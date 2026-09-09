@@ -334,26 +334,12 @@ button[hidden]{display:none!important}
 .math-grid{display:flex;flex-direction:column;gap:14px;margin-top:14px}
 /* v10：题型分组（题型标题在上，题目卡片在下） */
 .math-type-group{background:#fbfdff;border:1.5px solid #e3eefb;border-radius:14px;padding:12px}
-/* R60-5：主题卡内所有题目全部打卡完成 → 切换为绿色 */
-.math-type-group.is-all-done{background:#e6f9ee;border-color:#86dcab;box-shadow:0 4px 14px rgba(34,160,90,.15)}
-.math-type-group.is-all-done .math-group-name{color:#0f7a4a}
-/* R65-2：主题卡全部完成 → 其上方「题型卡片」(题型分组头) 也变绿 */
-.math-type-group.is-all-done .math-type-group-head{
-  background:linear-gradient(135deg,#e6f9ee,#d3f3e2);
-  border:1.5px solid #86dcab;
-  border-radius:10px;
-  padding:6px 10px;
-  margin-bottom:10px;
-}
-.math-type-group.is-all-done .math-group-name{color:#0f7a4a;font-weight:800}
+/* R73-2：乐读数学恢复为「题型卡直接展示全部题目」（不再全完成变绿 / 不再点击展开折叠） */
 .math-type-group-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding-bottom:8px;margin-bottom:10px;border-bottom:1.5px dashed #cfe0f5}
 .math-group-name{font-size:15px;font-weight:800;color:var(--orange-dark)}
 .math-group-count{font-size:11px;color:var(--muted);background:#eef4fc;padding:2px 10px;border-radius:8px}
 .math-group-body{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:10px}
-/* R67-2：点击题型卡头部 → 展开/收起题目内容 */
-/* R66：题型卡头部默认不可点击展开；math-group-body 始终显示 */
 .math-group-right{display:flex;align-items:center;gap:8px}
-.math-chevron{display:inline-block;font-size:11px;color:#6b8cae;transition:transform .15s;min-width:10px;text-align:center}
 /* v10：题目行 */
 .math-q{font-size:14px;font-weight:700;color:#1c3d6b;line-height:1.7;white-space:pre-wrap;background:#eef4fc;border-radius:8px;padding:8px 10px}
 .math-q-label{display:inline-block;font-size:10px;font-weight:800;color:#fff;background:linear-gradient(135deg,#6fa8e6,#2f7ed8);padding:2px 8px;border-radius:6px;margin-right:8px;vertical-align:1px}
@@ -1219,9 +1205,12 @@ button[hidden]{display:none!important}
 /* R60-6：学习报告「完成项」按板块分类统计（每板块一卡，卡内逐项计数） */
 /* R64-3：恢复到 R61 网格布局（auto-fill 列，避免行尾拉伸）；R63-3 的 flex 去留白方案回退 */
 /* R67-3：学习报告改为单列竖向展示（卡片依次上下排列，便于「百科讲堂在乐读数学下 / 家务在围棋下」的相邻关系清晰） */
-.report-secs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;align-items:start}
+/* R71-3：学习报告改「两列布局」—— 第一列 学而思英语/大阅读/百科讲堂；第二列 乐读数学/围棋对弈/家务小帮手/文明小标兵/作息 */
+.report-cols{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;align-items:start}
+.report-col{display:flex;flex-direction:column;gap:8px;min-width:0}
+@media (max-width:640px){ .report-cols{grid-template-columns:1fr} }
 .report-tabs-under{margin:0 0 8px}
-.report-sec{background:linear-gradient(135deg,#fff,#f2f8ff);border:1.5px solid #a4d0ff;border-radius:12px;padding:7px 10px;transition:.15s;flex:1 1 190px;min-width:160px}
+.report-sec{background:linear-gradient(135deg,#fff,#f2f8ff);border:1.5px solid #a4d0ff;border-radius:12px;padding:7px 10px;transition:.15s;flex:0 0 auto;min-width:160px;align-self:start}
 .report-sec:hover{transform:translateY(-1px);box-shadow:0 3px 8px rgba(30,58,138,.16)}
 .rsec-head{display:flex;align-items:center;gap:6px;margin-bottom:5px;padding-bottom:4px;border-bottom:1px dashed #cfe0f5}
 .rsec-ico{font-size:16px;line-height:1}
@@ -4618,16 +4607,18 @@ body.child-mode .parent-edit-fab{display:none}
 /* 当前子板块标题 */
 .bs-lesson-title{margin:4px 0 12px;padding:11px 16px;border-radius:14px;background:linear-gradient(135deg,#eaf3ff,#dceffc);color:#1e3a8a;font-size:18px;font-weight:900;letter-spacing:1px;border:1.5px solid #cfe0f5}
 /* 小节卡片（参照 .wp-card 圆角卡片 + 柔和阴影）；R63-6：排版优化 —— 字体/对齐/行距/段距 */
-.bs-sec{background:#fff;border:1.5px solid #dbe7f5;border-radius:14px;box-shadow:0 3px 10px rgba(30,58,138,.06);padding:14px 16px;margin-bottom:12px;display:flex;flex-direction:column}
-.bs-sec-h{color:#1e3a8a;font-size:15.5px;font-weight:900;letter-spacing:.5px;padding-bottom:7px;margin-bottom:9px;border-bottom:1.5px dashed #cfe0f5;display:flex;align-items:center;gap:6px}
+/* R71-4①：板块内主题内容排版优化 —— 卡片留白更足、标题与正文间距分层清晰、行距阅读顺畅 */
+.bs-sec{background:#fff;border:1.5px solid #dbe7f5;border-radius:14px;box-shadow:0 3px 10px rgba(30,58,138,.06);padding:16px 18px 14px;margin-bottom:16px;display:flex;flex-direction:column}
+.bs-sec-h{color:#1e3a8a;font-size:16px;font-weight:900;letter-spacing:.6px;padding-bottom:10px;margin-bottom:12px;border-bottom:1.5px dashed #cfe0f5;display:flex;align-items:center;gap:10px}
 .bs-sec-h::before{content:'📌';font-size:13px}
-.bs-sec-b{color:#2c4568;font-size:14.5px;font-weight:500;line-height:1.9;letter-spacing:.4px;word-break:break-word;text-align:justify;text-align-last:justify;word-spacing:3px}
-/* R65-6：必背知识逐项打卡行（左右对齐、上下间距适中、打卡键居右） */
-/* R66-4：打卡按钮置于每项「标题序号」前 —— 行首按钮 + 行尾内容，间距适中、对齐舒适 */
-.bs-row{display:flex;align-items:center;gap:12px;padding:11px 4px;border-bottom:1px dashed #e6eef8}
+/* R71-4②：打卡键置于「各项内容标题」旁（标题序号之后、标题文字之前） */
+.bs-sec-h .bs-checkin-btn{margin-right:10px;flex:0 0 auto;padding:6px 16px;font-size:13px;white-space:nowrap}
+.bs-sec-h-txt{flex:1 1 auto;min-width:0;line-height:1.5}
+.bs-sec-b{color:#2c4568;font-size:14.5px;font-weight:500;line-height:2;letter-spacing:.3px;word-break:break-word;text-align:left;word-spacing:normal}
+/* R71-4①：内容行间距放宽，段落之间呼吸感更足 */
+.bs-row{display:flex;align-items:center;gap:12px;padding:9px 2px;border-bottom:1px solid #eef3f9}
 .bs-row:last-child{border-bottom:none}
-.bs-row-text{flex:1 1 auto;color:#2c4568;font-size:14.5px;font-weight:500;line-height:1.7;letter-spacing:.3px;text-align:justify;text-align-last:justify;word-break:break-word;word-spacing:2px}
-.bs-row .bs-checkin-btn{margin-right:10px;flex:0 0 auto;padding:6px 14px;font-size:13px;white-space:nowrap}
+.bs-row-text{flex:1 1 auto;color:#2c4568;font-size:14.5px;font-weight:500;line-height:1.85;letter-spacing:.3px;text-align:left;word-break:break-word;word-spacing:normal}
 /* R64-6：每课打卡按钮（□未学 / ✅已学） */
 .bs-checkin-row{display:flex;justify-content:flex-end;margin-top:10px;padding-top:10px;border-top:1px dashed #cfe0f5}
 .bs-checkin-btn{flex:0 0 auto;padding:7px 18px;border-radius:999px;border:1.5px solid #cfe0f5;background:#fff;color:#1e3a8a;font-size:14px;font-weight:800;cursor:pointer;transition:.15s;font-family:inherit}
@@ -4650,6 +4641,75 @@ body.child-mode .parent-edit-fab{display:none}
 .go-stars-set input[type=number]{width:60px;padding:6px 8px;border:1.5px solid #cfe0f5;border-radius:9px;font-size:14px;font-weight:800;color:#1e3a8a;text-align:center;background:#fff;font-family:inherit}
 .go-stars-set input[type=number]:focus{outline:none;border-color:#4096ff;box-shadow:0 0 0 3px rgba(64,150,255,.15)}
 .go-stars-unit{font-size:13px;font-weight:700;color:#345}
+
+/* ========== R71-1：语法题库（巩固打卡下方说明卡） ========== */
+.xs-gram-bank{grid-column:1 / -1;margin-top:14px;border:1.5px solid #cfe0f5;border-radius:14px;background:linear-gradient(135deg,#f7fbff,#eef5ff);overflow:hidden}
+.xs-gram-bank-head{display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;user-select:none}
+.xs-gram-bank-head:hover{background:#eaf3ff}
+.xs-gram-bank-ico{font-size:18px;line-height:1}
+.xs-gram-bank-name{font-size:15px;font-weight:900;color:#1e3a8a;letter-spacing:.5px}
+.xs-gram-bank-count{flex:1 1 auto;font-size:12px;font-weight:700;color:var(--muted)}
+.xs-gram-bank-caret{font-size:12px;color:#6b8cae;min-width:12px;text-align:center}
+.xs-gram-bank-body{padding:0 16px 14px}
+.xs-gram-bank-tip{font-size:12.5px;line-height:1.7;color:#4a6a92;background:#fff;border:1px dashed #cfe0f5;border-radius:10px;padding:8px 12px;margin-bottom:10px}
+.xs-gram-bank-list{display:flex;flex-direction:column;gap:8px}
+.xs-bank-item{display:flex;gap:10px;align-items:flex-start;background:#fff;border:1.5px solid #dbe7f5;border-radius:12px;padding:9px 12px}
+.xs-bank-item.is-today{border-color:#86dcab;background:#f2fdf7}
+.xs-bank-no{flex:0 0 auto;width:24px;height:24px;border-radius:50%;background:#eef4fc;color:#1e3a8a;font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center}
+.xs-bank-main{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:2px}
+.xs-bank-title{font-size:13px;font-weight:900;color:#1e3a8a;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.xs-bank-today-tag{font-size:11px;font-weight:800;color:#0f7a4a;background:#e6f9ee;border:1px solid #86dcab;border-radius:999px;padding:1px 8px}
+.xs-bank-zh{font-size:13px;color:#2c4568;font-weight:600;line-height:1.6;word-break:break-word}
+.xs-bank-en{font-size:12.5px;color:#6b8cae;line-height:1.6;word-break:break-word}
+.xs-bank-empty{padding:12px;text-align:center;font-size:13px;color:var(--muted)}
+.xs-gram-bank-pager{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:10px}
+.xs-bank-page-btn{padding:5px 14px;border-radius:999px;border:1.5px solid #cfe0f5;background:#fff;color:#1e3a8a;font-size:12.5px;font-weight:800;cursor:pointer;font-family:inherit}
+.xs-bank-page-btn:disabled{opacity:.45;cursor:not-allowed}
+.xs-bank-page-info{font-size:12.5px;font-weight:800;color:var(--muted)}
+
+/* ========== R71-5：推荐书籍 · 添加按键 / 书籍正文页 ========== */
+.ktxs-head-btn{margin-left:10px;padding:5px 14px;border-radius:999px;border:1.5px solid #cfe0f5;background:#fff;color:#1e3a8a;font-size:12.5px;font-weight:800;cursor:pointer;font-family:inherit;white-space:nowrap}
+.ktxs-head-btn:hover{border-color:#8fc1f7;background:#eaf3ff}
+.ktxs-back-btn{background:#f7fbff}
+.ktxs-book-title{margin:2px 0 8px;padding:11px 16px;border-radius:14px;background:linear-gradient(135deg,#eaf3ff,#dceffc);color:#1e3a8a;font-size:18px;font-weight:900;letter-spacing:1px;border:1.5px solid #cfe0f5}
+.ktxs-book-intro{margin-bottom:10px;padding:10px 14px;border-radius:12px;background:#fff;border:1.5px solid #dbe7f5;color:#2c4568;font-size:14px;line-height:1.8;word-break:break-word}
+.ktxs-content-list{display:flex;flex-direction:column;gap:10px}
+.ktxs-content-item{display:flex;gap:10px;align-items:flex-start;background:#fff;border:1.5px solid #dbe7f5;border-radius:12px;padding:12px 14px;box-shadow:0 2px 8px rgba(30,58,138,.05)}
+.ktxs-content-no{flex:0 0 auto;width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#a4d0ff,#4096ff);color:#fff;font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center}
+.ktxs-content-txt{flex:1 1 auto;min-width:0;color:#2c4568;font-size:14.5px;font-weight:500;line-height:1.9;letter-spacing:.4px;white-space:pre-wrap;word-break:break-word;text-align:justify}
+.ktxs-pager{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:12px}
+.ktxs-page-btn{padding:5px 14px;border-radius:999px;border:1.5px solid #cfe0f5;background:#fff;color:#1e3a8a;font-size:12.5px;font-weight:800;cursor:pointer;font-family:inherit}
+.ktxs-page-btn:disabled{opacity:.45;cursor:not-allowed}
+.ktxs-page-info{font-size:12.5px;font-weight:800;color:var(--muted)}
+/* R72：诗词书（毛泽东诗词集）目录 + 赏析 */
+.mao-tip{margin:6px 2px 4px;font-size:12.5px;color:#6f86a8;font-weight:700}
+/* R73-5：诗词目录方格视图（正方形卡片，4 列 × 2 行/页 = 8 首/页） */
+.mao-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:8px 0 14px}
+.mao-grid-card{position:relative;aspect-ratio:1/1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:8px 6px;text-align:center;background:linear-gradient(135deg,#fff,#f0f6ff);border:1.5px solid #a4d0ff;border-radius:16px;cursor:pointer;transition:.15s;box-shadow:0 3px 10px rgba(30,58,138,.06);overflow:hidden}
+.mao-grid-card:hover{transform:translateY(-2px);border-color:#4096ff;box-shadow:0 6px 16px rgba(64,150,255,.22)}
+.mao-grid-no{position:absolute;top:8px;left:10px;font-size:12px;font-weight:900;color:#9bb6d8}
+.mao-grid-title{flex:1 1 auto;display:flex;align-items:center;justify-content:center;font-weight:800;color:#1e3a8a;font-size:15px;line-height:1.4;letter-spacing:.3px}
+.mao-grid-date{font-size:11px;color:#7a8aa0;font-weight:600}
+.mao-pager{display:flex;align-items:center;justify-content:center;gap:14px;margin:6px 0 14px}
+.mao-page-btn{padding:7px 16px;border-radius:999px;border:1.5px solid #cfe0f5;background:#fff;color:#1e3a8a;font-size:13px;font-weight:800;cursor:pointer;transition:.15s;font-family:inherit}
+.mao-page-btn:hover:not(:disabled){border-color:#8fc1f7;background:#eaf3ff}
+.mao-page-btn:disabled{opacity:.4;cursor:not-allowed}
+.mao-page-info{font-size:13px;font-weight:800;color:#14335f}
+/* R73-5：诗词详情（诗行居中排版 + 赏析） */
+.mao-detail{background:#fff;border:1.5px solid #a4d0ff;border-radius:16px;padding:18px 16px 16px;margin:6px 0 14px;box-shadow:0 3px 12px rgba(30,58,138,.08)}
+.mao-detail-title{text-align:center;font-size:22px;font-weight:900;color:#1e3a8a;letter-spacing:1px;font-family:"Songti SC","STSong","SimSun",serif}
+.mao-detail-date{text-align:center;color:#7a8aa0;font-size:13px;font-weight:600;margin-top:2px;margin-bottom:8px}
+.mao-poem-content{text-align:center;padding:10px 4px 6px;font-family:"Songti SC","STSong","SimSun",serif}
+.mao-line{font-size:17px;line-height:2.2;color:#23344a;letter-spacing:2px}
+.mao-stanza{height:14px}
+.mao-sec{margin-top:12px}
+.mao-sec-h{font-weight:800;color:#1e3a8a;border-left:4px solid #4096ff;padding-left:9px;margin:6px 0 5px;font-size:14.5px}
+.mao-sec-b{color:#37506e;line-height:1.95;font-size:14px;background:#f3f9ff;border:1px solid #e0edfb;border-radius:10px;padding:9px 13px;word-break:break-word}
+/* R73-5：毛泽东诗词集书籍卡片 —— 五星红旗背景贴图 */
+.sz-book-flag{position:relative;overflow:hidden;background-color:#DE2910;background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20300%20200%22%20preserveAspectRatio%3D%22xMidYMid%20slice%22%3E%3Crect%20width%3D%22300%22%20height%3D%22200%22%20fill%3D%22%23DE2910%22%2F%3E%3Cpath%20d%3D%22M50.00%2C20.00L56.74%2C40.73L78.53%2C40.73L60.90%2C53.54L67.63%2C74.27L50.00%2C61.46L32.37%2C74.27L39.10%2C53.54L21.47%2C40.73L43.26%2C40.73Z%22%20fill%3D%22%2523FFDE00%22%2F%3E%3Cpath%20d%3D%22M91.43%2C25.14L96.19%2C19.66L92.46%2C13.43L99.14%2C16.28L103.91%2C10.80L103.28%2C18.03L109.96%2C20.88L102.88%2C22.51L102.24%2C29.75L98.51%2C23.52Z%22%20fill%3D%22%2523FFDE00%22%2F%3E%3Cpath%20d%3D%22M110.10%2C41.41L116.62%2C38.21L115.60%2C31.02L120.65%2C36.24L127.18%2C33.04L123.78%2C39.46L128.84%2C44.67L121.68%2C43.43L118.29%2C49.85L117.26%2C42.66Z%22%20fill%3D%22%2523FFDE00%22%2F%3E%3Cpath%20d%3D%22M110.38%2C67.25L117.65%2C66.99L119.64%2C60.01L122.13%2C66.83L129.39%2C66.57L123.67%2C71.05L126.16%2C77.87L120.14%2C73.82L114.42%2C78.30L116.41%2C71.31Z%22%20fill%3D%22%2523FFDE00%22%2F%3E%3Cpath%20d%3D%22M92.19%2C83.75L98.99%2C86.32L103.53%2C80.64L103.19%2C87.90L109.99%2C90.46L102.98%2C92.39L102.65%2C99.64L98.65%2C93.57L91.65%2C95.50L96.18%2C89.82Z%22%20fill%3D%22%2523FFDE00%22%2F%3E%3C%2Fsvg%3E");background-size:cover;background-position:center}
+.sz-book-flag::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,.80)}
+.sz-book-flag>*{position:relative;z-index:1}
+
 
 </style>
 </head>
@@ -27180,6 +27240,10 @@ window.YW_BEISHU = [{"label":"第1课","title":"大青树下的小学","secs":[{
 
 </script>
 <script>
+window.MAO_POEMS = [{"t": "贺新郎·别友", "d": "一九二三年", "c": "挥手从兹去。更那堪凄然相向，苦情重诉。眼角眉梢都似恨，热泪欲零还住。知误会前番书语。过眼滔滔云共雾，算人间知己吾和汝。人有病，天知否？\n今朝霜重东门路，照横塘半天残月，凄清如许。汽笛一声肠已断，从此天涯孤旅。凭割断愁丝恨缕。要似昆仑崩绝壁，又恰像台风扫寰宇。重比翼，和云翥。", "b": "1923年，毛泽东因革命工作需要即将离湘，在长沙与妻子杨开慧话别。词以夫妻离情起笔，写革命者以天下为己任的胸怀。", "a": "上阕叙离愁与误会，情致婉转；过片「今朝霜重东门路」转写送别实景。结以「昆仑崩绝壁」「台风扫寰宇」喻革命风暴，将儿女情长升华为改造世界的壮志，「重比翼，和云翥」寄望夫妻并肩投身革命。"}, {"t": "沁园春·长沙", "d": "一九二五年", "c": "独立寒秋，湘江北去，橘子洲头。看万山红遍，层林尽染；漫江碧透，百舸争流。鹰击长空，鱼翔浅底，万类霜天竞自由。怅寥廓，问苍茫大地，谁主沉浮？\n携来百侣曾游，忆往昔峥嵘岁月稠。恰同学少年，风华正茂；书生意气，挥斥方遒。指点江山，激扬文字，粪土当年万户侯。曾记否，到中流击水，浪遏飞舟？", "b": "1925年秋，毛泽东重游长沙橘子洲，面对湘江壮丽秋色，追忆早年求学与革命岁月，写下这首气势磅礴的词。", "a": "上阕写景，「万山红遍」「百舸争流」开阔雄浑；「问苍茫大地，谁主沉浮」陡然振起。下阕忆同窗「指点江山，激扬文字」，以「中流击水」明报国壮志。景、史、情交融，尽显青年革命者的自信与担当。"}, {"t": "菩萨蛮·黄鹤楼", "d": "一九二七年春", "c": "茫茫九派流中国，沉沉一线穿南北。烟雨莽苍苍，龟蛇锁大江。\n黄鹤知何去？剩有游人处。把酒酹滔滔，心潮逐浪高！", "b": "1927年春，大革命危急，毛泽东登武汉黄鹤楼，俯瞰长江，感慨革命前途未卜、同志壮志难伸。", "a": "「茫茫九派」「沉沉一线」以空间之广写形势之重；「龟蛇锁大江」暗喻时局艰危。后阕「把酒酹滔滔，心潮逐浪高」于低抑中迸发坚定信念，苍茫沉郁中见革命者不息的豪情。"}, {"t": "西江月·秋收起义", "d": "一九二七年秋", "c": "军叫工农革命，旗号镰刀斧头。匡庐一带不停留，要向潇湘直进。\n地主重重压迫，农民个个同仇。秋收时节暮云愁，霹雳一声暴动。", "b": "1927年秋，毛泽东领导湘赣边界秋收起义，这首小令纪实般写下起义队伍的旗帜、口号与进军方向。", "a": "上阕「军叫工农革命，旗号镰刀斧头」直白如口号，尽显工农武装的崭新面貌；「要向潇湘直进」写出进军气势。下阕「秋收时节暮云愁，霹雳一声暴动」以雷霆喻起义，朴素刚健，是武装斗争的嘹亮序曲。"}, {"t": "西江月·井冈山", "d": "一九二八年秋", "c": "山下旌旗在望，山头鼓角相闻。敌军围困万千重，我自岿然不动。\n早已森严壁垒，更加众志成城。黄洋界上炮声隆，报道敌军宵遁。", "b": "1928年秋，黄洋界保卫战击退来犯之敌，毛泽东喜闻捷报，写此词赞井冈山军民的顽强斗志。", "a": "「敌军围困万千重，我自岿然不动」以对比显从容定力；「早已森严壁垒，更加众志成城」点出人民战争的法宝。结句「黄洋界上炮声隆，报道敌军宵遁」于轻快中见胜券在握，豪迈洗练。"}, {"t": "清平乐·蒋桂战争", "d": "一九二九年秋", "c": "风云突变，军阀重开战。洒向人间都是怨，一枕黄粱再现。\n红旗跃过汀江，直下龙岩上杭。收拾金瓯一片，分田分地真忙。", "b": "1929年秋，蒋介石与桂系军阀混战，红军乘机在闽西开辟根据地，词写军阀混战与革命根据地发展的对照。", "a": "上阕「风云突变，军阀重开战」一笔揭穿统治阶级内斗；「一枕黄粱」讽其图谋虚妄。下阕「红旗跃过汀江」「分田分地真忙」写根据地欣欣向荣，以反动混战反衬土地革命的生机，冷峻而乐观。"}, {"t": "采桑子·重阳", "d": "一九二九年十月", "c": "人生易老天难老，岁岁重阳。今又重阳，战地黄花分外香。\n一年一度秋风劲，不似春光。胜似春光，寥廓江天万里霜。", "b": "1929年重阳，毛泽东身处逆境却雄姿不减，借秋菊抒发革命者旷达乐观的情怀。", "a": "「人生易老天难老」起笔哲理深沉；「战地黄花分外香」以硝烟中的菊花写革命豪情。下阕「不似春光」「胜似春光」翻案传统悲秋，以「寥廓江天万里霜」收束，境界开阔，昂扬向上。"}, {"t": "如梦令·元旦", "d": "一九三〇年一月", "c": "宁化、清流、归化，路隘林深苔滑。今日向何方，直指武夷山下。山下山下，风展红旗如画。", "b": "1930年元旦，红军转战闽西，词写行军途中的艰险与红旗招展的明快画面。", "a": "「路隘林深苔滑」以三字短语写行军之难；「直指武夷山下」显目标明确。叠句「山下山下，风展红旗如画」于险境中突现明朗壮美的意境，短小精悍，举重若轻。"}, {"t": "减字木兰花·广昌路上", "d": "一九三〇年二月", "c": "漫天皆白，雪里行军情更迫。头上高山，风卷红旗过大关。\n此行何去？赣江风雪迷漫处。命令昨颁，十万工农下吉安。", "b": "1930年2月，红军由广昌向赣江挺进，词写雪中行军的紧迫与必胜信念。", "a": "「漫天皆白，雪里行军情更迫」以雪景衬军情；「风卷红旗过大关」动态如画。问答「此行何去？赣江风雪迷漫处」领起，结以「十万工农下吉安」，于肃杀中见雷霆万钧之势。"}, {"t": "蝶恋花·从汀州向长沙", "d": "一九三〇年七月", "c": "六月天兵征腐恶，万丈长缨要把鲲鹏缚。赣水那边红一角，偏师借重黄公略。\n百万工农齐踊跃，席卷江西直捣湘和鄂。国际悲歌歌一曲，狂飙为我从天落。", "b": "1930年7月，红军自汀州进军长沙，词写「百万工农」席卷江西、直捣湘鄂的浩大声势。", "a": "上阕「万丈长缨要把鲲鹏缚」以神话喻缚敌雄心；下阕「席卷江西直捣湘和鄂」写工农踊跃。结以「狂飙为我从天落」状革命风暴之不可抗拒，气吞山河，是早期武装斗争的恢弘画卷。"}, {"t": "渔家傲·反第一次大“围剿”", "d": "一九三一年春", "c": "万木霜天红烂漫，天兵怒气冲霄汉。雾满龙冈千嶂暗，齐声唤，前头捉了张辉瓒。\n二十万军重入赣，风烟滚滚来天半。唤起工农千百万，同心干，不周山下红旗乱。", "b": "1931年春，红军在龙冈伏击，活捉敌将张辉瓒，粉碎国民党第一次「围剿」，词纪此捷。", "a": "「万木霜天红烂漫」以景衬战云；「齐声唤，前头捉了张辉瓒」口语入词，生动可喜。下阕「唤起工农千百万」点人民战争伟力，「不周山下红旗乱」化用共工神话，写革命翻天覆地的气势。"}, {"t": "渔家傲·反第二次大“围剿”", "d": "一九三一年夏", "c": "白云山头云欲立，白云山下呼声急，枯木朽株齐努力。枪林逼，飞将军自重霄入。\n七百里驱十五日，赣水苍茫闽山碧，横扫千军如卷席。有人泣，为营步步嗟何及！", "b": "1931年夏，红军十五天内横扫七百里，粉碎第二次「围剿」，词写运动战的凌厉与敌军溃败。", "a": "「白云山头云欲立」以云拟人，气氛紧张；「枪林逼，飞将军自重霄入」赞红军神速。下阕「横扫千军如卷席」写摧枯拉朽，「有人泣，为营步步嗟何及」讽蒋军战术失败，对比鲜明，酣畅淋漓。"}, {"t": "菩萨蛮·大柏地", "d": "一九三三年夏", "c": "赤橙黄绿青蓝紫，谁持彩练当空舞？雨后复斜阳，关山阵阵苍。\n当年鏖战急，弹洞前村壁。装点此关山，今朝更好看。", "b": "1933年夏，毛泽东重过大柏地，忆四年前红军在此激战，弹痕犹在，触景生情。", "a": "「赤橙黄绿青蓝紫，谁持彩练当空舞」以彩虹起兴，色彩斑斓；「当年鏖战急，弹洞前村壁」由景入史。结以「装点此关山，今朝更好看」，将战争创伤化为壮丽风景，举重若轻，意味深长。"}, {"t": "清平乐·会昌", "d": "一九三四年夏", "c": "东方欲晓，莫道君行早。踏遍青山人未老，风景这边独好。\n会昌城外高峰，颠连直接东溟。战士指看南粤，更加郁郁葱葱。", "b": "1934年夏，红军第五次反「围剿」失利在即，毛泽东登上会昌山，于忧思中仍见必胜信念。", "a": "「东方欲晓，莫道君行早」以晨景起笔，含勤勉自勉；「踏遍青山人未老，风景这边独好」于困顿中显豁达。下阕「更加郁郁葱葱」写南方远景，于低回处藏昂扬，是逆境中的乐观之歌。"}, {"t": "十六字令三首", "d": "一九三四年至一九三五年", "c": "山，快马加鞭未下鞍。惊回首，离天三尺三。\n山，倒海翻江卷巨澜。奔腾急，万马战犹酣。\n山，刺破青天锷未残。天欲堕，赖以拄其间。", "b": "1934—1935年长征途中，毛泽东连续以三首十六字小令咏山，写红军翻山越岭的雄姿。", "a": "三首皆以「山」起，分别以「离天三尺三」「万马战犹酣」「赖以拄其间」状山之高、之势、之固。以山喻红军，尺幅千里，刚健奇崛，于极短篇幅中见长征的磅礴气魄。"}, {"t": "忆秦娥·娄山关", "d": "一九三五年二月", "c": "西风烈，长空雁叫霜晨月。霜晨月，马蹄声碎，喇叭声咽。\n雄关漫道真如铁，而今迈步从头越。从头越，苍山如海，残阳如血。", "b": "1935年2月，红军二渡赤水、重占娄山关，词写拂晓激战后的苍凉与再起步的坚毅。", "a": "上阕「西风烈」「霜晨月」以冷色写征战之严；「马蹄声碎，喇叭声咽」声情凄清。下阕「雄关漫道真如铁，而今迈步从头越」于悲壮中转豪迈，「苍山如海，残阳如血」以壮阔收束，沉郁顿挫，撼人心魄。"}, {"t": "七律·长征", "d": "一九三五年十月", "c": "红军不怕远征难，万水千山只等闲。\n五岭逶迤腾细浪，乌蒙磅礴走泥丸。\n金沙水拍云崖暖，大渡桥横铁索寒。\n更喜岷山千里雪，三军过后尽开颜。", "b": "1935年10月红军长征胜利在望，毛泽东以七律概括二万五千里征途的千难万险与英雄气概。", "a": "首联「万水千山只等闲」定下豪迈基调；颔联以「腾细浪」「走泥丸」缩千山于股掌；颈联「云崖暖」「铁索寒」写金沙大渡之险。尾联「更喜岷山千里雪，三军过后尽开颜」以胜利欢颜收束，气势恢宏，是长征的史诗。"}, {"t": "念奴娇·昆仑", "d": "一九三五年十月", "c": "横空出世，莽昆仑，阅尽人间春色。飞起玉龙三百万，搅得周天寒彻。夏日消溶，江河横溢，人或为鱼鳖。千秋功罪，谁人曾与评说？\n而今我谓昆仑：不要这高，不要这多雪。安得倚天抽宝剑，把汝裁为三截？一截遗欧，一截赠美，一截还东国。太平世界，环球同此凉热。", "b": "1935年10月，长征将抵陕北，毛泽东望昆仑雪山，驰骋想象，抒发改造山河、世界和平的宏愿。", "a": "上阕写昆仑「阅尽人间春色」而又「江河横溢」的功罪两面；下阕「不要这高，不要这多雪」「裁为三截」以奇想遣山。结以「太平世界，环球同此凉热」由个人豪情升华为人类大同理想，气象高大。"}, {"t": "清平乐·六盘山", "d": "一九三五年十月", "c": "天高云淡，望断南飞雁。不到长城非好汉，屈指行程二万。\n六盘山上高峰，红旗漫卷西风。今日长缨在手，何时缚住苍龙？", "b": "1935年10月，红军翻越长征最后一座大山六盘山，毛泽东临风寄慨，望长征将竟。", "a": "「天高云淡，望断南飞雁」以秋空起兴，含对南方苏区与战友的遥念；「不到长城非好汉」警策豪迈。下阕「红旗漫卷西风」「何时缚住苍龙」写胜利在望、敌忾未消，俊爽刚健。"}, {"t": "沁园春·雪", "d": "一九三六年二月", "c": "北国风光，千里冰封，万里雪飘。望长城内外，惟余莽莽；大河上下，顿失滔滔。山舞银蛇，原驰蜡象，欲与天公试比高。须晴日，看红装素裹，分外妖娆。\n江山如此多娇，引无数英雄竞折腰。惜秦皇汉武，略输文采；唐宗宋祖，稍逊风骚。一代天骄，成吉思汗，只识弯弓射大雕。俱往矣，数风流人物，还看今朝。", "b": "1936年2月，毛泽东率军渡河东征，途中所作。1945年重庆谈判时书赠柳亚子，传诵一时。", "a": "上阕写北国雪景，「千里冰封」「欲与天公试比高」雄视古今；下阕评说秦皇汉武等英雄，「数风流人物，还看今朝」翻历史案。景、史、论交融，气魄横绝，是毛泽东诗词的代表作。"}, {"t": "七律·人民解放军占领南京", "d": "一九四九年四月", "c": "钟山风雨起苍黄，百万雄师过大江。\n虎踞龙盘今胜昔，天翻地覆慨而慷。\n宜将剩勇追穷寇，不可沽名学霸王。\n天若有情天亦老，人间正道是沧桑。", "b": "1949年4月23日解放军横渡长江解放南京，毛泽东闻讯赋诗，宣告蒋家王朝覆灭。", "a": "首联「钟山风雨起苍黄」写巨变之速；颔联「宜将剩勇追穷寇」主张乘胜进军。颈联「天若有情天亦老」化用李贺，尾联「人间正道是沧桑」以哲理收束，雄辩地阐明革命必须进行到底。"}, {"t": "七律·和柳亚子先生", "d": "一九四九年四月二十九日", "c": "饮茶粤海未能忘，索句渝州叶正黄。\n三十一年还旧国，落花时节读华章。\n牢骚太盛防肠断，风物长宜放眼量。\n莫道昆明池水浅，观鱼胜过富春江。", "b": "1949年4月，柳亚子赋诗感叹南归，毛泽东步韵相和，劝其放宽心、共建设新中国。", "a": "「牢骚太盛防肠断，风物长宜放眼量」以箴言劝友；「莫道昆明池水浅，观鱼胜过富春江」喻北京可施展抱负。全诗于唱和中见领袖襟怀与对民主人士的恳切相待。"}, {"t": "浣溪沙·和柳亚子先生", "d": "一九五〇年十月", "c": "长夜难明赤县天，百年魔怪舞翩跹，人民五亿不团圆。\n一唱雄鸡天下白，万方乐奏有于阗，诗人兴会更无前。", "b": "1950年国庆，柳亚子填词颂盛世，毛泽东依韵和作，写各族人民欢庆新生的图景。", "a": "「长夜难明赤县天」回顾百年苦难；「百年魔怪舞翩跹」写旧世乱象。下阕「一唱雄鸡天下白」「万方乐奏有于阗」以明朗意象写新中国分立冬去春来，欢快明朗，气象一新。"}, {"t": "浪淘沙·北戴河", "d": "一九五四年夏", "c": "大雨落幽燕，白浪滔天，秦皇岛外打鱼船。一片汪洋都不见，知向谁边？\n往事越千年，魏武挥鞭，东临碣石有遗篇。萧瑟秋风今又是，换了人间。", "b": "1954年夏，毛泽东于北戴河观沧海，抚今追昔，思曹操观海之事，写建设年代的心胸。", "a": "「大雨落幽燕，白浪沧海」以壮阔海景开篇；「往事越千年，魏武挥鞭」怀古。结以「萧瑟秋风今又是，换了人间」对比古今，于雄浑中见时代巨变之慨，豪迈深沉。"}, {"t": "水调歌头·游泳", "d": "一九五六年六月", "c": "才饮长沙水，又食武昌鱼。万里长江横渡，极目楚天舒。不管风吹浪打，胜似闲庭信步，今日得宽馀。子在川上曰：逝者如斯夫！\n风樯动，龟蛇静，起宏图。一桥飞架南北，天堑变通途。更立西江石壁，截断巫山云雨，高峡出平湖。神女应无恙，当惊世界殊。", "b": "1956年6月，毛泽东横渡长江，写下这首词，既写搏浪之乐，也写武汉长江大桥与三峡宏图。", "a": "上阕「万里长江横渡」写畅游豪情；「不管风吹浪打，胜似闲庭信步」见从容。下阕「更立西江石壁」「高峡出平湖」畅想水利伟业，「神女应无恙，当惊世界殊」以浪漫收束，现实与理想辉映。"}, {"t": "蝶恋花·答李淑一", "d": "一九五七年五月十一日", "c": "我失骄杨君失柳，杨柳轻飏直上重霄九。问讯吴刚何所有，吴刚捧出桂花酒。\n寂寞嫦娥舒广袖，万里长空且为忠魂舞。忽报人间曾伏虎，泪飞顿作倾盆雨。", "b": "1957年，李淑一函寄悼亡词，毛泽东以这首蝶恋花相答，悼念亡妻杨开慧与战友柳直荀。", "a": "「我失骄杨君失柳」以「骄杨」赞烈士；「杨柳轻飏直上重霄九」化入仙境。下阕吴刚捧桂、嫦娥舒袖，以神话写英烈受敬，「泪飞顿作倾盆雨」写忠魂之悲喜，深情浪漫，感人至深。"}, {"t": "七律二首·送瘟神", "d": "一九五八年七月一日", "c": "读六月三十日人民日报，余江县消灭了血吸虫。浮想联翩，夜不能寐。微风拂煦，旭日临窗。遥望南天，欣然命笔。\n【其一】\n绿水青山枉自多，华佗无奈小虫何！\n千村薜荔人遗矢，万户萧疏鬼唱歌。\n坐地日行八万里，巡天遥看一千河。\n牛郎欲问瘟神事，一样悲欢逐逝波。\n【其二】\n春风杨柳万千条，六亿神州尽舜尧。\n红雨随心翻作浪，青山着意化为桥。\n天连五岭银锄落，地动三河铁臂摇。\n借问瘟君欲何往，纸船明烛照天烧。", "b": "1958年，毛泽东读余江县消灭血吸虫喜报，浮想联翩，作二律纪新社会除害兴利的奇迹。", "a": "其一「绿水青山枉自多」痛陈旧世瘟神横行；「千村薜荔人遗矢」写民生凋敝。其二「春风杨柳万千条」转写新天，「六亿神州尽舜尧」颂人民伟力，「纸船明烛照天烧」送走瘟神，今昔对照，激情奔涌。"}, {"t": "七律·到韶山", "d": "一九五九年六月", "c": "一九五九年六月二十五日到韶山。离别这个地方已有三十二周年了。\n别梦依稀咒逝川，故园三十二年前。\n红旗卷起农奴戟，黑手高悬霸主鞭。\n为有牺牲多壮志，敢教日月换新天。\n喜看稻菽千重浪，遍地英雄下夕烟。", "b": "1959年6月，毛泽东阔别三十二年的故乡韶山，见巨变而忆牺牲的亲友，感慨万端。", "a": "「别梦依稀咒逝川」起笔沉郁；「红旗卷起农奴戟」忆革命烽火。颈联「为有牺牲多壮志，敢教日月换新天」为名句，颂牺牲换来的天地翻覆。尾联写稻浪丰收，于悲壮中见欣慰。"}, {"t": "七律·登庐山", "d": "一九五九年七月一日", "c": "一山飞峙大江边，跃上葱茏四百旋。\n冷眼向洋看世界，热风吹雨洒江天。\n云横九派浮黄鹤，浪下三吴起白烟。\n陶令不知何处去，桃花源里可耕田？", "b": "1959年7月，毛泽东登庐山，写登高所见与对时局、建设的热望。", "a": "「一山飞峙大江边」写庐山雄姿；「冷眼向洋看世界」显从容自信。下阕「陶令不知何处去，桃花源里可耕田」借陶渊明讽逃避现实，暗喻脚踏实地搞建设，景中寓理，洒脱明快。"}, {"t": "七绝·为女民兵题照", "d": "一九六一年二月", "c": "飒爽英姿五尺枪，曙光初照演兵场。\n中华儿女多奇志，不爱红装爱武装。", "b": "1961年2月，毛泽东为一张女民兵持枪照片题诗，赞颂全民皆兵、巾帼不让须眉。", "a": "「飒爽英姿五尺枪，曙光初照演兵场」勾勒女民兵英姿；「中华儿女多奇志，不爱红装爱武装」以对比颂其志向，语言明快，是那个年代民兵风采的传神写照。"}, {"t": "七绝·为李进同志题所摄庐山仙人洞照", "d": "一九六一年九月九日", "c": "暮色苍茫看劲松，乱云飞渡仍从容。\n天生一个仙人洞，无限风光在险峰。", "b": "1961年9月，毛泽东为江青所摄庐山仙人洞照片题诗，于困难时期寄寓坚韧自信。", "a": "「暮色苍茫看劲松，乱云飞渡仍从容」以劲松喻定力；「天生一个仙人洞，无限风光在险峰」由景及理，言险峰方见佳境，于逆境中见乐观与定力，含蓄而有力。"}, {"t": "七律·答友人", "d": "一九六一年", "c": "九嶷山上白云飞，帝子乘风下翠微。\n斑竹一枝千滴泪，红霞万朵百重衣。\n洞庭波涌连天雪，长岛人歌动地诗。\n我欲因之梦寥廓，芙蓉国里尽朝晖。", "b": "1961年，友人自湖南来函，毛泽东以诗相答，借湖湘神话写故乡与时代的新貌。", "a": "「九嶷山上白云飞」以娥皇女英神话起笔；「芙蓉国里尽朝晖」写湖南新景。下阕「洞庭波涌连天雪，长岛人歌动地诗」壮阔热烈，「我欲因之梦寥廓」由实入虚，浪漫瑰丽。"}, {"t": "七律·和郭沫若同志", "d": "一九六一年十一月十七日", "c": "一从大地起风雷，便有精生白骨堆。\n僧是愚氓犹可训，妖为鬼蜮必成灾。\n金猴奋起千钧棒，玉宇澄清万里埃。\n今日欢呼孙大圣，只缘妖雾又重来。", "b": "1961年，郭沫若咏孙悟空诗，毛泽东步韵相和，借西游记故事谈对敌斗争策略。", "a": "「一从大地起风雷」写革命风暴起；「金猴奋起千钧棒，玉宇澄清万里埃」以孙悟空喻驱邪。结以「今日欢呼孙大圣，只缘妖雾又重来」借神话警喻现实中仍需斗争，风趣而犀利。"}, {"t": "卜算子·咏梅", "d": "一九六一年十二月", "c": "读陆游咏梅词，反其意而用之。\n风雨送春归，飞雪迎春到。已是悬崖百丈冰，犹有花枝俏。\n俏也不争春，只把春来报。待到山花烂漫时，她在丛中笑。", "b": "1961年冬，毛泽东读陆游咏梅词反其意而用之，借梅花写共产党人不畏严寒、无私奉献的品格。", "a": "「已是悬崖百丈冰，犹有花枝俏」写梅之傲雪；「俏也不争春，只把春来报」翻陆游孤芳自赏之旨，以「待到山花烂漫时，她在丛中笑」写功成不居，境界高远，是咏物言志的典范。"}, {"t": "七律·冬云", "d": "一九六二年十二月二十六日", "c": "雪压冬云白絮飞，万花纷谢一时稀。\n高天滚滚寒流急，大地微微暖气吹。\n独有英雄驱虎豹，更无豪杰怕熊罴。\n梅花欢喜漫天雪，冻死苍蝇未足奇。", "b": "1962年12月26日毛泽东生日，时值国际局势紧张，以冬云喻环境，写傲寒斗雪的意志。", "a": "「雪压冬云白絮飞」写寒云压顶；「独有英雄驱虎豹，更无豪杰怕熊罴」以对比显胆魄。下阕「梅花欢喜漫天雪，冻死苍蝇未足奇」以梅蝇喻敌我，于严冬中见斗争豪情，刚健冷峻。"}, {"t": "满江红·和郭沫若同志", "d": "一九六三年一月九日", "c": "小小寰球，有几个苍蝇碰壁。嗡嗡叫，几声凄厉，几声抽泣。蚂蚁缘槐夸大国，蚍蜉撼树谈何易。正西风落叶下长安，飞鸣镝。\n多少事，从来急；天地转，光阴迫。一万年太久，只争朝夕。四海翻腾云水怒，五洲震荡风雷激。要扫除一切害人虫，全无敌。", "b": "1963年1月，毛泽东和郭沫若《满江红》，纵论天下大势，抒发反帝反霸的坚强决心。", "a": "上阕「小小寰球，有几个苍蝇碰壁」以嘲讽起；「蚂蚁缘槐夸大国」讽霸权虚妄。下阕「四海翻腾云水怒，五洲震荡风雷激」写世界革命浪潮，「要扫除一切害人虫」气势磅礴，是放眼全球的战斗宣言。"}, {"t": "七律·吊罗荣桓同志", "d": "一九六三年十二月", "c": "记得当年草上飞，红军队里每相违。\n长征不是难堪日，战锦方为大问题。\n斥鷃每闻欺大鸟，昆鸡长笑老鹰非。\n君今不幸离人世，国有疑难可问谁？", "b": "1963年12月罗荣桓元帅逝世，毛泽东赋诗悼念，赞其政治品格与战友深情。", "a": "「记得当年草上飞」忆战争岁月；「红军队里每相违」写聚少离多。颈联「长征不是难堪日，战锦方为大问题」评其功过担当，结以「国有疑难可问谁」痛失栋梁，沉痛深切，朴挚感人。"}, {"t": "贺新郎·读史", "d": "一九六四年春", "c": "人猿相揖别。只几个石头磨过，小儿时节。铜铁炉中翻火焰，为问何时猜得？不过几千寒热。人世难逢开口笑，上疆场彼此弯弓月。流遍了，郊原血。\n一篇读罢头飞雪，但记得斑斑点点，几行陈迹。五帝三皇神圣事，骗了无涯过客。有多少风流人物？盗跖庄蹻流誉后，更陈王奋起挥黄钺。歌未竟，东方白。", "b": "1964年春，毛泽东读二十四史有所感，以词纵论数千年阶级争斗，翻封建正统史观。", "a": "「人猿相揖别」起笔写人类进化；「盗跖庄蹻流誉后，更陈王奋起挥黄钺」推重农民起义。下阕「五帝三皇神圣事，骗了无涯过客」破帝王神话，「歌未竟，东方白」由古及今，气势磅礴，史识独到。"}, {"t": "水调歌头·重上井冈山", "d": "一九六五年五月", "c": "久有凌云志，重上井冈山。千里来寻故地，旧貌变新颜。到处莺歌燕舞，更有潺潺流水，高路入云端。过了黄洋界，险处不须看。\n风雷动，旌旗奋，是人寰。三十八年过去，弹指一挥间。可上九天揽月，可下五洋捉鳖，谈笑凯歌还。世上无难事，只要肯登攀。", "b": "1965年5月，毛泽东重上井冈山，距1927年割据三十八年，抚今追昔，写斗争结晶与继续革命之志。", "a": "「久有凌云志，重上井冈山」起笔明志；「到处莺歌燕舞」写旧地新颜。下阕「可上九天揽月，可下五洋捉鳖」豪气干云，「世上无难事，只要肯登攀」以警句收束，刚健昂扬。"}, {"t": "念奴娇·鸟儿问答", "d": "一九六五年秋", "c": "鲲鹏展翅，九万里，翻动扶摇羊角。背负青天朝下看，都是人间城郭。炮火连天，弹痕遍地，吓倒蓬间雀。怎么得了，哎呀我要飞跃。\n借问君去何方，雀儿答道：有仙山琼阁。不见前年秋月朗，订了三家条约。还有吃的，土豆烧熟了，再加牛肉。不须放屁，试看天地翻覆。", "b": "1965年秋，毛泽东以鲲鹏与蓬间雀对话的寓言词，讽刺当时国际共运中的妥协论调。", "a": "「鲲鹏展翅九万里」以壮鸟喻革命力量；「蓬间雀」怯懦窃语，问答之间寓立场之别。结以「土豆烧熟了，再加牛肉」戏拟「福利共产主义」口号，幽默犀利，于谈笑中见原则。"}, {"t": "七律·洪都", "d": "一九六五年十二月", "c": "到得洪都又一年，祖生击楫至今传。\n闻鸡久听南天雨，立马曾挥北地鞭。\n鬓雪飞来成废料，彩云长在有新天。\n年年后浪推前浪，江草江花处处鲜。", "b": "1965年12月，毛泽东至南昌（古洪都），怀王勃《滕王阁序》，写老区新貌与后继有人。", "a": "「到得洪都又一年」平起；「鬓雪飞来成废料」自谦年老。下阕「彩云长在有新天」望前景，「年年后浪推前浪」喻新人代起，结以「江草江花处处鲜」写生机，于平淡中见达观。"}, {"t": "七律·有所思", "d": "一九六六年六月", "c": "正是神都有事时，又来南国踏芳枝。\n青松怒向苍天发，败叶纷随碧水驰。\n一阵风雷惊世界，满街红绿走旌旗。\n凭阑静听潇潇雨，故国人民有所思。", "b": "1966年6月，毛泽东于风云变幻之际有所感怀，写对时局的忧思与对群众的瞩望。", "a": "「正是神都有事时」点明背景；「又来南国踏芳枝」写南行。下阕「青松怒向苍天发，败叶纷随碧水驰」以景物喻斗争双方，「一阵风雷惊世界」写变动将至，含蓄深沉，寄意遥深。"}];
+
+</script>
+<script>
 /* ============================================================
    疯狂动物城 · 三年级学习乐园
    数据层：10 张表 + 农场 + 商店 + 百科 + 大阅读 + 围棋
@@ -31419,52 +31483,102 @@ May / Can I /we have …, please? 请问我 / 我们可以拿…… 吗？
   // V21-1：错题优先入当日题组（错题在下一日考察中继续出现，直到答对从错题本移除），再按日期种子补抽到 10 个
   // R59-3：末尾追加第 11、12 题 —— 语法默写题（题源：语法板块卡片）
   // 词汇题源核验：仅取 st.xueersiContent.words（含用户手动新增词汇，xsAdd('words') 直接写入该列表）
+  // R73-1：语法题库抽取 —— 覆盖语法板块全部例句；补全「例句」字段缺失/格式多样导致的遗漏；
+  //        对答例句中「提问 + 回答」合并为一题（如 A:… B:… / 问：… 答：…）
   function xsGrammarPairsOf(card){
     const out = [];
     const push = (en, zh)=>{
       en = String(en||'').replace(/^[•·]\s*/, '').replace(/\s+/g,' ').trim();
-      zh = String(zh||'').replace(/[。.]\s*$/, '').replace(/\s+/g,' ').trim();
+      zh = String(zh||'').replace(/[。.。]\s*$/, '').replace(/\s+/g,' ').trim();
       if(en && zh && /[\u4e00-\u9fff]/.test(zh)) out.push({en, zh});
     };
-    const parse = (txt)=>{
-      if(!txt) return;
-      String(txt).split(/\n+/).forEach(line=>{
-        const m = line.match(/^\s*[•·]?\s*(.+?)\s*[—–]\s*(.+?)\s*$/);
-        if(m) push(m[1], m[2]);
-      });
+    // 将「英文在前、中文在后」的双语文本切成 {en, zh}（中文从首个汉字起）
+    const splitBilingual = (s)=>{
+      const m = String(s||'').match(/^(.*?)([一-鿿].*)$/s);
+      if(m) return [m[1].trim(), m[2].trim()];
+      return [String(s||'').trim(), ''];
     };
-    parse(card.examples);       // 优先用「例句」字段
-    if(!out.length) parse(card.body); // 回退：从正文「• 英文 — 中文」行提取
+    // examples 与 body 合并处理，确保不漏任何例句行
+    const src = [card.examples, card.body].filter(Boolean).join('\n');
+    const lines = String(src).split(/\n+/).map(s=>s.trim()).filter(Boolean);
+    let buf = null; // 对答缓冲 {en, zh}
+    const flush = ()=>{ if(buf){ push(buf.en, buf.zh); buf = null; } };
+    const turnRe = /^(A|B|Q|a|b|q|问|答)[:：·]\s*(.+)$/;
+    for(const line of lines){
+      const t = line.match(turnRe);
+      if(t){
+        // 对答：把提问与回答合并为同一题
+        const [en, zh] = splitBilingual(t[2]);
+        if(!buf) buf = {en:'', zh:''};
+        buf.en += (buf.en ? '  ' : '') + en;
+        buf.zh += (buf.zh ? '  ' : '') + zh;
+        continue;
+      }
+      flush();
+      const m = line.match(/^(.+?)\s*[—–]\s*(.+?)\s*$/);
+      if(m) push(m[1], m[2]);
+    }
+    flush();
     return out;
   }
-  // R59-3：每日 2 道语法默写题 —— 随机抽 2 张语法卡片，各取 1 个例句中文翻译（按日期种子，当日固定）
-  function xsBuildDailyGrammar(){
+  // R71-1：语法题库 —— 语法板块全部例句自动汇总为题库（实时派生，新增/修改语法卡即刻同步）
+  // 条目结构：{ id 题库唯一键, grammarId 所属语法卡, title 语法卡标题, en 英文例句, zh 中文翻译 }
+  function xsGrammarPool(){
     const st = load();
     const cards = (st.xueersiContent && st.xueersiContent.grammar) || [];
-    const out = [];
-    if(!cards.length) return out;
-    const today = todayStr();
-    const seed = parseInt(today.replace(/-/g,''),10);
-    const roll = (st.xueersiGrammarRoll || 0); // R66-1：重置偏移（每次重置 +1，循环）
-    const n = Math.min(2, cards.length);
-    const start = ((seed*13) + roll*97) % cards.length; // 决定从哪张卡开始抽
-    for(let i=0; out.length<n && i<cards.length*2; i++){
-      const card = cards[(start+i)%cards.length];
-      if(!card || out.some(x=>x.grammarId===card.id)) continue;
+    const pool = [];
+    cards.forEach(card=>{
       const pairs = xsGrammarPairsOf(card);
-      if(!pairs.length) continue;
-      const pair = pairs[(seed + roll*53) % pairs.length]; // R66-1：重置也换取不同例句
-      // R66-1：题目区显示「语法卡片标题 + 例句中文意思」，看中文默写英文
-      out.push({wordId:'gq_'+card.id, grammarId:card.id, en:pair.en,
-        zh:'【语法】'+card.title+'：'+pair.zh, date:today, grammar:true});
+      pairs.forEach((p, i)=>{
+        pool.push({
+          id: String(card.id) + '_p' + i,
+          grammarId: card.id,
+          title: card.title || '语法',
+          en: p.en,
+          zh: p.zh
+        });
+      });
+    });
+    return pool;
+  }
+  // R71-1：重置语法题出题规则 —— 每日从「语法题库」随机抽 2 个例题，展示中文翻译，默写英文句子
+  // 规则：以「日期 + 重置偏移」为种子洗牌抽取；当日固定，点「🔄 重置语法题」换一组
+  function xsBuildDailyGrammar(){
+    const pool = xsGrammarPool();
+    if(!pool.length) return [];
+    const st = load();
+    const today = todayStr();
+    const seed = parseInt(today.replace(/-/g,''),10) || 1;
+    const roll = (st.xueersiGrammarRoll || 0); // 重置偏移（每次重置 +1，循环）
+    const n = Math.min(2, pool.length);
+    const idxs = pool.map((_,i)=>i);
+    let s = (((seed % 100000) * 7919) + roll * 104729 + 12345) >>> 0;
+    const rnd = ()=>{ s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; };
+    for(let i = idxs.length - 1; i > 0; i--){
+      const j = Math.floor(rnd() * (i + 1));
+      const t = idxs[i]; idxs[i] = idxs[j]; idxs[j] = t;
+    }
+    const mk = (it)=>({ wordId:'gq_'+it.id, grammarId:it.grammarId, en:it.en,
+      zh:'【语法】'+it.title+'：'+it.zh, date:today, grammar:true });
+    const out = [];
+    // 优先来自不同语法卡，覆盖面更广
+    for(let i=0; i<idxs.length && out.length<n; i++){
+      const it = pool[idxs[i]];
+      if(out.some(x=>x.grammarId === it.grammarId)) continue;
+      out.push(mk(it));
+    }
+    // 兜底：题库例句集中在同一张语法卡时，允许同卡取满 2 题
+    for(let i=0; i<idxs.length && out.length<n; i++){
+      const it = pool[idxs[i]];
+      if(out.some(x=>x.wordId === 'gq_'+it.id)) continue;
+      out.push(mk(it));
     }
     return out.slice(0, n);
   }
-  // R66-1：重置语法题 —— 递增偏移盐，下次巩固打卡抽取 2 道不同例题（家长）
+  // R66-1 / R71-1：重置语法题 —— 递增偏移盐，下次巩固打卡从题库换抽 2 道例题（家长）
   function setGrammarRoll(){
     const st = load();
-    const cards = (st.xueersiContent && st.xueersiContent.grammar) || [];
-    const max = Math.max(1, cards.length);
+    const max = Math.max(1, xsGrammarPool().length);
     st.xueersiGrammarRoll = ((st.xueersiGrammarRoll||0) + 1) % max;
     save(st);
   }
@@ -32040,6 +32154,8 @@ May / Can I /we have …, please? 请问我 / 我们可以拿…… 吗？
     getXsWordCheckinCount, resetXsWordCheckins, getBaikeCheckinDayCount,
     // V11.2 学而思英语（精简：词汇批量+默写）
     parseEnZhDict, parseBulkText, xsBulkAddWords, xsAddWrong, xsRemoveWrong, xsBuildDailyWords, xsGetTodayResult, xsRecordAnswer,
+    // R71-1：语法题库（语法板块例句自动汇总，供巩固打卡随机抽题 + 题库展示）
+    xsGrammarPool,
     xsStoryStart, xsStoryAdvance, xsStoryGetAll,
     // V15-T6：RAZ 已删除
     // V14-T8：设置密码（4 位数字 PIN）
@@ -33455,12 +33571,12 @@ May / Can I /we have …, please? 请问我 / 我们可以拿…… 吗？
           renderYuwenSlot(key, label, slotBody);
         });
       });
-      // R64-6：每课打卡（标记本科已学 / 取消），状态 □未学 / ✅已学
-      slotBody.querySelectorAll('[data-bs-checkin-item]').forEach(btn=>{
+      // R64-6 / R71-4：必背知识打卡 —— 打卡键置于各项内容「标题」旁，状态 □未学 / ✅已学
+      slotBody.querySelectorAll('[data-bs-checkin-sec]').forEach(btn=>{
         if(btn._bsCkBound) return; btn._bsCkBound = true;
         btn.addEventListener('click', (e)=>{
           e.stopPropagation();
-          const idx = btn.getAttribute('data-bs-checkin-item');
+          const idx = btn.getAttribute('data-bs-checkin-sec');
           if(window.Store.isReadingRead('ywBeishu', idx)){
             window.Store.unmarkReadingRead('ywBeishu', idx);
             btn.classList.remove('checked');
@@ -34099,20 +34215,22 @@ May / Can I /we have …, please? 请问我 / 我们可以拿…… 吗？
     const head = cur.title
       ? `<div class="bs-lesson-title">${esc(cur.label)} · ${esc(cur.title)}</div>`
       : `<div class="bs-lesson-title">${esc(cur.label)}</div>`;
-    const secs = (cur.secs||[]).map(s=>{
+    const secs = (cur.secs||[]).map((s, si)=>{
       const items = (s.b||'').split('\n').map(x=>x.trim()).filter(Boolean);
-      const itemHtml = items.length ? items.map((it,ii)=>{
-        const bkey = _bsIdx + '::' + ii;
-        const done = (window.Store && window.Store.isReadingRead) ? window.Store.isReadingRead('ywBeishu', bkey) : false;
-        // R66-4：打卡按钮置于每项内容「标题序号」之前（如「[✅已学] 一、识字表注音」）；未打卡 □未学 / 已打卡 ✅已学
-        return `<div class="bs-row">
-          <button type="button" class="bs-checkin-btn${done?' checked':''}" data-bs-checkin-item="${bkey}" title="${done?'已打卡（点击取消）':'点击打卡标记已会'}">${done?'✅已学':'□未学'}</button>
-          <span class="bs-row-text">${esc(it)}</span>
-        </div>`;
-      }).join('') : `<div class="bs-row"><span class="bs-row-text">${esc(s.b||'')}</span></div>`;
+      // R71-4：重置打卡设置 —— 打卡键置于「各项内容标题」旁（如「一、识字表注音」→ 键在「识字表注音」标题旁）
+      //        不再逐条内容设键；未打卡 □未学 / 已打卡 ✅已学
+      const skey = _bsIdx + '::s' + si;
+      const secDone = (window.Store && window.Store.isReadingRead) ? window.Store.isReadingRead('ywBeishu', skey) : false;
+      const itemHtml = items.length
+        ? items.map(it=>`<div class="bs-row"><span class="bs-row-text">${esc(it)}</span></div>`).join('')
+        : `<div class="bs-row"><span class="bs-row-text">${esc(s.b||'')}</span></div>`;
+      const titleTxt = s.h || '背诵内容';
       return `
       <div class="bs-sec${s.h?'':' bs-sec-plain'}">
-        ${s.h ? `<div class="bs-sec-h">${esc(s.h)}</div>` : ''}
+        <div class="bs-sec-h">
+          <button type="button" class="bs-checkin-btn${secDone?' checked':''}" data-bs-checkin-sec="${esc(skey)}" title="${secDone?'已打卡（点击取消）':'点击打卡标记已学'}">${secDone?'✅已学':'□未学'}</button>
+          <span class="bs-sec-h-txt">${esc(titleTxt)}</span>
+        </div>
         <div class="bs-sec-b">${itemHtml}</div>
       </div>`;
     }).join('');
@@ -34743,6 +34861,77 @@ May / Can I /we have …, please? 请问我 / 我们可以拿…… 吗？
         if(card.hasAttribute('data-sz-locked')){ toast('🔒 尚未解锁：每天可打卡 1 篇，打卡后次日解锁下一篇'); return; }
         const btn = card.querySelector('[data-suzhi-checkin]');
         if(btn) btn.click();
+      });
+    });
+    // R71-5：推荐书籍 —— 添加书籍 / 点条目进正文 / 返回书目 / 添加正文 / 正文翻页
+    const addBookBtn = slotBody.querySelector('[data-ktxs-add-book]');
+    if(addBookBtn && !addBookBtn._ktBound){
+      addBookBtn._ktBound = true;
+      addBookBtn.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        openKtxsBookAdd(()=>{ _szCurPage = 0; if(rerender) rerender(); toast('📚 已添加书籍'); });
+      });
+    }
+    slotBody.querySelectorAll('[data-ktxs-book]').forEach(card=>{
+      if(card._ktBound) return; card._ktBound = true;
+      card.addEventListener('click', (e)=>{
+        if(e.target.closest('[data-suzhi-checkin]')) return; // 打卡键独立
+        _ktxsOpenBook = card.getAttribute('data-ktxs-book');
+        _ktxsBookPage = 0;
+        _ktxsOpenPoem = -1;
+        _ktxsMaoPageIndex = 0;
+        if(rerender) rerender();
+      });
+    });
+    const ktBack = slotBody.querySelector('[data-ktxs-back]');
+    if(ktBack && !ktBack._ktBound){
+      ktBack._ktBound = true;
+      ktBack.addEventListener('click', (e)=>{ e.stopPropagation(); _ktxsOpenBook = null; _ktxsOpenPoem = -1; if(rerender) rerender(); });
+    }
+    const addCntBtn = slotBody.querySelector('[data-ktxs-add-content]');
+    if(addCntBtn && !addCntBtn._ktBound){
+      addCntBtn._ktBound = true;
+      addCntBtn.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        if(!_ktxsOpenBook) return;
+        const bk = _ktxsOpenBook;
+        openNwAdd('ktxs_' + bk, '《' + bk + '》正文', '输入本书正文内容…', ()=>{ if(rerender) rerender(); toast('📝 已添加正文'); });
+      });
+    }
+    slotBody.querySelectorAll('[data-ktxs-page]').forEach(b=>{
+      if(b._ktBound) return; b._ktBound = true;
+      b.addEventListener('click', ()=>{
+        if(b.disabled) return;
+        const p = parseInt(b.getAttribute('data-ktxs-page'), 10);
+        if(isNaN(p) || p < 0) return;
+        _ktxsBookPage = p;
+        if(rerender) rerender();
+      });
+    });
+    // R73-5：诗词书 —— 方格点击进入诗词详情；详情页「返回目录」回到方格；目录翻页
+    slotBody.querySelectorAll('[data-mao-poem]').forEach(b=>{
+      if(b._maoBound) return; b._maoBound = true;
+      b.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        const i = parseInt(b.getAttribute('data-mao-poem'), 10);
+        if(isNaN(i)) return;
+        _ktxsOpenPoem = i;
+        if(rerender) rerender();
+      });
+    });
+    const maoBack = slotBody.querySelector('[data-mao-back]');
+    if(maoBack && !maoBack._maoBackBound){
+      maoBack._maoBackBound = true;
+      maoBack.addEventListener('click', (e)=>{ e.stopPropagation(); _ktxsOpenPoem = -1; if(rerender) rerender(); });
+    }
+    slotBody.querySelectorAll('[data-mao-page]').forEach(b=>{
+      if(b._maoPageBound) return; b._maoPageBound = true;
+      b.addEventListener('click', ()=>{
+        if(b.disabled) return;
+        const p = parseInt(b.getAttribute('data-mao-page'), 10);
+        if(isNaN(p) || p < 0) return;
+        _ktxsMaoPageIndex = p;
+        if(rerender) rerender();
       });
     });
     // R25-2 英语小知识：板块「➕ 添加」→ 弹窗录入小标题 + 内容
@@ -36503,6 +36692,8 @@ I'm good at running.`},
   // R43-2：大阅读专区「推荐书籍」书目（独立常量，不并入 SUZHI_SEED，避免污染知识秘境题库）
   // 每条 { title 书名, cat 分类标签, body 一句话简介 }
   const KTXS_BOOKS = [
+    // R71-5：置于第一页第一个位置
+    { title:'毛泽东诗词集',              cat:'红色经典', body:'收录毛泽东同志各个时期的经典诗词，气势磅礴、意境开阔，读来令人振奋，感受一代伟人的胸襟与豪情。', poemKey:'mao' },
     { title:'帽子上带星的人',            cat:'成长故事', body:'写给孩子的成长故事，文字朴实，读来温暖，讲平凡生活里的担当与守信。' },
     { title:'歪歪兔独立成长通话',        cat:'习惯养成', body:'歪歪兔系列绘本，围绕自己穿衣、收拾书包、独立完成小事，培养独立与自信。' },
     { title:'了不起的狐狸爸爸',          cat:'世界经典', body:'罗尔德·达尔的经典童话，狐狸爸爸用机智与勇气守护家人，紧张又幽默。' },
@@ -36582,9 +36773,20 @@ I'm good at running.`},
     const m = [label,'🌈',''];
     return nwSlotGeneric(m[0], m[1], m[2], false);
   }
-  // R43-2：推荐书籍 —— 一行 3 本卡片网格，书名加粗 + 分类标签 + 一句话简介，整卡点击读完打卡
+  // R43-2 / R71-5：推荐书籍 —— 书目网格（点击条目进入书籍正文页）+ 书籍正文页（添加内容 + 分页展示）
+  let _ktxsOpenBook = null;  // 当前打开的书籍书名（null = 书目列表）
+  let _ktxsBookPage = 0;     // 书籍正文分页游标
+  let _ktxsOpenPoem = -1;    // 诗词书当前打开的诗词下标（-1 = 目录方格视图）
+  let _ktxsMaoPageIndex = 0; // 诗词目录方格分页游标（一行 4 首、一页 2 行 = 8 首/页）
+  // R71-5：内置书目 + 用户自定义书籍（存 nwZone['ktxs_books']，字段 {t:书名, c:简介}）
+  function ktxsBooksAll(){
+    const custom = (window.Store && window.Store.getNwZone) ? window.Store.getNwZone('ktxs_books') : [];
+    const extra = (custom||[]).map(it=>({ title: it.t || '', cat:'我的书籍', body: it.c || '' })).filter(b=>b.title);
+    return KTXS_BOOKS.concat(extra);
+  }
   function ktxsSlot(label){
-    const items = KTXS_BOOKS;
+    if(_ktxsOpenBook) return ktxsBookPage(label);
+    const items = ktxsBooksAll();
     const rk = 'suzhi_ktxs';
     const perPage = 6;
     const totalPages = Math.max(1, Math.ceil(items.length / perPage));
@@ -36598,7 +36800,7 @@ I'm good at running.`},
       const done = S.isReadingRead(rk, it.title);
       const no = start + i + 1;
       return `
-        <div class="sz-daily-card sz-grid-card sz-book-card ${done?'is-checked':''}" data-sz-card="1" title="${done?'已读完（点击取消）':'点击卡片任意位置读完打卡'}">
+        <div class="sz-daily-card sz-grid-card sz-book-card ${done?'is-checked':''} ${it.poemKey?'sz-book-flag':''}" data-ktxs-book="${esc(it.title)}" title="点击进入《${esc(it.title)}》正文">
           <div class="sz-card-top">
             <span class="sz-book-no">${no}</span>
             <span class="sz-daily-badge">${esc(it.cat)}</span>
@@ -36607,17 +36809,146 @@ I'm good at running.`},
           <div class="sz-daily-title sz-book-title">《${esc(it.title)}》</div>
           <div class="sz-daily-body sz-book-body">${esc(it.body)}</div>
           <div class="bk-checkin-row">
-            <span class="sz-hint">${done?'✓ 已读完，点击可取消':'👆 点击整卡读完打卡'}</span>
+            <span class="sz-hint">${done?'✓ 已读完，点按钮可取消':'👆 点右侧按钮读完打卡 · 点卡片看正文'}</span>
             <button class="ri-checkin-btn ${done?'checked':''}" data-suzhi-checkin="${esc(rk)}::${esc(it.title)}" title="${done?'已打卡（点击取消）':'点击打卡'}"></button>
           </div>
         </div>`;
     }).join('') || '<div class="nw-zone-empty">书目整理中～</div>';
+    // R71-5：新增「➕ 添加书籍」按键；已删除原书目下方的「添加内容卡片」
     return `
-      <div class="yw-comp-head">${esc(label||'推荐书籍')} · 共 ${items.length} 本</div>
+      <div class="yw-comp-head">${esc(label||'推荐书籍')} · 共 ${items.length} 本
+        <button type="button" class="ktxs-head-btn" data-ktxs-add-book="1" title="添加一本新书">➕ 添加书籍</button>
+      </div>
       <div class="sz-card-grid">${cards}</div>
       ${szPager(page, totalPages)}
-      <div class="sz-page-foot">本页第 ${items.length?start+1:0}–${start+pageItems.length} 本 · 每页 ${perPage} 本（一行 ${SZ_ROW_SIZE} 本）· 共 ${totalPages} 页</div>
-      ${nwZoneList('ktxs', label||'推荐书籍')}`;
+      <div class="sz-page-foot">本页第 ${items.length?start+1:0}–${start+pageItems.length} 本 · 每页 ${perPage} 本（一行 ${SZ_ROW_SIZE} 本）· 共 ${totalPages} 页 · 点击书籍卡片进入正文</div>`;
+  }
+  // R73-5：诗词正文排版 —— 按原文档换行逐句成行、居中呈现，更适合诗词阅读
+  function fmtMaoPoem(c){
+    return String(c||'').split('\n').map(line=>{
+      const t = line.trim();
+      if(!t) return '<div class="mao-stanza"></div>';
+      return '<div class="mao-line">'+esc(t)+'</div>';
+    }).join('');
+  }
+  // R73-5：诗词书 —— 目录方格视图（正方形卡片，一行 4 首、一页 2 行 = 8 首/页）+ 点击进入诗词详情（诗行排版 + 赏析）
+  function ktxsMaoPage(label, book){
+    const poems = (window.MAO_POEMS && Array.isArray(window.MAO_POEMS)) ? window.MAO_POEMS : [];
+    // 详情视图：打开某一首
+    if(_ktxsOpenPoem >= 0 && _ktxsOpenPoem < poems.length){
+      const po = poems[_ktxsOpenPoem];
+      return `
+      <div class="yw-comp-head">${esc(label||'推荐书籍')} · 《${esc(book.title)}》
+        <button type="button" class="ktxs-head-btn ktxs-back-btn" data-mao-back="1" title="返回诗词目录">← 返回目录</button>
+        <button type="button" class="ktxs-head-btn ktxs-book-back-btn" data-ktxs-back="1" title="返回推荐书目">← 书目</button>
+      </div>
+      <div class="mao-detail">
+        <div class="mao-detail-title">${esc(po.t)}</div>
+        ${po.d?`<div class="mao-detail-date">${esc(po.d)}</div>`:''}
+        <div class="mao-poem-content">${fmtMaoPoem(po.c)}</div>
+        <div class="mao-sec">
+          <div class="mao-sec-h">📜 创作背景</div>
+          <div class="mao-sec-b">${esc(po.b || '')}</div>
+        </div>
+        <div class="mao-sec">
+          <div class="mao-sec-h">🔍 专业赏析</div>
+          <div class="mao-sec-b">${esc(po.a || '')}</div>
+        </div>
+      </div>`;
+    }
+    // 目录方格视图
+    const PER = 8; // 4 × 2
+    const totalPages = Math.max(1, Math.ceil(poems.length / PER));
+    _ktxsMaoPageIndex = Math.min(Math.max(0, _ktxsMaoPageIndex || 0), totalPages - 1);
+    const start = _ktxsMaoPageIndex * PER;
+    const pageItems = poems.slice(start, start + PER);
+    const grid = pageItems.length ? pageItems.map((po, i)=>{
+      const gi = start + i;
+      return `
+      <div class="mao-grid-card" data-mao-poem="${gi}" title="点击阅读《${esc(po.t)}》">
+        <span class="mao-grid-no">${gi+1}</span>
+        <span class="mao-grid-title">${esc(po.t)}</span>
+        ${po.d?`<span class="mao-grid-date">${esc(po.d)}</span>`:''}
+      </div>`;
+    }).join('') : '<div class="nw-zone-empty">诗词内容整理中～</div>';
+    return `
+      <div class="yw-comp-head">${esc(label||'推荐书籍')} · 正文
+        <button type="button" class="ktxs-head-btn ktxs-back-btn" data-ktxs-back="1" title="返回推荐书目">← 返回书目</button>
+      </div>
+      <div class="ktxs-book-title">《${esc(book.title)}》</div>
+      ${book.body?`<div class="ktxs-book-intro">${esc(book.body)}</div>`:''}
+      <div class="mao-tip">点击任意方格，进入该首诗词全文与赏析 ▾</div>
+      <div class="mao-grid">${grid}</div>
+      ${totalPages>1?`<div class="mao-pager">
+        <button type="button" class="mao-page-btn" data-mao-page="${_ktxsMaoPageIndex-1}" ${_ktxsMaoPageIndex<=0?'disabled':''}>‹ 上一页</button>
+        <span class="mao-page-info">第 ${_ktxsMaoPageIndex+1} / ${totalPages} 页（共 ${poems.length} 首）</span>
+        <button type="button" class="mao-page-btn" data-mao-page="${_ktxsMaoPageIndex+1}" ${_ktxsMaoPageIndex>=totalPages-1?'disabled':''}>下一页 ›</button>
+      </div>`:''}`;
+  }
+  // R71-5：书籍正文页 —— 书名 + 简介 + 正文内容分页展示 + 「➕ 添加内容」按键 + 返回书目
+  function ktxsBookPage(label){
+    const title = _ktxsOpenBook;
+    const book = ktxsBooksAll().find(b=>b.title === title) || { title:title, cat:'我的书籍', body:'' };
+    // R72：诗词书走专用目录 + 赏析视图
+    if(book.poemKey && window.MAO_POEMS && Array.isArray(window.MAO_POEMS)) return ktxsMaoPage(label, book);
+    const zoneKey = 'ktxs_' + title;
+    const contents = (window.Store && window.Store.getNwZone) ? window.Store.getNwZone(zoneKey) : [];
+    const perPage = 5;
+    const totalPages = Math.max(1, Math.ceil((contents||[]).length / perPage));
+    _ktxsBookPage = Math.min(Math.max(0, _ktxsBookPage || 0), totalPages - 1);
+    const start = _ktxsBookPage * perPage;
+    const pageItems = (contents||[]).slice(start, start + perPage);
+    const listHtml = pageItems.length ? pageItems.map((it, i)=>{
+      const head = String(it.t||'').trim();
+      const body = String(it.c||'').trim();
+      const txt = body || head;
+      return `
+      <div class="ktxs-content-item">
+        <div class="ktxs-content-no">${start+i+1}</div>
+        <div class="ktxs-content-txt">${esc(txt)}</div>
+      </div>`;
+    }).join('') : '<div class="nw-zone-empty">还没有正文内容，点上方「➕ 添加内容」录入第一条～</div>';
+    return `
+      <div class="yw-comp-head">${esc(label||'推荐书籍')} · 正文
+        <button type="button" class="ktxs-head-btn" data-ktxs-add-content="1" title="为本书添加一段正文">➕ 添加内容</button>
+        <button type="button" class="ktxs-head-btn ktxs-back-btn" data-ktxs-back="1" title="返回推荐书目">← 返回书目</button>
+      </div>
+      <div class="ktxs-book-title">《${esc(book.title)}》</div>
+      ${book.body?`<div class="ktxs-book-intro">${esc(book.body)}</div>`:''}
+      <div class="ktxs-content-list">${listHtml}</div>
+      ${totalPages>1?`<div class="ktxs-pager">
+        <button type="button" class="ktxs-page-btn" data-ktxs-page="${_ktxsBookPage-1}" ${_ktxsBookPage<=0?'disabled':''}>‹ 上一页</button>
+        <span class="ktxs-page-info">第 ${_ktxsBookPage+1} / ${totalPages} 页</span>
+        <button type="button" class="ktxs-page-btn" data-ktxs-page="${_ktxsBookPage+1}" ${_ktxsBookPage>=totalPages-1?'disabled':''}>下一页 ›</button>
+      </div>`:''}`;
+  }
+  // R71-5：「➕ 添加书籍」—— 书名 + 一句话简介（复用美文弹窗容器，双字段）
+  function openKtxsBookAdd(onDone){
+    const mask = document.getElementById('modalMeiwenAdd');
+    const fields = document.getElementById('mwAddFields');
+    const confirm = document.getElementById('mwAddConfirm');
+    const titleEl = document.getElementById('mwAddTitle');
+    const hintEl = document.getElementById('mwAddHint');
+    if(!mask || !fields || !confirm) return;
+    if(titleEl) titleEl.textContent = '添加：推荐书籍';
+    if(hintEl) hintEl.textContent = '填写书名与一句话简介，添加后出现在推荐书籍列表末尾';
+    fields.innerHTML = `
+      <input class="nw-add-input" id="mwAddSource" type="text" placeholder="书名（如：小王子）" maxlength="60" />
+      <textarea class="nw-add-area" id="mwAddContent" placeholder="一句话简介" maxlength="200"></textarea>`;
+    const srcEl = document.getElementById('mwAddSource');
+    const cntEl = document.getElementById('mwAddContent');
+    showModal('#modalMeiwenAdd');
+    setTimeout(()=>{ if(srcEl) srcEl.focus(); }, 30);
+    const doAdd = ()=>{
+      const t = (srcEl && srcEl.value || '').trim();
+      const c = (cntEl && cntEl.value || '').trim();
+      if(!t){ if(srcEl) srcEl.style.borderColor = '#ff5b6e'; return; }
+      if(window.Store && window.Store.addNwZone) window.Store.addNwZone('ktxs_books', { t:t, c:c });
+      hideModal('#modalMeiwenAdd');
+      if(onDone) onDone();
+    };
+    confirm.onclick = doAdd;
+    if(cntEl) cntEl.onkeydown = (e)=>{ if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); doAdd(); } };
   }
   // 美文摘选：来源 + 内容 双字段记录（存 store.nwZone['meiwen']）
   function meiwenSlot(){
@@ -38011,6 +38342,8 @@ I'm good at running.`},
       </div>
     </div>`;
   }
+  // R71-2：题型卡默认收起，点击头部展开题目内容（会话内保持展开/收起状态）
+  let _mathExpanded = new Set();
   function renderMath(){
     const st = S.load();
     const all = st.mathProblems || [];
@@ -38053,14 +38386,13 @@ I'm good at running.`},
       // R53-1：该题型的知识笔记展示在第一个内容卡片位置（用户自建笔记在前）
       const gNotes = (S.getMathNotes ? S.getMathNotes() : []).filter(n => (n.type||'未分类') === type);
       const noteCards = gNotes.map(mathNoteCardHtml).join('');
-      // R60-5：主题卡内所有题目全部打卡完成 → 主题卡切换为绿色
+      // 各题型题目数 / 已掌握数（用于分组头计数）
       const doneN = items.filter(m=>m.mastery==='mastered').length;
-      const allDone = items.length > 0 && doneN === items.length;
       return `
-      <div class="math-type-group ${allDone?'is-all-done':''}" data-type="${esc(type)}">
+      <div class="math-type-group" data-type="${esc(type)}">
         <div class="math-type-group-head">
-          <span class="math-group-name">${allDone?'✅':(isNM?'⚠️':'🧮')} ${esc(type)}</span>
-          <span class="math-group-right"><span class="math-group-count">${items.length} 题 · 已掌握 ${doneN} · 未掌握 ${items.filter(m=>m.mastery==='notMastered').length}${gNotes.length?` · 笔记 ${gNotes.length}`:''}${allDone?' · 🎉 全部完成':''}</span></span>
+          <span class="math-group-name">${isNM?'⚠️':'🧮'} ${esc(type)}</span>
+          <span class="math-group-right"><span class="math-group-count">${items.length} 题 · 已掌握 ${doneN} · 未掌握 ${items.filter(m=>m.mastery==='notMastered').length}${gNotes.length?` · 笔记 ${gNotes.length}`:''}</span></span>
         </div>
         <div class="math-group-body">${noteCards}${items.map(mathCardHtml).join('')}</div>
       </div>`;
@@ -40953,7 +41285,57 @@ I'm good at running.`},
         return head + cardHtml(it,i);
       }).join('');
     }
-    target.innerHTML = `<div class="xs-adv-cards">${listHtml}</div>${doneCount?`<div class="xs-done-redirect">📒 全部提交完成！已答对 ${doneCount} 个已移至「已默写」页 · 点上方「📒 已默写」查看</div>`:(allSubmitted?'':'<div class="xs-done-redirect xs-done-redirect-pending">完成全部题目并提交后，答对的题目会收进「📒 已默写」</div>')}`;
+    // R71-1：语法题库（巩固打卡下方说明卡）—— 语法板块全部例句自动同步；每日随机抽 2 题默写
+    const bank = (S.xsGrammarPool ? S.xsGrammarPool() : []) || [];
+    const BANK_PAGE = 10;
+    const bankPages = Math.max(1, Math.ceil(bank.length / BANK_PAGE));
+    window.xsBankPage = Math.min(Math.max(0, window.xsBankPage || 0), bankPages - 1);
+    const bStart = window.xsBankPage * BANK_PAGE;
+    const bItems = bank.slice(bStart, bStart + BANK_PAGE);
+    const bankOpen = !!window.xsBankOpen;
+    const todayBankIds = daily.filter(d=>d.grammar).map(d=>String(d.wordId||'').replace(/^gq_/,''));
+    const bankList = bItems.length ? bItems.map((it,i)=>{
+      const isToday = todayBankIds.indexOf(String(it.id)) >= 0;
+      return `<div class="xs-bank-item${isToday?' is-today':''}">
+        <span class="xs-bank-no">${bStart+i+1}</span>
+        <span class="xs-bank-main">
+          <span class="xs-bank-title">${esc(it.title)}${isToday?'<span class="xs-bank-today-tag">今日抽中</span>':''}</span>
+          <span class="xs-bank-zh">${esc(it.zh)}</span>
+          <span class="xs-bank-en">${esc(it.en)}</span>
+        </span>
+      </div>`;
+    }).join('') : '<div class="xs-bank-empty">题库暂无例句，请先到「📐 语法」板块新增带例句的语法卡</div>';
+    const bankHtml = `
+      <div class="xs-gram-bank${bankOpen?' open':''}">
+        <div class="xs-gram-bank-head" data-xs-bank-toggle="1" title="点击展开 / 收起语法题库">
+          <span class="xs-gram-bank-ico">📚</span>
+          <span class="xs-gram-bank-name">语法题库</span>
+          <span class="xs-gram-bank-count">共 ${bank.length} 题 · 每日随机抽 2 题</span>
+          <span class="xs-gram-bank-caret">${bankOpen?'▴':'▾'}</span>
+        </div>
+        <div class="xs-gram-bank-body"${bankOpen?'':' hidden'}>
+          <div class="xs-gram-bank-tip">语法板块全部例句自动同步至题库，后续新增的语法例句也会自动加入；每日从中随机抽 2 题，看中文默写英文句子。</div>
+          <div class="xs-gram-bank-list">${bankList}</div>
+          ${bankPages>1?`<div class="xs-gram-bank-pager">
+            <button type="button" class="xs-bank-page-btn" data-xs-bank-page="${window.xsBankPage-1}" ${window.xsBankPage<=0?'disabled':''}>‹ 上一页</button>
+            <span class="xs-bank-page-info">第 ${window.xsBankPage+1} / ${bankPages} 页</span>
+            <button type="button" class="xs-bank-page-btn" data-xs-bank-page="${window.xsBankPage+1}" ${window.xsBankPage>=bankPages-1?'disabled':''}>下一页 ›</button>
+          </div>`:''}
+        </div>
+      </div>`;
+    target.innerHTML = `<div class="xs-adv-cards">${listHtml}</div>${doneCount?`<div class="xs-done-redirect">📒 全部提交完成！已答对 ${doneCount} 个已移至「已默写」页 · 点上方「📒 已默写」查看</div>`:(allSubmitted?'':'<div class="xs-done-redirect xs-done-redirect-pending">完成全部题目并提交后，答对的题目会收进「📒 已默写」</div>')}${bankHtml}`;
+    // R71-1：语法题库 —— 展开/收起 + 翻页
+    const bankHead = target.querySelector('[data-xs-bank-toggle]');
+    if(bankHead) bankHead.onclick = ()=>{ window.xsBankOpen = !window.xsBankOpen; renderXsCheckin(); };
+    target.querySelectorAll('[data-xs-bank-page]').forEach(b=>{
+      b.onclick = ()=>{
+        const p = parseInt(b.dataset.xsBankPage, 10);
+        if(isNaN(p) || p < 0 || b.disabled) return;
+        window.xsBankPage = p;
+        window.xsBankOpen = true;
+        renderXsCheckin();
+      };
+    });
     // 提交绑定（交互逻辑保持不变）
     target.querySelectorAll('[data-xs-cidate-submit]').forEach(b=>{
       b.onclick = ()=>{
@@ -42578,34 +42960,37 @@ I'm good at running.`},
     const rep = archiveReportType === 'monthly' ? S.buildMonthlyReport() : S.buildWeeklyReport();
     const periodLabel = archiveReportType === 'monthly' ? '📅 本月' : '📅 本周';
     // R60-6：完成项改为「按板块分类统计」（乐读数学 / 学而思英语 / 大阅读 / 百科讲堂 / 围棋 / 文明 / 家务 / 作息）
-    // R65-3 / R66-3：围棋对弈、家务小帮手 移到「大阅读」右侧（家务位于围棋之下）
-    const sections = (function(secs){
-      const iR = secs.findIndex(s=>s.name==='大阅读');
-      if(iR < 0) return secs;
-      const pick = (name)=>{ const i = secs.findIndex(s=>s.name===name); return i>=0 ? secs.splice(i,1)[0] : null; };
-      const go = pick('围棋对弈');
-      const chore = pick('家务小帮手');
-      const at = iR + 1;
-      let k = at;
-      if(go){ secs.splice(k,0,go); k++; }
-      if(chore){ secs.splice(k,0,chore); k++; }
-      return secs;
-    })((rep.sections||[]).slice());
-    const secHtml = sections.map(sec=>{
+    // R71-3：卡片改两列布局 —— 第一列：学而思英语 / 大阅读 / 百科讲堂；
+    //        第二列：乐读数学 / 围棋对弈 / 家务小帮手 / 文明小标兵 / 作息
+    //        并移除板块卡后方附带的总计文字，仅保留各任务项的数据统计结果
+    const REPORT_COL1 = ['学而思英语','大阅读','百科讲堂'];
+    const REPORT_COL2 = ['乐读数学','围棋对弈','家务小帮手','文明小标兵','作息'];
+    const byName = {};
+    (rep.sections||[]).forEach(s=>{ if(s && s.name) byName[s.name] = s; });
+    const col1 = REPORT_COL1.map(n=>byName[n]).filter(Boolean);
+    const col2 = REPORT_COL2.map(n=>byName[n]).filter(Boolean);
+    // 兜底：未在两列清单中的板块追加到第二列末尾，避免数据丢失
+    (rep.sections||[]).forEach(s=>{
+      if(!s || !s.name) return;
+      if(REPORT_COL1.indexOf(s.name)>=0 || REPORT_COL2.indexOf(s.name)>=0) return;
+      col2.push(s);
+    });
+    const secCard = (sec)=>{
       const itemsHtml = (sec.items||[]).map(it=>`
         <div class="rsec-item">
           <span class="rsec-item-name">${esc(it.label)}</span>
           <span class="rsec-item-num">${it.count}</span>
         </div>`).join('');
-      const total = (sec.items||[]).reduce((s,it)=>s+(it.count||0),0);
       return `<div class="report-sec">
-        <div class="rsec-head"><span class="rsec-ico">${sec.ico}</span><span class="rsec-name">${esc(sec.name)}</span><span class="rsec-total">${total}</span></div>
+        <div class="rsec-head"><span class="rsec-ico">${sec.ico}</span><span class="rsec-name">${esc(sec.name)}</span></div>
         <div class="rsec-items">${itemsHtml}</div>
       </div>`;
-    }).join('');
+    };
+    const colHtml = (secs)=> `<div class="report-col">${secs.map(secCard).join('')}</div>`;
+    const hasSec = col1.length || col2.length;
     $('#weeklyReport').innerHTML = `
       <div class="report-header">${periodLabel} · 完成率 <b>${rep.overall}%</b> · 任务 ${rep.doneTask}/${rep.totalTask} · 最长 ${rep.longest} 天</div>
-      <div class="report-secs">${secHtml || '<div style="color:var(--muted);padding:10px;text-align:center">暂无打卡数据</div>'}</div>
+      <div class="report-cols">${hasSec ? (colHtml(col1) + colHtml(col2)) : '<div style="color:var(--muted);padding:10px;text-align:center">暂无打卡数据</div>'}</div>
       <div class="report-line"><span class="l">⚽ 运动时长</span><span class="v">${rep.sportMin} 分钟</span></div>
       <div class="report-line"><span class="l">📖 阅读时长</span><span class="v">${rep.readMin} 分钟</span></div>
       <div class="report-line"><span class="l">⚠️ 薄弱学科</span><span class="v">${esc(rep.weak)}</span></div>`;
@@ -44162,12 +44547,37 @@ I'm good at running.`},
 })();
 </script>
 
-<!-- R69：完全离线支持 —— 注册 Service Worker，把整个应用缓存到设备本地，断网也能用 -->
+<!-- R69：完全离线支持 —— 注册 Service Worker，把整个应用缓存到设备本地，断网也能用
+     R70：启动即检测新版 —— sw.js 携带构建指纹，内容变化时浏览器自动重装并把新 index.html
+          预缓存到本地，装好后页面自动重载一次，iPad 上打开即可见最新版本（无需开两次） -->
 <script>
 (function(){
   if(!('serviceWorker' in navigator)) return;
+  var RELOAD_FLAG = '__sw_reload_at';
+  // 带节流保护：8 秒内已重载过则放弃，防止极端情况下反复刷新
+  function safeReload(){
+    try{
+      var last = parseInt(localStorage.getItem(RELOAD_FLAG) || '0', 10) || 0;
+      if(Date.now() - last < 8000) return;
+      localStorage.setItem(RELOAD_FLAG, String(Date.now()));
+    }catch(e){ return; }
+    location.reload();
+  }
   window.addEventListener('load', function(){
-    navigator.serviceWorker.register('./sw.js').catch(function(err){
+    navigator.serviceWorker.register('./sw.js').then(function(reg){
+      // 上一轮已下载好的新版正在等待 → 立刻切入，避免还要等到下次打开
+      if(reg.waiting && navigator.serviceWorker.controller) safeReload();
+      reg.addEventListener('updatefound', function(){
+        var nw = reg.installing || reg.waiting;
+        if(!nw) return;
+        nw.addEventListener('statechange', function(){
+          // installed 时新版 index.html 已完成预缓存；controller 存在说明不是首次安装
+          if(nw.state === 'installed' && navigator.serviceWorker.controller) safeReload();
+        });
+      });
+      // 每次启动主动比对一次 sw.js（仅 2KB，离线时静默失败不影响使用）
+      if(reg.update) reg.update().catch(function(){});
+    }).catch(function(err){
       console.warn('[SW] 注册失败（离线功能不可用）：', err);
     });
   });
