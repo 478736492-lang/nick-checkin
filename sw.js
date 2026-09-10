@@ -8,10 +8,10 @@
  */
 var CACHE_NAME = 'zoo-checkin-v1';
 var PRECACHE = ['./', './index.html'];
-/* R70：构建指纹。部署脚本会把 eb7270f1d7f1 替换为当期 index.html 的 sha256 前 12 位。
+/* R70：构建指纹。部署脚本会把 101fd89e82c7 替换为当期 index.html 的 sha256 前 12 位。
  * 作用：只在站点内容真的变化时，sw.js 本身才变化，从而触发浏览器 SW 更新流程
  * （install → 重新预缓存新 index.html → installed → 页面自动重载到新版）。 */
-var BUILD = 'eb7270f1d7f1';
+var BUILD = '101fd89e82c7';
 
 self.addEventListener('install', function (e) {
   self.skipWaiting();
