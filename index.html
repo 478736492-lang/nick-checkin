@@ -5019,6 +5019,20 @@ body.child-mode .parent-edit-fab{display:none}
         <div class="form-warn" style="margin-top:8px" data-page-node-id="R76kmBgmTip">10 首内置音乐全部为程序实时合成，无需联网；其中 5 首为中国风（茉莉花 / 高山流水 / 春江花月夜 / 渔舟唱晚 / 彩云追月）。</div>
       </div>
 
+      <!-- R78：版本与更新 —— 显示当前构建指纹，并提供手动检查更新（解决 iPad 停留在旧版本的问题） -->
+      <div class="set-card hidden-in-child" data-page-node-id="R78verCard">
+        <div class="set-card-title" data-page-node-id="R78verTitle">🔄 版本与更新</div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px" data-page-node-id="R78verRow">
+          <span style="font-size:13px;color:var(--muted)" data-page-node-id="R78verLbl">当前版本</span>
+          <span id="appBuildStamp" style="font-size:13px;font-weight:700;color:var(--tiffany-deep);font-family:Menlo,Consolas,monospace" data-page-node-id="R78verVal">读取中…</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap" data-page-node-id="R78verBtnRow">
+          <button class="pbtn" id="btnCheckUpdate" style="border-color:#4fa8e0;color:#4fa8e0" data-page-node-id="R78btnUpd">🔄 检查更新</button>
+          <span id="updateHint" style="font-size:12px;color:var(--muted)" data-page-node-id="R78updHint">点此立即拉取最新版本</span>
+        </div>
+        <div class="form-warn" style="margin-top:8px" data-page-node-id="R78verTip">应用已开启离线缓存，正常情况下打开页面会自动获取最新版；若发现内容仍是旧的，点「检查更新」即可立即刷新。</div>
+      </div>
+
       <div class="set-card hidden-in-child" data-page-node-id="S4bWDXf7FgapWytSsOp2yD">
         <div class="set-card-title" data-page-node-id="XC5d9lW54o3K065iQJLZir">⚠️ 危险操作</div>
         <button class="pbtn" id="btnResetData" style="border-color:#e74c3c;color:#e74c3c" data-page-node-id="ib8yFrEa1qngAMBePeEF0d">🗑️ 清空所有数据</button>
@@ -44994,6 +45008,65 @@ I'm good at running.`},
       console.warn('[SW] 注册失败（离线功能不可用）：', err);
     });
   });
+})();
+</script>
+
+<!-- R78：版本显示 + 手动检查更新。
+     用途：家长可一眼确认 iPad 上跑的是不是最新构建；若不是，点一下立即拉取新版。 -->
+<script>
+(function(){
+  var VER_FLAG = '__app_build';
+  function el(id){ return document.getElementById(id); }
+  function setVer(txt){ var e = el('appBuildStamp'); if(e) e.textContent = txt || '未知'; }
+  try{ var v = localStorage.getItem(VER_FLAG); if(v) setVer(v); }catch(e){}
+
+  // 联网读取 sw.js 中的构建指纹（sw.js 仅 2KB，开销可忽略）
+  function readSwBuild(){
+    if(!window.fetch) return;
+    fetch('./sw.js?t=' + Date.now(), { cache: 'no-store' }).then(function(r){
+      return r.ok ? r.text() : '';
+    }).then(function(t){
+      var m = /var\s+BUILD\s*=\s*'([^']+)'/.exec(t || '');
+      if(m){ try{ localStorage.setItem(VER_FLAG, m[1]); }catch(e){} setVer(m[1]); }
+    }).catch(function(){ /* 离线时保持上次读数 */ });
+  }
+
+  function bindUpdateBtn(){
+    var btn = el('btnCheckUpdate'), hint = el('updateHint');
+    if(!btn) return;
+    btn.addEventListener('click', function(){
+      if(navigator.onLine === false){
+        if(hint) hint.textContent = '当前处于离线状态，无法检查更新';
+        return;
+      }
+      if(hint) hint.textContent = '正在检查并更新…';
+      btn.disabled = true;
+      // 清掉自动重载的节流标记，避免 8 秒保护把这次手动刷新拦掉
+      try{ localStorage.removeItem('__sw_reload_at'); }catch(e){}
+      var done = function(){ location.reload(); };
+      var clearCaches = function(){
+        if(!('caches' in window)) return Promise.resolve();
+        return caches.keys().then(function(ns){
+          return Promise.all(ns.map(function(n){ return caches.delete(n); }));
+        }).catch(function(){});
+      };
+      if('serviceWorker' in navigator){
+        navigator.serviceWorker.getRegistrations().then(function(regs){
+          var list = regs || [];
+          return Promise.all(list.map(function(r){ return r.update().catch(function(){}); }))
+            .then(function(){
+              // 通知处于 waiting 的新 SW 立即接管
+              list.forEach(function(r){ if(r.waiting) { try{ r.waiting.postMessage({type:'SKIP_WAITING'}); }catch(e){} } });
+            })
+            .then(clearCaches);
+        }).then(done).catch(done);
+      } else {
+        clearCaches().then(done).catch(done);
+      }
+    });
+  }
+
+  window.addEventListener('load', function(){ bindUpdateBtn(); readSwBuild(); });
 })();
 </script>
 
