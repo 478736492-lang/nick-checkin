@@ -1293,6 +1293,11 @@ body.child-mode .hidden-in-child{display:none!important}
 .farm-music-upload:hover{transform:scale(1.08);background:var(--orange);color:#fff}
 .farm-music-upload.has-file{border-color:#2e9e6e;color:#2e9e6e}
 .farm-music-upload.has-file::after{content:'✓';position:absolute;top:-2px;right:-2px;background:#2e9e6e;color:#fff;font-size:10px;width:14px;height:14px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+/* R76-3：知识秘境背景音乐上传按键（与种植园上传键同款，便于统一维护） */
+.km-music-upload{width:38px;height:38px;border-radius:50%;background:#fff;border:2px solid var(--orange);font-size:18px;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.1);display:flex;align-items:center;justify-content:center;transition:.18s;flex-shrink:0;position:relative}
+.km-music-upload:hover{transform:scale(1.08);background:var(--orange);color:#fff}
+.km-music-upload.has-file{border-color:#2e9e6e;color:#2e9e6e}
+.km-music-upload.has-file::after{content:'✓';position:absolute;top:-2px;right:-2px;background:#2e9e6e;color:#fff;font-size:10px;width:14px;height:14px;border-radius:50%;display:flex;align-items:center;justify-content:center}
 
 /* ========== 滚动条美化 ========== */
 .main-wrap::-webkit-scrollbar,.modal-body::-webkit-scrollbar{width:6px}
@@ -4972,17 +4977,33 @@ body.child-mode .parent-edit-fab{display:none}
           <span data-page-node-id="9uEhFHX0GtUQGaANN9vear">开启种植园背景音乐</span>
         </label>
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px" data-page-node-id="uoepmvAql3yyNiwpFFtEdj">
-          <span style="font-size:13px;color:var(--tiffany-deep);font-weight:600" data-page-node-id="R78m3Z3kdSG6GxmXwGgbH4">音乐风格</span>
-          <select id="farmMusicStyle" style="padding:6px 10px;border:1.5px solid var(--tiffany-light);border-radius:8px;font-size:13px;color:var(--tiffany-deep);background:#fff" data-page-node-id="jZL2e6lFpiRVx7ohA2Zc7J">
-            <option value="birds" data-page-node-id="JR4Rsy5rc4D45hoWsUCOD1">百鸟齐鸣（默认）</option>
-            <option value="summerNight" data-page-node-id="ZKBu8fkAWaDJMUIEe9bwE0">夏夜柔板</option>
-            <option value="qqFarm" data-page-node-id="CgmRRnyOjXHbDPD9RJAs8h">QQ 农场 8-bit 旋律</option>
-          </select>
+          <span style="font-size:13px;color:var(--tiffany-deep);font-weight:600" data-page-node-id="R78m3Z3kdSG6GxmXwGgbH4">选择音乐</span>
+          <!-- R76-3：10 首内置曲目由 renderFarmMusicOptions() 从 FARM_BGM_TRACKS 注入（含 3 首日本民谣） -->
+          <select id="farmMusicStyle" style="padding:6px 10px;border:1.5px solid var(--tiffany-light);border-radius:8px;font-size:13px;color:var(--tiffany-deep);background:#fff;max-width:280px" data-page-node-id="jZL2e6lFpiRVx7ohA2Zc7J"></select>
         </div>
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap" data-page-node-id="i24pKjzFTbRoljI0D7SzoM">
           <label class="farm-music-upload settings-music-upload" id="farmMusicUpload" title="上传自定义背景音乐(mp3/wav/ogg)" data-page-node-id="oAqhl7Vu4nWFogwfhlP8Vu">🎶 上传自定义音乐<input type="file" accept="audio/*" id="farmMusicFile" hidden data-page-node-id="axaPKyDNWE6ZGVC72M7h38"></label>
           <span id="farmMusicFileName" style="font-size:12px;color:var(--muted)" data-page-node-id="wo6hUJSerm2WWLHYC7XkaZ"></span>
         </div>
+      </div>
+
+      <div class="set-card hidden-in-child" data-page-node-id="R76kmBgmCard">
+        <div class="set-card-title" data-page-node-id="R76kmBgmTitle">🗝️ 知识秘境背景音乐</div>
+        <label style="flex-direction:row;align-items:center;gap:8px;margin-bottom:8px" data-page-node-id="R76kmBgmOnWrap">
+          <input type="checkbox" id="kmMusicOn" style="width:auto" data-page-node-id="R76kmBgmOn">
+          <span data-page-node-id="R76kmBgmOnTxt">开启知识秘境背景音乐（闯关时播放）</span>
+        </label>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px" data-page-node-id="R76kmBgmStyleWrap">
+          <span style="font-size:13px;color:var(--tiffany-deep);font-weight:600" data-page-node-id="R76kmBgmStyleLbl">选择音乐</span>
+          <!-- R76-3：10 首内置曲目由 renderKMMusicOptions() 从 KM_BGM_TRACKS 注入（含 5 首中国风） -->
+          <select id="kmMusicStyle" style="padding:6px 10px;border:1.5px solid var(--tiffany-light);border-radius:8px;font-size:13px;color:var(--tiffany-deep);background:#fff;max-width:280px" data-page-node-id="R76kmBgmStyle"></select>
+          <button class="pbtn" id="kmMusicPreview" style="border-color:#4fa8e0;color:#4fa8e0" data-page-node-id="R76kmBgmPreview">▶ 试听</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap" data-page-node-id="R76kmBgmUpWrap">
+          <label class="km-music-upload settings-music-upload" id="kmMusicUpload" title="上传自定义背景音乐(mp3/wav/ogg)" data-page-node-id="R76kmBgmUp">🎶 上传自定义音乐<input type="file" accept="audio/*" id="kmMusicFile" hidden data-page-node-id="R76kmBgmFile"></label>
+          <span id="kmMusicFileName" style="font-size:12px;color:var(--muted)" data-page-node-id="R76kmBgmFName"></span>
+        </div>
+        <div class="form-warn" style="margin-top:8px" data-page-node-id="R76kmBgmTip">10 首内置音乐全部为程序实时合成，无需联网；其中 5 首为中国风（茉莉花 / 高山流水 / 春江花月夜 / 渔舟唱晚 / 彩云追月）。</div>
       </div>
 
       <div class="set-card hidden-in-child" data-page-node-id="S4bWDXf7FgapWytSsOp2yD">
@@ -31580,8 +31601,10 @@ May / Can I /we have …, please? 请问我 / 我们可以拿…… 吗？
       const j = Math.floor(rnd() * (i + 1));
       const t = idxs[i]; idxs[i] = idxs[j]; idxs[j] = t;
     }
+    // R76-1：出题精简 —— 只保留完整中文例句（去掉「【语法】标题：」这类语法说明前缀），
+    //        语法卡标题/题型另存 gramTitle / gramKind，供家长侧管理题卡使用，不进入孩子看到的题干
     const mk = (it)=>({ wordId:'gq_'+it.id, grammarId:it.grammarId, en:it.en,
-      zh:'【'+(it.kind==='dialogue'?'语法对话':'语法')+'】'+it.title+'：'+it.zh, date:today, grammar:true });
+      zh: it.zh, gramTitle: it.title || '', gramKind: it.kind || 'sentence', date:today, grammar:true });
     const out = [];
     // 优先来自不同语法卡，覆盖面更广
     for(let i=0; i<idxs.length && out.length<n; i++){
@@ -32297,9 +32320,156 @@ May / Can I /we have …, please? 请问我 / 我们可以拿…… 吗？
       }
     } catch(e){ /* 静默降级 */ }
   }
+  /* ============ R76-3：内置背景音乐曲库（Web Audio 实时合成，无外部音频文件） ============
+     - bgmHz：音名 → 频率（A4=440；支持 C4 / F#5 / Bb3，R 为休止符）
+     - bgmPlayTrack：通用曲目播放器（主旋律 + 可选低八度和声 + 可选环境声），返回 stop 句柄
+     - FARM_BGM_TRACKS：种植园 10 首（含 3 首日本民谣：樱花 / 红蜻蜓 / 荒城之月）
+     - KM_BGM_TRACKS：知识秘境 10 首（含 5 首中国风：茉莉花 / 高山流水 / 春江花月夜 / 渔舟唱晚 / 彩云追月）
+  ================================================================================== */
+  function bgmHz(note){
+    if(typeof note === 'number') return note;
+    const m = /^([A-Ga-g])([#b]?)(-?\d)$/.exec(String(note||'').trim());
+    if(!m) return 0;
+    const base = {c:0,d:2,e:4,f:5,g:7,a:9,b:11}[m[1].toLowerCase()];
+    const acc = m[2]==='#' ? 1 : (m[2]==='b' ? -1 : 0);
+    const oct = parseInt(m[3],10);
+    return 440 * Math.pow(2, (base + acc - 9) / 12 + (oct - 4));
+  }
+  // track = { id, label, notes[], beat, wave, gain, noteGain, bass, amb }
+  function bgmPlayTrack(ctx, track, opt){
+    opt = opt || {};
+    if(!ctx || !track) return null;
+    let mainGain;
+    try { mainGain = ctx.createGain(); } catch(e){ return null; }
+    const peak = (track.gain != null ? track.gain : 0.22) * (opt.volMul || 1);
+    try{
+      mainGain.gain.setValueAtTime(0.0001, ctx.currentTime);
+      mainGain.gain.exponentialRampToValueAtTime(peak, ctx.currentTime + 1.0);
+      mainGain.connect(opt.dest || ctx.destination);
+    }catch(e){ return null; }
+    const beat = track.beat || 0.42;
+    const notes = track.notes || [];
+    let step = 0, timer = null, ambTimer = null, stopped = false;
+    const sched = ()=>{
+      if(stopped || !notes.length) return;
+      try{
+        const now = ctx.currentTime + 0.02;
+        const f = bgmHz(notes[step % notes.length]);
+        if(f > 0){
+          const ng = track.noteGain || 0.09;
+          const o = ctx.createOscillator(), g = ctx.createGain();
+          o.type = track.wave || 'triangle';
+          o.frequency.value = f;
+          g.gain.setValueAtTime(0.0001, now);
+          g.gain.exponentialRampToValueAtTime(ng, now + 0.03);
+          g.gain.exponentialRampToValueAtTime(0.0001, now + beat * 0.92);
+          o.connect(g).connect(mainGain); o.start(now); o.stop(now + beat);
+          if(track.bass){ // 低八度垫音，让旋律更饱满
+            const o2 = ctx.createOscillator(), g2 = ctx.createGain();
+            o2.type = 'sine'; o2.frequency.value = f * 0.5;
+            g2.gain.setValueAtTime(0.0001, now);
+            g2.gain.exponentialRampToValueAtTime(ng * 0.5, now + 0.05);
+            g2.gain.exponentialRampToValueAtTime(0.0001, now + beat * 0.9);
+            o2.connect(g2).connect(mainGain); o2.start(now); o2.stop(now + beat);
+          }
+        }
+        step++;
+      }catch(e){}
+      timer = setTimeout(sched, beat * 1000);
+    };
+    sched();
+    // 可选环境点缀声（鸟鸣 / 夜虫），让"背景音乐"更有场景感
+    if(track.amb === 'birds' || track.amb === 'night'){
+      const chirp = ()=>{
+        if(stopped) return;
+        try{
+          const t = ctx.currentTime + 0.02;
+          const o = ctx.createOscillator(), g = ctx.createGain();
+          if(track.amb === 'birds'){
+            const base = 1900 + Math.random() * 1200;
+            o.type = 'sine'; o.frequency.setValueAtTime(base, t);
+            o.frequency.exponentialRampToValueAtTime(base * 1.45, t + 0.11);
+            g.gain.setValueAtTime(0.0001, t);
+            g.gain.exponentialRampToValueAtTime(0.045, t + 0.02);
+            g.gain.exponentialRampToValueAtTime(0.0001, t + 0.18);
+            o.connect(g).connect(mainGain); o.start(t); o.stop(t + 0.22);
+          } else {
+            o.type = 'triangle'; o.frequency.setValueAtTime(4200 + Math.random() * 600, t);
+            g.gain.setValueAtTime(0.0001, t);
+            g.gain.exponentialRampToValueAtTime(0.016, t + 0.012);
+            g.gain.exponentialRampToValueAtTime(0.0001, t + 0.055);
+            o.connect(g).connect(mainGain); o.start(t); o.stop(t + 0.09);
+          }
+        }catch(e){}
+        ambTimer = setTimeout(chirp, (track.amb === 'birds' ? 2200 : 950) + Math.random() * 3000);
+      };
+      ambTimer = setTimeout(chirp, 1200);
+    }
+    return {
+      stop(){
+        stopped = true;
+        if(timer){ clearTimeout(timer); timer = null; }
+        if(ambTimer){ clearTimeout(ambTimer); ambTimer = null; }
+        try{
+          mainGain.gain.cancelScheduledValues(ctx.currentTime);
+          mainGain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.4);
+        }catch(e){}
+        setTimeout(()=>{ try{ mainGain.disconnect(); }catch(e){} }, 500);
+      }
+    };
+  }
+  // 种植园背景音乐 10 首（田园 / 自然 / 治愈；其中 3 首为日本民谣）
+  const FARM_BGM_TRACKS = [
+    { id:'birds',       label:'百鸟齐鸣（默认）', legacy:'birds' },
+    { id:'summerNight', label:'夏夜柔板',         legacy:'summerNight' },
+    { id:'qqFarm',      label:'QQ 农场 8-bit 旋律', legacy:'qqFarm' },
+    { id:'sakura',      label:'🌸 樱花 さくら（日本民谣）', wave:'triangle', beat:0.46, gain:0.20, noteGain:0.085, bass:true, amb:'birds',
+      notes:['A4','A4','B4','A4','A4','B4','A4','B4','C5','D5','C5','B4','A4','B4','C5','B4','A4','R','A4','B4','C5','D5','C5','B4','A4','B4','C5','B4','A4','R'] },
+    { id:'akatombo',    label:'🎏 红蜻蜓 赤とんぼ（日本童谣）', wave:'sine', beat:0.44, gain:0.20, noteGain:0.09, bass:true, amb:'birds',
+      notes:['E4','E4','E4','D4','C4','C4','C4','A3','G3','A3','C4','D4','E4','R','E4','E4','E4','D4','C4','C4','C4','A3','G3','A3','C4','D4','C4','R'] },
+    { id:'kojo',        label:'🏯 荒城之月（日本民谣）', wave:'triangle', beat:0.52, gain:0.20, noteGain:0.085, bass:true, amb:'night',
+      notes:['B4','B4','E5','F#5','G5','F#5','E5','R','F#5','E5','B4','C#5','D5','C#5','B4','R','B4','B4','E5','F#5','G5','A5','G5','F#5','E5','R'] },
+    { id:'pastorale',   label:'🌾 田园牧歌', wave:'sine', beat:0.46, gain:0.20, noteGain:0.085, bass:true, amb:'birds',
+      notes:['C5','E5','G5','E5','C5','D5','E5','G5','A5','G5','E5','D5','C5','E5','D5','C5'] },
+    { id:'brookDawn',   label:'💧 溪畔晨光', wave:'sine', beat:0.42, gain:0.19, noteGain:0.08, bass:false, amb:'birds',
+      notes:['G4','B4','D5','A4','C5','E5','D5','B4','G4','A4','B4','D5','C5','B4','A4','G4'] },
+    { id:'harvestWaltz',label:'🌻 丰收圆舞曲', wave:'triangle', beat:0.34, gain:0.19, noteGain:0.075, bass:true,
+      notes:['C5','D5','E5','F5','G5','A5','G5','E5','F5','E5','D5','C5','G4','C5','E5','G5','C5','G5','E5','C5'] },
+    { id:'starLullaby', label:'✨ 星空摇篮曲', wave:'sine', beat:0.62, gain:0.20, noteGain:0.085, bass:true, amb:'night',
+      notes:['E5','C5','G4','C5','F4','A4','C5','A4','D5','C5','A4','F4','G4','C5','E5','C5'] }
+  ];
+  // 知识秘境背景音乐 10 首（探险 / 神秘；其中 5 首为中国风）
+  const KM_BGM_TRACKS = [
+    { id:'molihua',    label:'🏮 茉莉花（中国风）', wave:'sine', beat:0.40, gain:0.20, noteGain:0.085, bass:false,
+      notes:['E5','E5','G5','A5','C6','C6','A5','G5','A5','G5','R','E5','E5','G5','A5','C6','C6','A5','G5','A5','G5','R'] },
+    { id:'gaoshan',    label:'🏔️ 高山流水（中国风）', wave:'triangle', beat:0.44, gain:0.20, noteGain:0.085, bass:true,
+      notes:['D5','E5','G5','A5','C6','A5','G5','E5','D5','E5','D5','A4','D5','R','A4','D5','E5','G5','A5','G5','E5','D5'] },
+    { id:'chunjiang',  label:'🌕 春江花月夜（中国风）', wave:'sine', beat:0.56, gain:0.20, noteGain:0.08, bass:true,
+      notes:['A4','C5','D5','E5','G5','A5','G5','E5','D5','C5','A4','R','D5','E5','G5','A5','C6','A5','G5','E5','D5'] },
+    { id:'yuzhou',     label:'🎣 渔舟唱晚（中国风）', wave:'triangle', beat:0.38, gain:0.20, noteGain:0.085, bass:false,
+      notes:['G5','A5','C6','D6','C6','A5','G5','E5','D5','E5','G5','A5','G5','R','A5','C6','D6','E6','D6','C6','A5','G5'] },
+    { id:'caiyun',     label:'☁️ 彩云追月（中国风）', wave:'sine', beat:0.40, gain:0.20, noteGain:0.085, bass:true,
+      notes:['C5','D5','E5','G5','A5','G5','E5','D5','C5','A4','C5','D5','E5','G5','A5','C6','A5','G5','E5','D5','C5'] },
+    { id:'kmOverture', label:'🗝️ 秘境序曲', wave:'triangle', beat:0.40, gain:0.19, noteGain:0.085, bass:true,
+      notes:['D4','A4','D5','F5','A5','F5','D5','A4','D5','F5','A5','D6','A5','F5','D5','A4'] },
+    { id:'kmGalaxy',   label:'🌌 智慧星河', wave:'sine', beat:0.36, gain:0.19, noteGain:0.08, bass:false,
+      notes:['C5','E5','G5','B5','A5','G5','E5','C5','D5','F5','A5','G5','F5','D5','C5'] },
+    { id:'kmMarch',    label:'🛡️ 勇者进行曲', wave:'square', beat:0.30, gain:0.16, noteGain:0.055, bass:true,
+      notes:['C5','C5','D5','E5','C5','E5','F5','G5','E5','G5','A5','G5','F5','E5','D5','C5'] },
+    { id:'kmForest',   label:'🌳 魔法森林', wave:'sine', beat:0.42, gain:0.19, noteGain:0.08, bass:false,
+      notes:['E5','G5','B5','A5','G5','E5','D5','E5','A4','C5','E5','G5','F5','E5','D5','E5'] },
+    { id:'kmVictory',  label:'🎺 胜利号角', wave:'triangle', beat:0.34, gain:0.19, noteGain:0.08, bass:true,
+      notes:['C5','E5','G5','C6','G5','C6','E6','C6','G5','E5','C5','E5','G5','C6','E6','G6','C6','G5'] }
+  ];
+  function bgmTrackById(list, id){
+    for(let i=0;i<list.length;i++){ if(list[i].id === id) return list[i]; }
+    return null;
+  }
+
   // 背景自然声：优先播放用户上传的自定义音乐，否则合成乐
   // V53：默认改为 "summer night"（夏夜柔板风格：低频氛围 pad + 缓慢中频琶音 + 稀疏夜虫鸣），
   //        保留旧 8-bit QQ 农场旋律作为可选样式（仅当用户勾选过旧版音乐时）
+  // R76-3：曲库扩展到 10 首（原有 3 首保留旧实现，新增 7 首走通用合成播放器）
   function startFarmAmbient(style){
     if(_farmAmbient) return; // 已在跑
     const _style = style || (typeof window !== 'undefined' && window.__farmMusicStyle) || 'birds';
@@ -32326,6 +32496,22 @@ May / Can I /we have …, please? 请问我 / 我们可以拿…… 吗？
     if(_style === 'birds'){
       startFarmAmbientBirds(); // 需求①（改值）：多种鸟儿一起叫的百鸟齐鸣合奏
       return;
+    }
+    if(_style === 'summerNight'){
+      startFarmAmbientSummer(); // V53：夏夜柔板
+      return;
+    }
+    // R76-3：新增 7 首内置曲目走通用合成播放器
+    const tk = bgmTrackById(FARM_BGM_TRACKS, _style);
+    if(tk && !tk.legacy){
+      try{
+        const ctx = getAudio(); if(!ctx) return;
+        const handle = bgmPlayTrack(ctx, tk, {});
+        if(handle){
+          _farmAmbient = { stop(){ try{ handle.stop(); }catch(e){} _farmAmbient = null; } };
+          return;
+        }
+      }catch(e){ /* fall through */ }
     }
     // 兜底：summerNight 夏夜柔板
     startFarmAmbientSummer();
@@ -34933,7 +35119,7 @@ May / Can I /we have …, please? 请问我 / 我们可以拿…… 吗？
         if(rerender) rerender();
       });
     });
-    // R73-5：诗词书 —— 方格点击进入诗词详情；详情页「返回目录」回到方格；目录翻页
+    // R73-5 / R76-2：诗词书 —— 方格点击进入诗词详情；详情页「返回目录」回到方格（目录已取消分页）
     slotBody.querySelectorAll('[data-mao-poem]').forEach(b=>{
       if(b._maoBound) return; b._maoBound = true;
       b.addEventListener('click', (e)=>{
@@ -34949,16 +35135,6 @@ May / Can I /we have …, please? 请问我 / 我们可以拿…… 吗？
       maoBack._maoBackBound = true;
       maoBack.addEventListener('click', (e)=>{ e.stopPropagation(); _ktxsOpenPoem = -1; if(rerender) rerender(); });
     }
-    slotBody.querySelectorAll('[data-mao-page]').forEach(b=>{
-      if(b._maoPageBound) return; b._maoPageBound = true;
-      b.addEventListener('click', ()=>{
-        if(b.disabled) return;
-        const p = parseInt(b.getAttribute('data-mao-page'), 10);
-        if(isNaN(p) || p < 0) return;
-        _ktxsMaoPageIndex = p;
-        if(rerender) rerender();
-      });
-    });
     // R25-2 英语小知识：板块「➕ 添加」→ 弹窗录入小标题 + 内容
     slotBody.querySelectorAll('[data-eg-add]').forEach(btn=>{
       if(btn._egAddBound) return; btn._egAddBound = true;
@@ -36802,7 +36978,7 @@ I'm good at running.`},
   let _ktxsOpenBook = null;  // 当前打开的书籍书名（null = 书目列表）
   let _ktxsBookPage = 0;     // 书籍正文分页游标
   let _ktxsOpenPoem = -1;    // 诗词书当前打开的诗词下标（-1 = 目录方格视图）
-  let _ktxsMaoPageIndex = 0; // 诗词目录方格分页游标（R75-2：一行 16 首、一页 1 行 = 16 首/页）
+  let _ktxsMaoPageIndex = 0; // 诗词目录视图游标（R76-2：已取消分页，保留变量用于打开书籍时复位）
   // R71-5：内置书目 + 用户自定义书籍（存 nwZone['ktxs_books']，字段 {t:书名, c:简介}）
   function ktxsBooksAll(){
     const custom = (window.Store && window.Store.getNwZone) ? window.Store.getNwZone('ktxs_books') : [];
@@ -36887,12 +37063,9 @@ I'm good at running.`},
         </div>
       </div>`;
     }
-    // 目录方格视图
-    const PER = 16; // R75-2：一行 16 首 × 1 行 = 16 首/页
-    const totalPages = Math.max(1, Math.ceil(poems.length / PER));
-    _ktxsMaoPageIndex = Math.min(Math.max(0, _ktxsMaoPageIndex || 0), totalPages - 1);
-    const start = _ktxsMaoPageIndex * PER;
-    const pageItems = poems.slice(start, start + PER);
+    // 目录方格视图（R76-2：取消分页 —— 全部诗词在同一页一次展示完，一行 16 首自动换行）
+    const start = 0;
+    const pageItems = poems;
     const grid = pageItems.length ? pageItems.map((po, i)=>{
       const gi = start + i;
       return `
@@ -36910,11 +37083,7 @@ I'm good at running.`},
       ${book.body?`<div class="ktxs-book-intro">${esc(book.body)}</div>`:''}
       <div class="mao-tip">点击任意方格，进入该首诗词全文与赏析 ▾</div>
       <div class="mao-grid">${grid}</div>
-      ${totalPages>1?`<div class="mao-pager">
-        <button type="button" class="mao-page-btn" data-mao-page="${_ktxsMaoPageIndex-1}" ${_ktxsMaoPageIndex<=0?'disabled':''}>‹ 上一页</button>
-        <span class="mao-page-info">第 ${_ktxsMaoPageIndex+1} / ${totalPages} 页（共 ${poems.length} 首）</span>
-        <button type="button" class="mao-page-btn" data-mao-page="${_ktxsMaoPageIndex+1}" ${_ktxsMaoPageIndex>=totalPages-1?'disabled':''}>下一页 ›</button>
-      </div>`:''}`;
+      <div class="sz-page-foot">全部 ${poems.length} 首 · 一行 16 首 · 一页展示完毕</div>`;
   }
   // R71-5：书籍正文页 —— 书名 + 简介 + 正文内容分页展示 + 「➕ 添加内容」按键 + 返回书目
   function ktxsBookPage(label){
@@ -39239,6 +39408,7 @@ I'm good at running.`},
   // R40-2d：支持按关卡(levelId)选取不同的家长上传音乐（chinese/math/english/mixed），缺省回退全局 bgm
   //         各关卡内置默认音色也不相同（按学科特点）：语文·轻柔鸟鸣风 / 数学·清脆音阶 / 英语·活泼旋律 / 综合·壮阔和弦
   let kmBgmCtx = null, kmBgmGain = null, kmBgmTimer = null, kmBgmOn = false, kmBgmCurLevel = null;
+  let _kmTrackHandle = null; // R76-3：内置曲目播放句柄（bgmPlayTrack 返回）
   // R40-2d：四关卡内置默认音色（频率阵列 + 波形 + 间隔节奏）—— 区分学科氛围
   const KM_BGM_DEFAULT = {
     chinese: { wave:'sine',     notes:[523.25, 587.33, 659.25, 587.33, 523.25, 659.25], interval:780, gain:0.16 },  // 语文·文字森林：温柔鸟鸣般的上行五声
@@ -39250,8 +39420,10 @@ I'm good at running.`},
     const all = S.getKMSettings();
     // 优先读家长为该关卡单独设置
     const lvl = (all.bgmByLevel && all.bgmByLevel[levelId]) || {};
+    // R76-3：设置卡里的「开启知识秘境背景音乐」开关作为全局默认值（缺省开），各关卡单独设置仍优先
+    const gOn = (window.__kmBgmOn !== undefined) ? !!window.__kmBgmOn : !!(all.bgm && all.bgm.on);
     const merged = {
-      on: (lvl.on!==undefined ? lvl.on : (all.bgm && all.bgm.on)),
+      on: (lvl.on!==undefined ? lvl.on : gOn),
       volume: (lvl.volume!==undefined ? lvl.volume : ((all.bgm && all.bgm.volume!=null) ? all.bgm.volume : 60)),
       src: (lvl.src!==undefined ? lvl.src : ((all.bgm && all.bgm.src) ? all.bgm.src : ''))
     };
@@ -39273,6 +39445,13 @@ I'm good at running.`},
     try{
       if(!kmBgmCtx){ const AC = window.AudioContext || window.webkitAudioContext; if(!AC) return; kmBgmCtx = new AC(); }
       if(kmBgmCtx.state === 'suspended') kmBgmCtx.resume();
+      // R76-3：设置卡里选定的内置曲目优先（10 首，含 5 首中国风）
+      const _tkId = window.__kmBgmStyle || 'auto';
+      const _tk = (_tkId && _tkId !== 'auto') ? bgmTrackById(KM_BGM_TRACKS, _tkId) : null;
+      if(_tk){
+        _kmTrackHandle = bgmPlayTrack(kmBgmCtx, _tk, { volMul: Math.max(0.25, (set.volume||60)/100) });
+        return;
+      }
       kmBgmGain = kmBgmCtx.createGain(); kmBgmGain.gain.value = ((set.volume||60)/100)*0.16; kmBgmGain.connect(kmBgmCtx.destination);
       const cfg = KM_BGM_DEFAULT[kmBgmCurLevel] || KM_BGM_DEFAULT.chinese;
       const notes = cfg.notes; let i=0;
@@ -39285,6 +39464,7 @@ I'm good at running.`},
   }
   function kmBgmStop(){
     kmBgmOn = false;
+    if(_kmTrackHandle){ try{ _kmTrackHandle.stop(); }catch(e){} _kmTrackHandle = null; }
     const a = document.getElementById('kmBgmAudio'); if(a){ try{ a.pause(); }catch(e){} }
     if(kmBgmTimer){ clearInterval(kmBgmTimer); kmBgmTimer = null; }
     if(kmBgmGain){ try{ kmBgmGain.disconnect(); }catch(e){} kmBgmGain = null; }
@@ -41764,6 +41944,133 @@ I'm good at running.`},
     const style = localStorage.getItem('farmMusicStyle');
     if(style) window.__farmMusicStyle = style;
     else if(window.__farmMusicStyle === undefined) window.__farmMusicStyle = 'birds';
+    renderFarmMusicOptions();
+  }
+  // R76-3：种植园背景音乐下拉 —— 10 首内置曲目（含 3 首日本民谣）
+  function renderFarmMusicOptions(){
+    const sel = document.getElementById('farmMusicStyle');
+    if(!sel) return;
+    sel.innerHTML = FARM_BGM_TRACKS.map(t=>`<option value="${esc(t.id)}">${esc(t.label)}</option>`).join('');
+    const cur = window.__farmMusicStyle || 'birds';
+    if(bgmTrackById(FARM_BGM_TRACKS, cur)) sel.value = cur;
+    else sel.value = 'birds';
+  }
+  /* ============ R76-3：知识秘境背景音乐设置（种植园背景音乐下方） ============
+     内置 10 首（含 5 首中国风），另支持家长上传自定义音乐；闯关时由 kmBgmStart 播放。
+  ========================================================================== */
+  const KM_MUSIC_KEY = 'km-custom-music';
+  function kmMusicCurId(){ return window.__kmBgmStyle || 'auto'; }
+  function initKMBgmState(){
+    const on = localStorage.getItem('kmMusicOn');
+    window.__kmBgmOn = on === null ? true : (on === '1');
+    const style = localStorage.getItem('kmMusicStyle');
+    if(style) window.__kmBgmStyle = style;
+    else if(window.__kmBgmStyle === undefined) window.__kmBgmStyle = 'auto';
+    renderKMMusicOptions();
+    bindKMMusicToggle();
+    loadKMCustomAudio();
+    const onCb = document.getElementById('kmMusicOn');
+    if(onCb) onCb.checked = (window.__kmBgmOn !== false);
+  }
+  function renderKMMusicOptions(){
+    const sel = document.getElementById('kmMusicStyle');
+    if(!sel) return;
+    sel.innerHTML = `<option value="auto">各关卡内置音（默认）</option>` +
+      KM_BGM_TRACKS.map(t=>`<option value="${esc(t.id)}">${esc(t.label)}</option>`).join('');
+    const cur = kmMusicCurId();
+    if(cur === 'auto' || bgmTrackById(KM_BGM_TRACKS, cur)) sel.value = cur;
+    else sel.value = 'auto';
+  }
+  function bindKMMusicToggle(){
+    const onCb = document.getElementById('kmMusicOn');
+    if(onCb && !onCb._kmBound){
+      onCb._kmBound = true;
+      onCb.onchange = ()=>{
+        window.__kmBgmOn = !!onCb.checked;
+        localStorage.setItem('kmMusicOn', onCb.checked ? '1' : '0');
+        try{
+          const set = S.getKMSettings ? S.getKMSettings() : {};
+          if(S.saveKMSettings) S.saveKMSettings({ bgm: Object.assign({}, (set.bgm||{}), { on: !!onCb.checked }) });
+        }catch(e){}
+        if(!onCb.checked) kmBgmStop();
+      };
+    }
+    const styleSel = document.getElementById('kmMusicStyle');
+    if(styleSel && !styleSel._kmBound){
+      styleSel._kmBound = true;
+      styleSel.onchange = ()=>{
+        window.__kmBgmStyle = styleSel.value;
+        localStorage.setItem('kmMusicStyle', styleSel.value);
+      };
+    }
+    const prevBtn = document.getElementById('kmMusicPreview');
+    if(prevBtn && !prevBtn._kmBound){
+      prevBtn._kmBound = true;
+      prevBtn.onclick = ()=>{
+        const sel = document.getElementById('kmMusicStyle');
+        const id = sel ? sel.value : kmMusicCurId();
+        kmPreviewTrack(id);
+        if(!prevBtn.dataset.oldText) prevBtn.dataset.oldText = prevBtn.textContent;
+        prevBtn.textContent = '🔊 试听中…';
+        clearTimeout(prevBtn._kmT);
+        prevBtn._kmT = setTimeout(()=>{ prevBtn.textContent = prevBtn.dataset.oldText || '▶ 试听'; }, 1500);
+      };
+    }
+    const fileInput = document.getElementById('kmMusicFile');
+    if(fileInput && !fileInput._kmBound){
+      fileInput._kmBound = true;
+      fileInput.onchange = async (e)=>{
+        const f = e.target.files && e.target.files[0];
+        if(!f) return;
+        try{
+          const blob = f.slice(0, f.size, f.type || 'audio/mpeg');
+          await recPut(KM_MUSIC_KEY, blob, f.type || 'audio/mpeg');
+          const url = URL.createObjectURL(blob);
+          try{
+            const set = S.getKMSettings ? S.getKMSettings() : {};
+            if(S.saveKMSettings) S.saveKMSettings({ bgm: Object.assign({}, (set.bgm||{}), { src: url }) });
+          }catch(err){}
+          const lbl = document.getElementById('kmMusicUpload');
+          if(lbl) lbl.classList.add('has-file');
+          const fn = document.getElementById('kmMusicFileName');
+          if(fn) fn.textContent = '（已上传自定义音乐：' + esc(f.name) + '）';
+          toast('✓ 已上传知识秘境背景音乐：' + f.name);
+        }catch(err){ toast('上传失败：' + (err.message||err)); }
+        fileInput.value = '';
+      };
+    }
+  }
+  async function loadKMCustomAudio(){
+    try{
+      const rec = await recGet(KM_MUSIC_KEY);
+      if(rec && rec.blob){
+        const url = URL.createObjectURL(rec.blob);
+        const set = S.getKMSettings ? S.getKMSettings() : {};
+        if(set.bgm && set.bgm.src && /^blob:/.test(set.bgm.src)){
+          if(S.saveKMSettings) S.saveKMSettings({ bgm: Object.assign({}, set.bgm, { src: url }) });
+        }
+        const lbl = document.getElementById('kmMusicUpload');
+        if(lbl) lbl.classList.add('has-file');
+      }
+    }catch(e){ /* ignore */ }
+  }
+  // R76-3：试听某首内置曲目（独立 AudioContext，2.5 秒后自动停止）
+  let _kmPreviewHandle = null;
+  function kmPreviewTrack(id){
+    try{
+      if(_kmPreviewHandle){ try{ _kmPreviewHandle.stop(); }catch(e){} _kmPreviewHandle = null; }
+      const tk = bgmTrackById(KM_BGM_TRACKS, id);
+      if(!tk) { toast('该关卡使用内置音，请选择一首曲目试听'); return; }
+      const AC = window.AudioContext || window.webkitAudioContext; if(!AC) return;
+      const ctx = new AC();
+      if(ctx.state === 'suspended' && ctx.resume) ctx.resume();
+      _kmPreviewHandle = bgmPlayTrack(ctx, tk, { volMul: 1.6 });
+      setTimeout(()=>{
+        try{ if(_kmPreviewHandle) _kmPreviewHandle.stop(); }catch(e){}
+        _kmPreviewHandle = null;
+        setTimeout(()=>{ try{ ctx.close(); }catch(e){} }, 700);
+      }, 2600);
+    }catch(e){}
   }
   function renderFarmTop(st){
     const a = st.archive||{};
@@ -42342,25 +42649,17 @@ I'm good at running.`},
     d: { group:'经典', label:'金币叮咚', play(){ if(window.KM_SFX) KM_SFX.coin(); } },
     e: { group:'经典', label:'弹跳', play(){ if(window.KM_SFX) KM_SFX.jump(); } },
     f: { group:'经典', label:'轻点', play(){ playZooSound('click'); } },
-    /* ---- R60-2：苹果手机全套音效（iPhone 经典铃声 + 提示音，Web Audio 合成还原） ---- */
-    g:  { group:'苹果', label:'三全音 Tri-tone',  play(){ sfxSeq(sfxNotes(['C6','E6','G6'], 0.20, 0.22, 'triangle', 0.10)); } },
-    h:  { group:'苹果', label:'叮 Chime',         play(){ sfxSeq([['E6',0.55,0.24,'sine',0,0],['C7',0.55,0.16,'sine',0.02,0]]); } },
-    i:  { group:'苹果', label:'玻璃 Glass',       play(){ sfxSeq([['E7',0.16,0.20,'sine',0,0],['A7',0.24,0.14,'sine',0.05,0]]); } },
-    j:  { group:'苹果', label:'喇叭 Horn',        play(){ sfxSeq([['A#3',0.30,0.24,'sawtooth',0,0],['F3',0.42,0.22,'sawtooth',0.16,0]]); } },
-    k:  { group:'苹果', label:'铃声 Bell',        play(){ sfxSeq([['C6',0.60,0.22,'sine',0,0],['G6',0.60,0.12,'sine',0.01,0],['E7',0.45,0.07,'sine',0.02,0]]); } },
-    l:  { group:'苹果', label:'电子 Electronic',  play(){ sfxSeq([['B5',0.10,0.20,'square',0,0],['E6',0.16,0.20,'square',0.09,0]]); } },
-    m:  { group:'苹果', label:'马林巴 Marimba',   play(){ sfxSeq(sfxNotes(['E5','D5','F#5','B4','D5','F#5','B5','F#5'], 0.15, 0.22, 'sine', 0.115)); } },
-    n:  { group:'苹果', label:'雷达 Radar',       play(){ sfxSeq(sfxNotes(['C6','C6','C6'], 0.10, 0.20, 'sine', 0.17)); } },
-    o:  { group:'苹果', label:'上升 Rise',        play(){ sfxSeq([[440,0.55,0.20,'triangle',0,1760]]); } },
-    p:  { group:'苹果', label:'宇宙 Universe',    play(){ sfxSeq([['C3',0.90,0.18,'sine',0,0],['G3',0.90,0.12,'sine',0.02,0],['C7',0.70,0.10,'sine',0.05,0]]); } },
-    q:  { group:'苹果', label:'波纹 Ripple',      play(){ sfxSeq(sfxNotes(['G5','E5','C5','G4'], 0.14, 0.20, 'sine', 0.10)); } },
-    r:  { group:'苹果', label:'反射 Reflection',  play(){ sfxSeq([['A5',0.28,0.18,'sine',0,0],['E6',0.34,0.14,'sine',0.10,0]]); } },
-    s:  { group:'苹果', label:'木琴 Xylophone',   play(){ sfxSeq(sfxNotes(['C5','E5','G5','C6','G5'], 0.11, 0.22, 'triangle', 0.09)); } },
-    t:  { group:'苹果', label:'星光 Stargaze',    play(){ sfxSeq(sfxNotes(['C6','G6','E7','B6','E7'], 0.13, 0.16, 'sine', 0.095)); } },
-    u:  { group:'苹果', label:'门铃 Doorbell',    play(){ sfxSeq([['E5',0.42,0.22,'sine',0,0],['C5',0.60,0.22,'sine',0.24,0]]); } },
-    v:  { group:'苹果', label:'警报 Alarm',       play(){ sfxSeq(sfxNotes(['A5','D6','A5','D6','A5','D6'], 0.11, 0.20, 'square', 0.15)); } },
-    w:  { group:'苹果', label:'信号 Signal',      play(){ sfxSeq([['E6',0.09,0.20,'sine',0,0],['E6',0.09,0.20,'sine',0.16,0],['B6',0.16,0.18,'sine',0.32,0]]); } },
-    x:  { group:'苹果', label:'开场 Opening',     play(){ sfxSeq(sfxNotes(['C5','G5','C6','E6','G6','C7'], 0.16, 0.18, 'triangle', 0.105)); } }
+    /* ---- R76-3：按键音专用库（10 首，全部为短促清脆的一次性按键反馈音，均 < 0.45 秒） ---- */
+    g:  { group:'按键', label:'水晶轻点',  play(){ sfxSeq([['A6',0.07,0.24,'sine',0,0],['E7',0.10,0.14,'sine',0.03,0]]); } },
+    h:  { group:'按键', label:'木鱼嗒',    play(){ sfxSeq([['G5',0.05,0.22,'square',0,0],['C5',0.09,0.16,'square',0.04,0]]); } },
+    i:  { group:'按键', label:'风铃叮铃',  play(){ sfxSeq(sfxNotes(['E7','B7'], 0.13, 0.13, 'sine', 0.075)); } },
+    j:  { group:'按键', label:'电子哔',    play(){ sfxSeq([['C7',0.055,0.20,'square',0,0],['G6',0.07,0.15,'square',0.06,0]]); } },
+    k:  { group:'按键', label:'气泡啵',    play(){ sfxSeq([[1250,0.13,0.24,'sine',0,420]]); } },
+    l:  { group:'按键', label:'星光闪',    play(){ sfxSeq(sfxNotes(['G6','B6','E7'], 0.09, 0.13, 'sine', 0.055)); } },
+    m:  { group:'按键', label:'圆润嘟',    play(){ sfxSeq([['F5',0.16,0.22,'triangle',0,0]]); } },
+    n:  { group:'按键', label:'机械键',    play(){ sfxSeq([['D6',0.035,0.18,'sawtooth',0,0],['A5',0.07,0.20,'triangle',0.035,0]]); } },
+    o:  { group:'按键', label:'露珠滴',    play(){ sfxSeq([[1750,0.12,0.18,'sine',0,760]]); } },
+    p:  { group:'按键', label:'八音盒',    play(){ sfxSeq(sfxNotes(['C7','G6','E7'], 0.12, 0.15, 'triangle', 0.075)); } }
   };
   // R60-2：试听 —— 先恢复 AudioContext（部分浏览器挂起态会吞掉首帧声音），放大音量并保证只响当前一个
   function stopSfxPreview(){
@@ -43411,6 +43710,7 @@ I'm good at running.`},
     const fname = document.getElementById('farmMusicFileName');
     if(fname) fname.textContent = _farmCustomBlob ? '（已上传自定义音乐，进入种植园时播放）' : '';
     bindFarmMusicToggle();
+    initKMBgmState();    // R76-3：知识秘境背景音乐设置（10 首内置曲目 + 上传 + 试听）
     renderSfxSettings(); // R51-2：点击音效设置（导航栏/主题卡/次级主题卡/打卡）
   }
   // R51-2：点击音效设置块（注入「任务设置」系统设置面板）
@@ -43423,7 +43723,8 @@ I'm good at running.`},
       body.appendChild(box);
     }
     const slots = [['nav','导航栏'],['theme','主题卡'],['sub','次级主题卡'],['checkin','打卡']];
-    const opts = Object.keys(SFX_PRESETS).map(k=>`<option value="${k}">音效${k.toUpperCase()} · ${SFX_PRESETS[k].label}</option>`).join('');
+    // R76-3：下拉按「分组 · 名称」展示（经典 6 首 + 按键 10 首；苹果铃声已移除）
+    const opts = Object.keys(SFX_PRESETS).map(k=>`<option value="${k}">${esc(SFX_PRESETS[k].group||'经典')} · ${esc(SFX_PRESETS[k].label)}</option>`).join('');
     const cfg = (S.load().clickSfx) || defaultClickSfx();
     box.innerHTML = `
       <div class="sfx-set-title">🔊 点击音效设置</div>
@@ -44526,6 +44827,7 @@ I'm good at running.`},
     document.body.classList.toggle('child-mode', child);
     bindEvents();
     initFarmMusicState();
+    initKMBgmState();   // R76-3：知识秘境背景音乐设置初始化（读回开关/曲目 + 绑定控件）
     renderHome();
     if(typeof autoWelcomeJudy==='function') autoWelcomeJudy();
     resetIdle();
