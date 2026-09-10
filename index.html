@@ -4716,7 +4716,10 @@ body.child-mode .parent-edit-fab{display:none}
 .mao-check-wrap{text-align:center;margin:10px 0 4px}
 .mao-check-btn{display:inline-block;padding:9px 22px;border:none;border-radius:999px;font-size:14.5px;font-weight:800;letter-spacing:.5px;color:#fff;background:linear-gradient(135deg,#4096ff,#1e3a8a);box-shadow:0 4px 12px rgba(64,150,255,.35);cursor:pointer;transition:.15s;min-height:44px}
 .mao-check-btn:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(64,150,255,.45)}
-.mao-check-btn.done{background:linear-gradient(135deg,#9db9d8,#6f8db0);box-shadow:none;cursor:default}
+/* R79-2：已打卡状态仍可点击取消，因此保持 pointer 手型并给出可点反馈 */
+.mao-check-btn.done{background:linear-gradient(135deg,#9db9d8,#6f8db0);box-shadow:none;cursor:pointer}
+.mao-check-btn.done:hover{background:linear-gradient(135deg,#8ea9c7,#5f7c9d);transform:translateY(-1px)}
+.mao-check-tip{margin-top:7px;font-size:12px;color:#7a8aa0;font-weight:600}
 .mao-grid-card.mao-done{border-color:#79c98d;background:linear-gradient(135deg,#f2fbf4,#e6f7ea)}
 .mao-grid-check{position:absolute;top:4px;right:5px;font-size:10px}
 .mao-sec{margin-top:12px}
@@ -4993,6 +4996,8 @@ body.child-mode .parent-edit-fab{display:none}
           <span style="font-size:13px;color:var(--tiffany-deep);font-weight:600" data-page-node-id="R78m3Z3kdSG6GxmXwGgbH4">选择音乐</span>
           <!-- R76-3：10 首内置曲目由 renderFarmMusicOptions() 从 FARM_BGM_TRACKS 注入（含 3 首日本民谣） -->
           <select id="farmMusicStyle" style="padding:6px 10px;border:1.5px solid var(--tiffany-light);border-radius:8px;font-size:13px;color:var(--tiffany-deep);background:#fff;max-width:280px" data-page-node-id="jZL2e6lFpiRVx7ohA2Zc7J"></select>
+          <!-- R79-1：种植园此前没有试听按钮，现补上（与知识秘境一致） -->
+          <button class="pbtn" id="farmMusicPreview" style="border-color:#4fa8e0;color:#4fa8e0" data-page-node-id="R79farmPrev">▶ 试听</button>
         </div>
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap" data-page-node-id="i24pKjzFTbRoljI0D7SzoM">
           <label class="farm-music-upload settings-music-upload" id="farmMusicUpload" title="上传自定义背景音乐(mp3/wav/ogg)" data-page-node-id="oAqhl7Vu4nWFogwfhlP8Vu">🎶 上传自定义音乐<input type="file" accept="audio/*" id="farmMusicFile" hidden data-page-node-id="axaPKyDNWE6ZGVC72M7h38"></label>
@@ -29349,8 +29354,29 @@ window.MAO_POEMS = [{"t": "贺新郎·别友", "d": "一九二三年", "c": "挥
     st.maoPoemChecks = Array.isArray(st.maoPoemChecks) ? st.maoPoemChecks : [];
     if(st.maoPoemChecks.indexOf(i) >= 0) return {ok:false, stars:0, total:st.maoPoemChecks.length};
     st.maoPoemChecks.push(i);
+    // R79-2：记录本次打卡实际获得的⭐，取消打卡时按此扣回（家长中途改过⭐设置也能准确回退）
+    const got = getMaoStars();
+    st.maoPoemStars = st.maoPoemStars || {};
+    st.maoPoemStars[String(i)] = got;
     save(st);
-    return {ok:true, stars:getMaoStars(), total:st.maoPoemChecks.length};
+    return {ok:true, stars:got, total:st.maoPoemChecks.length};
+  }
+  // R79-2：取消某首诗词的打卡（可反复打卡/取消）；返回本次扣回的⭐数
+  function uncheckMaoPoem(idx){
+    const i = parseInt(idx, 10);
+    if(isNaN(i) || i < 0) return {ok:false, stars:0, total:maoPoemCheckedList().length};
+    const st = load();
+    st.maoPoemChecks = Array.isArray(st.maoPoemChecks) ? st.maoPoemChecks : [];
+    const at = st.maoPoemChecks.indexOf(i);
+    if(at < 0) return {ok:false, stars:0, total:st.maoPoemChecks.length};
+    st.maoPoemChecks.splice(at, 1);
+    // 优先按打卡时记录的⭐数扣回；老数据无记录则回退为当前设置值
+    let got = 0;
+    if(st.maoPoemStars && st.maoPoemStars[String(i)] != null) got = parseInt(st.maoPoemStars[String(i)], 10) || 0;
+    if(!got) got = getMaoStars();
+    if(st.maoPoemStars) delete st.maoPoemStars[String(i)];
+    save(st);
+    return {ok:true, stars:got, total:st.maoPoemChecks.length};
   }
   // R64-5：各「阅读类打卡」任务完成/打开后获得的成长星数量，统一由「任务设置 · ⭐奖励设置」配置。
   // 默认值为历史硬编码值；家长可在任务设置里逐项修改（范围 0~20，0 表示不奖励）。
@@ -32235,7 +32261,7 @@ May / Can I /we have …, please? 请问我 / 我们可以拿…… 吗？
     getReading, getDailySpeaking, addUserReading, markReadingRead, unmarkReadingRead, isReadingRead, markSpeakingComplete, unmarkSpeakingComplete, unmarkXueersiDailyReward, refundReadingStars,
     getSuzhiProgress, setSuzhiProgressIfEmpty,
     addGoRecord, deleteGoRecord, getWeekGoCount, clearWeekGoRecords, getGoStars, setGoStars,
-    getMaoStars, setMaoStars, maoPoemCheckedList, isMaoPoemChecked, checkMaoPoem,
+    getMaoStars, setMaoStars, maoPoemCheckedList, isMaoPoemChecked, checkMaoPoem, uncheckMaoPoem,
     TASK_STAR_DEFS, getTaskStars, setTaskStars,
     getDailyBaike, getDailyCaimi, getBaikeByCat, markBaikeCheckin, unmarkBaikeCheckin, getBaikeCounts, isBaikeChecked,
     addBaikeItem, delBaikeItem,
@@ -32322,15 +32348,17 @@ May / Can I /we have …, please? 请问我 / 我们可以拿…… 吗？
   let _passagePlayingTitle = null;
   let _passagePausedTitle = null;
   // V14：本地通用加星工具（用于阅读、RAZ 等纯 +Stars 场景，不改任务记录）
-  function addStars(n){
+  // R79-2：silent=true 时不播恭喜音（用于取消打卡扣回⭐的场景）
+  function addStars(n, silent){
     const st = S.load();
     st.archive = st.archive || {consecutiveDays:0,maxConsecutive:0,totalStars:0,exp:0,totalCoins:0};
-    st.archive.totalStars = (st.archive.totalStars||0) + n;
+    // 扣减时不允许变成负数
+    st.archive.totalStars = Math.max(0, (st.archive.totalStars||0) + n);
     st.archive.exp = st.archive.totalStars;
     S.save(st);
     if(typeof renderHome === 'function') renderHome();
-    // V15-T2：加星即成功，播放恭喜音效
-    try { if(typeof playCongrats === 'function') playCongrats(); } catch(e){}
+    // V15-T2：加星即成功，播放恭喜音效（取消打卡等扣减场景静默）
+    try { if(!silent && n > 0 && typeof playCongrats === 'function') playCongrats(); } catch(e){}
   }
 
   // ============ V14：Web Audio 合成音效 + 种植园背景自然声 ============
@@ -32408,7 +32436,9 @@ May / Can I /we have …, please? 请问我 / 我们可以拿…… 吗？
       mainGain.connect(opt.dest || ctx.destination);
     }catch(e){ return null; }
     const beat = track.beat || 0.42;
-    const notes = track.notes || [];
+    // R79-1：容错展平 —— 若曲库误写成 [[...]] 嵌套数组，自动取内层，避免整首曲子静音
+    const rawNotes = track.notes || [];
+    const notes = (rawNotes.length && Array.isArray(rawNotes[0])) ? rawNotes[0] : rawNotes;
     let step = 0, timer = null, ambTimer = null, stopped = false;
     const sched = ()=>{
       if(stopped || !notes.length) return;
@@ -32484,42 +32514,42 @@ May / Can I /we have …, please? 请问我 / 我们可以拿…… 吗？
     { id:'summerNight', label:'夏夜柔板',         legacy:'summerNight' },
     { id:'qqFarm',      label:'QQ 农场 8-bit 旋律', legacy:'qqFarm' },
     { id:'sakura',      label:'🌸 樱花 さくら（日本民谣）', wave:'triangle', beat:0.46, gain:0.20, noteGain:0.085, bass:true, amb:'birds',
-      notes:[['A4','A4','B4','A4','A4','B4','A4','B4','C5','D5','C5','B4','A4','B4','C5','B4','A4','B4','A4','R','C5','B4','A4','B4','C5','B4','A4','R','D5','C5','B4','C5','D5','C5','B4','A4','R','A4','A4','B4','A4','A4','B4','A4','B4','C5','B4','A4','A4','R']] },
+      notes:['A4','A4','B4','A4','A4','B4','A4','B4','C5','D5','C5','B4','A4','B4','C5','B4','A4','B4','A4','R','C5','B4','A4','B4','C5','B4','A4','R','D5','C5','B4','C5','D5','C5','B4','A4','R','A4','A4','B4','A4','A4','B4','A4','B4','C5','B4','A4','A4','R'] },
     { id:'akatombo',    label:'🎏 红蜻蜓 赤とんぼ（日本童谣）', wave:'sine', beat:0.44, gain:0.20, noteGain:0.09, bass:true, amb:'birds',
-      notes:[['E4','E4','E4','D4','C4','C4','C4','A3','G3','A3','C4','D4','E4','R','E4','E4','E4','D4','C4','C4','C4','A3','G3','A3','C4','D4','C4','R','A3','C4','D4','E4','D4','C4','A3','G3','A3','R','C4','D4','E4','G4','E4','D4','C4','D4','C4','A3','G3','A3','R','E4','E4','E4','D4','C4','C4','C4','A3','G3','A3','C4','D4','E4','R','E4','D4','C4','A3','G3','A3','C4','D4','C4','R']] },
+      notes:['E4','E4','E4','D4','C4','C4','C4','A3','G3','A3','C4','D4','E4','R','E4','E4','E4','D4','C4','C4','C4','A3','G3','A3','C4','D4','C4','R','A3','C4','D4','E4','D4','C4','A3','G3','A3','R','C4','D4','E4','G4','E4','D4','C4','D4','C4','A3','G3','A3','R','E4','E4','E4','D4','C4','C4','C4','A3','G3','A3','C4','D4','E4','R','E4','D4','C4','A3','G3','A3','C4','D4','C4','R'] },
     { id:'kojo',        label:'🏯 荒城之月（日本民谣）', wave:'triangle', beat:0.52, gain:0.20, noteGain:0.085, bass:true, amb:'night',
-      notes:[['B4','B4','E5','F#5','G5','F#5','E5','R','F#5','E5','B4','C#5','D5','C#5','B4','R','B4','B4','E5','F#5','G5','A5','G5','F#5','E5','R','G5','A5','G5','F#5','E5','D5','C#5','D5','E5','R','E5','F#5','G5','E5','F#5','G5','A5','B5','A5','G5','F#5','E5','R','F#5','E5','D5','C#5','B4','A4','B4','R']] },
+      notes:['B4','B4','E5','F#5','G5','F#5','E5','R','F#5','E5','B4','C#5','D5','C#5','B4','R','B4','B4','E5','F#5','G5','A5','G5','F#5','E5','R','G5','A5','G5','F#5','E5','D5','C#5','D5','E5','R','E5','F#5','G5','E5','F#5','G5','A5','B5','A5','G5','F#5','E5','R','F#5','E5','D5','C#5','B4','A4','B4','R'] },
     { id:'pastorale',   label:'🌾 田园牧歌', wave:'sine', beat:0.46, gain:0.20, noteGain:0.085, bass:true, amb:'birds',
-      notes:[['C5','E5','G5','E5','C5','D5','E5','G5','A5','G5','E5','D5','C5','R','E5','G5','C6','B5','A5','G5','A5','G5','E5','D5','C5','R','D5','E5','F5','E5','D5','C5','D5','E5','G5','E5','D5','C5','R','C5','D5','E5','G5','A5','G5','E5','D5','C5','E5','D5','C5','R']] },
+      notes:['C5','E5','G5','E5','C5','D5','E5','G5','A5','G5','E5','D5','C5','R','E5','G5','C6','B5','A5','G5','A5','G5','E5','D5','C5','R','D5','E5','F5','E5','D5','C5','D5','E5','G5','E5','D5','C5','R','C5','D5','E5','G5','A5','G5','E5','D5','C5','E5','D5','C5','R'] },
     { id:'brookDawn',   label:'💧 溪畔晨光', wave:'sine', beat:0.42, gain:0.19, noteGain:0.08, bass:false, amb:'birds',
-      notes:[['G4','B4','D5','A4','C5','E5','D5','B4','G4','A4','B4','D5','C5','B4','A4','G4','R','B4','D5','G5','F5','E5','D5','E5','D5','B4','A4','G4','R','A4','C5','E5','D5','C5','B4','C5','B4','A4','G4','A4','B4','A4','G4','R']] },
+      notes:['G4','B4','D5','A4','C5','E5','D5','B4','G4','A4','B4','D5','C5','B4','A4','G4','R','B4','D5','G5','F5','E5','D5','E5','D5','B4','A4','G4','R','A4','C5','E5','D5','C5','B4','C5','B4','A4','G4','A4','B4','A4','G4','R'] },
     { id:'harvestWaltz',label:'🌻 丰收圆舞曲', wave:'triangle', beat:0.34, gain:0.19, noteGain:0.075, bass:true,
-      notes:[['C5','D5','E5','F5','G5','A5','G5','E5','F5','E5','D5','C5','G4','C5','E5','G5','C5','R','E5','F5','G5','A5','B5','C6','B5','A5','G5','E5','C5','R','F5','G5','A5','G5','F5','E5','D5','E5','F5','E5','D5','C5','R','E5','D5','C5','D5','E5','G5','C5','E5','C5','R']] },
+      notes:['C5','D5','E5','F5','G5','A5','G5','E5','F5','E5','D5','C5','G4','C5','E5','G5','C5','R','E5','F5','G5','A5','B5','C6','B5','A5','G5','E5','C5','R','F5','G5','A5','G5','F5','E5','D5','E5','F5','E5','D5','C5','R','E5','D5','C5','D5','E5','G5','C5','E5','C5','R'] },
     { id:'starLullaby', label:'✨ 星空摇篮曲', wave:'sine', beat:0.62, gain:0.20, noteGain:0.085, bass:true, amb:'night',
-      notes:[['E5','C5','G4','C5','F4','A4','C5','A4','D5','C5','A4','F4','G4','C5','E5','C5','R','E5','G5','E5','C5','A4','C5','F5','E5','D5','C5','A4','F4','G4','C5','R','C5','E5','G5','E5','F5','D5','B4','G4','C5','E5','C5','R']] }
+      notes:['E5','C5','G4','C5','F4','A4','C5','A4','D5','C5','A4','F4','G4','C5','E5','C5','R','E5','G5','E5','C5','A4','C5','F5','E5','D5','C5','A4','F4','G4','C5','R','C5','E5','G5','E5','F5','D5','B4','G4','C5','E5','C5','R'] }
   ];
   // 知识秘境背景音乐 10 首（探险 / 神秘；其中 5 首为中国风）
   const KM_BGM_TRACKS = [
     { id:'molihua',    label:'🏮 茉莉花（中国风）', wave:'sine', beat:0.40, gain:0.20, noteGain:0.085, bass:false,
-      notes:[['E5','E5','G5','A5','C6','C6','A5','G5','G5','A5','G5','R','E5','E5','G5','A5','C6','C6','A5','G5','G5','A5','G5','R','G5','G5','G5','E5','G5','A5','A5','G5','E5','G5','E5','D5','E5','R','G5','G5','A5','G5','E5','D5','E5','G5','E5','D5','C5','D5','E5','R','D5','E5','D5','C5','A4','C5','D5','C5','C5','R']] },
+      notes:['E5','E5','G5','A5','C6','C6','A5','G5','G5','A5','G5','R','E5','E5','G5','A5','C6','C6','A5','G5','G5','A5','G5','R','G5','G5','G5','E5','G5','A5','A5','G5','E5','G5','E5','D5','E5','R','G5','G5','A5','G5','E5','D5','E5','G5','E5','D5','C5','D5','E5','R','D5','E5','D5','C5','A4','C5','D5','C5','C5','R'] },
     { id:'gaoshan',    label:'🏔️ 高山流水（中国风）', wave:'triangle', beat:0.44, gain:0.20, noteGain:0.085, bass:true,
-      notes:[['D5','E5','G5','A5','C6','A5','G5','E5','D5','E5','D5','A4','D5','R','A4','D5','E5','G5','A5','G5','E5','D5','E5','G5','A5','C6','D6','C6','A5','G5','R','G5','E5','D5','E5','G5','A5','G5','E5','D5','E5','D5','A4','D5','R','E5','G5','A5','C6','A5','G5','E5','D5','A4','D5','R']] },
+      notes:['D5','E5','G5','A5','C6','A5','G5','E5','D5','E5','D5','A4','D5','R','A4','D5','E5','G5','A5','G5','E5','D5','E5','G5','A5','C6','D6','C6','A5','G5','R','G5','E5','D5','E5','G5','A5','G5','E5','D5','E5','D5','A4','D5','R','E5','G5','A5','C6','A5','G5','E5','D5','A4','D5','R'] },
     { id:'chunjiang',  label:'🌕 春江花月夜（中国风）', wave:'sine', beat:0.56, gain:0.20, noteGain:0.08, bass:true,
-      notes:[['A4','C5','D5','E5','G5','A5','G5','E5','D5','C5','A4','R','D5','E5','G5','A5','C6','A5','G5','E5','D5','C5','A4','R','A4','B4','C5','D5','E5','D5','C5','B4','A4','R','E5','G5','A5','G5','E5','D5','C5','D5','E5','D5','C5','A4','R','C5','D5','E5','G5','E5','D5','C5','A4','A4','R']] },
+      notes:['A4','C5','D5','E5','G5','A5','G5','E5','D5','C5','A4','R','D5','E5','G5','A5','C6','A5','G5','E5','D5','C5','A4','R','A4','B4','C5','D5','E5','D5','C5','B4','A4','R','E5','G5','A5','G5','E5','D5','C5','D5','E5','D5','C5','A4','R','C5','D5','E5','G5','E5','D5','C5','A4','A4','R'] },
     { id:'yuzhou',     label:'🎣 渔舟唱晚（中国风）', wave:'triangle', beat:0.38, gain:0.20, noteGain:0.085, bass:false,
-      notes:[['G5','A5','C6','D6','C6','A5','G5','E5','D5','E5','G5','A5','G5','R','A5','C6','D6','E6','D6','C6','A5','G5','A5','C6','A5','G5','E5','G5','R','E5','G5','A5','C6','A5','G5','E5','D5','E5','G5','E5','D5','C5','D5','R','C6','A5','G5','A5','C6','D6','E6','D6','C6','A5','G5','G5','R']] },
+      notes:['G5','A5','C6','D6','C6','A5','G5','E5','D5','E5','G5','A5','G5','R','A5','C6','D6','E6','D6','C6','A5','G5','A5','C6','A5','G5','E5','G5','R','E5','G5','A5','C6','A5','G5','E5','D5','E5','G5','E5','D5','C5','D5','R','C6','A5','G5','A5','C6','D6','E6','D6','C6','A5','G5','G5','R'] },
     { id:'caiyun',     label:'☁️ 彩云追月（中国风）', wave:'sine', beat:0.40, gain:0.20, noteGain:0.085, bass:true,
-      notes:[['C5','D5','E5','G5','A5','G5','E5','D5','C5','A4','C5','D5','E5','G5','A5','C6','A5','G5','E5','D5','C5','R','E5','G5','A5','C6','A5','G5','E5','G5','A5','C6','D6','C6','A5','G5','E5','D5','C5','R','D5','E5','G5','E5','D5','C5','A4','C5','D5','E5','D5','C5','C5','R']] },
+      notes:['C5','D5','E5','G5','A5','G5','E5','D5','C5','A4','C5','D5','E5','G5','A5','C6','A5','G5','E5','D5','C5','R','E5','G5','A5','C6','A5','G5','E5','G5','A5','C6','D6','C6','A5','G5','E5','D5','C5','R','D5','E5','G5','E5','D5','C5','A4','C5','D5','E5','D5','C5','C5','R'] },
     { id:'kmOverture', label:'🗝️ 秘境序曲', wave:'triangle', beat:0.40, gain:0.19, noteGain:0.085, bass:true,
-      notes:[['D4','A4','D5','F5','A5','F5','D5','A4','D5','F5','A5','D6','A5','F5','D5','A4','R','C5','F5','A5','C6','A5','F5','C5','A4','C5','F5','A5','F5','C5','R','B4','D5','G5','B5','A5','G5','F5','E5','D5','A4','D5','R']] },
+      notes:['D4','A4','D5','F5','A5','F5','D5','A4','D5','F5','A5','D6','A5','F5','D5','A4','R','C5','F5','A5','C6','A5','F5','C5','A4','C5','F5','A5','F5','C5','R','B4','D5','G5','B5','A5','G5','F5','E5','D5','A4','D5','R'] },
     { id:'kmGalaxy',   label:'🌌 智慧星河', wave:'sine', beat:0.36, gain:0.19, noteGain:0.08, bass:false,
-      notes:[['C5','E5','G5','B5','A5','G5','E5','C5','D5','F5','A5','G5','F5','D5','C5','R','E5','G5','B5','C6','B5','G5','E5','D5','E5','G5','F5','E5','D5','C5','R','A4','C5','E5','G5','F5','E5','D5','E5','C5','R']] },
+      notes:['C5','E5','G5','B5','A5','G5','E5','C5','D5','F5','A5','G5','F5','D5','C5','R','E5','G5','B5','C6','B5','G5','E5','D5','E5','G5','F5','E5','D5','C5','R','A4','C5','E5','G5','F5','E5','D5','E5','C5','R'] },
     { id:'kmMarch',    label:'🛡️ 勇者进行曲', wave:'square', beat:0.30, gain:0.16, noteGain:0.055, bass:true,
-      notes:[['C5','C5','D5','E5','C5','E5','F5','G5','E5','G5','A5','G5','F5','E5','D5','C5','R','G5','G5','A5','B5','C6','B5','A5','G5','E5','G5','C6','C5','R','F5','F5','E5','D5','C5','D5','E5','G5','E5','D5','C5','C5','R']] },
+      notes:['C5','C5','D5','E5','C5','E5','F5','G5','E5','G5','A5','G5','F5','E5','D5','C5','R','G5','G5','A5','B5','C6','B5','A5','G5','E5','G5','C6','C5','R','F5','F5','E5','D5','C5','D5','E5','G5','E5','D5','C5','C5','R'] },
     { id:'kmForest',   label:'🌳 魔法森林', wave:'sine', beat:0.42, gain:0.19, noteGain:0.08, bass:false,
-      notes:[['E5','G5','B5','A5','G5','E5','D5','E5','A4','C5','E5','G5','F5','E5','D5','E5','R','G5','B5','D6','C6','B5','A5','G5','E5','G5','A5','G5','E5','D5','E5','R','A4','C5','E5','A5','G5','E5','D5','C5','E5','R']] },
+      notes:['E5','G5','B5','A5','G5','E5','D5','E5','A4','C5','E5','G5','F5','E5','D5','E5','R','G5','B5','D6','C6','B5','A5','G5','E5','G5','A5','G5','E5','D5','E5','R','A4','C5','E5','A5','G5','E5','D5','C5','E5','R'] },
     { id:'kmVictory',  label:'🎺 胜利号角', wave:'triangle', beat:0.34, gain:0.19, noteGain:0.08, bass:true,
-      notes:[['C5','E5','G5','C6','G5','C6','E6','C6','G5','E5','C5','E5','G5','C6','E6','G6','C6','G5','R','D5','F5','A5','D6','A5','F5','D5','A4','D5','F5','A5','F5','D5','R','E5','G5','C6','E6','D6','C6','G5','E5','G5','C6','C6','R']] }
+      notes:['C5','E5','G5','C6','G5','C6','E6','C6','G5','E5','C5','E5','G5','C6','E6','G6','C6','G5','R','D5','F5','A5','D6','A5','F5','D5','A4','D5','F5','A5','F5','D5','R','E5','G5','C6','E6','D6','C6','G5','E5','G5','C6','C6','R'] }
   ];
   function bgmTrackById(list, id){
     for(let i=0;i<list.length;i++){ if(list[i].id === id) return list[i]; }
@@ -32559,6 +32589,11 @@ May / Can I /we have …, please? 请问我 / 我们可以拿…… 吗？
     }
     if(_style === 'summerNight'){
       startFarmAmbientSummer(); // V53：夏夜柔板
+      return;
+    }
+    // R79-1：QQ 农场 8-bit 旋律此前漏了分支，选中后一直落到「夏夜柔板」兜底，现补上
+    if(_style === 'qqFarm'){
+      startFarmAmbientQQ();
       return;
     }
     // R76-3：新增 7 首内置曲目走通用合成播放器
@@ -35195,7 +35230,8 @@ May / Can I /we have …, please? 请问我 / 我们可以拿…… 吗？
       maoBack._maoBackBound = true;
       maoBack.addEventListener('click', (e)=>{ e.stopPropagation(); _ktxsOpenPoem = -1; if(rerender) rerender(); });
     }
-    // R77-3：诗词打卡键 —— 每首打卡一次，成功获得⭐（数量由任务设置配置，默认 2）
+    /* R77-3 / R79-2：诗词打卡键 —— 打卡获得⭐（数量由任务设置配置，默认 2）；
+       R79-2：已打卡时再点一次可取消打卡，并按打卡当时记录的⭐数扣回。 */
     slotBody.querySelectorAll('[data-mao-check]').forEach(b=>{
       if(b._maoCheckBound) return; b._maoCheckBound = true;
       b.addEventListener('click', (e)=>{
@@ -35203,10 +35239,19 @@ May / Can I /we have …, please? 请问我 / 我们可以拿…… 吗？
         const i = parseInt(b.getAttribute('data-mao-check'), 10);
         if(isNaN(i)) return;
         const poems = (window.MAO_POEMS && Array.isArray(window.MAO_POEMS)) ? window.MAO_POEMS : [];
-        const r = S.checkMaoPoem(i);
-        if(!r.ok){ toast('这首诗已经打过卡啦 ✅'); return; }
-        if(typeof addStars === 'function') addStars(r.stars);
-        toast('打卡成功《' + ((poems[i]&&poems[i].t)||'') + '》 +' + r.stars + '⭐');
+        const title = (poems[i] && poems[i].t) || '';
+        const wasChecked = S.isMaoPoemChecked ? S.isMaoPoemChecked(i) : false;
+        if(wasChecked){
+          const r = S.uncheckMaoPoem ? S.uncheckMaoPoem(i) : {ok:false, stars:0};
+          if(!r.ok){ toast('这首诗还没打过卡'); return; }
+          if(typeof addStars === 'function') addStars(-r.stars, true); // 静默扣回，不播恭喜音
+          toast('已取消《' + title + '》打卡，扣回 ' + r.stars + '⭐');
+        } else {
+          const r = S.checkMaoPoem(i);
+          if(!r.ok){ toast('这首诗已经打过卡啦 ✅'); return; }
+          if(typeof addStars === 'function') addStars(r.stars);
+          toast('打卡成功《' + title + '》 +' + r.stars + '⭐');
+        }
         if(rerender) rerender();
       });
     });
@@ -37129,9 +37174,12 @@ I'm good at running.`},
         ${po.d?`<div class="mao-detail-date">${esc(po.d)}</div>`:''}
         <div class="mao-poem-content">${fmtMaoPoem(po.c)}</div>
         <div class="mao-check-wrap">
-          <button type="button" class="mao-check-btn ${(S.isMaoPoemChecked&&S.isMaoPoemChecked(_ktxsOpenPoem))?'done':''}" data-mao-check="${_ktxsOpenPoem}" title="诗词打卡成功获得⭐（可在任务设置更改数量）">
-            ${(S.isMaoPoemChecked&&S.isMaoPoemChecked(_ktxsOpenPoem))?'✅ 已打卡 · 本首已获得 ⭐':'📌 诗词打卡 +'+(S.getMaoStars?S.getMaoStars():2)+'⭐'}
+          <button type="button" class="mao-check-btn ${(S.isMaoPoemChecked&&S.isMaoPoemChecked(_ktxsOpenPoem))?'done':''}" data-mao-check="${_ktxsOpenPoem}" title="点击打卡获得⭐；已打卡时再点一次可取消打卡（⭐数可在任务设置更改）">
+            ${(S.isMaoPoemChecked&&S.isMaoPoemChecked(_ktxsOpenPoem))
+              ? '✅ 已打卡 · 再点一次取消打卡'
+              : '📌 诗词打卡 +'+(S.getMaoStars?S.getMaoStars():2)+'⭐'}
           </button>
+          <div class="mao-check-tip">已打卡 ${(S.maoPoemCheckedList?S.maoPoemCheckedList().length:0)} / ${poems.length} 首</div>
         </div>
         <div class="mao-sec">
           <div class="mao-sec-h">📜 创作背景</div>
@@ -42023,6 +42071,46 @@ I'm good at running.`},
   }
   // V14：右上角音乐开关绑定（用 dataset 内存保存状态，避免 localStorage）
   // V56-Req4：背景音乐设置已从种植园顶部移至「设置」板块。此处绑定设置里的开关/样式/上传。
+  /* ============ R79-1：种植园曲目试听 ============
+     此前种植园设置里根本没有试听按钮；且 17 首内置曲目的音符被误写成嵌套数组
+     （bgmHz 拿到数组 → 频率 0 → 完全静音），现一并修复。
+     · 7 首内置曲目：独立 AudioContext + 通用合成播放器
+     · 百鸟齐鸣 / 夏夜柔板 / QQ 农场 8-bit：沿用各自合成函数，试听期间接管播放
+     2.6 秒后自动停止，不打扰后续使用。
+  ================================================== */
+  let _farmPreviewHandle = null, _farmPreviewCtx = null, _farmPreviewTimer = null, _farmPreviewLegacy = false;
+  function stopFarmPreview(){
+    if(_farmPreviewTimer){ clearTimeout(_farmPreviewTimer); _farmPreviewTimer = null; }
+    if(_farmPreviewLegacy){
+      _farmPreviewLegacy = false;
+      try{ if(_farmAmbient) _farmAmbient.stop(); }catch(e){}
+    }
+    try{ if(_farmPreviewHandle) _farmPreviewHandle.stop(); }catch(e){}
+    _farmPreviewHandle = null;
+    if(_farmPreviewCtx){ const c = _farmPreviewCtx; _farmPreviewCtx = null; setTimeout(()=>{ try{ c.close(); }catch(e){} }, 700); }
+  }
+  function farmPreviewTrack(id){
+    let started = false;
+    try{
+      stopFarmPreview();
+      const tk = bgmTrackById(FARM_BGM_TRACKS, id);
+      if(tk && !tk.legacy){
+        const AC = window.AudioContext || window.webkitAudioContext; if(!AC) return false;
+        const ctx = new AC();
+        if(ctx.state === 'suspended' && ctx.resume) ctx.resume();
+        _farmPreviewCtx = ctx;
+        _farmPreviewHandle = bgmPlayTrack(ctx, tk, { volMul: 1.6 });
+        started = !!_farmPreviewHandle;
+      } else {
+        _farmPreviewLegacy = true;
+        try{ stopFarmAmbient(); }catch(e){}
+        startFarmAmbient(id);
+        started = true;
+      }
+      _farmPreviewTimer = setTimeout(stopFarmPreview, 8000);
+    }catch(e){}
+    return started;
+  }
   function bindFarmMusicToggle(){
     const onCb = document.getElementById('farmMusicOn');
     if(onCb && !onCb._bound){
@@ -42044,8 +42132,25 @@ I'm good at running.`},
       styleSel.onchange = ()=>{
         window.__farmMusicStyle = styleSel.value;
         localStorage.setItem('farmMusicStyle', styleSel.value);
+        try{ stopFarmPreview(); }catch(e){} // R79-1：换曲目时停止上一次试听
         const onFarm = !document.querySelector('.page[data-page="farm"]').hidden;
         if(onFarm && window.__farmMusicOn !== false){ stopFarmAmbient(); startFarmAmbient(); }
+      };
+    }
+    // R79-1：种植园试听按钮
+    const farmPrevBtn = document.getElementById('farmMusicPreview');
+    if(farmPrevBtn && !farmPrevBtn._bound){
+      farmPrevBtn._bound = true;
+      farmPrevBtn.onclick = ()=>{
+        if(!farmPrevBtn.dataset.oldText) farmPrevBtn.dataset.oldText = farmPrevBtn.textContent;
+        // 再点一次即停止
+        if(_farmPreviewHandle || _farmPreviewLegacy){ stopFarmPreview(); farmPrevBtn.textContent = farmPrevBtn.dataset.oldText || '▶ 试听'; return; }
+        const sel = document.getElementById('farmMusicStyle');
+        const id = sel ? sel.value : (window.__farmMusicStyle || 'birds');
+        const started = farmPreviewTrack(id);
+        farmPrevBtn.textContent = started ? '⏹ 停止试听' : (farmPrevBtn.dataset.oldText || '▶ 试听');
+        clearTimeout(farmPrevBtn._t);
+        farmPrevBtn._t = setTimeout(()=>{ farmPrevBtn.textContent = farmPrevBtn.dataset.oldText || '▶ 试听'; }, started ? 8000 : 1200);
       };
     }
     bindFarmMusicUpload();
@@ -42120,13 +42225,15 @@ I'm good at running.`},
     if(prevBtn && !prevBtn._kmBound){
       prevBtn._kmBound = true;
       prevBtn.onclick = ()=>{
+        if(!prevBtn.dataset.oldText) prevBtn.dataset.oldText = prevBtn.textContent;
+        // R79-1：再点一次即停止（此前只能等它自己结束）
+        if(_kmPreviewHandle){ kmPreviewStop(); prevBtn.textContent = prevBtn.dataset.oldText || '▶ 试听'; return; }
         const sel = document.getElementById('kmMusicStyle');
         const id = sel ? sel.value : kmMusicCurId();
-        kmPreviewTrack(id);
-        if(!prevBtn.dataset.oldText) prevBtn.dataset.oldText = prevBtn.textContent;
-        prevBtn.textContent = '🔊 试听中…';
+        const real = kmPreviewTrack(id);
+        prevBtn.textContent = '⏹ 停止试听';
         clearTimeout(prevBtn._kmT);
-        prevBtn._kmT = setTimeout(()=>{ prevBtn.textContent = prevBtn.dataset.oldText || '▶ 试听'; }, 1500);
+        prevBtn._kmT = setTimeout(()=>{ prevBtn.textContent = prevBtn.dataset.oldText || '▶ 试听'; }, real ? 8000 : 1200);
       };
     }
     const fileInput = document.getElementById('kmMusicFile');
@@ -42167,23 +42274,36 @@ I'm good at running.`},
       }
     }catch(e){ /* ignore */ }
   }
-  // R76-3：试听某首内置曲目（独立 AudioContext，2.5 秒后自动停止）
-  let _kmPreviewHandle = null;
+  /* R76-3 / R79-1：试听知识秘境曲目（独立 AudioContext，8 秒后自动停止，也可再点按钮手动停止）。
+     R79-1 改进：① 选「各关卡内置音」时此前点了没声音，现改为试听默认曲目并给出说明；
+                ② 试听时长 2.6s → 8s，能听清完整旋律的开头乐段；③ 返回是否真的开始播放。 */
+  let _kmPreviewHandle = null, _kmPreviewCtx = null, _kmPreviewT = null;
+  function kmPreviewStop(){
+    if(_kmPreviewT){ clearTimeout(_kmPreviewT); _kmPreviewT = null; }
+    try{ if(_kmPreviewHandle) _kmPreviewHandle.stop(); }catch(e){}
+    _kmPreviewHandle = null;
+    if(_kmPreviewCtx){ const c = _kmPreviewCtx; _kmPreviewCtx = null; setTimeout(()=>{ try{ c.close(); }catch(e){} }, 700); }
+  }
   function kmPreviewTrack(id){
+    let started = false;
     try{
-      if(_kmPreviewHandle){ try{ _kmPreviewHandle.stop(); }catch(e){} _kmPreviewHandle = null; }
-      const tk = bgmTrackById(KM_BGM_TRACKS, id);
-      if(!tk) { toast('该关卡使用内置音，请选择一首曲目试听'); return; }
-      const AC = window.AudioContext || window.webkitAudioContext; if(!AC) return;
+      kmPreviewStop();
+      let tk = bgmTrackById(KM_BGM_TRACKS, id);
+      if(!tk){
+        // 选「各关卡内置音」时没有具体曲目，试听默认曲目，保证点下去一定有声音
+        tk = bgmTrackById(KM_BGM_TRACKS, 'kmOverture');
+        if(tk) toast('当前为各关卡内置音，先为你试听默认曲目：秘境序曲');
+      }
+      if(!tk) return false;
+      const AC = window.AudioContext || window.webkitAudioContext; if(!AC) return false;
       const ctx = new AC();
       if(ctx.state === 'suspended' && ctx.resume) ctx.resume();
+      _kmPreviewCtx = ctx;
       _kmPreviewHandle = bgmPlayTrack(ctx, tk, { volMul: 1.6 });
-      setTimeout(()=>{
-        try{ if(_kmPreviewHandle) _kmPreviewHandle.stop(); }catch(e){}
-        _kmPreviewHandle = null;
-        setTimeout(()=>{ try{ ctx.close(); }catch(e){} }, 700);
-      }, 2600);
+      started = !!_kmPreviewHandle;
+      _kmPreviewT = setTimeout(kmPreviewStop, 8000);
     }catch(e){}
+    return started;
   }
   function renderFarmTop(st){
     const a = st.archive||{};
