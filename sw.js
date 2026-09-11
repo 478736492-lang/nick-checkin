@@ -18,10 +18,10 @@
 var CACHE_NAME = 'zoo-checkin-v1';
 var PRECACHE = ['./', './index.html'];
 var NAV_TIMEOUT = 6000; // 弱网保护：6 秒拿不到网络响应就用缓存，避免白屏
-/* R70：构建指纹。部署脚本会把 08d1e856c173 替换为当期 index.html 的 sha256 前 12 位。
+/* R70：构建指纹。部署脚本会把 ce9e89c7bac2 替换为当期 index.html 的 sha256 前 12 位。
  * 作用：只在站点内容真的变化时，sw.js 本身才变化，从而触发浏览器 SW 更新流程
  * （install → 重新预缓存新 index.html → installed → 页面自动重载到新版）。 */
-var BUILD = '08d1e856c173';
+var BUILD = 'ce9e89c7bac2';
 
 self.addEventListener('install', function (e) {
   self.skipWaiting();
