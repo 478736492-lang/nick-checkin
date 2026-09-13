@@ -1404,6 +1404,9 @@ body.child-mode .parent-edit-fab{display:none}
 .parent-edit-group{margin-bottom:18px;padding:12px;background:linear-gradient(135deg,#fafbff,#f5f7ff);border:1px solid #e3eefb;border-radius:12px}
 .peg-title{font-size:14px;font-weight:700;color:#5b4dbf;margin-bottom:10px;display:flex;align-items:center;gap:6px}
 .peg-list{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+/* R88：背景设置内「逐板块主题卡设置」8 板块入口（4 列网格，按钮撑满） */
+.peg-sec-grid{grid-template-columns:repeat(4,1fr)}
+.peg-sec-grid .pbtn{width:100%;justify-content:center;font-size:14px;padding:10px 6px}
 .peg-item{display:flex;align-items:center;gap:8px;padding:8px 10px;background:#fff;border:1px solid #e3eefb;border-radius:10px;transition:.15s}
 .peg-item:hover{border-color:#7a5af7;box-shadow:0 2px 6px rgba(122,90,247,.15)}
 .peg-name{flex:1;font-size:13px;font-weight:600;color:#14335f}
@@ -5746,6 +5749,20 @@ body.child-mode .parent-edit-fab{display:none}
         </div>
       </div>
     </div>
+      <!-- R88：逐板块主题卡设置（全部 8 大板块；点击进入该板块「整页 + 标题区」设置：上传背景图 + 透明度） -->
+      <div class="parent-edit-group" data-page-node-id="R88bgSecGroup">
+        <div class="peg-title" data-page-node-id="R88bgSecTitle">🗂️ 逐板块主题卡设置（点击进入：上传背景图 + 透明度）</div>
+        <div id="bgSectionList" class="peg-list peg-sec-grid" data-page-node-id="R88bgSecList">
+          <button class="pbtn" data-bg-section="newworld">🌟 新世界</button>
+          <button class="pbtn" data-bg-section="knowledge">🗺️ 知识秘境</button>
+          <button class="pbtn" data-bg-section="farm">🌱 种植园</button>
+          <button class="pbtn" data-bg-section="math">🧮 乐读数学</button>
+          <button class="pbtn" data-bg-section="xueersi">📘 学而思英语</button>
+          <button class="pbtn" data-bg-section="reading">📖 大阅读</button>
+          <button class="pbtn" data-bg-section="baike">🌍 百科讲堂</button>
+          <button class="pbtn" data-bg-section="archive">🏆 成长档案</button>
+        </div>
+      </div>
     <div class="modal-foot" data-page-node-id="XVQuFHKROBb7yQ9R6OHBAA">
       <button class="pbtn" data-close data-page-node-id="1nxTpIBcV8E1tFPmtj0zfW">关闭</button>
     </div>
@@ -32639,8 +32656,10 @@ May / Can I /we have …, please? 请问我 / 我们可以拿…… 吗？
     const t=$('#toast'); t.textContent=msg; t.hidden=false;
     clearTimeout(t._t); t._t=setTimeout(()=>t.hidden=true,1800);
   };
-  const showModal = sel=>$(sel).hidden=false;
-  const hideModal = sel=>$(sel).hidden=true;
+  // R88：弹窗堆叠层级 —— 后打开的弹窗永远盖在之前打开的之上（修复「新增任务/编辑弹窗显示在下层」「设置中心嵌套弹窗被遮挡」）
+  let _modalZ = 1000;
+  const showModal = sel=>{ const el=$(sel); if(!el) return; _modalZ = Math.max(_modalZ,1000)+1; el.style.zIndex = _modalZ; el.hidden=false; };
+  const hideModal = sel=>{ const el=$(sel); if(!el) return; el.hidden=true; if(el.style.zIndex) el.style.zIndex=''; };
   // R9-REQ2：英语短文朗读状态机（每篇独立 idle/playing/paused）
   let _passagePlayingTitle = null;
   let _passagePausedTitle = null;
@@ -41423,6 +41442,15 @@ I'm good at running.`},
     // R83：bindShopList 已提升为模块级 function 声明（见下方 renderShopEditor 上方），供 bindParentEdit 与 bindFarmSetting 共用
     // R83：市集/小卖部 列表事件已迁移至 bindFarmSetting（种植园设置弹窗）
     bindFarmSetting();
+    // R88：逐板块主题卡设置入口（点击 → 打开该板块「整页 + 标题区」背景设置：上传图片 + 透明度）
+    const bgSecList = $('#bgSectionList');
+    if(bgSecList && !bgSecList._bound){
+      bgSecList._bound = true;
+      bgSecList.addEventListener('click', e=>{
+        const b = e.target.closest('[data-bg-section]');
+        if(b){ openSectionBgEdit(b.dataset.bgSection); }
+      });
+    }
     // V23-5：保存背景图显示设置
     const btnBgOpt = $('#btnBgOptSave');
     if(btnBgOpt && !btnBgOpt._bound){
