@@ -44888,11 +44888,8 @@ I'm good at running.`},
     const ow = $('#btnSettingsOpenWrong'); if(ow) ow.onclick = ()=> showModal('#modalWrong');
     const addReq = $('#btnSettingsAddReq'); if(addReq) addReq.onclick = ()=>{ openTaskEdit(null); const t=$('#tType'); if(t) t.value='必做任务'; };
     const addOpt = $('#btnSettingsAddOpt'); if(addOpt) addOpt.onclick = ()=>{ openTaskEdit(null); const t=$('#tType'); if(t) t.value='选做拓展任务'; };
-    if(typeof handleTodayClick==='function'){
-      ['#settingsTaskReq','#settingsTaskOpt','#settingsTaskHouse','#settingsTaskSport'].forEach(sel=>{
-        const el=$(sel); if(el && !el._taskBound){ el._taskBound=true; el.addEventListener('click', handleTodayClick); }
-      });
-    }
+    // R88fix：设置弹窗内任务列表的编辑/删除委托改在 bindEvents() 内绑定（handleTodayClick 在此作用域可见）；
+    // 此处 clone 仅替换子节点，容器监听由 bindEvents 一次性绑定，刷新列表后持续有效。
     _forceTaskEdit = false;
   }
   function openSettingsTask(){
@@ -45125,6 +45122,10 @@ I'm good at running.`},
     $('#todayOpt').addEventListener('click',handleTodayClick);
     $('#todayHouse').addEventListener('click',handleTodayClick);
     $('#todaySport').addEventListener('click',handleTodayClick);
+    // R88fix：设置中心「打卡任务」弹窗内任务列表（clone 自今日）的编辑/删除委托
+    ['#settingsTaskReq','#settingsTaskOpt','#settingsTaskHouse','#settingsTaskSport','#settingsTaskGoContent'].forEach(sel=>{
+      const el=$(sel); if(el && !el._taskBound){ el._taskBound=true; el.addEventListener('click', handleTodayClick); }
+    });
     function handleTodayClick(e){
       const ed=e.target.closest('[data-edit-task]');
       if(ed){ const st=S.load(); const t=st.tasks.find(x=>x.id===ed.dataset.editTask); openTaskEdit(t); return; }
