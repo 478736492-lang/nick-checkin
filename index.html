@@ -4791,6 +4791,62 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 #settingsMusicBody .set-card,#settingsSyncBody .set-card,#settingsExportBody .set-card{margin:0 0 12px}
 #settingsMusicBody .set-card:last-child,#settingsSyncBody .set-card:last-child,#settingsExportBody .set-card:last-child{margin-bottom:0}
 
+/* ============ R91：乐读数学「次主题卡（学期/班型）→ 三级卡（题型）」 ============ */
+/* 次主题卡区：卡片列表（点击切换当前次级卡），区域后方为【＋ 新增次级卡】 */
+.math-sub-region{margin-top:12px}
+.math-sub-list{display:flex;flex-wrap:wrap;gap:10px}
+.math-sub-card{
+  display:flex;flex-direction:column;align-items:flex-start;gap:4px;
+  min-width:136px;min-height:56px;
+  padding:9px 14px;margin:0;
+  font-family:inherit;font-size:14px;line-height:1.25;text-align:left;
+  background:#fff;border:1.5px solid #cfe0f5;border-radius:14px;
+  box-shadow:0 2px 8px rgba(30,58,138,.10);
+  cursor:pointer;transition:.15s;-webkit-appearance:none;appearance:none
+}
+.math-sub-card:hover{border-color:#8fc1f7;box-shadow:0 4px 12px rgba(30,58,138,.16);transform:translateY(-1px)}
+.math-sub-card.active{background:linear-gradient(135deg,#a4d0ff,#8fc1f7);border-color:#4096ff;box-shadow:0 4px 14px rgba(64,150,255,.32)}
+.math-sub-card .msc-name{font-size:14px;font-weight:800;color:#1e3a8a;white-space:nowrap}
+.math-sub-card.active .msc-name{color:#fff}
+.math-sub-card .msc-count{font-size:11px;color:#6a7a95;background:#eef4fc;padding:1px 8px;border-radius:8px;white-space:nowrap}
+.math-sub-card.active .msc-count{background:rgba(255,255,255,.8);color:#16306b}
+
+/* 区域后方的新增按键 + 就地输入行（点按键展开输入框，命名后确认新增） */
+.math-add-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px}
+.math-ter-add-row{margin-top:12px}
+.pbtn.math-add-card-btn{
+  border:1.5px dashed #8fc1f7;background:rgba(164,208,255,.22);color:#16306b;
+  font-weight:700;padding:8px 14px;border-radius:12px
+}
+.pbtn.math-add-card-btn:hover{background:rgba(143,193,247,.36);border-color:#4096ff}
+.math-inline-add{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.math-add-input{
+  min-width:210px;padding:8px 12px;border:1.5px solid #8fc1f7;border-radius:10px;
+  font-size:13px;font-family:inherit;color:var(--text);background:#fff
+}
+.math-add-input:focus{outline:none;border-color:#4096ff;box-shadow:0 0 0 3px rgba(64,150,255,.18)}
+.pbtn.math-add-cancel{color:#6a7a95;border-color:#d4def0;background:#fff}
+
+/* 三级卡（题型）头部删除键（仅家长态渲染）+ 暂无题目引导 */
+.pbtn.math-group-del{color:#c25e22;border-color:#ffd0a8;background:rgba(255,140,66,.12)}
+.math-group-empty{
+  grid-column:1/-1;padding:14px;text-align:center;color:#6a7a95;font-size:12px;
+  background:#fff;border:1.5px dashed #cfe0f5;border-radius:12px
+}
+
+/* 显隐：本项目 .hidden 仅在带作用域的选择器下生效（无全局 .hidden 规则） */
+.math-empty.hidden,.math-inline-add.hidden,.pbtn.math-add-card-btn.hidden{display:none}
+
+/* 触屏 + 大屏：次级卡与新增控件触控目标 ≥44px */
+@media (pointer:coarse) and (min-width:768px){
+  .math-sub-card{min-height:64px;min-width:150px;padding:11px 16px}
+  .math-sub-card .msc-name{font-size:15px}
+  .pbtn.math-add-card-btn{min-height:44px;padding:10px 16px;font-size:13px}
+  .math-inline-add .pbtn{min-height:44px}
+  .math-add-input{min-height:44px;font-size:14px}
+  .pbtn.math-group-del{min-height:36px}
+}
+
 
 </style>
 </head>
@@ -5217,11 +5273,32 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
         <!-- R59-2：移除【新增题目】【新建知识笔记】独立按键 —— 统一收纳进题型栏【＋ 新题型】选择弹窗 -->
       </div>
     </div><div class="page-content">
-    <!-- v10：删除 掌握/待掌握 与 全部/简便计算/脱式计算/应用题 子板块；
-         仅保留「题库」+ 按题型动态生成的子板块（初始仅「提取公因数」，新增题目后自动出现新题型） -->
+    <!-- R91：乐读数学层级 = 次级卡（学期/班型）→ 三级卡（题型）→ 题目卡片。
+         「题库 / 需巩固 / 已掌握」保留为跨次级卡的全局筛选（置于最上方）。 -->
     <div class="math-type-tabs" id="mathTypeTabs" data-page-node-id="kLbDH28pvPUwNa3gHz3r5V"></div>
+    <!-- R91：次主题卡区（学期/班型卡片列表）——区域后方为【＋ 新增次级卡】 -->
+    <div class="math-sub-region" data-page-node-id="R91mathSubRegion">
+      <div class="math-sub-list" id="mathSubList" data-page-node-id="R91mathSubList"></div>
+      <div class="math-add-row" data-page-node-id="R91mathSubAddRow">
+        <button class="pbtn small math-add-card-btn" id="btnMathAddSubCard" data-page-node-id="R91btnAddSubCard" title="新增一张次级卡（学期/班型）">＋ 新增次级卡</button>
+        <span class="math-inline-add hidden" id="mathSubAddInline" data-page-node-id="R91mathSubAddInline">
+          <input type="text" class="math-add-input" id="mathSubNewName" maxlength="24" placeholder="输入次级卡名称（如 2027 春三 S）" data-page-node-id="R91mathSubNewName">
+          <button class="pbtn small" id="btnMathSubNewOk" data-page-node-id="R91btnSubNewOk">确定</button>
+          <button class="pbtn small math-add-cancel" id="btnMathSubNewCancel" data-page-node-id="R91btnSubNewCancel">取消</button>
+        </span>
+      </div>
+    </div>
+    <!-- R91：三级卡区（题型卡，沿用原有 .math-type-group 排版）——区域后方为【＋ 新增三级卡】 -->
     <div class="math-grid" id="mathGrid" data-page-node-id="U31PqHWK5OA0rl0GoBFXBp"></div>
-    <div class="math-empty hidden" id="mathEmpty" data-page-node-id="J3mbWF2szMoHL7nBIBAcj7">还没有题目哦，点击右上角"新增题目"开始录入吧～</div>
+    <div class="math-add-row math-ter-add-row" data-page-node-id="R91mathTerAddRow">
+      <button class="pbtn small math-add-card-btn" id="btnMathAddTerCard" data-page-node-id="R91btnAddTerCard" title="在当前次级卡下新增一张三级卡（题型）">＋ 新增三级卡</button>
+      <span class="math-inline-add hidden" id="mathTerAddInline" data-page-node-id="R91mathTerAddInline">
+        <input type="text" class="math-add-input" id="mathTerNewName" maxlength="24" placeholder="输入三级卡名称（题型）" data-page-node-id="R91mathTerNewName">
+        <button class="pbtn small" id="btnMathTerNewOk" data-page-node-id="R91btnTerNewOk">确定</button>
+        <button class="pbtn small math-add-cancel" id="btnMathTerNewCancel" data-page-node-id="R91btnTerNewCancel">取消</button>
+      </span>
+    </div>
+    <div class="math-empty hidden" id="mathEmpty" data-page-node-id="J3mbWF2szMoHL7nBIBAcj7">还没有题目哦，点「＋ 新题型」开始录入吧～</div>
   </div></section>
 
   <!-- ================= 学而思英语 V20：恢复 V18 状态（仅学习汇总：词汇 + 语法） ================= -->
@@ -27941,6 +28018,42 @@ window.MAO_POEMS = [{"t": "贺新郎·别友", "d": "一九二三年", "c": "挥
     "mastery": "bank"
   }
 ];
+  // R91：乐读数学「次级卡」种子（学期 / 班型）—— 数组顺序即页面展示顺序；
+  // 「2026 春二 A+」为默认承载卡：首次建卡时把「当前页面内全部题型」作为三级卡导入该卡
+  const MATH_GROUP_SEED = ['2026 夏三 S','2026 春二 A+','2026 冬二 A+','2026 冬二 A+','2025 夏二 A+','2025 秋二 A+','2025 冬一 A+','2025 春上一 A+','2025 春下一 A+'];
+  const MATH_GROUP_DEFAULT = '2026 春二 A+';
+  // R91：次级卡结构自愈 —— ①首次建 9 张；②未归属题型归入「2026 春二 A+」（承载现有全部题型）；
+  // ③清理已删除题型。返回是否发生变更（由 load() 决定是否落盘）
+  function normalizeMathGroups(st){
+    let changed = false;
+    if(!Array.isArray(st.mathGroups) || st.mathGroups.length === 0){
+      const stamp = Date.now().toString(36);
+      st.mathGroups = MATH_GROUP_SEED.map((name, i) => ({ id: 'mg' + stamp + '_' + i, name, types: [] }));
+      changed = true;
+    }
+    st.mathGroups.forEach(g => { if(!Array.isArray(g.types)){ g.types = []; changed = true; } });
+    // 题库中出现过的题型（与 mathTypes() 一致，含默认「提取公因数」）
+    const allTypes = [];
+    (st.mathProblems || []).forEach(m => { const t = m.type || '未分类'; if(allTypes.indexOf(t) < 0) allTypes.push(t); });
+    if(allTypes.indexOf('提取公因数') < 0) allTypes.unshift('提取公因数');
+    // 合法题型集合 = 题库题型 + 自定义题型（新建但暂无题目的三级卡不能被清掉）
+    const validTypes = allTypes.slice();
+    (st.customMathTypes || []).forEach(t => { if(validTypes.indexOf(t) < 0) validTypes.push(t); });
+    // 归属表（同一题型只归一张次级卡）
+    const owned = {};
+    st.mathGroups.forEach(g => g.types.forEach(t => { if(owned[t] === undefined) owned[t] = g.id; }));
+    // 未归属题型 → 落在已有「提取公因数」的那张（即 2026 春二 A+）；否则同名卡；否则首张
+    let target = st.mathGroups.find(g => g.types.indexOf('提取公因数') >= 0)
+              || st.mathGroups.find(g => g.name === MATH_GROUP_DEFAULT)
+              || st.mathGroups[0];
+    allTypes.forEach(t => { if(owned[t] === undefined){ target.types.push(t); owned[t] = target.id; changed = true; } });
+    st.mathGroups.forEach(g => {
+      const before = g.types.length;
+      g.types = g.types.filter(t => validTypes.indexOf(t) >= 0);
+      if(g.types.length !== before) changed = true;
+    });
+    return changed;
+  }
   const PLOT_COUNT = 12; // v10.2：3 行 x 4 列 = 12 块田（含未解锁）
   const STAGE_NEED = {0:8,1:12,2:16,3:20,4:24}; // v8：每阶段进下一阶段需要的水/阳光
   function newPlot(){
@@ -28241,6 +28354,8 @@ window.MAO_POEMS = [{"t": "贺新郎·别友", "d": "一九二三年", "c": "挥
     st.mathProblems.forEach(m=>{
       if(TYPE_MAP[m.type]) m.type = TYPE_MAP[m.type];
     });
+    // R91：乐读数学次级卡（学期/班型）—— 首次建 9 张，并把现有全部题型导入「2026 春二 A+」
+    if(normalizeMathGroups(st)) save(st);
     // v10：首页昵称统一为英文 Nick（旧数据中的「小尼克 / 尼克」中文昵称一并迁移）
     if(!st.profile) st.profile = {nickname:'Nick',grade:'三年级',mode:'child', avatar:''};
     if(!st.profile.nickname || /尼克/.test(st.profile.nickname)) st.profile.nickname = 'Nick';
@@ -29387,14 +29502,81 @@ window.MAO_POEMS = [{"t": "贺新郎·别友", "d": "一九二三年", "c": "挥
   }
   function removeMathType(name){
     const st = load();
-    if(!Array.isArray(st.customMathTypes)) return {ok:false, msg:'无题型可删'};
-    const idx = st.customMathTypes.indexOf(name);
-    if(idx < 0) return {ok:false, msg:'该题型不存在'};
-    st.customMathTypes.splice(idx, 1);
+    const listed = Array.isArray(st.customMathTypes) && st.customMathTypes.indexOf(name) >= 0;
+    const hasProb = (st.mathProblems||[]).some(m => m.type === name);
+    if(!listed && !hasProb) return {ok:false, msg:'该题型不存在'};
+    if(Array.isArray(st.customMathTypes)){
+      const idx = st.customMathTypes.indexOf(name);
+      if(idx >= 0) st.customMathTypes.splice(idx, 1);
+    }
+    // R91：同步从所有次级卡（三级卡列表）中剔除
+    normalizeMathGroups(st);
+    (st.mathGroups||[]).forEach(g => { g.types = g.types.filter(t => t !== name); });
     // 同时清空该题型的所有题目
     (st.mathProblems||[]).forEach(m=>{ if(m.type === name) m.type = '未分类'; });
     save(st);
-    return {ok:true, list: st.customMathTypes.slice()};
+    return {ok:true, list: (st.customMathTypes||[]).slice()};
+  }
+  // ----- R91：乐读数学「次级卡」（学期/班型）+「三级卡」（题型归属） -----
+  // 次级卡清单（含各自的题型/三级卡列表）
+  function getMathGroups(){
+    const st = load();
+    if(normalizeMathGroups(st)) save(st);
+    return (st.mathGroups||[]).map(g => ({ id:g.id, name:g.name, types:g.types.slice() }));
+  }
+  // 某题型（三级卡）所属次级卡 id；未归属返回 ''
+  function groupIdOfMathType(type){
+    const t = String(type||'');
+    const hit = getMathGroups().find(g => g.types.indexOf(t) >= 0);
+    return hit ? hit.id : '';
+  }
+  // 新增次级卡（就地输入命名；空名 / 重名拒绝）
+  function addMathGroup(name){
+    const n = String(name||'').trim();
+    if(!n) return {ok:false, msg:'请输入次级卡名称'};
+    const st = load();
+    normalizeMathGroups(st);
+    if(st.mathGroups.some(g => g.name === n)) return {ok:false, msg:'已存在同名次级卡：' + n};
+    const g = { id:'mg' + Date.now().toString(36) + '_' + st.mathGroups.length, name:n, types:[] };
+    st.mathGroups.push(g);
+    save(st);
+    return {ok:true, group:{id:g.id, name:g.name, types:[]}};
+  }
+  // 新增三级卡（题型）到指定次级卡；题型名全局唯一（题目按题型名归类）
+  function addMathTypeToGroup(groupId, name){
+    const n = String(name||'').trim();
+    if(!n) return {ok:false, msg:'请输入三级卡名称'};
+    const st = load();
+    normalizeMathGroups(st);
+    const exists = st.mathGroups.some(g => g.types.indexOf(n) >= 0);
+    if(exists) return {ok:false, msg:'已有同名三级卡：' + n};
+    const g = st.mathGroups.find(x => x.id === groupId) || st.mathGroups[0];
+    if(!g) return {ok:false, msg:'次级卡不存在'};
+    g.types.push(n);
+    if(!Array.isArray(st.customMathTypes)) st.customMathTypes = [];
+    if(st.customMathTypes.indexOf(n) < 0) st.customMathTypes.push(n);
+    save(st);
+    return {ok:true, groupId:g.id, name:n};
+  }
+  // 把某题型（保存题目时新建的题型）移动到指定次级卡下
+  function assignMathTypeToGroup(type, groupId){
+    const t = String(type||'').trim();
+    if(!t) return {ok:false};
+    const st = load();
+    normalizeMathGroups(st);
+    const g = st.mathGroups.find(x => x.id === groupId) || st.mathGroups[0];
+    if(!g) return {ok:false};
+    let changed = false;
+    st.mathGroups.forEach(x => {
+      if(x.id === g.id) return;
+      const i = x.types.indexOf(t);
+      if(i >= 0){ x.types.splice(i, 1); changed = true; }
+    });
+    if(g.types.indexOf(t) < 0){ g.types.push(t); changed = true; }
+    if(!Array.isArray(st.customMathTypes)) st.customMathTypes = [];
+    if(st.customMathTypes.indexOf(t) < 0){ st.customMathTypes.push(t); changed = true; }
+    if(changed) save(st);
+    return {ok:true, groupId:g.id};
   }
   // V12.6：种植园清零（水/阳光/成长星/金币/解锁田 — 解锁田恢复成 12 块未解锁）
   function resetFarmCurrencies(){
@@ -32595,6 +32777,7 @@ May / Can I /we have …, please? 请问我 / 我们可以拿…… 吗？
     addMathProblem, updateMathProblem, toggleMathStar, deleteMathProblem,
     getMathNotes, addMathNote, delMathNote,
     setMathMastery, getMathByMastery, markMathMastered, toggleMathMastery, unmarkMathMastered, migrateMathMastery, mathTypes, addMathType, removeMathType, listMathTypes,
+    getMathGroups, addMathGroup, addMathTypeToGroup, assignMathTypeToGroup, groupIdOfMathType,
     getReading, getDailySpeaking, addUserReading, markReadingRead, unmarkReadingRead, isReadingRead, markSpeakingComplete, unmarkSpeakingComplete, unmarkXueersiDailyReward, refundReadingStars,
     getSuzhiProgress, setSuzhiProgressIfEmpty,
     addGoRecord, deleteGoRecord, getWeekGoCount, clearWeekGoRecords, getGoStars, setGoStars,
@@ -38907,7 +39090,9 @@ I'm good at running.`},
   }
 
   // ============ 乐读数学（v10：仅「题库」+ 动态题型子板块；思路/答案直接呈现；仅留「掌握」键 +2⭐） ============
-  let mathTypeTab = 'bank'; // 'bank'（全部题目）| 'notMastered'（未掌握）| 具体题型名
+  // R91：mathTypeTab 收敛为「全局筛选」三态（跨全部次级卡）；题型筛选改由「三级卡」承载
+  let mathTypeTab = 'bank'; // 'bank'（题库）| 'notMastered'（需巩固）| 'mastered'（已掌握）
+  let mathGroupId = '';     // R91：当前选中的次级卡 id（空 → 渲染时落到默认次级卡）
   let editingMathId = null; // V56-Req10：当前正在编辑的数学题 id（null = 新增）
   // 从题库中提取所有题型（保持首次出现顺序），至少保证「提取公因数」子板块存在
   function mathTypeList(){
@@ -38917,34 +39102,23 @@ I'm good at running.`},
     if(out.indexOf('提取公因数') < 0) out.unshift('提取公因数');
     return out;
   }
-  // V13.2 + V23-4 + V24-2：第一行 = 题库 + 需巩固 + 已掌握；第二行 = 各动态题型 + 管理入口
+  // R91：全局筛选行 = 题库 / 需巩固 / 已掌握（跨全部次级卡生效）+ 家长态「＋ 新题型」新增内容入口
+  // （原「各题型子标签」已由三级卡取代：题型不再作为标签，而是在三级卡区各自成卡）
   function renderMathTypeTabs(){
     const el = document.getElementById('mathTypeTabs');
     if(!el) return;
     const all = (S.load().mathProblems) || [];
-    const types = S.listMathTypes();
-    if(mathTypeTab !== 'bank' && mathTypeTab !== 'notMastered' && mathTypeTab !== 'mastered' && types.indexOf(mathTypeTab) < 0) mathTypeTab = 'bank';
+    if(mathTypeTab !== 'bank' && mathTypeTab !== 'notMastered' && mathTypeTab !== 'mastered') mathTypeTab = 'bank';
     const masteredCount = all.filter(m => m.mastery === 'mastered').length;
     const needConsolidateCount = all.filter(m => m.mastery === 'notMastered').length;
-    // V24-2：第一行 = 题库 + 需巩固 + 已掌握（紧跟题库后）
     const row1Btns = [
       `<button class="sub-tab ${mathTypeTab==='bank'?'active':''}" data-math-type-tab="bank">📚 题库</button>`,
       `<button class="sub-tab ${mathTypeTab==='notMastered'?'active':''} ${needConsolidateCount>0?'notmastered':''}" data-math-type-tab="notMastered">🔄 需巩固 ${needConsolidateCount>0?`(${needConsolidateCount})`:''}</button>`,
       `<button class="sub-tab mastered-tab ${mathTypeTab==='mastered'?'active':''} ${masteredCount>0?'mastered':''}" data-math-type-tab="mastered">✅ 已掌握 ${masteredCount>0?`(${masteredCount})`:''}</button>`
     ];
-    // 第二行 = 各动态题型 + 管理入口
-    const row2Btns = [];
-    types.forEach(t => {
-      const cls = [mathTypeTab===t ? 'active' : ''].filter(Boolean).join(' ');
-      row2Btns.push(`<button class="sub-tab ${cls}" data-math-type-tab="${esc(t)}">🧮 ${esc(t)}</button>`);
-    });
-    if(!isChild()){
-      row2Btns.push(`<button class="sub-tab math-mgr-btn" data-math-mgr="add" title="新增题型">＋ 新题型</button>`);
-      if(mathTypeTab !== 'bank' && mathTypeTab !== 'notMastered' && mathTypeTab !== 'mastered' && types.indexOf(mathTypeTab) >= 0){
-        row2Btns.push(`<button class="sub-tab math-mgr-btn danger" data-math-mgr="remove" title="删除当前题型">－ ${esc(mathTypeTab)}</button>`);
-      }
-    }
-    el.innerHTML = `<div class="math-tab-row">${row1Btns.join('')}</div>${row2Btns.length>0?`<div class="math-tab-row">${row2Btns.join('')}</div>`:''}`;
+    // 家长态：新增内容（知识笔记 / 题目）入口；三级卡（题型）的增删在三级卡区
+    if(!isChild()) row1Btns.push(`<button class="sub-tab math-mgr-btn" data-math-mgr="add" title="新增内容（知识笔记 / 题目）">＋ 新题型</button>`);
+    el.innerHTML = `<div class="math-tab-row">${row1Btns.join('')}</div>`;
     el.querySelectorAll('[data-math-type-tab]').forEach(b => {
       b.onclick = () => { mathTypeTab = b.dataset.mathTypeTab; renderMath(); };
     });
@@ -38952,16 +39126,38 @@ I'm good at running.`},
       b.onclick = () => openMathTypeMgr(b.dataset.mathMgr);
     });
   }
+  // R91：次主题卡区渲染（学期/班型卡片列表；点击即切换当前次级卡）
+  function renderMathSubCards(groups, activeId){
+    const el = document.getElementById('mathSubList');
+    if(!el) return;
+    el.innerHTML = (groups||[]).map(g => `
+      <button class="math-sub-card ${g.id===activeId?'active':''}" data-math-group="${esc(g.id)}" title="${esc(g.name)}（${g.types.length} 张三级卡）">
+        <span class="msc-name">${esc(g.name)}</span>
+        <span class="msc-count">${g.types.length} 题型</span>
+      </button>`).join('');
+  }
+  // R91：当前次级卡（选中项失效/为空时回落到「首个有三级卡的次级卡」，保证默认停在承载题型的卡上）
+  function activeMathGroup(groups){
+    const list = groups || (S.getMathGroups ? S.getMathGroups() : []);
+    if(!list.length) return null;
+    let g = list.find(x => x.id === mathGroupId);
+    if(!g) g = list.find(x => x.types.length > 0) || list[0];
+    mathGroupId = g.id;
+    return g;
+  }
   // V12.2：题型管理弹窗
   // R59-2：【＋ 新题型】弹出「新增内容」选择弹窗（新增知识笔记 / 新增题目），选择后进入对应编辑界面
-  function openMathTypeMgr(mode){
+  // R91：mode='add' → 新增内容（知识笔记 / 题目）；mode='remove' → 删除指定三级卡（题型）
+  function openMathTypeMgr(mode, type){
     if(mode === 'add'){
       showModal('#modalMathAddChoice');
     } else if(mode === 'remove'){
-      if(!confirm('确认删除当前题型「' + mathTypeTab + '」？\n该题型下的所有题目会移入「未分类」。')) return;
-      const r = S.removeMathType(mathTypeTab);
-      if(r.ok){ toast('✓ 已删除'); mathTypeTab = 'bank'; renderMath(); }
-      else toast(r.msg);
+      const t = String(type || '');
+      if(!t){ toast('未指定要删除的三级卡'); return; }
+      if(!confirm('确认删除该三级卡（题型）「' + t + '」？\n该题型下的所有题目会移入「未分类」。')) return;
+      const r = S.removeMathType(t);
+      if(r.ok){ toast('✓ 已删除「' + t + '」'); renderMath(); }
+      else toast(r.msg || '删除失败');
     }
   }
   // V13.2：每题双键「✅ 已掌握 / 🔄 需巩固」 — 点击切换题目分类
@@ -39038,54 +39234,54 @@ I'm good at running.`},
   function renderMath(){
     const st = S.load();
     const all = st.mathProblems || [];
+    const groupsDef = (S.getMathGroups ? S.getMathGroups() : []);
     renderMathTypeTabs();
+    // R91：先定位当前次级卡，再渲染次主题卡区 + 其下的三级卡（题型卡）
+    const active = activeMathGroup(groupsDef);
+    renderMathSubCards(groupsDef, active ? active.id : '');
     const isBank = mathTypeTab === 'bank';
     const isNM = mathTypeTab === 'notMastered';
     const isMas = mathTypeTab === 'mastered';
-    const list = isBank ? all
-      : isNM ? all.filter(m => m.mastery === 'notMastered')
-      : isMas ? all.filter(m => m.mastery === 'mastered')
-      : all.filter(m => (m.type||'未分类') === mathTypeTab);
     $('#mathModeTitle').textContent = isBank ? '📚 题库'
       : isNM ? '🔄 需巩固'
-      : isMas ? '✅ 已掌握'
-      : `🧮 ${mathTypeTab}`;
+      : '✅ 已掌握';
+    // R91：三级卡 = 当前次级卡下的题型（原有 .math-type-group 排版保持不变）
+    const types = active ? active.types.slice() : [];
+    const groups = [];
+    types.forEach(t => {
+      const items = all.filter(m => (m.type||'未分类') === t);
+      if(isBank){ groups.push([t, items]); }
+      else {
+        const filtered = items.filter(m => m.mastery === mathTypeTab);
+        if(filtered.length) groups.push([t, filtered]);
+      }
+    });
     const emptyEl = document.getElementById('mathEmpty');
     emptyEl.textContent = isBank
-      ? '还没有题目哦，点击右上角"新增题目"开始录入吧～'
+      ? (active && active.types.length
+          ? '这张次级卡下暂无题目，点「＋ 新增三级卡」建题型、或点「＋ 新题型」录入题目吧～'
+          : '这张次级卡还没有三级卡，点「＋ 新增三级卡」新增题型吧～')
       : isNM
         ? '✨ 太棒了！没有需巩固题目'
-        : isMas
-          ? '🌱 还没有已掌握的题目，打个卡看看～'
-          : `「${mathTypeTab}」暂无题目，点击右上角"新增题目"加一道吧～`;
-    emptyEl.classList.toggle('hidden', list.length > 0);
-    // 题库：按题型分组展示（题型标题在上、题目在下）；子板块：仅该题型
-    const groups = [];
-    if(isBank){
-      mathTypeList().forEach(t => {
-        const items = all.filter(m => (m.type||'未分类') === t);
-        if(items.length) groups.push([t, items]);
-      });
-      // 兜底：题型不在列表中的题目（理论上不会出现）
-      const known = groups.map(g => g[0]);
-      const rest = all.filter(m => known.indexOf(m.type||'未分类') < 0);
-      if(rest.length) groups.push(['未分类', rest]);
-    } else if(list.length){
-      groups.push([mathTypeTab, list]);
-    }
+        : '🌱 还没有已掌握的题目，打个卡看看～';
+    emptyEl.classList.toggle('hidden', groups.length > 0);
     document.getElementById('mathGrid').innerHTML = groups.map(([type, items]) => {
       // R53-1：该题型的知识笔记展示在第一个内容卡片位置（用户自建笔记在前）
       const gNotes = (S.getMathNotes ? S.getMathNotes() : []).filter(n => (n.type||'未分类') === type);
       const noteCards = gNotes.map(mathNoteCardHtml).join('');
       // 各题型题目数 / 已掌握数（用于分组头计数）
       const doneN = items.filter(m=>m.mastery==='mastered').length;
+      // R91：三级卡允许「暂无题目」（新建题型后先建卡）；此时给出录入引导
+      const body = (noteCards || items.length)
+        ? `${noteCards}${items.map(mathCardHtml).join('')}`
+        : `<div class="math-group-empty">「${esc(type)}」暂无题目，点右上角「＋ 新题型」录入吧～</div>`;
       return `
       <div class="math-type-group" data-type="${esc(type)}">
         <div class="math-type-group-head">
           <span class="math-group-name">${isNM?'⚠️':'🧮'} ${esc(type)}</span>
-          <span class="math-group-right"><span class="math-group-count">${items.length} 题 · 已掌握 ${doneN} · 未掌握 ${items.filter(m=>m.mastery==='notMastered').length}${gNotes.length?` · 笔记 ${gNotes.length}`:''}</span></span>
+          <span class="math-group-right"><span class="math-group-count">${items.length} 题 · 已掌握 ${doneN} · 未掌握 ${items.filter(m=>m.mastery==='notMastered').length}${gNotes.length?` · 笔记 ${gNotes.length}`:''}</span>${isChild()?'':`<button class="pbtn small math-group-del" data-math-group-del="${esc(type)}" title="删除该三级卡（题型）">🗑️ 删除</button>`}</span>
         </div>
-        <div class="math-group-body">${noteCards}${items.map(mathCardHtml).join('')}</div>
+        <div class="math-group-body">${body}</div>
       </div>`;
     }).join('');
   }
@@ -39169,8 +39365,9 @@ I'm good at running.`},
       if(warn) warn.textContent = '正在编辑本题，保存后将更新原题目';
     } else {
       editingMathId = null;
-      // R56-1：默认选中当前所在题型子板块（题库页默认「提取公因数」），也可下拉改选或新增题型
-      fillMathTypeOptions(mathTypeTab !== 'bank' ? mathTypeTab : '提取公因数');
+      // R91：默认选中当前次级卡下的第一个三级卡（题型），题库页无三级卡时回退「提取公因数」；可下拉改选或新增题型
+      const _ag = activeMathGroup();
+      fillMathTypeOptions((_ag && _ag.types.length) ? _ag.types[0] : '提取公因数');
       const inp = document.getElementById('mmTypeNew'); if(inp) inp.value = '';
       ['mmDesc','mmMind','mmSteps'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
       // R56-1：【＋ 新题型】入口进来时默认落在「＋ 新增题型…」，直接录入新题型名称
@@ -39203,7 +39400,13 @@ I'm good at running.`},
     }
     hideModal('#modalMathManual');
     editingMathId = null;
-    mathTypeTab = type;
+    // R91：保存后回到「题库」筛选，并定位到该题型所属次级卡（全新题型则挂到当前次级卡下）
+    mathTypeTab = 'bank';
+    if(S.groupIdOfMathType && S.assignMathTypeToGroup){
+      if(!S.groupIdOfMathType(type)) S.assignMathTypeToGroup(type, mathGroupId);
+      const gid = S.groupIdOfMathType(type);
+      if(gid) mathGroupId = gid;
+    }
     renderMath();
     renderHome();
   }
@@ -39234,7 +39437,11 @@ I'm good at running.`},
     S.addMathNote({ type, body, img: _mnImg });
     hideModal('#modalMathNote');
     toast('📝 知识笔记已保存到「' + type + '」');
-    mathTypeTab = type;
+    // R91：回到「题库」筛选，并定位到该题型所属次级卡（全新题型则挂到当前次级卡下）
+    mathTypeTab = 'bank';
+    if(!S.groupIdOfMathType(type) && S.assignMathTypeToGroup) S.assignMathTypeToGroup(type, mathGroupId);
+    const noteGid = S.groupIdOfMathType(type);
+    if(noteGid) mathGroupId = noteGid;
     renderMath();
   }
   // V55-Req10：在题目/思路/答案中插入图片（base64 dataURL，自动压缩到 720px 宽）
@@ -45379,12 +45586,72 @@ I'm good at running.`},
         }
         return;
       }
+      // R91：三级卡（题型）头部「🗑️ 删除」—— 删除该题型，其题目移入「未分类」
+      const grpDel = e.target.closest('[data-math-group-del]');
+      if(grpDel){
+        e.preventDefault(); e.stopPropagation();
+        openMathTypeMgr('remove', grpDel.getAttribute('data-math-group-del'));
+        return;
+      }
       // R27-2-2：整卡点击 → 标记为「已掌握」（等价点击 ✅ 已掌握 键）
       const card = e.target.closest('.math-card');
       if(card){
         const mbtn = card.querySelector('[data-math-toggle-mastery][data-target="mastered"]');
         if(mbtn){ e.preventDefault(); e.stopPropagation(); mbtn.click(); return; }
       }
+    });
+    // R91：乐读数学 —— 次主题卡区（点击切换当前次级卡）+ 【＋ 新增次级卡】/【＋ 新增三级卡】就地输入命名
+    const mathSubListEl = document.getElementById('mathSubList');
+    if(mathSubListEl && !mathSubListEl._bound){
+      mathSubListEl._bound = true;
+      mathSubListEl.addEventListener('click', e => {
+        const b = e.target.closest('[data-math-group]');
+        if(!b) return;
+        mathGroupId = b.dataset.mathGroup;
+        renderMath();
+      });
+    }
+    // 就地输入行：点按钮展开输入框，Enter/确定提交，Esc/取消收起
+    function bindMathInlineAdd(btnId, rowId, inputId, okId, cancelId, onSubmit){
+      const btn = document.getElementById(btnId);
+      const row = document.getElementById(rowId);
+      const inp = document.getElementById(inputId);
+      if(!btn || !row) return;
+      const show = ()=>{ row.classList.remove('hidden'); btn.classList.add('hidden'); if(inp){ inp.value = ''; try{ inp.focus(); }catch(e){} } };
+      const hide = ()=>{ row.classList.add('hidden'); btn.classList.remove('hidden'); if(inp) inp.value = ''; };
+      if(!btn._bound){ btn._bound = true; btn.onclick = show; }
+      const ok = document.getElementById(okId);
+      const cancel = document.getElementById(cancelId);
+      if(ok && !ok._bound){ ok._bound = true; ok.onclick = ()=>{ if(onSubmit(inp ? inp.value : '')) hide(); }; }
+      if(cancel && !cancel._bound){ cancel._bound = true; cancel.onclick = hide; }
+      if(inp && !inp._bound){
+        inp._bound = true;
+        inp.addEventListener('keydown', ev => {
+          if(ev.key === 'Enter'){ ev.preventDefault(); const o = document.getElementById(okId); if(o) o.click(); }
+          else if(ev.key === 'Escape'){ ev.preventDefault(); hide(); }
+        });
+      }
+    }
+    // 【＋ 新增次级卡】→ 就地命名后追加一张次级卡（并切换到该卡）
+    bindMathInlineAdd('btnMathAddSubCard','mathSubAddInline','mathSubNewName','btnMathSubNewOk','btnMathSubNewCancel', v => {
+      const r = S.addMathGroup(v);
+      if(!r.ok){ toast(r.msg || '新增失败'); return false; }
+      mathGroupId = r.group.id;
+      mathTypeTab = 'bank';
+      toast('✓ 已新增次级卡「' + r.group.name + '」');
+      renderMath();
+      return true;
+    });
+    // 【＋ 新增三级卡】→ 就地命名后在当前次级卡下追加一个题型（三级卡）
+    bindMathInlineAdd('btnMathAddTerCard','mathTerAddInline','mathTerNewName','btnMathTerNewOk','btnMathTerNewCancel', v => {
+      const active = activeMathGroup();
+      if(!active){ toast('请先新增次级卡'); return false; }
+      const r = S.addMathTypeToGroup(active.id, v);
+      if(!r.ok){ toast(r.msg || '新增失败'); return false; }
+      mathTypeTab = 'bank';
+      toast('✓ 已在「' + active.name + '」下新增三级卡「' + r.name + '」');
+      renderMath();
+      return true;
     });
     // V15-T1：大阅读打卡已删除（⭕️/朱迪/录音键），仅保留「＋新增」入口
     $$('[data-reading-add]').forEach(b=>b.onclick=()=>openReadingAdd(b.dataset.readingAdd));
