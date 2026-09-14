@@ -4893,14 +4893,16 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 }
 
 /* ============================================================
-   R95：9 大板块主题卡尺寸统一 —— 总框高 75px × 固定宽 843px
+   R96：9 大板块主题卡尺寸统一 —— 总高 2cm × 宽度随内容区（与下方内容卡同宽）
    覆盖：新世界 / 乐读数学 / 学而思英语 / 大阅读 / 百科讲堂 /
         知识秘境 / 种植园 / 成长档案 / 设置中心
-   ⚠️ 不含「今日任务」页 —— 需求明确该项保持原样（.page-today > .page-title）
-   ⚠️ 必须显式声明 box-sizing:border-box —— 全站 box-sizing 实为 content-box
-      （styles.css 顶部 reset 缺选择器，整条规则被浏览器丢弃），
-      否则 width/height 只约束内容盒，加上内边距与边框后会横向溢出容器。
-   注：843px = iPad 1024×768 横屏内容区 847px − 左右外边距 4px，正好贴满。
+   ⚠️ 不含「今日任务」页 —— 该项保持原样（.page-today > .page-title 仍 2cm）
+   ⚠️ 高度用 height:2cm（与全站主题卡统一基线 R80/V111 一致）；不声明 box-sizing
+      → 继承全站 content-box（styles.css 顶部 reset 缺选择器已失效），故 2cm 为
+      内容盒、外框 ≈ 109.6px，与原始主题卡观感一致。
+   ⚠️ 宽度不固定：撤销 R95 的 width:843px 上限，还原为块级默认（width:auto）
+      → 外框宽 = 内容区宽，正好与主题卡下方的内容卡片同宽（宽屏不再出现
+      主题卡比内容卡窄一圈的现象）。
    ------------------------------------------------------------ */
 .nw-topbar,
 .km-title-card,
@@ -4911,9 +4913,7 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .page-baike > .page-title,
 .page-archive > .page-title,
 .page-settings > .page-title{
-  box-sizing:border-box;
-  height:75px;
-  width:843px;
+  height:2cm;
   padding:8px 18px;
 }
 
