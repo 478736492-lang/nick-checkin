@@ -4917,6 +4917,19 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   padding:8px 18px;
 }
 
+/* ============================================================
+   R97：乐读数学主题卡宽度单独固定 847px（仅此一张，只改宽、不动高/盒模型）
+   覆盖 .page-math > .page-title（在 R96 统一块之后，等特异性后写胜出）。
+   ⚠️ 不声明 box-sizing —— 与另外 8 张保持一致（全站 content-box），
+      故高度仍是 2cm 内容盒（外框 ≈ 94.6px，与其余卡片统一），无意外高度变化。
+   ⚠️ 外框宽 = width + 左右内边距(18×2) + 左右边框(1.5×2) = width + 39。
+      要外框正好 847px → width = 808px。（padding:8px 18px 来自 R96 块；
+      border:1.5px 来自 .page-math > .page-title 基础规则，均未改）
+   ------------------------------------------------------------ */
+.page-math > .page-title{
+  width:808px;
+}
+
 /* R95：知识秘境卡内容压缩（75px 总高下内容区仅 56px —— 卡内为「标题+欢迎语+2 统计胶囊+2 幽灵键+后台键」，需收为单行不换行） */
 .km-title-card{flex-wrap:nowrap;gap:10px;align-items:center}
 .km-title-main{flex:1 1 auto;min-width:0}
