@@ -4569,17 +4569,16 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .math-choose-square:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(30,58,138,.24)}
 .math-choose-square .ico{font-size:34px;line-height:1}
 .math-choose-square .lbl{font-size:16px;font-weight:800;letter-spacing:1px}
-/* R92：题目卡上的【新建知识笔记】按钮已取消（知识笔记入口保留在【＋ 新题型】选择弹窗）—— 独立笔记卡标签保留 */
+/* R92：题目卡上的【新建知识笔记】按钮已取消（R94 起该入口与【＋ 新增题目】并排落在题型详情板块底部）—— 独立笔记卡标签保留 */
 .math-note-tag{font-size:12px;font-weight:800;color:#1e3a8a;background:#dcecff;border-radius:999px;padding:2px 10px}
 .mn-img-preview{display:block;max-width:100%;max-height:220px;border-radius:10px;border:1px solid #cfe0f5;margin-top:6px}
-/* R59-2：【＋ 新题型】选择弹窗（新增知识笔记 / 新增题目） */
-.math-add-choice-list{display:flex;flex-direction:column;gap:10px;margin:4px 0 10px}
-.math-add-choice{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:12px 14px;border-radius:12px;border:1.5px solid #cfe0f5;background:#fff;cursor:pointer;font-family:inherit;transition:.15s}
-.math-add-choice:hover{border-color:#4096ff;background:#f2f8ff;transform:translateY(-1px);box-shadow:0 4px 12px rgba(64,150,255,.18)}
-.math-add-choice-ico{font-size:26px;flex:0 0 auto}
-.math-add-choice-text{display:flex;flex-direction:column;gap:2px}
-.math-add-choice-text b{font-size:15px;font-weight:800;color:#1e3a8a}
-.math-add-choice-text i{font-style:normal;font-size:12px;color:#5b6b85}
+/* R94：【－ 删除题型】弹窗 —— 列出当前次级卡全部题型，点选后二次确认 */
+.math-del-type-list{display:flex;flex-direction:column;gap:8px;margin:4px 0 10px}
+.math-del-type-item{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;text-align:left;padding:11px 14px;border-radius:12px;border:1.5px solid #cfe0f5;background:#fff;cursor:pointer;font-family:inherit;transition:.15s}
+.math-del-type-item:hover{border-color:#e2453a;background:#fff5f4;transform:translateY(-1px);box-shadow:0 4px 12px rgba(226,69,58,.16)}
+.math-del-type-item .mdti-name{font-size:15px;font-weight:800;color:#1e3a8a}
+.math-del-type-item .mdti-del{font-size:12px;font-weight:800;color:#e2453a;flex:0 0 auto}
+.math-del-type-empty{font-size:13px;color:#5b6b85;padding:6px 0}
 /* R53-4：百科集中营 主题按钮切换 + 自建条目删除 + 思考男孩图标 */
 .bk-lib-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 12px}
 .bk-lib-tab{padding:7px 14px;border-radius:999px;border:1.5px solid #cfe0f5;background:#fff;color:#1e3a8a;font-size:13px;font-weight:800;cursor:pointer;transition:.15s;font-family:inherit}
@@ -4805,12 +4804,7 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .math-sub-card .msc-count{font-size:11px;color:#6a7a95;background:#eef4fc;padding:1px 8px;border-radius:8px;white-space:nowrap}
 .math-sub-card.active .msc-count{background:rgba(255,255,255,.8);color:#16306b}
 /* R92：各次级卡内部统一展示的【＋ 新题型】 */
-.pbtn.msc-new{
-  border:1.5px dashed #8fc1f7;background:rgba(164,208,255,.22);color:#16306b;
-  font-weight:700;font-size:12px;padding:5px 10px;border-radius:10px;width:100%
-}
-.pbtn.msc-new:hover{background:rgba(143,193,247,.4);border-color:#4096ff}
-.math-sub-card.active .pbtn.msc-new{background:rgba(255,255,255,.72);border-color:#fff;color:#16306b}
+/* R94 需求①：该按键已按需求删除 —— 新增题型统一收到题型列表页的「＋ 新增题型」 */
 
 /* 区域后方的新增按键 + 就地输入行（点按键展开输入框，命名后确认新增） */
 .math-add-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px}
@@ -4819,6 +4813,12 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   font-weight:700;padding:8px 14px;border-radius:12px
 }
 .pbtn.math-add-card-btn:hover{background:rgba(143,193,247,.36);border-color:#4096ff}
+/* R94：【－ 删除题型】按键 —— 与【＋ 新增题型】同排，红系虚线以示区别 */
+.pbtn.math-del-card-btn{
+  border:1.5px dashed #f3a9a2;background:rgba(255,224,221,.34);color:#a5322a;
+  font-weight:700;padding:8px 14px;border-radius:12px
+}
+.pbtn.math-del-card-btn:hover{background:rgba(255,205,200,.5);border-color:#e2453a}
 .math-inline-add{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .math-add-input{
   min-width:210px;padding:8px 12px;border:1.5px solid #8fc1f7;border-radius:10px;
@@ -4859,11 +4859,20 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .math-type-item.active .mti-nums .mnum-sep{text-shadow:0 1px 0 rgba(255,255,255,.55)}
 
 /* R93：题型列表后方的【＋ 新增题型】 + 暂无题目引导 */
+/* R94 需求②：该行同时承载【＋ 新增题型】与【－ 删除题型】两个按键 */
 .math-type-add-row{margin-top:12px}
 .math-group-empty{
   grid-column:1/-1;padding:14px;text-align:center;color:#6a7a95;font-size:12px;
   background:#fff;border:1.5px dashed #cfe0f5;border-radius:12px
 }
+
+/* R94 需求③：题型详情板块底部的动作行 —— 【＋ 新增题目】+【＋ 新增知识笔记】 */
+.math-group-actions{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  margin-top:14px;padding-top:12px;border-top:1.5px dashed #cfe0f5
+}
+.pbtn.math-notecard-add-btn{color:#16306b;border-color:#cfe0f5;background:#fff;font-weight:700}
+.pbtn.math-notecard-add-btn:hover{background:#eaf3ff;border-color:#4096ff}
 
 /* 显隐：本项目 .hidden 仅在带作用域的选择器下生效（无全局 .hidden 规则） */
 .math-empty.hidden,.math-inline-add.hidden,.pbtn.math-add-card-btn.hidden{display:none}
@@ -4872,14 +4881,15 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 @media (pointer:coarse) and (min-width:768px){
   .math-sub-card{min-width:186px;padding:12px 14px}
   .math-sub-card .msc-name{font-size:15px}
-  .pbtn.msc-new{min-height:44px;font-size:13px}
-  .pbtn.math-add-card-btn{min-height:44px;padding:10px 16px;font-size:13px}
+  .pbtn.math-add-card-btn,.pbtn.math-del-card-btn{min-height:44px;padding:10px 16px;font-size:13px}
   .math-inline-add .pbtn{min-height:44px}
   .math-add-input{min-height:44px;font-size:14px}
   .pbtn.math-back-btn{min-height:44px;padding:10px 16px}
   .math-type-item{min-width:170px;padding:11px 15px}
   .math-type-item .mti-name{font-size:15px}
   .mti-nums .mnum-ok,.mti-nums .mnum-need{font-size:15px}
+  .math-group-actions .pbtn{min-height:44px;padding:10px 16px;font-size:13px}
+  .math-del-type-item{min-height:48px}
 }
 
 
@@ -5333,13 +5343,21 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
       </div>
       <!-- 题型列表（三级卡列表）：点某一题型 → 下方展示该题型具体内容 -->
       <div class="math-type-list" id="mathTypeList" data-page-node-id="R92mathTypeList"></div>
-      <!-- R93 需求②：三级卡区域后方（紧跟题型卡列表）搭建【＋ 新增题型】——沿用原有新增题型逻辑 -->
-      <div class="math-add-row math-type-add-row" data-page-node-id="R93mathTypeAddRow">
-        <button class="pbtn small math-add-card-btn" id="btnMathAddType" data-page-node-id="R93btnMathAddType" title="新增题型 / 录入题目">＋ 新增题型</button>
+      <!-- R94 需求②：三级卡区域后方搭建「增减题型」按键（＋ 新增题型 / － 删除题型）。
+           新增题型 = 就地命名后在该次级卡下追加一个三级卡；删除题型 = 弹出题型列表点选后二次确认。
+           R94 需求③：原【＋ 新增题型】改名为【＋ 新增题目】并移入各题型详情板块内（见 .math-group-actions）。 -->
+      <div class="math-add-row math-type-add-row" data-page-node-id="R94mathTypeMgrRow">
+        <button class="pbtn small math-add-card-btn" id="btnMathAddType" data-page-node-id="R94btnMathAddType" title="在当前次级卡下新增一个题型（三级卡）">＋ 新增题型</button>
+        <button class="pbtn small math-del-card-btn" id="btnMathDelType" data-page-node-id="R94btnMathDelType" title="删除当前次级卡下的某个题型（三级卡）">－ 删除题型</button>
+        <span class="math-inline-add hidden" id="mathTypeAddInline" data-page-node-id="R94mathTypeAddInline">
+          <input type="text" class="math-add-input" id="mathTypeNewName" maxlength="24" placeholder="输入题型名称（如 提取公因数）" data-page-node-id="R94mathTypeNewName">
+          <button class="pbtn small" id="btnMathTypeNewOk" data-page-node-id="R94btnTypeNewOk">确定</button>
+          <button class="pbtn small math-add-cancel" id="btnMathTypeNewCancel" data-page-node-id="R94btnTypeNewCancel">取消</button>
+        </span>
       </div>
       <!-- 选中题型的详细内容（沿用原有 .math-type-group 排版） -->
       <div class="math-grid" id="mathGrid" data-page-node-id="U31PqHWK5OA0rl0GoBFXBp"></div>
-      <div class="math-empty hidden" id="mathEmpty" data-page-node-id="J3mbWF2szMoHL7nBIBAcj7">该题型下还没有题目哦，点「＋ 新增题型」录入吧～</div>
+      <div class="math-empty hidden" id="mathEmpty" data-page-node-id="J3mbWF2szMoHL7nBIBAcj7">这张次级卡还没有题型，点上方「＋ 新增题型」新增吧～</div>
     </div>
   </section>
 
@@ -6371,27 +6389,19 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   </div>
 </div>
 
-<!-- R56-1：数学「录入方式选择」弹窗与「拍照录入」弹窗已按需求删除 —— 新增题目统一从【＋ 新增题目】/【＋ 新题型】进入新增数学题页 -->
+<!-- R56-1：数学「录入方式选择」弹窗与「拍照录入」弹窗已按需求删除 —— 新增内容统一进入新增页 -->
+<!-- R94：「新增内容」选择弹窗已删除 —— 「新增题目」「新增知识笔记」两个入口直接落在题型详情板块内 -->
 
-<!-- ========== 弹窗：R59-2 【＋ 新题型】选择（新增知识笔记 / 新增题目） ========== -->
-<div class="modal-mask" id="modalMathAddChoice" hidden>
-  <div class="modal-box" style="min-width:420px">
+<!-- ========== 弹窗：R94 － 删除题型（列出当前次级卡全部题型，点选后二次确认） ========== -->
+<div class="modal-mask" id="modalMathDelType" hidden data-page-node-id="R94mathDelTypeModal">
+  <div class="modal-box" style="min-width:420px" data-page-node-id="R94mathDelTypeBox">
     <div class="modal-head">
-      <h3>➕ 新增内容</h3>
+      <h3>－ 删除题型</h3>
       <button class="modal-x" data-close>×</button>
     </div>
     <div class="modal-body">
-      <div class="math-add-choice-list">
-        <button type="button" class="math-add-choice" id="btnMathAddNote">
-          <span class="math-add-choice-ico">📝</span>
-          <span class="math-add-choice-text"><b>新增知识笔记</b><i>为某个题型添加知识笔记（展示在该题型第一个卡片位置）</i></span>
-        </button>
-        <button type="button" class="math-add-choice" id="btnMathAddProblem">
-          <span class="math-add-choice-ico">🧮</span>
-          <span class="math-add-choice-text"><b>新增题目</b><i>录入一道新题目（题型可下拉选择或自建新题型）</i></span>
-        </button>
-      </div>
-      <div class="form-warn">选择要新增的内容类型</div>
+      <div class="math-del-type-list" id="mathDelTypeList" data-page-node-id="R94mathDelTypeList"></div>
+      <div class="form-warn">点选要删除的题型（三级卡）。删除后该题型下的题目会回到「未分类」，题目本身不会丢失。</div>
     </div>
   </div>
 </div>
@@ -39169,7 +39179,8 @@ I'm good at running.`},
     const c = mathCounts(items);
     return `<span class="mti-nums" title="已掌握 ${c.done} 题 / 未掌握 ${c.need} 题"><b class="mnum-ok">${c.done}</b><i class="mnum-sep">/</i><b class="mnum-need">${c.need}</b></span>`;
   }
-  // R91/R92：次主题卡区渲染 —— 每张卡内部统一带【＋ 新题型】；点卡主体 → 跳出题型列表页
+  // R91/R92：次主题卡区渲染 —— 点卡主体 → 跳出题型列表页
+  // R94 需求①：删除卡内的【＋ 新题型】按键（新增题型统一收到题型列表页的「＋ 新增题型」）
   function renderMathSubCards(groups, activeId){
     const el = document.getElementById('mathSubList');
     if(!el) return;
@@ -39179,7 +39190,6 @@ I'm good at running.`},
           <span class="msc-name">${esc(g.name)}</span>
           <span class="msc-count">${g.types.length} 题型</span>
         </button>
-        ${isChild()?'':`<button class="pbtn small msc-new" data-math-new="${esc(g.id)}" title="在「${esc(g.name)}」下新增题型 / 录入题目">＋ 新题型</button>`}
       </div>`).join('');
   }
   // R91：当前次级卡（选中项失效/为空时回落到「首个有三级卡的次级卡」，保证默认停在承载题型的卡上）
@@ -39197,6 +39207,7 @@ I'm good at running.`},
   }
   // R92：单个题型（三级卡）的详细内容 —— 沿用原有排版（题型头 / 笔记卡首位 / 题目卡）
   // R93：题型前方不再带算盘图标；题数统计文字换成同排彩色数字「已掌握/未掌握」；移除卡内删除键
+  // R94 需求③：原【＋ 新增题型】改名为【＋ 新增题目】，并移入本详情板块底部；同排保留【＋ 新增知识笔记】
   function mathTypeGroupHtml(type, items){
     // R53-1：该题型的知识笔记展示在第一个内容卡片位置（用户自建笔记在前）
     const gNotes = (S.getMathNotes ? S.getMathNotes() : []).filter(n => (n.type||'未分类') === type);
@@ -39204,7 +39215,7 @@ I'm good at running.`},
     // R91：允许「暂无题目」（新建题型后先建卡）；此时给出录入引导
     const body = (noteCards || items.length)
       ? `${noteCards}${items.map(mathCardHtml).join('')}`
-      : `<div class="math-group-empty">「${esc(type)}」暂无题目，点「＋ 新增题型」录入吧～</div>`;
+      : `<div class="math-group-empty">「${esc(type)}」暂无题目，点下方「＋ 新增题目」录入吧～</div>`;
     return `
       <div class="math-type-group" data-type="${esc(type)}">
         <div class="math-type-group-head">
@@ -39212,13 +39223,25 @@ I'm good at running.`},
           ${mathNumsHtml(items)}
         </div>
         <div class="math-group-body">${body}</div>
+        <div class="math-group-actions">
+          <button class="pbtn small math-add-card-btn" data-math-add-problem="${esc(type)}" title="为「${esc(type)}」录入一道新题目">＋ 新增题目</button>
+          <button class="pbtn small math-notecard-add-btn" data-math-add-note="${esc(type)}" title="为「${esc(type)}」添加知识笔记">＋ 新增知识笔记</button>
+        </div>
       </div>`;
   }
-  // V12.2：题型管理弹窗
-  // R59-2：【＋ 新题型】弹出「新增内容」选择弹窗（新增知识笔记 / 新增题目），选择后进入对应编辑界面
-  // R93：【＋ 新增题型】沿用同一逻辑；题型卡内的删除按键已移除，故不再有 mode='remove' 分支
-  function openMathTypeMgr(){
-    showModal('#modalMathAddChoice');
+  // R94：题型（三级卡）管理 —— 【－ 删除题型】弹出当前次级卡下的题型列表，点选后二次确认删除
+  function renderMathDelTypeList(){
+    const el = document.getElementById('mathDelTypeList');
+    if(!el) return;
+    const active = activeMathGroup(S.getMathGroups ? S.getMathGroups() : []);
+    const types = (active && active.types.length) ? active.types : [];
+    el.innerHTML = types.length
+      ? types.map(t => `<button type="button" class="math-del-type-item" data-math-del-type="${esc(t)}"><span class="mdti-name">${esc(t)}</span><span class="mdti-del">🗑️ 删除</span></button>`).join('')
+      : '<div class="math-del-type-empty">这张次级卡还没有题型可删除</div>';
+  }
+  function openMathDelTypeMgr(){
+    renderMathDelTypeList();
+    showModal('#modalMathDelType');
   }
   // V13.2：每题双键「✅ 已掌握 / 🔄 需巩固」 — 点击切换题目分类
   // V55-Req10：将含 [[IMG:dataURL]] 标记的数学文本渲染为「文字 + 内嵌图片」
@@ -39317,9 +39340,8 @@ I'm good at running.`},
     }
     const emptyEl = document.getElementById('mathEmpty');
     if(emptyEl){
-      emptyEl.textContent = (active && active.types.length)
-        ? '该题型下还没有题目，点「＋ 新增题型」录入吧～'
-        : '这张次级卡还没有题型，点「＋ 新增题型」新增吧～';
+      // R94：本区块只在「该次级卡下没有任何题型」时显示；新增题目的引导改由题型详情板块内的按钮承担
+      emptyEl.textContent = '这张次级卡还没有题型，点上方「＋ 新增题型」新增吧～';
       emptyEl.classList.toggle('hidden', groups.length > 0);
     }
     const sel = groups.find(g => g[0] === mathTypeSel);
@@ -39406,8 +39428,10 @@ I'm good at running.`},
     } else {
       editingMathId = null;
       // R91：默认选中当前次级卡下的第一个三级卡（题型），题库页无三级卡时回退「提取公因数」；可下拉改选或新增题型
+      // R94：从题型详情板块的【＋ 新增题目】进来时，用 opts.type 预填为当前题型的名称
       const _ag = activeMathGroup();
-      fillMathTypeOptions((_ag && _ag.types.length) ? _ag.types[0] : '提取公因数');
+      const defType = (opts && opts.type) ? opts.type : ((_ag && _ag.types.length) ? _ag.types[0] : '提取公因数');
+      fillMathTypeOptions(defType);
       const inp = document.getElementById('mmTypeNew'); if(inp) inp.value = '';
       ['mmDesc','mmMind','mmSteps'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
       // R56-1：【＋ 新题型】入口进来时默认落在「＋ 新增题型…」，直接录入新题型名称
@@ -45569,16 +45593,8 @@ I'm good at running.`},
       if(r.ok){ hideModal('#modalDayPlan'); renderArchive(); renderHome(); renderToday(); }
     };
     // 数学：R56-1 删除拍照录入与「录入方式选择」弹窗 —— 新增题目直接进入「新增数学题」页
-    // R59-2：【新增题目】【新建知识笔记】独立按键已移除，入口统一为【＋ 新题型】选择弹窗
-    // R92：【＋ 新题型】移入各次级卡内部；本弹窗保留「新增知识笔记」入口（题目卡上的按钮已取消）
-    if($('#btnMathAddNote')) $('#btnMathAddNote').onclick = () => {
-      hideModal('#modalMathAddChoice');
-      openMathNoteModal('');
-    };
-    if($('#btnMathAddProblem')) $('#btnMathAddProblem').onclick = () => {
-      hideModal('#modalMathAddChoice');
-      openMathManualModal();
-    };
+    // R94：原来收纳「新增知识笔记 / 新增题目」的选择弹窗已删除，两个入口统一落在题型详情板块内
+    //      （见 mathTypeGroupHtml 的 .math-group-actions，及下方 #mathGrid 点击委托）
     if($('#btnMathManualSave')) $('#btnMathManualSave').onclick = saveMathManual;
     if($('#btnMathNoteSave')) $('#btnMathNoteSave').onclick = saveMathNote;
     // R56-1：题型下拉选「＋ 新增题型…」时，显示/隐藏新题型输入框
@@ -45590,6 +45606,12 @@ I'm good at running.`},
     // V12.2：每题 1 个「打卡 +2⭐ / 取消 -2⭐」单键 → checkMath/unmarkMath
     // V13.2：每题双键「✅ 已掌握 / 🔄 需巩固」 → toggleMathMastery；再点同一键回到 bank（题库）
     $('#mathGrid').addEventListener('click', e => {
+      // R94：题型详情板块底部【＋ 新增题目】→ 直接打开新增页，题型预填为当前题型
+      const addProblemBtn = e.target.closest('[data-math-add-problem]');
+      if(addProblemBtn){ openMathManualModal(null, { type: addProblemBtn.dataset.mathAddProblem }); return; }
+      // R94：题型详情板块底部【＋ 新增知识笔记】→ 直接打开新建笔记弹窗，题型预填为当前题型
+      const addNoteBtn = e.target.closest('[data-math-add-note]');
+      if(addNoteBtn){ openMathNoteModal(addNoteBtn.dataset.mathAddNote); return; }
       const editBtn = e.target.closest('[data-math-edit]');
       if(editBtn){
         const st = S.load();
@@ -45619,17 +45641,12 @@ I'm good at running.`},
         if(mbtn){ e.preventDefault(); e.stopPropagation(); mbtn.click(); return; }
       }
     });
-    // R92：乐读数学 —— 次主题卡区（点卡片主体 → 跳出题型列表页；卡内【＋ 新题型】→ 新增内容弹窗）
+    // R92：乐读数学 —— 次主题卡区（点卡片主体 → 跳出题型列表页）
+    // R94 需求①：卡内【＋ 新题型】已删除，本区只剩「点卡主体」一种交互
     const mathSubListEl = document.getElementById('mathSubList');
     if(mathSubListEl && !mathSubListEl._bound){
       mathSubListEl._bound = true;
       mathSubListEl.addEventListener('click', e => {
-        const newBtn = e.target.closest('[data-math-new]');
-        if(newBtn){
-          mathGroupId = newBtn.dataset.mathNew;
-          openMathTypeMgr('add');
-          return;
-        }
         const openBtn = e.target.closest('[data-math-open]');
         if(!openBtn) return;
         mathGroupId = openBtn.dataset.mathOpen;
@@ -45668,6 +45685,16 @@ I'm good at running.`},
       renderMath();
       return true;
     });
+    // R94：【＋ 新增题型】→ 就地命名后，在当前次级卡下追加一个题型（三级卡）
+    bindMathInlineAdd('btnMathAddType','mathTypeAddInline','mathTypeNewName','btnMathTypeNewOk','btnMathTypeNewCancel', v => {
+      const ag = activeMathGroup();
+      const r = S.addMathTypeToGroup(ag ? ag.id : mathGroupId, v);
+      if(!r.ok){ toast(r.msg || '新增题型失败'); return false; }
+      mathTypeSel = r.name;
+      toast('✓ 已新增题型「' + r.name + '」');
+      renderMath();
+      return true;
+    });
     // R92：题型列表页 —— 点题型展示该题型具体内容（页内直接切换）+ 返回次级卡列表
     const mathTypeListEl = document.getElementById('mathTypeList');
     if(mathTypeListEl && !mathTypeListEl._bound){
@@ -45679,11 +45706,29 @@ I'm good at running.`},
         renderMathTypes();
       });
     }
-    // R93：题型列表页【＋ 新增题型】—— 沿用原有新增题型逻辑（弹出「新增内容」选择：新增题目 / 新增知识笔记）
-    const mathAddTypeBtn = document.getElementById('btnMathAddType');
-    if(mathAddTypeBtn && !mathAddTypeBtn._bound){
-      mathAddTypeBtn._bound = true;
-      mathAddTypeBtn.onclick = () => openMathTypeMgr();
+    // R94：【－ 删除题型】→ 弹出题型列表，点选后二次确认删除
+    const mathDelTypeBtn = document.getElementById('btnMathDelType');
+    if(mathDelTypeBtn && !mathDelTypeBtn._bound){
+      mathDelTypeBtn._bound = true;
+      mathDelTypeBtn.onclick = () => openMathDelTypeMgr();
+    }
+    const mathDelTypeListEl = document.getElementById('mathDelTypeList');
+    if(mathDelTypeListEl && !mathDelTypeListEl._bound){
+      mathDelTypeListEl._bound = true;
+      mathDelTypeListEl.addEventListener('click', ev => {
+        const b = ev.target.closest('[data-math-del-type]');
+        if(!b) return;
+        const type = b.dataset.mathDelType;
+        hideModal('#modalMathDelType');
+        openCustomModal('删除题型', `确定删除题型「<b>${esc(type)}</b>」吗？<div style="margin-top:8px;color:#5b6b85;font-size:13px">该题型下的题目会回到「未分类」，题目本身不会丢失。</div>`, () => {
+          const r = S.removeMathType(type);
+          if(!r || !r.ok){ toast((r && r.msg) || '删除失败'); return false; }
+          if(mathTypeSel === type) mathTypeSel = '';
+          toast('✓ 已删除题型「' + type + '」');
+          renderMath();
+          return true;
+        });
+      });
     }
     const mathBackBtn = document.getElementById('btnMathBackToSub');
     if(mathBackBtn && !mathBackBtn._bound){ mathBackBtn._bound = true; mathBackBtn.onclick = () => goPage('math'); }
