@@ -2536,6 +2536,19 @@ body.child-mode .parent-edit-fab{display:none}
 .peg-bgop-row input[type=range]{flex:1;accent-color:#7a5af7}
 .peg-bgop-row select{flex:1;padding:6px 10px;border:1px solid #d4def0;border-radius:6px;font-size:12px;background:#fff;font-family:inherit}
 
+/* ========== R90：设置项统一「填空选择」控件（数值填空 input[number] + 档位下拉 select） ========== */
+.peg-input{padding:7px 10px;border:1.5px solid var(--tiffany-light);border-radius:8px;font-size:13px;color:var(--tiffany-deep);background:#fff;font-family:inherit;min-width:76px;max-width:150px}
+select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
+.peg-input:focus{outline:none;border-color:var(--tiffany);box-shadow:0 0 0 2px rgba(58,111,196,.16)}
+.peg-input-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px 16px;align-items:center}
+.peg-input-grid label{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;color:#14335f;font-weight:600}
+.peg-input-grid .peg-input{flex:0 0 auto}
+
+/* R90-6：诗词打卡（任务设置）进度 + 操作行 */
+.mao-set-progress{font-size:13px;color:var(--muted);line-height:1.6}
+.mao-set-progress b{color:var(--tiffany);font-size:15px}
+.mao-set-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+
 /* V23-5 兼容：farm 板块保留原天空草地渐变，不加白膜 */
 .page-farm::before{display:none}
 .page-farm{background:#d0e8ff !important;background-image:none !important}
@@ -2895,6 +2908,11 @@ body.child-mode .parent-edit-fab{display:none}
 .page-baike > .page-title,
 .page-archive > .page-title,
 .page-today > .page-title{height:2cm;border:1.5px solid #bfe0ff;border-radius:18px;padding:16px 22px;margin:6px 2px 18px;box-shadow:0 4px 14px rgba(120,180,240,.18);color:var(--sky-blue);background:#fff; /* R82：移除背景贴图，纯白底（保留 R80 版型参数：高/边框/圆角/内边距/外边距/阴影） */}
+/* R90-1：除首页(page-home)外，各板块「主题卡」与「内容板块」分开呈现 —— 内容区独立白色圆角底板 + 与主题卡的明显间隙 */
+.page-content{background:#fff;border:1.5px solid #e3eefb;border-radius:18px;padding:16px 18px;margin:6px 2px 18px;box-shadow:0 4px 14px rgba(120,180,240,.14)}
+.page:not(.page-home) > .page-title{margin-bottom:20px}
+/* 知识秘境：内容区 .page-content 由 renderKnowledge 注入，包裹 .km-levels */
+.page-knowledge .page-content{padding:14px 16px}
 /* V105：所有主题卡（主板版块标题卡）内文字统一改为深蓝色，配白色柔光保证在背景图上的可读性 */
 .page-math > .page-title h2,
 .page-xueersi > .page-title h2,
@@ -4901,7 +4919,7 @@ body.child-mode .parent-edit-fab{display:none}
         <button class="pbtn hidden-in-child" id="btnTaskSettings" data-page-node-id="xXftzu1Q8Fcw5p6oGnjBaX">✏️ 编辑</button>
         <button class="pbtn hidden-in-child" id="btnAddTaskToday" data-page-node-id="nZRTWDj8lNdTSwc7PT7cK4">＋ 新增任务</button>
       </div>
-    </div>
+    </div><div class="page-content">
 
     <!-- 任务面板（单一版块：任务设置 + 系统设置 同页呈现，方便使用） -->
     <div id="setTasksPanel" data-page-node-id="5aUJm56d1znBtkzFjrWrSz">
@@ -4964,7 +4982,7 @@ body.child-mode .parent-edit-fab{display:none}
       </div>
     </div>
     </div><!-- /#setTasksPanel -->
-  </section><!-- /page-today -->
+  </div></section><!-- /page-today -->
 
 
   <!-- ================= R85：设置中心（从任务设置独立出来，统一收纳全部配置） ================= -->
@@ -4983,7 +5001,7 @@ body.child-mode .parent-edit-fab{display:none}
         </button>
         <span class="mode-slider" id="modeSliderSettings" data-page-node-id="R85modeSlider"></span>
       </div>
-    </div>
+    </div><div class="page-content">
 
     <!-- 设置中心卡片网格 -->
     <div class="settings-grid" id="settingsGrid" data-page-node-id="R85settingsGrid">
@@ -5060,13 +5078,13 @@ body.child-mode .parent-edit-fab{display:none}
 
     <!-- 设置中心详情面板（点击卡片后展开/弹窗的占位容器，实际弹窗见下方 modal） -->
     <div id="settingsDetailPanel" hidden data-page-node-id="R85setDetailPanel"></div>
-  </section>
+  </div></section>
 
   <!-- ================= 新世界学科素养大本营（首页总览 + 5 个二级子页面） ================= -->
   <section class="page page-newworld" data-page="newworld" data-zone="newworld" hidden data-page-node-id="K7SB9Qwq0I9x8mJUYEJSKK">
     <div class="nw-topbar" data-page-node-id="UEaagnXlM41YYMoTRjUSMU">
       <span class="nw-topbar-title" data-page-node-id="VP0IYQNp4FcEZhAkS9CsJS">新世界学科素养大本营</span>
-    </div>
+    </div><div class="page-content">
     <div class="nw-home" id="nwHome" data-page-node-id="NKHILJ2E2FQ9gP8PYGQP1E"><!-- 首页卡片由 renderNewWorld 注入 --></div>
     <!-- 四角立体小星星装饰 -->
     <span class="nw-star nw-star--tl" data-page-node-id="HMc10r66jCWmJ0FdDSoNPC"></span>
@@ -5092,7 +5110,7 @@ body.child-mode .parent-edit-fab{display:none}
         </div>
       </div>
     </div>
-  </section>
+  </div></section>
 
   <!-- ========== 弹窗：课程表 · 课时管理（V105：课程行增减 + 添加课程区域颜色） ========== -->
   <div class="modal-mask" id="modalSchedManage" hidden data-page-node-id="OmrB5diZr4W8ucr5FqXA6z">
@@ -5198,13 +5216,13 @@ body.child-mode .parent-edit-fab{display:none}
       <div class="page-actions" data-page-node-id="IpJuhpydqv1OSGbspdyrs2">
         <!-- R59-2：移除【新增题目】【新建知识笔记】独立按键 —— 统一收纳进题型栏【＋ 新题型】选择弹窗 -->
       </div>
-    </div>
+    </div><div class="page-content">
     <!-- v10：删除 掌握/待掌握 与 全部/简便计算/脱式计算/应用题 子板块；
          仅保留「题库」+ 按题型动态生成的子板块（初始仅「提取公因数」，新增题目后自动出现新题型） -->
     <div class="math-type-tabs" id="mathTypeTabs" data-page-node-id="kLbDH28pvPUwNa3gHz3r5V"></div>
     <div class="math-grid" id="mathGrid" data-page-node-id="U31PqHWK5OA0rl0GoBFXBp"></div>
     <div class="math-empty hidden" id="mathEmpty" data-page-node-id="J3mbWF2szMoHL7nBIBAcj7">还没有题目哦，点击右上角"新增题目"开始录入吧～</div>
-  </section>
+  </div></section>
 
   <!-- ================= 学而思英语 V20：恢复 V18 状态（仅学习汇总：词汇 + 语法） ================= -->
   <section class="page page-xueersi" data-page="xueersi" data-zone="xueersi" hidden data-page-node-id="8uKecaiCoL2NDkdjl8IRDG">
@@ -5213,7 +5231,7 @@ body.child-mode .parent-edit-fab{display:none}
       <div class="page-actions" data-page-node-id="7VVK0dkGhrigdb5gGnMQLP">
         <!-- V53：删除学而思标题栏 ⭐ 统计（统计统一在首页） -->
       </div>
-    </div>
+    </div><div class="page-content">
 
     <!-- 学习汇总（词汇 + 语法） -->
     <div class="xs-pane xs-summary-pane" data-xs-pane="summary" data-page-node-id="V56WGpErSzMODzu1rxPD3h">
@@ -5232,11 +5250,11 @@ body.child-mode .parent-edit-fab{display:none}
       <div class="xs-list" id="xsSummaryList" data-page-node-id="YDjIvMVxlsL8Uek4SCYodG"></div>
       <div class="xs-pager" id="xsPager" data-page-node-id="Iu2e498LLOW7VFwmUNwkMS"></div>
     </div>
-  </section>
+  </div></section>
 
   <!-- ================= 大阅读（R53-6：语文阅读/英语阅读全部迁入「收录书屋」，主题按钮切换 + 内容分页） ================= -->
   <section class="page page-reading" data-page="reading" data-zone="reading" hidden data-page-node-id="s9KPFN8u9W4C3eWreSQHUm">
-    <div class="page-title" data-page-node-id="xJsIGaFSq9b0WBJspufwPo"><h2 data-page-node-id="p9agOICDSmhdCi6BeZS35u">📖 大阅读</h2></div>
+    <div class="page-title" data-page-node-id="xJsIGaFSq9b0WBJspufwPo"><h2 data-page-node-id="p9agOICDSmhdCi6BeZS35u">📖 大阅读</h2></div><div class="page-content">
     <!-- R56-6：回退 R53-6 —— 收录书屋退回为独立页面（点按钮切换），主视图恢复「语文三栏 + 英语两栏」并列 -->
     <div class="reading-bs-bar" data-page-node-id="8oC8cVF52ObGALl22uflj2">
       <button class="bs-main-btn" id="bsMainToggle" data-page-node-id="ZFEhv0eT1vHraLOzEJQET1">📚 收录书屋</button>
@@ -5299,7 +5317,7 @@ body.child-mode .parent-edit-fab{display:none}
         <div class="bs-theme-body" id="bsColPassage" hidden data-page-node-id="bsR57body0005"></div>
       </div>
     </div>
-  </section>
+  </div></section>
 
   <!-- ================= 百科 v10：9 主题（百科大讲堂）；每段内容后打卡→🦥；统计每主题已打卡次数 ================= -->
   <section class="page page-baike" data-page="baike" data-zone="baike" hidden data-page-node-id="AaaCPVtVn27I1lMHge2vSB">
@@ -5307,7 +5325,7 @@ body.child-mode .parent-edit-fab{display:none}
       <div class="page-title-main" data-page-node-id="zNcEjZxoWgeYGLeJXcMyEA">
         <h2 data-page-node-id="GUlAUVBSHs2uQW26cBVCqG">🌍 百科大讲堂</h2>
       </div>
-    </div>
+    </div><div class="page-content">
     <!-- V53：「百科集中营」按键移到「百科大讲堂」标题栏正下方左侧 -->
     <div class="baike-lib-bar" data-page-node-id="x3ikh3GjvblBSLTyjfmphQ">
       <button class="baike-lib-btn" id="btnBaikeLib" title="查看已归档的百科内容" data-page-node-id="iUx8etikO9PzSvj3IcHuIe">📚 百科集中营</button>
@@ -5316,7 +5334,7 @@ body.child-mode .parent-edit-fab{display:none}
     </div>
     <div class="baike-boxes" id="baikeBoxes" data-page-node-id="aQjZoYDupVE31Zuj8379Sl"></div>
     <!-- v6：底部角色照排已删除 -->
-  </section>
+  </div></section>
 
   <!-- ================= 知识秘境（内嵌 Canvas 闯关 + 后台改题，原疯狂大闯关升级重构） ================= -->
   <section class="page page-knowledge" data-page="knowledge" hidden data-page-node-id="gurjF8vKlyFe4ei7LipI1i">
@@ -5348,7 +5366,7 @@ body.child-mode .parent-edit-fab{display:none}
         <span class="fts fts-sun" data-page-node-id="2AcRBZKRiDZaYrikoKNYs2"><span class="fts-ico" data-page-node-id="I0BMYpsXq88UVFvDR9En9q">☀️</span><b id="farmSun" data-page-node-id="kqPYlgKI6EcEBRYKIrxxiT">0</b></span>
         <span class="fts fts-coins" data-page-node-id="W1UCiESjj73O9pwfmPtDFO"><span class="fts-ico" data-page-node-id="kFjH2qNWTQESVnxqVbPJAx">💰</span><b id="farmCoins" data-page-node-id="0Ansxhd6S6tCQk1PuQqU8V">0</b></span>
       </div>
-    </header>
+    </header><div class="page-content">
     <header class="farm-topbar" data-page-node-id="x9B9feSzgAEZORx4DAEhIL">
       <div class="farm-topbar-main" data-page-node-id="CbgtYRniGUlt1LfNtsG19r">
         <!-- V58-R5a：货币管理快捷按钮（家长模式可见，点击展开面板） -->
@@ -5418,11 +5436,11 @@ body.child-mode .parent-edit-fab{display:none}
         <div class="panel-grid" id="wishlistGrid" data-page-node-id="AI1w79fEGcHqFdZcys5aKl"></div>
       </div>
     </footer>
-  </section>
+  </div></section>
 
   <!-- ================= 成长档案 ================= -->
   <section class="page page-archive" data-page="archive" hidden data-page-node-id="rO5PKT931BnXZx1RawEKQ2">
-    <div class="page-title" data-page-node-id="StvTzAbICc7ediOsOymivd"><h2 data-page-node-id="Yc4CDTyvfk73PrB7HXB9Ij">🏆 成长档案 <span class="archive-guide" data-page-node-id="fe0sWlXxbFRP41jP5cOAF3">🐂 局长 Bogo 为你点赞！</span></h2></div>
+    <div class="page-title" data-page-node-id="StvTzAbICc7ediOsOymivd"><h2 data-page-node-id="Yc4CDTyvfk73PrB7HXB9Ij">🏆 成长档案 <span class="archive-guide" data-page-node-id="fe0sWlXxbFRP41jP5cOAF3">🐂 局长 Bogo 为你点赞！</span></h2></div><div class="page-content">
     <div class="archive-grid" data-page-node-id="ibzJFBBAtBWH9sce7K9Yiv">
       <div class="card report-card" data-page-node-id="Xo8UhvCwNILGTKNo1SieeQ">
         <div class="card-head" data-page-node-id="od5mA6Pv9ortRsiRCgUHA4">
@@ -5456,7 +5474,7 @@ body.child-mode .parent-edit-fab{display:none}
         <div class="cert-list" id="certList" data-page-node-id="ePJ6yumaNG0tzOtxHoZBOv"></div>
       </div>
     </div>
-  </section>
+  </div></section>
 
 </main>
 
@@ -5708,48 +5726,8 @@ body.child-mode .parent-edit-fab{display:none}
       <button class="modal-x" data-close data-page-node-id="6FzHTKvAXG5Bs1HrjfpXLZ">×</button>
     </div>
     <div class="modal-body" data-page-node-id="P701ngEUDturToC7tHjcCe">
-      <div class="parent-edit-hint" data-page-node-id="ObrnqCyKmBwAPmIf8hXtQ1">📌 在此为各版块上传背景图、设置背景显示效果；种植园排版与农场市集/小卖部请在「种植园设置」中调整。所有修改只对家长模式可见、可编辑。</div>
-      <div class="parent-edit-group" data-page-node-id="CPFxx5PWfVKFfpjHi03EBq">
-        <div class="peg-title" data-page-node-id="L5H4ydQfCMBW1ZFKIF6mNC">🖼️ 各版块背景图</div>
-        <div id="parentEditBgList" class="peg-list" data-page-node-id="Z0d2si2FSwhQLfNSm9Pdku"></div>
-      </div>
-      <!-- R83：种植园排版 / 农场市集 / 云上小卖部 已迁移至 #modalFarmSetting（种植园设置弹窗） -->
-      <!-- V23-5：背景图显示设置（透明度/大小/位置） -->
-      <div class="parent-edit-group" data-page-node-id="dpcAjubRwaARrPiHe38fJz">
-        <div class="peg-title" data-page-node-id="Q27djyBhsWYTZUQjTfqzvo">🎨 背景图显示设置（全局）</div>
-        <div class="peg-bgop-row" data-page-node-id="Jt2yKVabGxEmNmDyrXBpEn">
-          <label data-page-node-id="DfosgrQYXSGVAhSA1VotUg">透明度 <input type="range" id="bgOptOpacity" min="0" max="1" step="0.05" data-page-node-id="7VZ4bRhNZqnKOUHcTuVVhc"><span id="bgOptOpacityVal" class="peg-val" data-page-node-id="cFBRFEOk7i9lf1sOatEXEf">0.5</span></label>
-        </div>
-        <div class="peg-bgop-row" data-page-node-id="AfbyYaVtlipye7EFaaG8tn">
-          <label data-page-node-id="BEmTmSc41gfNt1LZOfWSVF">大小
-            <select id="bgOptSize" data-page-node-id="g8NTZ6pR7gJWYOghSRJ0dJ">
-              <option value="cover" data-page-node-id="U2u5RHJrdeIPLOPRSR7EGh">铺满 (cover)</option>
-              <option value="contain" data-page-node-id="2NHne36ptnrqyA9fEN7tHl">完整 (contain)</option>
-              <option value="auto" data-page-node-id="AglcS54TgHpSjUEvDbm5ZV">实际大小 (auto)</option>
-              <option value="100% 100%" data-page-node-id="QPTrBGztibSm4DYPkwkZKm">拉伸 100%</option>
-              <option value="50%" data-page-node-id="78bGKgpkQZHy2embflIVYM">50% 缩放</option>
-            </select>
-          </label>
-          <label data-page-node-id="ffT6vkEOPtby4VDM5rYnl3">位置
-            <select id="bgOptPosition" data-page-node-id="KkjF6hZ9skXKL1j6nRAzV2">
-              <option value="center center" data-page-node-id="RG6uN0yW1YsnohQJwY7Y2p">居中</option>
-              <option value="top center" data-page-node-id="fcWeBkThdq2Ob80HhWAQE7">顶部居中</option>
-              <option value="bottom center" data-page-node-id="icqZgnVFuP4hEg8DFNJpic">底部居中</option>
-              <option value="left center" data-page-node-id="2Pu4tst5uaTGBhOWZqqrwb">左侧居中</option>
-              <option value="right center" data-page-node-id="At4VCDNYXd37uoicWVzYPo">右侧居中</option>
-              <option value="top left" data-page-node-id="b1PVh31r42tXGvXEdF30GJ">左上</option>
-              <option value="top right" data-page-node-id="zk6AAT7suA8fJDRZX62zoz">右上</option>
-              <option value="bottom left" data-page-node-id="6fkUM3fVTmrGMxHnG5ILPL">左下</option>
-              <option value="bottom right" data-page-node-id="vS8IoCV7DQIUIHnLmcIBai">右下</option>
-            </select>
-          </label>
-        </div>
-        <div class="peg-farm-actions" data-page-node-id="UNsxDgFHW2rptIvY2P9RhA">
-          <button class="primary-btn" id="btnBgOptSave" data-page-node-id="BkrhUFYLtPtENps4thZhOq">💾 保存设置</button>
-        </div>
-      </div>
-    </div>
-      <!-- R88：逐板块主题卡设置（全部 8 大板块；点击进入该板块「整页 + 标题区」设置：上传背景图 + 透明度） -->
+      <div class="parent-edit-hint" data-page-node-id="ObrnqCyKmBwAPmIf8hXtQ1">📌 在此为各版块上传主题卡背景图并设置透明度；点击下方板块进入该板块的「整页 + 标题区」背景设置。所有修改只对家长模式可见、可编辑。</div>
+      <!-- R88/R90：逐板块主题卡设置（全部 8 大板块；点击进入该板块「整页 + 标题区」设置：上传背景图 + 透明度） -->
       <div class="parent-edit-group" data-page-node-id="R88bgSecGroup">
         <div class="peg-title" data-page-node-id="R88bgSecTitle">🗂️ 逐板块主题卡设置（点击进入：上传背景图 + 透明度）</div>
         <div id="bgSectionList" class="peg-list peg-sec-grid" data-page-node-id="R88bgSecList">
@@ -5763,6 +5741,7 @@ body.child-mode .parent-edit-fab{display:none}
           <button class="pbtn" data-bg-section="archive">🏆 成长档案</button>
         </div>
       </div>
+    </div>
     <div class="modal-foot" data-page-node-id="XVQuFHKROBb7yQ9R6OHBAA">
       <button class="pbtn" data-close data-page-node-id="1nxTpIBcV8E1tFPmtj0zfW">关闭</button>
     </div>
@@ -5780,10 +5759,20 @@ body.child-mode .parent-edit-fab{display:none}
       <div class="parent-edit-hint" data-page-node-id="R83farmHint">📌 在此调整种植园排版、管理农场市集（种子/水/阳光）与云上小卖部（礼物）；所有修改只对家长模式可见、可编辑。</div>
       <div class="parent-edit-group" data-page-node-id="R83farmLayoutGrp">
         <div class="peg-title" data-page-node-id="EFlGg4U3ymB2Nkg7uAjuPQ">🌱 种植园排版</div>
-        <div class="peg-farm-row" data-page-node-id="O5kf782JAFVXsmxAm0OUWm">
-          <label data-page-node-id="gdzSVNkrHri3XFLO4lohoT">列数 <input type="range" id="farmEditCols" min="2" max="8" step="1" data-page-node-id="hQND2b6jMaUxFhFAbeWGf4"><span id="farmEditColsVal" class="peg-val" data-page-node-id="LhlhCm93FVgAKC536RwCRN">5</span></label>
-          <label data-page-node-id="fOFJCH0MBpe6UBysQ9qD51">间距 <input type="range" id="farmEditGap" min="0" max="40" step="1" data-page-node-id="wYHftGaO3z8VzJ19sMymfl"><span id="farmEditGapVal" class="peg-val" data-page-node-id="ImLRCGT3PBVOO4SWLg4lTn">8</span>px</label>
-          <label data-page-node-id="Wfvm7Dttm83TjtaqlAjEVJ">地块 <input type="range" id="farmEditSize" min="28" max="120" step="2" data-page-node-id="zejY51z3Th3Tu2Cw86KLeI"><span id="farmEditSizeVal" class="peg-val" data-page-node-id="UuVls7K9RGcHW2ZdhLFiOh">54</span>px</label>
+        <div class="peg-farm-row peg-input-grid" data-page-node-id="O5kf782JAFVXsmxAm0OUWm">
+          <label data-page-node-id="gdzSVNkrHri3XFLO4lohoT">列数
+            <select id="farmEditCols" class="peg-input" data-page-node-id="hQND2b6jMaUxFhFAbeWGf4">
+              <option value="2">2 列</option>
+              <option value="3">3 列</option>
+              <option value="4">4 列</option>
+              <option value="5">5 列</option>
+              <option value="6">6 列</option>
+              <option value="7">7 列</option>
+              <option value="8">8 列</option>
+            </select>
+          </label>
+          <label data-page-node-id="fOFJCH0MBpe6UBysQ9qD51">间距 <input type="number" id="farmEditGap" class="peg-input" min="0" max="40" step="1" data-page-node-id="wYHftGaO3z8VzJ19sMymfl"> px</label>
+          <label data-page-node-id="Wfvm7Dttm83TjtaqlAjEVJ">地块 <input type="number" id="farmEditSize" class="peg-input" min="28" max="120" step="2" data-page-node-id="zejY51z3Th3Tu2Cw86KLeI"> px</label>
         </div>
         <div class="peg-farm-actions" data-page-node-id="Q1CiPnr1Ge3p3YwxdbewR8">
           <button class="primary-btn" id="btnFarmEditSave" data-page-node-id="i51MHrdUIATmIfOs05ateW">💾 保存排版</button>
@@ -5905,27 +5894,58 @@ body.child-mode .parent-edit-fab{display:none}
       </div>
       <div class="parent-edit-group" data-page-node-id="R85kmDiffGrp">
         <div class="peg-title" data-page-node-id="R85kmDiffTitle">⚔️ 难度与提示</div>
-        <div class="peg-farm-row" data-page-node-id="R85kmDiffRow">
-          <label data-page-node-id="R85kmRetriesLbl">答错重试 <input type="range" id="kmRetries" min="1" max="3" step="1" data-page-node-id="R85kmRetries"><span id="kmRetriesVal" class="peg-val" data-page-node-id="R85kmRetriesVal">2</span> 次</label>
-          <label data-page-node-id="R85kmFogLbl">迷雾时长 <input type="range" id="kmFogMs" min="0" max="5000" step="100" data-page-node-id="R85kmFogMs"><span id="kmFogMsVal" class="peg-val" data-page-node-id="R85kmFogMsVal">2500</span> ms</label>
+        <div class="peg-farm-row peg-input-grid" data-page-node-id="R85kmDiffRow">
+          <label data-page-node-id="R85kmRetriesLbl">答错重试
+            <select id="kmRetries" class="peg-input" data-page-node-id="R85kmRetries">
+              <option value="1">1 次</option>
+              <option value="2">2 次</option>
+              <option value="3">3 次</option>
+            </select>
+          </label>
+          <label data-page-node-id="R85kmFogLbl">迷雾时长 <input type="number" id="kmFogMs" class="peg-input" min="0" max="5000" step="100" data-page-node-id="R85kmFogMs"> ms</label>
+          <label data-page-node-id="R85kmHintsLbl">普通模式提示
+            <select id="kmHintsOn" class="peg-input" data-page-node-id="R85kmHintsOn">
+              <option value="1">显示提示</option>
+              <option value="0">不显示</option>
+            </select>
+          </label>
         </div>
-        <label style="flex-direction:row;align-items:center;gap:8px;margin-top:8px" data-page-node-id="R85kmHintsLbl">
-          <input type="checkbox" id="kmHintsOn" style="width:auto" data-page-node-id="R85kmHintsOn"> 普通模式显示提示
-        </label>
       </div>
       <div class="parent-edit-group" data-page-node-id="R85kmFeelGrp">
         <div class="peg-title" data-page-node-id="R85kmFeelTitle">🏃 操作手感</div>
-        <div class="peg-farm-row" data-page-node-id="R85kmFeelRow">
-          <label data-page-node-id="R85kmSpeedLbl">速度 <input type="range" id="kmSpeed" min="0.7" max="1.5" step="0.1" data-page-node-id="R85kmSpeed"><span id="kmSpeedVal" class="peg-val" data-page-node-id="R85kmSpeedVal">1.0</span></label>
-          <label data-page-node-id="R85kmJumpLbl">跳跃 <input type="range" id="kmJump" min="0.8" max="1.4" step="0.1" data-page-node-id="R85kmJump"><span id="kmJumpVal" class="peg-val" data-page-node-id="R85kmJumpVal">1.0</span></label>
+        <div class="peg-farm-row peg-input-grid" data-page-node-id="R85kmFeelRow">
+          <label data-page-node-id="R85kmSpeedLbl">速度
+            <select id="kmSpeed" class="peg-input" data-page-node-id="R85kmSpeed">
+              <option value="0.7">0.7×（慢）</option>
+              <option value="0.8">0.8×</option>
+              <option value="0.9">0.9×</option>
+              <option value="1">1.0×（标准）</option>
+              <option value="1.1">1.1×</option>
+              <option value="1.2">1.2×</option>
+              <option value="1.3">1.3×</option>
+              <option value="1.4">1.4×</option>
+              <option value="1.5">1.5×（快）</option>
+            </select>
+          </label>
+          <label data-page-node-id="R85kmJumpLbl">跳跃
+            <select id="kmJump" class="peg-input" data-page-node-id="R85kmJump">
+              <option value="0.8">0.8×（低）</option>
+              <option value="0.9">0.9×</option>
+              <option value="1">1.0×（标准）</option>
+              <option value="1.1">1.1×</option>
+              <option value="1.2">1.2×</option>
+              <option value="1.3">1.3×</option>
+              <option value="1.4">1.4×（高）</option>
+            </select>
+          </label>
         </div>
       </div>
       <div class="parent-edit-group" data-page-node-id="R85kmRewardGrp">
         <div class="peg-title" data-page-node-id="R85kmRewardTitle">⭐ 奖励设置</div>
-        <div class="peg-farm-row" data-page-node-id="R85kmRewardRow">
-          <label data-page-node-id="R85kmPerLevelLbl">每关题数 <input type="range" id="kmPerLevel" min="10" max="100" step="5" data-page-node-id="R85kmPerLevel"><span id="kmPerLevelVal" class="peg-val" data-page-node-id="R85kmPerLevelVal">50</span> 题</label>
-          <label data-page-node-id="R85kmCorrectLbl">答对奖励 <input type="number" id="kmRewardCorrect" min="0" max="20" step="1" style="width:60px;padding:6px;border:1.5px solid var(--tiffany-light);border-radius:8px" data-page-node-id="R85kmCorrect"> ⭐</label>
-          <label data-page-node-id="R85kmClearLbl">通关奖励 <input type="number" id="kmRewardClear" min="0" max="50" step="1" style="width:60px;padding:6px;border:1.5px solid var(--tiffany-light);border-radius:8px" data-page-node-id="R85kmClear"> ⭐</label>
+        <div class="peg-farm-row peg-input-grid" data-page-node-id="R85kmRewardRow">
+          <label data-page-node-id="R85kmPerLevelLbl">每关题数 <input type="number" id="kmPerLevel" class="peg-input" min="10" max="100" step="5" data-page-node-id="R85kmPerLevel"> 题</label>
+          <label data-page-node-id="R85kmCorrectLbl">答对奖励 <input type="number" id="kmRewardCorrect" class="peg-input" min="0" max="20" step="1" data-page-node-id="R85kmCorrect"> ⭐</label>
+          <label data-page-node-id="R85kmClearLbl">通关奖励 <input type="number" id="kmRewardClear" class="peg-input" min="0" max="50" step="1" data-page-node-id="R85kmClear"> ⭐</label>
         </div>
       </div>
       <div class="parent-edit-group" data-page-node-id="R85kmTextGrp">
@@ -5962,7 +5982,7 @@ body.child-mode .parent-edit-fab{display:none}
           <button class="pbtn" id="farmMusicPreview" style="border-color:#4fa8e0;color:#4fa8e0" data-page-node-id="R85farmMusicPreview">▶ 试听</button>
         </div>
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap" data-page-node-id="R85farmMusicUpWrap">
-          <label class="farm-music-upload settings-music-upload" id="farmMusicUpload" title="上传自定义背景音乐(mp3/wav/ogg)" data-page-node-id="R85farmMusicUp">🎶 上传自定义音乐<input type="file" accept="audio/*" id="farmMusicFile" hidden data-page-node-id="R85farmMusicFile"></label>
+          <label class="farm-music-upload settings-music-upload" id="farmMusicUpload" title="上传自定义背景音乐(mp3/wav/ogg)" data-page-node-id="R85farmMusicUp">📤 上传<input type="file" accept="audio/*" id="farmMusicFile" hidden data-page-node-id="R85farmMusicFile"></label>
           <span id="farmMusicFileName" style="font-size:12px;color:var(--muted)" data-page-node-id="R85farmMusicFName"></span>
         </div>
       </div>
@@ -5979,7 +5999,7 @@ body.child-mode .parent-edit-fab{display:none}
           <button class="pbtn" id="kmMusicPreview" style="border-color:#4fa8e0;color:#4fa8e0" data-page-node-id="R85kmMusicPreview">▶ 试听</button>
         </div>
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap" data-page-node-id="R85kmMusicUpWrap">
-          <label class="km-music-upload settings-music-upload" id="kmMusicUpload" title="上传自定义背景音乐(mp3/wav/ogg)" data-page-node-id="R85kmMusicUp">🎶 上传自定义音乐<input type="file" accept="audio/*" id="kmMusicFile" hidden data-page-node-id="R85kmMusicFile"></label>
+          <label class="km-music-upload settings-music-upload" id="kmMusicUpload" title="上传自定义背景音乐(mp3/wav/ogg)" data-page-node-id="R85kmMusicUp">📤 上传<input type="file" accept="audio/*" id="kmMusicFile" hidden data-page-node-id="R85kmMusicFile"></label>
           <span id="kmMusicFileName" style="font-size:12px;color:var(--muted)" data-page-node-id="R85kmMusicFName"></span>
         </div>
         <div class="form-warn" style="margin-top:8px" data-page-node-id="R85kmMusicTip">10 首内置音乐全部为程序实时合成，无需联网；其中 5 首为中国风（茉莉花 / 高山流水 / 春江花月夜 / 渔舟唱晚 / 彩云追月）。</div>
@@ -6118,12 +6138,12 @@ body.child-mode .parent-edit-fab{display:none}
       <div class="parent-edit-group" data-page-node-id="0alKlbOWSWKb4Vf4DrFSYN">
         <div class="peg-title" data-page-node-id="vTKyrS6IAaVXWQNJSlkzJi">🖼️ 板块整页背景</div>
         <div class="sec-bg-thumb-row" id="secBgPageThumb" data-page-node-id="uJ6PDQrB8ZdIeQIrpJtUTP"></div>
-        <div class="peg-bgop-row" data-page-node-id="Evb2tbKTTB5MmprinoFBoJ">
-          <label data-page-node-id="cKGZtctl4FO8CWcbU75lkv">透明度 <input type="range" id="secBgPageOpacity" min="0" max="1" step="0.05" data-page-node-id="6gVjvEX4uk502J5Ovk5z8V"><span id="secBgPageOpacityVal" class="peg-val" data-page-node-id="1r5D1FixLqrYcnOTsEHFzF">0.5</span></label>
+        <div class="peg-bgop-row peg-input-grid" data-page-node-id="Evb2tbKTTB5MmprinoFBoJ">
+          <label data-page-node-id="cKGZtctl4FO8CWcbU75lkv">透明度 <input type="number" id="secBgPageOpacity" class="peg-input" min="0" max="1" step="0.05" placeholder="0 ~ 1" data-page-node-id="6gVjvEX4uk502J5Ovk5z8V"></label>
         </div>
-        <div class="peg-bgop-row" data-page-node-id="6ST6nIsTrb1ucFqhnbo2tu">
+        <div class="peg-bgop-row peg-input-grid" data-page-node-id="6ST6nIsTrb1ucFqhnbo2tu">
           <label data-page-node-id="UFdUbq8f3oloeGQJ1uBY0l">大小
-            <select id="secBgPageSize" data-page-node-id="Tl5vRmhVC0691L6OBbdCA5">
+            <select id="secBgPageSize" class="peg-input" data-page-node-id="Tl5vRmhVC0691L6OBbdCA5">
               <option value="cover" data-page-node-id="1xDCKa0lfqZtAkqhKXttQR">铺满 (cover)</option>
               <option value="contain" data-page-node-id="77pabzld3OIEPHSUcZRw2N">完整 (contain)</option>
               <option value="auto" data-page-node-id="VGxt8aQ00QkCrfi8n3N4ZW">实际大小 (auto)</option>
@@ -6131,7 +6151,7 @@ body.child-mode .parent-edit-fab{display:none}
             </select>
           </label>
           <label data-page-node-id="1YlxTo83WAzY3EsxosnJrr">位置
-            <select id="secBgPagePosition" data-page-node-id="YE0e5QfsEtL1c9eXkmbvwz">
+            <select id="secBgPagePosition" class="peg-input" data-page-node-id="YE0e5QfsEtL1c9eXkmbvwz">
               <option value="center center" data-page-node-id="gBWQGrzIhbHE9bHZpTSgJ4">居中</option>
               <option value="top center" data-page-node-id="9mWlFDFFabuuH0UKQ32ei6">顶部居中</option>
               <option value="bottom center" data-page-node-id="mTCwu5XcNkbn1pL4B2EaSu">底部居中</option>
@@ -6153,12 +6173,12 @@ body.child-mode .parent-edit-fab{display:none}
       <div class="parent-edit-group" data-page-node-id="eNE04EvyxddBsfkwN8BDCf">
         <div class="peg-title" data-page-node-id="Bs5PlkkquZhYEFrp9FbtPB">🏷️ 标题区域背景（独立于整页）</div>
         <div class="sec-bg-thumb-row" id="secBgTitleThumb" data-page-node-id="cHSH2XuOqjzW6SWlDbBadv"></div>
-        <div class="peg-bgop-row" data-page-node-id="vyO1w8zVrebx24yHQqQZkP">
-          <label data-page-node-id="umaDMtVUp5GOIm9Uvtb4Ay">透明度 <input type="range" id="secBgTitleOpacity" min="0" max="1" step="0.05" data-page-node-id="vSGMCA0ac2e2PhOjqjHgk1"><span id="secBgTitleOpacityVal" class="peg-val" data-page-node-id="cJAIgECcX66YaXRkn510BW">1.0</span></label>
+        <div class="peg-bgop-row peg-input-grid" data-page-node-id="vyO1w8zVrebx24yHQqQZkP">
+          <label data-page-node-id="umaDMtVUp5GOIm9Uvtb4Ay">透明度 <input type="number" id="secBgTitleOpacity" class="peg-input" min="0" max="1" step="0.05" placeholder="0 ~ 1" data-page-node-id="vSGMCA0ac2e2PhOjqjHgk1"></label>
         </div>
-        <div class="peg-bgop-row" data-page-node-id="fmaeBGogU9w3aJiDQRtFTE">
+        <div class="peg-bgop-row peg-input-grid" data-page-node-id="fmaeBGogU9w3aJiDQRtFTE">
           <label data-page-node-id="oJy6ZAFtHeBREPfCvBLhoZ">大小
-            <select id="secBgTitleSize" data-page-node-id="kXmiBJP99EBvBF022PRH1H">
+            <select id="secBgTitleSize" class="peg-input" data-page-node-id="kXmiBJP99EBvBF022PRH1H">
               <option value="cover" data-page-node-id="B5qgue1HtHMit44JYPhPww">铺满 (cover)</option>
               <option value="contain" data-page-node-id="AB40vQhkLpMHHUp21HJEDJ">完整 (contain)</option>
               <option value="auto" data-page-node-id="Fy1An7O3TYPQAxto5Pd4iR">实际大小 (auto)</option>
@@ -6166,7 +6186,7 @@ body.child-mode .parent-edit-fab{display:none}
             </select>
           </label>
           <label data-page-node-id="61mZxlBj7L45Dq4ZzHr7hy">位置
-            <select id="secBgTitlePosition" data-page-node-id="3dCRJFNd7KqFGWBtogwh4P">
+            <select id="secBgTitlePosition" class="peg-input" data-page-node-id="3dCRJFNd7KqFGWBtogwh4P">
               <option value="center center" data-page-node-id="SQ0SpFVoabx7n4u1QJa9wl">居中</option>
               <option value="top center" data-page-node-id="3YaSaYEoxcnWp3AufZ8g6G">顶部居中</option>
               <option value="bottom center" data-page-node-id="5H4In9zZ0l4Xk2MoSPp9RE">底部居中</option>
@@ -6190,10 +6210,10 @@ body.child-mode .parent-edit-fab{display:none}
         <div class="sec-bg-row" data-page-node-id="p4dVDfiq0pciiKnzSwaluA">
           <label data-page-node-id="zQybBScr0n9bAUk2eCeZwu">标题文字 <input type="text" id="secBgTitleText" placeholder="留空使用默认文字" maxlength="40" data-page-node-id="2JQFFnFJrpwNwdl0KhoXQW"></label>
         </div>
-        <div class="peg-bgop-row" data-page-node-id="uLG3iio2zgCR9piQnMYvzw">
-          <label data-page-node-id="4xno77zvxDXC19pVNH9q0l">字号 <input type="range" id="secBgTitleFontSize" min="14" max="36" step="1" data-page-node-id="Z69uQzK2xLjGOFcMXdv7LC"><span id="secBgTitleFontSizeVal" class="peg-val" data-page-node-id="89bR916CZadeYYFLdfvml9">22</span>px</label>
-          <label data-page-node-id="2kCrO6EHy8XBjYXTqDGXxF">左右 padding <input type="range" id="secBgTitlePaddingX" min="0" max="48" step="2" data-page-node-id="VyAjAe7wzyOiqcnSqGRLhv"><span id="secBgTitlePaddingXVal" class="peg-val" data-page-node-id="ldkPD1zWCf0CUU3usrd4H3">18</span>px</label>
-          <label data-page-node-id="Yc60Bz1c4e8DFaAE3xlSzp">上下 padding <input type="range" id="secBgTitlePaddingY" min="0" max="32" step="2" data-page-node-id="GBTslityc67SRcqxqQCU6d"><span id="secBgTitlePaddingYVal" class="peg-val" data-page-node-id="KcEvE88nwiNdNbSmiPmid2">12</span>px</label>
+        <div class="peg-bgop-row peg-input-grid" data-page-node-id="uLG3iio2zgCR9piQnMYvzw">
+          <label data-page-node-id="4xno77zvxDXC19pVNH9q0l">字号 <input type="number" id="secBgTitleFontSize" class="peg-input" min="14" max="36" step="1" placeholder="14 ~ 36" data-page-node-id="Z69uQzK2xLjGOFcMXdv7LC"> px</label>
+          <label data-page-node-id="2kCrO6EHy8XBjYXTqDGXxF">左右 padding <input type="number" id="secBgTitlePaddingX" class="peg-input" min="0" max="48" step="2" placeholder="0 ~ 48" data-page-node-id="VyAjAe7wzyOiqcnSqGRLhv"> px</label>
+          <label data-page-node-id="Yc60Bz1c4e8DFaAE3xlSzp">上下 padding <input type="number" id="secBgTitlePaddingY" class="peg-input" min="0" max="32" step="2" placeholder="0 ~ 32" data-page-node-id="GBTslityc67SRcqxqQCU6d"> px</label>
         </div>
         <div class="peg-farm-actions" data-page-node-id="oYdEkbPxlHZnOJhl50WrA4">
           <button class="primary-btn" id="btnSecBgTitleStyleSave" data-page-node-id="AVDnCvDaBvWfV5vsc9jGCz">💾 保存标题文字/样式</button>
@@ -29639,16 +29659,16 @@ window.MAO_POEMS = [{"t": "贺新郎·别友", "d": "一九二三年", "c": "挥
     save(st);
     return v;
   }
-  // R77-3：毛泽东诗词打卡 —— 每首可打卡一次，成功获得⭐（默认 2，家长可在任务设置 1~10 自定义）
+  // R77-3 / R90-6：诗词打卡 —— 每首可打卡一次，成功获得⭐（预置 1⭐，家长可在任务设置 1~10 自定义）
   function getMaoStars(){
     const st = load();
     const n = parseInt(st.maoStars, 10);
-    return (isNaN(n) || n < 1 || n > 10) ? 2 : n;
+    return (isNaN(n) || n < 1 || n > 10) ? 1 : n;
   }
   function setMaoStars(n){
     const st = load();
     let v = parseInt(n, 10);
-    if(isNaN(v)) v = 2;
+    if(isNaN(v)) v = 1;
     v = Math.min(10, Math.max(1, v));
     st.maoStars = v;
     save(st);
@@ -37496,7 +37516,7 @@ I'm good at running.`},
           <button type="button" class="mao-check-btn ${(S.isMaoPoemChecked&&S.isMaoPoemChecked(_ktxsOpenPoem))?'done':''}" data-mao-check="${_ktxsOpenPoem}" title="点击打卡获得⭐；已打卡时再点一次可取消打卡（⭐数可在任务设置更改）">
             ${(S.isMaoPoemChecked&&S.isMaoPoemChecked(_ktxsOpenPoem))
               ? '✅ 已打卡 · 再点一次取消打卡'
-              : '📌 诗词打卡 +'+(S.getMaoStars?S.getMaoStars():2)+'⭐'}
+              : '📌 诗词打卡 +'+(S.getMaoStars?S.getMaoStars():1)+'⭐'}
           </button>
           <div class="mao-check-tip">已打卡 ${(S.maoPoemCheckedList?S.maoPoemCheckedList().length:0)} / ${poems.length} 首</div>
         </div>
@@ -38828,29 +38848,58 @@ I'm good at running.`},
     };
   }
   // R74-3：「⭐奖励设置」卡已按需求整体移除（各阅读类打卡⭐数沿用 store 内已有配置，不再提供界面）
-  // R77-3：诗词打卡获得⭐设置（任务设置 · 围棋对弈设置下方；排版同 star-set-row）
+  // R90-6：打开《毛泽东诗词集》打卡（关闭设置弹窗 → 拓展素养 → 推荐书籍 → 毛泽东诗词集）
+  function openMaoPoemBook(){
+    try{ hideModal('#modalTaskSettings'); }catch(e){}
+    try{
+      goPage('newworld-suzhi');
+      const ktBtn = document.querySelector('#szTopCards .yw-round-btn[data-key="ktxs"]');
+      if(ktBtn) ktBtn.click();
+      const bookCard = document.querySelector('#szSlotBody [data-ktxs-book="毛泽东诗词集"]');
+      if(bookCard){ bookCard.click(); }
+      else { _ktxsOpenBook = '毛泽东诗词集'; _ktxsOpenPoem = -1; goPage('newworld-suzhi'); }
+    }catch(e){}
+  }
+  // R77-3 / R90-6：诗词打卡获得⭐设置（任务设置 · 围棋对弈设置下方）—— 预置 1⭐/首，含进度 / 去打卡 / 清空记录
   function renderTodayMaoStar(target){
     const el = document.getElementById(target || 'todayMaoStarContent');
     if(!el) return;
     const done = (S.maoPoemCheckedList && S.maoPoemCheckedList().length) || 0;
     const total = (window.MAO_POEMS && Array.isArray(window.MAO_POEMS)) ? window.MAO_POEMS.length : 42;
+    const stars = S.getMaoStars ? S.getMaoStars() : 1;
     el.innerHTML = `
       ${isChild()?'':`
-      <div class="star-set-row mao-star-row" title="家长设置：每首毛泽东诗词打卡成功获得的⭐数量">
-        <span class="star-set-label">📜 毛泽东诗词打卡加⭐</span>
-        <input type="number" class="star-set-input" id="maoStarsInput" min="1" max="10" step="1" value="${S.getMaoStars?S.getMaoStars():2}">
+      <div class="star-set-row mao-star-row" title="家长设置：每首诗词打卡成功获得的⭐数量（预置 1⭐）">
+        <span class="star-set-label">📜 诗词打卡加⭐（每首）</span>
+        <input type="number" class="star-set-input" id="maoStarsInput" min="1" max="10" step="1" value="${stars}">
         <span class="star-set-unit">⭐ / 首</span>
         <button class="pbtn small" id="btnMaoStarsSave">保存</button>
       </div>`}
       <div class="go-record-list">
-        <div style="color:var(--muted);font-size:13px">📖 已打卡 ${done} / ${total} 首 · 打开《毛泽东诗词集》任意一首即可打卡领⭐</div>
+        <div class="mao-set-progress">📖 已打卡 <b>${done}</b> / ${total} 首 · 每首完成打卡 +${stars}⭐（共可得 ${done*stars}⭐）</div>
+        <div class="mao-set-actions">
+          <button class="pbtn small" id="btnMaoGoCheck">📌 去打卡</button>
+          ${isChild()?'':'<button class="pbtn small" id="btnMaoReset">↺ 清空打卡记录</button>'}
+        </div>
       </div>`;
     const btn = el.querySelector('#btnMaoStarsSave');
     if(btn) btn.onclick = ()=>{
       const inp = el.querySelector('#maoStarsInput');
       const v = S.setMaoStars(inp && inp.value);
-      inp.value = v;
+      renderTodayMaoStar(target);
       toast('✓ 已保存：诗词打卡加⭐ +' + v);
+    };
+    const go = el.querySelector('#btnMaoGoCheck');
+    if(go) go.onclick = openMaoPoemBook;
+    const rst = el.querySelector('#btnMaoReset');
+    if(rst) rst.onclick = ()=>{
+      if(typeof confirm === 'function' && !confirm('确定清空全部诗词打卡记录吗？此操作不可撤销。')) return;
+      const st = S.load();
+      st.maoPoemChecks = [];
+      st.maoPoemStars = {};
+      S.save(st);
+      renderTodayMaoStar(target);
+      toast('↺ 已清空诗词打卡记录');
     };
   }
   function subIco(s){
@@ -40037,6 +40086,7 @@ I'm good at running.`},
           <div class="km-admin-wrap"><button class="km-admin-btn" id="kmAdminBtn" data-km-act="admin"${isParent()?'':' hidden'}>🛠️ 后台修改中心</button></div>
         </div>
       </div>
+      <div class="page-content">
       <div class="km-levels">
         <div class="km-map">
           <div class="km-map-bg"></div>
@@ -40054,6 +40104,7 @@ I'm good at running.`},
             <span><i class="lg lg-lock"></i>未解锁 🔒</span>
           </div>
         </div>
+      </div>
       </div>`;
     initSectionCardBgBtns(); // R13-Req3：主题卡渲染后重新挂载 🎨 背景设置按键
   }
@@ -41240,38 +41291,17 @@ I'm good at running.`},
   }
   let _editTargetSection = 'home';
   function openParentEdit(){
-    // 渲染背景图列表
-    const bgs = S.getSectionBgs();
-    const list = $('#parentEditBgList');
-    if(list){
-      list.innerHTML = SECTION_LABELS.map(([id,label])=>{
-        const url = bgs[id];
-        const thumb = url ? `style="background-image:url('${url}')"` : '';
-        return `<div class="peg-item" data-section="${esc(id)}">
-          <div class="peg-thumb" ${thumb}></div>
-          <div class="peg-name">${label}</div>
-          <button class="peg-btn" data-peg-upload="${esc(id)}">上传</button>
-          ${url ? `<button class="peg-btn danger" data-peg-clear="${esc(id)}">清除</button>` : ''}
-        </div>`;
-      }).join('');
-    }
-    // V23-5：渲染背景图显示设置（透明度/大小/位置）
-    const opt = S.getSectionBgOptions().default || { opacity: 0.5, size: 'cover', position: 'center center', repeat: 'no-repeat' };
-    const oOpa = $('#bgOptOpacity'), oSize = $('#bgOptSize'), oPos = $('#bgOptPosition'), oVal = $('#bgOptOpacityVal');
-    if(oOpa){ oOpa.value = String(opt.opacity); oVal.textContent = String(opt.opacity); oOpa.oninput = ()=>{ oVal.textContent = oOpa.value; }; }
-    if(oSize){ oSize.value = opt.size; }
-    if(oPos){ oPos.value = opt.position; }
-    // R83：种植园排版 / 市集 / 小卖部 已迁移至 #modalFarmSetting（种植园设置弹窗）
+    // R90-2：背景设置弹窗仅保留「逐板块主题卡设置」（原「各版块背景图」与「背景图显示设置（全局）」两张卡片已按需求删除）
     showModal('#modalParentEdit');
   }
   // R83：种植园设置弹窗（从背景设置迁移：种植园排版 + 农场市集 + 云上小卖部）
   function openFarmSetting(){
-    // 渲染种植园排版滑杆
+    // R90-4：种植园排版改为「填空选择」（列数下拉 + 间距/地块数值填空）
     const layout = S.getFarmLayout();
     const c = $('#farmEditCols'), g = $('#farmEditGap'), s = $('#farmEditSize');
-    if(c){ c.value = layout.cols; $('#farmEditColsVal').textContent = layout.cols; c.oninput = ()=>{ $('#farmEditColsVal').textContent = c.value; }; }
-    if(g){ g.value = layout.gap;  $('#farmEditGapVal').textContent  = layout.gap;  g.oninput = ()=>{ $('#farmEditGapVal').textContent  = g.value; }; }
-    if(s){ s.value = layout.plotSize; $('#farmEditSizeVal').textContent = layout.plotSize; s.oninput = ()=>{ $('#farmEditSizeVal').textContent = s.value; }; }
+    if(c) c.value = String(layout.cols);
+    if(g) g.value = String(layout.gap);
+    if(s) s.value = String(layout.plotSize);
     // 渲染农场市集（种子+工具）/ 云上小卖部（礼物）列表
     renderShopEditor('farmSetMarketList', ['seed','growth']);
     renderShopEditor('farmSetShopList',   ['gift']);
@@ -41419,27 +41449,7 @@ I'm good at running.`},
     // R83：种植园设置按键 → 打开种植园设置弹窗
     const farmSetBtn = $('#btnFarmSetting');
     if(farmSetBtn && !farmSetBtn._bound){ farmSetBtn._bound = true; farmSetBtn.onclick = openFarmSetting; }
-    // 上传/清除按钮（事件委托）
-    const list = $('#parentEditBgList');
-    if(list && !list._bound){
-      list._bound = true;
-      list.addEventListener('click', e=>{
-        const up = e.target.closest('[data-peg-upload]');
-        if(up){
-          _editTargetSection = up.dataset.pegUpload;
-          const inp = $('#parentEditBgFile');
-          if(inp){ inp.value = ''; inp.onchange = ev=> handleParentEditBgFile(_editTargetSection, ev.target.files[0]); inp.click(); }
-          return;
-        }
-        const cl = e.target.closest('[data-peg-clear]');
-        if(cl){
-          S.clearSectionBg(cl.dataset.pegClear);
-          applySectionBgs();
-          openParentEdit();
-          toast('✓ 已清除：' + cl.dataset.pegClear);
-        }
-      });
-    }
+    // R90-2：「各版块背景图」卡片与其上传/清除委托已移除（改由「逐板块主题卡设置」进入）
     // R83：种植园排版保存/恢复默认 已迁移至 bindFarmSetting（种植园设置弹窗）
     // V23-1：市集/小卖部 列表事件委托（添加/删除/改价/改名/改图）
     // R83：bindShopList 已提升为模块级 function 声明（见下方 renderShopEditor 上方），供 bindParentEdit 与 bindFarmSetting 共用
@@ -41454,20 +41464,7 @@ I'm good at running.`},
         if(b){ openSectionBgEdit(b.dataset.bgSection); }
       });
     }
-    // V23-5：保存背景图显示设置
-    const btnBgOpt = $('#btnBgOptSave');
-    if(btnBgOpt && !btnBgOpt._bound){
-      btnBgOpt._bound = true;
-      btnBgOpt.onclick = ()=>{
-        const o = S.setSectionBgOption({
-          opacity: parseFloat($('#bgOptOpacity').value),
-          size: $('#bgOptSize').value,
-          position: $('#bgOptPosition').value
-        });
-        applySectionBgs();
-        toast(`✓ 背景设置已保存（透明度 ${o.opacity} · ${o.size} · ${o.position}）`);
-      };
-    }
+    // R90-2：「背景图显示设置（全局）」卡片与其保存委托已移除（透明度改在「逐板块主题卡设置」内逐板块调整）
   }
   // ============ V25-2 + V25-4：每板块独立背景图设置按键 + 标题区域独立设置 ============
   // SECTION_LABELS_TITLES：哪些板块有 page-title（带标题）+ 🎨 按键（farm 除外）
@@ -41692,8 +41689,8 @@ I'm good at running.`},
         };
       }
     }
-    const oP = $('#secBgPageOpacity'), oPV = $('#secBgPageOpacityVal'), oPS = $('#secBgPageSize'), oPP = $('#secBgPagePosition');
-    if(oP){ oP.value = String(pageOpt.opacity); oPV.textContent = String(pageOpt.opacity); oP.oninput = ()=>{ oPV.textContent = oP.value; }; }
+    const oP = $('#secBgPageOpacity'), oPS = $('#secBgPageSize'), oPP = $('#secBgPagePosition');
+    if(oP) oP.value = String(pageOpt.opacity);   // R90-5：透明度改为数值填空（无联动值 span）
     if(oPS){ oPS.value = pageOpt.size; }
     if(oPP){ oPP.value = pageOpt.position; }
     // 标题区域背景
@@ -41725,8 +41722,8 @@ I'm good at running.`},
         };
       }
     }
-    const oT = $('#secBgTitleOpacity'), oTV = $('#secBgTitleOpacityVal'), oTS = $('#secBgTitleSize'), oTP = $('#secBgTitlePosition');
-    if(oT){ oT.value = String(titleOpt.opacity); oTV.textContent = String(titleOpt.opacity); oT.oninput = ()=>{ oTV.textContent = oT.value; }; }
+    const oT = $('#secBgTitleOpacity'), oTS = $('#secBgTitleSize'), oTP = $('#secBgTitlePosition');
+    if(oT) oT.value = String(titleOpt.opacity);  // R90-5：透明度改为数值填空
     if(oTS){ oTS.value = titleOpt.size; }
     if(oTP){ oTP.value = titleOpt.position; }
     // V27-2：标题文字 + 样式（字号 / padding）
@@ -41734,12 +41731,13 @@ I'm good at running.`},
     const curStyle = (S.getSectionTitleStyles()||{}).default || { fontSize: 22, paddingX: 18, paddingY: 12 };
     const inText = $('#secBgTitleText');
     if(inText) inText.value = curText;
-    const inFs = $('#secBgTitleFontSize'), inFsV = $('#secBgTitleFontSizeVal');
-    if(inFs){ inFs.value = String(curStyle.fontSize); inFsV.textContent = String(curStyle.fontSize); inFs.oninput = ()=>{ inFsV.textContent = inFs.value; }; }
-    const inPx = $('#secBgTitlePaddingX'), inPxV = $('#secBgTitlePaddingXVal');
-    if(inPx){ inPx.value = String(curStyle.paddingX); inPxV.textContent = String(curStyle.paddingX); inPx.oninput = ()=>{ inPxV.textContent = inPx.value; }; }
-    const inPy = $('#secBgTitlePaddingY'), inPyV = $('#secBgTitlePaddingYVal');
-    if(inPy){ inPy.value = String(curStyle.paddingY); inPyV.textContent = String(curStyle.paddingY); inPy.oninput = ()=>{ inPyV.textContent = inPy.value; }; }
+    // R90-5：字号 / 左右·上下 padding 改为数值填空（无联动值 span）
+    const inFs = $('#secBgTitleFontSize');
+    if(inFs) inFs.value = String(curStyle.fontSize);
+    const inPx = $('#secBgTitlePaddingX');
+    if(inPx) inPx.value = String(curStyle.paddingX);
+    const inPy = $('#secBgTitlePaddingY');
+    if(inPy) inPy.value = String(curStyle.paddingY);
     showModal('#modalSectionBg');
   }
 
@@ -45046,22 +45044,18 @@ I'm good at running.`},
     const setVal = (id, v)=>{ const el = document.getElementById(id); if(el) el.value = v; };
     const setChk = (id, v)=>{ const el = document.getElementById(id); if(el) el.checked = !!v; };
     setChk('kmModeTrial', !!s.trial);
-    setVal('kmRetries', s.retries); if($('#kmRetriesVal')) $('#kmRetriesVal').textContent = s.retries;
-    setVal('kmFogMs', s.fogMs); if($('#kmFogMsVal')) $('#kmFogMsVal').textContent = s.fogMs;
-    setChk('kmHintsOn', s.hintsOn);
-    setVal('kmSpeed', s.speed); if($('#kmSpeedVal')) $('#kmSpeedVal').textContent = s.speed;
-    setVal('kmJump', s.jump); if($('#kmJumpVal')) $('#kmJumpVal').textContent = s.jump;
-    setVal('kmPerLevel', s.perLevel); if($('#kmPerLevelVal')) $('#kmPerLevelVal').textContent = s.perLevel;
+    // R90-4：难度/手感/奖励 改为「填空 + 下拉」控件，无需再联动数值 span
+    setVal('kmRetries', s.retries);
+    setVal('kmFogMs', s.fogMs);
+    setVal('kmHintsOn', s.hintsOn ? '1' : '0'); // R90-4：普通模式提示由复选框改为「显示/不显示」下拉
+    setVal('kmSpeed', s.speed);
+    setVal('kmJump', s.jump);
+    setVal('kmPerLevel', s.perLevel);
     setVal('kmRewardCorrect', (s.starReward && s.starReward.correct != null) ? s.starReward.correct : 2);
     setVal('kmRewardClear', (s.starReward && s.starReward.clear != null) ? s.starReward.clear : 10);
     setVal('kmTextWelcome', (s.text && s.text.welcome) || '');
     setVal('kmTextCleared', (s.text && s.text.cleared) || '');
     setVal('kmTextCert', (s.text && s.text.cert) || '');
-    // 滑杆实时联动数值显示
-    ['kmRetries','kmFogMs','kmSpeed','kmJump','kmPerLevel'].forEach(id=>{
-      const el = document.getElementById(id), v = document.getElementById(id + 'Val');
-      if(el && v) el.oninput = ()=>{ v.textContent = el.value; };
-    });
     const saveBtn = document.getElementById('btnKMSettingSave');
     if(saveBtn && !saveBtn._bound){
       saveBtn._bound = true;
@@ -45070,7 +45064,7 @@ I'm good at running.`},
         const txt = (id)=>{ const el = document.getElementById(id); return el ? el.value : ''; };
         const patch = {
           trial: !!document.getElementById('kmModeTrial').checked,
-          retries: num('kmRetries'), fogMs: num('kmFogMs'), hintsOn: !!document.getElementById('kmHintsOn').checked,
+          retries: num('kmRetries'), fogMs: num('kmFogMs'), hintsOn: (document.getElementById('kmHintsOn') || {}).value === '1',
           speed: num('kmSpeed'), jump: num('kmJump'), perLevel: num('kmPerLevel'),
           starReward: { correct: num('kmRewardCorrect'), clear: num('kmRewardClear') },
           text: { welcome: txt('kmTextWelcome'), cleared: txt('kmTextCleared'), cert: txt('kmTextCert') }
