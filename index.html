@@ -4892,6 +4892,70 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   .math-del-type-item{min-height:48px}
 }
 
+/* ============================================================
+   R95：9 大板块主题卡尺寸统一 —— 总框高 75px × 固定宽 843px
+   覆盖：新世界 / 乐读数学 / 学而思英语 / 大阅读 / 百科讲堂 /
+        知识秘境 / 种植园 / 成长档案 / 设置中心
+   ⚠️ 不含「今日任务」页 —— 需求明确该项保持原样（.page-today > .page-title）
+   ⚠️ 必须显式声明 box-sizing:border-box —— 全站 box-sizing 实为 content-box
+      （styles.css 顶部 reset 缺选择器，整条规则被浏览器丢弃），
+      否则 width/height 只约束内容盒，加上内边距与边框后会横向溢出容器。
+   注：843px = iPad 1024×768 横屏内容区 847px − 左右外边距 4px，正好贴满。
+   ------------------------------------------------------------ */
+.nw-topbar,
+.km-title-card,
+.farm-mine-banner,
+.page-math > .page-title,
+.page-xueersi > .page-title,
+.page-reading > .page-title,
+.page-baike > .page-title,
+.page-archive > .page-title,
+.page-settings > .page-title{
+  box-sizing:border-box;
+  height:75px;
+  width:843px;
+  padding:8px 18px;
+}
+
+/* R95：知识秘境卡内容压缩（75px 总高下内容区仅 56px —— 卡内为「标题+欢迎语+2 统计胶囊+2 幽灵键+后台键」，需收为单行不换行） */
+.km-title-card{flex-wrap:nowrap;gap:10px;align-items:center}
+.km-title-main{flex:1 1 auto;min-width:0}
+.km-title-row{gap:8px}
+.km-title{font-size:20px}
+.km-welcome-corner{margin-top:2px;font-size:11px;line-height:1.25}
+.km-title-side{gap:8px;flex-wrap:nowrap}
+.km-stats{margin:0;gap:6px;flex-wrap:nowrap}
+.km-stat{padding:3px 9px;gap:5px}
+.km-stat-ico{font-size:13px}
+.km-stat b{font-size:13px}
+.km-stat span{font-size:11px}
+.km-quick{margin:0;gap:6px;flex-wrap:nowrap}
+.km-ghost-btn{padding:4px 10px;font-size:12px}
+.km-admin-wrap{margin-top:0}
+.km-admin-btn{padding:4px 10px;font-size:12px}
+
+/* R95：种植园卡内统计胶囊收窄（75px 总高，须与标题同行） */
+.farm-mine-banner{flex-wrap:nowrap}
+.farm-title-stats{gap:6px;flex-wrap:nowrap}
+.farm-title-stats .fts{padding:3px 9px;gap:4px;font-size:13px}
+.farm-title-stats .fts-ico{font-size:15px}
+.farm-title-stats .fts b{font-size:14px}
+
+/* R95：6 个 .page-title 板块的标题 h2 去掉 UA 默认上下外边距（0.83em≈18.26px）
+   —— 顶部 reset 缺选择器失效后 h2 一直吃着 UA 默认 margin，在 75px 卡内会顶出 66.5px 的盒子 */
+.page-math > .page-title h2,
+.page-xueersi > .page-title h2,
+.page-reading > .page-title h2,
+.page-baike > .page-title h2,
+.page-archive > .page-title h2,
+.page-settings > .page-title h2{margin:0}
+
+/* R95：设置中心模式切换键收窄（75px 总高）—— 必须显式改回 row，否则继承 .settings-mode-seg 的 column 会变两行 59px 高 */
+.settings-title-card .settings-mode-seg-mini{padding:2px}
+.settings-title-card .settings-mode-seg-mini .mode-opt{flex-direction:row;align-items:center;gap:5px;padding:4px 11px;font-size:12px}
+.settings-title-card .settings-mode-seg-mini .mode-opt .mode-ico{font-size:15px}
+.settings-title-card .settings-mode-seg-mini .mode-opt .mode-name{font-size:12px}
+
 
 </style>
 </head>
