@@ -18,15 +18,15 @@
 var CACHE_NAME = 'zoo-checkin-v1';
 var PRECACHE = ['./', './index.html'];
 var NAV_TIMEOUT = 6000; // 弱网保护：6 秒拿不到网络响应就用缓存，避免白屏
-/* R70：构建指纹。部署脚本会把 74ef7d3ae3a3 替换为当期 index.html 的 sha256 前 12 位。
+/* R70：构建指纹。部署脚本会把 5179d0e45190 替换为当期 index.html 的 sha256 前 12 位。
  * 作用：只在站点内容真的变化时，sw.js 本身才变化，从而触发浏览器 SW 更新流程
  * （install → 重新预缓存新 index.html → installed → 页面自动重载到新版）。 */
-var BUILD = '74ef7d3ae3a3';
-/* R93：版本号与版本更新时间。部署脚本会把 R97 替换为当期轮次号（如 R93）、
- * 2026-09-15 07:50 替换为本次部署时间（北京时间，格式 YYYY-MM-DD HH:mm）。
+var BUILD = '5179d0e45190';
+/* R93：版本号与版本更新时间。部署脚本会把 R98 替换为当期轮次号（如 R93）、
+ * 2026-09-15 08:52 替换为本次部署时间（北京时间，格式 YYYY-MM-DD HH:mm）。
  * 用途：「设置中心 → 版本与更新」显示「当前版本 + 更新时间」，点「检查更新」后即为最新读数。 */
-var APP_VERSION = 'R97';
-var BUILD_TIME = '2026-09-15 07:50';
+var APP_VERSION = 'R98';
+var BUILD_TIME = '2026-09-15 08:52';
 
 self.addEventListener('install', function (e) {
   self.skipWaiting();
