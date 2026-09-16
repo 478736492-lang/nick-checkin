@@ -361,7 +361,7 @@ button[hidden]{display:none!important}
 .math-check-btn:hover{transform:translateY(-1px);box-shadow:0 2px 8px rgba(42,135,128,.18)}
 .math-check-btn.done{background:linear-gradient(135deg,var(--tiffany),var(--tiffany-dark));color:#fff;border-color:var(--tiffany-dark);box-shadow:0 2px 6px rgba(42,135,128,.32)}
 .math-card.status-mastered .math-check-btn{background:linear-gradient(135deg,#a8e6a3,#3fa550);color:#fff;border-color:#3fa550}
-/* R92：题型栏内的【＋ 新题型】子标签已移入各次级卡内部（原该子标签的样式规则随之移除） */
+/* R92：题型栏内的【＋ 新题型】子标签已移入各板块内部（原该子标签的样式规则随之移除） */
 .math-actions .pbtn.notmastery{background:linear-gradient(135deg,#ffd6a8,#ffb35b);color:#fff;border-color:#ff8c42;font-weight:700}
 .math-actions .pbtn.notmastery:hover{filter:brightness(1.08)}
 .math-actions .pbtn.notmastery.active{background:linear-gradient(135deg,#ff8c42,#e8742a);box-shadow:0 2px 6px rgba(255,140,66,.4)}
@@ -2671,6 +2671,19 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 /* R28-3：家长模式下问候语「编辑」入口 */
 .wp-encourage-edit{margin-top:6px;font-size:11px;font-weight:700;color:#4fa8e0;border:1px solid #cfe2fb;background:#eaf4ff;border-radius:999px;padding:2px 10px;cursor:pointer;white-space:nowrap}
 .wp-encourage-edit:hover{background:#dcebff}
+/* R104：首页介绍卡「学段」文字 —— 默认只读，✎ 编辑键仅家长模式可见（hidden-in-child） */
+.wp-grade-edit{
+  margin-left:6px;font-size:11px;font-weight:700;color:#4fa8e0;border:1px solid #cfe2fb;
+  background:#eaf4ff;border-radius:999px;padding:1px 8px;cursor:pointer;white-space:nowrap;
+  vertical-align:middle;line-height:1.6
+}
+.wp-grade-edit:hover{background:#dcebff}
+.wp-grade-edit[hidden]{display:none}
+.wp-grade-input{
+  width:96px;padding:1px 8px;border:1.5px solid #8fc1f7;border-radius:8px;
+  font-size:13px;font-family:inherit;color:var(--sky-blue);background:#fff;vertical-align:middle
+}
+.wp-grade-input:focus{outline:none;border-color:#4096ff;box-shadow:0 0 0 3px rgba(64,150,255,.18)}
 /* R28-3：问候语知识库编辑弹窗 */
 .greet-modal{position:fixed;inset:0;background:rgba(15,23,42,.5);display:flex;align-items:center;justify-content:center;z-index:9999;padding:16px}
 .greet-modal-card{width:min(560px,96%);max-height:86vh;overflow:auto;background:#fff;border-radius:18px;padding:20px;box-shadow:0 16px 60px rgba(0,0,0,.4)}
@@ -4509,7 +4522,7 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 /* R60-2：试听中状态（播放中高亮，提示音效正在响） */
 .sfx-preview.playing{background:linear-gradient(135deg,#a4d0ff,#4096ff)!important;color:#fff!important;border-color:#4096ff!important}
 
-/* ============ R51-3：乐读数学「知识笔记」次级卡 ============ */
+/* ============ R51-3：乐读数学「知识笔记」板块 ============ */
 .math-note-card{margin:0 0 10px;padding:10px 12px;border:1.5px dashed #8fc1f7;border-radius:12px;background:linear-gradient(135deg,#eef6ff,#e3f0ff);box-shadow:0 2px 6px rgba(64,150,255,.10)}
 .math-note-head{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:900;color:#1e3a8a;margin-bottom:4px}
 .math-note-head .math-note-edit{margin-left:auto}
@@ -4574,7 +4587,7 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 /* R92：题目卡上的【新建知识笔记】按钮已取消（R94 起该入口与【＋ 新增题目】并排落在题型详情板块底部）—— 独立笔记卡标签保留 */
 .math-note-tag{font-size:12px;font-weight:800;color:#1e3a8a;background:#dcecff;border-radius:999px;padding:2px 10px}
 .mn-img-preview{display:block;max-width:100%;max-height:220px;border-radius:10px;border:1px solid #cfe0f5;margin-top:6px}
-/* R94：【－ 删除题型】弹窗 —— 列出当前次级卡全部题型，点选后二次确认 */
+/* R94：【－ 删除题型】弹窗 —— 列出当前板块全部题型，点选后二次确认 */
 .math-del-type-list{display:flex;flex-direction:column;gap:8px;margin:4px 0 10px}
 .math-del-type-item{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;text-align:left;padding:11px 14px;border-radius:12px;border:1.5px solid #cfe0f5;background:#fff;cursor:pointer;font-family:inherit;transition:.15s}
 .math-del-type-item:hover{border-color:#e2453a;background:#fff5f4;transform:translateY(-1px);box-shadow:0 4px 12px rgba(226,69,58,.16)}
@@ -4781,10 +4794,10 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 #settingsMusicBody .set-card,#settingsSyncBody .set-card,#settingsExportBody .set-card{margin:0 0 12px}
 #settingsMusicBody .set-card:last-child,#settingsSyncBody .set-card:last-child,#settingsExportBody .set-card:last-child{margin-bottom:0}
 
-/* ============ R91/R92/R102：乐读数学「次级卡标签 → 三级卡题型标签 → 内联内容区」 ============ */
-/* R102：次级卡改为横向标签行（.math-sub-tags/.math-sub-tag）；原「卡片列表 + 卡内新题型」结构已整体废弃删除 */
+/* ============ R91/R92/R102：乐读数学「板块标签 → 题型标签 → 内联内容区」 ============ */
+/* R102：板块改为横向标签行（.math-sub-tags/.math-sub-tag）；原「卡片列表 + 卡内新题型」结构已整体废弃删除 */
 .math-sub-region{margin-top:12px}
-/* R92/R94 需求①：各次级卡内部的【＋ 新题型】已删除 —— 新增题型统一由三级卡标签行的【＋ 新增题型】承担 */
+/* R92/R94 需求①：各板块内部的【＋ 新题型】已删除 —— 新增题型统一由题型标签行的【＋ 新增题型】承担 */
 
 /* 区域后方的新增按键 + 就地输入行（点按键展开输入框，命名后确认新增） */
 .math-add-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px}
@@ -4808,8 +4821,8 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .pbtn.math-add-cancel{color:#6a7a95;border-color:#d4def0;background:#fff}
 
 /* ================= R103：乐读数学两级筛选按键（标题卡下方） =================
-   ① 筛选按键 1（.math-filter #mathFilterSub）：次级卡板块，下拉面板 = #mathSubTags（.math-sub-tags）；
-   ② 筛选按键 2（.math-filter #mathFilterType）：三级卡题型，下拉面板 = #mathTypeTags（.math-type-tags），选项随 ① 联动；
+   ① 筛选按键 1（.math-filter #mathFilterSub）：板块，下拉面板 = #mathSubTags（.math-sub-tags）；
+   ② 筛选按键 2（.math-filter #mathFilterType）：题型，下拉面板 = #mathTypeTags（.math-type-tags），选项随 ① 联动；
    ③ 选中题型后，题目内容实时内联展示在 #mathContentArea（取代原弹窗跳转与 R102 的横向标签行）。
    R102 的两条标签行已收进筛选按键的下拉面板内，改竖排选项 + 滚动，避免占版面。 */
 .math-filter-bar{display:flex;flex-wrap:wrap;gap:10px;margin:2px 0 4px}
@@ -4846,6 +4859,14 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .math-filter-menu[hidden]{display:none}
 @keyframes mathMenuIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
 .math-filter-empty{padding:12px 10px;text-align:center;color:#6a7a95;font-size:12px}
+/* R104：管理按键区 —— 【＋ 新增题型】【－ 删除题型】【＋ 新增板块】及其就地输入行统一排在题型筛选按键后方，
+   与两个筛选按键同一行高职级；空间不足时整块换行（flex-wrap:wrap），不挤压下拉面板 */
+.math-filter-ops{
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;flex:0 1 auto;align-self:stretch;
+  min-width:0
+}
+.math-filter-ops > .pbtn{white-space:nowrap;flex:none}
+.math-filter-ops .math-inline-add{flex:1 1 220px;min-width:190px}
 .math-sub-tags{display:flex;flex-direction:column;gap:6px;margin-bottom:0}
 .math-sub-tag{
   display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:10px;white-space:nowrap;
@@ -4885,7 +4906,7 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .math-type-item.active{background:linear-gradient(135deg,#a4d0ff,#8fc1f7);border-color:#4096ff;box-shadow:0 2px 8px rgba(64,150,255,.28)}
 .math-type-item .mti-name{font-size:14px;font-weight:800;color:#1e3a8a;white-space:nowrap}
 .math-type-item.active .mti-name{color:#fff}
-/* R102：三级卡标签行内的题型标签入场动画（置于基础规则之后，避免覆盖 flex 排布） */
+/* R102：题型标签行内的题型标签入场动画（置于基础规则之后，避免覆盖 flex 排布） */
 .math-type-tags .math-type-item{animation:mathTagIn .18s ease}
 
 /* R93：题型卡上的数字统计 —— 已掌握(绿) / 未掌握(红)，与题型名同排、不换行 */
@@ -4897,26 +4918,27 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .math-type-item.active .mti-nums .mnum-need,
 .math-type-item.active .mti-nums .mnum-sep{text-shadow:0 1px 0 rgba(255,255,255,.55)}
 
-/* R93：题型列表后方的【＋ 新增题型】 + 暂无题目引导 */
-/* R94 需求②：该行同时承载【＋ 新增题型】与【－ 删除题型】两个按键 */
-.math-type-add-row{margin-top:12px}
+/* R93：暂无题目引导 */
 .math-group-empty{
   grid-column:1/-1;padding:14px;text-align:center;color:#6a7a95;font-size:12px;
   background:#fff;border:1.5px dashed #cfe0f5;border-radius:12px
 }
 
-/* R94 需求③：题型详情板块底部的动作行 —— 【＋ 新增题目】+【＋ 新增知识笔记】 */
+/* R104 需求③：题型头右侧功能键位 —— 【＋ 新增题目】+【＋ 新增知识笔记】紧跟统计数据右侧（margin-left:auto）对齐，
+   与题型名、题数统计同排不换行（保持 R93 的 nowrap 约束） */
 .math-group-actions{
-  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
-  margin-top:14px;padding-top:12px;border-top:1.5px dashed #cfe0f5
+  display:flex;align-items:center;gap:8px;flex-wrap:nowrap;flex:0 0 auto;
+  margin-left:auto
 }
+/* R104：题型头右侧多了功能键位后，题型名不再被挤压（超长时省略号，数字与键位始终右对齐） */
+.math-type-group-head > .math-group-name{flex:0 0 auto;max-width:42%;overflow:hidden;text-overflow:ellipsis}
 .pbtn.math-notecard-add-btn{color:#16306b;border-color:#cfe0f5;background:#fff;font-weight:700}
 .pbtn.math-notecard-add-btn:hover{background:#eaf3ff;border-color:#4096ff}
 
 /* 显隐：本项目 .hidden 仅在带作用域的选择器下生效（无全局 .hidden 规则） */
 .math-empty.hidden,.math-inline-add.hidden,.pbtn.math-add-card-btn.hidden{display:none}
 
-/* 触屏 + 大屏：次级卡/题型行与新增控件触控目标 ≥44px */
+/* 触屏 + 大屏：板块/题型行、筛选按键后方管理键与新增控件触控目标 ≥44px */
 @media (pointer:coarse) and (min-width:768px){
   .math-sub-tag{padding:11px 16px}
   .math-sub-tag .msc-name{font-size:15px}
@@ -4929,6 +4951,11 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   .mti-nums .mnum-ok,.mti-nums .mnum-need{font-size:15px}
   .math-group-actions .pbtn{min-height:44px;padding:10px 16px;font-size:13px}
   .math-del-type-item{min-height:48px}
+  /* R104：筛选按键后方的管理按键区与就地输入行同步抬到 44px */
+  .math-filter-ops .pbtn{min-height:44px;padding:10px 16px;font-size:13px}
+  .math-filter-ops .math-add-input{min-height:44px;font-size:14px}
+  .wp-grade-edit{min-height:32px;padding:2px 12px;font-size:12px}
+  .wp-grade-input{min-height:32px;font-size:14px;width:120px}
 }
 
 /* ============================================================
@@ -5055,7 +5082,8 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
             </div>
             <div class="wp-nick-greeting" data-page-node-id="3im1ZyaKn1CoxYlMteUGq5">Hi, I'm Nick!</div>
             <div class="wp-nick-info" data-page-node-id="FbS60iwn663EgGIcDEsDOA">
-              <div class="wp-nick-meta" data-page-node-id="e2DEPuj9wJu77ZXuf8Oiy7">三年级 · <span id="homeStreak" data-page-node-id="Dlql4BFWnp2Iq1Pyh9aRqp">0</span> 天连续</div>
+              <!-- R104：学段文字（三年级）独立成 #homeGrade，仅家长模式可通过旁侧 ✎ 修改，普通用户模式只读 -->
+              <div class="wp-nick-meta" data-page-node-id="e2DEPuj9wJu77ZXuf8Oiy7"><span id="homeGrade" data-page-node-id="R104homeGrade">三年级</span> · <span id="homeStreak" data-page-node-id="Dlql4BFWnp2Iq1Pyh9aRqp">0</span> 天连续<button type="button" class="wp-grade-edit hidden-in-child" id="btnGradeEdit" title="修改学段（仅家长模式可编辑）" data-page-node-id="R104btnGradeEdit">✎</button></div>
               <div class="wp-exp-bar" data-page-node-id="JaJmQY3ShZnBIHYM91mGxt"><div class="wp-exp-fill" id="homeExpFill" data-page-node-id="4RLEl1NWoU1n51hDkgCCjw"></div></div>
               <div class="wp-nick-cur" data-page-node-id="z2FxTe1Ebljgr91PTCU9Ql"><span data-page-node-id="uf02XBEH02pOuWWM9Wf5u5">⭐ <b id="homeStars" data-page-node-id="TdE8l5SCKfxw7jjclC8MmM">0</b></span> <span data-page-node-id="h59rGwiWWOcZeqaHjfBZsr">💰 <b id="homeCoins" data-page-node-id="8VB8nIFNZKEHqtkK8J2k5f">0</b></span> <span id="homeExp" class="wp-nick-exp" data-page-node-id="4k1GPDm5ctuzotD16TnQ8c">0 经验</span></div>
               <div class="wp-encourage" id="homeEncourage" data-page-node-id="V2mhawsF63fFPWeWstDwuQ">今天又是元气满满的一天哦～</div>
@@ -5428,65 +5456,64 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
     <div class="nw-sub-body" id="nwSchedule" data-page-node-id="Z2oYXnZib2UNNv4w5Ds7yJ"></div>
   </section>
 
-  <!-- ================= 乐读数学（R103：两级筛选按键 —— 次级卡板块 → 三级卡题型 → 内容区实时展示） ================= -->
+  <!-- ================= 乐读数学（R104：两个筛选按键 + 后方管理按键区 —— 板块 → 题型 → 内容区实时展示） ================= -->
   <section class="page page-math" data-page="math" data-zone="math" hidden data-page-node-id="BPMwO5bewelPZ5Rmqc1FvO">
     <div class="page-title" data-page-node-id="6GaFIcEd2Bvey5euDJeHSd">
       <h2 data-page-node-id="7FB9UfGb8Y5Jb2seRec3Ek">🧮 乐读数学</h2>
       <div class="page-actions" data-page-node-id="IpJuhpydqv1OSGbspdyrs2"></div>
     </div><div class="page-content">
-    <!-- R103：标题卡下方两级筛选按键 —— 筛选按键1（次级卡板块）→ 筛选按键2（三级卡题型）→ 下方内联内容区。
+    <!-- R104：标题卡下方两个筛选按键 —— 筛选按键1（板块）→ 筛选按键2（题型）→ 下方内联内容区。
          点筛选按键1 选板块 → 筛选按键2 内呈现该板块的全部题型；点题型 → 下方实时展示对应题目内容。
          R102 的横向标签行已收进两个筛选按键的下拉面板内（#mathSubTags / #mathTypeTags）。
-         题目固定全量展示(R93)。权限：仅【新增题型】全局常驻；其余新增/删除按键统一加 hidden-in-child（仅家长模式可见）。 -->
+         R104：层级文案统一 —— 两个筛选按键分别标注为「板块」与「题型」，页面内不再使用旧层级称呼；
+         【＋ 新增题型】【－ 删除题型】【＋ 新增板块】三个管理按键统一排在题型筛选按键后方（#mathFilterOps）。
+         题目固定全量展示(R93)。权限：仅【＋ 新增题型】全局常驻；其余新增/删除按键统一加 hidden-in-child（仅家长模式可见）。 -->
     <div class="math-sub-region" data-page-node-id="R91mathSubRegion">
       <div class="math-filter-bar" data-page-node-id="R103mathFilterBar">
-        <!-- 筛选按键 1：次级卡板块 -->
+        <!-- 筛选按键 1：板块 -->
         <div class="math-filter" id="mathFilterSub" data-page-node-id="R103mathFilterSub">
-          <button type="button" class="math-filter-btn" id="btnMathFilterSub" aria-expanded="false" aria-haspopup="listbox" title="点击选择次级卡板块" data-page-node-id="R103btnFilterSub">
-            <span class="mf-label" data-page-node-id="R103filterSubLabel">次级卡板块</span>
+          <button type="button" class="math-filter-btn" id="btnMathFilterSub" aria-expanded="false" aria-haspopup="listbox" title="点击选择板块" data-page-node-id="R103btnFilterSub">
+            <span class="mf-label" data-page-node-id="R103filterSubLabel">板块</span>
             <span class="mf-value" id="mathFilterSubValue" data-page-node-id="R103filterSubValue">请选择板块</span>
             <span class="mf-caret" aria-hidden="true">▾</span>
           </button>
-          <!-- 下拉面板：该板块列表（点选后联动筛选按键 2） -->
+          <!-- 下拉面板：板块列表（点选后联动筛选按键 2） -->
           <div class="math-sub-tags math-filter-menu" id="mathSubTags" role="listbox" hidden data-page-node-id="R102mathSubTags"></div>
         </div>
-        <!-- 筛选按键 2：三级卡题型（选项随筛选按键 1 联动） -->
+        <!-- 筛选按键 2：题型（选项随筛选按键 1 联动） -->
         <div class="math-filter" id="mathFilterType" data-page-node-id="R103mathFilterType">
           <button type="button" class="math-filter-btn" id="btnMathFilterType" aria-expanded="false" aria-haspopup="listbox" title="点击选择题型" data-page-node-id="R103btnFilterType">
-            <span class="mf-label" data-page-node-id="R103filterTypeLabel">三级卡题型</span>
+            <span class="mf-label" data-page-node-id="R103filterTypeLabel">题型</span>
             <span class="mf-value" id="mathFilterTypeValue" data-page-node-id="R103filterTypeValue">请选择题型</span>
             <span class="mf-caret" aria-hidden="true">▾</span>
           </button>
           <!-- 下拉面板：当前板块下的题型列表（点选后下方实时展示题目） -->
           <div class="math-type-tags math-filter-menu" id="mathTypeTags" role="listbox" hidden data-page-node-id="R102mathTypeTags"></div>
         </div>
+        <!-- R104：管理按键区 —— 统一排在题型筛选按键后方（＋ 新增题型 / － 删除题型 / ＋ 新增板块 及其就地输入行） -->
+        <div class="math-filter-ops" id="mathFilterOps" data-page-node-id="R104mathFilterOps">
+          <button class="pbtn small math-add-card-btn" id="btnMathAddType" data-page-node-id="R94btnMathAddType" title="在当前板块下新增一个题型">＋ 新增题型</button>
+          <button class="pbtn small math-del-card-btn hidden-in-child" id="btnMathDelType" data-page-node-id="R94btnMathDelType" title="删除当前板块下的某个题型">－ 删除题型</button>
+          <button class="pbtn small math-add-card-btn hidden-in-child" id="btnMathAddSubCard" data-page-node-id="R91btnAddSubCard" title="新增一个板块（学期/班型）">＋ 新增板块</button>
+          <span class="math-inline-add hidden" id="mathSubAddInline" data-page-node-id="R91mathSubAddInline">
+            <input type="text" class="math-add-input" id="mathSubNewName" maxlength="24" placeholder="输入板块名称（如 2027 春三 S）" data-page-node-id="R91mathSubNewName">
+            <button class="pbtn small" id="btnMathSubNewOk" data-page-node-id="R91btnSubNewOk">确定</button>
+            <button class="pbtn small math-add-cancel" id="btnMathSubNewCancel" data-page-node-id="R91btnSubNewCancel">取消</button>
+          </span>
+          <span class="math-inline-add hidden" id="mathTypeAddInline" data-page-node-id="R94mathTypeAddInline">
+            <input type="text" class="math-add-input" id="mathTypeNewName" maxlength="24" placeholder="输入题型名称（如 提取公因数）" data-page-node-id="R94mathTypeNewName">
+            <button class="pbtn small" id="btnMathTypeNewOk" data-page-node-id="R94btnTypeNewOk">确定</button>
+            <button class="pbtn small math-add-cancel" id="btnMathTypeNewCancel" data-page-node-id="R94btnTypeNewCancel">取消</button>
+          </span>
+        </div>
       </div>
       <!-- 内容展示区：内联展示选中题型全部题目（取代原弹窗） -->
       <div class="math-content-area" id="mathContentArea" data-page-node-id="R102mathContentArea"></div>
-      <!-- 操作行：新增题型全局常驻；删除题型仅家长模式可见 -->
-      <div class="math-add-row math-type-add-row" data-page-node-id="R94mathTypeMgrRow">
-        <button class="pbtn small math-add-card-btn" id="btnMathAddType" data-page-node-id="R94btnMathAddType" title="在当前次级卡下新增一个题型（三级卡）">＋ 新增题型</button>
-        <button class="pbtn small math-del-card-btn hidden-in-child" id="btnMathDelType" data-page-node-id="R94btnMathDelType" title="删除当前次级卡下的某个题型（三级卡）">－ 删除题型</button>
-        <span class="math-inline-add hidden" id="mathTypeAddInline" data-page-node-id="R94mathTypeAddInline">
-          <input type="text" class="math-add-input" id="mathTypeNewName" maxlength="24" placeholder="输入题型名称（如 提取公因数）" data-page-node-id="R94mathTypeNewName">
-          <button class="pbtn small" id="btnMathTypeNewOk" data-page-node-id="R94btnTypeNewOk">确定</button>
-          <button class="pbtn small math-add-cancel" id="btnMathTypeNewCancel" data-page-node-id="R94btnTypeNewCancel">取消</button>
-        </span>
-      </div>
-      <!-- 新增次级卡：仅家长模式可见 -->
-      <div class="math-add-row math-sub-ops-row hidden-in-child" data-page-node-id="R102mathSubOpsRow">
-        <button class="pbtn small math-add-card-btn hidden-in-child" id="btnMathAddSubCard" data-page-node-id="R91btnAddSubCard" title="新增一张次级卡（学期/班型）">＋ 新增次级卡</button>
-        <span class="math-inline-add hidden" id="mathSubAddInline" data-page-node-id="R91mathSubAddInline">
-          <input type="text" class="math-add-input" id="mathSubNewName" maxlength="24" placeholder="输入次级卡名称（如 2027 春三 S）" data-page-node-id="R91mathSubNewName">
-          <button class="pbtn small" id="btnMathSubNewOk" data-page-node-id="R91btnSubNewOk">确定</button>
-          <button class="pbtn small math-add-cancel" id="btnMathSubNewCancel" data-page-node-id="R91btnSubNewCancel">取消</button>
-        </span>
-      </div>
     </div>
   </div></section>
 
   <!-- R102：原「题型列表页」独立页与原题目详情弹窗均已删除。
-       R103：乐读数学改为「筛选按键1（次级卡板块）→ 筛选按键2（三级卡题型）→ 内联内容区」的两级下拉筛选流。 -->
+       R104：乐读数学 = 筛选按键1（板块）→ 筛选按键2（题型）→ 内联内容区；管理按键统一排在筛选按键后方。 -->
 
   <!-- ================= 学而思英语 V20：恢复 V18 状态（仅学习汇总：词汇 + 语法） ================= -->
   <section class="page page-xueersi" data-page="xueersi" data-zone="xueersi" hidden data-page-node-id="8uKecaiCoL2NDkdjl8IRDG">
@@ -6519,7 +6546,7 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 <!-- R56-1：数学「录入方式选择」弹窗与「拍照录入」弹窗已按需求删除 —— 新增内容统一进入新增页 -->
 <!-- R94：「新增内容」选择弹窗已删除 —— 「新增题目」「新增知识笔记」两个入口直接落在题型详情板块内 -->
 
-<!-- ========== 弹窗：R94 － 删除题型（列出当前次级卡全部题型，点选后二次确认） ========== -->
+<!-- ========== 弹窗：R94 － 删除题型（列出当前板块全部题型，点选后二次确认） ========== -->
 <div class="modal-mask" id="modalMathDelType" hidden data-page-node-id="R94mathDelTypeModal">
   <div class="modal-box" style="min-width:420px" data-page-node-id="R94mathDelTypeBox">
     <div class="modal-head">
@@ -6528,7 +6555,7 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
     </div>
     <div class="modal-body">
       <div class="math-del-type-list" id="mathDelTypeList" data-page-node-id="R94mathDelTypeList"></div>
-      <div class="form-warn">点选要删除的题型（三级卡）。删除后该题型下的题目会回到「未分类」，题目本身不会丢失。</div>
+      <div class="form-warn">点选要删除的题型。删除后该题型下的题目会回到「未分类」，题目本身不会丢失。</div>
     </div>
   </div>
 </div>
@@ -33803,7 +33830,7 @@ May / Can I /we have …, please? 请问我 / 我们可以拿…… 吗？
   // ============ 导航 ============
   function goPage(page){
     $$('.page').forEach(p=>p.hidden = (p.dataset.page!==page));
-    // R101：乐读数学「题型列表页」已删除（次级卡下方就地加载三级卡），导航特判随之移除
+    // R101：乐读数学「题型列表页」已删除（板块下方就地加载题型），导航特判随之移除
     $$('.nav-btn').forEach(b=>b.classList.toggle('active', b.dataset.page===page));
     // V14：种植园背景自然声 — 离开种植园时停止，进入时按「设置」里的背景音乐开关决定播放
     if(page==='farm'){
@@ -38060,10 +38087,66 @@ I'm good at running.`},
     });
   }
 
+  // R104：首页介绍卡里的「学段」文字（默认三年级）—— 仅家长模式可编辑修改，普通用户模式只读
+  const DEFAULT_HOME_GRADE = '三年级';
+  function getHomeGrade(){
+    try {
+      const st = S.load();
+      return ((st && st.profile && st.profile.grade) || DEFAULT_HOME_GRADE);
+    } catch(e){ return DEFAULT_HOME_GRADE; }
+  }
+  function setHomeGrade(v){
+    const val = String(v == null ? '' : v).trim().slice(0, 20) || DEFAULT_HOME_GRADE;
+    const st = S.load();
+    st.profile = st.profile || {};
+    st.profile.grade = val;
+    S.save(st);
+    renderHomeGrade();
+    toast('学段已更新为「' + val + '」');
+  }
+  function renderHomeGrade(){
+    const el = document.getElementById('homeGrade');
+    if(el) el.textContent = getHomeGrade();
+    // 普通用户模式：不给出任何编辑入口（✎ 由 hidden-in-child 隐藏，此处再作 JS 兜底）
+    const btn = document.getElementById('btnGradeEdit');
+    if(btn) btn.style.display = isChild() ? 'none' : '';
+  }
+  // R104：家长点击 ✎ → 学段文字就地变输入框，Enter/失焦保存，Esc 取消
+  function openHomeGradeEditor(){
+    if(isChild()){ toast('学段仅家长模式可修改'); return; }
+    const gradeEl = document.getElementById('homeGrade');
+    if(!gradeEl || document.getElementById('homeGradeInput')) return;
+    const btn = document.getElementById('btnGradeEdit');
+    const inp = document.createElement('input');
+    inp.type = 'text'; inp.id = 'homeGradeInput'; inp.className = 'wp-grade-input';
+    inp.maxLength = 20; inp.value = getHomeGrade();
+    gradeEl.style.display = 'none';
+    if(btn) btn.style.display = 'none';
+    gradeEl.parentNode.insertBefore(inp, gradeEl.nextSibling);
+    try { inp.focus(); inp.select(); } catch(e){}
+    let closed = false;
+    const finish = (commit)=>{
+      if(closed) return; closed = true;
+      const val = inp.value.trim();
+      try { inp.remove(); } catch(e){}
+      gradeEl.style.display = '';
+      if(btn) btn.style.display = '';
+      if(commit && val && val !== getHomeGrade()) setHomeGrade(val);
+    };
+    inp.addEventListener('click', e => e.stopPropagation());
+    inp.addEventListener('keydown', e => {
+      e.stopPropagation();
+      if(e.key === 'Enter'){ e.preventDefault(); finish(true); }
+      else if(e.key === 'Escape'){ e.preventDefault(); finish(false); }
+    });
+    inp.addEventListener('blur', ()=>finish(true));
+  }
+
   function renderHome(){
     const st = S.load();
     // 顶部 Nick 信息（"Hi, I'm Nick!" 已置于头像下方居中显示 — 此处不再需要 nickname 文本节点）
     $('#homeStreak').textContent = st.archive.consecutiveDays;
+    renderHomeGrade(); // R104：学段文字（默认三年级，家长模式可改）
     const expMax = 100;
     const expPct = Math.min(100, (st.archive.exp||0)%expMax);
     $('#homeExpFill').style.width = expPct+'%';
@@ -39280,8 +39363,8 @@ I'm good at running.`},
 
   // ============ 乐读数学（v10：仅「题库」+ 动态题型子板块；思路/答案直接呈现；仅留「掌握」键 +2⭐） ============
   // R93：原「题库 / 需巩固 / 已掌握」全局筛选按键已按需求移除 —— 题目固定全量展示（不再按状态过滤）
-  let mathGroupId = '';     // R91：当前选中的次级卡 id（空 → 渲染时落到默认次级卡）
-  let mathTypeSel = '';     // R92：题型列表页中当前选中的题型（三级卡）
+  let mathGroupId = '';     // R91：当前选中的板块 id（空 → 渲染时落到默认板块）
+  let mathTypeSel = '';     // R92：当前选中的题型
   let editingMathId = null; // V56-Req10：当前正在编辑的数学题 id（null = 新增）
   // 从题库中提取所有题型（保持首次出现顺序），至少保证「提取公因数」子板块存在
   function mathTypeList(){
@@ -39303,19 +39386,19 @@ I'm good at running.`},
     const c = mathCounts(items);
     return `<span class="mti-nums" title="已掌握 ${c.done} 题 / 未掌握 ${c.need} 题"><b class="mnum-ok">${c.done}</b><i class="mnum-sep">/</i><b class="mnum-need">${c.need}</b></span>`;
   }
-  // R102：次主题卡 → 横向标签；点标签筛选下方三级卡
+  // R102：板块 → 横向标签；点标签筛选下方题型（R104：层级统称统一为「板块 / 题型」）
   function renderMathSubCards(groups, activeId){
     const el = document.getElementById('mathSubTags');
     if(!el) return;
     const list = groups||[];
-    // R103：次级卡板块列表收进「筛选按键 1」的下拉面板（无板块时给空态提示）
+    // R103：板块列表收进「筛选按键 1」的下拉面板（无板块时给空态提示）
     el.innerHTML = list.length
       ? list.map(g => `
-      <button class="math-sub-tag ${g.id===activeId?'active':''}" data-math-group="${esc(g.id)}" role="option" aria-selected="${g.id===activeId?'true':'false'}" title="筛选「${esc(g.name)}」的三级卡题型">
+      <button class="math-sub-tag ${g.id===activeId?'active':''}" data-math-group="${esc(g.id)}" role="option" aria-selected="${g.id===activeId?'true':'false'}" title="筛选「${esc(g.name)}」下的题型">
         <span class="msc-name">${esc(g.name)}</span>
         <span class="msc-count">${g.types.length} 题型</span>
       </button>`).join('')
-      : '<div class="math-filter-empty">暂无次级卡板块</div>';
+      : '<div class="math-filter-empty">暂无板块</div>';
     updateMathFilterLabels();
   }
   // R103：两个筛选按键的开合（下拉面板 = #mathSubTags / #mathTypeTags，默认收起）
@@ -39338,7 +39421,7 @@ I'm good at running.`},
     const tv = document.getElementById('mathFilterTypeValue');
     if(tv) tv.textContent = mathTypeSel || '请选择题型';
   }
-  // R91：当前次级卡（选中项失效/为空时回落到「首个有三级卡的次级卡」，保证默认停在承载题型的卡上）
+  // R91：当前板块（选中项失效/为空时回落到「首个有题型的板块」，保证默认停在承载题型的板块上）
   function activeMathGroup(groups){
     const list = groups || (S.getMathGroups ? S.getMathGroups() : []);
     if(!list.length) return null;
@@ -39347,13 +39430,14 @@ I'm good at running.`},
     mathGroupId = g.id;
     return g;
   }
-  // R92：题型列表页 —— 当前次级卡下的题型（三级卡）列表；R93：固定全量展示（不再按掌握状态过滤）
+  // R92：当前板块下的题型列表；R93：固定全量展示（不再按掌握状态过滤）
   function mathGroupedTypes(all, active){
     return (active ? active.types : []).map(t => [t, all.filter(m => (m.type||'未分类') === t)]);
   }
-  // R92：单个题型（三级卡）的详细内容 —— 沿用原有排版（题型头 / 笔记卡首位 / 题目卡）
+  // R92：单个题型的详细内容 —— 沿用原有排版（题型头 / 笔记卡首位 / 题目卡）
   // R93：题型前方不再带算盘图标；题数统计文字换成同排彩色数字「已掌握/未掌握」；移除卡内删除键
-  // R94 需求③：原【＋ 新增题型】改名为【＋ 新增题目】，并移入本详情板块底部；同排保留【＋ 新增知识笔记】
+  // R94 需求③：原【＋ 新增题型】改名为【＋ 新增题目】；同排保留【＋ 新增知识笔记】
+  // R104 需求③：两个入口从详情板块底部移到题型头内 —— 紧跟统计数据右侧对齐（.math-group-actions 用 margin-left:auto）
   function mathTypeGroupHtml(type, items){
     // R53-1：该题型的知识笔记展示在第一个内容卡片位置（用户自建笔记在前）
     const gNotes = (S.getMathNotes ? S.getMathNotes() : []).filter(n => (n.type||'未分类') === type);
@@ -39361,21 +39445,21 @@ I'm good at running.`},
     // R91：允许「暂无题目」（新建题型后先建卡）；此时给出录入引导
     const body = (noteCards || items.length)
       ? `${noteCards}${items.map(mathCardHtml).join('')}`
-      : `<div class="math-group-empty">「${esc(type)}」暂无题目，点下方「＋ 新增题目」录入吧～</div>`;
+      : `<div class="math-group-empty">「${esc(type)}」暂无题目，点右侧「＋ 新增题目」录入吧～</div>`;
     return `
       <div class="math-type-group" data-type="${esc(type)}">
         <div class="math-type-group-head">
           <span class="math-group-name">${esc(type)}</span>
           ${mathNumsHtml(items)}
+          <div class="math-group-actions">
+            <button class="pbtn small math-add-card-btn hidden-in-child" data-math-add-problem="${esc(type)}" title="为「${esc(type)}」录入一道新题目">＋ 新增题目</button>
+            <button class="pbtn small math-notecard-add-btn hidden-in-child" data-math-add-note="${esc(type)}" title="为「${esc(type)}」添加知识笔记">＋ 新增知识笔记</button>
+          </div>
         </div>
         <div class="math-group-body">${body}</div>
-        <div class="math-group-actions">
-          <button class="pbtn small math-add-card-btn hidden-in-child" data-math-add-problem="${esc(type)}" title="为「${esc(type)}」录入一道新题目">＋ 新增题目</button>
-          <button class="pbtn small math-notecard-add-btn hidden-in-child" data-math-add-note="${esc(type)}" title="为「${esc(type)}」添加知识笔记">＋ 新增知识笔记</button>
-        </div>
       </div>`;
   }
-  // R94：题型（三级卡）管理 —— 【－ 删除题型】弹出当前次级卡下的题型列表，点选后二次确认删除
+  // R94：题型管理 —— 【－ 删除题型】弹出当前板块下的题型列表，点选后二次确认删除
   function renderMathDelTypeList(){
     const el = document.getElementById('mathDelTypeList');
     if(!el) return;
@@ -39383,7 +39467,7 @@ I'm good at running.`},
     const types = (active && active.types.length) ? active.types : [];
     el.innerHTML = types.length
       ? types.map(t => `<button type="button" class="math-del-type-item" data-math-del-type="${esc(t)}"><span class="mdti-name">${esc(t)}</span><span class="mdti-del">🗑️ 删除</span></button>`).join('')
-      : '<div class="math-del-type-empty">这张次级卡还没有题型可删除</div>';
+      : '<div class="math-del-type-empty">这个板块还没有题型可删除</div>';
   }
   function openMathDelTypeMgr(){
     renderMathDelTypeList();
@@ -39458,7 +39542,7 @@ I'm good at running.`},
   }
   // R71-2：题型卡默认收起，点击头部展开题目内容（会话内保持展开/收起状态）
   let _mathExpanded = new Set();
-  // R93：乐读数学主页无筛选态；R103：筛选按键1（次级卡板块）→ 筛选按键2（三级卡题型）→ 内联内容区
+  // R93：乐读数学主页无筛选态；R104：筛选按键1（板块）→ 筛选按键2（题型）→ 内联内容区
   function renderMath(){
     const groupsDef = (S.getMathGroups ? S.getMathGroups() : []);
     // R103：进入/刷新板块时收起两个下拉面板，保证只呈现当前选中项；随后渲染两个面板与内容区
@@ -39469,7 +39553,7 @@ I'm good at running.`},
   }
   // R102 的横向标签行与 R101 的【显示】键均已废弃移除（R103 起改为两个筛选按键的下拉面板）
 
-  // R103：三级卡 → 「筛选按键 2」下拉面板（#mathTypeTags），选项随筛选按键 1 选中的板块联动；点选项实时展示题型内容
+  // R104：题型选项 → 「筛选按键 2」下拉面板（#mathTypeTags），选项随筛选按键 1 选中的板块联动；点选项实时展示题型内容
   function renderMathTypes(){
     const all = (S.load().mathProblems) || [];
     const active = activeMathGroup(S.getMathGroups ? S.getMathGroups() : []);
@@ -39497,7 +39581,7 @@ I'm good at running.`},
     const body = document.getElementById('mathContentArea');
     if(!body) return;
     if(!mathTypeSel){
-      body.innerHTML = '<div class="math-group-empty">点上方「三级卡题型」筛选按键选择题型～</div>';
+      body.innerHTML = '<div class="math-group-empty">点上方「题型」筛选按键选择题型～</div>';
       return;
     }
     body.innerHTML = mathTypeGroupHtml(mathTypeSel, items);
@@ -39582,7 +39666,7 @@ I'm good at running.`},
       if(warn) warn.textContent = '正在编辑本题，保存后将更新原题目';
     } else {
       editingMathId = null;
-      // R91：默认选中当前次级卡下的第一个三级卡（题型），题库页无三级卡时回退「提取公因数」；可下拉改选或新增题型
+      // R91：默认选中当前板块下的第一个题型，板块内无题型时回退「提取公因数」；可下拉改选或新增题型
       // R94：从题型详情板块的【＋ 新增题目】进来时，用 opts.type 预填为当前题型的名称
       const _ag = activeMathGroup();
       const defType = (opts && opts.type) ? opts.type : ((_ag && _ag.types.length) ? _ag.types[0] : '提取公因数');
@@ -39619,14 +39703,14 @@ I'm good at running.`},
     }
     hideModal('#modalMathManual');
     editingMathId = null;
-    // R91/R92/R102：保存后定位到该题型所属次级卡并筛选三级卡标签（全新题型挂到当前次级卡下）
+    // R91/R92/R102：保存后定位到该题型所属板块并筛选题型标签（全新题型挂到当前板块下）
     if(S.groupIdOfMathType && S.assignMathTypeToGroup){
       if(!S.groupIdOfMathType(type)) S.assignMathTypeToGroup(type, mathGroupId);
       const gid = S.groupIdOfMathType(type);
       if(gid) mathGroupId = gid;
     }
     mathTypeSel = type;
-    // R102：保存后定位到该题型所属次级卡 → 筛选三级卡标签 → 内联展示该题型题目
+    // R102：保存后定位到该题型所属板块 → 筛选题型标签 → 内联展示该题型题目
     goPage('math');
     renderMath();
     renderHome();
@@ -39658,12 +39742,12 @@ I'm good at running.`},
     S.addMathNote({ type, body, img: _mnImg });
     hideModal('#modalMathNote');
     toast('📝 知识笔记已保存到「' + type + '」');
-    // R91/R92：定位到该题型所属次级卡并跳到题型列表页（全新题型挂到当前次级卡下）
+    // R91/R92：定位到该题型所属板块（全新题型挂到当前板块下）
     if(!S.groupIdOfMathType(type) && S.assignMathTypeToGroup) S.assignMathTypeToGroup(type, mathGroupId);
     const noteGid = S.groupIdOfMathType(type);
     if(noteGid) mathGroupId = noteGid;
     mathTypeSel = type;
-    // R102：保存后定位到该题型所属次级卡 → 筛选三级卡标签 → 内联展示该题型内容
+    // R102：保存后定位到该题型所属板块 → 筛选题型标签 → 内联展示该题型内容
     goPage('math');
     renderMath();
   }
@@ -45740,6 +45824,11 @@ I'm good at running.`},
     }
     // R28-3：家长模式编辑首页问候语知识库（20 条，每日轮换 1 条）
     if($('#btnGreetEdit')){ $('#btnGreetEdit').onclick = () => { openGreetEditor(); }; }
+    // R104：首页学段文字编辑（✎ 带 hidden-in-child，普通用户模式不可见；此处再作 click 层的家长态兜底）
+    if($('#btnGradeEdit') && !$('#btnGradeEdit')._gradeBound){
+      $('#btnGradeEdit')._gradeBound = true;
+      $('#btnGradeEdit').onclick = (e) => { e.stopPropagation(); openHomeGradeEditor(); };
+    }
     $('#btnSaveTask').onclick=saveTaskFromModal;
     $('#btnDeleteTask').onclick=()=>{ if(editingTaskId){S.deleteTask(editingTaskId); hideModal('#modalTaskEdit'); toast('已删除'); renderToday(); renderHome();} };
     // V11.4：日期多选实时预览
@@ -45803,7 +45892,7 @@ I'm good at running.`},
         if(mbtn){ e.preventDefault(); e.stopPropagation(); mbtn.click(); return; }
       }
     });
-    // R103：筛选按键 1 开合 —— 点按键展开/收起「次级卡板块」下拉面板（两个面板互斥，同一时刻只开一个）
+    // R104：筛选按键 1 开合 —— 点按键展开/收起「板块」下拉面板（两个面板互斥，同一时刻只开一个）
     const btnMathFilterSubEl = document.getElementById('btnMathFilterSub');
     if(btnMathFilterSubEl && !btnMathFilterSubEl._bound){
       btnMathFilterSubEl._bound = true;
@@ -45814,7 +45903,7 @@ I'm good at running.`},
         setMathFilterOpen('sub', willOpen);
       });
     }
-    // R103：筛选按键 2 开合 —— 点按键展开/收起「三级卡题型」下拉面板
+    // R104：筛选按键 2 开合 —— 点按键展开/收起「题型」下拉面板
     const btnMathFilterTypeEl = document.getElementById('btnMathFilterType');
     if(btnMathFilterTypeEl && !btnMathFilterTypeEl._bound){
       btnMathFilterTypeEl._bound = true;
@@ -45834,7 +45923,7 @@ I'm good at running.`},
       });
       document.addEventListener('keydown', e => { if(e.key === 'Escape') closeMathFilters(); });
     }
-    // R103：点「次级卡板块」选项 → 收起面板 1，并自动展开面板 2（里面已是该板块的全部题型）
+    // R104：点「板块」选项 → 收起面板 1，并自动展开面板 2（里面已是该板块的全部题型）
     const mathSubTagsEl = document.getElementById('mathSubTags');
     if(mathSubTagsEl && !mathSubTagsEl._bound){
       mathSubTagsEl._bound = true;
@@ -45871,17 +45960,17 @@ I'm good at running.`},
         });
       }
     }
-    // 【＋ 新增次级卡】→ 就地命名后追加一张次级卡（并切换到该卡）
+    // R104：【＋ 新增板块】→ 就地命名后追加一个板块（并切换到该板块）
     bindMathInlineAdd('btnMathAddSubCard','mathSubAddInline','mathSubNewName','btnMathSubNewOk','btnMathSubNewCancel', v => {
       const r = S.addMathGroup(v);
       if(!r.ok){ toast(r.msg || '新增失败'); return false; }
       mathGroupId = r.group.id;
       mathTypeSel = '';
-      toast('✓ 已新增次级卡「' + r.group.name + '」');
+      toast('✓ 已新增板块「' + r.group.name + '」');
       renderMath();
       return true;
     });
-    // R94：【＋ 新增题型】→ 就地命名后，在当前次级卡下追加一个题型（三级卡）
+    // R94：【＋ 新增题型】→ 就地命名后，在当前板块下追加一个题型
     bindMathInlineAdd('btnMathAddType','mathTypeAddInline','mathTypeNewName','btnMathTypeNewOk','btnMathTypeNewCancel', v => {
       const ag = activeMathGroup();
       const r = S.addMathTypeToGroup(ag ? ag.id : mathGroupId, v);
@@ -45891,7 +45980,7 @@ I'm good at running.`},
       renderMath();
       return true;
     });
-    // R103：点「三级卡题型」选项 → 收起面板 2，下方内容区实时内联展示该题型全部题目（无弹窗、无独立页）
+    // R104：点「题型」选项 → 收起面板 2，下方内容区实时内联展示该题型全部题目（无弹窗、无独立页）
     const mathTypeListEl = document.getElementById('mathTypeTags');
     if(mathTypeListEl && !mathTypeListEl._bound){
       mathTypeListEl._bound = true;
@@ -45929,7 +46018,7 @@ I'm good at running.`},
         });
       });
     }
-    // R102：乐读数学层级标签化（次级卡标签 → 三级卡标签 → 内联内容区），无独立页/无弹窗，故无返回键
+    // R104：乐读数学层级标签化（板块标签 → 题型标签 → 内联内容区），无独立页/无弹窗，故无返回键
     // V15-T1：大阅读打卡已删除（⭕️/朱迪/录音键），仅保留「＋新增」入口
     $$('[data-reading-add]').forEach(b=>b.onclick=()=>openReadingAdd(b.dataset.readingAdd));
     // 需求②③：阅读栏「📚 文库」按钮（优秀作文 / 英语短文）— 打开文库列表 + 导入
