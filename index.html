@@ -45273,8 +45273,69 @@ I'm good at running.`},
         }); });
         return out;
       } },
-    { key:'math', label:'🧮 数学专区', subs:[{key:'all',label:'已掌握题目'}],
-      extract:(st)=>((st.math)||[]).filter(m=>m&&m.mastered).map(m=>({类型:(m.types&&m.types[0])||'题',编号:m.id||'',题目:m.body||m.enunciado||''})) },
+    { key:'math', label:'🧮 数学专区', subs:[
+        {key:'all',label:'全部题目'},{key:'mastered',label:'已掌握'},{key:'notMastered',label:'未掌握'},{key:'bank',label:'待学题库'} ],
+      // R105：原逻辑读已废弃的旧数学数组（永远 0 条）；现读 st.mathProblems（{type,title,desc,solution,mastery}）+ 按掌握状态切片
+      extract:(st,sub)=>{
+        const ms = (sub==='all') ? null : (sub||'all');
+        const list = ((st.mathProblems)||[]).filter(m => ms ? ((m.mastery||'bank')===ms) : true);
+        const stMap = {mastered:'已掌握', notMastered:'未掌握', bank:'待学'};
+        return list.map(m=>({
+          题型:m.type||'未分类',
+          题目:m.title||m.desc||m.body||'',
+          解析:m.solution||'',
+          掌握状态:stMap[m.mastery||'bank']||'待学',
+          添加日期:m.createdAt ? new Date(m.createdAt).toLocaleDateString('zh-CN') : ''
+        }));
+      } },
+    { key:'farm', label:'🌱 种植园', subs:[
+        {key:'all',label:'全部概览'},{key:'plots',label:'地块状态'},{key:'inventory',label:'仓库库存'},{key:'gifts',label:'心愿盒礼物'} ],
+      // R105：补齐种植园数据导出（st.plots / st.inventory / st.gifts）
+      extract:(st,sub)=>{
+        const plots=(st.plots)||[]; const inv=st.inventory||{}; const gifts=(st.gifts)||[];
+        if(sub==='plots') return plots.map((p,i)=>({地块:i+1,状态:p.kind||'',阶段:(p.stage||0)+1,作物:p.cropId||'',浇水:p.waterCount||0,日照:p.sunCount||0,已种次数:p.plantedTimes||0}));
+        if(sub==='inventory') return [{水滴:inv.water||0,阳光:inv.sun||0,种子:JSON.stringify(inv.seeds||{}),累计收获:JSON.stringify(inv.harvested||{})}];
+        if(sub==='gifts') return gifts.map((g,i)=>({序号:i+1,名称:g.name||'',价格金币:g.price||'',获得时间:g.ts?new Date(g.ts).toLocaleDateString('zh-CN'):''}));
+        const out = plots.map((p,i)=>({分类:'地块',序号:i+1,详情:`${p.kind||''} 第${(p.stage||0)+1}阶 作物=${p.cropId||'-'} 水${p.waterCount||0}/阳${p.sunCount||0} 已种${p.plantedTimes||0}`}));
+        out.push({分类:'仓库',详情:`水=${inv.water||0} 阳=${inv.sun||0} 种子=${JSON.stringify(inv.seeds||{})} 累计收获=${JSON.stringify(inv.harvested||{})}`.slice(0,400)});
+        gifts.forEach((g,i)=>out.push({分类:'心愿盒',序号:i+1,详情:`${g.name||''} ${g.price||''}金币`}));
+        return out;
+      } },
+    { key:'xueersi', label:'📖 学而思英语', subs:[
+        {key:'all',label:'全部内容'},{key:'words',label:'单词库'},{key:'grammar',label:'语法库'},{key:'stories',label:'绘本故事'},{key:'sentences',label:'重点句式'},{key:'checkin',label:'每日巩固打卡'},{key:'wrongs',label:'错题本'} ],
+      // R105：补齐学而思英语导出（xueersiContent / xueersiCheckin / xueersiWrongs）
+      extract:(st,sub)=>{
+        const xc=st.xueersiContent||{}; const xck=st.xueersiCheckin||{};
+        const w=(xc.words||[]).map(it=>({类型:'单词',英文:it.en||'',中文:it.zh||'',例句:it.example||'',例句中文:it.exampleZh||''}));
+        const g=(xc.grammar||[]).map(it=>({类型:'语法',英文:it.en||it.title||'',中文:it.zh||''}));
+        const s=(xc.stories||[]).map(it=>({类型:'绘本',标题:it.title||'',中文标题:it.zh||'',英文:it.en||'',中文:it.zhBody||it.body||''}));
+        const se=(xc.sentences||[]).map(it=>({类型:'句式',英文:it.en||'',中文:it.zh||''}));
+        const ck=(xck.items||[]).map(it=>({类型:'打卡',日期:xck.lastDate||'',内容:it.en||it.title||'',结果:it.ok?'已会':'待巩固'}));
+        const wr=(st.xueersiWrongs||[]).map(it=>({类型:'错题',题干:it.title||it.en||'',正确答案:it.answer||'',我的答案:it.userAnswer||'',提示:it.hint||''}));
+        if(sub==='all') return [].concat(w,g,s,se,ck,wr);
+        return ({words:w,grammar:g,stories:s,sentences:se,checkin:ck,wrongs:wr})[sub]||[];
+      } },
+    { key:'km', label:'🧭 知识秘境', subs:[
+        {key:'all',label:'全部概览'},{key:'progress',label:'闯关进度'},{key:'wrongs',label:'错题本'} ],
+      // R105：补齐知识秘境导出（st.km.wrong/stars/coins/cleared + st.chuangguan）
+      extract:(st,sub)=>{
+        const km=st.km||{}; const c=st.chuangguan||{};
+        const prog=[
+          {项目:'当前关卡',值:c.level||1},
+          {项目:'累计答对',值:c.totalCorrect||0},
+          {项目:'最佳连对',值:c.bestStreak||0},
+          {项目:'秘境星星',值:km.stars||0},
+          {项目:'秘境金币',值:km.coins||0},
+          {项目:'中文森林通关',值:(km.cleared&&km.cleared.chinese)?'是':'否'},
+          {项目:'逻辑峡谷通关',值:(km.cleared&&km.cleared.math)?'是':'否'},
+          {项目:'语言海湾通关',值:(km.cleared&&km.cleared.english)?'是':'否'},
+          {项目:'综合神殿通关',值:(km.cleared&&km.cleared.mixed)?'是':'否'}
+        ];
+        const wrongs=(km.wrong||[]).map(it=>({学科:it.subject||'',题干:it.title||'',正确答案:it.answer||'',我的答案:it.userAnswer||'',提示:it.hint||''}));
+        if(sub==='progress') return prog;
+        if(sub==='wrongs') return wrongs;
+        return prog.concat(wrongs.map(w=>({项目:'错题',值:`${w.学科||''} ${w.题干||''}`})));
+      } },
     { key:'go', label:'♟️ 围棋对弈', subs:[{key:'all',label:'全部对弈'}],
       extract:(st)=>((st.goRecords)||[]).map(r=>({日期:r.date,对手:r.opponent||'',结果:r.result||'',备注:r.note||''})) },
   ];
@@ -45452,7 +45513,9 @@ I'm good at running.`},
     const blocks=buildExportBlocks(board.value, sub?sub.value:'all');
     const total=blocks.reduce((n,b)=>n+b.records.length,0);
     if(!total){ toast('所选内容暂无数据，无需导出'); return; }
-    const name = board.value==='all' ? '全部板块' : (getExportBoard(board.value).label + ((sub&&sub.value&&sub.value!=='all')?('·'+sub.value):''));
+    // R105：文件名分版块用中文 label（如「好词好句」）而非 key（如 cnWords）
+    const subLabel = (sub && sub.value && sub.value!=='all') ? ((getBoardSubs(S.load(), board.value).find(s=>s.key===sub.value)||{}).label || sub.value) : '';
+    const name = board.value==='all' ? '全部板块' : (getExportBoard(board.value).label + (subLabel?('·'+subLabel):''));
     downloadExport(blocks, fmt?fmt.value:'json', name);
   }
   function doExportAll(){
