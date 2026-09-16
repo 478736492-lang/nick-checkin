@@ -45225,7 +45225,8 @@ I'm good at running.`},
         return list.map(t=>({名称:t.name||'(未命名)',学科:t.subject||'',类型:t.type||'',说明:t.desc||t.standard||'',成长星:t.stars||1,时长:(t.minutes||0)+'分钟'}));
       } },
     { key:'records', label:'✅ 打卡记录', subs:[
-        {key:'all',label:'全部记录'},{key:'语文',label:'语文'},{key:'数学',label:'数学'},{key:'英语',label:'英语'},{key:'运动',label:'运动·作息'},{key:'围棋',label:'围棋'},{key:'家务',label:'家务'},{key:'错题',label:'错题'} ],
+        // R105：移除恒空的「错题」分版块（该学科打卡任务已下线，真实错题改由「知识秘境→错题本」「学而思英语→错题本」导出；历史记录仍含在「全部记录」中）
+        {key:'all',label:'全部记录'},{key:'语文',label:'语文'},{key:'数学',label:'数学'},{key:'英语',label:'英语'},{key:'运动',label:'运动·作息'},{key:'围棋',label:'围棋'},{key:'家务',label:'家务'} ],
       extract:(st,sub)=>{
         const subjMap={语文:'语文',数学:'数学',英语:'英语','运动':['运动','作息'],围棋:'围棋',家务:'习惯家务',错题:'错题'};
         const want=subjMap[sub];
