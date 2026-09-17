@@ -5125,6 +5125,48 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .km-midbar-side .km-stats,.km-midbar-side .km-quick{margin:0}
 .km-midbar-side .km-stat{background:#f1f6fc;border:1px solid #dce8f7}
 
+/* ========== R112：种植园园景提升 —— 5 张子卡半透明 + 布局留白 ==========
+   需求：① 调整 5 张子卡（田地区 field-frame / 仓库 farm-warehouse / 三面板 .panel）布局与
+   遮挡，使大卡片(.page-content)内园景更完整显露，避免子卡大面积连续覆盖主背景；
+   ② 子卡各自独立半透明背景（低饱和暖米 / 浅砂，国风敦煌田园色系）；
+   ③ 视觉统一：C4D 低饱和·通透渐变·圆角·阴影·色系沿用平台标准；不改子卡功能与交互。
+   仅改背景 / 通透度 / 留白，子卡结构、事件、交互逻辑不变。 */
+/* 田地区：浅砂半透明（保留柔和绿边暗示田块），园景可透出 */
+.page-farm .field-frame{
+  background:rgba(246,238,216,.80);
+  border:3px solid rgba(120,150,90,.55);
+  box-shadow:0 8px 18px rgba(120,90,50,.16), inset 0 0 16px rgba(120,90,50,.05);
+}
+/* 仓库：浅砂半透明 */
+.page-farm .farm-warehouse{
+  background:rgba(246,238,216,.80);
+  border-color:rgba(196,167,138,.65);
+  box-shadow:0 6px 14px rgba(120,90,50,.14);
+}
+/* 三张面板：浅砂半透明 */
+.page-farm .panel{
+  background:rgba(246,238,216,.80);
+  border-color:rgba(196,167,138,.65);
+  box-shadow:0 6px 14px rgba(120,90,50,.12);
+}
+/* 子卡内单元格：通透白，使园景可透出（深色文字可读性保留） */
+.page-farm .wh-item,
+.page-farm .market-item,
+.page-farm .shop-item,
+.page-farm .wish-item{
+  background:rgba(255,255,255,.72);
+  border-color:rgba(196,167,138,.5);
+}
+.page-farm .wish-item{background:rgba(243,247,224,.74);border-color:rgba(179,200,123,.55)}
+.page-farm .wish-item.fulfilled{background:rgba(255,255,255,.72);border-color:rgba(196,167,138,.5)}
+.page-farm .wish-item.empty{background:rgba(243,239,225,.70);border-color:rgba(200,190,160,.5)}
+.page-farm .warehouse-title,
+.page-farm .panel-title{color:#7a5a32}
+/* 布局留白：拉开子卡间距，使园景在沟槽处连续显露（避免大面积连续覆盖主背景） */
+.page-farm .farm-main{gap:22px;padding:0 18px 16px}
+.page-farm .farm-bottom-panels{gap:18px;padding:8px 18px 20px}
+.page-farm .page-content{padding:18px 20px}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
