@@ -5204,6 +5204,17 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 }
 .page[data-page="settings"] .page-title{--title-bg-image:var(--title-bg-settings)}
 
+/* ================= R115：设置中心模式选择按键移到主题卡下方 =================
+   需求：模式选择按键（孩子/家长，#modeSegSettings）从主题卡「上方」移到「下方」。
+   DOM 顺序（index.html）：.page-title.settings-title-card → .settings-mode-topbar → .page-content。
+   ① ID / 交互 / seg 自身样式一律不变（.settings-mode-seg-mini 系列规则沿用）；
+   ② 本块仅覆盖 R113 的 topbar 间距与主题卡下边距：
+      — R113 场景为「卡上方」，依赖 .page-title margin-bottom:20px 制造卡前间隙；
+      — 现移到「卡下方」，主题卡与模式条收为 6px 一组，模式条与内容底板留 12px。 */
+.page-settings > .page-title.settings-title-card{margin-bottom:6px}
+.settings-mode-topbar{display:flex;justify-content:flex-end;margin:0 2px 12px}
+.settings-mode-topbar .settings-mode-seg-mini{margin-left:0}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -5401,7 +5412,10 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   <!-- ================= R85：设置中心（从任务设置独立出来，统一收纳全部配置） ================= -->
   <section class="page page-settings" data-page="settings" hidden data-page-node-id="R85pageSettings">
     <!-- 标题卡：平台风格 + 模式选择操作按键（无「模式选择」文字） -->
-    <!-- R113：模式选择按键移到主题卡上方独立条，避免卡内拥挤；功能/样式不变 -->
+    <!-- R115：模式选择按键移到主题卡下方独立条（R113 曾在卡上方）；仅调整 DOM 顺序，功能/样式/ID 不变 -->
+        <div class="page-title settings-title-card" data-page-node-id="R85setTitle">
+      <h2 data-page-node-id="R85setTitleLbl"></h2>
+    </div>
     <div class="settings-mode-topbar">
       <div class="settings-mode-seg settings-mode-seg-mini" id="modeSegSettings" data-page-node-id="R85modeSeg">
         <button class="mode-opt" data-mode="child" id="modeChildSettings" data-page-node-id="R85modeChild">
@@ -5414,9 +5428,6 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
         </button>
         <span class="mode-slider" id="modeSliderSettings" data-page-node-id="R85modeSlider"></span>
       </div>
-    </div>
-    <div class="page-title settings-title-card" data-page-node-id="R85setTitle">
-      <h2 data-page-node-id="R85setTitleLbl"></h2>
     </div><div class="page-content">
 
     <!-- 设置中心卡片网格 -->
