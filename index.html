@@ -5116,6 +5116,15 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .page[data-page="newworld"] .nw-topbar{background-image:var(--title-bg-newworld);background-size:cover;background-position:center;background-repeat:no-repeat}
 .km-title-card{background-image:var(--title-bg-knowledge);background-size:cover;background-position:center;background-repeat:no-repeat}
 
+/* ========== R111：知识秘境「主题卡 ↔ 路线路卡」中间区域条 ==========
+   原在主题卡内的欢迎文字 + 数据统计按键（统计/错题/后台修改）迁移至此，仅调整摆放位置，交互与功能不变。
+   主题卡（.km-title-card）仅保留背景贴图，文字已删除（见 Part2）。 */
+.km-midbar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:0 2px 16px;padding:12px 18px;background:rgba(255,255,255,.74);border:1px solid var(--tone-150);border-radius:14px;box-shadow:var(--card-sh-md)}
+.km-midbar-welcome{flex:1 1 280px;min-width:0;font-size:13px;line-height:1.4;color:var(--tone-800)}
+.km-midbar-side{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:flex-end}
+.km-midbar-side .km-stats,.km-midbar-side .km-quick{margin:0}
+.km-midbar-side .km-stat{background:#f1f6fc;border:1px solid #dce8f7}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -5314,7 +5323,7 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   <section class="page page-settings" data-page="settings" hidden data-page-node-id="R85pageSettings">
     <!-- 标题卡：平台风格 + 模式选择操作按键（无「模式选择」文字） -->
     <div class="page-title settings-title-card" data-page-node-id="R85setTitle">
-      <h2 data-page-node-id="R85setTitleLbl">⚙️ 设置中心</h2>
+      <h2 data-page-node-id="R85setTitleLbl"></h2>
       <div class="settings-mode-seg settings-mode-seg-mini" id="modeSegSettings" data-page-node-id="R85modeSeg">
         <button class="mode-opt" data-mode="child" id="modeChildSettings" data-page-node-id="R85modeChild">
           <span class="mode-ico" data-page-node-id="R85modeChildIco"><svg width="20" height="20" viewBox="0 0 24 24" style="display:inline-block;vertical-align:middle"><circle cx="12" cy="10" r="8" fill="#ffdbac"/><path d="M6,6 Q8,3 12,3 Q16,3 18,6" fill="#4a3b2a"/><circle cx="9.5" cy="10" r="1.2" fill="#333"/><circle cx="14.5" cy="10" r="1.2" fill="#333"/><path d="M10,13 Q12,15 14,13" fill="none" stroke="#333" stroke-width="1" stroke-linecap="round"/><path d="M8,18 Q12,16 16,18 L16,22 Q12,21 8,22 Z" fill="#ff8c42"/></svg></span>
@@ -5408,7 +5417,7 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   <!-- ================= 新世界学科素养大本营（首页总览 + 5 个二级子页面） ================= -->
   <section class="page page-newworld" data-page="newworld" data-zone="newworld" hidden data-page-node-id="K7SB9Qwq0I9x8mJUYEJSKK">
     <div class="nw-topbar" data-page-node-id="UEaagnXlM41YYMoTRjUSMU">
-      <span class="nw-topbar-title" data-page-node-id="VP0IYQNp4FcEZhAkS9CsJS">新世界学科素养大本营</span>
+      <span class="nw-topbar-title" data-page-node-id="VP0IYQNp4FcEZhAkS9CsJS"></span>
     </div><div class="page-content">
     <div class="nw-home" id="nwHome" data-page-node-id="NKHILJ2E2FQ9gP8PYGQP1E"><!-- 首页卡片由 renderNewWorld 注入 --></div>
     <!-- 四角立体小星星装饰 -->
@@ -5537,7 +5546,7 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   <!-- ================= 乐读数学（R104：两个筛选按键 + 后方管理按键区 —— 板块 → 题型 → 内容区实时展示） ================= -->
   <section class="page page-math" data-page="math" data-zone="math" hidden data-page-node-id="BPMwO5bewelPZ5Rmqc1FvO">
     <div class="page-title" data-page-node-id="6GaFIcEd2Bvey5euDJeHSd">
-      <h2 data-page-node-id="7FB9UfGb8Y5Jb2seRec3Ek">🧮 乐读数学</h2>
+      <h2 data-page-node-id="7FB9UfGb8Y5Jb2seRec3Ek"></h2>
       <div class="page-actions" data-page-node-id="IpJuhpydqv1OSGbspdyrs2"></div>
     </div><div class="page-content">
     <!-- R104：标题卡下方两个筛选按键 —— 筛选按键1（板块）→ 筛选按键2（题型）→ 下方内联内容区。
@@ -5596,7 +5605,7 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   <!-- ================= 学而思英语 V20：恢复 V18 状态（仅学习汇总：词汇 + 语法） ================= -->
   <section class="page page-xueersi" data-page="xueersi" data-zone="xueersi" hidden data-page-node-id="8uKecaiCoL2NDkdjl8IRDG">
     <div class="page-title" data-page-node-id="7Gt6dCU483P8uDzRgxHIzy">
-      <h2 data-page-node-id="9iuo5X7WkBke3AqVxvOmil">📘 学而思英语</h2>
+      <h2 data-page-node-id="9iuo5X7WkBke3AqVxvOmil"></h2>
       <div class="page-actions" data-page-node-id="7VVK0dkGhrigdb5gGnMQLP">
         <!-- V53：删除学而思标题栏 ⭐ 统计（统计统一在首页） -->
       </div>
@@ -5623,7 +5632,7 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 
   <!-- ================= 大阅读（R53-6：语文阅读/英语阅读全部迁入「收录书屋」，主题按钮切换 + 内容分页） ================= -->
   <section class="page page-reading" data-page="reading" data-zone="reading" hidden data-page-node-id="s9KPFN8u9W4C3eWreSQHUm">
-    <div class="page-title" data-page-node-id="xJsIGaFSq9b0WBJspufwPo"><h2 data-page-node-id="p9agOICDSmhdCi6BeZS35u">📖 大阅读</h2></div><div class="page-content">
+    <div class="page-title" data-page-node-id="xJsIGaFSq9b0WBJspufwPo"><h2 data-page-node-id="p9agOICDSmhdCi6BeZS35u"></h2></div><div class="page-content">
     <!-- R56-6：回退 R53-6 —— 收录书屋退回为独立页面（点按钮切换），主视图恢复「语文三栏 + 英语两栏」并列 -->
     <div class="reading-bs-bar" data-page-node-id="8oC8cVF52ObGALl22uflj2">
       <button class="bs-main-btn" id="bsMainToggle" data-page-node-id="ZFEhv0eT1vHraLOzEJQET1">📚 收录书屋</button>
@@ -5692,7 +5701,7 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   <section class="page page-baike" data-page="baike" data-zone="baike" hidden data-page-node-id="AaaCPVtVn27I1lMHge2vSB">
     <div class="page-title" data-page-node-id="5pEJzxFuIHzGsJ5I8yH3SV">
       <div class="page-title-main" data-page-node-id="zNcEjZxoWgeYGLeJXcMyEA">
-        <h2 data-page-node-id="GUlAUVBSHs2uQW26cBVCqG">🌍 百科大讲堂</h2>
+        <h2 data-page-node-id="GUlAUVBSHs2uQW26cBVCqG"></h2>
       </div>
     </div><div class="page-content">
     <!-- V53：「百科集中营」按键移到「百科大讲堂」标题栏正下方左侧 -->
@@ -5728,7 +5737,7 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 
     <!-- V110：合并「我的种植园」横幅 + 4 统计（⭐💧☀️💰） -->
     <header class="farm-mine-banner" data-page-node-id="k7gGVRGPXTexmfjQSMRLhz">
-      <div class="fmb-title" data-page-node-id="ORAjABkCUuUIXY4NX84Hb4">🌱 我的种植园</div>
+      <div class="fmb-title" data-page-node-id="ORAjABkCUuUIXY4NX84Hb4"></div>
       <div class="farm-title-stats" data-page-node-id="pQoy2qUAJglkq07hfs1Rzl">
         <span class="fts fts-stars" data-page-node-id="ibQitRhCqDh8S9ntY9D6ML"><span class="fts-ico" data-page-node-id="qMbgyyOmEqHGc5tDmyVDjc">⭐</span><b id="farmStars" data-page-node-id="guaQdavqnuwu83YC5wsIwD">0</b></span>
         <span class="fts fts-water" data-page-node-id="BfpRssUxHgg9q5ETOY5sTu"><span class="fts-ico" data-page-node-id="0QQSa5e1ybgZXFhfLOTdZQ">💧</span><b id="farmWater" data-page-node-id="95PYZiV4dm0IoTArKKMn5D">0</b></span>
@@ -5809,7 +5818,7 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 
   <!-- ================= 成长档案 ================= -->
   <section class="page page-archive" data-page="archive" hidden data-page-node-id="rO5PKT931BnXZx1RawEKQ2">
-    <div class="page-title" data-page-node-id="StvTzAbICc7ediOsOymivd"><h2 data-page-node-id="Yc4CDTyvfk73PrB7HXB9Ij">🏆 成长档案 <span class="archive-guide" data-page-node-id="fe0sWlXxbFRP41jP5cOAF3">🐂 局长 Bogo 为你点赞！</span></h2></div><div class="page-content">
+    <div class="page-title" data-page-node-id="StvTzAbICc7ediOsOymivd"><h2 data-page-node-id="Yc4CDTyvfk73PrB7HXB9Ij"></h2></div><div class="page-content">
     <div class="archive-grid" data-page-node-id="ibzJFBBAtBWH9sce7K9Yiv">
       <div class="card report-card" data-page-node-id="Xo8UhvCwNILGTKNo1SieeQ">
         <div class="card-head" data-page-node-id="od5mA6Pv9ortRsiRCgUHA4">
@@ -40658,15 +40667,11 @@ I'm good at running.`},
       </div>`;
     }).join('');
     wrap.innerHTML = `
-      <div class="km-title-card">
-        <div class="km-title-main">
-            <div class="km-title-row">
-              <div class="km-title">🗺️ 知识秘境</div>
-            </div>
-            <!-- R53-5：欢迎语迁入主题卡内展示（标题下方一行，不遮挡标题/按钮/背景图） -->
-            <div class="km-welcome-corner">${esc(st.settings.text.welcome)}</div>
-        </div>
-        <div class="km-title-side">
+      <div class="km-title-card"></div>
+      <!-- R111：欢迎文字 + 数据统计按键（统计/错题/后台修改）从主题卡迁至「主题卡 ↔ 路线路卡」中间区域；主题卡仅保留背景贴图，文字已按 Part2 删除 -->
+      <div class="km-midbar">
+        <div class="km-midbar-welcome">${esc(st.settings.text.welcome)}</div>
+        <div class="km-midbar-side">
           <div class="km-stats">
             <div class="km-stat"><span class="km-stat-ico">⭐</span><b>${st.stars}</b><span>总星星</span></div>
             <div class="km-stat"><span class="km-stat-ico">🏆</span><b>${['chinese','math','english','mixed'].filter(k=>cleared[k]).length}/4</b><span>已通关</span></div>
