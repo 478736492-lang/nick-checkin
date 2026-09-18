@@ -78,6 +78,11 @@
   --ok-main:#2f9e44; --ok-pale:#eafaf0; --ok-line:#b7e6c9;
   --bad-main:#e2453a; --bad-pale:#ffeef0; --bad-line:#ffd0d5;
 }
+/* ⚠️ 遗留缺陷（R121 排查发现，暂不修复以免影响既有排版）：以下声明块缺少选择器，
+   原意应为「*{box-sizing:border-box;margin:0;padding:0}」的全局重置，现被浏览器整体忽略。
+   影响：① 全站元素退回 content-box（width:100% + 内边距会超出容器，如 .wp-slogan）；
+        ② UA 默认边距未被清零（body 8px，已由 R121 在竖屏块中单独归零）。
+   如需修复，须先在横屏 1024×768 与竖屏 768×1024 做首页/新世界/种植园/数学四页的截图回归。 */
 {box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--text);background:var(--bg-grad);overflow:hidden}
 /* 布局：「左侧竖列导航 + 右侧内容」横向布局（R32-R1：应需求恢复左侧导航栏） */
@@ -2643,8 +2648,10 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .wp-banner-title .wp-bt-l1,.wp-banner-title .wp-bt-l2{display:block;white-space:nowrap}
 .wp-banner-title .wp-bt-l2{font-size:33px;letter-spacing:8px;padding-left:8px}
 .wp-banner-img{max-width:100%;width:100%;max-height:none;height:auto;object-fit:cover;border-radius:22px;display:block;margin-bottom:6px;background:#fff}
-/* ② 标语：水平居中 */
-.wp-slogan{text-align:center;width:100%;padding:0 8px}
+/* ② 标语：水平居中
+   R121-5：补 box-sizing:border-box。原规则以 content-box 计算，width:100% + 左右各 8px 内边距
+   使实际盒宽比横幅内容盒多出 16px（左右各溢出 8px），此前被 .wp-banner{overflow:hidden} 裁掉而未暴露。 */
+.wp-slogan{text-align:center;width:100%;padding:0 8px;box-sizing:border-box}
 .wp-slogan-zh{font-size:22px;font-weight:900;color:var(--sky-blue);letter-spacing:1px;margin-bottom:6px;font-family:"PingFang SC","Microsoft YaHei",sans-serif}
 .wp-slogan-en{display:inline-block;background:var(--tone-900);color:#fff;font-size:13px;font-weight:600;padding:4px 14px;border-radius:14px;letter-spacing:.3px}
 .wp-banner-edit{
@@ -5243,8 +5250,9 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .wp-nickmemo-btn:active{transform:translateY(0)}
 /* R119-2：实测 .wp-card-body 的 padding-right:2px 覆盖了 .wp-left-body 的 12px，
    导致卡内内容（姓名块 + 备忘录键）左 12px / 右 2px 不对称、整体右偏 5px。
-   以更高特异性恢复左右对称内边距，使两卡左右边距严格相等、水平居中。 */
-.wp-card-left-intro .wp-card-body.wp-left-body{padding:10px 12px}
+   以更高特异性接管这一层的内边距（R121-3 起归零，四边完全交给 .wp-card 的 padding 14px 12px 16px，
+   与「完成度卡片」的边距标准一致；元素之间仍由 .wp-left-body 的 gap:10px 分隔）。 */
+.wp-card-left-intro .wp-card-body.wp-left-body{padding:0}
 
 /* ---- R118-2：「Nick 的备忘录」独立页面（背景贴图 + 留白区书写板） ---- */
 .page-memonick{
@@ -5357,6 +5365,147 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .page-archive .badge{border-color:var(--tone-150)}
 .page-archive .cert{border-color:var(--tone-300)}
 .cert-edit-pane h4{color:var(--tone-700)}
+
+/* ==================================================================================
+   R121：设置中心开放日期 / 使用模式排版 / 首页姓名卡 / 全站竖屏响应式
+   ================================================================================== */
+
+/* ---- R121-2：设置中心「使用模式」——模式按键移至说明文字右侧并靠右摆放 ---- */
+.settings-card-row{display:flex;align-items:center;gap:10px;min-width:0}
+.settings-card-row .settings-card-desc{flex:1 1 auto;min-width:0}
+.settings-card-row-mode{margin-top:3px}
+.settings-card-row-mode .settings-mode-seg-card{margin-top:0;margin-left:auto;align-self:center;flex:0 0 auto}
+
+/* ---- R121-1：知识秘境「游戏开放日期」设置项（modalKMSetting 内） ---- */
+.km-open-hint{
+  font-size:12px;font-weight:700;color:var(--tone-700);line-height:1.7;
+  background:var(--tone-100);border-radius:10px;padding:6px 10px;margin-bottom:8px
+}
+.km-open-on{color:#2f9e44}
+.km-open-off{color:#e2453a}
+.km-open-chk{
+  flex-direction:row!important;align-items:center;gap:8px;display:flex;
+  font-size:13px;color:#33415c;line-height:1.8
+}
+.km-open-add{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:8px 0 6px}
+.km-open-add .peg-input{min-height:36px}
+.km-open-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:2px}
+.km-open-empty{font-size:12px;color:#6a7a95;line-height:1.7}
+.km-open-chip{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:12px;font-weight:700;color:#16306b;
+  background:var(--tone-175);border:1.5px solid var(--tone-200);
+  border-radius:999px;padding:4px 6px 4px 12px
+}
+.km-open-del{
+  width:22px;height:22px;line-height:1;border-radius:50%;cursor:pointer;
+  border:1px solid var(--tone-200);background:#fff;color:#e2453a;
+  font-size:13px;font-weight:800;padding:0;display:inline-flex;align-items:center;justify-content:center
+}
+.km-open-del:hover{background:#ffeceb}
+
+/* R121-1：非开放日侧栏「知识秘境」入口锁定态（🔒 角标 + 变暗 + 提示语） */
+.nav-btn.nav-locked{position:relative;opacity:.72;filter:grayscale(.35)}
+.nav-btn.nav-locked:hover{opacity:.85}
+.nav-lock-badge{
+  position:absolute;top:2px;right:2px;font-size:11px;line-height:1;
+  filter:drop-shadow(0 1px 2px rgba(0,0,0,.35));pointer-events:none
+}
+
+/* ---- R121-3：首页姓名卡片优化 ---- */
+/* ① 三项数据统计（⭐ / 💰 / 经验）同一行展示 —— 原 flex-wrap:wrap 在窄卡里会竖排成三行 */
+.wp-nick-cur{flex-wrap:nowrap;justify-content:center;white-space:nowrap;gap:6px}
+.wp-nick-cur span{flex:0 0 auto;white-space:nowrap}
+/* ② 缩小「Hi, I'm Nick!」与学段行之间的间距（原 18px = margin 6+6 + 容器 gap 6 → 只留容器 gap 6） */
+.wp-nick-greeting{margin:0}
+.wp-nick-meta{margin-top:0}
+/* ③ 姓名卡内容块四边到卡片外框的边距对齐「完成度卡片标准」= .wp-card 的 padding 14px 12px 16px
+      （左 12 / 右 12 / 上 14 / 下 16）→ 中间层 .wp-left-body 的内边距归零，
+      规则本体见上方 R119-2 块（值由 R121-3 由 10px 12px 改为 0），实测 12/12/14 与完成度卡一致。 */
+
+/* ==================================================================================
+   R121-4：全站竖屏（含 iPad 竖屏 768×1024 与手机竖屏）响应式适配
+   竖屏访问时页面内容需可正常展示、浏览与操作。
+   ================================================================================== */
+
+/* ① 基础修正：UA 默认 body margin 8px 导致全站横向多出 8px（横竖屏都存在） */
+html,body{margin:0;padding:0}
+
+@media (max-width:1023px), (orientation:portrait){
+
+  /* ② 首页网格：整行单列 —— 必须连 R118 新增卡（左简介 / 左统计 / 横幅）一起复位，
+        否则它们残留的 grid-column:1/2/3 会生成隐式窄列，把卡片压成几十像素宽 */
+  .wp-grid{grid-template-columns:1fr !important;grid-template-rows:auto !important;gap:14px}
+  .wp-grid > *{grid-column:1 !important;grid-row:auto !important;min-width:0}
+  .wp-card-left-intro,.wp-card-left-stats,.wp-banner-wrap{min-height:auto}
+  .wp-banner{
+    max-width:100%;box-sizing:border-box;
+    padding:10px 12px 12px;border-radius:22px;gap:6px
+  }
+  .wp-banner-img{max-width:min(320px,72%);max-height:190px}
+  /* 标题原为 39px + white-space:nowrap（横幅内两行标题不折行），窄屏下每行都超宽 8px。
+     改为随宽度收缩的字号并允许折行，消除内部溢出（内容不再被裁切）。 */
+  .wp-banner-title{
+    font-size:clamp(18px,5.2vw,32px);letter-spacing:1px;
+    padding:8px 12px;margin:2px auto 8px;border-radius:14px;max-width:100%
+  }
+  .wp-banner-title .wp-bt-l1,.wp-banner-title .wp-bt-l2{
+    white-space:normal;text-align:center;overflow-wrap:anywhere
+  }
+  .wp-banner-title .wp-bt-l2{
+    font-size:clamp(16px,4.6vw,26px);letter-spacing:2px;padding-left:0
+  }
+  .wp-grid > .wp-card{width:auto}
+
+  /* ③ 多列内容网格在竖屏统一收列；固定像素轨道改自适应 */
+  .farm-main{grid-template-columns:1fr !important;gap:16px}
+  .farm-warehouse,.farm-title-stats{width:auto;max-width:100%}
+  .farm-wh-col{width:auto;min-width:0}
+  .field-frame{box-sizing:border-box}
+  .report-cols{grid-template-columns:1fr}
+  .settings-grid{grid-template-columns:1fr}
+  .math-group-body{grid-template-columns:repeat(auto-fill,minmax(min(320px,100%),1fr))}
+  .wp-today-wrap{flex-direction:column;align-items:stretch}
+  .wp-today-pie{flex:none;align-self:center}
+  .km-map,.km-levels,.page-content{box-sizing:border-box}
+
+  /* ④ 通用防溢出安全网：网格子项允许收缩 + 长文本可断行 */
+  .page-content{max-width:100%}
+  .farm-main > *,.report-cols > *,.settings-grid > *,.math-group-body > *,
+  .xs-pane > *,.bk-box > *,.bk-mini > *{min-width:0}
+  .dialogue-bubble,.dialogue-en,.ri-title,.ri-body,.ri-analysis,
+  .reading-translation,.bk-mini-q,.bk-mini-label,.wp-tbar-name{min-width:0}
+  .dialogue-bubble{box-sizing:border-box;max-width:100%}
+  .bk-box,.bk-mini,.daily-block,.dialogue-list,.dialogue-row,.reading-item{
+    overflow-wrap:anywhere;word-break:break-word;max-width:100%
+  }
+}
+
+/* ⑤ 手机竖屏（≤600px）：侧栏改为「时钟细条 + 整宽导航条」两行，把整宽让给内容 */
+@media (max-width:600px) and (orientation:portrait){
+  body{flex-direction:column}
+  .sidebar{
+    width:100%;flex:0 0 auto;
+    border-right:none;border-bottom:3px solid #1e4d99;
+    box-shadow:0 6px 22px rgba(0,0,0,.32), inset 0 2px 8px rgba(255,255,255,.12)
+  }
+  .sidebar-clock{
+    flex:0 0 auto;flex-direction:row;flex-wrap:nowrap;justify-content:center;gap:8px;
+    padding:4px 8px;border-bottom:2px dashed rgba(255,255,255,.6);border-right:none
+  }
+  .sidebar-clock .rt-date,.sidebar-clock .rt-week,.sidebar-clock .rt-time{
+    flex-basis:auto;font-size:11px;line-height:1.3
+  }
+  .sidebar-clock .rt-week{padding:0 6px}
+  .sidebar-nav{
+    flex:1 1 auto;flex-direction:row;gap:4px;
+    padding:5px 6px;overflow-x:auto;overflow-y:hidden;background:transparent
+  }
+  .nav-btn{flex:0 0 auto;min-width:58px;min-height:52px;padding:5px 7px}
+  .nav-btn .ico{font-size:18px}
+  .nav-btn .lbl{font-size:10px}
+  .main-wrap{flex:1 1 auto;min-height:0;padding:10px 10px 20px}
+}
 
 </style>
 </head>
@@ -5584,6 +5733,8 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
         <div class="settings-card-icon" data-page-node-id="R118cardModeIco">👥</div>
         <div class="settings-card-main" data-page-node-id="R118cardModeMain">
           <div class="settings-card-title" data-page-node-id="R118cardModeTitle">使用模式</div>
+          <!-- R121-2：模式按键移至「使用模式」说明文字右侧并靠右摆放（说明文字在左，按键贴行尾） -->
+          <div class="settings-card-row settings-card-row-mode" data-page-node-id="R121cardModeRow">
           <div class="settings-card-desc" data-page-node-id="R118cardModeDesc">孩子模式 / 家长模式切换</div>
           <div class="settings-mode-seg settings-mode-seg-mini settings-mode-seg-card" id="modeSegSettings" data-page-node-id="R85modeSeg">
             <button class="mode-opt" data-mode="child" id="modeChildSettings" data-page-node-id="R85modeChild">
@@ -5595,6 +5746,7 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
               <span class="mode-name" data-page-node-id="R85modeParentLbl">家长</span>
             </button>
             <span class="mode-slider" id="modeSliderSettings" data-page-node-id="R85modeSlider"></span>
+          </div>
           </div>
         </div>
         <span class="settings-card-arrow" data-page-node-id="R118cardModeArrow">›</span>
@@ -6538,6 +6690,22 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
           <div class="settings-game-desc" data-page-node-id="R118kmaEntryDesc">题库管理、游戏规则、界面美化、关卡音乐</div>
         </div>
         <span class="settings-card-arrow" data-page-node-id="R118kmaEntryArrow">›</span>
+      </div>
+      <!-- R121-1：游戏开放日期（默认周末 + 法定节假日；支持自定义开放日；非开放日知识秘境板块锁定） -->
+      <div class="parent-edit-group" data-page-node-id="R121kmOpenGrp">
+        <div class="peg-title" data-page-node-id="R121kmOpenTitle">📅 游戏开放日期</div>
+        <div class="km-open-hint" id="kmOpenToday" data-page-node-id="R121kmOpenToday">--</div>
+        <label class="km-open-chk" data-page-node-id="R121kmOpenWeekendLbl">
+          <input type="checkbox" id="kmOpenWeekend" style="width:auto" data-page-node-id="R121kmOpenWeekend"> 默认周末开放（周六 / 周日）
+        </label>
+        <label class="km-open-chk" data-page-node-id="R121kmOpenHolidayLbl">
+          <input type="checkbox" id="kmOpenHoliday" style="width:auto" data-page-node-id="R121kmOpenHoliday"> 默认法定节假日开放（按国家放假安排）
+        </label>
+        <div class="km-open-add" data-page-node-id="R121kmOpenAdd">
+          <input type="date" id="kmOpenDateInput" class="peg-input" data-page-node-id="R121kmOpenDateInput">
+          <button type="button" class="pbtn small" id="btnKMOpenAdd" data-page-node-id="R121kmOpenAddBtn">＋ 添加开放日</button>
+        </div>
+        <div class="km-open-list" id="kmOpenDateList" data-page-node-id="R121kmOpenList"></div>
       </div>
       <div class="parent-edit-group" data-page-node-id="R85kmModeGrp">
         <div class="peg-title" data-page-node-id="R85kmModeTitle">🎮 默认模式</div>
@@ -30725,8 +30893,35 @@ window.MAO_POEMS = [{"t": "贺新郎·别友", "d": "一九二三年", "c": "挥
     try { return (typeof window !== 'undefined' && window.KM_QUESTIONS_SEED) ? window.KM_QUESTIONS_SEED : []; }
     catch(e){ return []; }
   }
+  // R121-1：中国法定节假日（国务院办公厅通知）—— 仅内置已公布年份；后续年份由家长在
+  // 「设置中心 → 游戏设置 → 知识秘境 → 游戏开放日期」里自定义补充。
+  // 这里存「起止区间」而非逐日枚举，便于维护；YYYY-MM-DD 可直接做字典序比较。
+  const KM_HOLIDAY_RANGES = {
+    2025: [['2025-01-01','2025-01-01'],['2025-01-28','2025-02-04'],['2025-04-04','2025-04-06'],['2025-05-01','2025-05-05'],['2025-05-31','2025-06-02'],['2025-10-01','2025-10-08']],
+    2026: [['2026-01-01','2026-01-03'],['2026-02-15','2026-02-23'],['2026-04-04','2026-04-06'],['2026-05-01','2026-05-05'],['2026-06-19','2026-06-21'],['2026-09-25','2026-09-27'],['2026-10-01','2026-10-07']]
+  };
+  function kmHolidayYear(y){
+    const r = KM_HOLIDAY_RANGES[y];
+    return Array.isArray(r) ? r : [];
+  }
+  function kmIsHoliday(dateStr){
+    const d = dateStr || todayStr();
+    const y = parseInt(d.slice(0,4), 10);
+    const ranges = kmHolidayYear(y);
+    for(let i=0;i<ranges.length;i++){
+      if(d >= ranges[i][0] && d <= ranges[i][1]) return true;
+    }
+    return false;
+  }
+  function kmIsWeekend(dateStr){
+    const d = dateStr || todayStr();
+    const wd = new Date(d + 'T00:00:00').getDay();
+    return wd === 0 || wd === 6;
+  }
   function kmDefaultSettings(){
     return {
+      // R121-1：游戏开放日期（默认规则 = 周末 + 法定节假日；dates 为家长自定义追加的开放日）
+      open: { weekend: true, holiday: true, dates: [] },
       retries: 2,            // 答错可重试次数 1-3
       fogMs: 2500,           // 答错后迷雾遮挡时长(ms)
       hintsOn: true,         // 普通模式提示开关
@@ -30763,6 +30958,13 @@ window.MAO_POEMS = [{"t": "贺新郎·别友", "d": "一九二三年", "c": "挥
     s.jump = (typeof s.jump==='number') ? s.jump : d.jump;
     s.perLevel = (typeof s.perLevel==='number') ? s.perLevel : d.perLevel;
     s.trial = (typeof s.trial==='boolean') ? s.trial : d.trial;
+    // R121-1：游戏开放日期设置（weekend / holiday 布尔开关 + dates 自定义开放日数组）
+    s.open = Object.assign({}, d.open, s.open||{});
+    s.open.weekend = (typeof s.open.weekend === 'boolean') ? s.open.weekend : d.open.weekend;
+    s.open.holiday = (typeof s.open.holiday === 'boolean') ? s.open.holiday : d.open.holiday;
+    s.open.dates = Array.isArray(s.open.dates)
+      ? s.open.dates.filter(x => typeof x === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(x))
+      : [];
     s.themeColors = Object.assign({}, d.themeColors, s.themeColors||{});
     s.text = Object.assign({}, d.text, s.text||{});
     s.starReward = Object.assign({}, d.starReward, s.starReward||{});
@@ -30803,6 +31005,8 @@ window.MAO_POEMS = [{"t": "贺新郎·别友", "d": "一九二三年", "c": "挥
       if(patch.jump!==undefined) merged.jump = patch.jump;
       if(patch.perLevel!==undefined) merged.perLevel = patch.perLevel;
       if(patch.trial!==undefined) merged.trial = patch.trial;
+      // R121-1：游戏开放日期（weekend / holiday 开关，dates 数组整体替换）
+      if(patch.open) merged.open = Object.assign({}, merged.open, patch.open);
       if(patch.themeColors) merged.themeColors = Object.assign({}, merged.themeColors, patch.themeColors);
       if(patch.text) merged.text = Object.assign({}, merged.text, patch.text);
       if(patch.starReward) merged.starReward = Object.assign({}, merged.starReward, patch.starReward);
@@ -30817,6 +31021,23 @@ window.MAO_POEMS = [{"t": "贺新郎·别友", "d": "一九二三年", "c": "挥
     const st = load(); const km = kmEnsure(st);
     return { stars:km.stars, cleared:Object.assign({},km.cleared), wrong:km.wrong.slice(), settings:JSON.parse(JSON.stringify(km.settings)) };
   }
+  // ---------- R121-1：知识秘境「游戏开放日期」判定 ----------
+  // 规则：家长自定义开放日（dates）> 法定节假日（holiday 开关）> 周末（weekend 开关）> 其余锁定。
+  // 传入 dateStr（YYYY-MM-DD）便于测试与预览，缺省用今天。
+  function getKMOpenInfo(dateStr){
+    const st = load(); const km = kmEnsure(st);
+    const d = dateStr || todayStr();
+    const o = km.settings.open || {};
+    const custom = (Array.isArray(o.dates) ? o.dates : []).indexOf(d) >= 0;
+    const holiday = kmIsHoliday(d);
+    const weekend = kmIsWeekend(d);
+    let open = false, reason = '非开放日';
+    if(custom){ open = true; reason = '自定义开放日'; }
+    else if(holiday && o.holiday !== false){ open = true; reason = '法定节假日'; }
+    else if(weekend && o.weekend !== false){ open = true; reason = '周末'; }
+    return { date: d, open: open, reason: reason, custom: custom, holiday: holiday, weekend: weekend, weekendOn: o.weekend !== false, holidayOn: o.holiday !== false, dates: (Array.isArray(o.dates) ? o.dates.slice() : []) };
+  }
+  function isKMOpen(dateStr){ return getKMOpenInfo(dateStr).open; }
   function addKMStars(n){
     const st = load(); const km = kmEnsure(st);
     km.stars = (km.stars||0) + (n||0); save(st); return km.stars;
@@ -33437,6 +33658,8 @@ May / Can I /we have …, please? 请问我 / 我们可以拿…… 吗？
     getKMSettings, saveKMSettings, getKMState, addKMStars, resetKMStars, getKMStars, addKMCoins,
     markKMCleared, getKMCleared, addKMWrong, getKMWrong, clearKMWrong, resetKMProgress, getKMStats,
     getKMProgress, saveKMProgress,
+    // R121-1：游戏开放日期（周末 + 法定节假日默认规则，支持自定义开放日）
+    isKMOpen, getKMOpenInfo, kmIsHoliday, kmIsWeekend,
     // V55-Req6：收录书屋
     archiveReadingToday, isReadingArchivedToday, deleteUserReading,
     // V60-R7：收录书屋 - 全板块当日所有内容聚合
@@ -41192,6 +41415,8 @@ I'm good at running.`},
   // ---------- 启动某关卡：调用统一内核 KM_ENGINE（数据驱动，按关卡ID切换资源） ----------
   // 入口：renderKnowledge 委托（仅传 levelId；模式默认全局 kmMode）→ 整页进入独立游戏页。
   function kmLaunch(levelId){
+    // R121-1：非开放日不允许启动关卡（防御性拦截；正常入口在导航点击处已拦住）
+    if(kmLockedToday()){ kmLockToast(); return; }
     const gameBox = document.getElementById('kmGame'); if(!gameBox) return;
     gameBox.hidden = false; gameBox.innerHTML = '';
     // 模块④ 关卡配置管理器：按关卡ID取出对应 levelConfig，四关共用同一套游戏逻辑
@@ -46200,6 +46425,106 @@ I'm good at running.`},
     populateExportBoards();
     showModal('#modalExportSettings');
   }
+  /* ============ R121-1：知识秘境「游戏开放日期」设置 + 非开放日锁定 ============ */
+  // 规则：家长自定义开放日 > 法定节假日（可关）> 周末（可关）> 其余锁定。
+  // 判定全部走 Store.getKMOpenInfo / Store.isKMOpen（纯函数、可传日期，便于测试）。
+  function kmLockedToday(){ try { return !S.isKMOpen(); } catch(e){ return false; } }
+  function kmLockToast(){
+    let date = '';
+    try { date = S.getKMOpenInfo().date; } catch(e){}
+    toast('🔒 知识秘境今日未开放' + (date ? '（' + date + '）' : '') + '，仅周末与法定节假日开放');
+  }
+  function renderKMOpenDates(){
+    const box = document.getElementById('kmOpenDateList'); if(!box) return;
+    let ds = [];
+    try { ds = (S.getKMOpenInfo().dates || []).slice().sort(); } catch(e){}
+    if(!ds.length){
+      box.innerHTML = '<div class="km-open-empty" data-page-node-id="R121kmOpenEmpty">暂无自定义开放日（默认按「周末 + 法定节假日」开放）</div>';
+      return;
+    }
+    const wdNames = ['周日','周一','周二','周三','周四','周五','周六'];
+    box.innerHTML = ds.map(d => {
+      let wd = '';
+      try { wd = wdNames[new Date(d + 'T00:00:00').getDay()]; } catch(e){}
+      return '<span class="km-open-chip" data-page-node-id="R121kmOpenChip">' + esc(d) + ' ' + esc(wd) +
+        '<button type="button" class="km-open-del" data-km-open-del="' + esc(d) + '" title="移除该开放日">×</button></span>';
+    }).join('');
+  }
+  function renderKMOpenStatus(){
+    const el = document.getElementById('kmOpenToday'); if(!el) return;
+    let info = null;
+    try { info = S.getKMOpenInfo(); } catch(e){}
+    if(!info){ el.textContent = '--'; return; }
+    el.innerHTML = info.open
+      ? '今日（' + esc(info.date) + '）<b class="km-open-on">开放</b> · 依据：' + esc(info.reason)
+      : '今日（' + esc(info.date) + '）<b class="km-open-off">锁定</b> · 非开放日无法进入知识秘境';
+  }
+  function setKMOpenPatch(patch){
+    const cur = S.getKMSettings();
+    S.saveKMSettings({ open: Object.assign({}, cur.open || {}, patch) });
+    renderKMOpenDates(); renderKMOpenStatus(); syncKMLockBadge();
+  }
+  function initKMOpenSetting(){
+    const s = S.getKMSettings(); const o = s.open || {};
+    const weekend = document.getElementById('kmOpenWeekend');
+    const holiday = document.getElementById('kmOpenHoliday');
+    if(weekend) weekend.checked = o.weekend !== false;
+    if(holiday) holiday.checked = o.holiday !== false;
+    if(weekend && !weekend._bound){ weekend._bound = true; weekend.onchange = () => setKMOpenPatch({ weekend: !!weekend.checked }); }
+    if(holiday && !holiday._bound){ holiday._bound = true; holiday.onchange = () => setKMOpenPatch({ holiday: !!holiday.checked }); }
+    const addBtn = document.getElementById('btnKMOpenAdd');
+    if(addBtn && !addBtn._bound){
+      addBtn._bound = true;
+      addBtn.onclick = () => {
+        const inp = document.getElementById('kmOpenDateInput');
+        const v = inp ? (inp.value || '').trim() : '';
+        if(!/^\d{4}-\d{2}-\d{2}$/.test(v)){ toast('请先选择要开放的日期'); return; }
+        const dates = S.getKMOpenInfo().dates || [];
+        if(dates.indexOf(v) >= 0){ toast('该日期已在开放列表中'); return; }
+        setKMOpenPatch({ dates: dates.concat([v]) });
+        if(inp) inp.value = '';
+        toast('✓ 已添加开放日 ' + v);
+      };
+    }
+    const list = document.getElementById('kmOpenDateList');
+    if(list && !list._bound){
+      list._bound = true;
+      list.addEventListener('click', (e) => {
+        const b = e.target.closest('[data-km-open-del]'); if(!b) return;
+        const d = b.getAttribute('data-km-open-del');
+        const dates = S.getKMOpenInfo().dates || [];
+        setKMOpenPatch({ dates: dates.filter(x => x !== d) });
+        toast('已移除开放日 ' + d);
+      });
+    }
+    renderKMOpenDates(); renderKMOpenStatus();
+  }
+  // 侧栏「知识秘境」入口锁定态（加锁图标 + 变暗 + tooltip），进入判定在 nav 绑定里拦截
+  function syncKMLockBadge(){
+    const locked = kmLockedToday();
+    const navBtn = document.querySelector('.nav-btn[data-page="knowledge"]');
+    if(navBtn){
+      navBtn.classList.toggle('nav-locked', locked);
+      navBtn.title = locked ? '知识秘境今日未开放（周末与法定节假日开放）' : '知识秘境';
+      let badge = navBtn.querySelector('.nav-lock-badge');
+      if(locked && !badge){
+        badge = document.createElement('span');
+        badge.className = 'nav-lock-badge';
+        badge.textContent = '🔒';
+        badge.setAttribute('data-page-node-id', 'R121navLockBadge');
+        navBtn.appendChild(badge);
+      } else if(!locked && badge){
+        badge.parentNode.removeChild(badge);
+      }
+    }
+    renderKMOpenStatus();
+  }
+  // 统一入口：知识秘境相关页面在非开放日一律拦截（导航点击 / data-go / 关卡启动 三处都走它）
+  function kmEntryAllowed(page){
+    if((page === 'knowledge' || page === 'kmgame') && kmLockedToday()){ kmLockToast(); return false; }
+    return true;
+  }
+
   function openKMSetting(){
     const s = S.getKMSettings();
     const setVal = (id, v)=>{ const el = document.getElementById(id); if(el) el.value = v; };
@@ -46217,6 +46542,8 @@ I'm good at running.`},
     setVal('kmTextWelcome', (s.text && s.text.welcome) || '');
     setVal('kmTextCleared', (s.text && s.text.cleared) || '');
     setVal('kmTextCert', (s.text && s.text.cert) || '');
+    // R121-1：游戏开放日期（周末 / 法定节假日开关 + 自定义开放日列表）
+    initKMOpenSetting();
     const saveBtn = document.getElementById('btnKMSettingSave');
     if(saveBtn && !saveBtn._bound){
       saveBtn._bound = true;
@@ -46228,9 +46555,12 @@ I'm good at running.`},
           retries: num('kmRetries'), fogMs: num('kmFogMs'), hintsOn: (document.getElementById('kmHintsOn') || {}).value === '1',
           speed: num('kmSpeed'), jump: num('kmJump'), perLevel: num('kmPerLevel'),
           starReward: { correct: num('kmRewardCorrect'), clear: num('kmRewardClear') },
-          text: { welcome: txt('kmTextWelcome'), cleared: txt('kmTextCleared'), cert: txt('kmTextCert') }
+          text: { welcome: txt('kmTextWelcome'), cleared: txt('kmTextCleared'), cert: txt('kmTextCert') },
+          // R121-1：两个开放规则开关（自定义开放日列表在增删时已即时落库，此处仅同步开关状态）
+          open: { weekend: !!(document.getElementById('kmOpenWeekend') || {}).checked, holiday: !!(document.getElementById('kmOpenHoliday') || {}).checked }
         };
         S.saveKMSettings(patch);
+        syncKMLockBadge();
         toast('✓ 知识秘境设置已保存');
         showModal('#modalGameSettings');
       };
@@ -46240,8 +46570,9 @@ I'm good at running.`},
 
   function bindEvents(){
     // 导航
-    $$('.nav-btn[data-page]').forEach(b=>b.onclick=()=>goPage(b.dataset.page));
-    $$('[data-go]').forEach(b=>b.onclick=()=>goPage(b.dataset.go));
+    // R121-1：知识秘境在非开放日锁定 —— 点击不进入，仅提示（其余板块不受影响）
+    $$('.nav-btn[data-page]').forEach(b=>b.onclick=()=>{ if(!kmEntryAllowed(b.dataset.page)) return; goPage(b.dataset.page); });
+    $$('[data-go]').forEach(b=>b.onclick=()=>{ if(!kmEntryAllowed(b.dataset.go)) return; goPage(b.dataset.go); });
     // R51-2：全局点击音效分发（导航栏/主题卡/次级主题卡/打卡）→ 注册一次
     if(!window.__sfxClickBound){ document.addEventListener('click', onGlobalSfxClick); window.__sfxClickBound = true; }
     // 设置：合并进「任务设置」页（单一版块；系统设置锁卡片点击解锁）
@@ -46285,6 +46616,8 @@ I'm good at running.`},
     initNickMemo();
     // 初始化主题卡内的使用模式开关（即使系统设置处于锁定态也能正确显示当前模式）
     setModeUI(S.load().profile.mode === 'child' ? 'child' : 'parent');
+    // R121-1：初始化知识秘境开放日期锁定态（侧栏入口加锁图标 + 弹窗内状态行）
+    syncKMLockBadge();
     const btnResetData = $('#btnResetData');
     if(btnResetData) btnResetData.onclick = ()=>{
       if(!confirm('确认清空所有数据？此操作不可恢复！')) return;
