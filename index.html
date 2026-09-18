@@ -5215,6 +5215,72 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .settings-mode-topbar{display:flex;justify-content:flex-end;margin:0 2px 12px}
 .settings-mode-topbar .settings-mode-seg-mini{margin-left:0}
 
+/* ================= R117：首页备忘录（朱迪小提示）— 明信片样式 =================
+   放置于「完成度卡片」(wp-card-left-stats) 内的「今日完成度」(wp-today) 上方。
+   视觉规范：质感与首页其他 .wp-section / .wp-card 蓝调体系统一；
+   浏览态为明信片版式展示事项列表，点【编辑】进入编辑态（新增/改字/删除），保存回展示态。 */
+.wp-memo{position:relative}
+/* 头部：标题左、编辑键右，沿用 .wp-mini-head 蓝调字号 */
+.wp-memo .wp-memo-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.wp-memo-edit{
+  flex:0 0 auto;font-size:11px;font-weight:700;color:#4fa8e0;
+  border:1px solid var(--tone-200);background:var(--tone-100);
+  border-radius:999px;padding:2px 10px;cursor:pointer;white-space:nowrap;line-height:1.6
+}
+.wp-memo-edit:hover{background:var(--tone-175)}
+/* 明信片主体：暖白纸面 + 细边 + 柔和阴影，右上角邮票/邮戳点缀 */
+.wp-postcard{
+  position:relative;background:linear-gradient(135deg,#fffdf6,#fbf4e6);
+  border:1px solid #ecdfc4;border-radius:12px;padding:12px 12px 12px;
+  box-shadow:0 2px 8px rgba(30,58,138,.12);color:#5a4a2e;min-height:54px
+}
+.wp-postcard::after{
+  content:"✉";position:absolute;top:8px;right:10px;font-size:18px;opacity:.5;
+  transform:rotate(-8deg)
+}
+/* 左侧邮票小块（邮戳质感） */
+.wp-postcard-stamp{
+  position:absolute;top:8px;right:34px;width:26px;height:30px;border-radius:4px;
+  background:repeating-linear-gradient(45deg,#fbe7c6,#fbe7c6 3px,#f6d9a8 3px,#f6d9a8 6px);
+  border:1px dashed #d9b97e;opacity:.85
+}
+.wp-memo-list{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+.wp-memo-item{display:flex;align-items:flex-start;gap:6px;font-size:13px;line-height:1.55;word-break:break-word}
+.wp-memo-dot{flex:0 0 auto;font-size:12px;line-height:1.5}
+.wp-memo-text{flex:1;min-width:0}
+.wp-memo-empty{font-size:12px;font-style:italic;color:#9a8a66;padding:4px 2px 2px;line-height:1.6}
+/* 编辑态：事项逐行可改 + 删除键 + 新增行 + 保存/取消 */
+.wp-postcard-edit{background:linear-gradient(135deg,#fffefa,#f7f3ea)}
+.wp-memo-edit-list{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
+.wp-memo-edit-row{display:flex;align-items:center;gap:6px}
+.wp-memo-input{
+  flex:1;min-width:0;padding:5px 8px;border:1.5px solid var(--tone-line-soft);
+  border-radius:8px;font-size:13px;font-family:inherit;color:#23314a;background:#fff
+}
+.wp-memo-input:focus{outline:none;border-color:var(--tone-600);box-shadow:0 0 0 3px rgba(64,150,255,.18)}
+.wp-memo-del{
+  flex:0 0 auto;width:26px;height:26px;border-radius:50%;border:1.5px solid #f0c0c0;
+  background:#fff;color:var(--danger);font-weight:900;cursor:pointer;line-height:1;font-size:13px
+}
+.wp-memo-del:hover{background:#fff0f0}
+.wp-memo-add-row{display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.wp-memo-add{
+  flex:0 0 auto;font-size:12px;font-weight:700;color:#4fa8e0;border:1px solid var(--tone-200);
+  background:var(--tone-100);border-radius:999px;padding:4px 12px;cursor:pointer;white-space:nowrap
+}
+.wp-memo-add:hover{background:var(--tone-175)}
+.wp-memo-edit-actions{display:flex;gap:8px;justify-content:flex-end}
+.wp-memo-save{
+  font-size:12px;font-weight:700;color:#fff;background:var(--tone-900);
+  border:none;border-radius:999px;padding:5px 14px;cursor:pointer
+}
+.wp-memo-save:hover{filter:brightness(1.05)}
+.wp-memo-cancel{
+  font-size:12px;font-weight:700;color:#5b6b85;border:1px solid var(--tone-200);
+  background:#fff;border-radius:999px;padding:5px 14px;cursor:pointer
+}
+.wp-memo-cancel:hover{background:var(--tone-100)}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -5272,6 +5338,13 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 
       <!-- 左侧卡片二：本周完成度 + 本月完成度 -->
       <div class="wp-card wp-card-left-stats" data-page-node-id="kC959HRKgA9qIHlwHOBCRF">
+        <!-- R117：朱迪小提示 · 首页备忘录（明信片样式，支持编辑/新增/删除/修改） -->
+        <div class="wp-section wp-memo" data-page-node-id="R117memoSec001">
+          <div class="wp-mini-head wp-memo-head" data-page-node-id="R117memoHead001">📮 朱迪小提示：一起来翻阅备忘录吧！
+            <button class="wp-memo-edit" id="btnMemoEdit" title="编辑备忘录" data-page-node-id="R117memoEdit001">✎ 编辑</button>
+          </div>
+          <div class="wp-memo-body" id="memoBody" data-page-node-id="R117memoBody001"></div>
+        </div>
         <!-- R52-2：今日完成度（总任务饼图 + 各科目横向柱状图） -->
         <div class="wp-section wp-today" data-page-node-id="R52todaySec001">
           <div class="wp-mini-head" data-page-node-id="R52todayHead001">📈 今日完成度</div>
@@ -28771,6 +28844,8 @@ window.MAO_POEMS = [{"t": "贺新郎·别友", "d": "一九二三年", "c": "挥
     // V11.6：记录每日日常交流完成状态（5 条均完成 → +2⭐，仅一次）
     if(!st.speakingComplete) st.speakingComplete = {};
     if(!st.goRecords) st.goRecords = [];
+    // R117：首页备忘录（朱迪小提示），用户自建事项列表
+    if(!st.memos) st.memos = [];
     // V11.1：数学掌握数据迁移（toMaster → notMastered）
     let _migrated = false;
     (st.mathProblems||[]).forEach(m=>{ if(m.mastery === 'toMaster'){ m.mastery='notMastered'; _migrated=true; } });
@@ -29083,6 +29158,25 @@ window.MAO_POEMS = [{"t": "贺新郎·别友", "d": "一九二三年", "c": "挥
     st.customList[kind] = st.customList[kind].filter(x=>String(x.id)!==String(id));
     save(st);
     return st.customList[kind].slice();
+  }
+  // R117：首页备忘录（朱迪小提示）。事项结构：{ id, text }（text 上限 120 字）
+  const MEMO_MAX = 120;
+  function _genMemoId(){
+    return 'm' + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+  }
+  function getMemos(){
+    const st = load();
+    if(!Array.isArray(st.memos)) return [];
+    return st.memos.map(m=>({ id: m.id || _genMemoId(), text: String(m.text||'').slice(0, MEMO_MAX) }));
+  }
+  function saveMemos(list){
+    const st = load();
+    const arr = Array.isArray(list) ? list : [];
+    st.memos = arr
+      .map(x=>({ id: (x && x.id) ? String(x.id) : _genMemoId(), text: String((x && x.text) || '').slice(0, MEMO_MAX) }))
+      .filter(x=>x.text.trim());
+    save(st);
+    return st.memos.slice();
   }
   // V88：新世界首页卡片可编辑内容（家长模式编辑，按 page 持久化）
   function getNWData(){
@@ -33227,6 +33321,8 @@ May / Can I /we have …, please? 请问我 / 我们可以拿…… 吗？
     getNwZone, addNwZone, delNwZone,
     // R52：结构化自定义内容
     getCustomList, addCustomList, delCustomList,
+    // R117：首页备忘录（朱迪小提示）
+    getMemos, saveMemos,
     // V88：新世界首页卡片可编辑内容
     getNWData, saveNWData, resetNWData,
     // V98：课程表可编辑（课时行数 + 每格课程/颜色）
@@ -38349,8 +38445,109 @@ I'm good at running.`},
     if(strip) strip.hidden = (st.records.filter(r=>r.completed).length === 0);
     // 必做 / 选做 / 时间轴 三卡片 + 节日
     renderWallpaperCards(st);
+    // R117：首页备忘录（朱迪小提示）
+    initMemo();
+    renderMemo();
     // 拖拽 + 打卡点击（仅绑定一次）
     initWallpaperDnd();
+  }
+
+  // R117：首页备忘录（朱迪小提示）。明信片版式；浏览态展示，点【编辑】进编辑态。
+  let _memoInited = false;
+  let _memoEditing = false;
+  let _memoDraft = null; // 编辑态草稿：[{id,text}]
+  function initMemo(){
+    if(_memoInited) return; _memoInited = true;
+    const btn = document.getElementById('btnMemoEdit');
+    if(btn) btn.addEventListener('click', ()=>{ if(!_memoEditing) enterMemoEdit(); });
+  }
+  function getMemosSafe(){
+    return (window.Store && window.Store.getMemos) ? window.Store.getMemos() : [];
+  }
+  function renderMemo(){
+    const body = document.getElementById('memoBody');
+    if(!body) return;
+    const topBtn = document.getElementById('btnMemoEdit');
+    if(topBtn) topBtn.style.display = _memoEditing ? 'none' : '';
+    if(_memoEditing) renderMemoEdit(body); else renderMemoView(body);
+  }
+  function renderMemoView(body){
+    const memos = getMemosSafe();
+    if(!memos.length){
+      body.innerHTML = '<div class="wp-postcard"><div class="wp-postcard-stamp"></div><div class="wp-memo-empty">还没有备忘事项，点【编辑】添加第一条吧～</div></div>';
+      return;
+    }
+    const rows = memos.map(m=>`<li class="wp-memo-item"><span class="wp-memo-dot">📌</span><span class="wp-memo-text">${esc(m.text)}</span></li>`).join('');
+    body.innerHTML = `<div class="wp-postcard"><div class="wp-postcard-stamp"></div><ul class="wp-memo-list">${rows}</ul></div>`;
+  }
+  function enterMemoEdit(){
+    _memoDraft = getMemosSafe().map(m=>({ id: m.id, text: m.text }));
+    _memoEditing = true;
+    renderMemo();
+    bindMemoEdit();
+  }
+  function renderMemoEdit(body){
+    const draft = _memoDraft || [];
+    const rows = draft.map(m=>`<div class="wp-memo-edit-row" data-id="${esc(m.id)}"><input class="wp-memo-input" value="${esc(m.text)}" maxlength="120" /><button class="wp-memo-del" title="删除该条">🗑</button></div>`).join('');
+    body.innerHTML = `<div class="wp-postcard wp-postcard-edit">
+      <div class="wp-memo-edit-list">${rows}</div>
+      <div class="wp-memo-add-row"><input class="wp-memo-input wp-memo-add-input" placeholder="新增一条备忘…" maxlength="120" /><button class="wp-memo-add">＋ 添加</button></div>
+      <div class="wp-memo-edit-actions"><button class="wp-memo-save">💾 保存</button><button class="wp-memo-cancel">取消</button></div>
+    </div>`;
+  }
+  function bindMemoEdit(){
+    const body = document.getElementById('memoBody');
+    if(!body) return;
+    // 删除单项
+    body.querySelectorAll('.wp-memo-del').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const id = btn.closest('.wp-memo-edit-row').getAttribute('data-id');
+        _memoDraft = (_memoDraft||[]).filter(x=>String(x.id)!==String(id));
+        renderMemo(); bindMemoEdit();
+      });
+    });
+    // 实时同步已有项文字
+    body.querySelectorAll('.wp-memo-edit-row .wp-memo-input').forEach(inp=>{
+      inp.addEventListener('input', ()=>{
+        const id = inp.closest('.wp-memo-edit-row').getAttribute('data-id');
+        const row = (_memoDraft||[]).find(x=>String(x.id)===String(id));
+        if(row) row.text = inp.value;
+      });
+    });
+    // 新增
+    const addBtn = body.querySelector('.wp-memo-add');
+    const addInput = body.querySelector('.wp-memo-add-input');
+    const doAdd = ()=>{
+      const v = (addInput.value||'').trim();
+      if(!v) return;
+      _memoDraft = _memoDraft || [];
+      _memoDraft.push({ id: 'm'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), text: v });
+      renderMemo(); bindMemoEdit();
+      const ni = document.getElementById('memoBody').querySelector('.wp-memo-add-input');
+      if(ni) ni.focus();
+    };
+    if(addBtn) addBtn.addEventListener('click', doAdd);
+    if(addInput) addInput.addEventListener('keydown', e=>{ if(e.key==='Enter') doAdd(); });
+    // 保存
+    const saveBtn = body.querySelector('.wp-memo-save');
+    if(saveBtn) saveBtn.addEventListener('click', ()=>{
+      // 先把当前输入框值刷回草稿
+      body.querySelectorAll('.wp-memo-edit-row .wp-memo-input').forEach(inp=>{
+        const id = inp.closest('.wp-memo-edit-row').getAttribute('data-id');
+        const row = (_memoDraft||[]).find(x=>String(x.id)===String(id));
+        if(row) row.text = inp.value;
+      });
+      window.Store.saveMemos(_memoDraft||[]);
+      _memoEditing = false; _memoDraft = null;
+      renderMemo();
+      if(window.toast) toast('备忘录已保存');
+    });
+    // 取消
+    const cancelBtn = body.querySelector('.wp-memo-cancel');
+    if(cancelBtn) cancelBtn.addEventListener('click', ()=>{
+      _memoEditing = false; _memoDraft = null;
+      renderMemo();
+    });
   }
 
   // V35：横幅渲染（图片 + 中英标语，来自 S.getHomeBanner）
