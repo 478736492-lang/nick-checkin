@@ -5507,6 +5507,119 @@ html,body{margin:0;padding:0}
   .main-wrap{flex:1 1 auto;min-height:0;padding:10px 10px 20px}
 }
 
+/* ==================================================================================
+   R122：新世界·英语专区 —— 书本课文单元卡 / 重点知识（导入图片）
+   ================================================================================== */
+
+/* ---- ① 次级单元卡片网格（书本课文 11 张 Unit1–10+汇总 / 重点知识 10 张，共用一套版型） ---- */
+.en-unit-cards{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));
+  gap:12px;margin:0 4px 14px
+}
+.en-unit-card{
+  position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:3px;
+  min-height:78px;padding:10px 12px;cursor:pointer;text-align:left;
+  background:#fff;border:2px solid var(--tone-200);border-radius:var(--card-r-md);
+  box-shadow:var(--card-sh-sm);
+  transition:transform .14s,box-shadow .14s,border-color .14s,background .14s
+}
+.en-unit-card:hover{transform:translateY(-2px);box-shadow:var(--card-sh-hover);border-color:var(--tone-400)}
+.en-unit-card:active{transform:translateY(0)}
+/* 选中态：蒂芙尼蓝渐变 + 白字（与 .en-book-cap 单元头同色系） */
+.en-unit-card.is-active{
+  background:linear-gradient(135deg,var(--tiffany-light) 0%,var(--tiffany-dark) 100%);
+  border-color:var(--tone-950);box-shadow:0 6px 16px rgba(30,58,138,.28)
+}
+.en-uc-no{font-size:13px;font-weight:900;letter-spacing:.5px;color:var(--tone-900)}
+.en-uc-title{font-size:14px;font-weight:800;line-height:1.32;color:var(--text)}
+.en-uc-sub{font-size:11.5px;font-weight:700;color:var(--muted)}
+.en-uc-stars{font-size:12px;letter-spacing:1px;margin-top:2px;line-height:1}
+.en-unit-card.is-active .en-uc-no,
+.en-unit-card.is-active .en-uc-title,
+.en-unit-card.is-active .en-uc-sub{color:#fff}
+.en-unit-card.is-active .en-uc-sub{opacity:.92}
+/* 完成态角标：白底绿勾，选中/未选中两种底色下都清晰 */
+.en-unit-card.is-done::after{
+  content:"✓";position:absolute;top:6px;right:8px;
+  width:19px;height:19px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:900;color:var(--ok-main);
+  background:#fff;box-shadow:0 1px 4px rgba(30,58,138,.22)
+}
+
+/* ---- ② 重点知识：单元详情页「➕ 增加」行 ---- */
+.kp-add-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 4px 14px}
+.kp-add-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  min-height:44px;padding:10px 20px;cursor:pointer;
+  font-size:14px;font-weight:800;color:#fff;
+  background:linear-gradient(135deg,var(--tone-600),var(--tone-900));
+  border:none;border-radius:999px;box-shadow:0 4px 12px rgba(30,58,138,.28);
+  transition:transform .12s,box-shadow .12s
+}
+.kp-add-btn:hover{transform:translateY(-1px);box-shadow:0 7px 18px rgba(30,58,138,.36)}
+.kp-add-btn:active{transform:translateY(0)}
+.kp-add-hint{font-size:12.5px;color:var(--muted);line-height:1.5}
+
+/* ---- ③ 重点知识：图片墙（导入图片自适应屏幕：宽随容器、高按比例、永不溢出） ---- */
+.kp-img-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(min(260px,100%),1fr));
+  align-items:start;gap:14px;margin:0 4px 12px
+}
+.kp-img-card{
+  background:#fff;border:2px solid var(--tone-200);border-radius:var(--card-r-md);
+  padding:10px;cursor:pointer;overflow:hidden;min-width:0;
+  box-shadow:var(--card-sh-sm);
+  transition:transform .14s,box-shadow .14s,border-color .14s,background .14s
+}
+.kp-img-card:hover{transform:translateY(-2px);box-shadow:var(--card-sh-hover);border-color:var(--tone-400)}
+.kp-img-card.is-checked{border-color:var(--ok-line);background:var(--ok-pale)}
+/* 自适应 = 宽度撑满卡片（width:100%），高度按原始比例自然延伸（height:auto）。
+   ⚠️ 这里刻意「不」加 max-height 上限：
+     · 若加 max-height + width:100%，元素盒被压扁，得靠 object-fit:contain 在盒内留白
+       （实测 360×538 的盒里塞一条 120px 宽的图）→ 大片蓝底空白，观感像坏了；
+     · 若改用 width:auto 联动收缩，竖拍长图会缩到 119px 宽 —— 知识点多是课本/笔记照片，
+       这个宽度根本看不清字。
+   重点是「看得清」：宽图占满卡片，长图占满宽度后纵向延伸，整页本来就可滚动。
+   网格侧用 align-items:start 让每张卡按自身内容定高，避免被同行最高图拉长留白。 */
+.kp-img{
+  display:block;width:100%;max-width:100%;height:auto;
+  border-radius:var(--card-r-sm);background:var(--tone-100)
+}
+.kp-img-cap{
+  font-size:13px;font-weight:700;color:var(--text);
+  margin-top:8px;line-height:1.5;overflow-wrap:anywhere
+}
+.kp-img-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px}
+.kp-img-state{font-size:12.5px;font-weight:800;color:var(--muted)}
+.kp-img-card.is-checked .kp-img-state{color:var(--ok-main)}
+.kp-img-del{
+  min-height:34px;padding:5px 13px;cursor:pointer;
+  font-size:12px;font-weight:800;color:var(--bad-main);
+  background:#fff;border:1.5px solid var(--bad-line);border-radius:999px;
+  transition:background .12s
+}
+.kp-img-del:hover{background:var(--bad-pale)}
+.kp-empty{
+  grid-column:1/-1;text-align:center;
+  font-size:13.5px;color:var(--muted);line-height:1.7;
+  background:var(--tone-100);border:1.5px dashed var(--tone-400);
+  border-radius:var(--card-r-md);padding:24px 16px
+}
+
+/* ---- ④ 竖屏 / 窄屏（沿用 R121 的断点口径）---- */
+@media (max-width:1023px), (orientation:portrait){
+  .en-unit-cards{grid-template-columns:repeat(auto-fill,minmax(min(132px,100%),1fr));gap:10px}
+  .kp-img-grid{grid-template-columns:repeat(auto-fill,minmax(min(240px,100%),1fr))}
+}
+@media (max-width:600px) and (orientation:portrait){
+  /* 手机竖屏：单元卡两列仍偏窄，改为更紧凑的最小宽度 */
+  .en-unit-cards{grid-template-columns:repeat(auto-fill,minmax(108px,1fr));gap:9px}
+  .en-unit-card{min-height:70px;padding:9px 10px}
+  .en-uc-title{font-size:13px}
+  .kp-img-grid{grid-template-columns:1fr}
+}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -29416,6 +29529,52 @@ window.MAO_POEMS = [{"t": "贺新郎·别友", "d": "一九二三年", "c": "挥
     return st.nwZone[key].slice();
   }
 
+  // ----- R122：新世界·英语专区「重点知识」单元图片（原「书本词汇」改名并改为图片为主） -----
+  // 说明：不能用 addNwZone —— 它把 c 字段截断到 800 字符，装不下图片 dataURL。
+  // 每条 { img:'data:image/...', t:'说明文字', ts }；图片在 app 侧已用 canvas 压缩（最长边 ≤1280、JPEG 0.8）。
+  function getEnKeyPoints(unitId){
+    const st = load();
+    return (st.enKeyPoints && st.enKeyPoints[unitId]) ? st.enKeyPoints[unitId].slice() : [];
+  }
+  function addEnKeyPoint(unitId, item){
+    const st = load();
+    if(!st.enKeyPoints) st.enKeyPoints = {};
+    if(!st.enKeyPoints[unitId]) st.enKeyPoints[unitId] = [];
+    st.enKeyPoints[unitId].push({
+      img: String((item && item.img) || ''),
+      t:   String((item && item.t) || '').slice(0, 120),
+      ts:  Date.now()
+    });
+    save(st);
+    return st.enKeyPoints[unitId].slice();
+  }
+  function delEnKeyPoint(unitId, idx){
+    const st = load();
+    if(!st.enKeyPoints || !st.enKeyPoints[unitId]) return [];
+    const i = parseInt(idx, 10);
+    if(!isNaN(i) && i >= 0 && i < st.enKeyPoints[unitId].length) st.enKeyPoints[unitId].splice(i, 1);
+    save(st);
+    return st.enKeyPoints[unitId].slice();
+  }
+  // 注意：打卡状态按 readFlags[`${kind}::${unitId}::${idx}`] 扁平存放，键里含图片下标。
+  // 删除某张图片会让后续下标整体前移，若不重排，「已学」标记就会错位到别的图片上。
+  // 删除图片后调用此法：丢弃被删那条的打卡记录，后面的整体前移一位。
+  function shiftEnKeyPointReads(unitId, removedIdx, kind){
+    const st = load();
+    if(!st.readFlags) return;
+    const prefix = kind + '::' + unitId + '::';
+    const next = {};
+    Object.keys(st.readFlags).forEach(k=>{
+      if(k.indexOf(prefix) !== 0){ next[k] = st.readFlags[k]; return; }
+      const i = parseInt(k.slice(prefix.length), 10);
+      if(isNaN(i)) return;                 // 非数字尾缀，原样保留更安全
+      if(i === removedIdx) return;         // 被删的那条打卡记录一并丢弃
+      next[prefix + (i > removedIdx ? i - 1 : i)] = st.readFlags[k];
+    });
+    st.readFlags = next;
+    save(st);
+  }
+
   // ----- R52：结构化自定义内容（看图写话 kantu / 作文素材 sucai / 古诗词与文言文 gushi） -----
   // kind：'kantu' | 'sucai' | 'gushi'；item：任意字段对象，自动补 id 与 ts
   const CUSTOM_KINDS = ['kantu','sucai','gushi'];
@@ -33695,6 +33854,8 @@ May / Can I /we have …, please? 请问我 / 我们可以拿…… 吗？
     getCertMetrics, getMetricValue, getCustomCerts, addCustomCert, updateCustomCert, deleteCustomCert,
     // V70：新世界各板块用户添加内容
     getNwZone, addNwZone, delNwZone,
+    // R122：新世界·英语专区「重点知识」单元图片（含删除后打卡下标重排）
+    getEnKeyPoints, addEnKeyPoint, delEnKeyPoint, shiftEnKeyPointReads,
     // R52：结构化自定义内容
     getCustomList, addCustomList, delCustomList,
     // R117：首页备忘录（朱迪小提示）
@@ -34548,7 +34709,7 @@ May / Can I /we have …, please? 请问我 / 我们可以拿…… 吗？
       ] },
     { page:'newworld-english',  tag:'英语专区', corner:'英语', icon:'🔤', color:'orange',
       mods:[
-        {t:'同步课时练习', icon:'📁', items:['书本课文','书本词汇']},
+        {t:'同步课时练习', icon:'📁', items:['书本课文','重点知识']},
         {t:'拓展练习',     icon:'💬', items:['句型练习','听力训练']},
         {t:'错题本',       icon:'📓', items:['错题本']}
       ] },
@@ -36742,36 +36903,8 @@ May / Can I /we have …, please? 请问我 / 我们可以拿…… 吗？
       if(btn._enThemeBound) return; btn._enThemeBound = true;
       btn.addEventListener('click', (e)=>{ e.stopPropagation(); enOxfordThemeToggle(btn); });
     });
-    // R22：书本词汇 — 点击「标记本单元已熟记」按钮，整页变绿，再次点击取消
-    // R28-1：整页（各主题/单元内容）点击即完成该主题打卡
-    const enVocabToggle = (btn)=>{
-      const id = btn.getAttribute('data-en-vocab-done');
-      const pageEl = btn.closest('.en-unit-page') || btn;
-      if(S.isReadingRead('enVocab', id)){
-        S.unmarkReadingRead('enVocab', id);
-        pageEl.classList.remove('is-done');
-        btn.classList.remove('is-done');
-        btn.innerHTML = '□未学';
-      } else {
-        S.markReadingRead('enVocab', id);
-        pageEl.classList.add('is-done');
-        btn.classList.add('is-done');
-        btn.innerHTML = '✅已学';
-        playCheckinSound();
-      }
-    };
-    slotBody.querySelectorAll('[data-en-vocab-done]').forEach(btn=>{
-      if(btn._enVocabBound) return; btn._enVocabBound = true;
-      btn.addEventListener('click', (e)=>{ e.stopPropagation(); enVocabToggle(btn); });
-      const pageEl = btn.closest('.en-unit-page');
-      if(pageEl && !pageEl._enVocabCardBound){
-        pageEl._enVocabCardBound = true;
-        pageEl.addEventListener('click', (e)=>{
-          if(e.target.closest('[data-en-page-step]')) return;
-          enVocabToggle(btn);
-        });
-      }
-    });
+    // R122：原「书本词汇」的整页打卡逻辑已随板块改名下线（函数与按钮属性均删除），
+    //      改为「重点知识」每张图片单独打卡（见下方 [data-kp-card] 绑定，规则同书本课文）。
     // R37-3：句型练习 — 点击「标记本单元已熟记」按钮，整页变绿，再次点击取消
     const enSentenceToggle = (btn)=>{
       const id = btn.getAttribute('data-en-sentence-done');
@@ -36813,6 +36946,85 @@ May / Can I /we have …, please? 请问我 / 我们可以拿…… 吗？
         if(np > total-1) np = total-1;
         _enCurPage = np;
         rerender();
+      });
+    });
+    // R122：书本课文 —— 顶部单元卡切换（Unit 1–10 + 汇总）
+    slotBody.querySelectorAll('[data-en-book-unit]').forEach(btn=>{
+      if(btn._enBookUnitBound) return; btn._enBookUnitBound = true;
+      btn.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        const i = parseInt(btn.getAttribute('data-en-book-unit'), 10);
+        if(isNaN(i)) return;
+        _enBookUnit = i;
+        rerender();
+      });
+    });
+    // R122：重点知识 —— 顶部单元卡切换（Unit 1–10）
+    slotBody.querySelectorAll('[data-en-kp-unit]').forEach(btn=>{
+      if(btn._enKpUnitBound) return; btn._enKpUnitBound = true;
+      btn.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        const i = parseInt(btn.getAttribute('data-en-kp-unit'), 10);
+        if(isNaN(i)) return;
+        _enKpUnit = i;
+        rerender();
+      });
+    });
+    // R122：重点知识 —— 单元内每张图片单独打卡（规则同书本课文：全部完成 → oxfordunit ⭐，取消则扣回）
+    const enKpToggle = (unitId, idx)=>{
+      const items = enKpItems(unitId);
+      if(!items.length) return;
+      const allDone = ()=> items.every((it,k)=> S.isReadingRead(EN_KP_READ, unitId+'::'+k));
+      const was = allDone();
+      const key = unitId + '::' + idx;
+      if(S.isReadingRead(EN_KP_READ, key)){
+        S.unmarkReadingRead(EN_KP_READ, key);
+      } else {
+        S.markReadingRead(EN_KP_READ, key);
+        playCheckinSound();
+      }
+      const now = allDone();
+      if(!was && now){ addStars(S.getTaskStars('oxfordunit')); }
+      else if(was && !now){ addStars(-S.getTaskStars('oxfordunit')); }
+      if(typeof rerender === 'function') rerender();
+    };
+    slotBody.querySelectorAll('[data-kp-card]').forEach(card=>{
+      if(card._kpCardBound) return; card._kpCardBound = true;
+      card.addEventListener('click', (e)=>{
+        if(e.target.closest('[data-kp-del]')) return;   // 删除按钮自行处理
+        e.stopPropagation();
+        const unit = (EN_OXFORD_VOCAB_3A[_enKpUnit] || {}).id;
+        if(!unit) return;
+        const i = parseInt(card.getAttribute('data-kp-card'), 10);
+        if(isNaN(i)) return;
+        enKpToggle(unit, i);
+      });
+    });
+    // R122：重点知识 —— 删除图片（先重排打卡下标，再删，避免「已学」错位到下一张）
+    slotBody.querySelectorAll('[data-kp-del]').forEach(btn=>{
+      if(btn._kpDelBound) return; btn._kpDelBound = true;
+      btn.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        const unit = (EN_OXFORD_VOCAB_3A[_enKpUnit] || {}).id;
+        if(!unit) return;
+        const i = parseInt(btn.getAttribute('data-kp-del'), 10);
+        if(isNaN(i)) return;
+        if(window.Store && window.Store.shiftEnKeyPointReads) window.Store.shiftEnKeyPointReads(unit, i, EN_KP_READ);
+        if(window.Store && window.Store.delEnKeyPoint) window.Store.delEnKeyPoint(unit, i);
+        toast('🗑 已删除该图片');
+        if(typeof rerender === 'function') rerender();
+      });
+    });
+    // R122：重点知识 —— 「➕ 增加」→ 唤起图片选择
+    slotBody.querySelectorAll('[data-kp-add]').forEach(btn=>{
+      if(btn._kpAddBound) return; btn._kpAddBound = true;
+      btn.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        _enKpAddUnit = btn.getAttribute('data-kp-add') || '';
+        const inp = document.getElementById('enKpImgInput');
+        if(!inp){ toast('当前环境不支持图片导入'); return; }
+        inp.value = '';      // 允许重复选同一个文件
+        inp.click();
       });
     });
     // R24-5：英语小知识章节切换（16 章语法 + 顺口溜）
@@ -36908,6 +37120,9 @@ May / Can I /we have …, please? 请问我 / 我们可以拿…… 吗？
         const key = btn.getAttribute('data-key');
         const label = btn.getAttribute('data-label');
         if(key === 'dd' || key === 'gd'){ _enCurPage = 0; _enCurKey = key; } // V116：切换两板块时重置分页
+        // R122：切回板块时各自回到第一个单元
+        if(key === 'dd'){ _enBookUnit = 0; }
+        if(key === 'gd'){ _enKpUnit = 0; }
         _szCurPage = 0; // R24-4：切换拓展素养板块时重置卡片分页
         if(key === 'yyxzs') _egCurSec = 0; // R24-5：进入英语小知识回到第一章
         if(slotBody){
@@ -37704,6 +37919,10 @@ I'm good at running.`},
   // V116：英语专区两板块分页状态（模块级，跨 rerender 保留）
   let _enCurPage = 0;
   let _enCurKey  = 'dd';
+  // R122：书本课文 / 重点知识 的「当前单元」索引（替代原分页，点单元卡切换）
+  let _enBookUnit  = 0;   // 书本课文：0–10（Unit 1–10 + 汇总）
+  let _enKpUnit    = 0;   // 重点知识：0–9（Unit 1–10）
+  let _enKpAddUnit = '';  // 重点知识：待导入图片的单元 id
   // V116：分页条（上一页/下一页/第 X/Y 页）
   function enPager(key, page, total){
     return `
@@ -37792,12 +38011,42 @@ I'm good at running.`},
     }
     return `<div class="en-sec en-cat-${cat.key}" style="--en-cat:${cat.c};--en-cat-bg:${cat.bg}">${head}${body}</div>`;
   }
-  function renderOxfordBook(page){
-    page = page || 0;
-    const totalPages = EN_OXFORD_3A.length; // R20：11 页（Unit 1–10 + 本册总复习）
+  // ---------- R122：英语专区次级单元卡片网格（书本课文 11 张 / 重点知识 10 张，共用一套样式）----------
+  // cards: [{no,label,sub,done,stars}]；attr: 卡片点击属性名（data-<attr>）
+  function enUnitCards(cards, curIdx, attr){
+    return `<div class="en-unit-cards">` + cards.map((c,i)=>`
+      <button class="en-unit-card${i===curIdx?' is-active':''}${c.done?' is-done':''}" data-${attr}="${i}">
+        <span class="en-uc-no">${esc(c.no)}</span>
+        <span class="en-uc-title">${esc(c.label)}</span>
+        <span class="en-uc-sub">${esc(c.sub||'')}</span>
+        ${c.stars ? `<span class="en-uc-stars">${c.stars}</span>` : ''}
+      </button>`).join('') + `</div>`;
+  }
+  // R122：书本课文单元卡 —— Unit 1–10 + 汇总（汇总 = 本册总复习）
+  function enBookUnitCards(curIdx){
+    const cards = EN_OXFORD_3A.map((u,i)=>{
+      const secs = u.sections||[];
+      const total = secs.length;
+      const done = secs.filter((s,k)=> S.isReadingRead('enOxfordTheme', u.id+'::'+k)).length;
+      const starN = total ? Math.round(done/total*5) : 0;
+      const isReview = (u.id === 'en-review');
+      return {
+        no:    isReview ? '汇总' : (u.unit || ('Unit '+(i+1))),
+        label: isReview ? 'Unit1~Unit10 汇总' : (u.title || ''),
+        sub:   total ? (done + '/' + total + ' 主题') : '暂无内容',
+        done:  total > 0 && done === total,
+        stars: '⭐'.repeat(starN) + '☆'.repeat(5-starN)
+      };
+    });
+    return enUnitCards(cards, curIdx, 'en-book-unit');
+  }
+  // R122：书本课文 —— 取消分页，改为顶部单元卡片切换（共 11 张：Unit 1–10 + 汇总）
+  function renderOxfordBook(idx){
+    idx = parseInt(idx, 10);
+    if(isNaN(idx) || idx < 0 || idx >= EN_OXFORD_3A.length) idx = 0;
     const isUnitComplete = (u)=> (u.sections||[]).length>0 && (u.sections||[]).every((s,i)=> S.isReadingRead('enOxfordTheme', u.id+'::'+i));
     const doneCount = EN_OXFORD_3A.filter(isUnitComplete).length;
-    const u = EN_OXFORD_3A[page] || EN_OXFORD_3A[0];
+    const u = EN_OXFORD_3A[idx] || EN_OXFORD_3A[0];
     const sections = u.sections||[];
     const totalThemes = sections.length;
     const doneThemes = sections.filter((s,i)=> S.isReadingRead('enOxfordTheme', u.id+'::'+i)).length;
@@ -37817,7 +38066,8 @@ I'm good at running.`},
     const starStr = '⭐'.repeat(starCount) + '☆'.repeat(5-starCount);
     return `
       <div class="yw-comp-head">沪教牛津英语 三年级上册 · 书本课文（每单元按主题打卡）</div>
-      <div class="en-oxford-tip">每一课（主题板块）都可单独打卡；本单元全部主题打卡完成，即可获得 5⭐️。</div>
+      <div class="en-oxford-tip">点上方单元卡片切换单元；每一课（主题板块）都可单独打卡，本单元全部主题打卡完成即可获得 5⭐️。</div>
+      ${enBookUnitCards(idx)}
       <div class="en-book-cap">
         <div class="en-cap-unit">${esc(u.unit)}</div>
         <div class="en-cap-title">${esc(u.title)}</div>
@@ -37828,12 +38078,13 @@ I'm good at running.`},
       <div class="en-unit-page${unitComplete?' is-done':''}">
         ${secHtml}
       </div>
-      ${enPager('book', page, totalPages)}
-      <div class="en-oxford-foot">共 ${totalPages} 页 · 已全主题完成 ${doneCount} 个单元</div>`;
+      <div class="en-oxford-foot">共 ${EN_OXFORD_3A.length} 个单元 · 已全主题完成 ${doneCount} 个单元（当前第 ${idx+1}/${EN_OXFORD_3A.length} 个）</div>`;
   }
 
-  // ---------- R22：沪教牛津英语 三年级上册 书本词汇（分单元结构化，与书本课文同一本书）----------
+  // ---------- R22：沪教牛津英语 三年级上册 单元词汇（分单元结构化，与书本课文同一本书）----------
   // 数据结构：10 个 Unit，每 Unit 含 核心词汇 words(带词性) / 重点短语 phrases / 常用表达 exprs
+  // R122：本数据集原供「书本词汇」板块渲染；板块改名为「重点知识」并改为图片为主后，
+  //       这里仅保留 10 个 Unit 的 id / unit / title 元数据（供重点知识的 10 张单元卡使用）。
   const EN_OXFORD_VOCAB_3A = [
     { id:'voc-u1', unit:'Unit 1', title:'My school',
       words:[
@@ -38178,57 +38429,102 @@ I'm good at running.`},
     (u.exprs||[]).forEach(v=>parts.push(v.en));
     return parts.join('. ');
   }
-  // 渲染书本词汇：按单元分页，每页 1 个单元（点击「标记已熟记」按钮整页变绿）
-  // 渲染书本词汇：按模块分页，每页 1 模块，每 Unit 一张可点击课程卡（点击整卡变绿）
-  function renderOxfordVocab(page){
-    page = page || 0;
-    const totalPages = EN_OXFORD_VOCAB_3A.length; // R22：10 个单元，每单元一页
-    const doneCount = EN_OXFORD_VOCAB_3A.filter(u=>S.isReadingRead('enVocab', u.id)).length;
-    const u = EN_OXFORD_VOCAB_3A[page] || EN_OXFORD_VOCAB_3A[0];
-    const done = S.isReadingRead('enVocab', u.id);
-    const wordsHtml = (u.words||[]).map(v=>`
-        <div class="en-vrow"><span class="en-vw en-tap-speak" data-en-speak="${esc(v.w)}">${esc(v.w)}</span><span class="en-vpos">${esc(v.pos||'')}</span><span class="en-vc">${esc(v.cn||'')}</span></div>`).join('');
-    const phrasesHtml = (u.phrases||[]).map(v=>`
-        <div class="en-vrow"><span class="en-vw en-tap-speak" data-en-speak="${esc(v.en)}">${esc(v.en)}</span><span class="en-vc">${esc(v.cn||'')}</span></div>`).join('');
-    const exprsHtml = (u.exprs||[]).map(v=>`
-        <div class="en-vexpr"><div class="en-vexpr-en en-tap-speak" data-en-speak="${esc(v.en)}">${esc(v.en)}</div><div class="en-vexpr-cn">${esc(v.cn||'')}</div></div>`).join('');
-    const secs = [];
-    if(u.words && u.words.length) secs.push(`
-      <div class="en-sec en-cat-vocab" style="--en-cat:#1e3a8a;--en-cat-bg:#eaf0fb">
-        <div class="en-sec-head"><span class="en-sec-title">核心词汇</span><span class="en-cat-chip" style="--en-cat:#1e3a8a;--en-cat-bg:#eaf0fb">📘 基础积累</span></div>
-        <div class="en-vocab-list">${wordsHtml}</div>
-      </div>`);
-    if(u.phrases && u.phrases.length) secs.push(`
-      <div class="en-sec en-cat-phrase" style="--en-cat:#2bb3a3;--en-cat-bg:#e6f7f4">
-        <div class="en-sec-head"><span class="en-sec-title">重点短语</span><span class="en-cat-chip" style="--en-cat:#2bb3a3;--en-cat-bg:#e6f7f4">🔤 语音拼读</span></div>
-        <div class="en-vocab-list">${phrasesHtml}</div>
-      </div>`);
-    if(u.exprs && u.exprs.length) secs.push(`
-      <div class="en-sec en-cat-expr" style="--en-cat:#5b6fd6;--en-cat-bg:#eef0fb">
-        <div class="en-sec-head"><span class="en-sec-title">常用表达</span><span class="en-cat-chip" style="--en-cat:#5b6fd6;--en-cat-bg:#eef0fb">💬 表达交流</span></div>
-        <div class="en-vexpr-list">${exprsHtml}</div>
-      </div>`);
+  // ---------- R122：「书本词汇」改名「重点知识」，内容改为以导入图片为主 ----------
+  // 单元元数据仍复用 EN_OXFORD_VOCAB_3A（Unit 1–10 的 id/unit/title），但不再渲染词汇表文本。
+  const EN_KP_READ = 'enKeyPoint';   // 打卡 kind（与书本课文的 enOxfordTheme 对应）
+  function enKpItems(unitId){
+    return (window.Store && window.Store.getEnKeyPoints) ? window.Store.getEnKeyPoints(unitId) : [];
+  }
+  function enKpDoneCount(unitId, items){
+    return (items||[]).filter((it,k)=> S.isReadingRead(EN_KP_READ, unitId+'::'+k)).length;
+  }
+  function enKpUnitCards(curIdx){
+    const cards = EN_OXFORD_VOCAB_3A.map((u,i)=>{
+      const items = enKpItems(u.id);
+      const total = items.length;
+      const done = enKpDoneCount(u.id, items);
+      const starN = total ? Math.round(done/total*5) : 0;
+      return {
+        no:    u.unit || ('Unit '+(i+1)),
+        label: u.title || '',
+        sub:   total ? (done + '/' + total + ' 张') : '待导入',
+        done:  total > 0 && done === total,
+        stars: '⭐'.repeat(starN) + '☆'.repeat(5-starN)
+      };
+    });
+    return enUnitCards(cards, curIdx, 'en-kp-unit');
+  }
+  // R122：重点知识 —— Unit 1–10 共 10 张单元卡，点进单元详情页（➕ 增加 导入图片 + 图片墙）
+  function renderEnKeyPoints(idx){
+    idx = parseInt(idx, 10);
+    if(isNaN(idx) || idx < 0 || idx >= EN_OXFORD_VOCAB_3A.length) idx = 0;
+    const u = EN_OXFORD_VOCAB_3A[idx] || EN_OXFORD_VOCAB_3A[0];
+    const items = enKpItems(u.id);
+    const total = items.length;
+    const done = enKpDoneCount(u.id, items);
+    const complete = total > 0 && done === total;
+    const starN = total ? Math.round(done/total*5) : 0;
+    const starStr = '⭐'.repeat(starN) + '☆'.repeat(5-starN);
+    const cardsHtml = total ? items.map((it,k)=>{
+      const d = S.isReadingRead(EN_KP_READ, u.id+'::'+k);
+      return `
+        <div class="kp-img-card${d?' is-checked':''}" data-kp-card="${k}" title="${d?'已学（点击取消）':'点击图片标记为已学'}">
+          <img class="kp-img" src="${esc(it.img)}" alt="${esc(it.t||'重点知识')}" />
+          ${it.t ? `<div class="kp-img-cap">${esc(it.t)}</div>` : ''}
+          <div class="kp-img-foot">
+            <span class="kp-img-state">${d?'✅已学':'□未学'}</span>
+            <button class="kp-img-del" data-kp-del="${k}" title="删除这张图片">删除</button>
+          </div>
+        </div>`;
+    }).join('') : '<div class="kp-empty">还没有重点知识图片，点上面「➕ 增加」导入课本重点照片吧～</div>';
     return `
-      <div class="yw-comp-head">沪教牛津英语 三年级上册 · 书本词汇（每单元一页）</div>
-      <div class="en-oxford-tip">每单元一页，滑到页底点「标记本单元已熟记」即可整页变绿。</div>
+      <div class="yw-comp-head">沪教牛津英语 三年级上册 · 重点知识（导入图片 · 每张单独打卡）</div>
+      <div class="en-oxford-tip">点单元卡片切换；进入单元后点「➕ 增加」导入图片（自动压缩并自适应屏幕）。每张图片单独打卡，本单元全部打卡完成即可获得 5⭐️。</div>
+      ${enKpUnitCards(idx)}
       <div class="en-book-cap">
         <div class="en-cap-unit">${esc(u.unit)}</div>
         <div class="en-cap-title">${esc(u.title)}</div>
+        <div class="en-unit-stars"><span class="en-unit-star-icons">${starStr}</span><span class="en-unit-star-num">${done}/${total} 张 · ${starN}/5 ⭐</span></div>
       </div>
-      <div class="en-unit-page${done?' is-done':''}">
-        ${secs.join('')}
-        <div class="en-done-row">
-          <button class="en-done-btn${done?' is-done':''}" data-en-vocab-done="${esc(u.id)}">${done?'✅已学':'□未学'}</button>
-        </div>
+      <div class="kp-add-row">
+        <button class="kp-add-btn" data-kp-add="${esc(u.id)}">➕ 增加</button>
+        <span class="kp-add-hint">支持从相册 / 文件夹选择图片，导入后自动压缩并自适应屏幕宽度</span>
       </div>
-      ${enPager('vocab', page, totalPages)}
-      <div class="en-oxford-foot">共 ${totalPages} 页（Unit 1–10）· 已完成 ${doneCount} 页（当前第 ${page+1}/${totalPages} 页）</div>`;
+      <div class="kp-img-grid">${cardsHtml}</div>
+      <div class="en-oxford-foot">本单元共 ${total} 张 · 已完成 ${done} 张${complete?' · 🎉 本单元已全部完成':''}</div>`;
+  }
+  // R122：图片导入 —— 读文件 → 等比压缩到最长边 1280 → JPEG 0.8 dataURL（避免撑爆 localStorage）
+  function enKpCompressImage(file, cb){
+    const MAX_EDGE = 1280;
+    const fr = new FileReader();
+    fr.onload = ()=>{
+      const src = String(fr.result || '');
+      const img = new Image();
+      img.onload = ()=>{
+        try{
+          const scale = Math.min(1, MAX_EDGE / Math.max(img.width, img.height));
+          const w = Math.max(1, Math.round(img.width * scale));
+          const h = Math.max(1, Math.round(img.height * scale));
+          const cv = document.createElement('canvas');
+          cv.width = w; cv.height = h;
+          const ctx = cv.getContext('2d');
+          ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h);
+          ctx.drawImage(img, 0, 0, w, h);
+          cb(cv.toDataURL('image/jpeg', 0.8) || src);
+        }catch(e){ cb(src); }
+      };
+      img.onerror = ()=> cb(src);
+      img.src = src;
+    };
+    fr.onerror = ()=> cb('');
+    fr.readAsDataURL(file);
   }
   // ---------- 英语专区 ----------
   const EN_TOP_CARDS = [
     { title:'同步课时练习', items:[
       { key:'dd',  icon:'📕', label:'书本课文' },
-      { key:'gd',  icon:'🔤', label:'书本词汇' }
+      // R122：「书本词汇」改名为「重点知识」，内容改为以导入图片为主
+      { key:'gd',  icon:'📌', label:'重点知识' }
     ] },
     // R24-5：「听力训练」改为「英语小知识」（整个英语语法体系）
     { title:'拓展练习', items:[
@@ -38375,18 +38671,52 @@ I'm good at running.`},
       ${nwZoneList('英语小知识','英语小知识')}`;
   }
   function enSlot(key, label){
-    if(key === 'dd') return renderOxfordBook(_enCurPage); // V116：书本课文（分页）
-    if(key === 'gd') return renderOxfordVocab(_enCurPage); // V116：书本词汇（分页）
+    // R122：书本课文 / 重点知识 改为单元卡片切换，不再用 _enCurPage 分页
+    if(key === 'dd') return renderOxfordBook(_enBookUnit);
+    if(key === 'gd') return renderEnKeyPoints(_enKpUnit);
     if(key === 'jx') return renderOxfordSentence(_enCurPage); // R37-3：句型练习（分页）
     if(key === 'yyxzs') return enGrammar();               // R24-5：英语小知识（语法体系）
     const map = {
-      gd:  ['书本词汇','🔤','听音跟读，再遮住单词自测默写。', true],
+      // R122：与上方 EN_TOP_CARDS 保持一致的板块名
+      gd:  ['重点知识','📌','导入课本重点照片，逐张打卡。', true],
       ctb: ['错题本','📓','把做错的题收进来，定期复习不再错。', false]
     };
     const m = map[key] || [label,'🔤',''];
     return nwSlotGeneric(m[0], m[1], m[2], m[3]);
   }
   function renderEnglishPage(){ renderSlotPage('enTopCards','enSlotBody','enSlotHint', EN_TOP_CARDS, enSlot, 'dd'); }
+  // R122：重点知识图片导入 —— 绑定隐藏 file input（全局只绑一次，避免 slotBody 重渲染后重复绑定）
+  // 流程：选图 → 过滤非图片 → 逐张压缩（最长边 1280 / JPEG 0.8）→ 写入当前单元 → 重渲染
+  function initEnKeyPointImport(){
+    const inp = document.getElementById('enKpImgInput');
+    if(!inp || inp._kpBound) return;
+    inp._kpBound = true;
+    inp.addEventListener('change', ()=>{
+      const files = Array.prototype.slice.call(inp.files || []).filter(f=> /^image\//.test(f.type || ''));
+      if(!files.length){ inp.value = ''; return; }
+      const unitId = _enKpAddUnit || ((EN_OXFORD_VOCAB_3A[_enKpUnit]||{}).id) || '';
+      if(!unitId){ inp.value = ''; toast('请先选择一个单元'); return; }
+      let pending = files.length, added = 0;
+      const done = ()=>{
+        pending--;
+        if(pending > 0) return;
+        inp.value = '';
+        toast(added ? ('✅ 已导入 ' + added + ' 张重点知识图片') : '⚠️ 图片导入失败，请重试');
+        if(added && typeof renderEnglishPage === 'function') renderEnglishPage();
+      };
+      files.forEach(f=>{
+        enKpCompressImage(f, (dataUrl)=>{
+          if(dataUrl){
+            try{
+              if(window.Store && window.Store.addEnKeyPoint) window.Store.addEnKeyPoint(unitId, { img:dataUrl, t:'' });
+              added++;
+            }catch(e){ toast('⚠️ 存储空间不足，请先删除部分图片'); }
+          }
+          done();
+        });
+      });
+    });
+  }
 
   // ---------- 拓展素养 ----------
   const SZ_TOP_CARDS = [
@@ -47252,6 +47582,7 @@ I'm good at running.`},
     bindEvents();
     initFarmMusicState();
     initKMBgmState();   // R76-3：知识秘境背景音乐设置初始化（读回开关/曲目 + 绑定控件）
+    initEnKeyPointImport(); // R122：英语专区「重点知识」图片导入（隐藏 file input 的 change 绑定，全局只绑一次）
     renderHome();
     if(typeof autoWelcomeJudy==='function') autoWelcomeJudy();
     resetIdle();
@@ -47539,5 +47870,9 @@ I'm good at running.`},
     </div>
   </div>
 </div>
+
+<!-- R122：新世界·英语专区「重点知识」图片导入（隐藏 file input，由单元详情页「➕ 增加」触发） -->
+<input type="file" id="enKpImgInput" accept="image/*" multiple style="display:none" data-page-node-id="R122kpImgInput" />
+
 </body>
 </html>
