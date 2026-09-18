@@ -5241,6 +5241,10 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 }
 .wp-nickmemo-btn:hover{filter:brightness(1.05);transform:translateY(-1px);box-shadow:0 5px 14px rgba(30,58,138,.22)}
 .wp-nickmemo-btn:active{transform:translateY(0)}
+/* R119-2：实测 .wp-card-body 的 padding-right:2px 覆盖了 .wp-left-body 的 12px，
+   导致卡内内容（姓名块 + 备忘录键）左 12px / 右 2px 不对称、整体右偏 5px。
+   以更高特异性恢复左右对称内边距，使两卡左右边距严格相等、水平居中。 */
+.wp-card-left-intro .wp-card-body.wp-left-body{padding:10px 12px}
 
 /* ---- R118-2：「Nick 的备忘录」独立页面（背景贴图 + 留白区书写板） ---- */
 .page-memonick{
@@ -5325,14 +5329,17 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 }
 .mn-cancel:hover{background:var(--tone-100)}
 
-/* R119-3：日月星辰装饰 —— 覆盖背景图右下角「豆包AI生成」水印（图片 1080x810 右下角） */
+/* R119-3：日月星辰装饰 —— 覆盖背景图右下角「豆包AI生成」水印（图片 1080x810 右下角）
+   6 枚装饰符号紧密排布 + 柔和光晕托底，确保水印文字被完全遮住 */
 .mn-decor{
   position:absolute;right:1%;bottom:1.2%;z-index:4;pointer-events:none;
-  display:flex;align-items:center;gap:1px;
-  font-size:clamp(18px,3.2vmin,34px);line-height:1;
-  filter:drop-shadow(0 1px 3px rgba(30,58,138,.28))
+  display:flex;align-items:center;gap:0;padding:2px 10px;border-radius:999px;
+  font-size:clamp(20px,3.4vmin,38px);line-height:1;
+  background:radial-gradient(closest-side,rgba(158,210,248,.94) 58%,rgba(158,210,248,0));
+  filter:drop-shadow(0 1px 3px rgba(30,58,138,.26))
 }
-.mn-decor span{line-height:1}
+.mn-decor span{line-height:1;margin-left:-4px}
+.mn-decor span:first-child{margin-left:0}
 
 /* ---- R118-3：设置中心模式选择卡片（#cardModeSettings，与打卡任务等同款外壳） ---- */
 .settings-card-mode{cursor:default}
@@ -5559,7 +5566,7 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
         <div class="mn-list" id="nickMemoList" data-page-node-id="R118memoList"></div>
       </div>
       <!-- R119-3：日月星辰装饰，覆盖背景图右下角「豆包AI生成」水印 -->
-      <div class="mn-decor" aria-hidden="true" data-page-node-id="R119memoDecor"><span>☀️</span><span>🌙</span><span>⭐</span><span>✨</span></div>
+      <div class="mn-decor" aria-hidden="true" data-page-node-id="R119memoDecor"><span>☀️</span><span>🌙</span><span>⭐</span><span>✨</span><span>🌟</span><span>💫</span></div>
     </div>
   </section>
 
