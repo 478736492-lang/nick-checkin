@@ -5593,13 +5593,6 @@ html,body{margin:0;padding:0}
 .kp-img-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px}
 .kp-img-state{font-size:12.5px;font-weight:800;color:var(--muted)}
 .kp-img-card.is-checked .kp-img-state{color:var(--ok-main)}
-.kp-img-del{
-  min-height:34px;padding:5px 13px;cursor:pointer;
-  font-size:12px;font-weight:800;color:var(--bad-main);
-  background:#fff;border:1.5px solid var(--bad-line);border-radius:999px;
-  transition:background .12s
-}
-.kp-img-del:hover{background:var(--bad-pale)}
 .kp-empty{
   grid-column:1/-1;text-align:center;
   font-size:13.5px;color:var(--muted);line-height:1.7;
@@ -5619,6 +5612,35 @@ html,body{margin:0;padding:0}
   .en-uc-title{font-size:13px}
   .kp-img-grid{grid-template-columns:1fr}
 }
+
+/* ==================================================================================
+   R123：新世界·英语专区 —— 单元卡只显 Unit N/汇总 + 单元卡与单元信息区同行 + 重点知识顶部删除模式
+   ================================================================================== */
+/* ① 单元卡（次标题卡）与单元信息区（单元标题 + 数据统计）并排同一行 */
+.en-book-head-row{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:0 4px 4px}
+.en-book-head-row > .en-unit-cards{flex:1 1 460px;min-width:0;margin:0}
+.en-book-head-row > .en-book-cap{flex:0 0 auto;min-width:200px;max-width:300px;margin:0}
+/* 单元卡只显示 Unit N / 汇总：内容居中、字号放大 */
+.en-book-head-row .en-unit-card{justify-content:center;align-items:center;text-align:center;min-height:64px}
+.en-book-head-row .en-uc-no{font-size:15px;font-weight:900;letter-spacing:.5px;color:var(--tone-900)}
+.en-book-head-row .en-unit-card.is-active .en-uc-no{color:#fff}
+/* ② 重点知识：顶部「🗑 删除」模式按钮 */
+.kp-del-mode-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  min-height:44px;padding:10px 18px;cursor:pointer;
+  font-size:14px;font-weight:800;color:var(--bad-main);
+  background:#fff;border:1.5px solid var(--bad-line);border-radius:999px;
+  transition:transform .12s,box-shadow .12s,background .12s,border-color .12s
+}
+.kp-del-mode-btn:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(226,69,58,.22)}
+.kp-del-mode-btn:active{transform:translateY(0)}
+.kp-del-mode-btn.is-on{background:var(--bad-main);color:#fff;border-color:var(--bad-main);box-shadow:0 6px 16px rgba(226,69,58,.32)}
+/* 删除模式提示条 */
+.en-kp-del-hint{margin:0 4px 12px;padding:10px 14px;font-size:13px;font-weight:700;color:var(--bad-main);
+  background:var(--bad-pale);border:1.5px dashed var(--bad-line);border-radius:12px;line-height:1.5}
+/* 删除模式下图片卡视觉提示 */
+.kp-img-grid.is-del-mode .kp-img-card{cursor:pointer}
+.kp-img-grid.is-del-mode .kp-img-card:hover{border-color:var(--bad-main);box-shadow:0 6px 16px rgba(226,69,58,.22)}
 
 </style>
 </head>
@@ -36967,6 +36989,7 @@ May / Can I /we have …, please? 请问我 / 我们可以拿…… 吗？
         const i = parseInt(btn.getAttribute('data-en-kp-unit'), 10);
         if(isNaN(i)) return;
         _enKpUnit = i;
+        _enKpDelMode = false;   // R123：切换单元即退出删除模式
         rerender();
       });
     });
@@ -36991,27 +37014,36 @@ May / Can I /we have …, please? 请问我 / 我们可以拿…… 吗？
     slotBody.querySelectorAll('[data-kp-card]').forEach(card=>{
       if(card._kpCardBound) return; card._kpCardBound = true;
       card.addEventListener('click', (e)=>{
-        if(e.target.closest('[data-kp-del]')) return;   // 删除按钮自行处理
         e.stopPropagation();
         const unit = (EN_OXFORD_VOCAB_3A[_enKpUnit] || {}).id;
         if(!unit) return;
         const i = parseInt(card.getAttribute('data-kp-card'), 10);
         if(isNaN(i)) return;
+        if(_enKpDelMode){ enKpDeleteImage(unit, i); return; }  // R123：删除模式下点图片→确认删除
         enKpToggle(unit, i);
       });
     });
-    // R122：重点知识 —— 删除图片（先重排打卡下标，再删，避免「已学」错位到下一张）
-    slotBody.querySelectorAll('[data-kp-del]').forEach(btn=>{
-      if(btn._kpDelBound) return; btn._kpDelBound = true;
+    // R123：重点知识 —— 删除图片（顶部「🗑 删除」模式触发：先确认，再重排打卡下标并删除，避免「已学」错位）
+    const enKpDeleteImage = (unitId, idx)=>{
+      const list = (window.Store && window.Store.getEnKeyPoints) ? window.Store.getEnKeyPoints(unitId) : [];
+      const it = list[idx];
+      const name = (it && it.t) ? it.t : ('第 ' + (idx+1) + ' 张');
+      openCustomModal('删除重点知识图片',
+        `确定删除「<b>${esc(name)}</b>」这张重点知识图片吗？<div style="margin-top:8px;color:#5b6b85;font-size:13px">删除后不可恢复，该图片的打卡记录也会一并清除。</div>`,
+        ()=>{
+          if(window.Store && window.Store.shiftEnKeyPointReads) window.Store.shiftEnKeyPointReads(unitId, idx, EN_KP_READ);
+          if(window.Store && window.Store.delEnKeyPoint) window.Store.delEnKeyPoint(unitId, idx);
+          toast('🗑 已删除该图片');
+          if(typeof rerender === 'function') rerender();
+          return true;
+        });
+    };
+    // R123：重点知识 —— 顶部「🗑 删除」切换删除模式
+    slotBody.querySelectorAll('[data-kp-del-mode]').forEach(btn=>{
+      if(btn._kpDelModeBound) return; btn._kpDelModeBound = true;
       btn.addEventListener('click', (e)=>{
         e.stopPropagation();
-        const unit = (EN_OXFORD_VOCAB_3A[_enKpUnit] || {}).id;
-        if(!unit) return;
-        const i = parseInt(btn.getAttribute('data-kp-del'), 10);
-        if(isNaN(i)) return;
-        if(window.Store && window.Store.shiftEnKeyPointReads) window.Store.shiftEnKeyPointReads(unit, i, EN_KP_READ);
-        if(window.Store && window.Store.delEnKeyPoint) window.Store.delEnKeyPoint(unit, i);
-        toast('🗑 已删除该图片');
+        _enKpDelMode = !_enKpDelMode;
         if(typeof rerender === 'function') rerender();
       });
     });
@@ -37122,7 +37154,7 @@ May / Can I /we have …, please? 请问我 / 我们可以拿…… 吗？
         if(key === 'dd' || key === 'gd'){ _enCurPage = 0; _enCurKey = key; } // V116：切换两板块时重置分页
         // R122：切回板块时各自回到第一个单元
         if(key === 'dd'){ _enBookUnit = 0; }
-        if(key === 'gd'){ _enKpUnit = 0; }
+        if(key === 'gd'){ _enKpUnit = 0; _enKpDelMode = false; }
         _szCurPage = 0; // R24-4：切换拓展素养板块时重置卡片分页
         if(key === 'yyxzs') _egCurSec = 0; // R24-5：进入英语小知识回到第一章
         if(slotBody){
@@ -37923,6 +37955,7 @@ I'm good at running.`},
   let _enBookUnit  = 0;   // 书本课文：0–10（Unit 1–10 + 汇总）
   let _enKpUnit    = 0;   // 重点知识：0–9（Unit 1–10）
   let _enKpAddUnit = '';  // 重点知识：待导入图片的单元 id
+  let _enKpDelMode = false;   // R123：重点知识「🗑 删除」模式开关
   // V116：分页条（上一页/下一页/第 X/Y 页）
   function enPager(key, page, total){
     return `
@@ -38013,13 +38046,11 @@ I'm good at running.`},
   }
   // ---------- R122：英语专区次级单元卡片网格（书本课文 11 张 / 重点知识 10 张，共用一套样式）----------
   // cards: [{no,label,sub,done,stars}]；attr: 卡片点击属性名（data-<attr>）
+  // R123：单元卡（次标题卡）只显示 Unit N / 汇总，不再内联课文标题与数据统计（标题/统计移到内容卡片的单元信息区 .en-book-head-row）
   function enUnitCards(cards, curIdx, attr){
     return `<div class="en-unit-cards">` + cards.map((c,i)=>`
       <button class="en-unit-card${i===curIdx?' is-active':''}${c.done?' is-done':''}" data-${attr}="${i}">
         <span class="en-uc-no">${esc(c.no)}</span>
-        <span class="en-uc-title">${esc(c.label)}</span>
-        <span class="en-uc-sub">${esc(c.sub||'')}</span>
-        ${c.stars ? `<span class="en-uc-stars">${c.stars}</span>` : ''}
       </button>`).join('') + `</div>`;
   }
   // R122：书本课文单元卡 —— Unit 1–10 + 汇总（汇总 = 本册总复习）
@@ -38067,12 +38098,14 @@ I'm good at running.`},
     return `
       <div class="yw-comp-head">沪教牛津英语 三年级上册 · 书本课文（每单元按主题打卡）</div>
       <div class="en-oxford-tip">点上方单元卡片切换单元；每一课（主题板块）都可单独打卡，本单元全部主题打卡完成即可获得 5⭐️。</div>
-      ${enBookUnitCards(idx)}
-      <div class="en-book-cap">
-        <div class="en-cap-unit">${esc(u.unit)}</div>
-        <div class="en-cap-title">${esc(u.title)}</div>
-        ${bigQ}
-        <div class="en-unit-stars"><span class="en-unit-star-icons">${starStr}</span><span class="en-unit-star-num">${doneThemes}/${totalThemes} 主题 · ${starCount}/5 ⭐</span></div>
+      <div class="en-book-head-row">
+        ${enBookUnitCards(idx)}
+        <div class="en-book-cap">
+          <div class="en-cap-unit">${esc(u.unit)}</div>
+          <div class="en-cap-title">${esc(u.title)}</div>
+          ${bigQ}
+          <div class="en-unit-stars"><span class="en-unit-star-icons">${starStr}</span><span class="en-unit-star-num">${doneThemes}/${totalThemes} 主题 · ${starCount}/5 ⭐</span></div>
+        </div>
       </div>
       ${legend}
       <div class="en-unit-page${unitComplete?' is-done':''}">
@@ -38468,29 +38501,32 @@ I'm good at running.`},
     const cardsHtml = total ? items.map((it,k)=>{
       const d = S.isReadingRead(EN_KP_READ, u.id+'::'+k);
       return `
-        <div class="kp-img-card${d?' is-checked':''}" data-kp-card="${k}" title="${d?'已学（点击取消）':'点击图片标记为已学'}">
+        <div class="kp-img-card${d?' is-checked':''}" data-kp-card="${k}" title="${_enKpDelMode?'点击删除这张图片':'点击图片标记为已学（再点取消）'}">
           <img class="kp-img" src="${esc(it.img)}" alt="${esc(it.t||'重点知识')}" />
           ${it.t ? `<div class="kp-img-cap">${esc(it.t)}</div>` : ''}
           <div class="kp-img-foot">
             <span class="kp-img-state">${d?'✅已学':'□未学'}</span>
-            <button class="kp-img-del" data-kp-del="${k}" title="删除这张图片">删除</button>
           </div>
         </div>`;
     }).join('') : '<div class="kp-empty">还没有重点知识图片，点上面「➕ 增加」导入课本重点照片吧～</div>';
     return `
       <div class="yw-comp-head">沪教牛津英语 三年级上册 · 重点知识（导入图片 · 每张单独打卡）</div>
       <div class="en-oxford-tip">点单元卡片切换；进入单元后点「➕ 增加」导入图片（自动压缩并自适应屏幕）。每张图片单独打卡，本单元全部打卡完成即可获得 5⭐️。</div>
-      ${enKpUnitCards(idx)}
-      <div class="en-book-cap">
-        <div class="en-cap-unit">${esc(u.unit)}</div>
-        <div class="en-cap-title">${esc(u.title)}</div>
-        <div class="en-unit-stars"><span class="en-unit-star-icons">${starStr}</span><span class="en-unit-star-num">${done}/${total} 张 · ${starN}/5 ⭐</span></div>
+      <div class="en-book-head-row">
+        ${enKpUnitCards(idx)}
+        <div class="en-book-cap">
+          <div class="en-cap-unit">${esc(u.unit)}</div>
+          <div class="en-cap-title">${esc(u.title)}</div>
+          <div class="en-unit-stars"><span class="en-unit-star-icons">${starStr}</span><span class="en-unit-star-num">${done}/${total} 张 · ${starN}/5 ⭐</span></div>
+        </div>
       </div>
       <div class="kp-add-row">
         <button class="kp-add-btn" data-kp-add="${esc(u.id)}">➕ 增加</button>
+        <button class="kp-del-mode-btn${_enKpDelMode?' is-on':''}" data-kp-del-mode="1">${_enKpDelMode?'🗑 退出删除':'🗑 删除'}</button>
         <span class="kp-add-hint">支持从相册 / 文件夹选择图片，导入后自动压缩并自适应屏幕宽度</span>
       </div>
-      <div class="kp-img-grid">${cardsHtml}</div>
+      ${_enKpDelMode ? `<div class="en-kp-del-hint">🗑 删除模式已开启：点击任意图片即可删除（每张都会再次确认）</div>` : ''}
+      <div class="kp-img-grid${_enKpDelMode?' is-del-mode':''}">${cardsHtml}</div>
       <div class="en-oxford-foot">本单元共 ${total} 张 · 已完成 ${done} 张${complete?' · 🎉 本单元已全部完成':''}</div>`;
   }
   // R122：图片导入 —— 读文件 → 等比压缩到最长边 1280 → JPEG 0.8 dataURL（避免撑爆 localStorage）
