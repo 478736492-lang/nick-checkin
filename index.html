@@ -5616,14 +5616,24 @@ html,body{margin:0;padding:0}
 /* ==================================================================================
    R123：新世界·英语专区 —— 单元卡只显 Unit N/汇总 + 单元卡与单元信息区同行 + 重点知识顶部删除模式
    ================================================================================== */
-/* ① 单元卡（次标题卡）与单元信息区（单元标题 + 数据统计）并排同一行 */
-.en-book-head-row{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:0 4px 4px}
-.en-book-head-row > .en-unit-cards{flex:1 1 460px;min-width:0;margin:0}
-.en-book-head-row > .en-book-cap{flex:0 0 auto;min-width:200px;max-width:300px;margin:0}
-/* 单元卡只显示 Unit N / 汇总：内容居中、字号放大 */
-.en-book-head-row .en-unit-card{justify-content:center;align-items:center;text-align:center;min-height:64px}
-.en-book-head-row .en-uc-no{font-size:15px;font-weight:900;letter-spacing:.5px;color:var(--tone-900)}
+/* ① 单元卡（次标题卡）单行缩排 + 标题卡文字单行：单元卡横向同一行（Unit1~10+汇总），标题卡内文字一字排开 */
+.en-book-head-row{display:flex;flex-direction:column;gap:0;margin:0 4px 6px}
+/* 单元卡容器：单行、可横向滚动（11 张不换行） */
+.en-book-head-row > .en-unit-cards{flex:none;width:100%;min-width:0;margin:0 0 8px;
+  display:flex;flex-wrap:nowrap;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+/* 标题卡：单元标签 + 标题 + 统计 整行单行展示 */
+.en-book-head-row > .en-book-cap{flex:none;width:100%;min-width:0;max-width:none;margin:0 0 10px;
+  display:flex;flex-wrap:nowrap;align-items:center;gap:12px;padding:10px 16px}
+/* 单元卡缩小：固定小尺寸、居中、单行排列 */
+.en-book-head-row .en-unit-card{flex:0 0 auto;width:66px;min-width:66px;min-height:46px;
+  justify-content:center;align-items:center;text-align:center;padding:5px 4px}
+.en-book-head-row .en-uc-no{font-size:14px;font-weight:900;letter-spacing:.5px;color:var(--tone-900)}
 .en-book-head-row .en-unit-card.is-active .en-uc-no{color:#fff}
+/* 标题卡内部文字一字排开（同一行）：标签/标题/统计横向平铺，长标题省略 */
+.en-book-head-row .en-cap-unit{margin-bottom:0;flex:0 0 auto}
+.en-book-head-row .en-cap-title{font-size:16px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1 1 auto;min-width:0}
+.en-book-head-row .en-bigq{margin-top:0;flex:0 0 auto}
+.en-book-head-row .en-unit-stars{margin-left:auto;white-space:nowrap;flex:0 0 auto}
 /* ② 重点知识：顶部「🗑 删除」模式按钮 */
 .kp-del-mode-btn{
   display:inline-flex;align-items:center;gap:6px;
