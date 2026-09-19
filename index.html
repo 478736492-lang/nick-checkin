@@ -5642,6 +5642,10 @@ html,body{margin:0;padding:0}
 .kp-img-grid.is-del-mode .kp-img-card{cursor:pointer}
 .kp-img-grid.is-del-mode .kp-img-card:hover{border-color:var(--bad-main);box-shadow:0 6px 16px rgba(226,69,58,.22)}
 
+/* R124：种植园 游戏开放时间 —— 工作日时段窗子行（复用 .km-open-* 体系） */
+.km-open-chk .km-open-wd{display:block;font-size:12px;color:#6a7a95;margin-top:4px;line-height:1.9}
+.km-open-chk .km-open-wd .peg-input{display:inline-block;width:auto;min-width:84px;height:30px;vertical-align:middle;margin:0 2px}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -6709,6 +6713,30 @@ html,body{margin:0;padding:0}
           <button class="primary-btn" id="btnFarmEditSave" data-page-node-id="i51MHrdUIATmIfOs05ateW">💾 保存排版</button>
           <button class="pbtn" id="btnFarmEditReset" data-page-node-id="R362B3PWJjTfmEUZ2mncRp">↺ 恢复默认</button>
         </div>
+      </div>
+      <!-- R124：种植园 游戏开放时间（默认工作日 21:00-24:00 + 周末/法定节假日；支持自定义开放日/时段；非开放时间锁定） -->
+      <div class="parent-edit-group" data-page-node-id="R124farmOpenGrp">
+        <div class="peg-title" data-page-node-id="R124farmOpenTitle">📅 游戏开放时间</div>
+        <div class="km-open-hint" id="farmOpenToday" data-page-node-id="R124farmOpenToday">--</div>
+        <label class="km-open-chk" data-page-node-id="R124farmWeekdayLbl">
+          <input type="checkbox" id="farmOpenWeekday" style="width:auto" data-page-node-id="R124farmWeekday"> 默认工作日开放（周一 ~ 周五）
+          <span class="km-open-wd" data-page-node-id="R124farmWdSpan">开放时段 <input type="time" id="farmOpenWdStart" class="peg-input" style="width:auto;min-height:30px"> ~ <input type="time" id="farmOpenWdEnd" class="peg-input" style="width:auto;min-height:30px">（默认 21:00 ~ 24:00）</span>
+        </label>
+        <label class="km-open-chk" data-page-node-id="R124farmWeekendLbl">
+          <input type="checkbox" id="farmOpenWeekend" style="width:auto" data-page-node-id="R124farmWeekend"> 默认周末开放（周六 / 周日，全天）
+        </label>
+        <label class="km-open-chk" data-page-node-id="R124farmHolidayLbl">
+          <input type="checkbox" id="farmOpenHoliday" style="width:auto" data-page-node-id="R124farmHoliday"> 默认法定节假日开放（按国家放假安排，全天）
+        </label>
+        <div class="km-open-add" data-page-node-id="R124farmCustomAdd">
+          <span style="font-size:13px">自定义开放日（可选时段，留空=全天）：</span>
+          <input type="date" id="farmOpenDateInput" class="peg-input" data-page-node-id="R124farmDateInput">
+          <input type="time" id="farmOpenTimeStart" class="peg-input" style="width:auto;min-height:30px" title="开始时间，留空=全天">
+          <span>~</span>
+          <input type="time" id="farmOpenTimeEnd" class="peg-input" style="width:auto;min-height:30px" title="结束时间，留空=全天">
+          <button type="button" class="pbtn small" id="btnFarmOpenAdd" data-page-node-id="R124farmAddBtn">＋ 添加开放日</button>
+        </div>
+        <div class="km-open-list" id="farmOpenDateList" data-page-node-id="R124farmOpenList"></div>
       </div>
       <div class="parent-edit-group" data-page-node-id="R83farmMarketGrp">
         <div class="peg-title" data-page-node-id="qvi7DFg2FE8XoWu8fHvNM5">🛒 农场市集（种子 / 水 / 阳光）</div>
@@ -31219,6 +31247,68 @@ window.MAO_POEMS = [{"t": "贺新郎·别友", "d": "一九二三年", "c": "挥
     return { date: d, open: open, reason: reason, custom: custom, holiday: holiday, weekend: weekend, weekendOn: o.weekend !== false, holidayOn: o.holiday !== false, dates: (Array.isArray(o.dates) ? o.dates.slice() : []) };
   }
   function isKMOpen(dateStr){ return getKMOpenInfo(dateStr).open; }
+  // ---------- R124：种植园「游戏开放时间」判定（家长自定义开放日/时段 + 默认规则）----------
+  // 默认规则：周一~周五 21:00-24:00；周末（周六/周日）全天；法定节假日全天；自定义开放日（可指定时段，缺省全天）。
+  // 优先级：自定义开放日（家长精确补充/覆盖）> 法定节假日 > 周末 > 工作日时段窗。
+  // 全部走纯函数 Store.getFarmOpenInfo / Store.isFarmOpen（可传 dateStr/timeStr，便于测试；缺省用当前时间）。
+  function farmDefaultOpen(){
+    return { weekday:true, weekdayStart:'21:00', weekdayEnd:'24:00', weekend:true, holiday:true, dates:[] };
+  }
+  function getFarmOpenConfig(){
+    const st = load();
+    const d = farmDefaultOpen();
+    const o = (st.farmOpen && typeof st.farmOpen === 'object') ? st.farmOpen : {};
+    const cfg = Object.assign({}, d, o);
+    cfg.weekday = (typeof o.weekday === 'boolean') ? o.weekday : d.weekday;
+    cfg.weekend = (typeof o.weekend === 'boolean') ? o.weekend : d.weekend;
+    cfg.holiday = (typeof o.holiday === 'boolean') ? o.holiday : d.holiday;
+    cfg.weekdayStart = o.weekdayStart || d.weekdayStart;
+    cfg.weekdayEnd = o.weekdayEnd || d.weekdayEnd;
+    cfg.dates = Array.isArray(o.dates)
+      ? o.dates.filter(x => x && typeof x.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(x.date))
+      : [];
+    return cfg;
+  }
+  function farmSaveOpen(patch){
+    const st = load();
+    st.farmOpen = Object.assign({}, getFarmOpenConfig(), patch || {});
+    save(st);
+    return getFarmOpenConfig();
+  }
+  function farmHmToMin(hm){
+    const m = /^(\d{1,2}):(\d{2})$/.exec(hm || '');
+    if(!m) return null;
+    return parseInt(m[1], 10) * 60 + parseInt(m[2], 10);
+  }
+  function farmNowHM(){
+    const n = new Date();
+    return ('0' + n.getHours()).slice(-2) + ':' + ('0' + n.getMinutes()).slice(-2);
+  }
+  function getFarmOpenInfo(dateStr, timeStr){
+    const d = dateStr || todayStr();
+    const t = timeStr || farmNowHM();
+    const cfg = getFarmOpenConfig();
+    const customHit = (cfg.dates || []).find(x => x.date === d) || null;
+    const holiday = kmIsHoliday(d);
+    const wdNum = new Date(d + 'T00:00:00').getDay();
+    const weekend = (wdNum === 0 || wdNum === 6);
+    const weekday = (wdNum >= 1 && wdNum <= 5);
+    const nowMin = farmHmToMin(t);
+    let open = false, reason = '非开放时间';
+    if(customHit){
+      const sMin = farmHmToMin(customHit.start), eMin = farmHmToMin(customHit.end);
+      const allDay = (sMin === null && eMin === null);
+      if(allDay || (sMin !== null && eMin !== null && nowMin >= sMin && nowMin <= eMin)){ open = true; reason = '自定义开放时间'; }
+    }
+    if(!open && holiday && cfg.holiday){ open = true; reason = '法定节假日'; }
+    if(!open && weekend && cfg.weekend){ open = true; reason = '周末'; }
+    if(!open && weekday && cfg.weekday && nowMin !== null){
+      const sMin = farmHmToMin(cfg.weekdayStart), eMin = farmHmToMin(cfg.weekdayEnd);
+      if(sMin !== null && eMin !== null && nowMin >= sMin && nowMin <= eMin){ open = true; reason = '工作日 ' + cfg.weekdayStart + '-' + cfg.weekdayEnd; }
+    }
+    return { date:d, time:t, open:open, reason:reason, custom:!!customHit, holiday:holiday, weekend:weekend, weekday:weekday, weekdayOn:cfg.weekday, holidayOn:cfg.holiday, weekendOn:cfg.weekend, dates:(cfg.dates||[]).slice() };
+  }
+  function isFarmOpen(dateStr, timeStr){ return getFarmOpenInfo(dateStr, timeStr).open; }
   function addKMStars(n){
     const st = load(); const km = kmEnsure(st);
     km.stars = (km.stars||0) + (n||0); save(st); return km.stars;
@@ -33841,6 +33931,8 @@ May / Can I /we have …, please? 请问我 / 我们可以拿…… 吗？
     getKMProgress, saveKMProgress,
     // R121-1：游戏开放日期（周末 + 法定节假日默认规则，支持自定义开放日）
     isKMOpen, getKMOpenInfo, kmIsHoliday, kmIsWeekend,
+    // R124：种植园 游戏开放时间（工作日时段窗 + 周末/节假日 + 自定义开放日/时段）
+    isFarmOpen, getFarmOpenInfo, getFarmOpenConfig, farmSaveOpen,
     // V55-Req6：收录书屋
     archiveReadingToday, isReadingArchivedToday, deleteUserReading,
     // V60-R7：收录书屋 - 全板块当日所有内容聚合
@@ -42993,6 +43085,8 @@ I'm good at running.`},
     // 渲染农场市集（种子+工具）/ 云上小卖部（礼物）列表
     renderShopEditor('farmSetMarketList', ['seed','growth']);
     renderShopEditor('farmSetShopList',   ['gift']);
+    // R124：游戏开放时间（工作日时段窗 + 周末/节假日 + 自定义开放日）
+    initFarmOpenSetting();
     showModal('#modalFarmSetting');
   }
   // R83：种植园设置弹窗交互绑定（保存/恢复默认排版 + 市集/小卖部列表事件）
@@ -46934,11 +47028,126 @@ I'm good at running.`},
     showModal('#modalKMSetting');
   }
 
+  /* ============ R124：种植园「游戏开放时间」设置 + 非开放时间锁定 ============ */
+  // 规则：家长自定义开放日/时段 > 法定节假日（可关）> 周末（可关）> 工作日时段窗（默认 21:00-24:00，可关）。
+  // 判定全部走 Store.isFarmOpen / Store.getFarmOpenInfo（纯函数、可传日期与时间，便于测试）。
+  function farmLockedNow(){ try { return !S.isFarmOpen(); } catch(e){ return false; } }
+  function farmLockToast(){
+    toast('🔒 种植园今日未到开放时间，仅工作日 21:00-24:00、周末与法定节假日开放');
+  }
+  function renderFarmOpenDates(){
+    const box = document.getElementById('farmOpenDateList'); if(!box) return;
+    let ds = [];
+    try { ds = (S.getFarmOpenConfig().dates || []).slice().sort((a,b)=> (a.date < b.date ? -1 : 1)); } catch(e){}
+    if(!ds.length){
+      box.innerHTML = '<div class="km-open-empty" data-page-node-id="R124farmOpenEmpty">暂无自定义开放日（默认规则：工作日 21:00-24:00 + 周末 + 法定节假日）</div>';
+      return;
+    }
+    const wdNames = ['周日','周一','周二','周三','周四','周五','周六'];
+    box.innerHTML = ds.map(d => {
+      const wd = wdNames[new Date(d.date + 'T00:00:00').getDay()] || '';
+      const span = (d.start && d.end) ? (' ' + d.start + '-' + d.end) : (d.start ? (' 自' + d.start) : (d.end ? (' 至' + d.end) : ' 全天'));
+      return '<span class="km-open-chip" data-page-node-id="R124farmOpenChip">' + esc(d.date) + ' ' + esc(wd) + esc(span) +
+        '<button type="button" class="km-open-del" data-farm-open-del="' + esc(d.date) + '" title="移除该开放日">×</button></span>';
+    }).join('');
+  }
+  function renderFarmOpenStatus(){
+    const el = document.getElementById('farmOpenToday'); if(!el) return;
+    let info = null;
+    try { info = S.getFarmOpenInfo(); } catch(e){}
+    if(!info){ el.textContent = '--'; return; }
+    el.innerHTML = info.open
+      ? '今日（' + esc(info.date) + ' ' + esc(info.time) + '）<b class="km-open-on">开放</b> · 依据：' + esc(info.reason)
+      : '今日（' + esc(info.date) + ' ' + esc(info.time) + '）<b class="km-open-off">锁定</b> · 非开放时间无法进入种植园';
+  }
+  function farmSaveOpenPatch(patch){
+    S.farmSaveOpen(patch);
+    renderFarmOpenDates(); renderFarmOpenStatus(); syncFarmLockBadge();
+  }
+  function initFarmOpenSetting(){
+    const cfg = S.getFarmOpenConfig();
+    const wd = document.getElementById('farmOpenWeekday');
+    const we = document.getElementById('farmOpenWeekend');
+    const ho = document.getElementById('farmOpenHoliday');
+    const wds = document.getElementById('farmOpenWdStart');
+    const wde = document.getElementById('farmOpenWdEnd');
+    if(wd) wd.checked = cfg.weekday !== false;
+    if(we) we.checked = cfg.weekend !== false;
+    if(ho) ho.checked = cfg.holiday !== false;
+    if(wds) wds.value = cfg.weekdayStart || '21:00';
+    if(wde) wde.value = cfg.weekdayEnd || '24:00';
+    if(wd && !wd._bound){ wd._bound = true; wd.onchange = () => farmSaveOpenPatch({ weekday: !!wd.checked }); }
+    if(we && !we._bound){ we._bound = true; we.onchange = () => farmSaveOpenPatch({ weekend: !!we.checked }); }
+    if(ho && !ho._bound){ ho._bound = true; ho.onchange = () => farmSaveOpenPatch({ holiday: !!ho.checked }); }
+    if(wds && !wds._bound){ wds._bound = true; wds.onchange = () => farmSaveOpenPatch({ weekdayStart: wds.value || '21:00' }); }
+    if(wde && !wde._bound){ wde._bound = true; wde.onchange = () => farmSaveOpenPatch({ weekdayEnd: wde.value || '24:00' }); }
+    const addBtn = document.getElementById('btnFarmOpenAdd');
+    if(addBtn && !addBtn._bound){
+      addBtn._bound = true;
+      addBtn.onclick = () => {
+        const inp = document.getElementById('farmOpenDateInput');
+        const v = inp ? (inp.value || '').trim() : '';
+        if(!/^\d{4}-\d{2}-\d{2}$/.test(v)){ toast('请先选择要开放的日期'); return; }
+        const ts = document.getElementById('farmOpenTimeStart');
+        const te = document.getElementById('farmOpenTimeEnd');
+        const s = ts ? (ts.value || '').trim() : '';
+        const e = te ? (te.value || '').trim() : '';
+        if((s && !/^\d{2}:\d{2}$/.test(s)) || (e && !/^\d{2}:\d{2}$/.test(e))){ toast('时间格式应为 HH:MM'); return; }
+        const dates = S.getFarmOpenConfig().dates || [];
+        const exist = dates.find(x => x.date === v);
+        let next;
+        if(exist){ next = dates.map(x => x.date === v ? Object.assign({}, x, { start: s || undefined, end: e || undefined }) : x); }
+        else { next = dates.concat([{ date: v, start: s || undefined, end: e || undefined }]); }
+        farmSaveOpenPatch({ dates: next });
+        if(inp) inp.value = '';
+        if(ts) ts.value = ''; if(te) te.value = '';
+        toast('✓ 已设置开放日 ' + v + (s || e ? (' ' + (s || '00:00') + '-' + (e || '24:00')) : ' 全天'));
+      };
+    }
+    const list = document.getElementById('farmOpenDateList');
+    if(list && !list._bound){
+      list._bound = true;
+      list.addEventListener('click', (e) => {
+        const b = e.target.closest('[data-farm-open-del]'); if(!b) return;
+        const d = b.getAttribute('data-farm-open-del');
+        const dates = S.getFarmOpenConfig().dates || [];
+        farmSaveOpenPatch({ dates: dates.filter(x => x.date !== d) });
+        toast('已移除开放日 ' + d);
+      });
+    }
+    renderFarmOpenDates(); renderFarmOpenStatus();
+  }
+  // 侧栏「种植园」入口锁定态（加锁图标 + 变暗 + tooltip），进入判定在 nav 绑定里拦截
+  function syncFarmLockBadge(){
+    const locked = farmLockedNow();
+    const navBtn = document.querySelector('.nav-btn[data-page="farm"]');
+    if(navBtn){
+      navBtn.classList.toggle('nav-locked', locked);
+      navBtn.title = locked ? '种植园今日未到开放时间（工作日 21:00-24:00、周末与法定节假日开放）' : '种植园';
+      let badge = navBtn.querySelector('.nav-lock-badge');
+      if(locked && !badge){
+        badge = document.createElement('span');
+        badge.className = 'nav-lock-badge';
+        badge.textContent = '🔒';
+        badge.setAttribute('data-page-node-id', 'R124navLockBadge');
+        navBtn.appendChild(badge);
+      } else if(!locked && badge){
+        badge.parentNode.removeChild(badge);
+      }
+    }
+    renderFarmOpenStatus();
+  }
+  // 统一入口：种植园在非开放时间一律拦截（导航点击 / data-go 两处都走它）
+  function farmEntryAllowed(page){
+    if(page === 'farm' && farmLockedNow()){ farmLockToast(); return false; }
+    return true;
+  }
+
   function bindEvents(){
     // 导航
     // R121-1：知识秘境在非开放日锁定 —— 点击不进入，仅提示（其余板块不受影响）
-    $$('.nav-btn[data-page]').forEach(b=>b.onclick=()=>{ if(!kmEntryAllowed(b.dataset.page)) return; goPage(b.dataset.page); });
-    $$('[data-go]').forEach(b=>b.onclick=()=>{ if(!kmEntryAllowed(b.dataset.go)) return; goPage(b.dataset.go); });
+    $$('.nav-btn[data-page]').forEach(b=>b.onclick=()=>{ if(!kmEntryAllowed(b.dataset.page)) return; if(!farmEntryAllowed(b.dataset.page)) return; goPage(b.dataset.page); });
+    $$('[data-go]').forEach(b=>b.onclick=()=>{ if(!kmEntryAllowed(b.dataset.go)) return; if(!farmEntryAllowed(b.dataset.go)) return; goPage(b.dataset.go); });
     // R51-2：全局点击音效分发（导航栏/主题卡/次级主题卡/打卡）→ 注册一次
     if(!window.__sfxClickBound){ document.addEventListener('click', onGlobalSfxClick); window.__sfxClickBound = true; }
     // 设置：合并进「任务设置」页（单一版块；系统设置锁卡片点击解锁）
@@ -46984,6 +47193,8 @@ I'm good at running.`},
     setModeUI(S.load().profile.mode === 'child' ? 'child' : 'parent');
     // R121-1：初始化知识秘境开放日期锁定态（侧栏入口加锁图标 + 弹窗内状态行）
     syncKMLockBadge();
+    // R124：初始化种植园开放时间锁定态（侧栏入口加锁图标 + 弹窗内状态行）
+    syncFarmLockBadge();
     const btnResetData = $('#btnResetData');
     if(btnResetData) btnResetData.onclick = ()=>{
       if(!confirm('确认清空所有数据？此操作不可恢复！')) return;
