@@ -5656,6 +5656,29 @@ html,body{margin:0;padding:0}
 .km-open-chk .km-open-wd{display:block;font-size:12px;color:#6a7a95;margin-top:4px;line-height:1.9}
 .km-open-chk .km-open-wd .peg-input{display:inline-block;width:auto;min-width:84px;height:30px;vertical-align:middle;margin:0 2px}
 
+/* ==================================================================================
+   R125：英语专区·重点知识 —— 打卡键移到图片下方 + 点图片放大查看
+   ================================================================================== */
+/* ① 图片下方「打卡」键（打卡功能移到按键：点图片=放大查看，点按键=打卡/取消） */
+.kp-check-btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  min-height:44px;padding:8px 18px;cursor:pointer;
+  font-size:13.5px;font-weight:800;color:var(--tone-900);
+  background:#fff;border:1.5px solid var(--tone-200);border-radius:999px;
+  transition:transform .12s,box-shadow .12s,background .12s,color .12s,border-color .12s
+}
+.kp-check-btn:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(30,58,138,.18);border-color:var(--tone-400)}
+.kp-check-btn:active{transform:translateY(0)}
+.kp-check-btn.is-done{background:var(--ok-main);color:#fff;border-color:var(--ok-main);box-shadow:0 6px 16px rgba(56,158,13,.26)}
+/* ② 图片放大查看弹窗：图片按窗口自适应放大（限高 contain，适合查阅图片内容） */
+.kp-viewer-box{max-width:min(96vw,1080px);width:auto}
+.kp-viewer-body{padding:12px 16px 16px;display:flex;justify-content:center;background:transparent}
+#kpViewerImg{
+  display:block;width:auto;height:auto;max-width:min(92vw,1040px);max-height:78vh;
+  object-fit:contain;border-radius:12px;background:#fff;
+  box-shadow:0 10px 30px rgba(30,58,138,.25)
+}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -6580,6 +6603,19 @@ html,body{margin:0;padding:0}
     <div class="modal-foot" data-page-node-id="HJv64c44pwBAggmempQ5CJ">
       <button class="primary-btn" id="confirmYes" data-page-node-id="z4RQRWVrGQ0Z5oO4qNOpbO">确定</button>
       <button class="pbtn" data-close data-page-node-id="GIfRBeQDRVkH61x45OkkFt">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 弹窗：重点知识图片放大查看（R125：点图片放大至适合大小供查阅） ========== -->
+<div class="modal-mask" id="modalKpViewer" hidden data-page-node-id="r125kpViewerMaskQ7Xb2m">
+  <div class="modal-box kp-viewer-box" data-page-node-id="r125kpViewerBoxQ7Xb2m">
+    <div class="modal-head" data-page-node-id="r125kpViewerHeadQ7Xb2m">
+      <h3 id="kpViewerCap" data-page-node-id="r125kpViewerCapQ7Xb2m">重点知识图片</h3>
+      <button class="pbtn" data-close data-page-node-id="r125kpViewerCloseQ7Xb2m">✕ 关闭</button>
+    </div>
+    <div class="modal-body kp-viewer-body" data-page-node-id="r125kpViewerBodyQ7Xb2m">
+      <img id="kpViewerImg" alt="重点知识图片放大查看" data-page-node-id="r125kpViewerImgQ7Xb2m" />
     </div>
   </div>
 </div>
@@ -37113,6 +37149,17 @@ May / Can I /we have …, please? 请问我 / 我们可以拿…… 吗？
       else if(was && !now){ addStars(-S.getTaskStars('oxfordunit')); }
       if(typeof rerender === 'function') rerender();
     };
+    // R125：重点知识图片放大查看（点图片 → 弹窗放大至适合大小供查阅内容；打卡移到图片下方「打卡」键）
+    const openKpViewer = (card)=>{
+      const img = card.querySelector('.kp-img');
+      if(!img || !img.getAttribute('src')) return;
+      const cap = card.querySelector('.kp-img-cap');
+      const vImg = document.getElementById('kpViewerImg');
+      const vCap = document.getElementById('kpViewerCap');
+      if(vImg) vImg.src = img.getAttribute('src');
+      if(vCap) vCap.textContent = (cap && cap.textContent) ? cap.textContent : '重点知识图片';
+      showModal('#modalKpViewer');
+    };
     slotBody.querySelectorAll('[data-kp-card]').forEach(card=>{
       if(card._kpCardBound) return; card._kpCardBound = true;
       card.addEventListener('click', (e)=>{
@@ -37122,6 +37169,19 @@ May / Can I /we have …, please? 请问我 / 我们可以拿…… 吗？
         const i = parseInt(card.getAttribute('data-kp-card'), 10);
         if(isNaN(i)) return;
         if(_enKpDelMode){ enKpDeleteImage(unit, i); return; }  // R123：删除模式下点图片→确认删除
+        openKpViewer(card);  // R125：普通模式点图片→放大查看（打卡移到图片下方打卡键）
+      });
+    });
+    // R125：图片下方「打卡」键 —— 单独打卡/取消（阻止冒泡，避免同时触发图片放大）
+    slotBody.querySelectorAll('[data-kp-check]').forEach(btn=>{
+      if(btn._kpCheckBound) return; btn._kpCheckBound = true;
+      btn.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        if(_enKpDelMode) return;  // 删除模式下打卡键不响应
+        const unit = (EN_OXFORD_VOCAB_3A[_enKpUnit] || {}).id;
+        if(!unit) return;
+        const i = parseInt(btn.getAttribute('data-kp-check'), 10);
+        if(isNaN(i)) return;
         enKpToggle(unit, i);
       });
     });
@@ -38603,17 +38663,18 @@ I'm good at running.`},
     const cardsHtml = total ? items.map((it,k)=>{
       const d = S.isReadingRead(EN_KP_READ, u.id+'::'+k);
       return `
-        <div class="kp-img-card${d?' is-checked':''}" data-kp-card="${k}" title="${_enKpDelMode?'点击删除这张图片':'点击图片标记为已学（再点取消）'}">
+        <div class="kp-img-card${d?' is-checked':''}" data-kp-card="${k}" title="${_enKpDelMode?'点击删除这张图片':'点击图片放大查看内容'}">
           <img class="kp-img" src="${esc(it.img)}" alt="${esc(it.t||'重点知识')}" />
           ${it.t ? `<div class="kp-img-cap">${esc(it.t)}</div>` : ''}
           <div class="kp-img-foot">
             <span class="kp-img-state">${d?'✅已学':'□未学'}</span>
+            <button class="kp-check-btn${d?' is-done':''}" data-kp-check="${k}">${d?'✅ 取消打卡':'□ 打卡'}</button>
           </div>
         </div>`;
     }).join('') : '<div class="kp-empty">还没有重点知识图片，点上面「➕ 增加」导入课本重点照片吧～</div>';
     return `
       <div class="yw-comp-head">沪教牛津英语 三年级上册 · 重点知识（导入图片 · 每张单独打卡）</div>
-      <div class="en-oxford-tip">点单元卡片切换；进入单元后点「➕ 增加」导入图片（自动压缩并自适应屏幕）。每张图片单独打卡，本单元全部打卡完成即可获得 5⭐️。</div>
+      <div class="en-oxford-tip">点单元卡片切换；进入单元后点「➕ 增加」导入图片（自动压缩并自适应屏幕）。点图片可放大查看内容，点图片下方「打卡」键标记已学 / 取消；本单元全部打卡完成即可获得 5⭐️。</div>
       <div class="en-book-head-row">
         ${enKpUnitCards(idx)}
         <div class="en-book-cap">
