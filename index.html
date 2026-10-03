@@ -29792,10 +29792,34 @@ window.MAO_POEMS = [{"t": "贺新郎·别友", "d": "一九二三年", "c": "挥
   // V98：课程表可编辑数据（课时行数 rows + 每格 cells[r-c]={t:课程名,c:颜色}）
   // V105：默认 9 节课（第一节~第九节）× 5 天（星期一~星期五）；addColor = 新增课程区域默认底色
   const SCHED_DAYS = ['星期一','星期二','星期三','星期四','星期五'];
+  // R127-1：默认课表种子（2026 秋季周课表，按截图内容与配色导入）
+  // 配色：语文/进阶阅读·粉红 #f87171｜数学/奥数·明黄 #fbbf24｜英语·浅绿 #86efac｜体育健康·淡紫 #c4b5fd｜其余课程·淡蓝 #93c5fd
+  const SCHED_SEED_CELLS = (function(){
+    const cc = { blue:'#93c5fd', pink:'#f87171', yellow:'#fbbf24', green:'#86efac', purple:'#c4b5fd' };
+    // 每行 5 列（星期一~星期五），null = 空白格
+    const grid = [
+      [['班级活动',cc.blue],['语文',cc.pink],['语文',cc.pink],['语文',cc.pink],['语文',cc.pink]],
+      [['道法',cc.blue],['数学',cc.yellow],['语文',cc.pink],['语文',cc.pink],['语文',cc.pink]],
+      [['科学',cc.blue],['艺术',cc.blue],['信息技术',cc.blue],['艺术',cc.blue],['数学',cc.yellow]],
+      [['科学',cc.blue],['艺术',cc.blue],['体育健康',cc.purple],['英语',cc.green],['心理',cc.blue]],
+      [['综合实践',cc.blue],['语文',cc.pink],['艺术',cc.blue],['数学',cc.yellow],['体育健康',cc.purple]],
+      [['体育健康',cc.purple],['英语',cc.green],['数学',cc.yellow],['劳动',cc.blue],['英语',cc.green]],
+      [['道法',cc.blue],['体育健康',cc.purple],['数学',cc.yellow],['体育健康',cc.purple],null],
+      [['课后服务',cc.blue],['课后服务',cc.blue],['课后服务',cc.blue],['课后服务',cc.blue],null],
+      [['奥数',cc.yellow],['动漫绘画',cc.blue],null,['进阶阅读',cc.pink],null]
+    ];
+    const cells = {};
+    grid.forEach((row,r)=> row.forEach((it,c)=>{ if(it) cells[r+'-'+c] = { t:it[0], c:it[1] }; }));
+    return cells;
+  })();
+  // R127-1：种子课表默认外观 —— 星期/节次表头卡片淡蓝色（#cfe6ff）
+  function schedSeed(){
+    return { rows:9, days:SCHED_DAYS.slice(), cells:JSON.parse(JSON.stringify(SCHED_SEED_CELLS)), addColor:'#ffffff', tableTextColor:'#1e3a8a', tableFontSize:15, tableCell:'#ffffff', cornerLabel:'节次', tableHeadColor:'#cfe6ff', cornerColor:'#cfe6ff', schedSeeded:true };
+  }
   function getSchedule(){
     const st = load();
     if(!st.schedule){
-      return { rows:9, days:SCHED_DAYS.slice(), cells:{}, addColor:'#ffffff', tableTextColor:'#1e3a8a', tableFontSize:15, tableCell:'#ffffff', cornerLabel:'节次', tableHeadColor:'', cornerColor:'' };
+      return schedSeed();
     }
     if(!st.schedule.days) st.schedule.days = SCHED_DAYS.slice();
     if(!st.schedule.cells) st.schedule.cells = {};
@@ -29808,6 +29832,14 @@ window.MAO_POEMS = [{"t": "贺新郎·别友", "d": "一九二三年", "c": "挥
     if(!('tableHeadColor' in st.schedule)) st.schedule.tableHeadColor = '';
     // R24-1：节次标签格颜色（左上角角标 + 左列「第X节」行头），空值=沿用默认 CSS 配色
     if(!('cornerColor' in st.schedule)) st.schedule.cornerColor = '';
+    // R127-1：默认课表导入（仅一次）—— 旧存档首次升级时写入种子课表内容，并把星期/节次表头卡片改为淡蓝色；
+    // 之后家长在设置里改颜色/清格子不会再被覆盖（schedSeeded 标记随存档持久化）
+    if(!st.schedule.schedSeeded){
+      st.schedule.cells = JSON.parse(JSON.stringify(SCHED_SEED_CELLS));
+      st.schedule.tableHeadColor = '#cfe6ff';
+      st.schedule.cornerColor = '#cfe6ff';
+      st.schedule.schedSeeded = true;
+    }
     return st.schedule;
   }
   function saveSchedule(obj){
@@ -41793,15 +41825,15 @@ I'm good at running.`},
 
   // R11-Req4：知识秘境背景音乐控制器（家长模式设置；闯关时播放）
   // R40-2d：支持按关卡(levelId)选取不同的家长上传音乐（chinese/math/english/mixed），缺省回退全局 bgm
-  //         各关卡内置默认音色也不相同（按学科特点）：语文·轻柔鸟鸣风 / 数学·清脆音阶 / 英语·活泼旋律 / 综合·壮阔和弦
+  //         R127-2：各关卡内置默认音乐统一改为「欢快的游戏音乐」（8-bit 街机风明亮旋律，节奏轻快）
   let kmBgmCtx = null, kmBgmGain = null, kmBgmTimer = null, kmBgmOn = false, kmBgmCurLevel = null;
   let _kmTrackHandle = null; // R76-3：内置曲目播放句柄（bgmPlayTrack 返回）
-  // R40-2d：四关卡内置默认音色（频率阵列 + 波形 + 间隔节奏）—— 区分学科氛围
+  // R127-2：四关卡内置默认音乐（欢快游戏风）—— 明亮方波主音 + 轻快短间隔节奏，按学科微调旋律走向
   const KM_BGM_DEFAULT = {
-    chinese: { wave:'sine',     notes:[523.25, 587.33, 659.25, 587.33, 523.25, 659.25], interval:780, gain:0.16 },  // 语文·文字森林：温柔鸟鸣般的上行五声
-    math:    { wave:'triangle', notes:[659.25, 783.99, 987.77, 783.99, 659.25, 523.25], interval:560, gain:0.14 },  // 数学·逻辑峡谷：清脆节拍的音阶下行
-    english: { wave:'sine',     notes:[523.25, 659.25, 783.99, 1046.5, 783.99, 659.25], interval:520, gain:0.16 },  // 英语·语言海湾：活泼旋律上行跳进
-    mixed:   { wave:'sawtooth', notes:[261.63, 329.63, 392.00, 523.25, 392.00, 329.63], interval:680, gain:0.10 }   // 综合·综合神殿：壮阔和弦
+    chinese: { wave:'square',   notes:[523.25, 659.25, 783.99, 659.25, 880, 783.99, 659.25, 523.25, 587.33, 659.25, 880, 1046.5, 880, 783.99, 659.25, 587.33], interval:300, gain:0.12 },  // 语文·文字森林：欢快上行五声音阶（8-bit 冒险开局）
+    math:    { wave:'square',   notes:[659.25, 783.99, 987.77, 783.99, 1046.5, 987.77, 783.99, 659.25, 523.25, 587.33, 659.25, 783.99, 659.25, 587.33, 523.25, 493.88], interval:280, gain:0.12 },  // 数学·逻辑峡谷：弹跳式音阶上下往返（金币节奏）
+    english: { wave:'square',   notes:[523.25, 659.25, 783.99, 1046.5, 987.77, 783.99, 659.25, 523.25, 587.33, 783.99, 880, 1046.5, 880, 783.99, 659.25, 587.33], interval:260, gain:0.12 },  // 英语·语言海湾：明快跳跃旋律（冲关加速感）
+    mixed:   { wave:'triangle', notes:[392, 523.25, 659.25, 783.99, 659.25, 523.25, 392, 440, 523.25, 698.46, 880, 698.46, 659.25, 523.25, 440, 392], interval:300, gain:0.15 }   // 综合·综合神殿：昂扬冒险和声（BOSS 关气势版欢快）
   };
   function kmBgmGetLevelSet(levelId){
     const all = S.getKMSettings();
@@ -41839,8 +41871,9 @@ I'm good at running.`},
         _kmTrackHandle = bgmPlayTrack(kmBgmCtx, _tk, { volMul: Math.max(0.25, (set.volume||60)/100) });
         return;
       }
-      kmBgmGain = kmBgmCtx.createGain(); kmBgmGain.gain.value = ((set.volume||60)/100)*0.16; kmBgmGain.connect(kmBgmCtx.destination);
+      // R127-2：默认支线音量跟随曲目 gain（欢快方波音量略低，不刺耳）
       const cfg = KM_BGM_DEFAULT[kmBgmCurLevel] || KM_BGM_DEFAULT.chinese;
+      kmBgmGain = kmBgmCtx.createGain(); kmBgmGain.gain.value = ((set.volume||60)/100) * (cfg.gain!=null ? cfg.gain : 0.16); kmBgmGain.connect(kmBgmCtx.destination);
       const notes = cfg.notes; let i=0;
       kmBgmTimer = setInterval(()=>{
         if(!kmBgmOn || !kmBgmCtx) return;
