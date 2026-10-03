@@ -29503,7 +29503,21 @@ window.MAO_POEMS = [{"t": "贺新郎·别友", "d": "一九二三年", "c": "挥
     if(!st.kewenLearned) st.kewenLearned = []; // V71：课文朗读已学习编号数组
     return st;
   }
-  function save(st){ localStorage.setItem(KEY, JSON.stringify(st)); }
+  // R126 安全加固：存储写入容错 —— localStorage 配额超限（如导入大量图片 dataURL）时，
+  // 原实现直接抛 QuotaExceededError，会让本次及其后所有 save 调用连锁抛错、页面写操作全站崩溃。
+  // 改为捕获并记录错误（getSaveError 可读），返回 false 供调用方感知；内存态保持不变。
+  let _saveError = '';
+  function save(st){
+    try{
+      localStorage.setItem(KEY, JSON.stringify(st));
+      _saveError = '';
+      return true;
+    }catch(e){
+      _saveError = (e && (e.name === 'QuotaExceededError' || e.code === 22 || /quota/i.test(String((e && e.message) || '')))) ? 'quota' : ((e && e.name) || 'error');
+      return false;
+    }
+  }
+  function getSaveError(){ return _saveError; }
 
   // ----- 任务相关 -----
   function tasksForDate(dateStr){
@@ -29641,7 +29655,13 @@ window.MAO_POEMS = [{"t": "贺新郎·别友", "d": "一九二三年", "c": "挥
       t:   String((item && item.t) || '').slice(0, 120),
       ts:  Date.now()
     });
-    save(st);
+    const ok = save(st);
+    // R126 安全加固：配额超限（写入失败）时回滚内存态，避免「看起来导入成功、刷新后丢失」以及
+    // 后续任何 save 反复序列化超大 dataURL 失败；返回 null 作为失败信号。
+    if(!ok){
+      st.enKeyPoints[unitId].pop();
+      return null;
+    }
     return st.enKeyPoints[unitId].slice();
   }
   function delEnKeyPoint(unitId, idx){
@@ -34016,6 +34036,8 @@ May / Can I /we have …, please? 请问我 / 我们可以拿…… 吗？
     getNwZone, addNwZone, delNwZone,
     // R122：新世界·英语专区「重点知识」单元图片（含删除后打卡下标重排）
     getEnKeyPoints, addEnKeyPoint, delEnKeyPoint, shiftEnKeyPointReads,
+    // R126：存储写入错误状态（配额超限感知）
+    getSaveError,
     // R52：结构化自定义内容
     getCustomList, addCustomList, delCustomList,
     // R117：首页备忘录（朱迪小提示）
@@ -38907,8 +38929,13 @@ I'm good at running.`},
         enKpCompressImage(f, (dataUrl)=>{
           if(dataUrl){
             try{
-              if(window.Store && window.Store.addEnKeyPoint) window.Store.addEnKeyPoint(unitId, { img:dataUrl, t:'' });
-              added++;
+              // R126：addEnKeyPoint 返回 null = 存储配额超限（已回滚，内存不残留），明确提示用户
+              const r = (window.Store && window.Store.addEnKeyPoint) ? window.Store.addEnKeyPoint(unitId, { img:dataUrl, t:'' }) : null;
+              if(r === null){
+                toast('⚠️ 存储空间已满，这张图片导入失败，请先删除部分旧图片再试');
+              }else{
+                added++;
+              }
             }catch(e){ toast('⚠️ 存储空间不足，请先删除部分图片'); }
           }
           done();
@@ -46701,7 +46728,13 @@ I'm good at running.`},
     else { const b=getExportBoard(boardKey); if(b) addBoard(b); }
     return blocks;
   }
-  function csvCell(v){ const s=String(v==null?'':v); return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s; }
+  // R126 安全加固：CSV 公式注入防护 —— 以 = + @ 或「- 非数字」开头的单元格加前导 '，
+  // 避免 Excel/WPS 打开导出文件时把内容当公式执行（负数如 -2 不受影响）。
+  function csvCell(v){
+    const s=String(v==null?'':v);
+    const guard = (/^[=+@]/.test(s) || /^-\D/.test(s)) ? "'" : '';
+    return guard + (/[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s);
+  }
   function blocksToCsv(blocks){
     const multi=blocks.length>1; const keySet=[];
     if(multi) keySet.push('板块','分版块');
