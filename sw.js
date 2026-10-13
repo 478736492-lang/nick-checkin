@@ -1,9 +1,13 @@
 /* R69：学习打卡站 Service Worker —— 完全离线支持
- * 目标：把整个单文件应用（index.html，约 16MB，图片已内联）缓存到设备本地，
- *       之后断网 / 无网络也能正常打开使用，数据仍存 localStorage。
+ * 目标：把站点缓存到设备本地，之后断网 / 无网络也能正常打开使用，数据仍存 localStorage。
+ * R132 起 Web 部署改为「小 HTML + 外置图片」架构（build_standalone.js --ghpages）：
+ *   · index.html 约 3.4MB（gzip 后约 1MB，纯代码与教材种子数据），首屏立即可渲染；
+ *   · 27 张背景/贴图在 ./assets/ 下按内容寻址，仅在对应板块渲染时才下载，
+ *     未访问的板块不占首屏流量；二次访问由本 SW 的「缓存优先」秒开。
+ *   · 自包含单文件版（约 12MB，图片全内联）仍由默认构建产出，供 iPad file:// / 小程序使用。
  * 策略：
  *   - 导航请求（打开页面）：R78 改为「网络优先 + 条件校验」
- *   - 其它同源 GET 资源：缓存优先（cache-first）+ 后台更新（stale-while-revalidate）
+ *   - 其它同源 GET 资源（含 ./assets/*.jpg）：缓存优先（cache-first）+ 后台更新（stale-while-revalidate）
  *   - 跨域请求（如 CloudBase SDK imgcache.qq.com）：不拦截，直接走网络
  *
  * R78 重要修复（iPad 上看到旧版本的问题）：
@@ -38,15 +42,15 @@ var PRECACHE = ['./', './index.html'];
 var NAV_TIMEOUT = 2500;      // R119.1：有缓存时的快速回退窗口（原 6000ms 偏长）
 var HARD_TIMEOUT = 30000;    // R119.1：无缓存且网络长时间无响应时的兜底，避免无限转圈
 var PRECACHE_TIMEOUT = 25000; // R119.1：预缓存最多占用这么久，超时就先激活 SW
-/* R70：构建指纹。部署脚本会把 5e143cee0c6e 替换为当期 index.html 的 sha256 前 12 位。
+/* R70：构建指纹。部署脚本会把 ba4922ad225b 替换为当期 index.html 的 sha256 前 12 位。
  * 作用：只在站点内容真的变化时，sw.js 本身才变化，从而触发浏览器 SW 更新流程
  * （install → 重新预缓存新 index.html → installed → 页面自动重载到新版）。 */
-var BUILD = '5e143cee0c6e';
-/* R93：版本号与版本更新时间。部署脚本会把 R130 替换为当期轮次号（如 R93）、
- * 2026-10-13 12:58 替换为本次部署时间（北京时间，格式 YYYY-MM-DD HH:mm）。
+var BUILD = 'ba4922ad225b';
+/* R93：版本号与版本更新时间。部署脚本会把 R132 替换为当期轮次号（如 R93）、
+ * 2026-10-13 15:31 替换为本次部署时间（北京时间，格式 YYYY-MM-DD HH:mm）。
  * 用途：「设置中心 → 版本与更新」显示「当前版本 + 更新时间」，点「检查更新」后即为最新读数。 */
-var APP_VERSION = 'R130';
-var BUILD_TIME = '2026-10-13 12:58';
+var APP_VERSION = 'R132';
+var BUILD_TIME = '2026-10-13 15:31';
 
 self.addEventListener('install', function (e) {
   self.skipWaiting();
