@@ -342,6 +342,10 @@ body{width:100%;height:100vh;height:100dvh;display:flex;flex-direction:row}
 .col-head.opt{background:linear-gradient(135deg,#e0e8ff,var(--tone-175));color:var(--tone-800)}
 .col-head.wrong{background:linear-gradient(135deg,#ffd5dc,#ffe6ec);color:var(--danger)}
 .col-head.sport{background:linear-gradient(135deg,var(--tone-175),#e3f4ff);color:#1a5f8a}
+/* R133-1：运动 / 作息 拆分为两张独立卡片（同行平铺，作息卡在运动卡右侧） */
+.sport-split-row{display:flex;gap:14px;align-items:stretch}
+.sport-split-col{flex:1 1 0;min-width:0}
+.col-head.routine{background:linear-gradient(135deg,#e3e0ff,#efeaff);color:#5a3fb0}
 .col-head.go{background:linear-gradient(135deg,#d5e8c5,#e8f5d8);color:#3a6f1f}
 .col-head.house{background:linear-gradient(135deg,#ffe6d5,#fff0d0);color:#b85c1f}
 /* V53：家务小帮手底部提示条（引导用户在「任务设置」中编辑） */
@@ -939,7 +943,7 @@ button[hidden]{display:none!important}
 /* R108：种植园背景贴图挂到「大卡片」内 —— 该卡同时容纳 田地(farm-field-area) /
    仓库(farm-warehouse) / 农场市集·云上小卖部·心愿盒(farm-bottom-panels 三张 .panel)。
    贴图铺在白底之上、各子卡片之下（子卡片均为不透明实心卡，文字可读性不受影响）。 */
-.page-farm .page-content{background-image:url('./assets/c30729544827.jpg');background-size:cover;background-position:center;background-repeat:no-repeat;}
+.page-farm .page-content{background-image:url('./assets/f2af6aa855a4.jpg');background-size:cover;background-position:center;background-repeat:no-repeat;}
 .page-farm .farm-deco-farm-fence{position:absolute;left:0;right:0;bottom:0;height:14px;background:repeating-linear-gradient(90deg,transparent 0,transparent 18px,#b88b5a 18px,#b88b5a 26px,#7a5235 26px,#7a5235 32px,transparent 32px);pointer-events:none;opacity:.5}
 
 /* === 顶部信息栏 === */
@@ -2253,7 +2257,7 @@ body.child-mode .parent-edit-fab{display:none}
    单元格：白色输入框；四角点缀星星与小船 */
 .page-sched{
   background-color:#0f1a3d !important;
-  background-image:url('./assets/27404ad288a3.jpg') !important;
+  background-image:url('./assets/dd3dd8db7338.jpg') !important;
   background-size:cover !important;
   background-position:center center !important;
   background-repeat:no-repeat !important;
@@ -2985,12 +2989,12 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 }
 
 /* V104：各版块背景占位符（保留以备家长模式🎨背景图设置 / 占位符校验）；以下 --title-bg-image 仅作变量保留，默认主题卡为纯色底（R82 起不再套用背景贴图） */
-.page-today    > .page-title{--title-bg-image:url('./assets/fb54a533c6fa.jpg')}
-.page-xueersi  > .page-title{--title-bg-image:url('./assets/a85150b3c112.jpg')}
-.page-reading  > .page-title{--title-bg-image:url('./assets/cbf8d48be606.jpg')}
-.page-baike    > .page-title{--title-bg-image:url('./assets/ae0b1533ea07.jpg')}
-.page-archive  > .page-title{--title-bg-image:url('./assets/80a144c3d5e2.jpg')}
-.page-math     > .page-title{--title-bg-image:url('./assets/119f2dbbd2f8.jpg')}
+.page-today    > .page-title{--title-bg-image:url('./assets/e4dac9adf396.jpg')}
+.page-xueersi  > .page-title{--title-bg-image:url('./assets/1262a7508bc5.jpg')}
+.page-reading  > .page-title{--title-bg-image:url('./assets/9f6dbf2a77f5.jpg')}
+.page-baike    > .page-title{--title-bg-image:url('./assets/236f6e87304f.jpg')}
+.page-archive  > .page-title{--title-bg-image:url('./assets/e0c7ba017a79.jpg')}
+.page-math     > .page-title{--title-bg-image:url('./assets/d36cd24e78f3.jpg')}
 
 /* R80+unify：背景位置统一为分组规则的 center/cover，移除 center 60% 旧偏移（保证九张卡背景居中一致） */
 
@@ -3294,7 +3298,7 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 /* R28-2：加大地图高度与上方间距，使路线图整体下移、与顶部标题栏分离，避免遮挡 */
 /* R99-2b：地图底色 —— 路线图背景贴图（R49-5《知识秘境大闯关》整图）已按需求整张删除，
    恢复纯 CSS 柔和分层渐变（天空→浅空→草地），SVG 道路 + 关卡节点卡 + 图例直接铺在其上 */
-.km-map{position:relative;width:100%;min-height:70vh;margin-top:14px;border-radius:18px;overflow:hidden;border:2px solid rgba(255,255,255,.55);box-shadow:0 6px 22px rgba(30,58,138,.18);background-color:#cfe9ff;background-image:url('./assets/9d86c26e6b54.jpg'),linear-gradient(180deg,#cfe9ff 0%,#e2f2ff 38%,#eaf6d8 62%,#d5ecb4 100%);background-size:cover,cover;background-position:center,center;background-repeat:no-repeat,no-repeat}
+.km-map{position:relative;width:100%;min-height:70vh;margin-top:14px;border-radius:18px;overflow:hidden;border:2px solid rgba(255,255,255,.55);box-shadow:0 6px 22px rgba(30,58,138,.18);background-color:#cfe9ff;background-image:url('./assets/d6040d7c2e2b.jpg'),linear-gradient(180deg,#cfe9ff 0%,#e2f2ff 38%,#eaf6d8 62%,#d5ecb4 100%);background-size:cover,cover;background-position:center,center;background-repeat:no-repeat,no-repeat}
 /* R107：按需求重新挂上「知识秘境路线图底层背景贴图」（用户提供《知识秘境背景图3》）。
    多层 background-image 中写在前者在上 → 贴图在上层，R99-2b 的天空→草地渐变降为「贴图加载失败」时的兜底。
    历史沿革：R28-2 纯渐变 → R49-5 挂贴图 → R99-2b 按需求删贴图回渐变 → R107 按需求回填新贴图。 */
@@ -3311,10 +3315,10 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 /* R48-3：还原四个关卡节点卡的背景贴图（BG_KM_CHINESE/MATH/ENGLISH/MIXED 占位符引用） */
 /* R100：关卡贴图融入地图底 —— 取消独立卡片框（白底/边框/阴影全清），四图像画在地图上一样平铺 */
 .km-node{position:absolute;transform:translate(-50%,-50%);z-index:4;box-sizing:border-box;width:clamp(96px,22vw,184px);aspect-ratio:1532/900;background-image:linear-gradient(165deg,rgba(255,255,255,.92),rgba(214,234,255,.82));background-size:cover;background-position:center;background-repeat:no-repeat;border:none;border-radius:14px;padding:6px 6px 7px;box-shadow:none;overflow:hidden;display:flex;flex-direction:column}
-.km-node[data-sub="chinese"]{background-image:url('./assets/0c11468b5691.jpg')}
-.km-node[data-sub="math"]{background-image:url('./assets/cf1a13af180e.jpg')}
-.km-node[data-sub="english"]{background-image:url('./assets/63d89223b192.jpg')}
-.km-node[data-sub="mixed"]{background-image:url('./assets/223b3f7dcd21.jpg')}
+.km-node[data-sub="chinese"]{background-image:url('./assets/ae85f5594938.jpg')}
+.km-node[data-sub="math"]{background-image:url('./assets/c49c39dd5fe5.jpg')}
+.km-node[data-sub="english"]{background-image:url('./assets/52cdcdc90cbf.jpg')}
+.km-node[data-sub="mixed"]{background-image:url('./assets/ab4558d30ebf.jpg')}
 /* V94：节点卡片改为与背景图同比例 1532/900（landscape），background-size:cover 即等于完整显示、
    无留白；overflow:hidden 将整图裁切进圆角卡片内（详见 .km-node 规则）。故移除旧 bleed ::before。 */
 .km-node-btn{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:100%;flex:1 1 auto;height:auto;background:transparent;border:none;padding:0;color:inherit;font:inherit;cursor:pointer}
@@ -4847,12 +4851,8 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 }
 .settings-save-btn:hover{filter:brightness(1.07)}
 .settings-save-btn--global{position:static;font-size:15px;padding:10px 26px;border-radius:12px}
-.settings-save-global{
-  position:sticky;bottom:0;margin-top:18px;padding:12px 2px 4px;
-  display:flex;justify-content:center;
-  background:linear-gradient(to top,var(--set-card-bg) 72%,rgba(255,255,255,0));
-  border-top:1px solid var(--tone-150);z-index:5
-}
+/* R133-4：设置子页面（弹窗）底部的【保存设置】按钮（内联，区别于角标 pill） */
+.settings-save-modal-btn{font-size:14px;padding:9px 22px;border-radius:12px;margin-right:auto}
 .settings-card:active{transform:translateY(0)}
 @media(max-width:680px){ .settings-grid{grid-template-columns:1fr} }
 
@@ -5128,12 +5128,12 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
    底色（#fff 等）仅作贴图加载失败兜底。主题卡尺寸/内边距/外边距/圆角/阴影等版型参数一律不变。
    用户经 🎨 按键上传的「标题区域背景」仍写 inline style，优先级高于本内置默认值。 */
 :root{
-  --title-bg-math:url('./assets/aadd386b2f33.jpg');
-  --title-bg-xueersi:url('./assets/f51312286bf0.jpg');
-  --title-bg-reading:url('./assets/087394554129.jpg');
-  --title-bg-baike:url('./assets/0c1fced34cad.jpg');
-  --title-bg-newworld:url('./assets/19a08aa76d71.jpg');
-  --title-bg-knowledge:url('./assets/ea1788ee5227.jpg');
+  --title-bg-math:url('./assets/0a92460a9796.jpg');
+  --title-bg-xueersi:url('./assets/599f5e24acb5.jpg');
+  --title-bg-reading:url('./assets/02964db1288d.jpg');
+  --title-bg-baike:url('./assets/61952b88d8a6.jpg');
+  --title-bg-newworld:url('./assets/d451830c2499.jpg');
+  --title-bg-knowledge:url('./assets/d2b5c0facee0.jpg');
 }
 /* CSS 兜底默认（用户无上传图、且 JS 未注入时的纯样式默认；JS 默认分支会注入对应 var 以 inline 形式生效） */
 .page[data-page="math"] .page-title{--title-bg-image:var(--title-bg-math)}
@@ -5201,8 +5201,8 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
    ④ 背景贴图：种植园(.farm-mine-banner) / 成长档案(.page-title) —— 居中、铺满、不重复；
      版型参数（尺寸/圆角/阴影/内边距）不变；用户 🎨 上传图仍以 inline 优先。 */
 :root{
-  --title-bg-farm:url('./assets/d4bbc89eea9d.jpg');
-  --title-bg-archive:url('./assets/1e29f2884738.jpg');
+  --title-bg-farm:url('./assets/aa6e709e52bb.jpg');
+  --title-bg-archive:url('./assets/9aaee6c97a7c.jpg');
 }
 /* ---- ④ 主题卡背景（CSS 兜底默认；JS 默认分支会以 inline 注入同一 var） ---- */
 .page[data-page="archive"] .page-title{--title-bg-image:var(--title-bg-archive)}
@@ -5225,7 +5225,7 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
    主题卡尺寸/内边距/外边距/圆角/阴影等样式参数一律不动；渲染沿用
    居中 / 铺满(cover) / 不重复(no-repeat) 规则（inline 由 applySectionTitleBgs 注入）。 */
 :root{
-  --title-bg-settings:url('./assets/e4e1122ae57a.jpg')
+  --title-bg-settings:url('./assets/227296779fcb.jpg')
 }
 .page[data-page="settings"] .page-title{--title-bg-image:var(--title-bg-settings)}
 
@@ -5291,7 +5291,7 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   position:relative;
   width:min(100%,calc((100dvh - 40px)*4/3));
   aspect-ratio:4/3;
-  background:url('./assets/f7501061bc59.jpg') center/cover no-repeat
+  background:url('./assets/a64b87fb9217.jpg') center/cover no-repeat
 }
 /* ① 背景图底层道路上分散的动漫人物元素 */
 .mn-chars{position:absolute;inset:0;pointer-events:none;z-index:2}
@@ -5304,19 +5304,23 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   font-size:12px;font-weight:800;color:#16306b;white-space:nowrap}
 .mn-avatar .av{width:22px;height:22px;border-radius:50%;background:var(--tone-400);
   display:inline-flex;align-items:center;justify-content:center;font-size:13px}
-/* ③ 编号玻璃便签卡容器（覆盖整张背景） */
-.mn-notes{position:absolute;inset:0;z-index:3}
-.mn-notes.mn-view .mn-view-empty{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+/* ③ R133-3：多张小备忘录卡「平铺网格」容器（覆盖整张背景，可滚动） */
+.mn-notes{position:absolute;inset:0;z-index:3;overflow:auto;
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));
+  grid-auto-rows:min-content;gap:14px;padding:18px;align-content:start}
+.mn-notes.mn-view .mn-view-empty{grid-column:1/-1;justify-self:center;align-self:center;
   font-size:13px;font-style:italic;color:#5b78a8;text-align:center;width:80%}
-/* 玻璃化便签卡：半透明白底 + 背景模糊，不遮挡底层背景图 */
+/* 玻璃化便签卡：半透明白底 + 背景模糊，不遮挡底层背景图（R133-3：改为网格平铺项，内嵌卡通形象） */
 .mn-note-card{
-  position:absolute;width:clamp(150px,22%,232px);box-sizing:border-box;
+  position:relative;box-sizing:border-box;
   background:rgba(255,255,255,.30);
   backdrop-filter:blur(6px) saturate(120%);-webkit-backdrop-filter:blur(6px) saturate(120%);
   border:1.5px solid rgba(255,255,255,.55);border-radius:14px;
   box-shadow:0 6px 18px rgba(30,58,138,.18);padding:10px 12px 12px;
   transition:box-shadow .15s ease
 }
+/* R133-3：每张小卡嵌入原页面的卡通形象 */
+.mn-note-char{font-size:30px;line-height:1;margin-bottom:4px;filter:drop-shadow(0 2px 4px rgba(30,58,138,.28))}
 .mn-note-card:hover{box-shadow:0 10px 24px rgba(30,58,138,.26)}
 .mn-note-no{
   position:absolute;top:-10px;left:-10px;width:24px;height:24px;border-radius:50%;
@@ -5809,7 +5813,7 @@ html,body{margin:0;padding:0}
         <div class="wp-banner" data-page-node-id="KG3LXhjBoap6GZcBhYuIhE">
           <!-- R32-1：标题分两行显示 -->
           <div class="wp-banner-title" data-page-node-id="FjGuJlFdAQKl5LAHlSwJbo"><span class="wp-bt-l1">疯狂动物城</span><span class="wp-bt-l2">学习乐园</span></div>
-          <img class="wp-banner-img" id="wpBannerImg" alt="疯狂动物城角色" data-page-node-id="agZyYv0T1LKYMUE4SQBCnI" />
+          <img class="wp-banner-img" id="wpBannerImg" alt="疯狂动物城角色" loading="lazy" decoding="async" data-page-node-id="agZyYv0T1LKYMUE4SQBCnI" />
           <div class="wp-slogan" data-page-node-id="AqhFORPdF5tr9h6RT6sTup">
             <div class="wp-slogan-zh" id="wpSloganZh" data-page-node-id="MriZe2xozJC6tna7STR50R"></div>
             <div class="wp-slogan-en" id="wpSloganEn" data-page-node-id="6Bibksgj3nxecBQGtstZEO"></div>
@@ -5899,10 +5903,16 @@ html,body{margin:0;padding:0}
           <div class="go-content" id="todayMaoStarContent"></div>
         </div>
 
-        <!-- 运动 · 作息打卡（v7：右列最下，围棋下方；R19-2 合并作息卡到运动卡） -->
-        <div class="today-col today-col-compact" data-page-node-id="LrfDY9fn2Y8leGsfnPUdyE">
-          <h3 class="col-head sport" data-page-node-id="GUqBjnJjOEUvYBAnuLtcuz">⚽ 运动 · 作息打卡</h3>
-          <div id="todaySport" data-page-node-id="FBN6TxxasyUWaQDrPTe39N"></div>
+        <!-- R133-1：运动 / 作息 拆分为两张独立卡片（作息卡在运动卡右侧，同行平铺） -->
+        <div class="sport-split-row" data-page-node-id="R133sportRow">
+          <div class="today-col today-col-compact sport-split-col" data-page-node-id="R133sportCol">
+            <h3 class="col-head sport" data-page-node-id="R133sportHead">⚽ 运动打卡</h3>
+            <div id="todaySport" data-page-node-id="FBN6TxxasyUWaQDrPTe39N"></div>
+          </div>
+          <div class="today-col today-col-compact sport-split-col" data-page-node-id="R133routineCol">
+            <h3 class="col-head routine" data-page-node-id="R133routineHead">😴 作息打卡</h3>
+            <div id="todayRoutine" data-page-node-id="R133routineList"></div>
+          </div>
         </div>
 
         <!-- V58-R1：家务小帮手（运动打卡下方，完成打卡 +2⭐） -->
@@ -6675,7 +6685,7 @@ html,body{margin:0;padding:0}
       <button class="pbtn" data-close data-page-node-id="r125kpViewerCloseQ7Xb2m">✕ 关闭</button>
     </div>
     <div class="modal-body kp-viewer-body" data-page-node-id="r125kpViewerBodyQ7Xb2m">
-      <img id="kpViewerImg" alt="重点知识图片放大查看" data-page-node-id="r125kpViewerImgQ7Xb2m" />
+      <img id="kpViewerImg" alt="重点知识图片放大查看" loading="lazy" decoding="async" data-page-node-id="r125kpViewerImgQ7Xb2m" />
     </div>
   </div>
 </div>
@@ -6784,6 +6794,7 @@ html,body{margin:0;padding:0}
       </div>
     </div>
     <div class="modal-foot" data-page-node-id="XVQuFHKROBb7yQ9R6OHBAA">
+      <button class="primary-btn settings-save-modal-btn" data-commit-settings data-page-node-id="R133saveBg">💾 保存设置</button>
       <button class="pbtn" data-close data-page-node-id="1nxTpIBcV8E1tFPmtj0zfW">关闭</button>
     </div>
   </div>
@@ -6853,9 +6864,10 @@ html,body{margin:0;padding:0}
         <div id="farmSetShopList" class="peg-shop-list" data-page-node-id="R83farmShopList"></div>
       </div>
     </div>
-    <div class="modal-foot" data-page-node-id="R83farmFoot">
-      <button class="pbtn" data-close data-page-node-id="R83farmClose">← 返回</button>
-    </div>
+      <div class="modal-foot" data-page-node-id="R83farmFoot">
+        <button class="primary-btn settings-save-modal-btn" data-commit-settings data-page-node-id="R133saveFarm">💾 保存设置</button>
+        <button class="pbtn" data-close data-page-node-id="R83farmClose">← 返回</button>
+      </div>
   </div>
 </div>
 
@@ -6885,8 +6897,12 @@ html,body{margin:0;padding:0}
           <button class="primary-btn" id="btnSettingsOpenWrong" data-page-node-id="R85btnOpenWrong">去打卡</button>
         </div>
         <div class="settings-task-section" data-page-node-id="R85taskSportSec">
-          <div class="settings-task-sec-title" data-page-node-id="R85taskSportTitle">⚽ 运动 · 作息打卡</div>
+          <div class="settings-task-sec-title" data-page-node-id="R133taskSportTitle">⚽ 运动打卡</div>
           <div id="settingsTaskSport" class="settings-task-list" data-page-node-id="R85taskSportList"></div>
+        </div>
+        <div class="settings-task-section" data-page-node-id="R133taskRoutineSec">
+          <div class="settings-task-sec-title" data-page-node-id="R133taskRoutineTitle">😴 作息打卡</div>
+          <div id="settingsTaskRoutine" class="settings-task-list" data-page-node-id="R133taskRoutineList"></div>
         </div>
         <div class="settings-task-section" data-page-node-id="R85taskHouseSec">
           <div class="settings-task-sec-title" data-page-node-id="R85taskHouseTitle">🧼 家务小帮手</div>
@@ -6903,9 +6919,10 @@ html,body{margin:0;padding:0}
         </div>
       </div>
     </div>
-    <div class="modal-foot" data-page-node-id="R85modalTaskFoot">
-      <button class="pbtn" data-close data-page-node-id="R85modalTaskClose">关闭</button>
-    </div>
+      <div class="modal-foot" data-page-node-id="R85modalTaskFoot">
+        <button class="primary-btn settings-save-modal-btn" data-commit-settings data-page-node-id="R133saveTask">💾 保存设置</button>
+        <button class="pbtn" data-close data-page-node-id="R85modalTaskClose">关闭</button>
+      </div>
   </div>
 </div>
 
@@ -6936,9 +6953,10 @@ html,body{margin:0;padding:0}
         </div>
       </div>
     </div>
-    <div class="modal-foot" data-page-node-id="R85modalGameFoot">
-      <button class="pbtn" data-close data-page-node-id="R85modalGameClose">关闭</button>
-    </div>
+      <div class="modal-foot" data-page-node-id="R85modalGameFoot">
+        <button class="primary-btn settings-save-modal-btn" data-commit-settings data-page-node-id="R133saveGame">💾 保存设置</button>
+        <button class="pbtn" data-close data-page-node-id="R85modalGameClose">关闭</button>
+      </div>
   </div>
 </div>
 
@@ -7046,7 +7064,7 @@ html,body{margin:0;padding:0}
       </div>
     </div>
     <div class="modal-foot" data-page-node-id="R85modalKMFoot">
-      <button class="primary-btn" id="btnKMSettingSave" data-page-node-id="R85btnKMSave">💾 保存设置</button>
+      <button class="primary-btn" id="btnKMSettingSave" data-commit-settings data-page-node-id="R85btnKMSave">💾 保存设置</button>
       <button class="pbtn" data-close data-page-node-id="R85modalKMClose">← 返回</button>
     </div>
   </div>
@@ -7096,9 +7114,10 @@ html,body{margin:0;padding:0}
       </div>
       <div id="settingsSfxBody" data-page-node-id="R85sfxBody"></div>
     </div>
-    <div class="modal-foot" data-page-node-id="R85modalMusicFoot">
-      <button class="pbtn" data-close data-page-node-id="R85modalMusicClose">关闭</button>
-    </div>
+      <div class="modal-foot" data-page-node-id="R85modalMusicFoot">
+        <button class="primary-btn settings-save-modal-btn" data-commit-settings data-page-node-id="R133saveMusic">💾 保存设置</button>
+        <button class="pbtn" data-close data-page-node-id="R85modalMusicClose">关闭</button>
+      </div>
   </div>
 </div>
 
@@ -7137,9 +7156,10 @@ html,body{margin:0;padding:0}
       </div>
       <div id="pinSettingsBox" data-page-node-id="R85pinBox"></div>
     </div>
-    <div class="modal-foot" data-page-node-id="R85modalSyncFoot">
-      <button class="pbtn" data-close data-page-node-id="R85modalSyncClose">关闭</button>
-    </div>
+      <div class="modal-foot" data-page-node-id="R85modalSyncFoot">
+        <button class="primary-btn settings-save-modal-btn" data-commit-settings data-page-node-id="R133saveSync">💾 保存设置</button>
+        <button class="pbtn" data-close data-page-node-id="R85modalSyncClose">关闭</button>
+      </div>
   </div>
 </div>
 
@@ -7173,9 +7193,10 @@ html,body{margin:0;padding:0}
         <div class="form-warn" style="margin-top:8px" data-page-node-id="R85verTip">应用已开启离线缓存，正常情况下打开页面会自动获取最新版；若发现内容仍是旧的，点「检查更新」即可立即刷新。</div>
       </div>
     </div>
-    <div class="modal-foot" data-page-node-id="R85modalVerFoot">
-      <button class="pbtn" data-close data-page-node-id="R85modalVerClose">关闭</button>
-    </div>
+      <div class="modal-foot" data-page-node-id="R85modalVerFoot">
+        <button class="primary-btn settings-save-modal-btn" data-commit-settings data-page-node-id="R133saveVer">💾 保存设置</button>
+        <button class="pbtn" data-close data-page-node-id="R85modalVerClose">关闭</button>
+      </div>
   </div>
 </div>
 
@@ -7216,9 +7237,10 @@ html,body{margin:0;padding:0}
         <div id="exportPreview" class="export-preview" data-page-node-id="R85exportPreview"></div>
       </div>
     </div>
-    <div class="modal-foot" data-page-node-id="R85modalExportFoot">
-      <button class="pbtn" data-close data-page-node-id="R85modalExportClose">关闭</button>
-    </div>
+      <div class="modal-foot" data-page-node-id="R85modalExportFoot">
+        <button class="primary-btn settings-save-modal-btn" data-commit-settings data-page-node-id="R133saveExport">💾 保存设置</button>
+        <button class="pbtn" data-close data-page-node-id="R85modalExportClose">关闭</button>
+      </div>
   </div>
 </div>
 
@@ -7412,7 +7434,7 @@ html,body{margin:0;padding:0}
       </label>
       <label>📷 上传照片（可选）
         <input type="file" id="mnImgFile" accept="image/*">
-        <img id="mnImgPreview" class="mn-img-preview" alt="笔记照片预览" hidden>
+        <img id="mnImgPreview" class="mn-img-preview" alt="笔记照片预览" loading="lazy" decoding="async" hidden>
       </label>
       <div class="form-warn" id="mnWarn">保存后，笔记将展示在对应题型第一个内容卡片位置</div>
     </div>
@@ -33847,7 +33869,7 @@ May / Can I /we have …, please? 请问我 / 我们可以拿…… 吗？
   }
   // 首页横幅：图片（dataURL）+ 中文标语 + 英文标语（家长模式可改）
   const DEFAULT_BANNER = {
-    image: './assets/ee53d7fc1297.png', // 占位符：构建时由 build_standalone.js 替换为 base64
+    image: './assets/7d12ed26f29d.png', // 占位符：构建时由 build_standalone.js 替换为 base64
     sloganZh: '今日打卡 get√，知识能量满格',
     sloganEn: ''
   };
@@ -34211,7 +34233,7 @@ May / Can I /we have …, please? 请问我 / 我们可以拿…… 吗？
 })();
 </script>
 <script>
-window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/0c11468b5691.jpg","KM_MATH":"./assets/cf1a13af180e.jpg","KM_ENGLISH":"./assets/63d89223b192.jpg","KM_MIXED":"./assets/223b3f7dcd21.jpg"};
+window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH":"./assets/c49c39dd5fe5.jpg","KM_ENGLISH":"./assets/52cdcdc90cbf.jpg","KM_MIXED":"./assets/ab4558d30ebf.jpg"};
 /* ============================================================
    疯狂动物城 · 三年级学习乐园
    交互逻辑 v3
@@ -36651,7 +36673,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/0c11468b5691.jpg","KM_MATH"
           </div>
           <button class="nw-zone-del" data-kt-del="${esc(it.id)}" title="删除">×</button>
         </div>
-        ${it.img ? `<div class="kt-img-wrap"><img class="kt-img" src="${esc(it.img)}" alt="${esc(it.title||'看图写话')}" /></div>` : ''}
+        ${it.img ? `<div class="kt-img-wrap"><img class="kt-img" src="${esc(it.img)}" alt="${esc(it.title||'看图写话')}" loading="lazy" decoding="async" /></div>` : ''}
         <div class="kt-block">
           <div class="kt-label">🖼️ 内容</div>
           <div class="kt-body">${esc(it.content || '')}</div>
@@ -38848,7 +38870,7 @@ I'm good at running.`},
       const d = S.isReadingRead(EN_KP_READ, u.id+'::'+k);
       return `
         <div class="kp-img-card${d?' is-checked':''}" data-kp-card="${k}" title="${_enKpDelMode?'点击删除这张图片':'点击图片放大查看内容'}">
-          <img class="kp-img" src="${esc(it.img)}" alt="${esc(it.t||'重点知识')}" />
+          <img class="kp-img" src="${esc(it.img)}" alt="${esc(it.t||'重点知识')}" loading="lazy" decoding="async" />
           ${it.t ? `<div class="kp-img-cap">${esc(it.t)}</div>` : ''}
           <div class="kp-img-foot">
             <span class="kp-img-state">${d?'✅已学':'□未学'}</span>
@@ -39604,6 +39626,8 @@ I'm good at running.`},
     if(editBtn) editBtn.style.display = _nmEditing ? 'none' : '';
     if(_nmEditing) renderNickMemoEdit(list); else renderNickMemoView(list);
   }
+  // R133-3：备忘录改为「多张小卡平铺网格」，每张卡嵌入原页面的卡通形象（循环复用背景动漫角色）
+  const MN_CARTEERS = ['🐰','🦊','🐻','🐱','🐶','🐼','🦁','🐯'];
   function renderNickMemoView(list){
     const memos = getNickMemosSafe();
     list.className = 'mn-notes mn-view';
@@ -39612,12 +39636,13 @@ I'm good at running.`},
       return;
     }
     const cards = memos.map((m,i)=>{
-      const p = _nmPos(i);
+      const char = MN_CARTEERS[i % MN_CARTEERS.length];
       const time = m.date ? esc(m.date) : '';
       const note = m.note ? esc(m.note) : '';
       const no = (i+1);
-      return '<div class="mn-note-card" style="top:'+p.top+'%;left:'+p.left+'%;transform:rotate('+p.rot+'deg);'+_nmItemStyle(m)+'">'
+      return '<div class="mn-note-card">'
         + '<span class="mn-note-no">'+no+'</span>'
+        + '<div class="mn-note-char" aria-hidden="true">'+char+'</div>'
         + '<div class="mn-note-body">'
         + (time ? '<div class="mn-note-time">🕒 '+time+'</div>' : '')
         + '<div class="mn-note-item">'+esc(m.item)+'</div>'
@@ -40717,6 +40742,7 @@ I'm good at running.`},
     renderTodayWrong(st, today);
     renderTodayHouse(st, today);
     renderTodaySport(st, today);
+    renderTodayRoutine(st, today);
     renderTodayGo(st);
     renderTodayMaoStar(); // R77-3：诗词打卡获得⭐设置（围棋对弈设置下方）
     $('#btnTaskSettings').textContent = taskManage ? '✅ 完成' : '✏️ 编辑';
@@ -40755,17 +40781,15 @@ I'm good at running.`},
       </div>
     `).join('') || '<div style="color:var(--muted);text-align:center;padding:20px">暂无选做任务</div>';
   }
-  // 运动 · 作息板块（R19-2：合并作息卡到运动卡位置，按科目分组展示）
-  function renderTodaySport(st, today){
-    const items = S.tasksForDate(today).filter(t=>t.subject==='运动' || t.subject==='作息');
-    if(!items.length){ $('#todaySport').innerHTML='<div style="color:var(--muted);text-align:center;padding:14px">暂无运动 / 作息任务</div>'; return; }
-    const groups = [['运动','🏃 运动'],['作息','😴 作息']];
-    $('#todaySport').innerHTML = groups.map(([sub, head])=>{
-      const list = items.filter(t=>t.subject===sub);
-      if(!list.length) return '';
-      return `<div class="sport-group"><span class="sport-group-head">${head}</span>${list.map(t=>renderTaskItem(t, st)).join('')}</div>`;
-    }).join('');
+  // R133-1：运动 / 作息 拆分为两张独立卡片（运动卡 → #todaySport，作息卡 → #todayRoutine）
+  function renderTodaySportGroup(st, today, sub, head, mountId){
+    const items = S.tasksForDate(today).filter(t=>t.subject===sub);
+    const mount = document.getElementById(mountId); if(!mount) return;
+    if(!items.length){ mount.innerHTML = '<div style="color:var(--muted);text-align:center;padding:10px">暂无'+head+'任务</div>'; return; }
+    mount.innerHTML = '<div class="sport-group"><span class="sport-group-head">'+head+'</span>'+items.map(t=>renderTaskItem(t, st)).join('')+'</div>';
   }
+  function renderTodaySport(st, today){ renderTodaySportGroup(st, today, '运动', '🏃 运动', 'todaySport'); }
+  function renderTodayRoutine(st, today){ renderTodaySportGroup(st, today, '作息', '😴 作息', 'todayRoutine'); }
   // V58-R1：家务小帮手（运动下方，完成 +2⭐）
   function renderTodayHouse(st, today){
     const houses = S.tasksForDate(today).filter(t=>t.subject==='家务小帮手' || t.subject==='习惯家务');
@@ -41053,7 +41077,7 @@ I'm good at running.`},
       const dataUrl = part.slice(0, end);
       const rest = part.slice(end + 2);
       const imgTag = dataUrl.startsWith('data:image')
-        ? `<img class="math-inline-img" src="${dataUrl}" alt="插图" loading="lazy">`
+        ? `<img class="math-inline-img" src="${dataUrl}" alt="插图" loading="lazy" decoding="async">`
         : '';
       return imgTag + esc(rest);
     }).join('');
@@ -41103,7 +41127,7 @@ I'm good at running.`},
         <span class="math-note-tag">📝 知识笔记</span>
       </div>
       <div class="math-body">
-        <div class="math-q"><span class="math-q-label">笔记</span>${renderMathRichText(n.body||'')}${n.img?`<img class="math-inline-img" src="${n.img}" alt="笔记照片">`:''}</div>
+        <div class="math-q"><span class="math-q-label">笔记</span>${renderMathRichText(n.body||'')}${n.img?`<img class="math-inline-img" src="${n.img}" alt="笔记照片" loading="lazy" decoding="async">`:''}</div>
       </div>
     </div>`;
   }
@@ -45368,7 +45392,10 @@ I'm good at running.`},
     if(window.Store&&window.Store.save) window.Store.save(st);
   }
   // 全局点击音效分发（导航栏/主题卡/次级主题卡/打卡），注册一次
+  // R133-2：单次物理点击去重 —— 同一事件对象只触发一个音效，杜绝「单个按键叠加多个音效」的重复播放
   function onGlobalSfxClick(e){
+    if(e && e.__sfxHandled) return;
+    if(e) e.__sfxHandled = true;
     const t = e.target; if(!t || !t.closest) return;
     // 打卡类：各自 handler 已调用 playCheckinSound（已路由到 playClickSfx('checkin')），此处跳过避免重复
     if(t.closest('[data-checkin], .ri-checkin-btn, [data-ri-checkin], .kw-checkin, .checkin-btn, [data-kw-checkin], .math-btn-mastery, .math-btn-need, [data-sfx-checkin]')) return;
@@ -47161,6 +47188,7 @@ I'm good at running.`},
     clone('#todayReq', '#settingsTaskReq');
     clone('#todayOpt', '#settingsTaskOpt');
     clone('#todaySport', '#settingsTaskSport');
+    clone('#todayRoutine', '#settingsTaskRoutine');
     clone('#todayHouse', '#settingsTaskHouse');
     clone('#todayHouseTip', '#settingsTaskHouseTip');
     renderTodayGo(S.load(), '#settingsTaskGoContent');
@@ -47499,29 +47527,13 @@ I'm good at running.`},
         };
       });
     }
-    // R131-2：注入设置中心【保存设置】按钮（每张卡片各一个 + 全局统一按钮）
+    // R133-4：将【保存设置】按钮移至各设置子页面（弹窗）底部 —— 绑定 [data-commit-settings] 调用 commitSettingsNow
+    // （原「每张卡片角标 pill + 页面底部全局 sticky 条」已移除，见 R133-4 说明）
     function ensureSettingsSaveButtons(){
-      const cards = ['cardModeSettings','cardTaskSettings','cardGameSettings','cardMusicSettings','cardBgSettings','cardSyncSettings','cardVersionSettings','cardExportSettings'];
-      cards.forEach(function(id){
-        const card = document.getElementById(id);
-        if(!card || card.querySelector('.settings-save-btn')) return;
-        const b = document.createElement('button');
-        b.type = 'button'; b.className = 'settings-save-btn'; b.textContent = '💾 保存设置';
-        b.setAttribute('data-page-node-id', 'R131save_' + id);
-        b.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); commitSettingsNow(); });
-        card.appendChild(b);
+      document.querySelectorAll('[data-commit-settings]').forEach(function(btn){
+        if(btn._bound) return; btn._bound = true;
+        btn.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); commitSettingsNow(); });
       });
-      const sp = document.querySelector('.page-settings .page-content');
-      if(sp && !sp.querySelector('#btnSaveSettingsGlobal')){
-        const bar = document.createElement('div');
-        bar.className = 'settings-save-global'; bar.setAttribute('data-page-node-id', 'R131saveGlobal');
-        const gb = document.createElement('button');
-        gb.type = 'button'; gb.id = 'btnSaveSettingsGlobal'; gb.className = 'settings-save-btn settings-save-btn--global';
-        gb.textContent = '💾 保存设置（全部配置）';
-        gb.addEventListener('click', function(e){ e.preventDefault(); commitSettingsNow(); });
-        bar.appendChild(gb);
-        sp.appendChild(bar);
-      }
     }
 
     // R85：设置中心 —— 7 张卡片点击路由
