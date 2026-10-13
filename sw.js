@@ -47,10 +47,10 @@ var PRECACHE_TIMEOUT = 25000; // R119.1：预缓存最多占用这么久，超�
  * （install → 重新预缓存新 index.html → installed → 页面自动重载到新版）。 */
 var BUILD = 'ba4922ad225b';
 /* R93：版本号与版本更新时间。部署脚本会把 R132 替换为当期轮次号（如 R93）、
- * 2026-10-13 15:31 替换为本次部署时间（北京时间，格式 YYYY-MM-DD HH:mm）。
+ * 2026-10-13 15:37 替换为本次部署时间（北京时间，格式 YYYY-MM-DD HH:mm）。
  * 用途：「设置中心 → 版本与更新」显示「当前版本 + 更新时间」，点「检查更新」后即为最新读数。 */
 var APP_VERSION = 'R132';
-var BUILD_TIME = '2026-10-13 15:31';
+var BUILD_TIME = '2026-10-13 15:37';
 
 self.addEventListener('install', function (e) {
   self.skipWaiting();
