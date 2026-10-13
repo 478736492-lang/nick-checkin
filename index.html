@@ -5280,7 +5280,11 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .page-memonick{
   position:relative;min-height:calc(100vh - 40px);min-height:calc(100dvh - 40px);
   background:linear-gradient(180deg,#9ed2f8,#cfe9ff);
-  overflow:hidden
+  overflow:hidden;
+  /* R136-1：备忘「标签卡」统一玻璃白度 —— 备忘墙卡片与备忘录管理页面行卡引用同一变量，
+     两处透明度严格一致；管理面板的可调「透明」值也以此为基准（见 app.js renderNickMemoView）。 */
+  --mn-glass-bg:rgba(255,255,255,.34);
+  --mn-glass-blur:8px
 }
 .mn-back{
   position:absolute;top:14px;left:14px;z-index:8;
@@ -5307,26 +5311,31 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
     0 1px 0 rgba(196,224,252,.95)
 }
 /* ② 标题下方整片区域：7 张卡片平铺（上行 4 张、下行 3 张，两行均铺满宽度）。
-   R135-2：四周留出边距，卡片区整体缩小一圈，背景图边缘天际线完整露出。 */
+   R135-2：四周留出边距，卡片区整体缩小一圈，背景图边缘天际线完整露出。
+   R136-2：继续缩小标签卡 —— 容器四周留白再放大、格间距加大、每卡自身再内缩一圈（margin），
+           夜景露出更多，视觉上更像一张张贴在玻璃上的小标签。 */
 .mn-notes{
   position:absolute;z-index:3;
-  left:clamp(16px,3.2vw,46px);right:clamp(16px,3.2vw,46px);
-  bottom:clamp(16px,3vh,40px);top:clamp(52px,9.5vh,92px);
+  left:clamp(22px,4.6vw,72px);right:clamp(22px,4.6vw,72px);
+  bottom:clamp(20px,4vh,58px);top:clamp(58px,11vh,106px);
   display:grid;grid-template-columns:repeat(12,1fr);grid-template-rows:repeat(2,1fr);
-  gap:clamp(9px,1.7vh,18px);
-  padding:clamp(8px,1.8vh,18px)
+  gap:clamp(12px,2.5vh,28px);
+  padding:clamp(10px,2.2vh,24px)
 }
 .mn-note-card:nth-child(-n+4){grid-column:span 3}
 .mn-note-card:nth-child(n+5){grid-column:span 4}
+/* R136-2：卡在网格单元内再内缩，卡片实际尺寸变小 */
+.mn-note-card{margin:clamp(4px,.9vh,12px) clamp(3px,.7vw,10px)}
 /* 磨砂玻璃便签卡：高透明度 + 背景模糊，底层陆家嘴建筑清晰透出。
-   R135-2：整体再提透明度（白底 .13→.09、模糊 9px→7px），背景更清晰。 */
+   R136-1：白底不再写死，改引 --mn-glass-bg —— 与「备忘录管理」页面行卡同一取值；
+           每张卡若在数据里调过「透明」，由 JS 以同一公式为基数写 inline 覆盖。 */
 .mn-note-card{
   position:relative;box-sizing:border-box;overflow:hidden;
-  border-radius:clamp(14px,2.1vh,22px);
-  border:1.5px solid rgba(255,255,255,.5);
-  background:rgba(255,255,255,.09);
-  backdrop-filter:blur(7px) saturate(150%);
-  -webkit-backdrop-filter:blur(7px) saturate(150%);
+  border-radius:clamp(12px,1.8vh,18px);
+  border:1.5px solid rgba(255,255,255,.58);
+  background:var(--mn-glass-bg);
+  backdrop-filter:blur(var(--mn-glass-blur)) saturate(150%);
+  -webkit-backdrop-filter:blur(var(--mn-glass-blur)) saturate(150%);
   box-shadow:0 8px 22px rgba(16,40,90,.16), inset 0 1px 0 rgba(255,255,255,.45);
   transition:transform .18s ease, box-shadow .18s ease
 }
@@ -5348,10 +5357,10 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .mn-note-card:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(16,40,90,.22), inset 0 1px 0 rgba(255,255,255,.55)}
 /* R135-2：卡内左下侧疯狂动物城角色人像徽章（毛玻璃圆底，纯图形无文字） */
 .mn-note-char{
-  position:absolute;left:clamp(8px,1.6vw,14px);bottom:clamp(8px,1.6vh,14px);z-index:3;
-  width:clamp(30px,4.6vh,42px);height:clamp(30px,4.6vh,42px);border-radius:50%;
+  position:absolute;left:clamp(7px,1.4vw,12px);bottom:clamp(7px,1.4vh,12px);z-index:3;
+  width:clamp(26px,3.9vh,36px);height:clamp(26px,3.9vh,36px);border-radius:50%;
   display:inline-flex;align-items:center;justify-content:center;
-  font-size:clamp(16px,2.5vh,23px);line-height:1;
+  font-size:clamp(14px,2.1vh,20px);line-height:1;
   background:rgba(255,255,255,.34);
   border:1.5px solid rgba(255,255,255,.66);
   backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
@@ -5361,18 +5370,18 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 }
 /* R135-2：卡内右下侧电影元素小装饰（半透明，不抢背景） */
 .mn-note-film{
-  position:absolute;right:clamp(10px,1.8vw,16px);bottom:clamp(6px,1.3vh,12px);z-index:3;
-  font-size:clamp(13px,2vh,19px);line-height:1;opacity:.72;
+  position:absolute;right:clamp(8px,1.5vw,13px);bottom:clamp(5px,1.1vh,10px);z-index:3;
+  font-size:clamp(11px,1.7vh,16px);line-height:1;opacity:.72;
   filter:drop-shadow(0 1px 2px rgba(16,40,90,.2));
   pointer-events:none
 }
 /* ③ 卡片右上角两个极简小图标：编辑 / 删除 */
 .mn-note-tools{
-  position:absolute;top:clamp(6px,1.2vh,11px);right:clamp(6px,1.2vw,11px);
-  z-index:4;display:flex;align-items:center;gap:clamp(5px,.8vh,8px)
+  position:absolute;top:clamp(5px,1vh,9px);right:clamp(5px,1vw,9px);
+  z-index:4;display:flex;align-items:center;gap:clamp(4px,.7vh,7px)
 }
 .mn-tool-btn{
-  width:clamp(25px,3.4vh,32px);height:clamp(25px,3.4vh,32px);
+  width:clamp(21px,2.9vh,27px);height:clamp(21px,2.9vh,27px);
   display:inline-flex;align-items:center;justify-content:center;padding:0;
   border:1.5px solid rgba(255,255,255,.72);border-radius:50%;
   background:rgba(255,255,255,.26);
@@ -5411,8 +5420,13 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   background:rgba(255,244,222,.92);border:1px dashed #ecc98a;border-radius:10px;
   padding:7px 12px
 }
+/* R136-1：管理页面每条的行卡改用与备忘墙标签卡完全相同的白度变量 —— 两处透明度严格一致；
+   行内输入框保持实白底，玻璃化不影响录入可读性。 */
 .mn-note-edit{
-  background:rgba(255,255,255,.92);border:1.5px solid var(--tone-200);border-radius:14px;
+  background:var(--mn-glass-bg);
+  backdrop-filter:blur(var(--mn-glass-blur)) saturate(140%);
+  -webkit-backdrop-filter:blur(var(--mn-glass-blur)) saturate(140%);
+  border:1.5px solid rgba(255,255,255,.72);border-radius:14px;
   padding:10px 12px;display:flex;flex-direction:column;gap:7px;box-shadow:0 3px 10px rgba(30,58,138,.12)
 }
 .mn-note-edit-head{display:flex;align-items:center;gap:8px}
@@ -39689,6 +39703,15 @@ I'm good at running.`},
   const MN_CHARS = ['🐰','🦊','🦥','🐆','🐑','🐭','🐃'];
   // 电影元素小装饰（按卡位依次）
   const MN_FILMS = ['🎬','🌟','🚔','📽️','🎫','🏙️','🚕'];
+  // 管理面板「透明」滑杆区间 0.2~1；R136-1：把该值换算成与管理页面行卡同一套玻璃白度
+  // （CSS 变量 --mn-glass-bg = .34），滑杆拉满即与管理页面完全一致，拉低则更透。
+  const MN_GLASS_MIN = 0.10, MN_GLASS_MAX = 0.34, MN_OP_MIN = 0.2;
+  function mnGlassAlpha(m){
+    const raw = (m && m.opacity!==undefined && m.opacity!==null && m.opacity!=='') ? (+m.opacity) : 1;
+    let op = raw; if(isNaN(op) || op < MN_OP_MIN) op = MN_OP_MIN; if(op > 1) op = 1;
+    const t = (op - MN_OP_MIN) / (1 - MN_OP_MIN);
+    return (MN_GLASS_MIN + (MN_GLASS_MAX - MN_GLASS_MIN) * t).toFixed(3);
+  }
   function renderNickMemoView(list){
     const memos = getNickMemosSafe();
     list.className = 'mn-notes mn-view';
@@ -39696,7 +39719,8 @@ I'm good at running.`},
     for(let i=0;i<MN_CARD_COUNT;i++){
       const m = memos[i];
       const id = (m && m.id) ? String(m.id) : '';
-      html += '<div class="mn-note-card" data-mn-id="'+esc(id)+'" data-page-node-id="R134memoCard'+i+'">'
+      const bg = ' style="background:rgba(255,255,255,'+mnGlassAlpha(m)+')"';
+      html += '<div class="mn-note-card" data-mn-id="'+esc(id)+'"'+bg+' data-page-node-id="R134memoCard'+i+'">'
         + '<div class="mn-note-tools">'
         + '<button class="mn-tool-btn mn-tool-edit" type="button" title="编辑备忘录" aria-label="编辑备忘录" data-page-node-id="R134memoEdit'+i+'">'+MN_TOOL_EDIT+'</button>'
         + '<button class="mn-tool-btn mn-tool-del" type="button" title="删除这张备忘" aria-label="删除这张备忘" data-page-node-id="R134memoDel'+i+'">'+MN_TOOL_DEL+'</button>'
