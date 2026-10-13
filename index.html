@@ -2945,6 +2945,8 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .wp-subj-阅读{background:linear-gradient(135deg,var(--z-read-pale2),var(--z-read-mid))!important;color:var(--z-read-deep)}
 .wp-subj-百科{background:linear-gradient(135deg,var(--z-baike-pale2),var(--z-baike-mid))!important;color:var(--z-baike-deep)}
 .wp-subj-运动{background:linear-gradient(135deg,var(--z-home-pale2),var(--z-home-mid))!important;color:var(--z-home-deep)}
+/* R135-1：作息独立子卡头（淡紫系，与首页 .col-head.routine 一致） */
+.wp-subj-作息{background:linear-gradient(135deg,#e3e0ff,#efeaff)!important;color:#5a3fb0}
 .wp-subj-围棋{background:linear-gradient(135deg,var(--z-go-pale2),var(--z-go-mid))!important;color:var(--z-go-deep)}
 .wp-subj-家务小帮手{background:linear-gradient(135deg,var(--z-chore-pale2),var(--z-chore-mid))!important;color:var(--z-chore-deep)}
 .wp-subj-其他{background:rgba(255,255,255,.55)!important;color:var(--sky-blue)}
@@ -5304,42 +5306,66 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
     0 0 34px rgba(186,222,255,.72),
     0 1px 0 rgba(196,224,252,.95)
 }
-/* ② 标题下方整片区域：7 张卡片平铺（上行 4 张、下行 3 张，两行均铺满宽度） */
+/* ② 标题下方整片区域：7 张卡片平铺（上行 4 张、下行 3 张，两行均铺满宽度）。
+   R135-2：四周留出边距，卡片区整体缩小一圈，背景图边缘天际线完整露出。 */
 .mn-notes{
   position:absolute;z-index:3;
-  left:0;right:0;bottom:0;top:clamp(52px,9.5vh,92px);
+  left:clamp(16px,3.2vw,46px);right:clamp(16px,3.2vw,46px);
+  bottom:clamp(16px,3vh,40px);top:clamp(52px,9.5vh,92px);
   display:grid;grid-template-columns:repeat(12,1fr);grid-template-rows:repeat(2,1fr);
   gap:clamp(9px,1.7vh,18px);
-  padding:clamp(10px,2.2vh,24px) clamp(12px,2.4vw,30px)
+  padding:clamp(8px,1.8vh,18px)
 }
 .mn-note-card:nth-child(-n+4){grid-column:span 3}
 .mn-note-card:nth-child(n+5){grid-column:span 4}
-/* 磨砂玻璃便签卡：高透明度 + 背景模糊，底层陆家嘴建筑清晰透出 */
+/* 磨砂玻璃便签卡：高透明度 + 背景模糊，底层陆家嘴建筑清晰透出。
+   R135-2：整体再提透明度（白底 .13→.09、模糊 9px→7px），背景更清晰。 */
 .mn-note-card{
   position:relative;box-sizing:border-box;overflow:hidden;
   border-radius:clamp(14px,2.1vh,22px);
-  border:1.5px solid rgba(255,255,255,.62);
-  background:rgba(255,255,255,.13);
-  backdrop-filter:blur(9px) saturate(155%);
-  -webkit-backdrop-filter:blur(9px) saturate(155%);
-  box-shadow:0 10px 26px rgba(16,40,90,.20), inset 0 1px 0 rgba(255,255,255,.52);
+  border:1.5px solid rgba(255,255,255,.5);
+  background:rgba(255,255,255,.09);
+  backdrop-filter:blur(7px) saturate(150%);
+  -webkit-backdrop-filter:blur(7px) saturate(150%);
+  box-shadow:0 8px 22px rgba(16,40,90,.16), inset 0 1px 0 rgba(255,255,255,.45);
   transition:transform .18s ease, box-shadow .18s ease
 }
-/* 彩虹玻璃染色层：赤 → 橙 → 黄 → 绿 → 青 → 蓝 → 紫（严格依次） */
+/* 彩虹玻璃染色层：赤 → 橙 → 黄 → 绿 → 青 → 蓝 → 紫（严格依次）。
+   R135-2：染色浓度 .26/.28 → .16/.18，更透更亮。 */
 .mn-note-card::before{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none}
-.mn-note-card:nth-child(1)::before{background:rgba(255,86,86,.26)}   /* 赤 */
-.mn-note-card:nth-child(2)::before{background:rgba(255,152,58,.26)}  /* 橙 */
-.mn-note-card:nth-child(3)::before{background:rgba(255,213,64,.26)}  /* 黄 */
-.mn-note-card:nth-child(4)::before{background:rgba(72,214,128,.26)}  /* 绿 */
-.mn-note-card:nth-child(5)::before{background:rgba(34,211,238,.26)}  /* 青 */
-.mn-note-card:nth-child(6)::before{background:rgba(79,140,255,.28)}  /* 蓝 */
-.mn-note-card:nth-child(7)::before{background:rgba(167,139,250,.28)} /* 紫 */
+.mn-note-card:nth-child(1)::before{background:rgba(255,86,86,.16)}   /* 赤 */
+.mn-note-card:nth-child(2)::before{background:rgba(255,152,58,.16)}  /* 橙 */
+.mn-note-card:nth-child(3)::before{background:rgba(255,213,64,.16)}  /* 黄 */
+.mn-note-card:nth-child(4)::before{background:rgba(72,214,128,.16)}  /* 绿 */
+.mn-note-card:nth-child(5)::before{background:rgba(34,211,238,.16)}  /* 青 */
+.mn-note-card:nth-child(6)::before{background:rgba(79,140,255,.18)}  /* 蓝 */
+.mn-note-card:nth-child(7)::before{background:rgba(167,139,250,.18)} /* 紫 */
 /* 玻璃高光斜纹，增强通透质感 */
 .mn-note-card::after{
   content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;
-  background:linear-gradient(150deg,rgba(255,255,255,.40),rgba(255,255,255,.07) 40%,rgba(255,255,255,0) 62%)
+  background:linear-gradient(150deg,rgba(255,255,255,.24),rgba(255,255,255,.05) 40%,rgba(255,255,255,0) 62%)
 }
-.mn-note-card:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(16,40,90,.26), inset 0 1px 0 rgba(255,255,255,.6)}
+.mn-note-card:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(16,40,90,.22), inset 0 1px 0 rgba(255,255,255,.55)}
+/* R135-2：卡内左下侧疯狂动物城角色人像徽章（毛玻璃圆底，纯图形无文字） */
+.mn-note-char{
+  position:absolute;left:clamp(8px,1.6vw,14px);bottom:clamp(8px,1.6vh,14px);z-index:3;
+  width:clamp(30px,4.6vh,42px);height:clamp(30px,4.6vh,42px);border-radius:50%;
+  display:inline-flex;align-items:center;justify-content:center;
+  font-size:clamp(16px,2.5vh,23px);line-height:1;
+  background:rgba(255,255,255,.34);
+  border:1.5px solid rgba(255,255,255,.66);
+  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+  box-shadow:0 3px 10px rgba(16,40,90,.18);
+  filter:drop-shadow(0 1px 2px rgba(16,40,90,.22));
+  pointer-events:none
+}
+/* R135-2：卡内右下侧电影元素小装饰（半透明，不抢背景） */
+.mn-note-film{
+  position:absolute;right:clamp(10px,1.8vw,16px);bottom:clamp(6px,1.3vh,12px);z-index:3;
+  font-size:clamp(13px,2vh,19px);line-height:1;opacity:.72;
+  filter:drop-shadow(0 1px 2px rgba(16,40,90,.2));
+  pointer-events:none
+}
 /* ③ 卡片右上角两个极简小图标：编辑 / 删除 */
 .mn-note-tools{
   position:absolute;top:clamp(6px,1.2vh,11px);right:clamp(6px,1.2vw,11px);
@@ -5359,28 +5385,63 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .mn-tool-btn svg{width:56%;height:56%;fill:#fff;filter:drop-shadow(0 1px 2px rgba(16,40,90,.5))}
 .mn-tool-del{background:rgba(255,118,118,.30);border-color:rgba(255,214,214,.82)}
 .mn-tool-del:hover{background:rgba(255,140,140,.48)}
-/* 编辑态：面板式可管理列表（含字号/颜色/透明度自定义） */
+/* 编辑态：面板式可管理列表（含字号/颜色/透明度自定义）。
+   R135-2：排版重排——顶部标题条、输入两列网格、虚线添加行、主/幽灵按钮区。 */
 .mn-notes.mn-editmode{
   display:flex;flex-direction:column;gap:10px;padding:16px;overflow:auto;
-  background:rgba(255,255,255,.55);border-radius:18px;
+  background:rgba(255,255,255,.62);border-radius:18px;
   box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.5)
+}
+/* 编辑面板顶部标题条 */
+.mn-edit-head{
+  flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:8px 14px;border-radius:12px;
+  background:linear-gradient(135deg,rgba(255,255,255,.9),rgba(223,238,255,.78));
+  border:1.5px solid var(--tone-200);box-shadow:0 3px 10px rgba(30,58,138,.10)
+}
+.mn-edit-head-title{font-size:14px;font-weight:900;color:#16306b;letter-spacing:.02em}
+.mn-edit-head-count{
+  font-size:11px;font-weight:800;color:#3f6cb5;
+  background:rgba(255,255,255,.85);border:1px solid var(--tone-200);
+  border-radius:999px;padding:2px 10px;white-space:nowrap
+}
+/* 超出 7 条的提示条（超出部分仅在编辑面板可见可删） */
+.mn-overflow-tip{
+  flex:0 0 auto;font-size:11px;line-height:1.5;color:#8a5a12;
+  background:rgba(255,244,222,.92);border:1px dashed #ecc98a;border-radius:10px;
+  padding:7px 12px
 }
 .mn-note-edit{
   background:rgba(255,255,255,.92);border:1.5px solid var(--tone-200);border-radius:14px;
-  padding:10px 12px;display:flex;flex-direction:column;gap:6px;box-shadow:0 3px 10px rgba(30,58,138,.12)
+  padding:10px 12px;display:flex;flex-direction:column;gap:7px;box-shadow:0 3px 10px rgba(30,58,138,.12)
 }
-.mn-note-edit-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.mn-note-edit-head{display:flex;align-items:center;gap:8px}
+.mn-note-edit-head .mn-del{margin-left:auto}
+/* 编辑行内的角色人像小徽章（与备忘墙卡片呼应） */
+.mn-note-edit-char{
+  width:24px;height:24px;border-radius:50%;flex:0 0 auto;
+  display:inline-flex;align-items:center;justify-content:center;font-size:13px;line-height:1;
+  background:rgba(223,238,255,.9);border:1px solid var(--tone-200)
+}
+/* 时间/事项两列网格，备注通栏——输入区更整齐 */
+.mn-note-grid{display:grid;grid-template-columns:minmax(88px,1fr) 2.2fr;gap:8px}
+.mn-add-row{display:grid;grid-template-columns:minmax(88px,1fr) 2.2fr 1.6fr auto;gap:8px;align-items:center}
 .mn-note-edit .mn-in{
-  flex:1;min-width:0;padding:4px 6px;border:1.5px solid var(--tone-line-soft);
-  border-radius:8px;font-size:12px;font-family:inherit;color:#23314a;background:#fff
+  flex:1;min-width:0;padding:6px 9px;border:1.5px solid var(--tone-line-soft);
+  border-radius:9px;font-size:12px;font-family:inherit;color:#23314a;background:#fff
 }
-.mn-note-style{display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:11px;color:#5b6b85}
+.mn-note-edit .mn-in::placeholder{color:#9db0cc}
+.mn-note-style{
+  display:flex;flex-wrap:wrap;gap:12px;align-items:center;font-size:11px;color:#5b6b85;
+  padding-top:6px;border-top:1px dashed var(--tone-200)
+}
 .mn-note-style label{display:inline-flex;align-items:center;gap:4px}
 .mn-fontsize{width:54px;padding:2px 4px;border:1.5px solid var(--tone-line-soft);border-radius:6px;font-size:12px}
 .mn-color{width:34px;height:26px;border:none;background:none;padding:0;cursor:pointer}
 .mn-opacity{width:84px}
-.mn-add-new{margin-top:2px}
-.mn-actions{display:flex;gap:8px;justify-content:flex-end;padding-top:4px;flex:0 0 auto}
+/* 添加行：虚线卡片，与已有行区分 */
+.mn-add-new{margin-top:2px;border-style:dashed;background:rgba(255,255,255,.72)}
+.mn-actions{display:flex;gap:10px;justify-content:flex-end;padding-top:6px;flex:0 0 auto}
 .mn-note-no{
   position:static;flex:0 0 auto;width:24px;height:24px;border-radius:50%;
   background:var(--tone-700);color:#fff;font-size:12px;font-weight:900;
@@ -5388,25 +5449,32 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   box-shadow:0 2px 6px rgba(30,58,138,.3)
 }
 .mn-del{
-  flex:0 0 auto;width:24px;height:24px;border-radius:50%;border:1.5px solid #f0c0c0;
-  background:#fff;color:var(--danger);font-weight:900;cursor:pointer;line-height:1;font-size:12px
+  flex:0 0 auto;width:26px;height:26px;border-radius:50%;border:1.5px solid #f0c0c0;
+  background:#fff;color:var(--danger);font-weight:900;cursor:pointer;line-height:1;font-size:12px;
+  transition:background .15s ease
 }
 .mn-del:hover{background:#fff0f0}
 .mn-add{
-  flex:0 0 auto;width:24px;height:24px;border-radius:50%;border:1.5px solid var(--tone-200);
-  background:var(--tone-100);color:#4fa8e0;font-weight:900;cursor:pointer;line-height:1;font-size:13px
+  flex:0 0 auto;width:30px;height:30px;border-radius:50%;border:1.5px solid var(--tone-300);
+  background:var(--tone-100);color:#4fa8e0;font-weight:900;cursor:pointer;line-height:1;font-size:16px;
+  transition:background .15s ease, transform .15s ease
 }
-.mn-add:hover{background:var(--tone-175)}
+.mn-add:hover{background:var(--tone-175);transform:translateY(-1px)}
 .mn-save{
-  font-size:12px;font-weight:700;color:#fff;background:var(--tone-700);
-  border:none;border-radius:999px;padding:5px 14px;cursor:pointer
+  font-size:13px;font-weight:800;color:#fff;
+  background:linear-gradient(135deg,var(--tone-600),var(--tone-700));
+  border:none;border-radius:999px;padding:8px 22px;cursor:pointer;
+  box-shadow:0 4px 12px rgba(30,58,138,.28);
+  transition:transform .15s ease, box-shadow .15s ease, filter .15s ease
 }
-.mn-save:hover{filter:brightness(1.05)}
+.mn-save:hover{filter:brightness(1.07);box-shadow:0 6px 16px rgba(30,58,138,.34);transform:translateY(-1px)}
+.mn-save:active{transform:translateY(0)}
 .mn-cancel{
-  font-size:12px;font-weight:700;color:#5b6b85;border:1px solid var(--tone-200);
-  background:#fff;border-radius:999px;padding:5px 14px;cursor:pointer
+  font-size:13px;font-weight:700;color:#5b6b85;border:1.5px solid var(--tone-200);
+  background:rgba(255,255,255,.85);border-radius:999px;padding:8px 18px;cursor:pointer;
+  transition:background .15s ease
 }
-.mn-cancel:hover{background:var(--tone-100)}
+.mn-cancel:hover{background:#fff}
 .mn-in:focus{outline:none;border-color:var(--tone-600);box-shadow:0 0 0 3px rgba(64,150,255,.18)}
 
 
@@ -29860,15 +29928,25 @@ window.WANTONG_COVER = './assets/c6249ea2bfe3.jpg';
   function getNickMemos(){
     const st = load();
     if(!Array.isArray(st.nickMemos)) return [];
-    return st.nickMemos.map(m=>({
-      id: m.id || _genMemoId(),
-      date: String(m.date||'').slice(0, 20),
-      item: String(m.item||'').slice(0, MEMO_MAX),
-      note: String(m.note||'').slice(0, MEMO_MAX),
-      fontSize: (m.fontSize!==undefined && m.fontSize!=='') ? String(m.fontSize) : '',
-      color: (m.color!==undefined && m.color!=='') ? String(m.color) : '',
-      opacity: (m.opacity!==undefined && m.opacity!=='') ? String(m.opacity) : ''
-    }));
+    // R135-3：历史数据可能缺 id；旧实现每次读取都新生成 id，导致「视图卡片 id」与
+    // 「删除时重新读取的 id」不一致 → 删除匹配失效。改为：缺失时一次性补齐并落库，
+    // 之后读取幂等稳定，编辑/删除按 id 精确匹配。
+    let patched = false;
+    const out = st.nickMemos.map(m=>{
+      let id = (m && m.id) ? String(m.id) : '';
+      if(!id){ id = _genMemoId(); patched = true; if(m) m.id = id; }
+      return {
+        id: id,
+        date: String((m && m.date)||'').slice(0, 20),
+        item: String((m && m.item)||'').slice(0, MEMO_MAX),
+        note: String((m && m.note)||'').slice(0, MEMO_MAX),
+        fontSize: (m && m.fontSize!==undefined && m.fontSize!=='') ? String(m.fontSize) : '',
+        color: (m && m.color!==undefined && m.color!=='') ? String(m.color) : '',
+        opacity: (m && m.opacity!==undefined && m.opacity!=='') ? String(m.opacity) : ''
+      };
+    });
+    if(patched){ try{ save(st); }catch(e){} }
+    return out;
   }
   function saveNickMemos(list){
     const st = load();
@@ -39603,9 +39681,14 @@ I'm good at running.`},
   // R134：备忘录改为「陆家嘴天际线背景 + 7 张彩虹磨砂玻璃空白便签卡」。
   // 卡片配色 赤→橙→黄→绿→青→蓝→紫 由 CSS nth-child 上色；卡内一律空白无任何文字，
   // 仅在右上角放两个极简小图标（编辑 / 删除），点击后进入编辑态或删除对应备忘。
+  // R135-2：每张卡左侧嵌入疯狂动物城角色人像徽章、右下角嵌入电影元素小装饰（纯图形，不引入文字）。
   const MN_CARD_COUNT = 7;
   const MN_TOOL_EDIT = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17.25V21h3.75L17.8 9.94l-3.75-3.75L3 17.25zM20.7 7.04a1 1 0 0 0 0-1.42l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>';
   const MN_TOOL_DEL  = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>';
+  // 疯狂动物城角色人像（按卡位依次：朱迪/尼克/闪电/豹警官/绵羊副市长/大先生/牦牛亚提）
+  const MN_CHARS = ['🐰','🦊','🦥','🐆','🐑','🐭','🐃'];
+  // 电影元素小装饰（按卡位依次）
+  const MN_FILMS = ['🎬','🌟','🚔','📽️','🎫','🏙️','🚕'];
   function renderNickMemoView(list){
     const memos = getNickMemosSafe();
     list.className = 'mn-notes mn-view';
@@ -39618,6 +39701,8 @@ I'm good at running.`},
         + '<button class="mn-tool-btn mn-tool-edit" type="button" title="编辑备忘录" aria-label="编辑备忘录" data-page-node-id="R134memoEdit'+i+'">'+MN_TOOL_EDIT+'</button>'
         + '<button class="mn-tool-btn mn-tool-del" type="button" title="删除这张备忘" aria-label="删除这张备忘" data-page-node-id="R134memoDel'+i+'">'+MN_TOOL_DEL+'</button>'
         + '</div>'
+        + '<span class="mn-note-char" aria-hidden="true">'+MN_CHARS[i % MN_CHARS.length]+'</span>'
+        + '<span class="mn-note-film" aria-hidden="true">'+MN_FILMS[i % MN_FILMS.length]+'</span>'
         + '</div>';
     }
     list.innerHTML = html;
@@ -39652,16 +39737,29 @@ I'm good at running.`},
   }
   function renderNickMemoEdit(list){
     list.className = 'mn-notes mn-editmode';
+    // R135-3：兜底初始化草稿。旧实现若 _nmDraft 为 null（异常路径直接进编辑态），
+    // 点保存会把空数组写进 store 清空全部备忘；这里保证草稿始终有值。
+    if(!_nmDraft){
+      _nmDraft = getNickMemosSafe().map(function(m){ return { id:m.id, date:m.date, item:m.item, note:m.note, fontSize:m.fontSize, color:m.color, opacity:m.opacity }; });
+    }
     const draft = _nmDraft || [];
+    // R135-3：视图只展示前 7 张卡，超出部分仅在编辑面板可见可删——给一句提示避免误以为数据丢失
+    const overflow = draft.length > MN_CARD_COUNT
+      ? '<div class="mn-overflow-tip">📌 备忘墙只展示前 '+MN_CARD_COUNT+' 张，超出 '+(draft.length-MN_CARD_COUNT)+' 条仅在此处管理（可删除）</div>'
+      : '';
     const rows = draft.map(function(m, i){
       const fs = (m.fontSize && +m.fontSize) ? (+m.fontSize) : 15;
       const col = m.color || '#1b2a44';
       const op = (m.opacity!==undefined && m.opacity!==null && m.opacity!=='') ? (+m.opacity) : 1;
-      return '<div class="mn-note-edit" data-id="'+esc(m.id)+'">'
+      const char = MN_CHARS[i % MN_CHARS.length];
+      return '<div class="mn-note-edit" data-id="'+esc(m.id)+'" data-page-node-id="R135memoRow'+i+'">'
         + '<div class="mn-note-edit-head"><span class="mn-note-no">'+(i+1)+'</span>'
-        + '<button class="mn-del" title="删除该条">🗑</button></div>'
+        + '<span class="mn-note-edit-char" aria-hidden="true">'+char+'</span>'
+        + '<button class="mn-del" title="删除该条" aria-label="删除该条">🗑</button></div>'
+        + '<div class="mn-note-grid">'
         + '<input class="mn-in mn-in-date" placeholder="时间" value="'+esc(m.date)+'" maxlength="20" />'
         + '<input class="mn-in mn-in-item" placeholder="事项" value="'+esc(m.item)+'" maxlength="120" />'
+        + '</div>'
         + '<input class="mn-in mn-in-note" placeholder="备注" value="'+esc(m.note)+'" maxlength="120" />'
         + '<div class="mn-note-style">'
         + '<label>字号<input class="mn-fontsize" type="number" min="10" max="40" value="'+fs+'" /></label>'
@@ -39669,14 +39767,17 @@ I'm good at running.`},
         + '<label>透明<input class="mn-opacity" type="range" min="0.2" max="1" step="0.05" value="'+op+'" /></label>'
         + '</div></div>';
     }).join('');
-    list.innerHTML = rows
-      + '<div class="mn-note-edit mn-add-new">'
+    list.innerHTML = '<div class="mn-edit-head"><span class="mn-edit-head-title">✏️ 备忘录管理</span>'
+      + '<span class="mn-edit-head-count">共 '+draft.length+' / '+MN_CARD_COUNT+' 条</span></div>'
+      + overflow + rows
+      + '<div class="mn-note-edit mn-add-new" data-page-node-id="R135memoAddRow">'
+      + '<div class="mn-add-row">'
       + '<input class="mn-in mn-in-date" placeholder="时间" maxlength="20" />'
-      + '<input class="mn-in mn-in-item" placeholder="事项" maxlength="120" />'
+      + '<input class="mn-in mn-in-item" placeholder="新事项" maxlength="120" />'
       + '<input class="mn-in mn-in-note" placeholder="备注" maxlength="120" />'
-      + '<button class="mn-add" title="新增该条">＋</button>'
-      + '</div>'
-      + '<div class="mn-actions"><button class="mn-save">💾 保存</button><button class="mn-cancel">取消</button></div>';
+      + '<button class="mn-add" title="新增该条" aria-label="新增该条">＋</button>'
+      + '</div></div>'
+      + '<div class="mn-actions"><button class="mn-cancel">取消</button><button class="mn-save">💾 保存</button></div>';
   }
   function bindNickMemoEdit(){
     const list = document.getElementById('nickMemoList');
@@ -39708,6 +39809,11 @@ I'm good at running.`},
     });
     const addBtn = list.querySelector('.mn-add-new .mn-add');
     const doAdd = function(){
+      // R135-3：备忘墙固定 7 张卡，新增上限 7 条，杜绝「加了却看不见也删不到」的幽灵数据
+      if((_nmDraft||[]).length >= MN_CARD_COUNT){
+        if(window.toast) toast('备忘墙最多 '+MN_CARD_COUNT+' 张，先删掉一张再加吧');
+        return;
+      }
       const wrap = list.querySelector('.mn-add-new'); if(!wrap) return;
       const date = (wrap.querySelector('.mn-in-date').value||'').trim();
       const item = (wrap.querySelector('.mn-in-item').value||'').trim();
@@ -39795,13 +39901,12 @@ I'm good at running.`},
     const groupBySubject = (arr)=>{
       const map = new Map();
       arr.forEach(t=>{
+        // R135-1：作息为独立卡片（移除 R24-2「作息并入运动」旧逻辑）
         let sub = t.subject || '其他';
-        // R24-2：首页「作息」卡合并进「运动」卡（占运动卡位置，不再单独成卡）
-        if(sub==='作息') sub = '运动';
         if(!map.has(sub)) map.set(sub, []);
         map.get(sub).push(t);
       });
-      const order = ['语文','数学','英语','阅读','百科','运动','围棋','家务小帮手','文明小标兵','其他'];
+      const order = ['语文','数学','英语','阅读','百科','运动','作息','围棋','家务小帮手','文明小标兵','其他'];
       return Array.from(map.entries()).sort((a,b)=>{
         const ia = order.indexOf(a[0]); const ib = order.indexOf(b[0]);
         return (ia<0?99:ia) - (ib<0?99:ib);
@@ -39819,19 +39924,7 @@ I'm good at running.`},
             <div class="wp-subcard-body">${list.map(itemHtml).join('')}</div>
           </div>`;
         }
-        // R24-2：运动卡内合并作息（运动组在上、作息组在下，各带小分组头）
-        if(sub==='运动'){
-          const sp = list.filter(t=>t.subject!=='作息');
-          const sl = list.filter(t=>t.subject==='作息');
-          const grp = (items, head)=> items.length
-            ? `<div class="wp-sport-grp"><span class="wp-sport-grp-head">${head}</span>${items.map(itemHtml).join('')}</div>`
-            : '';
-          const headTxt = sl.length ? `⚽ 运动 · 作息 · ${list.length}` : `⚽ 运动 · ${list.length}`;
-          return `<div class="wp-subcard wp-subcard-sport">
-            <div class="wp-subcard-head wp-subj-运动">${headTxt}</div>
-            <div class="wp-subcard-body">${grp(sp,'🏃 运动')}${grp(sl,'😴 作息')}</div>
-          </div>`;
-        }
+        // R135-1：作息与运动各自独立成子卡（移除 R24-2 合并分支，走下方默认分支）
         return `<div class="wp-subcard">
           <div class="wp-subcard-head wp-subj-${esc(sub)}">${subIco(sub)} ${esc(sub)} · ${list.length}</div>
           <div class="wp-subcard-body">${list.map(itemHtml).join('')}</div>
