@@ -5291,8 +5291,8 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   overflow:hidden;
   /* R136-1：备忘「标签卡」统一玻璃白度 —— 备忘墙卡片与备忘录管理页面行卡引用同一变量，
      两处透明度严格一致；管理面板的可调「透明」值也以此为基准（见 app.js renderNickMemoView）。 */
-  --mn-glass-bg:rgba(255,255,255,.34);
-  --mn-glass-blur:8px
+  --mn-glass-bg:rgba(255,255,255,.20);
+  --mn-glass-blur:7px
 }
 .mn-back{
   position:absolute;top:14px;left:14px;z-index:8;
@@ -5301,6 +5301,14 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   padding:8px 14px;cursor:pointer;box-shadow:0 2px 8px rgba(30,58,138,.15)
 }
 .mn-back:hover{background:#fff}
+.mn-manage{
+  position:absolute;top:14px;right:14px;z-index:8;
+  font-size:13px;font-weight:800;color:#fff;
+  background:linear-gradient(135deg,var(--tone-600),var(--tone-700));
+  border:1.5px solid rgba(255,255,255,.7);border-radius:999px;
+  padding:8px 16px;cursor:pointer;box-shadow:0 3px 10px rgba(30,58,138,.25)
+}
+.mn-manage:hover{filter:brightness(1.06);transform:translateY(-1px)}
 /* 舞台：整页铺满的背景图载体（陆家嘴天际线，cover 填充，不裁切主体建筑） */
 .mn-stage{
   position:absolute;inset:0;
@@ -5340,11 +5348,11 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .mn-note-card{
   position:relative;box-sizing:border-box;overflow:hidden;
   border-radius:clamp(12px,1.8vh,18px);
-  border:1.5px solid rgba(255,255,255,.58);
+  border:1.5px solid rgba(255,255,255,.42);
   background:var(--mn-glass-bg);
   backdrop-filter:blur(var(--mn-glass-blur)) saturate(150%);
   -webkit-backdrop-filter:blur(var(--mn-glass-blur)) saturate(150%);
-  box-shadow:0 8px 22px rgba(16,40,90,.16), inset 0 1px 0 rgba(255,255,255,.45);
+  box-shadow:0 8px 22px rgba(16,40,90,.14), inset 0 1px 0 rgba(255,255,255,.28);
   transition:transform .18s ease, box-shadow .18s ease
 }
 /* 彩虹玻璃染色层：赤 → 橙 → 黄 → 绿 → 青 → 蓝 → 紫（严格依次）。
@@ -5509,6 +5517,21 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 }
 .mn-cancel:hover{background:#fff}
 .mn-in:focus{outline:none;border-color:var(--tone-600);box-shadow:0 0 0 3px rgba(64,150,255,.18)}
+/* R138：备忘录管理改为统一弹窗（对话框），并整体放大；时间/事项/备注在同一对话框内编辑 */
+.modal-memo{
+  min-width:600px;width:min(720px,92vw);max-width:min(760px,94vw);
+  max-height:88vh;max-height:88dvh;display:flex;flex-direction:column
+}
+.modal-memo .modal-body{overflow-y:auto;padding-right:6px}
+.modal-memo .modal-foot{display:flex;gap:10px;justify-content:flex-end;padding-top:6px;flex:0 0 auto}
+.modal-memo .mn-edit-head-count{
+  font-size:11px;font-weight:800;color:#3f6cb5;
+  background:rgba(255,255,255,.85);border:1px solid var(--tone-200);
+  border-radius:999px;padding:2px 10px;white-space:nowrap;margin-left:8px
+}
+.mn-edit-fields{display:flex;flex-direction:column;gap:8px;margin:6px 0 2px}
+.mn-fld{display:grid;grid-template-columns:48px 1fr;align-items:center;gap:10px}
+.mn-fld-lab{font-size:12px;font-weight:800;color:#3f5e95;white-space:nowrap}
 
 
 /* ---- R118-3：设置中心模式选择卡片（#cardModeSettings，与打卡任务等同款外壳） ---- */
@@ -6046,6 +6069,7 @@ html,body{margin:0;padding:0}
   <!-- ================= R134：Nick 的备忘录（陆家嘴天际线背景 + 发光标题 + 7 张彩虹磨砂玻璃便签卡） ================= -->
   <section class="page page-memonick" data-page="memonick" hidden data-page-node-id="R118pageMemoNick">
     <button class="mn-back" id="btnMemoNickBack" title="返回首页" data-page-node-id="R118memoNickBack">← 返回首页</button>
+    <button class="mn-manage" id="btnMemoManage" title="管理备忘录" data-page-node-id="R138memoManage">📝 管理备忘</button>
     <div class="mn-stage" data-page-node-id="R118memoStage">
       <!-- ① 顶部居中标题：浅白色立体发光字体，避开东方明珠等主体建筑 -->
       <h2 class="mn-title" data-page-node-id="R134memoTitle">Nick的备忘录</h2>
@@ -6718,6 +6742,21 @@ html,body{margin:0;padding:0}
       <button class="pbtn danger hidden-in-child" id="btnDeleteTask" data-page-node-id="WitonC0vUdHANe2wnDQHiF">🗑️ 删除</button>
       <button class="primary-btn" id="btnSaveTask" data-page-node-id="OSK6cmlH16RHIBV4F3DQH9">保存</button>
       <button class="pbtn" data-close data-page-node-id="CIKikccu2OYPttUj3pH3Pi">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 弹窗：备忘录管理（R138：时间/事项/备注同对话框编辑，对话框放大） ========== -->
+<div class="modal-mask" id="modalMemoEdit" hidden data-page-node-id="R138modalMemoEdit">
+  <div class="modal-box modal-memo" data-page-node-id="R138modalMemoEditBox">
+    <div class="modal-head" data-page-node-id="R138modalMemoEditHead">
+      <h3 data-page-node-id="R138modalMemoEditTitle">📝 备忘录管理 <span id="memoEditCount" class="mn-edit-head-count"></span></h3>
+      <button class="modal-x" data-close data-page-node-id="R138modalMemoEditX">×</button>
+    </div>
+    <div class="modal-body" id="memoEditBody" data-page-node-id="R138modalMemoEditBody"></div>
+    <div class="modal-foot" data-page-node-id="R138modalMemoEditFoot">
+      <button class="mn-cancel" id="btnMemoCancel" type="button" data-page-node-id="R138memoCancel">取消</button>
+      <button class="mn-save" id="btnMemoSave" type="button" data-page-node-id="R138memoSave">💾 保存</button>
     </div>
   </div>
 </div>
@@ -39709,7 +39748,6 @@ I'm good at running.`},
 
   // R131-3：Nick 的备忘录重构 —— 编号玻璃便签卡散落背景（时间/事项/备注 + 字号/颜色/透明度自定义）
   let _nmInited = false;
-  let _nmEditing = false;
   let _nmDraft = null; // 编辑态草稿：[{id,date,item,note,fontSize,color,opacity}]
   function initNickMemo(){
     if(_nmInited) return; _nmInited = true;
@@ -39717,6 +39755,8 @@ I'm good at running.`},
     if(open) open.addEventListener('click', ()=>{ goPage('memonick'); });
     const back = document.getElementById('btnMemoNickBack');
     if(back) back.addEventListener('click', ()=>{ goPage('home'); });
+    const manage = document.getElementById('btnMemoManage');
+    if(manage) manage.addEventListener('click', ()=>{ openMemoEditModal(); });
   }
   function getNickMemosSafe(){
     return (window.Store && window.Store.getNickMemos) ? window.Store.getNickMemos() : [];
@@ -39724,7 +39764,7 @@ I'm good at running.`},
   function renderNickMemo(){
     const list = document.getElementById('nickMemoList');
     if(!list) return;
-    if(_nmEditing) renderNickMemoEdit(list); else renderNickMemoView(list);
+    renderNickMemoView(list);
   }
   // R134：备忘录改为「陆家嘴天际线背景 + 7 张彩虹磨砂玻璃空白便签卡」。
   // 卡片配色 赤→橙→黄→绿→青→蓝→紫 由 CSS nth-child 上色；卡内一律空白无任何文字，
@@ -39739,7 +39779,7 @@ I'm good at running.`},
   const MN_FILMS = ['🎬','🌟','🚔','📽️','🎫','🏙️','🚕'];
   // 管理面板「透明」滑杆区间 0.2~1；R136-1：把该值换算成与管理页面行卡同一套玻璃白度
   // （CSS 变量 --mn-glass-bg = .34），滑杆拉满即与管理页面完全一致，拉低则更透。
-  const MN_GLASS_MIN = 0.10, MN_GLASS_MAX = 0.34, MN_OP_MIN = 0.2;
+  const MN_GLASS_MIN = 0.05, MN_GLASS_MAX = 0.20, MN_OP_MIN = 0.2;
   function mnGlassAlpha(m){
     const raw = (m && m.opacity!==undefined && m.opacity!==null && m.opacity!=='') ? (+m.opacity) : 1;
     let op = raw; if(isNaN(op) || op < MN_OP_MIN) op = MN_OP_MIN; if(op > 1) op = 1;
@@ -39783,7 +39823,7 @@ I'm good at running.`},
     const list = document.getElementById('nickMemoList');
     if(!list) return;
     list.querySelectorAll('.mn-tool-edit').forEach(function(btn){
-      btn.addEventListener('click', function(){ if(!_nmEditing) enterNickMemoEdit(); });
+      btn.addEventListener('click', function(){ openMemoEditModal(); });
     });
     list.querySelectorAll('.mn-tool-del').forEach(function(btn){
       btn.addEventListener('click', function(){
@@ -39801,128 +39841,121 @@ I'm good at running.`},
       });
     });
   }
-  function enterNickMemoEdit(){
+  // R138：备忘录管理改为「统一弹窗（对话框）」编辑 —— 时间/事项/备注在
+  // 同一个对话框内编辑，对话框整体放大（见 styles.css .modal-memo）。备忘墙只负责展示。
+  function openMemoEditModal(){
+    // 兜底初始化草稿，防止异常路径下把空数组写回 store 清空全部备忘。
     _nmDraft = getNickMemosSafe().map(function(m){ return { id:m.id, date:m.date, item:m.item, note:m.note, fontSize:m.fontSize, color:m.color, opacity:m.opacity }; });
-    _nmEditing = true;
-    renderNickMemo(); bindNickMemoEdit();
+    renderMemoEditModalBody();
+    showModal('#modalMemoEdit');
+    bindMemoEditModal();
   }
-  function renderNickMemoEdit(list){
-    list.className = 'mn-notes mn-editmode';
-    // R135-3：兜底初始化草稿。旧实现若 _nmDraft 为 null（异常路径直接进编辑态），
-    // 点保存会把空数组写进 store 清空全部备忘；这里保证草稿始终有值。
-    if(!_nmDraft){
-      _nmDraft = getNickMemosSafe().map(function(m){ return { id:m.id, date:m.date, item:m.item, note:m.note, fontSize:m.fontSize, color:m.color, opacity:m.opacity }; });
-    }
+  function renderMemoEditModalBody(){
+    const body = document.getElementById('memoEditBody');
+    if(!body) return;
     const draft = _nmDraft || [];
-    // R135-3：视图只展示前 7 张卡，超出部分仅在编辑面板可见可删——给一句提示避免误以为数据丢失
+    // 视图只展示前 7 张卡，超出部分仅在编辑面板可见可删——给一句提示避免误以为数据丢失
     const overflow = draft.length > MN_CARD_COUNT
       ? '<div class="mn-overflow-tip">📌 备忘墙只展示前 '+MN_CARD_COUNT+' 张，超出 '+(draft.length-MN_CARD_COUNT)+' 条仅在此处管理（可删除）</div>'
       : '';
-    const rows = draft.map(function(m, i){
+    const cards = draft.map(function(m, i){
       const fs = (m.fontSize && +m.fontSize) ? (+m.fontSize) : 15;
       const col = m.color || '#1b2a44';
       const op = (m.opacity!==undefined && m.opacity!==null && m.opacity!=='') ? (+m.opacity) : 1;
       const char = MN_CHARS[i % MN_CHARS.length];
-      return '<div class="mn-note-edit" data-id="'+esc(m.id)+'" data-page-node-id="R135memoRow'+i+'">'
+      return '<div class="mn-note-edit" data-id="'+esc(m.id)+'" data-page-node-id="R138memoRow'+i+'">'
         + '<div class="mn-note-edit-head"><span class="mn-note-no">'+(i+1)+'</span>'
         + '<span class="mn-note-edit-char" aria-hidden="true">'+char+'</span>'
-        + '<button class="mn-del" title="删除该条" aria-label="删除该条">🗑</button></div>'
-        + '<div class="mn-note-grid">'
-        + '<input class="mn-in mn-in-date" placeholder="时间" value="'+esc(m.date)+'" maxlength="20" />'
-        + '<input class="mn-in mn-in-item" placeholder="事项" value="'+esc(m.item)+'" maxlength="120" />'
+        + '<button class="mn-del" type="button" title="删除该条" aria-label="删除该条">🗑</button></div>'
+        + '<div class="mn-edit-fields">'
+        + '<label class="mn-fld"><span class="mn-fld-lab">时间</span><input class="mn-in mn-in-date" placeholder="时间" maxlength="20" value="'+esc(m.date)+'" /></label>'
+        + '<label class="mn-fld"><span class="mn-fld-lab">事项</span><input class="mn-in mn-in-item" placeholder="事项" maxlength="120" value="'+esc(m.item)+'" /></label>'
+        + '<label class="mn-fld"><span class="mn-fld-lab">备注</span><input class="mn-in mn-in-note" placeholder="备注" maxlength="120" value="'+esc(m.note)+'" /></label>'
         + '</div>'
-        + '<input class="mn-in mn-in-note" placeholder="备注" value="'+esc(m.note)+'" maxlength="120" />'
         + '<div class="mn-note-style">'
         + '<label>字号<input class="mn-fontsize" type="number" min="10" max="40" value="'+fs+'" /></label>'
         + '<label>颜色<input class="mn-color" type="color" value="'+col+'" /></label>'
         + '<label>透明<input class="mn-opacity" type="range" min="0.2" max="1" step="0.05" value="'+op+'" /></label>'
         + '</div></div>';
     }).join('');
-    list.innerHTML = '<div class="mn-edit-head"><span class="mn-edit-head-title">✏️ 备忘录管理</span>'
-      + '<span class="mn-edit-head-count">共 '+draft.length+' / '+MN_CARD_COUNT+' 条</span></div>'
-      + overflow + rows
-      + '<div class="mn-note-edit mn-add-new" data-page-node-id="R135memoAddRow">'
-      + '<div class="mn-add-row">'
-      + '<input class="mn-in mn-in-date" placeholder="时间" maxlength="20" />'
-      + '<input class="mn-in mn-in-item" placeholder="新事项" maxlength="120" />'
-      + '<input class="mn-in mn-in-note" placeholder="备注" maxlength="120" />'
-      + '<button class="mn-add" title="新增该条" aria-label="新增该条">＋</button>'
-      + '</div></div>'
-      + '<div class="mn-actions"><button class="mn-cancel">取消</button><button class="mn-save">💾 保存</button></div>';
+    body.innerHTML = overflow + cards
+      + '<div class="mn-note-edit mn-add-new" data-page-node-id="R138memoAddRow">'
+      + '<div class="mn-edit-fields">'
+      + '<label class="mn-fld"><span class="mn-fld-lab">时间</span><input class="mn-in mn-in-date" placeholder="时间" maxlength="20" /></label>'
+      + '<label class="mn-fld"><span class="mn-fld-lab">事项</span><input class="mn-in mn-in-item" placeholder="新事项" maxlength="120" /></label>'
+      + '<label class="mn-fld"><span class="mn-fld-lab">备注</span><input class="mn-in mn-in-note" placeholder="备注" maxlength="120" /></label>'
+      + '</div>'
+      + '<button class="mn-add" type="button" title="新增该条" aria-label="新增该条">＋ 添加这条备忘</button>'
+      + '</div>';
+    const cnt = document.getElementById('memoEditCount');
+    if(cnt) cnt.textContent = '共 '+draft.length+' / '+MN_CARD_COUNT+' 条';
   }
-  function bindNickMemoEdit(){
-    const list = document.getElementById('nickMemoList');
-    if(!list) return;
-    list.querySelectorAll('.mn-note-edit[data-id] .mn-del').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        const id = btn.closest('.mn-note-edit').getAttribute('data-id');
-        _nmDraft = (_nmDraft||[]).filter(function(x){ return String(x.id)!==String(id); });
-        renderNickMemo(); bindNickMemoEdit();
-      });
-    });
-    list.querySelectorAll('.mn-note-edit[data-id]').forEach(function(rowEl){
-      const id = rowEl.getAttribute('data-id');
+  function bindMemoEditModal(){
+    const body = document.getElementById('memoEditBody');
+    if(!body) return;
+    body.querySelectorAll('.mn-note-edit[data-id]').forEach(function(card){
+      const id = card.getAttribute('data-id');
       const row = (_nmDraft||[]).find(function(x){ return String(x.id)===String(id); });
       if(!row) return;
-      rowEl.querySelectorAll('.mn-in').forEach(function(inp){
+      card.querySelectorAll('.mn-in').forEach(function(inp){
         inp.addEventListener('input', function(){
           if(inp.classList.contains('mn-in-date')) row.date = inp.value;
           else if(inp.classList.contains('mn-in-note')) row.note = inp.value;
           else row.item = inp.value;
         });
       });
-      const fs = rowEl.querySelector('.mn-fontsize');
-      if(fs) fs.addEventListener('input', function(){ row.fontSize = fs.value; });
-      const cl = rowEl.querySelector('.mn-color');
-      if(cl) cl.addEventListener('input', function(){ row.color = cl.value; });
-      const op = rowEl.querySelector('.mn-opacity');
-      if(op) op.addEventListener('input', function(){ row.opacity = op.value; });
+      const fs = card.querySelector('.mn-fontsize'); if(fs) fs.addEventListener('input', function(){ row.fontSize = fs.value; });
+      const cl = card.querySelector('.mn-color'); if(cl) cl.addEventListener('input', function(){ row.color = cl.value; });
+      const op = card.querySelector('.mn-opacity'); if(op) op.addEventListener('input', function(){ row.opacity = op.value; });
+      const del = card.querySelector('.mn-del');
+      if(del) del.addEventListener('click', function(){
+        _nmDraft = (_nmDraft||[]).filter(function(x){ return String(x.id)!==String(id); });
+        renderMemoEditModalBody(); bindMemoEditModal();
+      });
     });
-    const addBtn = list.querySelector('.mn-add-new .mn-add');
+    const addBtn = body.querySelector('.mn-add-new .mn-add');
     const doAdd = function(){
-      // R135-3：备忘墙固定 7 张卡，新增上限 7 条，杜绝「加了却看不见也删不到」的幽灵数据
+      // 备忘墙固定 7 张卡，新增上限 7 条，杜绝「加了却看不见也删不到」的幽灵数据
       if((_nmDraft||[]).length >= MN_CARD_COUNT){
         if(window.toast) toast('备忘墙最多 '+MN_CARD_COUNT+' 张，先删掉一张再加吧');
         return;
       }
-      const wrap = list.querySelector('.mn-add-new'); if(!wrap) return;
+      const wrap = body.querySelector('.mn-add-new'); if(!wrap) return;
       const date = (wrap.querySelector('.mn-in-date').value||'').trim();
       const item = (wrap.querySelector('.mn-in-item').value||'').trim();
       const note = (wrap.querySelector('.mn-in-note').value||'').trim();
       if(!item && !note && !date) return;
       _nmDraft = _nmDraft || [];
       _nmDraft.push({ id: 'nm'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), date:date, item:item, note:note, fontSize:'', color:'', opacity:'' });
-      renderNickMemo(); bindNickMemoEdit();
-      const ni = document.querySelector('#nickMemoList .mn-add-new .mn-in-item');
-      if(ni) ni.focus();
+      renderMemoEditModalBody(); bindMemoEditModal();
+      const ni = body.querySelector('.mn-add-new .mn-in-item'); if(ni) ni.focus();
     };
     if(addBtn) addBtn.addEventListener('click', doAdd);
-    list.querySelectorAll('.mn-add-new .mn-in').forEach(function(inp){
+    body.querySelectorAll('.mn-add-new .mn-in').forEach(function(inp){
       inp.addEventListener('keydown', function(e){ if(e.key==='Enter') doAdd(); });
     });
-    const saveBtn = list.querySelector('.mn-save');
-    if(saveBtn) saveBtn.addEventListener('click', function(){
-      list.querySelectorAll('.mn-note-edit[data-id]').forEach(function(rowEl){
-        const id = rowEl.getAttribute('data-id');
+    const saveBtn = document.getElementById('btnMemoSave');
+    if(saveBtn) saveBtn.onclick = function(){
+      body.querySelectorAll('.mn-note-edit[data-id]').forEach(function(card){
+        const id = card.getAttribute('data-id');
         const row = (_nmDraft||[]).find(function(x){ return String(x.id)===String(id); });
         if(!row) return;
-        row.date = (rowEl.querySelector('.mn-in-date').value||'');
-        row.item = (rowEl.querySelector('.mn-in-item').value||'');
-        row.note = (rowEl.querySelector('.mn-in-note').value||'');
-        const fs = rowEl.querySelector('.mn-fontsize'); if(fs) row.fontSize = fs.value;
-        const cl = rowEl.querySelector('.mn-color'); if(cl) row.color = cl.value;
-        const op = rowEl.querySelector('.mn-opacity'); if(op) row.opacity = op.value;
+        row.date = (card.querySelector('.mn-in-date').value||'');
+        row.item = (card.querySelector('.mn-in-item').value||'');
+        row.note = (card.querySelector('.mn-in-note').value||'');
+        const f = card.querySelector('.mn-fontsize'); if(f) row.fontSize = f.value;
+        const c = card.querySelector('.mn-color'); if(c) row.color = c.value;
+        const o = card.querySelector('.mn-opacity'); if(o) row.opacity = o.value;
       });
       window.Store.saveNickMemos(_nmDraft||[]);
-      _nmEditing = false; _nmDraft = null;
+      hideModal('#modalMemoEdit'); _nmDraft = null;
       renderNickMemo();
       if(window.toast) toast('备忘录已保存');
-    });
-    const cancelBtn = list.querySelector('.mn-cancel');
-    if(cancelBtn) cancelBtn.addEventListener('click', function(){
-      _nmEditing = false; _nmDraft = null;
-      renderNickMemo();
-    });
+    };
+    const cancelBtn = document.getElementById('btnMemoCancel');
+    if(cancelBtn) cancelBtn.onclick = function(){
+      hideModal('#modalMemoEdit'); _nmDraft = null;
+    };
   }
   // V35：横幅渲染（图片 + 中英标语，来自 S.getHomeBanner）
   function renderWallpaperBanner(){
