@@ -5552,6 +5552,149 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 /* 备忘墙卡片正文支持富文本（首行缩进与段间距与编辑器一致） */
 .mn-note-rich p,.mn-note-rich div{margin:0 0 4px;text-indent:2em;line-height:1.4}
 .mn-note-rich p:last-child,.mn-note-rich div:last-child{margin-bottom:0}
+/* ================= R140：日看板（Day Board）=================
+   备忘录墙首两卡合并后的跨列大卡：绿叶磨砂底 + 毛玻璃窗口 + 时间轴日程 + 底部圆形按钮。
+   所有组件悬浮半透明，透出底层绿叶背景；白色文字 + 低饱和度柔和配色，清新治愈。 */
+/* 网格重排：日看板占左半幅全高（6 列 × 2 行）；右侧 6 列放剩余 5 张备忘卡
+   （上行 3 张各 2 列、下行 2 张各 3 列），整墙铺满不留空位。 */
+.mn-notes .mn-note-card:nth-child(2),
+.mn-notes .mn-note-card:nth-child(3),
+.mn-notes .mn-note-card:nth-child(4){grid-column:span 2}
+.mn-notes .mn-note-card:nth-child(5),
+.mn-notes .mn-note-card:nth-child(6){grid-column:span 3}
+/* 合并大卡：绿叶底纹（URL 编码 SVG，非 base64，ghpages 外置不受影响）+ 深绿渐变，半透明 */
+.mn-notes .mn-note-card.mn-dayboard{
+  grid-column:span 6;grid-row:span 2;
+  display:flex;flex-direction:column;gap:clamp(6px,1.1vh,12px);
+  padding:clamp(10px,1.8vh,18px) clamp(12px,1.6vw,20px) clamp(8px,1.4vh,14px);
+  background:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='120'%20height='120'%20viewBox='0%200%20120%20120'%3E%3Cg%20fill='none'%20stroke='%23ffffff'%20stroke-opacity='.13'%20stroke-width='1.5'%20stroke-linecap='round'%3E%3Cg%20transform='translate(16%2022)%20rotate(-16)'%3E%3Cpath%20d='M0%200%20Q13%20-13%2026%200%20Q13%2013%200%200%20Z'/%3E%3Cpath%20d='M2%200%20L24%200'/%3E%3C/g%3E%3Cg%20transform='translate(72%2064)%20rotate(22)'%3E%3Cpath%20d='M0%200%20Q10%20-10%2020%200%20Q10%2010%200%200%20Z'/%3E%3Cpath%20d='M1.5%200%20L18.5%200'/%3E%3C/g%3E%3Cg%20transform='translate(40%2098)%20rotate(6)'%3E%3Cpath%20d='M0%200%20Q8%20-8%2016%200%20Q8%208%200%200%20Z'/%3E%3Cpath%20d='M1%200%20L15%200'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat,
+    linear-gradient(155deg, rgba(66,140,112,.88), rgba(44,104,84,.9) 55%, rgba(36,88,70,.92));
+  border-color:rgba(255,255,255,.42)
+}
+.mn-notes .mn-note-card.mn-dayboard::before{display:none}
+/* ① 顶部标题区：左上角粗体白色大标题 + 标题下方白色小字副标题 */
+.nb-title-area{flex:0 0 auto;display:flex;flex-direction:column;gap:2px}
+.nb-title{font-size:clamp(20px,3.4vh,30px);font-weight:900;color:#fff;letter-spacing:.08em;line-height:1.12;text-shadow:0 2px 12px rgba(8,36,26,.5), 0 0 18px rgba(255,255,255,.3)}
+.nb-sub{font-size:clamp(10px,1.6vh,13px);font-weight:600;color:rgba(255,255,255,.88);letter-spacing:.05em}
+/* ② 中部磨砂玻璃窗口：半透明 + 模糊 + 圆角 + 细微外发光，透出后方绿叶背景 */
+.nb-win{
+  flex:1 1 auto;min-height:0;display:flex;flex-direction:column;overflow:hidden;
+  border-radius:clamp(12px,1.8vh,18px);
+  background:rgba(255,255,255,.12);
+  border:1.5px solid rgba(255,255,255,.42);
+  backdrop-filter:blur(9px) saturate(130%);
+  -webkit-backdrop-filter:blur(9px) saturate(130%);
+  box-shadow:0 10px 30px rgba(10,38,28,.28), 0 0 22px rgba(255,255,255,.14), inset 0 1px 0 rgba(255,255,255,.4)
+}
+.nb-win-head{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:clamp(6px,1.1vh,11px) clamp(10px,1.4vw,16px);border-bottom:1px solid rgba(255,255,255,.32)}
+.nb-date-wrap{display:flex;align-items:center;gap:7px;min-width:0}
+.nb-date{font-size:clamp(14px,2.3vh,20px);font-weight:900;color:#fff;letter-spacing:.02em;white-space:nowrap;text-shadow:0 1px 6px rgba(8,36,26,.45)}
+.nb-today-pill{flex:0 0 auto;font-size:clamp(9px,1.3vh,11px);font-weight:800;color:#1f4d3a;background:rgba(255,255,255,.92);border-radius:999px;padding:2px 8px;white-space:nowrap}
+.nb-nav{margin-left:auto;display:flex;align-items:center;gap:6px}
+.nb-nav-btn{
+  font-size:clamp(10px,1.5vh,13px);font-weight:800;color:#24353f;line-height:1.2;white-space:nowrap;
+  background:rgba(236,241,245,.92);border:1.5px solid rgba(255,255,255,.75);border-radius:999px;
+  padding:clamp(3px,.6vh,6px) clamp(8px,1.1vw,13px);cursor:pointer;
+  box-shadow:0 2px 8px rgba(10,38,28,.2);transition:transform .12s ease, background .12s ease
+}
+.nb-nav-btn:hover{background:#fff;transform:translateY(-1px)}
+.nb-nav-btn:active{transform:scale(.95)}
+.nb-x{
+  flex:0 0 auto;width:clamp(22px,3.2vh,28px);height:clamp(22px,3.2vh,28px);
+  display:inline-flex;align-items:center;justify-content:center;padding:0;
+  font-size:clamp(13px,2vh,17px);line-height:1;color:#fff;
+  background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.55);border-radius:50%;
+  cursor:pointer;box-shadow:0 2px 8px rgba(10,38,28,.22);transition:background .12s ease, transform .18s ease
+}
+.nb-x:hover{background:rgba(255,255,255,.34);transform:rotate(90deg)}
+/* 时间轴：左侧纵向刻度列 + 右侧日程容器，行间水平虚线网格横向贯穿 */
+.nb-timeline{flex:1 1 auto;min-height:0;overflow-y:auto;display:flex;flex-direction:column;padding:clamp(4px,.8vh,8px) clamp(8px,1.2vw,14px) clamp(6px,1vh,10px)}
+.nb-row{display:grid;grid-template-columns:clamp(38px,5.4vw,54px) 1fr;gap:clamp(6px,.9vw,12px);align-items:stretch;min-height:clamp(34px,5vh,46px)}
+.nb-row + .nb-row{border-top:1px dashed rgba(255,255,255,.3)}
+.nb-row-lab{font-size:clamp(9px,1.35vh,12px);font-weight:400;color:rgba(255,255,255,.92);padding-top:clamp(6px,1vh,10px);white-space:nowrap;text-shadow:0 1px 4px rgba(8,36,26,.5)}
+.nb-row-body{position:relative;display:flex;flex-direction:column;gap:clamp(3px,.6vh,6px);padding:clamp(3px,.6vh,6px) 0;touch-action:none;user-select:none;-webkit-user-select:none}
+.nb-row-empty{font-size:clamp(9px,1.3vh,11px);font-weight:600;color:rgba(255,255,255,.55);padding:4px 2px}
+/* 任务卡：圆角矩形 + 半透明柔和底色 + 左侧细彩色竖标识条 */
+.nb-task{
+  position:relative;display:flex;align-items:stretch;gap:clamp(6px,.9vw,10px);
+  border-radius:clamp(8px,1.3vh,12px);padding:clamp(5px,.9vh,9px) clamp(8px,1.2vw,13px);
+  cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:none;overflow:hidden;
+  backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);
+  box-shadow:0 4px 14px rgba(10,38,28,.2), inset 0 1px 0 rgba(255,255,255,.28);
+  transition:transform .14s ease, box-shadow .14s ease, opacity .14s ease
+}
+.nb-task:hover{transform:translateY(-1px)}
+.nb-task:active{transform:scale(.99)}
+.nb-mark{flex:0 0 auto;width:4px;border-radius:999px;background:rgba(255,255,255,.9);box-shadow:0 0 6px rgba(255,255,255,.4)}
+.nb-task[data-nb-type="point"] .nb-mark{width:9px;height:9px;border-radius:50%;align-self:center}
+.nb-task-main{min-width:0;display:flex;flex-direction:column;gap:1px}
+.nb-task-title{font-size:clamp(11px,1.75vh,15px);font-weight:800;color:#fff;line-height:1.25;word-break:break-word;text-shadow:0 1px 4px rgba(8,30,50,.35)}
+.nb-task-time{font-size:clamp(9px,1.3vh,11px);font-weight:600;color:rgba(255,255,255,.85);letter-spacing:.02em}
+.nb-task-ico{margin-right:4px}
+.nb-task-check{margin-right:3px;font-weight:900}
+/* 4 色柔和标签（低饱和度）+ 全天浅灰白长条卡 */
+.nb-c-blue{background:rgba(88,148,238,.34);border:1px solid rgba(178,208,255,.5)}
+.nb-c-blue .nb-mark{background:rgba(150,196,255,.98)}
+.nb-c-green{background:rgba(84,178,128,.32);border:1px solid rgba(170,224,192,.5)}
+.nb-c-green .nb-mark{background:rgba(150,222,180,.98)}
+.nb-c-yellow{background:rgba(238,204,112,.36);border:1px solid rgba(248,228,150,.55)}
+.nb-c-yellow .nb-mark{background:rgba(250,224,130,.98)}
+.nb-c-red{background:rgba(230,122,118,.32);border:1px solid rgba(246,178,174,.5)}
+.nb-c-red .nb-mark{background:rgba(246,158,154,.98)}
+.nb-c-gray{background:rgba(246,248,250,.8);border:1px solid rgba(255,255,255,.85)}
+.nb-c-gray .nb-mark{background:rgba(120,150,175,.9);box-shadow:none}
+.nb-c-gray .nb-task-title{color:#24343f;text-shadow:none}
+.nb-c-gray .nb-task-time{color:rgba(36,52,63,.72)}
+/* 完成态 / 拖动态 / 落点高亮 / 创建预览带 */
+.nb-task.nb-done{opacity:.62}
+.nb-task.nb-done .nb-task-title{text-decoration:line-through}
+.nb-task.nb-dragging{opacity:.9;transform:scale(1.02);box-shadow:0 10px 24px rgba(10,38,28,.34);z-index:5}
+.nb-task.nb-pressing{transform:scale(.98)}
+.nb-row.nb-row-target{background:rgba(255,255,255,.14);border-radius:10px}
+.nb-create-preview{margin:2px 0;padding:5px 10px;border-radius:9px;border:1.5px dashed rgba(255,255,255,.75);background:rgba(255,255,255,.16);color:#fff;font-size:clamp(10px,1.5vh,13px);font-weight:800;text-align:center}
+/* 收起态：窗口与底部按钮隐藏，留一条可点击展开的横条 */
+.nb-collapsed-tip{display:none;flex:0 0 auto;text-align:center;font-size:clamp(10px,1.5vh,13px);font-weight:800;color:rgba(255,255,255,.9);padding:clamp(10px,1.6vh,16px);border-radius:clamp(10px,1.6vh,16px);border:1.5px dashed rgba(255,255,255,.5);background:rgba(255,255,255,.1);cursor:pointer}
+.mn-dayboard.nb-collapsed .nb-win,.mn-dayboard.nb-collapsed .nb-btns{display:none}
+.mn-dayboard.nb-collapsed .nb-collapsed-tip{display:block}
+/* ③ 底部 3 个圆形功能按钮：白色细描边圆形 + 简约图标 + 白色说明文字 */
+.nb-btns{flex:0 0 auto;display:flex;justify-content:space-around;align-items:flex-start;gap:clamp(6px,1vw,14px);padding:clamp(4px,.8vh,8px) 0 0}
+.nb-circ{flex:0 1 auto;min-width:0;display:flex;flex-direction:column;align-items:center;gap:clamp(3px,.5vh,5px);padding:2px;background:none;border:none;cursor:pointer}
+.nb-circ-ico{width:clamp(34px,5vh,46px);height:clamp(34px,5vh,46px);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:1.5px solid rgba(255,255,255,.78);background:rgba(255,255,255,.12);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);color:#fff;box-shadow:0 4px 14px rgba(10,38,28,.24), inset 0 1px 0 rgba(255,255,255,.3);transition:transform .14s ease, background .14s ease}
+.nb-circ:hover .nb-circ-ico{background:rgba(255,255,255,.24);transform:translateY(-2px)}
+.nb-circ-ico svg{width:52%;height:52%}
+.nb-dots{display:flex;gap:3px}
+.nb-dot{width:clamp(6px,.9vh,8px);height:clamp(6px,.9vh,8px);border-radius:50%;display:inline-block;box-shadow:0 0 0 1px rgba(255,255,255,.55)}
+.nb-dot-blue{background:rgba(120,175,250,.95)}
+.nb-dot-green{background:rgba(120,205,155,.95)}
+.nb-dot-yellow{background:rgba(245,215,120,.95)}
+.nb-dot-red{background:rgba(240,140,135,.95)}
+.nb-circ-cap{font-size:clamp(8px,1.2vh,11px);font-weight:700;color:rgba(255,255,255,.92);line-height:1.25;text-align:center;max-width:clamp(96px,15vw,180px);text-shadow:0 1px 4px rgba(8,36,26,.5)}
+/* R140：日看板「编辑/新建日程」弹窗（.modal-nb） */
+.modal-nb{min-width:340px;width:min(430px,92vw)}
+.modal-nb .modal-head{background:linear-gradient(135deg,var(--tone-600),var(--tone-700));color:#fff;margin:-18px -18px 12px;padding:14px 18px;border-radius:14px 14px 0 0;box-shadow:0 4px 10px rgba(30,58,138,.25)}
+.modal-nb .modal-x{background:rgba(255,255,255,.25);color:#fff;width:30px;height:30px}
+.modal-nb .modal-foot{margin-top:14px}
+.nb-e-fld{display:flex;align-items:center;gap:10px}
+.nb-e-fld > span{flex:0 0 42px;font-size:12px;font-weight:800;color:#3f5e95}
+.nb-e-fld input[type="text"],.nb-e-fld input[type="time"]{flex:1;min-width:0;font-size:14px;padding:8px 10px;border:1.5px solid var(--tone-200);border-radius:10px;background:#fff;color:#23314a;font-family:inherit}
+.nb-e-time-row{flex:1;display:flex;align-items:center;gap:8px}
+.nb-e-tilde{font-size:12px;font-weight:800;color:#7d90ad}
+.nb-e-types,.nb-e-colors{display:flex;gap:8px;flex-wrap:wrap}
+.nb-e-types button{flex:1;min-width:62px;padding:8px 6px;font-size:12px;font-weight:800;color:#3f5e95;background:rgba(255,255,255,.9);border:1.5px solid var(--tone-200);border-radius:10px;cursor:pointer;transition:background .12s ease,border-color .12s ease,color .12s ease}
+.nb-e-types button:hover{border-color:var(--tone-400)}
+.nb-e-types button.active{background:linear-gradient(135deg,var(--tone-600),var(--tone-700));color:#fff;border-color:var(--tone-700)}
+.nb-e-colors button{width:30px;height:30px;border-radius:50%;border:2px solid rgba(255,255,255,.9);box-shadow:0 0 0 1.5px var(--tone-200);cursor:pointer;padding:0;transition:transform .12s ease, box-shadow .12s ease}
+.nb-e-colors button:hover{transform:scale(1.06)}
+.nb-e-colors button.active{box-shadow:0 0 0 2.5px var(--tone-700);transform:scale(1.1)}
+.nb-e-c-blue{background:rgba(88,148,238,.9)}
+.nb-e-c-green{background:rgba(84,178,128,.9)}
+.nb-e-c-yellow{background:rgba(238,204,112,.95)}
+.nb-e-c-red{background:rgba(230,122,118,.9)}
+.nb-e-del{margin-right:auto;font-size:12px;font-weight:800;color:var(--bad-main);background:rgba(255,255,255,.9);border:1.5px solid rgba(226,69,58,.4);border-radius:10px;padding:8px 14px;cursor:pointer}
+.nb-e-del:hover{background:#fff;border-color:var(--bad-main)}
+.nb-e-cancel{font-size:13px;font-weight:800;color:#3f5e95;background:rgba(255,255,255,.9);border:1.5px solid var(--tone-200);border-radius:10px;padding:8px 16px;cursor:pointer}
+.nb-e-save{font-size:13px;font-weight:800;color:#fff;background:linear-gradient(135deg,var(--tone-600),var(--tone-700));border:1.5px solid rgba(255,255,255,.7);border-radius:10px;padding:8px 18px;cursor:pointer;box-shadow:0 3px 10px rgba(30,58,138,.25)}
+.nb-e-save:hover{filter:brightness(1.06)}
 
 
 /* ---- R118-3：设置中心模式选择卡片（#cardModeSettings，与打卡任务等同款外壳） ---- */
@@ -6777,6 +6920,46 @@ html,body{margin:0;padding:0}
     <div class="modal-foot" data-page-node-id="R138modalMemoEditFoot">
       <button class="mn-cancel" id="btnMemoCancel" type="button" data-page-node-id="R138memoCancel">取消</button>
       <button class="mn-save" id="btnMemoSave" type="button" data-page-node-id="R138memoSave">💾 保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== R140：日看板日程编辑/新建弹窗（全天 / 时间段 / 时间点 + 4 色标签） ========== -->
+<div class="modal-mask" id="modalNbEdit" hidden data-page-node-id="R140modalNbEdit">
+  <div class="modal-box modal-nb" data-page-node-id="R140modalNbEditBox">
+    <div class="modal-head" data-page-node-id="R140modalNbEditHead">
+      <h3 id="nbEditTitle" data-page-node-id="R140modalNbEditTitle">📅 编辑日程</h3>
+      <button class="modal-x" data-close data-page-node-id="R140modalNbEditX">×</button>
+    </div>
+    <div class="modal-body" data-page-node-id="R140modalNbEditBody">
+      <label class="nb-e-fld"><span>标题</span><input id="nbInTitle" type="text" maxlength="30" placeholder="给日程起个名字" data-page-node-id="R140nbInTitle" /></label>
+      <div class="nb-e-fld"><span>类型</span>
+        <div class="nb-e-types" id="nbTypes" data-page-node-id="R140nbTypes">
+          <button type="button" data-nb-type="all">🌞 全天</button>
+          <button type="button" data-nb-type="range">🕒 时间段</button>
+          <button type="button" data-nb-type="point">⏰ 时间点</button>
+        </div>
+      </div>
+      <div class="nb-e-fld" id="nbTimeFields" data-page-node-id="R140nbTimeFields"><span>时间</span>
+        <div class="nb-e-time-row">
+          <input id="nbInStart" type="time" data-page-node-id="R140nbInStart" />
+          <span class="nb-e-tilde" id="nbEndRow">至</span>
+          <input id="nbInEnd" type="time" data-page-node-id="R140nbInEnd" />
+        </div>
+      </div>
+      <div class="nb-e-fld"><span>颜色</span>
+        <div class="nb-e-colors" id="nbColors" data-page-node-id="R140nbColors">
+          <button type="button" class="nb-e-c-blue" data-nb-color="blue" title="蓝色"></button>
+          <button type="button" class="nb-e-c-green" data-nb-color="green" title="绿色"></button>
+          <button type="button" class="nb-e-c-yellow" data-nb-color="yellow" title="浅黄色"></button>
+          <button type="button" class="nb-e-c-red" data-nb-color="red" title="红色"></button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot" data-page-node-id="R140modalNbEditFoot">
+      <button class="nb-e-del" id="btnNbDel" type="button" data-page-node-id="R140btnNbDel">🗑 删除</button>
+      <button class="nb-e-cancel" id="btnNbCancel" type="button" data-page-node-id="R140btnNbCancel">取消</button>
+      <button class="nb-e-save" id="btnNbSave" type="button" data-page-node-id="R140btnNbSave">💾 保存</button>
     </div>
   </div>
 </div>
@@ -30074,6 +30257,58 @@ window.WANTONG_COVER = './assets/c6249ea2bfe3.jpg';
     save(st);
     return st.nickMemos.slice();
   }
+  // R140：Nick 的日看板（按日期存储日程任务）。任务结构：
+  // { id, title, type:'all'|'range'|'point', start:'HH:MM', end:'HH:MM', color:'blue'|'green'|'yellow'|'red'|'gray', done:0|1 }
+  // 存储形态：st.nickDayBoard = { 'YYYY-MM-DD': [task,...] }；今日首次读取时植入默认日程，其余日期从空白开始。
+  const NB_TYPES = { all:1, range:1, point:1 };
+  const NB_COLORS = { blue:1, green:1, yellow:1, red:1, gray:1 };
+  function _nbTodayISO(){
+    const d = new Date(), p = n => (n<10?'0':'')+n;
+    return d.getFullYear() + '-' + p(d.getMonth()+1) + '-' + p(d.getDate());
+  }
+  function _nbNormTask(x){
+    const type = (x && NB_TYPES[x.type]) ? x.type : 'range';
+    const color = (x && NB_COLORS[x.color]) ? x.color : (type === 'all' ? 'gray' : 'blue');
+    const t = v => { const s = String(v==null?'':v).slice(0,5); return /^\d{2}:\d{2}$/.test(s) ? s : ''; };
+    return {
+      id: (x && x.id) ? String(x.id) : _genMemoId(),
+      title: String((x && x.title) || '').slice(0, 30),
+      type: type,
+      start: t(x && x.start),
+      end: t(x && x.end),
+      color: color,
+      done: (x && x.done) ? 1 : 0
+    };
+  }
+  function _nbSeedTasks(){
+    return [
+      { id: 'nbSeedAll',  title: '整理书桌', type: 'all',   start: '',       end: '',       color: 'gray',   done: 0 },
+      { id: 'nbSeedEn',   title: '英语练习', type: 'range', start: '09:00', end: '10:00', color: 'blue',   done: 0 },
+      { id: 'nbSeedProj', title: '项目整理', type: 'range', start: '10:00', end: '11:00', color: 'green',  done: 0 },
+      { id: 'nbSeedRead', title: '阅读',     type: 'point', start: '11:00', end: '',       color: 'yellow', done: 0 }
+    ];
+  }
+  function getNickDayBoard(date){
+    const st = load();
+    const key = String(date || '');
+    if(!st.nickDayBoard || typeof st.nickDayBoard !== 'object') st.nickDayBoard = {};
+    if(!Array.isArray(st.nickDayBoard[key])){
+      // 仅「今天」首次打开时植入默认日程，其余日期从空白开始（杜绝幽灵数据）
+      st.nickDayBoard[key] = (key === _nbTodayISO()) ? _nbSeedTasks() : [];
+      save(st);
+    }
+    return st.nickDayBoard[key].map(_nbNormTask);
+  }
+  function saveNickDayBoard(date, list){
+    const st = load();
+    const key = String(date || '');
+    if(!st.nickDayBoard || typeof st.nickDayBoard !== 'object') st.nickDayBoard = {};
+    st.nickDayBoard[key] = (Array.isArray(list) ? list : [])
+      .map(_nbNormTask)
+      .filter(x => x.title);
+    save(st);
+    return st.nickDayBoard[key].slice();
+  }
   // R118：节日【已学习】打卡（+1⭐ 可取消收回）。结构：{ 节日名: true }
   function getFestLearned(){
     const st = load();
@@ -34393,6 +34628,8 @@ May / Can I /we have …, please? 请问我 / 我们可以拿…… 吗？
     getMemos, saveMemos,
     // R118：Nick 的备忘录（独立页）+ 节日已学习打卡
     getNickMemos, saveNickMemos, getFestLearned, setFestLearned,
+    // R140：Nick 的日看板（按日期存取日程任务）
+    getNickDayBoard, saveNickDayBoard,
     // V88：新世界首页卡片可编辑内容
     getNWData, saveNWData, resetNWData,
     // V98：课程表可编辑（课时行数 + 每格课程/颜色）
@@ -39901,7 +40138,9 @@ I'm good at running.`},
     const memos = getNickMemosSafe();
     list.className = 'mn-notes mn-view';
     let html = '';
-    for(let i=0;i<MN_CARD_COUNT;i++){
+    // R140：第一行左边两个标签卡合并为「日看板」跨列大卡；其余备忘卡（原第 3~7 张）顺延展示
+    html += dayBoardCardHTML();
+    for(let i=2;i<MN_CARD_COUNT;i++){
       const m = memos[i];
       const id = (m && m.id) ? String(m.id) : '';
       const bg = ' style="background:rgba(255,255,255,'+mnGlassAlpha(m)+')"';
@@ -39931,6 +40170,7 @@ I'm good at running.`},
     }
     list.innerHTML = html;
     bindNickMemoViewTools();
+    initDayBoard();
   }
   function bindNickMemoViewTools(){
     const list = document.getElementById('nickMemoList');
@@ -39953,6 +40193,399 @@ I'm good at running.`},
         if(window.toast) toast('已删除该备忘');
       });
     });
+  }
+  // ================= R140：日看板（Day Board）=================
+  // 备忘录墙「第一行左边两个标签卡」合并为一个跨列大卡，承载毛玻璃时间轴日程看板：
+  // 顶部标题区（日看板 / 把今天，安排得清清楚楚。）+ 中部磨砂玻璃窗口（实时日期 + 今天/←/→
+  // + 时间轴日程 + 水平虚线网格 + 关闭×）+ 底部 3 个圆形功能按钮。
+  // 交互：添加 3 类任务（全天/时间段/时间点）、卡片长按拖拽改起止时间、点击卡片唤起编辑、
+  //       长按卡片标记完成、←/→/今天切换日期、4 色柔和标签（蓝/绿/浅黄/红）。
+  const NB_HOURS = ['09:00','10:00','11:00','12:00']; // 可见小时行（每行 = 该小时起 1 小时）
+  const NB_WEEK = ['日','一','二','三','四','五','六'];
+  const NB_ICO_CLOCK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8.6"/><path d="M12 7.4V12l3.1 2"/></svg>';
+  const NB_ICO_PLUS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5.4v13.2M5.4 12h13.2"/></svg>';
+  const NB_ICO_PENCIL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.1-4.2L16.6 4.3a2.15 2.15 0 0 1 3.1 3.1L8.2 18.9 4 20z"/><path d="M14.6 6.3l3.1 3.1"/></svg>';
+  let _nbDate = '';        // 当前查看日期（ISO YYYY-MM-DD）
+  let _nbCollapsed = false;
+  let _nbEditId = '';      // 弹窗正在编辑的任务 id（'' = 新建）
+  let _nbEditType = 'range';
+  let _nbEditColor = 'blue';
+  function nbTodayISO(){ const d=new Date(), p=n=>(n<10?'0':'')+n; return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate()); }
+  function nbShiftISO(iso, days){ const d=new Date(iso+'T00:00:00'); d.setDate(d.getDate()+days); const p=n=>(n<10?'0':'')+n; return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate()); }
+  function nbFmtCN(iso){ const d=new Date(iso+'T00:00:00'); return d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日 周'+NB_WEEK[d.getDay()]; }
+  function nbMinutes(hhmm){ const p=String(hhmm||'').split(':'); return (+p[0]||0)*60 + (+p[1]||0); }
+  function nbAddHour(hhmm, addMin){ let m=nbMinutes(hhmm)+addMin; if(m<0)m=0; if(m>1439)m=1439; const p=x=>(x<10?'0':'')+x; return p(Math.floor(m/60))+':'+p(m%60); }
+  function nbHourOf(t){ const s=String(t||'').slice(0,5); if(NB_HOURS.indexOf(s)>=0) return s; return (s && s < '09:00') ? '09:00' : '12:00'; }
+  function nbTasks(){ return (window.Store && window.Store.getNickDayBoard) ? window.Store.getNickDayBoard(_nbDate) : []; }
+  function nbSaveTasks(list){ if(window.Store && window.Store.saveNickDayBoard) window.Store.saveNickDayBoard(_nbDate, list); }
+  function nbFindTask(id){ const ts=nbTasks(); for(let i=0;i<ts.length;i++) if(ts[i].id===id) return ts[i]; return null; }
+  function nbTimeText(t){
+    if(t.type==='all') return '全天';
+    if(t.type==='point') return t.start || '';
+    return (t.start||'') + ' - ' + (t.end || nbAddHour(t.start||'09:00', 60));
+  }
+  function nbNextColor(){ const cs=['blue','green','yellow','red']; return cs[nbTasks().length % 4]; }
+  function dayBoardCardHTML(){
+    return '<div class="mn-note-card mn-dayboard" data-page-node-id="R140dayBoard">'
+      + '<div class="nb-title-area">'
+      + '<div class="nb-title">日看板</div>'
+      + '<div class="nb-sub">把今天，安排得清清楚楚。</div>'
+      + '</div>'
+      + '<div class="nb-win" id="nbWin" data-page-node-id="R140nbWin">'
+      + '<div class="nb-win-head">'
+      + '<div class="nb-date-wrap"><span class="nb-date" id="nbDate"></span><span class="nb-today-pill" id="nbTodayPill">今天</span></div>'
+      + '<div class="nb-nav">'
+      + '<button class="nb-nav-btn nb-nav-today" id="nbBtnToday" type="button">今天</button>'
+      + '<button class="nb-nav-btn" id="nbBtnPrev" type="button" title="前一天" aria-label="前一天">←</button>'
+      + '<button class="nb-nav-btn" id="nbBtnNext" type="button" title="后一天" aria-label="后一天">→</button>'
+      + '</div>'
+      + '<button class="nb-x" id="nbBtnClose" type="button" title="收起窗口" aria-label="收起窗口">×</button>'
+      + '</div>'
+      + '<div class="nb-timeline" id="nbTimeline" data-page-node-id="R140nbTimeline"></div>'
+      + '</div>'
+      + '<div class="nb-collapsed-tip" id="nbCollapsedTip">▢ 日看板已收起，点击展开</div>'
+      + '<div class="nb-btns">'
+      + '<button class="nb-circ" id="nbBtnType" type="button">'
+      + '<span class="nb-circ-ico">'+NB_ICO_CLOCK+'</span>'
+      + '<span class="nb-dots"><i class="nb-dot nb-dot-blue"></i><i class="nb-dot nb-dot-green"></i><i class="nb-dot nb-dot-yellow"></i><i class="nb-dot nb-dot-red"></i></span>'
+      + '<span class="nb-circ-cap">时间点 / 时间段 / 全天</span></button>'
+      + '<button class="nb-circ" id="nbBtnAdd" type="button">'
+      + '<span class="nb-circ-ico">'+NB_ICO_PLUS+'</span>'
+      + '<span class="nb-circ-cap">点击空白新建，长按拖动创建时间段</span></button>'
+      + '<button class="nb-circ" id="nbBtnEdit" type="button">'
+      + '<span class="nb-circ-ico">'+NB_ICO_PENCIL+'</span>'
+      + '<span class="nb-circ-cap">点击事件编辑，长按切换完成</span></button>'
+      + '</div>'
+      + '</div>';
+  }
+  function nbTaskHTML(t){
+    return '<div class="nb-task nb-c-'+t.color+(t.done?' nb-done':'')+'" data-nb-id="'+esc(t.id)+'" data-nb-type="'+t.type+'" data-page-node-id="R140nbTask">'
+      + '<span class="nb-mark"></span>'
+      + '<div class="nb-task-main">'
+      + '<div class="nb-task-title">'
+      + (t.type==='all' ? '<span class="nb-task-ico">🧹</span>' : '')
+      + (t.done ? '<span class="nb-task-check">✓</span>' : '')
+      + esc(t.title) + '</div>'
+      + '<div class="nb-task-time">'+esc(nbTimeText(t))+'</div>'
+      + '</div></div>';
+  }
+  function nbRowHTML(label, key, tasks){
+    let inner = '';
+    tasks.forEach(function(t){ inner += nbTaskHTML(t); });
+    if(!inner) inner = '<div class="nb-row-empty">'+(key==='all' ? '暂无全天任务，点击空白处添加' : '点击空白处新建')+'</div>';
+    return '<div class="nb-row" data-nb-row="'+key+'">'
+      + '<div class="nb-row-lab">'+label+'</div>'
+      + '<div class="nb-row-body">'+inner+'</div>'
+      + '</div>';
+  }
+  function renderNbDate(){
+    const el = document.getElementById('nbDate');
+    if(el) el.textContent = nbFmtCN(_nbDate);
+    const pill = document.getElementById('nbTodayPill');
+    if(pill) pill.style.display = (_nbDate === nbTodayISO()) ? '' : 'none';
+  }
+  function renderNbTimeline(){
+    const tl = document.getElementById('nbTimeline');
+    if(!tl) return;
+    const tasks = nbTasks();
+    let html = nbRowHTML('全天', 'all', tasks.filter(function(t){ return t.type==='all'; }));
+    NB_HOURS.forEach(function(h){
+      html += nbRowHTML(h, h, tasks.filter(function(t){ return t.type!=='all' && nbHourOf(t.start)===h; }));
+    });
+    tl.innerHTML = html;
+    bindNbTasks();
+    bindNbBlank();
+  }
+  function nbRefresh(){ renderNbDate(); renderNbTimeline(); }
+  function nbRowKeyAt(clientY){
+    const tl = document.getElementById('nbTimeline');
+    if(!tl) return '';
+    const rows = tl.querySelectorAll('.nb-row');
+    let best = '', bd = 1e9;
+    for(let i=0;i<rows.length;i++){
+      const r = rows[i].getBoundingClientRect();
+      const d = clientY < r.top ? r.top - clientY : (clientY > r.bottom ? clientY - r.bottom : 0);
+      if(d < bd){ bd = d; best = rows[i].getAttribute('data-nb-row'); }
+    }
+    return best;
+  }
+  function nbClearRowTarget(){
+    const tl = document.getElementById('nbTimeline');
+    if(!tl) return;
+    tl.querySelectorAll('.nb-row').forEach(function(r){ r.classList.remove('nb-row-target'); });
+  }
+  function nbMoveTask(id, key){
+    const tasks = nbTasks();
+    let t = null;
+    for(let i=0;i<tasks.length;i++) if(tasks[i].id===id) t = tasks[i];
+    if(!t || !key) return;
+    if(key === 'all'){
+      t.type = 'all'; t.start = ''; t.end = '';
+    } else if(t.type === 'all'){
+      t.type = 'range'; t.start = key; t.end = nbAddHour(key, 60);
+    } else if(t.type === 'point'){
+      t.start = key; t.end = '';
+    } else {
+      const dur = (t.start && t.end) ? (nbMinutes(t.end) - nbMinutes(t.start)) : 60;
+      t.start = key; t.end = nbAddHour(key, dur > 0 ? dur : 60);
+    }
+    nbSaveTasks(tasks); nbRefresh();
+    if(window.toast) toast('已调整到 ' + (key==='all' ? '全天' : key));
+  }
+  function nbToggleDone(id){
+    const tasks = nbTasks();
+    let t = null;
+    for(let i=0;i<tasks.length;i++) if(tasks[i].id===id) t = tasks[i];
+    if(!t) return;
+    t.done = t.done ? 0 : 1;
+    nbSaveTasks(tasks); nbRefresh();
+    if(window.toast) toast(t.done ? '已完成「'+t.title+'」🎉' : '已取消「'+t.title+'」的完成标记');
+  }
+  function bindNbTasks(){
+    const tl = document.getElementById('nbTimeline');
+    if(!tl) return;
+    tl.querySelectorAll('.nb-task').forEach(function(card){
+      let timer = null, longFired = false, dragging = false, moved = false, sx = 0, sy = 0, targetKey = '';
+      card.addEventListener('pointerdown', function(e){
+        if(e.button !== undefined && e.button !== 0) return;
+        try{ card.setPointerCapture(e.pointerId); }catch(err){}
+        sx = e.clientX; sy = e.clientY; moved = false; longFired = false; dragging = false; targetKey = '';
+        timer = setTimeout(function(){ longFired = true; card.classList.add('nb-pressing'); }, 450);
+      });
+      card.addEventListener('pointermove', function(e){
+        if(!sx && !sy) return;
+        const dx = e.clientX - sx, dy = e.clientY - sy;
+        if(!moved && Math.sqrt(dx*dx + dy*dy) > 8){
+          moved = true;
+          if(timer){ clearTimeout(timer); timer = null; }
+          card.classList.remove('nb-pressing');
+          dragging = true;
+          card.classList.add('nb-dragging');
+        }
+        if(dragging){
+          e.preventDefault();
+          const key = nbRowKeyAt(e.clientY);
+          if(key && key !== targetKey){
+            targetKey = key;
+            nbClearRowTarget();
+            const row = tl.querySelector('.nb-row[data-nb-row="'+key+'"]');
+            if(row) row.classList.add('nb-row-target');
+          }
+        }
+      });
+      const finish = function(){
+        if(timer){ clearTimeout(timer); timer = null; }
+        card.classList.remove('nb-pressing', 'nb-dragging');
+        nbClearRowTarget();
+        const id = card.getAttribute('data-nb-id');
+        if(dragging){
+          dragging = false;
+          if(targetKey) nbMoveTask(id, targetKey);
+        } else if(longFired){
+          nbToggleDone(id);
+        } else if(!moved){
+          nbOpenEditModal(nbFindTask(id), null);
+        }
+        sx = 0; sy = 0;
+      };
+      card.addEventListener('pointerup', finish);
+      card.addEventListener('pointercancel', function(){
+        if(timer){ clearTimeout(timer); timer = null; }
+        card.classList.remove('nb-pressing', 'nb-dragging');
+        nbClearRowTarget(); dragging = false; sx = 0; sy = 0;
+      });
+      card.addEventListener('dragstart', function(e){ e.preventDefault(); });
+    });
+  }
+  function nbRangeText(fromKey, toKey){
+    if(fromKey === 'all' || toKey === 'all') return '全天';
+    if(fromKey === toKey) return fromKey + ' - ' + nbAddHour(fromKey, 60);
+    return fromKey + ' - ' + nbAddHour(toKey, 60);
+  }
+  function nbKeyRange(fromKey, toKey){
+    if(fromKey === 'all' || toKey === 'all') return ['all'];
+    const i = NB_HOURS.indexOf(fromKey), j = NB_HOURS.indexOf(toKey);
+    return NB_HOURS.slice(Math.min(i,j), Math.max(i,j) + 1);
+  }
+  function bindNbBlank(){
+    const tl = document.getElementById('nbTimeline');
+    if(!tl) return;
+    tl.querySelectorAll('.nb-row-body').forEach(function(body){
+      let timer = null, longFired = false, dragging = false, moved = false, sx = 0, sy = 0, fromKey = '', preview = null;
+      body.addEventListener('pointerdown', function(e){
+        if(e.target.closest && e.target.closest('.nb-task')) return;
+        if(e.button !== undefined && e.button !== 0) return;
+        try{ body.setPointerCapture(e.pointerId); }catch(err){}
+        sx = e.clientX; sy = e.clientY; moved = false; longFired = false; dragging = false;
+        const row = body.closest('.nb-row');
+        fromKey = row ? row.getAttribute('data-nb-row') : '';
+        timer = setTimeout(function(){ longFired = true; }, 450);
+      });
+      body.addEventListener('pointermove', function(e){
+        if(!sx && !sy) return;
+        const dx = e.clientX - sx, dy = e.clientY - sy;
+        if(!moved && Math.sqrt(dx*dx + dy*dy) > 8){
+          moved = true;
+          if(timer){ clearTimeout(timer); timer = null; }
+          dragging = true;
+          if(!preview){
+            preview = document.createElement('div');
+            preview.className = 'nb-create-preview';
+            body.appendChild(preview);
+          }
+        }
+        if(dragging){
+          e.preventDefault();
+          const key = nbRowKeyAt(e.clientY) || fromKey;
+          nbClearRowTarget();
+          nbKeyRange(fromKey, key).forEach(function(k){
+            const row = tl.querySelector('.nb-row[data-nb-row="'+k+'"]');
+            if(row) row.classList.add('nb-row-target');
+          });
+          if(preview) preview.textContent = nbRangeText(fromKey, key);
+        }
+      });
+      const finish = function(e){
+        if(timer){ clearTimeout(timer); timer = null; }
+        if(preview && preview.parentNode) preview.parentNode.removeChild(preview);
+        preview = null;
+        nbClearRowTarget();
+        const wasDragging = dragging;
+        dragging = false;
+        if(wasDragging){
+          const key = nbRowKeyAt(e.clientY) || fromKey;
+          if(key) nbOpenCreateRange(fromKey, key);
+        } else if(!moved && !longFired){
+          if(fromKey === 'all') nbOpenEditModal(null, { type:'all', color:'gray' });
+          else nbOpenEditModal(null, { type:'range', color:nbNextColor(), start:fromKey, end:nbAddHour(fromKey, 60) });
+        }
+        sx = 0; sy = 0;
+      };
+      body.addEventListener('pointerup', finish);
+      body.addEventListener('pointercancel', function(){
+        if(timer){ clearTimeout(timer); timer = null; }
+        if(preview && preview.parentNode) preview.parentNode.removeChild(preview);
+        preview = null; nbClearRowTarget(); dragging = false; sx = 0; sy = 0;
+      });
+    });
+  }
+  function nbOpenCreateRange(fromKey, toKey){
+    if(fromKey === 'all' || toKey === 'all'){ nbOpenEditModal(null, { type:'all', color:'gray' }); return; }
+    nbOpenEditModal(null, { type:'range', color:nbNextColor(), start:fromKey, end:nbAddHour(toKey, 60) });
+  }
+  function nbSyncEditModal(){
+    const types = document.getElementById('nbTypes');
+    if(types) types.querySelectorAll('button').forEach(function(b){
+      b.classList.toggle('active', b.getAttribute('data-nb-type') === _nbEditType);
+    });
+    const colors = document.getElementById('nbColors');
+    if(colors) colors.querySelectorAll('button').forEach(function(b){
+      b.classList.toggle('active', b.getAttribute('data-nb-color') === _nbEditColor);
+    });
+    const times = document.getElementById('nbTimeFields');
+    if(times) times.style.display = (_nbEditType === 'all') ? 'none' : '';
+    const endRow = document.getElementById('nbEndRow');
+    if(endRow) endRow.style.display = (_nbEditType === 'point') ? 'none' : '';
+    const endIn = document.getElementById('nbInEnd');
+    if(endIn) endIn.style.display = (_nbEditType === 'point') ? 'none' : '';
+  }
+  function nbOpenEditModal(task, prefill){
+    _nbEditId = task ? task.id : '';
+    const t = task || {}, pf = prefill || {};
+    _nbEditType = t.type || pf.type || 'range';
+    _nbEditColor = t.color || pf.color || 'blue';
+    const titleEl = document.getElementById('nbInTitle');
+    if(titleEl) titleEl.value = t.title || '';
+    const st = document.getElementById('nbInStart');
+    if(st) st.value = t.start || pf.start || '';
+    const en = document.getElementById('nbInEnd');
+    if(en) en.value = t.end || pf.end || '';
+    const h = document.getElementById('nbEditTitle');
+    if(h) h.textContent = task ? '📅 编辑日程' : '📅 新建日程';
+    const del = document.getElementById('btnNbDel');
+    if(del) del.style.display = task ? '' : 'none';
+    nbSyncEditModal();
+    showModal('#modalNbEdit');
+    if(titleEl) setTimeout(function(){ try{ titleEl.focus(); }catch(e){} }, 60);
+  }
+  function bindNbEditModal(){
+    const types = document.getElementById('nbTypes');
+    if(types) types.querySelectorAll('button').forEach(function(b){
+      b.onclick = function(){ _nbEditType = b.getAttribute('data-nb-type'); nbSyncEditModal(); };
+    });
+    const colors = document.getElementById('nbColors');
+    if(colors) colors.querySelectorAll('button').forEach(function(b){
+      b.onclick = function(){ _nbEditColor = b.getAttribute('data-nb-color'); nbSyncEditModal(); };
+    });
+    const saveBtn = document.getElementById('btnNbSave');
+    if(saveBtn) saveBtn.onclick = nbSaveFromModal;
+    const cancelBtn = document.getElementById('btnNbCancel');
+    if(cancelBtn) cancelBtn.onclick = function(){ hideModal('#modalNbEdit'); };
+    const delBtn = document.getElementById('btnNbDel');
+    if(delBtn) delBtn.onclick = function(){
+      const id = _nbEditId;
+      if(!id){ hideModal('#modalNbEdit'); return; }
+      nbSaveTasks(nbTasks().filter(function(x){ return x.id !== id; }));
+      hideModal('#modalNbEdit'); nbRefresh();
+      if(window.toast) toast('已删除该日程');
+    };
+    const titleEl = document.getElementById('nbInTitle');
+    if(titleEl) titleEl.addEventListener('keydown', function(e){ if(e.key === 'Enter') nbSaveFromModal(); });
+  }
+  function nbSaveFromModal(){
+    const titleEl = document.getElementById('nbInTitle');
+    const title = ((titleEl && titleEl.value) || '').trim();
+    if(!title){ if(window.toast) toast('先给日程起个名字吧'); if(titleEl) titleEl.focus(); return; }
+    const st = document.getElementById('nbInStart');
+    const en = document.getElementById('nbInEnd');
+    const start = (st && st.value) || '';
+    const end = (en && en.value) || '';
+    if(_nbEditType !== 'all' && !start){ if(window.toast) toast('选一个开始时间吧'); return; }
+    const tasks = nbTasks();
+    let t = null;
+    if(_nbEditId){ for(let i=0;i<tasks.length;i++) if(tasks[i].id === _nbEditId) t = tasks[i]; }
+    if(!t){
+      t = { id:'nb'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), title:title, type:_nbEditType, start:start, end:end, color:_nbEditColor, done:0 };
+      tasks.push(t);
+    }
+    t.title = title; t.type = _nbEditType; t.color = _nbEditColor;
+    t.start = (_nbEditType === 'all') ? '' : start;
+    t.end = (_nbEditType === 'point') ? '' : ((end && end > start) ? end : nbAddHour(start || '09:00', 60));
+    nbSaveTasks(tasks);
+    hideModal('#modalNbEdit'); nbRefresh();
+    if(window.toast) toast(_nbEditId ? '日程已更新' : '已添加新日程');
+  }
+  function initDayBoard(){
+    if(!_nbDate) _nbDate = nbTodayISO();
+    const card = document.querySelector('.mn-dayboard');
+    if(card){ if(_nbCollapsed) card.classList.add('nb-collapsed'); else card.classList.remove('nb-collapsed'); }
+    nbRefresh();
+    const prev = document.getElementById('nbBtnPrev');
+    if(prev) prev.onclick = function(){ _nbDate = nbShiftISO(_nbDate, -1); nbRefresh(); };
+    const next = document.getElementById('nbBtnNext');
+    if(next) next.onclick = function(){ _nbDate = nbShiftISO(_nbDate, 1); nbRefresh(); };
+    const today = document.getElementById('nbBtnToday');
+    if(today) today.onclick = function(){ _nbDate = nbTodayISO(); nbRefresh(); if(window.toast) toast('已回到今天'); };
+    const close = document.getElementById('nbBtnClose');
+    if(close) close.onclick = function(){
+      _nbCollapsed = true;
+      const c = document.querySelector('.mn-dayboard');
+      if(c) c.classList.add('nb-collapsed');
+      if(window.toast) toast('日看板窗口已收起，点击下方横条可展开');
+    };
+    const tip = document.getElementById('nbCollapsedTip');
+    if(tip) tip.onclick = function(){
+      _nbCollapsed = false;
+      const c = document.querySelector('.mn-dayboard');
+      if(c) c.classList.remove('nb-collapsed');
+    };
+    const bType = document.getElementById('nbBtnType');
+    if(bType) bType.onclick = function(){ nbOpenEditModal(null, { type:'range', color:nbNextColor(), start:'09:00', end:'10:00' }); };
+    const bAdd = document.getElementById('nbBtnAdd');
+    if(bAdd) bAdd.onclick = function(){ nbOpenEditModal(null, { type:'range', color:nbNextColor(), start:'09:00', end:'10:00' }); };
+    const bEdit = document.getElementById('nbBtnEdit');
+    if(bEdit) bEdit.onclick = function(){ if(window.toast) toast('点击卡片编辑 · 长按卡片标记完成 · 长按拖动改时间'); };
+    bindNbEditModal();
   }
   // R138：备忘录管理改为「统一弹窗（对话框）」编辑 —— 时间/事项/备注在
   // 同一个对话框内编辑，对话框整体放大（见 styles.css .modal-memo）。备忘墙只负责展示。
