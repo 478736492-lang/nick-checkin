@@ -49078,6 +49078,15 @@ I'm good at running.`},
     $$('[data-go]').forEach(b=>b.onclick=()=>{ if(!kmEntryAllowed(b.dataset.go)) return; if(!farmEntryAllowed(b.dataset.go)) return; goPage(b.dataset.go); });
     // R51-2：全局点击音效分发（导航栏/主题卡/次级主题卡/打卡）→ 注册一次
     if(!window.__sfxClickBound){ document.addEventListener('click', onGlobalSfxClick); window.__sfxClickBound = true; }
+    // R143：清除所有按键声音并重新分级配置 —— 版本化一次性重置（覆盖旧版任何自定义按键音；不破坏用户此后在「设置」中手动改设）
+    try{
+      const _st = (window.Store && window.Store.load) ? window.Store.load() : null;
+      if(_st && _st._clickSfxReset !== 'R143'){
+        _st.clickSfx = { nav:'a', theme:'b', sub:'b', checkin:'c' };
+        _st._clickSfxReset = 'R143';
+        if(window.Store && window.Store.save) window.Store.save(_st);
+      }
+    }catch(e){}
     // 设置：合并进「任务设置」页（单一版块；系统设置锁卡片点击解锁）
     bindPinGate();
     const btnUnlock = document.getElementById('btnUnlockSystem');
