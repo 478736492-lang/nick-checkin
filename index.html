@@ -40215,7 +40215,14 @@ I'm good at running.`},
   function nbFmtCN(iso){ const d=new Date(iso+'T00:00:00'); return d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日 周'+NB_WEEK[d.getDay()]; }
   function nbMinutes(hhmm){ const p=String(hhmm||'').split(':'); return (+p[0]||0)*60 + (+p[1]||0); }
   function nbAddHour(hhmm, addMin){ let m=nbMinutes(hhmm)+addMin; if(m<0)m=0; if(m>1439)m=1439; const p=x=>(x<10?'0':'')+x; return p(Math.floor(m/60))+':'+p(m%60); }
-  function nbHourOf(t){ const s=String(t||'').slice(0,5); if(NB_HOURS.indexOf(s)>=0) return s; return (s && s < '09:00') ? '09:00' : '12:00'; }
+  function nbHourOf(t){
+    const s = String(t||'').slice(0,5);
+    const m = /^(\d{2}):(\d{2})$/.exec(s);
+    if(!m) return '12:00';
+    const hour = m[1] + ':00';                 // 09:30 → 09:00 行（按起始小时归行）
+    if(NB_HOURS.indexOf(hour) >= 0) return hour;
+    return (s < '09:00') ? '09:00' : '12:00';
+  }
   function nbTasks(){ return (window.Store && window.Store.getNickDayBoard) ? window.Store.getNickDayBoard(_nbDate) : []; }
   function nbSaveTasks(list){ if(window.Store && window.Store.saveNickDayBoard) window.Store.saveNickDayBoard(_nbDate, list); }
   function nbFindTask(id){ const ts=nbTasks(); for(let i=0;i<ts.length;i++) if(ts[i].id===id) return ts[i]; return null; }
