@@ -257,6 +257,14 @@ body{width:100%;height:100vh;height:100dvh;display:flex;flex-direction:row}
 .task-item.undone{border-color:var(--tone-200);background:var(--tone-100)}
 /* Req5：首页任务打卡成功后 → 水洗蓝（浅天蓝底 + 蓝边）；本轮：增强为 dceefa 让"白→蓝"对比更明显 */
 .task-item.done{background:var(--tone-175);border:1px solid #a9cdf0;box-shadow:inset 0 0 0 1px rgba(255,255,255,.5)}
+/* R136-2：设置中心任务「锁定 / 解锁」开关 + 锁定态（变灰、不参与打卡） */
+.task-lock-btn{margin-left:auto;flex:0 0 auto;font-size:12px;font-weight:800;color:#8a5a12;
+  background:rgba(255,244,222,.95);border:1.5px solid #ecc98a;border-radius:999px;padding:4px 10px;cursor:pointer;
+  box-shadow:0 2px 6px rgba(30,58,138,.12);transition:transform .12s ease, background .12s ease}
+.task-lock-btn:hover{transform:translateY(-1px);background:#fff7e9}
+.task-lock-btn.locked{color:#1b6b3a;background:rgba(223,247,231,.95);border-color:#a7ddb7}
+.task-item.locked{opacity:.5;filter:grayscale(.4)}
+.task-item.locked .ri-checkin-btn{display:none}
 /* 弹窗：某日计划（v6：跟主页蓝色主题美化） */
 .modal-box.modal-dayplan{background:linear-gradient(180deg,var(--tone-025) 0%, var(--tone-100) 100%);border:2px solid var(--tone-200);box-shadow:0 10px 36px rgba(47,126,216,.25)}
 .modal-dayplan .modal-head{background:linear-gradient(135deg,#2f7ed8,#6fa8e6);color:#fff;margin:-18px -18px 12px;padding:14px 18px;border-radius:14px 14px 0 0;box-shadow:0 4px 10px rgba(47,126,216,.3)}
@@ -5375,6 +5383,17 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   filter:drop-shadow(0 1px 2px rgba(16,40,90,.2));
   pointer-events:none
 }
+/* R136-4：卡内备忘录正文（时间/事项/备注）—— 深色字 + 白描边，保证磨砂卡面可读性 */
+.mn-note-body{
+  position:absolute;top:clamp(20px,3.4vh,30px);left:clamp(12px,2vw,18px);right:clamp(40px,6vw,58px);
+  z-index:2;display:flex;flex-direction:column;gap:3px;pointer-events:none;
+  color:#102a52;line-height:1.32;
+  text-shadow:0 1px 0 rgba(255,255,255,.7), 0 0 6px rgba(255,255,255,.5)
+}
+.mn-note-date{font-size:clamp(11px,1.7vh,14px);font-weight:800;opacity:.85}
+.mn-note-item{font-size:clamp(14px,2.3vh,21px);font-weight:900;word-break:break-word}
+.mn-note-note{font-size:clamp(11px,1.7vh,14px);opacity:.82;word-break:break-word}
+.mn-note-empty{display:none}
 /* ③ 卡片右上角两个极简小图标：编辑 / 删除 */
 .mn-note-tools{
   position:absolute;top:clamp(5px,1vh,9px);right:clamp(5px,1vw,9px);
@@ -29266,8 +29285,7 @@ window.WANTONG_COVER = './assets/c6249ea2bfe3.jpg';
     // 围棋（V38.3：移至选做，每周至少3局）
     {id:uid(),name:'围棋对弈',subject:'围棋',type:'选做拓展任务',minutes:25,desc:'每周至少3局',standard:'每周完成3局对弈',enabled:true,weekendOnly:false, frequency:'weekly', needCount:3},
     // V39：家务小帮手（原习惯家务；仅保留任务名，下方说明删除）
-    {id:uid(),name:'洗碗',subject:'家务小帮手',type:'选做拓展任务',minutes:10,enabled:true,weekendOnly:false},
-    {id:uid(),name:'扫地',subject:'家务小帮手',type:'选做拓展任务',minutes:10,enabled:true,weekendOnly:false},
+    // R136-3：按家长要求移除「洗碗」「扫地」两项（R136 起不再作为默认任务；存量用户由下方迁移一并移除）
     {id:uid(),name:'倒垃圾',subject:'家务小帮手',type:'选做拓展任务',minutes:5,enabled:true,weekendOnly:false},
     {id:uid(),name:'整理书桌',subject:'家务小帮手',type:'选做拓展任务',minutes:10,enabled:true,weekendOnly:false},
     {id:uid(),name:'小日记片段',subject:'语文',type:'选做拓展任务',minutes:15,desc:'书写日记',standard:'50-100字日常片段',enabled:true,weekendOnly:false},
@@ -29597,6 +29615,22 @@ window.WANTONG_COVER = './assets/c6249ea2bfe3.jpg';
       (st.tasks||[]).forEach(t=>{ if(t) delete t._remove; });
     }
     if(_v39Migrated) save(st);
+    // R136-3：移除默认家务「洗碗」「扫地」（家长要求）。仅按「科目+任务名」精确删除这两项，
+    // 绝不触碰其他任务（含用户手动添加的家务项），满足「版本更新保留手动内容、不清除」。
+    if(!st._rmHouseV1){
+      const REMOVE = [['家务小帮手','洗碗'],['家务小帮手','扫地']];
+      const before = (st.tasks||[]).length;
+      st.tasks = (st.tasks||[]).filter(t=>{
+        if(!t) return false;
+        if(REMOVE.some(([s,n])=> t.subject===s && t.name===n)){
+          if(Array.isArray(st.records)) st.records = st.records.filter(r=>r && r.taskId!==t.id);
+          return false;
+        }
+        return true;
+      });
+      st._rmHouseV1 = true;
+      if((st.tasks||[]).length !== before) save(st);
+    }
     // R13-Req4：作息任务迁移（老数据补齐「10:00前睡觉」，已存在则跳过）
     if(Array.isArray(st.tasks) && !st.tasks.some(t=>t && t.subject==='作息')){
       st.tasks.push({id:uid(),name:'10:00前睡觉',subject:'作息',type:'必做任务',stars:2,minutes:0,desc:'每晚10点前上床睡觉',standard:'10:00前熄灯入睡',enabled:true,weekendOnly:false});
@@ -39720,11 +39754,24 @@ I'm good at running.`},
       const m = memos[i];
       const id = (m && m.id) ? String(m.id) : '';
       const bg = ' style="background:rgba(255,255,255,'+mnGlassAlpha(m)+')"';
+      // R136-4：备忘墙卡片显示备忘录内容（时间/事项/备注）——此前按 R134 设计是空白卡，
+      // 但管理页输入的内容在墙上不可见，本次补全渲染；空卡仍保留角色/电影装饰。
+      const dateS = (m && m.date) ? m.date : '';
+      const itemS = (m && m.item) ? m.item : '';
+      const noteS = (m && m.note) ? m.note : '';
+      const body = (dateS||itemS||noteS)
+        ? '<div class="mn-note-body">'
+          + (dateS ? '<div class="mn-note-date">🕒 '+esc(dateS)+'</div>' : '')
+          + (itemS ? '<div class="mn-note-item">'+esc(itemS)+'</div>' : '')
+          + (noteS ? '<div class="mn-note-note">'+esc(noteS)+'</div>' : '')
+          + '</div>'
+        : '<div class="mn-note-body mn-note-empty"></div>';
       html += '<div class="mn-note-card" data-mn-id="'+esc(id)+'"'+bg+' data-page-node-id="R134memoCard'+i+'">'
         + '<div class="mn-note-tools">'
         + '<button class="mn-tool-btn mn-tool-edit" type="button" title="编辑备忘录" aria-label="编辑备忘录" data-page-node-id="R134memoEdit'+i+'">'+MN_TOOL_EDIT+'</button>'
         + '<button class="mn-tool-btn mn-tool-del" type="button" title="删除这张备忘" aria-label="删除这张备忘" data-page-node-id="R134memoDel'+i+'">'+MN_TOOL_DEL+'</button>'
         + '</div>'
+        + body
         + '<span class="mn-note-char" aria-hidden="true">'+MN_CHARS[i % MN_CHARS.length]+'</span>'
         + '<span class="mn-note-film" aria-hidden="true">'+MN_FILMS[i % MN_FILMS.length]+'</span>'
         + '</div>';
@@ -47290,6 +47337,41 @@ I'm good at running.`},
   }
 
 
+  // R136-2：设置中心任务列表的「锁定 / 解锁」开关 —— 暂时不需要打卡的任务可锁定（从打卡视图隐藏），
+  // 需要时再解锁。仅作用于设置弹窗克隆出的列表，不影响首页打卡视图本身。
+  function applyTaskLockToggles(){
+    const BOXES = ['#settingsTaskReq','#settingsTaskOpt','#settingsTaskSport','#settingsTaskRoutine','#settingsTaskHouse'];
+    BOXES.forEach(sel=>{
+      const box = $(sel); if(!box) return;
+      box.querySelectorAll('.task-item').forEach(item=>{
+        if(item.querySelector('.task-lock-btn')) return; // 已注入则跳过（克隆会先清空再重建）
+        const id = item.getAttribute('data-edit-task') || item.getAttribute('data-del-task');
+        if(!id) return;
+        const st = S.load();
+        const t = st.tasks.find(x=>x.id===id);
+        if(!t) return;
+        const locked = t.enabled === false;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'pbtn task-lock-btn' + (locked ? ' locked' : '');
+        btn.setAttribute('data-lock-task', id);
+        btn.textContent = locked ? '🔓 解锁' : '🔒 锁定';
+        btn.title = locked ? '点击解锁：恢复此任务打卡' : '暂时不需要打卡？点击锁定';
+        if(locked) item.classList.add('locked'); else item.classList.remove('locked');
+        btn.onclick = ()=>{
+          const s = S.load();
+          const tt = s.tasks.find(x=>x.id===id);
+          if(!tt) return;
+          tt.enabled = (tt.enabled === false) ? true : false;
+          S.updateTask(id, { enabled: tt.enabled });
+          renderToday();
+          refreshSettingsTaskLists();
+          toast(tt.enabled === false ? ('🔒 已锁定：' + tt.name + '（暂不参与打卡）') : ('🔓 已解锁：' + tt.name));
+        };
+        item.appendChild(btn);
+      });
+    });
+  }
   // ============ R85：设置中心 —— 各卡片弹窗路由 ============
   // R87：把设置中心「打卡任务」弹窗的列表刷新封装为可复用函数（删除/保存后刷新用）
   function refreshSettingsTaskLists(){
@@ -47309,6 +47391,8 @@ I'm good at running.`},
     const ow = $('#btnSettingsOpenWrong'); if(ow) ow.onclick = ()=> showModal('#modalWrong');
     const addReq = $('#btnSettingsAddReq'); if(addReq) addReq.onclick = ()=>{ openTaskEdit(null); const t=$('#tType'); if(t) t.value='必做任务'; };
     const addOpt = $('#btnSettingsAddOpt'); if(addOpt) addOpt.onclick = ()=>{ openTaskEdit(null); const t=$('#tType'); if(t) t.value='选做拓展任务'; };
+    // R136-2：注入「锁定 / 解锁」开关（设置中心内对每个任务可一键切换）
+    applyTaskLockToggles();
     // R88fix：设置弹窗内任务列表的编辑/删除委托改在 bindEvents() 内绑定（handleTodayClick 在此作用域可见）；
     // 此处 clone 仅替换子节点，容器监听由 bindEvents 一次性绑定，刷新列表后持续有效。
     _forceTaskEdit = false;
