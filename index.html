@@ -5301,14 +5301,7 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   padding:8px 14px;cursor:pointer;box-shadow:0 2px 8px rgba(30,58,138,.15)
 }
 .mn-back:hover{background:#fff}
-.mn-manage{
-  position:absolute;top:14px;right:14px;z-index:8;
-  font-size:13px;font-weight:800;color:#fff;
-  background:linear-gradient(135deg,var(--tone-600),var(--tone-700));
-  border:1.5px solid rgba(255,255,255,.7);border-radius:999px;
-  padding:8px 16px;cursor:pointer;box-shadow:0 3px 10px rgba(30,58,138,.25)
-}
-.mn-manage:hover{filter:brightness(1.06);transform:translateY(-1px)}
+/* R146：页面右上角「管理备忘」按钮已删除，.mn-manage 样式一并移除 */
 /* 舞台：整页铺满的背景图载体（陆家嘴天际线，cover 填充，不裁切主体建筑） */
 .mn-stage{
   position:absolute;inset:0;
@@ -5577,106 +5570,10 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   border-color:rgba(255,255,255,.45)
 }
 .mn-notes .mn-note-card.mn-weekboard::before{display:none}
-/* R142 → R145：周看板「今天」视图（日看板内容嵌入）—— 当天时间轴（R145 已删除原第三行日期/→/周视图导航） */
-.wb-dayview{height:100%;display:flex;flex-direction:column;gap:clamp(4px,.8vh,8px)}
-/* ① 顶部标题区：左上角粗体白色大标题 + 标题下方白色小字副标题 */
-.nb-title-area{flex:0 0 auto;display:flex;flex-direction:column;gap:2px}
-.nb-title{font-size:clamp(20px,3.4vh,30px);font-weight:900;color:#fff;letter-spacing:.08em;line-height:1.12;text-shadow:0 2px 12px rgba(8,36,26,.5), 0 0 18px rgba(255,255,255,.3)}
-.nb-sub{font-size:clamp(10px,1.6vh,13px);font-weight:600;color:rgba(255,255,255,.88);letter-spacing:.05em}
-/* ② 中部磨砂玻璃窗口：半透明 + 模糊 + 圆角 + 细微外发光，透出后方绿叶背景 */
-.nb-win{
-  flex:1 1 auto;min-height:0;display:flex;flex-direction:column;overflow:hidden;
-  border-radius:clamp(12px,1.8vh,18px);
-  background:rgba(255,255,255,.12);
-  border:1.5px solid rgba(255,255,255,.42);
-  backdrop-filter:blur(9px) saturate(130%);
-  -webkit-backdrop-filter:blur(9px) saturate(130%);
-  box-shadow:0 10px 30px rgba(10,38,28,.28), 0 0 22px rgba(255,255,255,.14), inset 0 1px 0 rgba(255,255,255,.4)
-}
-.nb-win-head{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:clamp(6px,1.1vh,11px) clamp(10px,1.4vw,16px);border-bottom:1px solid rgba(255,255,255,.32)}
-.nb-date-wrap{display:flex;align-items:center;gap:7px;min-width:0}
-.nb-date{font-size:clamp(14px,2.3vh,20px);font-weight:900;color:#fff;letter-spacing:.02em;white-space:nowrap;text-shadow:0 1px 6px rgba(8,36,26,.45)}
-.nb-today-pill{flex:0 0 auto;font-size:clamp(9px,1.3vh,11px);font-weight:800;color:#1f4d3a;background:rgba(255,255,255,.92);border-radius:999px;padding:2px 8px;white-space:nowrap}
-.nb-nav{margin-left:auto;display:flex;align-items:center;gap:6px}
-.nb-nav-btn{
-  font-size:clamp(10px,1.5vh,13px);font-weight:800;color:#24353f;line-height:1.2;white-space:nowrap;
-  background:rgba(236,241,245,.92);border:1.5px solid rgba(255,255,255,.75);border-radius:999px;
-  padding:clamp(3px,.6vh,6px) clamp(8px,1.1vw,13px);cursor:pointer;
-  box-shadow:0 2px 8px rgba(10,38,28,.2);transition:transform .12s ease, background .12s ease
-}
-.nb-nav-btn:hover{background:#fff;transform:translateY(-1px)}
-.nb-nav-btn:active{transform:scale(.95)}
-.nb-x{
-  flex:0 0 auto;width:clamp(22px,3.2vh,28px);height:clamp(22px,3.2vh,28px);
-  display:inline-flex;align-items:center;justify-content:center;padding:0;
-  font-size:clamp(13px,2vh,17px);line-height:1;color:#fff;
-  background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.55);border-radius:50%;
-  cursor:pointer;box-shadow:0 2px 8px rgba(10,38,28,.22);transition:background .12s ease, transform .18s ease
-}
-.nb-x:hover{background:rgba(255,255,255,.34);transform:rotate(90deg)}
-/* 时间轴：左侧纵向刻度列 + 右侧日程容器，行间水平虚线网格横向贯穿 */
-.nb-timeline{flex:1 1 auto;min-height:0;overflow-y:auto;display:flex;flex-direction:column;padding:clamp(4px,.8vh,8px) clamp(8px,1.2vw,14px) clamp(6px,1vh,10px)}
-.nb-row{display:grid;grid-template-columns:clamp(38px,5.4vw,54px) 1fr;gap:clamp(6px,.9vw,12px);align-items:stretch;min-height:clamp(34px,5vh,46px)}
-.nb-row + .nb-row{border-top:1px dashed rgba(255,255,255,.3)}
-.nb-row-lab{font-size:clamp(9px,1.35vh,12px);font-weight:400;color:rgba(255,255,255,.92);padding-top:clamp(6px,1vh,10px);white-space:nowrap;text-shadow:0 1px 4px rgba(8,36,26,.5)}
-.nb-row-body{position:relative;display:flex;flex-direction:column;gap:clamp(3px,.6vh,6px);padding:clamp(3px,.6vh,6px) 0;touch-action:none;user-select:none;-webkit-user-select:none}
-.nb-row-empty{font-size:clamp(9px,1.3vh,11px);font-weight:600;color:rgba(255,255,255,.55);padding:4px 2px}
-/* 任务卡：圆角矩形 + 半透明柔和底色 + 左侧细彩色竖标识条 */
-.nb-task{
-  position:relative;display:flex;align-items:stretch;gap:clamp(6px,.9vw,10px);
-  border-radius:clamp(8px,1.3vh,12px);padding:clamp(5px,.9vh,9px) clamp(8px,1.2vw,13px);
-  cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:none;overflow:hidden;
-  backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);
-  box-shadow:0 4px 14px rgba(10,38,28,.2), inset 0 1px 0 rgba(255,255,255,.28);
-  transition:transform .14s ease, box-shadow .14s ease, opacity .14s ease
-}
-.nb-task:hover{transform:translateY(-1px)}
-.nb-task:active{transform:scale(.99)}
-.nb-mark{flex:0 0 auto;width:4px;border-radius:999px;background:rgba(255,255,255,.9);box-shadow:0 0 6px rgba(255,255,255,.4)}
-.nb-task[data-nb-type="point"] .nb-mark{width:9px;height:9px;border-radius:50%;align-self:center}
-.nb-task-main{min-width:0;display:flex;flex-direction:column;gap:1px}
-.nb-task-title{font-size:clamp(11px,1.75vh,15px);font-weight:800;color:#fff;line-height:1.25;word-break:break-word;text-shadow:0 1px 4px rgba(8,30,50,.35)}
-/* R145：今天视图日程卡同样承载富文本内容（编辑模式经富文本弹窗回写），压缩段落默认间距 */
-.nb-task-title p,.nb-task-title div{margin:0 0 2px}
-.nb-task-title p:last-child,.nb-task-title div:last-child{margin-bottom:0}
-.nb-task-time{font-size:clamp(9px,1.3vh,11px);font-weight:600;color:rgba(255,255,255,.85);letter-spacing:.02em}
-.nb-task-ico{margin-right:4px}
-.nb-task-check{margin-right:3px;font-weight:900}
-/* 4 色柔和标签（低饱和度）+ 全天浅灰白长条卡 */
-.nb-c-blue{background:rgba(88,148,238,.34);border:1px solid rgba(178,208,255,.5)}
-.nb-c-blue .nb-mark{background:rgba(150,196,255,.98)}
-.nb-c-green{background:rgba(84,178,128,.32);border:1px solid rgba(170,224,192,.5)}
-.nb-c-green .nb-mark{background:rgba(150,222,180,.98)}
-.nb-c-yellow{background:rgba(238,204,112,.36);border:1px solid rgba(248,228,150,.55)}
-.nb-c-yellow .nb-mark{background:rgba(250,224,130,.98)}
-.nb-c-red{background:rgba(230,122,118,.32);border:1px solid rgba(246,178,174,.5)}
-.nb-c-red .nb-mark{background:rgba(246,158,154,.98)}
-.nb-c-gray{background:rgba(246,248,250,.8);border:1px solid rgba(255,255,255,.85)}
-.nb-c-gray .nb-mark{background:rgba(120,150,175,.9);box-shadow:none}
-.nb-c-gray .nb-task-title{color:#24343f;text-shadow:none}
-.nb-c-gray .nb-task-time{color:rgba(36,52,63,.72)}
-/* 完成态 / 拖动态 / 落点高亮 / 创建预览带 */
-.nb-task.nb-done{opacity:.62}
-.nb-task.nb-done .nb-task-title{text-decoration:line-through}
-.nb-task.nb-dragging{opacity:.9;transform:scale(1.02);box-shadow:0 10px 24px rgba(10,38,28,.34);z-index:5}
-.nb-task.nb-pressing{transform:scale(.98)}
-.nb-row.nb-row-target{background:rgba(255,255,255,.14);border-radius:10px}
-.nb-create-preview{margin:2px 0;padding:5px 10px;border-radius:9px;border:1.5px dashed rgba(255,255,255,.75);background:rgba(255,255,255,.16);color:#fff;font-size:clamp(10px,1.5vh,13px);font-weight:800;text-align:center}
-/* 收起态：窗口与底部按钮隐藏，留一条可点击展开的横条 */
-.nb-collapsed-tip{display:none;flex:0 0 auto;text-align:center;font-size:clamp(10px,1.5vh,13px);font-weight:800;color:rgba(255,255,255,.9);padding:clamp(10px,1.6vh,16px);border-radius:clamp(10px,1.6vh,16px);border:1.5px dashed rgba(255,255,255,.5);background:rgba(255,255,255,.1);cursor:pointer}
-/* ③ 底部 3 个圆形功能按钮：白色细描边圆形 + 简约图标 + 白色说明文字 */
-.nb-btns{flex:0 0 auto;display:flex;justify-content:space-around;align-items:flex-start;gap:clamp(6px,1vw,14px);padding:clamp(4px,.8vh,8px) 0 0}
-.nb-circ{flex:0 1 auto;min-width:0;display:flex;flex-direction:column;align-items:center;gap:clamp(3px,.5vh,5px);padding:2px;background:none;border:none;cursor:pointer}
-.nb-circ-ico{width:clamp(34px,5vh,46px);height:clamp(34px,5vh,46px);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:1.5px solid rgba(255,255,255,.78);background:rgba(255,255,255,.12);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);color:#fff;box-shadow:0 4px 14px rgba(10,38,28,.24), inset 0 1px 0 rgba(255,255,255,.3);transition:transform .14s ease, background .14s ease}
-.nb-circ:hover .nb-circ-ico{background:rgba(255,255,255,.24);transform:translateY(-2px)}
-.nb-circ-ico svg{width:52%;height:52%}
-.nb-dots{display:flex;gap:3px}
-.nb-dot{width:clamp(6px,.9vh,8px);height:clamp(6px,.9vh,8px);border-radius:50%;display:inline-block;box-shadow:0 0 0 1px rgba(255,255,255,.55)}
-.nb-dot-blue{background:rgba(120,175,250,.95)}
-.nb-dot-green{background:rgba(120,205,155,.95)}
-.nb-dot-yellow{background:rgba(245,215,120,.95)}
-.nb-dot-red{background:rgba(240,140,135,.95)}
-.nb-circ-cap{font-size:clamp(8px,1.2vh,11px);font-weight:700;color:rgba(255,255,255,.92);line-height:1.25;text-align:center;max-width:clamp(96px,15vw,180px);text-shadow:0 1px 4px rgba(8,36,26,.5)}
+/* R142 → R146：周看板「今天」视图（与周/月共用数据层）—— R146 起为普通卡片式备忘内容区（无时间刻度） */
+.wb-dayview{display:flex;flex-direction:column;gap:clamp(4px,.8vh,8px);min-height:0}
+/* R146：日看板（时间轴版）模块已整体移除 —— 其 CSS 一并删除；周看板改版见下方 R141→R146 区块。
+   .modal-nb / .nb-e-* 表单样式仍被周看板富文本弹窗 #modalWbEdit 复用，予以保留。 */
 /* R140：日看板「编辑/新建日程」弹窗（.modal-nb） */
 .modal-nb{min-width:340px;width:min(430px,92vw)}
 .modal-nb .modal-head{background:linear-gradient(135deg,var(--tone-600),var(--tone-700));color:#fff;margin:-18px -18px 12px;padding:14px 18px;border-radius:14px 14px 0 0;box-shadow:0 4px 10px rgba(30,58,138,.25)}
@@ -5723,30 +5620,39 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .wb-view-btn.active{background:#3fbf7f;color:#fff;border-color:#3fbf7f;box-shadow:0 2px 8px rgba(20,90,60,.35)}
 .wb-today-btn{font-size:clamp(10px,1.5vh,13px);font-weight:800;color:#1f4d3a;background:rgba(255,255,255,.92);border:1.5px solid rgba(255,255,255,.75);border-radius:999px;padding:clamp(2px,.5vh,5px) clamp(9px,1.1vw,13px);cursor:pointer;box-shadow:0 2px 8px rgba(10,38,28,.2)}
 .wb-today-btn:hover{background:#fff}
-.wb-x{flex:0 0 auto;width:clamp(20px,3vh,26px);height:clamp(20px,3vh,26px);display:inline-flex;align-items:center;justify-content:center;font-size:clamp(12px,1.8vh,16px);line-height:1;color:#fff;background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.55);border-radius:50%;cursor:pointer;box-shadow:0 2px 8px rgba(10,38,28,.22);transition:background .12s ease,transform .18s ease}
-.wb-x:hover{background:rgba(255,255,255,.34);transform:rotate(90deg)}
-.wb-edit-btn svg{width:54%;height:54%}
-.wb-edit-btn:hover{background:rgba(255,255,255,.34);transform:translateY(-1px)}
-/* R145：铅笔按钮激活态（编辑模式开启）+ 新增按钮（加号，承接原铅笔的新建职能） */
-.wb-edit-btn.active{background:rgba(63,191,127,.92);border-color:rgba(63,191,127,.92);box-shadow:0 2px 10px rgba(20,90,60,.4)}
-.wb-add-btn svg{width:54%;height:54%}
-.wb-add-btn:hover{background:rgba(255,255,255,.34);transform:translateY(-1px)}
+/* R146：右上角图标按钮统一改为文字按钮（浅白文字 + 浅色圆角标签，清晰可读） */
+.wb-text-btn{flex:0 0 auto;font-size:clamp(10px,1.5vh,13px);font-weight:800;color:#fff;line-height:1.2;white-space:nowrap;
+  background:rgba(255,255,255,.2);border:1.5px solid rgba(255,255,255,.6);border-radius:999px;
+  padding:clamp(3px,.6vh,6px) clamp(10px,1.2vw,15px);cursor:pointer;
+  box-shadow:0 2px 8px rgba(10,38,28,.22);transition:background .12s ease,transform .12s ease,border-color .12s ease}
+.wb-text-btn:hover{background:rgba(255,255,255,.36);transform:translateY(-1px)}
+.wb-text-btn:active{transform:scale(.95)}
+/* 「编辑」激活态（编辑模式开启，按钮文字变为「取消」）—— 绿色高亮 + 「新增」浅绿底 */
+.wb-edit-btn.active{background:rgba(63,191,127,.92);border-color:rgba(255,255,255,.85);box-shadow:0 2px 10px rgba(20,90,60,.4)}
+.wb-add-btn{background:rgba(255,255,255,.34);border-color:rgba(255,255,255,.75)}
 /* R145：编辑模式 —— 页面内所有日程卡虚线高亮并显示右上角删除×；点击卡片进入富文本修改 */
-.mn-weekboard.wb-edit-mode .wb-task,.mn-weekboard.wb-edit-mode .nb-task{outline:1.5px dashed rgba(255,255,255,.8);outline-offset:1px}
-.wb-task-del,.nb-task-del{display:none;position:absolute;top:2px;right:2px;z-index:6;width:clamp(15px,2.1vh,19px);height:clamp(15px,2.1vh,19px);align-items:center;justify-content:center;padding:0;font-size:clamp(10px,1.5vh,13px);font-weight:900;line-height:1;color:#fff;background:rgba(226,69,58,.92);border:1.5px solid rgba(255,255,255,.85);border-radius:50%;cursor:pointer;box-shadow:0 2px 6px rgba(10,38,28,.3);transition:transform .12s ease,background .12s ease}
-.mn-weekboard.wb-edit-mode .wb-task-del,.mn-weekboard.wb-edit-mode .nb-task-del{display:inline-flex}
-.wb-task-del:hover,.nb-task-del:hover{background:rgba(226,69,58,1);transform:scale(1.1)}
+.mn-weekboard.wb-edit-mode .wb-task{outline:1.5px dashed rgba(255,255,255,.8);outline-offset:1px}
+.wb-task-del{display:none;position:absolute;top:2px;right:2px;z-index:6;width:clamp(15px,2.1vh,19px);height:clamp(15px,2.1vh,19px);align-items:center;justify-content:center;padding:0;font-size:clamp(10px,1.5vh,13px);font-weight:900;line-height:1;color:#fff;background:rgba(226,69,58,.92);border:1.5px solid rgba(255,255,255,.85);border-radius:50%;cursor:pointer;box-shadow:0 2px 6px rgba(10,38,28,.3);transition:transform .12s ease,background .12s ease}
+.mn-weekboard.wb-edit-mode .mn-weekboard.wb-edit-mode .wb-task-del{display:inline-flex}
+.wb-task-del:hover{background:rgba(226,69,58,1);transform:scale(1.1)}
 .wb-body{flex:1 1 auto;min-height:0;overflow:auto;padding:clamp(4px,.8vh,8px) clamp(6px,1vw,12px) clamp(6px,1vh,10px)}
-/* 周网格：8 列（1 时间 + 7 天）× 5 行（1 表头 + 4 小时） */
-.wb-week-grid{display:grid;grid-template-columns:clamp(34px,4.6vw,48px) repeat(7,1fr);grid-template-rows:auto repeat(4,minmax(40px,auto));gap:clamp(2px,.4vw,4px);min-height:100%}
-.wb-corner{}
-.wb-col-h{grid-column:span 1;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:clamp(9px,1.4vh,12px);font-weight:800;color:#fff;text-shadow:0 1px 4px rgba(8,36,26,.6);padding:2px 0}
+/* R146：周网格 —— 删除左侧时间刻度列（09:00~12:00）与小时行，改为 7 个「日期卡片列」横向展开 */
+.wb-week-grid{display:grid;grid-template-columns:repeat(7,1fr);grid-auto-rows:minmax(40px,auto);gap:clamp(4px,.7vw,8px);min-height:100%}
+.wb-day-col{display:flex;flex-direction:column;gap:clamp(3px,.5vh,5px);min-width:0;padding:clamp(3px,.5vh,5px);border-radius:10px;border:1px dashed rgba(180,230,200,.42);background:rgba(255,255,255,.05)}
+.wb-col-h{display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:clamp(9px,1.4vh,12px);font-weight:800;color:#fff;text-shadow:0 1px 4px rgba(8,36,26,.6);padding:1px 0}
 .wb-col-h .wb-col-d{font-size:clamp(10px,1.6vh,14px);font-weight:900}
-.wb-today-col{background:rgba(63,191,127,.22);border-radius:8px}
-.wb-time{display:flex;align-items:flex-start;justify-content:flex-end;padding:2px 4px;font-size:clamp(8px,1.2vh,11px);font-weight:600;color:rgba(255,255,255,.85);text-shadow:0 1px 3px rgba(8,36,26,.6)}
-.wb-cell{position:relative;min-height:0;display:flex;flex-direction:column;gap:2px;padding:2px;border-radius:8px;border:1px dashed rgba(180,230,200,.5);background:rgba(255,255,255,.06);touch-action:none;user-select:none;-webkit-user-select:none;overflow:visible}
-.wb-cell.wb-cell-target{background:rgba(63,191,127,.3);border:1px dashed rgba(63,191,127,.85)}
-.wb-task{position:relative;display:flex;align-items:stretch;gap:4px;border-radius:7px;padding:3px 5px;cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:none;overflow:visible;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);box-shadow:0 3px 10px rgba(10,38,28,.22),inset 0 1px 0 rgba(255,255,255,.28);transition:transform .14s ease,box-shadow .14s ease}
+.wb-today-col{background:rgba(63,191,127,.2);border-color:rgba(120,220,170,.6)}
+.wb-day-cards{display:flex;flex-direction:column;gap:clamp(3px,.6vh,6px);min-width:0}
+.wb-col-empty{font-size:clamp(8px,1.2vh,11px);font-weight:600;color:rgba(255,255,255,.45);text-align:center;padding:6px 2px}
+/* R146：今天视图 / 月视图单日明细的卡片列表 —— 横向展开、靠左对齐、间距清晰、高度自适应 */
+.wb-day-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(clamp(170px,20vw,260px),1fr));gap:clamp(5px,.9vh,10px);align-items:start}
+.wb-sec-bar{display:flex;align-items:center;gap:clamp(6px,1vw,10px);flex-wrap:wrap}
+.wb-sec-title{font-size:clamp(11px,1.7vh,14px);font-weight:900;color:#fff;letter-spacing:.02em;text-shadow:0 1px 5px rgba(8,36,26,.55)}
+.wb-sec-tag{font-size:clamp(9px,1.3vh,11px);font-weight:800;color:#1f4d3a;background:rgba(255,255,255,.92);border-radius:999px;padding:1px 8px}
+.wb-back-btn{font-size:clamp(9px,1.4vh,12px);font-weight:800;color:#24353f;background:rgba(236,241,245,.92);border:1.5px solid rgba(255,255,255,.75);border-radius:999px;padding:clamp(2px,.5vh,5px) clamp(8px,1vw,12px);cursor:pointer;box-shadow:0 2px 8px rgba(10,38,28,.2)}
+.wb-back-btn:hover{background:#fff}
+.wb-empty{font-size:clamp(10px,1.5vh,13px);font-weight:700;color:rgba(255,255,255,.72);line-height:1.7;padding:clamp(10px,2vh,20px) 2px;text-shadow:0 1px 4px rgba(8,36,26,.5)}
+.wb-task{position:relative;display:flex;align-items:stretch;gap:4px;width:100%;min-width:0;border-radius:clamp(8px,1.2vh,11px);padding:clamp(4px,.7vh,7px) clamp(6px,1vw,9px);cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:none;overflow:visible;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);box-shadow:0 3px 10px rgba(10,38,28,.22),inset 0 1px 0 rgba(255,255,255,.28);transition:transform .14s ease,box-shadow .14s ease}
 .wb-task:hover{transform:translateY(-1px)}
 .wb-task:active{transform:scale(.99)}
 .wb-mark{flex:0 0 auto;width:3px;border-radius:999px;background:rgba(255,255,255,.9);box-shadow:0 0 6px rgba(255,255,255,.4)}
@@ -5782,6 +5688,7 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .wb-mcell{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:3px 4px;border-radius:8px;background:rgba(255,255,255,.08);border:1px solid rgba(180,230,200,.35);cursor:pointer;overflow:hidden;transition:background .12s ease}
 .wb-mcell:hover{background:rgba(255,255,255,.16)}
 .wb-mcell.wb-out{opacity:.45}
+.mn-weekboard.wb-edit-mode .wb-mcell{border-style:dashed;border-color:rgba(255,255,255,.7)}
 .wb-m-d{font-size:clamp(10px,1.5vh,13px);font-weight:800;color:#fff;text-shadow:0 1px 3px rgba(8,36,26,.6)}
 .wb-m-d.wb-today{background:#3fbf7f;color:#fff;border-radius:999px;padding:0 6px}
 .wb-m-dots{display:flex;flex-wrap:wrap;gap:2px}
@@ -6346,7 +6253,6 @@ html,body{margin:0;padding:0}
   <!-- ================= R134：Nick 的备忘录（陆家嘴天际线背景 + 发光标题 + 7 张彩虹磨砂玻璃便签卡） ================= -->
   <section class="page page-memonick" data-page="memonick" hidden data-page-node-id="R118pageMemoNick">
     <button class="mn-back" id="btnMemoNickBack" title="返回首页" data-page-node-id="R118memoNickBack">← 返回首页</button>
-    <button class="mn-manage" id="btnMemoManage" title="管理备忘录" data-page-node-id="R138memoManage">📝 管理备忘</button>
     <div class="mn-stage" data-page-node-id="R118memoStage">
       <!-- ① 顶部居中标题：浅白色立体发光字体，避开东方明珠等主体建筑 -->
       <h2 class="mn-title" data-page-node-id="R134memoTitle">Nick的备忘录</h2>
@@ -7038,51 +6944,11 @@ html,body{margin:0;padding:0}
   </div>
 </div>
 
-<!-- ========== R140：日看板日程编辑/新建弹窗（全天 / 时间段 / 时间点 + 4 色标签） ========== -->
-<div class="modal-mask" id="modalNbEdit" hidden data-page-node-id="R140modalNbEdit">
-  <div class="modal-box modal-nb" data-page-node-id="R140modalNbEditBox">
-    <div class="modal-head" data-page-node-id="R140modalNbEditHead">
-      <h3 id="nbEditTitle" data-page-node-id="R140modalNbEditTitle">📅 编辑日程</h3>
-      <button class="modal-x" data-close data-page-node-id="R140modalNbEditX">×</button>
-    </div>
-    <div class="modal-body" data-page-node-id="R140modalNbEditBody">
-      <label class="nb-e-fld"><span>标题</span><input id="nbInTitle" type="text" maxlength="30" placeholder="给日程起个名字" data-page-node-id="R140nbInTitle" /></label>
-      <div class="nb-e-fld"><span>类型</span>
-        <div class="nb-e-types" id="nbTypes" data-page-node-id="R140nbTypes">
-          <button type="button" data-nb-type="all">🌞 全天</button>
-          <button type="button" data-nb-type="range">🕒 时间段</button>
-          <button type="button" data-nb-type="point">⏰ 时间点</button>
-        </div>
-      </div>
-      <div class="nb-e-fld" id="nbTimeFields" data-page-node-id="R140nbTimeFields"><span>时间</span>
-        <div class="nb-e-time-row">
-          <input id="nbInStart" type="time" data-page-node-id="R140nbInStart" />
-          <span class="nb-e-tilde" id="nbEndRow">至</span>
-          <input id="nbInEnd" type="time" data-page-node-id="R140nbInEnd" />
-        </div>
-      </div>
-      <div class="nb-e-fld"><span>颜色</span>
-        <div class="nb-e-colors" id="nbColors" data-page-node-id="R140nbColors">
-          <button type="button" class="nb-e-c-blue" data-nb-color="blue" title="蓝色"></button>
-          <button type="button" class="nb-e-c-green" data-nb-color="green" title="绿色"></button>
-          <button type="button" class="nb-e-c-yellow" data-nb-color="yellow" title="浅黄色"></button>
-          <button type="button" class="nb-e-c-red" data-nb-color="red" title="红色"></button>
-        </div>
-      </div>
-    </div>
-    <div class="modal-foot" data-page-node-id="R140modalNbEditFoot">
-      <button class="nb-e-del" id="btnNbDel" type="button" data-page-node-id="R140btnNbDel">🗑 删除</button>
-      <button class="nb-e-cancel" id="btnNbCancel" type="button" data-page-node-id="R140btnNbCancel">取消</button>
-      <button class="nb-e-save" id="btnNbSave" type="button" data-page-node-id="R140btnNbSave">💾 保存</button>
-    </div>
-  </div>
-</div>
-
-<!-- ========== 弹窗：周看板 编辑/新建日程（R144 Word 风格富文本编辑器，所见即所得） ========== -->
+<!-- ========== 弹窗：周看板 备忘编辑/新增（R144 Word 风格富文本编辑器，所见即所得；R146 今天/周/月三版块共用） ========== -->
 <div class="modal-mask" id="modalWbEdit" hidden data-page-node-id="R141modalWbEdit">
   <div class="modal-box modal-nb wb-rte-modal" data-page-node-id="R141modalWbEditBox">
     <div class="modal-head" data-page-node-id="R141modalWbEditHead">
-      <h3 id="wbEditTitle" data-page-node-id="R141modalWbEditTitle">✏️ 编辑日程</h3>
+      <h3 id="wbEditTitle" data-page-node-id="R141modalWbEditTitle">✏️ 编辑备忘</h3>
       <button class="modal-x" data-close data-page-node-id="R141modalWbEditX">×</button>
     </div>
     <div class="modal-body" data-page-node-id="R141modalWbEditBody">
@@ -7122,7 +6988,7 @@ html,body{margin:0;padding:0}
         <button type="button" class="wb-rte-btn" data-cmd="italic" title="斜体"><i>I</i></button>
         <button type="button" class="wb-rte-btn" data-cmd="underline" title="下划线"><u>U</u></button>
       </div>
-      <div class="wb-rte-editor" id="wbEditor" contenteditable="true" data-placeholder="在这里写日程内容，支持换行、首行缩进、字体/字号/颜色与加粗…" data-page-node-id="R141wbEditor"></div>
+      <div class="wb-rte-editor" id="wbEditor" contenteditable="true" data-placeholder="在这里写备忘内容，支持换行、首行缩进、字体/字号/颜色与加粗…" data-page-node-id="R141wbEditor"></div>
     </div>
     <div class="modal-foot" data-page-node-id="R141modalWbEditFoot">
       <button class="nb-e-del" id="btnWbDel" type="button" data-page-node-id="R141btnWbDel">🗑 删除</button>
@@ -40242,8 +40108,8 @@ I'm good at running.`},
     if(open) open.addEventListener('click', ()=>{ goPage('memonick'); });
     const back = document.getElementById('btnMemoNickBack');
     if(back) back.addEventListener('click', ()=>{ goPage('home'); });
-    const manage = document.getElementById('btnMemoManage');
-    if(manage) manage.addEventListener('click', ()=>{ openMemoEditModal(); });
+    // R146：删除页面右上角「管理备忘」按钮（#btnMemoManage）—— 备忘内容编辑改由各便签卡右上角
+    // 编辑图标进入统一弹窗（openMemoEditModal），顶部只保留标题与「返回首页」。
   }
   function getNickMemosSafe(){
     return (window.Store && window.Store.getNickMemos) ? window.Store.getNickMemos() : [];
@@ -40426,449 +40292,34 @@ I'm good at running.`},
       });
     });
   }
-  // ================= R140：日看板（Day Board）=================
-  // 备忘录墙「第一行左边两个标签卡」合并为一个跨列大卡，承载毛玻璃时间轴日程看板：
-  // 顶部标题区（日看板 / 把今天，安排得清清楚楚。）+ 中部磨砂玻璃窗口（实时日期 + 今天/←/→
-  // + 时间轴日程 + 水平虚线网格 + 关闭×）+ 底部 3 个圆形功能按钮。
-  // 交互：添加 3 类任务（全天/时间段/时间点）、卡片长按拖拽改起止时间、点击卡片唤起编辑、
-  //       长按卡片标记完成、←/→/今天切换日期、4 色柔和标签（蓝/绿/浅黄/红）。
-  const NB_HOURS = ['09:00','10:00','11:00','12:00']; // 可见小时行（每行 = 该小时起 1 小时）
-  const NB_WEEK = ['日','一','二','三','四','五','六'];
-  const NB_ICO_CLOCK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8.6"/><path d="M12 7.4V12l3.1 2"/></svg>';
-  const NB_ICO_PLUS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5.4v13.2M5.4 12h13.2"/></svg>';
-  const NB_ICO_PENCIL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.1-4.2L16.6 4.3a2.15 2.15 0 0 1 3.1 3.1L8.2 18.9 4 20z"/><path d="M14.6 6.3l3.1 3.1"/></svg>';
-  let _nbDate = '';        // 当前查看日期（ISO YYYY-MM-DD）
-  let _nbCollapsed = false;
-  let _nbEditId = '';      // 弹窗正在编辑的任务 id（'' = 新建）
-  let _nbEditType = 'range';
-  let _nbEditColor = 'blue';
+  // ================= R140 → R146：日程共享工具函数 =================
+  // R146：日看板独立模块已整体并入周看板 ——「今天 / 周 / 月」三个版块共用同一套周看板数据层
+  // （window.Store.getNickWeekBoard / saveNickWeekBoard，按日期 ISO 存取任务）。
+  // 旧「日看板」数据（st.nickDayBoard）由 bindEvents 内的一次性迁移合并进周看板层，不丢数据。
+  // 此处仅保留三个版块共用的工具函数：
+  const NB_WEEK = ['日','一','二','三','四','五','六'];   // Date.getDay() → 中文星期
+  let _nbDate = '';        // 「今天」视图当前查看日期（ISO YYYY-MM-DD）
   function nbTodayISO(){ const d=new Date(), p=n=>(n<10?'0':'')+n; return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate()); }
   function nbShiftISO(iso, days){ const d=new Date(iso+'T00:00:00'); d.setDate(d.getDate()+days); const p=n=>(n<10?'0':'')+n; return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate()); }
   function nbFmtCN(iso){ const d=new Date(iso+'T00:00:00'); return d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日 周'+NB_WEEK[d.getDay()]; }
   function nbMinutes(hhmm){ const p=String(hhmm||'').split(':'); return (+p[0]||0)*60 + (+p[1]||0); }
   function nbAddHour(hhmm, addMin){ let m=nbMinutes(hhmm)+addMin; if(m<0)m=0; if(m>1439)m=1439; const p=x=>(x<10?'0':'')+x; return p(Math.floor(m/60))+':'+p(m%60); }
-  function nbHourOf(t){
-    const s = String(t||'').slice(0,5);
-    const m = /^(\d{2}):(\d{2})$/.exec(s);
-    if(!m) return '12:00';
-    const hour = m[1] + ':00';                 // 09:30 → 09:00 行（按起始小时归行）
-    if(NB_HOURS.indexOf(hour) >= 0) return hour;
-    return (s < '09:00') ? '09:00' : '12:00';
-  }
-  function nbTasks(){ return (window.Store && window.Store.getNickDayBoard) ? window.Store.getNickDayBoard(_nbDate) : []; }
-  function nbSaveTasks(list){ if(window.Store && window.Store.saveNickDayBoard) window.Store.saveNickDayBoard(_nbDate, list); }
-  function nbFindTask(id){ const ts=nbTasks(); for(let i=0;i<ts.length;i++) if(ts[i].id===id) return ts[i]; return null; }
-  function nbTimeText(t){
-    if(t.type==='all') return '全天';
-    if(t.type==='point') return t.start || '';
-    return (t.start||'') + ' - ' + (t.end || nbAddHour(t.start||'09:00', 60));
-  }
-  function nbNextColor(){ const cs=['blue','green','yellow','red']; return cs[nbTasks().length % 4]; }
-  function dayBoardCardHTML(){
-    return '<div class="mn-note-card mn-dayboard" data-page-node-id="R140dayBoard">'
-      + '<div class="nb-title-area">'
-      + '<div class="nb-title">日看板</div>'
-      + '<div class="nb-sub">把今天，安排得清清楚楚。</div>'
-      + '</div>'
-      + '<div class="nb-win" id="nbWin" data-page-node-id="R140nbWin">'
-      + '<div class="nb-win-head">'
-      + '<div class="nb-date-wrap"><span class="nb-date" id="nbDate"></span><span class="nb-today-pill" id="nbTodayPill">今天</span></div>'
-      + '<div class="nb-nav">'
-      + '<button class="nb-nav-btn nb-nav-today" id="nbBtnToday" type="button">今天</button>'
-      + '<button class="nb-nav-btn" id="nbBtnPrev" type="button" title="前一天" aria-label="前一天">←</button>'
-      + '<button class="nb-nav-btn" id="nbBtnNext" type="button" title="后一天" aria-label="后一天">→</button>'
-      + '</div>'
-      + '<button class="nb-x" id="nbBtnClose" type="button" title="收起窗口" aria-label="收起窗口">×</button>'
-      + '</div>'
-      + '<div class="nb-timeline" id="nbTimeline" data-page-node-id="R140nbTimeline"></div>'
-      + '</div>'
-      + '<div class="nb-collapsed-tip" id="nbCollapsedTip">▢ 日看板已收起，点击展开</div>'
-      + '<div class="nb-btns">'
-      + '<button class="nb-circ" id="nbBtnType" type="button">'
-      + '<span class="nb-circ-ico">'+NB_ICO_CLOCK+'</span>'
-      + '<span class="nb-dots"><i class="nb-dot nb-dot-blue"></i><i class="nb-dot nb-dot-green"></i><i class="nb-dot nb-dot-yellow"></i><i class="nb-dot nb-dot-red"></i></span>'
-      + '<span class="nb-circ-cap">时间点 / 时间段 / 全天</span></button>'
-      + '<button class="nb-circ" id="nbBtnAdd" type="button">'
-      + '<span class="nb-circ-ico">'+NB_ICO_PLUS+'</span>'
-      + '<span class="nb-circ-cap">点击空白新建，长按拖动创建时间段</span></button>'
-      + '<button class="nb-circ" id="nbBtnEdit" type="button">'
-      + '<span class="nb-circ-ico">'+NB_ICO_PENCIL+'</span>'
-      + '<span class="nb-circ-cap">点击事件编辑，长按切换完成</span></button>'
-      + '</div>'
-      + '</div>';
-  }
-  function nbTaskHTML(t){
-    const rich = t.html ? sanitizeRich(t.html) : esc(t.title);
-    return '<div class="nb-task nb-c-'+t.color+(t.done?' nb-done':'')+'" data-nb-id="'+esc(t.id)+'" data-nb-type="'+t.type+'" data-page-node-id="R140nbTask">'
-      + '<span class="nb-mark"></span>'
-      + '<div class="nb-task-main">'
-      + '<div class="nb-task-title">'
-      + (t.type==='all' ? '<span class="nb-task-ico">🧹</span>' : '')
-      + (t.done ? '<span class="nb-task-check">✓</span>' : '')
-      + rich + '</div>'
-      + '<div class="nb-task-time">'+esc(nbTimeText(t))+'</div>'
-      + '</div>'
-      + '<button class="nb-task-del" type="button" data-nb-del="'+esc(t.id)+'" title="删除此日程" aria-label="删除此日程">×</button>'
-      + '</div>';
-  }
-  function nbRowHTML(label, key, tasks){
-    let inner = '';
-    tasks.forEach(function(t){ inner += nbTaskHTML(t); });
-    if(!inner) inner = '<div class="nb-row-empty">暂无安排</div>';
-    return '<div class="nb-row" data-nb-row="'+key+'">'
-      + '<div class="nb-row-lab">'+label+'</div>'
-      + '<div class="nb-row-body">'+inner+'</div>'
-      + '</div>';
-  }
-  function renderNbDate(){
-    const el = document.getElementById('nbDate');
-    if(el) el.textContent = nbFmtCN(_nbDate);
-    const pill = document.getElementById('nbTodayPill');
-    if(pill) pill.style.display = (_nbDate === nbTodayISO()) ? '' : 'none';
-  }
-  function renderNbTimeline(){
-    const tl = document.getElementById('nbTimeline');
-    if(!tl) return;
-    const tasks = nbTasks();
-    let html = '';
-    // R145：删除独立「全天」行 —— 全天任务并入首个小时行（09:00）展示，避免数据不可见
-    NB_HOURS.forEach(function(h, idx){
-      const list = tasks.filter(function(t){
-        if(t.type === 'all') return idx === 0;
-        return t.type !== 'all' && nbHourOf(t.start) === h;
-      });
-      html += nbRowHTML(h, h, list);
-    });
-    tl.innerHTML = html;
-    bindNbTasks();
-    // R145：取消点击空白处新建/长按拖动创建（bindNbBlank 停用）—— 新建统一走窗口右上角「新增」按钮
-  }
-  function nbRefresh(){ renderNbDate(); renderNbTimeline(); }
-  function nbRowKeyAt(clientY){
-    const tl = document.getElementById('nbTimeline');
-    if(!tl) return '';
-    const rows = tl.querySelectorAll('.nb-row');
-    let best = '', bd = 1e9;
-    for(let i=0;i<rows.length;i++){
-      const r = rows[i].getBoundingClientRect();
-      const d = clientY < r.top ? r.top - clientY : (clientY > r.bottom ? clientY - r.bottom : 0);
-      if(d < bd){ bd = d; best = rows[i].getAttribute('data-nb-row'); }
-    }
-    return best;
-  }
-  function nbClearRowTarget(){
-    const tl = document.getElementById('nbTimeline');
-    if(!tl) return;
-    tl.querySelectorAll('.nb-row').forEach(function(r){ r.classList.remove('nb-row-target'); });
-  }
-  function nbMoveTask(id, key){
-    const tasks = nbTasks();
-    let t = null;
-    for(let i=0;i<tasks.length;i++) if(tasks[i].id===id) t = tasks[i];
-    if(!t || !key) return;
-    if(key === 'all'){
-      t.type = 'all'; t.start = ''; t.end = '';
-    } else if(t.type === 'all'){
-      t.type = 'range'; t.start = key; t.end = nbAddHour(key, 60);
-    } else if(t.type === 'point'){
-      t.start = key; t.end = '';
-    } else {
-      const dur = (t.start && t.end) ? (nbMinutes(t.end) - nbMinutes(t.start)) : 60;
-      t.start = key; t.end = nbAddHour(key, dur > 0 ? dur : 60);
-    }
-    nbSaveTasks(tasks); nbRefresh();
-    if(window.toast) toast('已调整到 ' + (key==='all' ? '全天' : key));
-  }
-  function nbToggleDone(id){
-    const tasks = nbTasks();
-    let t = null;
-    for(let i=0;i<tasks.length;i++) if(tasks[i].id===id) t = tasks[i];
-    if(!t) return;
-    t.done = t.done ? 0 : 1;
-    nbSaveTasks(tasks); nbRefresh();
-    if(window.toast) toast(t.done ? '已完成「'+t.title+'」🎉' : '已取消「'+t.title+'」的完成标记');
-  }
-  function bindNbTasks(){
-    const tl = document.getElementById('nbTimeline');
-    if(!tl) return;
-    tl.querySelectorAll('.nb-task').forEach(function(card){
-      let timer = null, longFired = false, dragging = false, moved = false, sx = 0, sy = 0, targetKey = '';
-      card.addEventListener('pointerdown', function(e){
-        if(e.button !== undefined && e.button !== 0) return;
-        if(_wbEditMode) return;   // R145：编辑模式下仅响应点击（由 pointerup 的 !moved 分支唤起富文本弹窗），禁用长按与拖拽
-        try{ card.setPointerCapture(e.pointerId); }catch(err){}
-        sx = e.clientX; sy = e.clientY; moved = false; longFired = false; dragging = false; targetKey = '';
-        timer = setTimeout(function(){ longFired = true; card.classList.add('nb-pressing'); }, 450);
-      });
-      card.addEventListener('pointermove', function(e){
-        if(!sx && !sy) return;
-        const dx = e.clientX - sx, dy = e.clientY - sy;
-        if(!moved && Math.sqrt(dx*dx + dy*dy) > 8){
-          moved = true;
-          if(timer){ clearTimeout(timer); timer = null; }
-          card.classList.remove('nb-pressing');
-          dragging = true;
-          card.classList.add('nb-dragging');
-        }
-        if(dragging){
-          e.preventDefault();
-          const key = nbRowKeyAt(e.clientY);
-          if(key && key !== targetKey){
-            targetKey = key;
-            nbClearRowTarget();
-            const row = tl.querySelector('.nb-row[data-nb-row="'+key+'"]');
-            if(row) row.classList.add('nb-row-target');
-          }
-        }
-      });
-      const finish = function(){
-        if(timer){ clearTimeout(timer); timer = null; }
-        card.classList.remove('nb-pressing', 'nb-dragging');
-        nbClearRowTarget();
-        const id = card.getAttribute('data-nb-id');
-        if(dragging){
-          dragging = false;
-          if(targetKey) nbMoveTask(id, targetKey);
-        } else if(longFired){
-          nbToggleDone(id);
-        } else if(!moved){
-          // R145：取消点击时间后面的卡片弹出新建日程页面；编辑模式下点击卡片 → 富文本弹窗修改
-          if(_wbEditMode){ const t = nbFindTask(id); wbOpenEditModal(t, { date:_nbDate, scope:'day' }); }
-        }
-        sx = 0; sy = 0;
-      };
-      card.addEventListener('pointerup', finish);
-      card.addEventListener('pointercancel', function(){
-        if(timer){ clearTimeout(timer); timer = null; }
-        card.classList.remove('nb-pressing', 'nb-dragging');
-        nbClearRowTarget(); dragging = false; sx = 0; sy = 0;
-      });
-      card.addEventListener('dragstart', function(e){ e.preventDefault(); });
-    });
-    // R145：编辑模式删除按钮（仅编辑模式可见，见 styles.css .mn-weekboard.wb-edit-mode）
-    tl.querySelectorAll('.nb-task-del').forEach(function(b){
-      b.addEventListener('pointerdown', function(e){ e.stopPropagation(); });
-      b.addEventListener('pointerup', function(e){ e.stopPropagation(); });
-      b.addEventListener('click', function(e){
-        e.stopPropagation();
-        const id = b.getAttribute('data-nb-del');
-        nbSaveTasks(nbTasks().filter(function(x){ return x.id !== id; }));
-        wbRefresh();
-        if(window.toast) toast('已删除该日程');
-      });
-    });
-  }
-  function nbRangeText(fromKey, toKey){
-    if(fromKey === 'all' || toKey === 'all') return '全天';
-    if(fromKey === toKey) return fromKey + ' - ' + nbAddHour(fromKey, 60);
-    return fromKey + ' - ' + nbAddHour(toKey, 60);
-  }
-  function nbKeyRange(fromKey, toKey){
-    if(fromKey === 'all' || toKey === 'all') return ['all'];
-    const i = NB_HOURS.indexOf(fromKey), j = NB_HOURS.indexOf(toKey);
-    return NB_HOURS.slice(Math.min(i,j), Math.max(i,j) + 1);
-  }
-  function bindNbBlank(){
-    const tl = document.getElementById('nbTimeline');
-    if(!tl) return;
-    tl.querySelectorAll('.nb-row-body').forEach(function(body){
-      let timer = null, longFired = false, dragging = false, moved = false, sx = 0, sy = 0, fromKey = '', preview = null;
-      body.addEventListener('pointerdown', function(e){
-        if(e.target.closest && e.target.closest('.nb-task')) return;
-        if(e.button !== undefined && e.button !== 0) return;
-        try{ body.setPointerCapture(e.pointerId); }catch(err){}
-        sx = e.clientX; sy = e.clientY; moved = false; longFired = false; dragging = false;
-        const row = body.closest('.nb-row');
-        fromKey = row ? row.getAttribute('data-nb-row') : '';
-        timer = setTimeout(function(){ longFired = true; }, 450);
-      });
-      body.addEventListener('pointermove', function(e){
-        if(!sx && !sy) return;
-        const dx = e.clientX - sx, dy = e.clientY - sy;
-        if(!moved && Math.sqrt(dx*dx + dy*dy) > 8){
-          moved = true;
-          if(timer){ clearTimeout(timer); timer = null; }
-          dragging = true;
-          if(!preview){
-            preview = document.createElement('div');
-            preview.className = 'nb-create-preview';
-            body.appendChild(preview);
-          }
-        }
-        if(dragging){
-          e.preventDefault();
-          const key = nbRowKeyAt(e.clientY) || fromKey;
-          nbClearRowTarget();
-          nbKeyRange(fromKey, key).forEach(function(k){
-            const row = tl.querySelector('.nb-row[data-nb-row="'+k+'"]');
-            if(row) row.classList.add('nb-row-target');
-          });
-          if(preview) preview.textContent = nbRangeText(fromKey, key);
-        }
-      });
-      const finish = function(e){
-        if(timer){ clearTimeout(timer); timer = null; }
-        if(preview && preview.parentNode) preview.parentNode.removeChild(preview);
-        preview = null;
-        nbClearRowTarget();
-        const wasDragging = dragging;
-        dragging = false;
-        if(wasDragging){
-          const key = nbRowKeyAt(e.clientY) || fromKey;
-          if(key) nbOpenCreateRange(fromKey, key);
-        } else if(!moved && !longFired){
-          if(fromKey === 'all') nbOpenEditModal(null, { type:'all', color:'gray' });
-          else nbOpenEditModal(null, { type:'range', color:nbNextColor(), start:fromKey, end:nbAddHour(fromKey, 60) });
-        }
-        sx = 0; sy = 0;
-      };
-      body.addEventListener('pointerup', finish);
-      body.addEventListener('pointercancel', function(){
-        if(timer){ clearTimeout(timer); timer = null; }
-        if(preview && preview.parentNode) preview.parentNode.removeChild(preview);
-        preview = null; nbClearRowTarget(); dragging = false; sx = 0; sy = 0;
-      });
-    });
-  }
-  function nbOpenCreateRange(fromKey, toKey){
-    if(fromKey === 'all' || toKey === 'all'){ nbOpenEditModal(null, { type:'all', color:'gray' }); return; }
-    nbOpenEditModal(null, { type:'range', color:nbNextColor(), start:fromKey, end:nbAddHour(toKey, 60) });
-  }
-  function nbSyncEditModal(){
-    const types = document.getElementById('nbTypes');
-    if(types) types.querySelectorAll('button').forEach(function(b){
-      b.classList.toggle('active', b.getAttribute('data-nb-type') === _nbEditType);
-    });
-    const colors = document.getElementById('nbColors');
-    if(colors) colors.querySelectorAll('button').forEach(function(b){
-      b.classList.toggle('active', b.getAttribute('data-nb-color') === _nbEditColor);
-    });
-    const times = document.getElementById('nbTimeFields');
-    if(times) times.style.display = (_nbEditType === 'all') ? 'none' : '';
-    const endRow = document.getElementById('nbEndRow');
-    if(endRow) endRow.style.display = (_nbEditType === 'point') ? 'none' : '';
-    const endIn = document.getElementById('nbInEnd');
-    if(endIn) endIn.style.display = (_nbEditType === 'point') ? 'none' : '';
-  }
-  function nbOpenEditModal(task, prefill){
-    _nbEditId = task ? task.id : '';
-    const t = task || {}, pf = prefill || {};
-    _nbEditType = t.type || pf.type || 'range';
-    _nbEditColor = t.color || pf.color || 'blue';
-    const titleEl = document.getElementById('nbInTitle');
-    if(titleEl) titleEl.value = t.title || '';
-    const st = document.getElementById('nbInStart');
-    if(st) st.value = t.start || pf.start || '';
-    const en = document.getElementById('nbInEnd');
-    if(en) en.value = t.end || pf.end || '';
-    const h = document.getElementById('nbEditTitle');
-    if(h) h.textContent = task ? '📅 编辑日程' : '📅 新建日程';
-    const del = document.getElementById('btnNbDel');
-    if(del) del.style.display = task ? '' : 'none';
-    nbSyncEditModal();
-    showModal('#modalNbEdit');
-    if(titleEl) setTimeout(function(){ try{ titleEl.focus(); }catch(e){} }, 60);
-  }
-  function bindNbEditModal(){
-    const types = document.getElementById('nbTypes');
-    if(types) types.querySelectorAll('button').forEach(function(b){
-      b.onclick = function(){ _nbEditType = b.getAttribute('data-nb-type'); nbSyncEditModal(); };
-    });
-    const colors = document.getElementById('nbColors');
-    if(colors) colors.querySelectorAll('button').forEach(function(b){
-      b.onclick = function(){ _nbEditColor = b.getAttribute('data-nb-color'); nbSyncEditModal(); };
-    });
-    const saveBtn = document.getElementById('btnNbSave');
-    if(saveBtn) saveBtn.onclick = nbSaveFromModal;
-    const cancelBtn = document.getElementById('btnNbCancel');
-    if(cancelBtn) cancelBtn.onclick = function(){ hideModal('#modalNbEdit'); };
-    const delBtn = document.getElementById('btnNbDel');
-    if(delBtn) delBtn.onclick = function(){
-      const id = _nbEditId;
-      if(!id){ hideModal('#modalNbEdit'); return; }
-      nbSaveTasks(nbTasks().filter(function(x){ return x.id !== id; }));
-      hideModal('#modalNbEdit'); nbRefresh();
-      if(window.toast) toast('已删除该日程');
-    };
-    const titleEl = document.getElementById('nbInTitle');
-    if(titleEl) titleEl.addEventListener('keydown', function(e){ if(e.key === 'Enter') nbSaveFromModal(); });
-  }
-  function nbSaveFromModal(){
-    const titleEl = document.getElementById('nbInTitle');
-    const title = ((titleEl && titleEl.value) || '').trim();
-    if(!title){ if(window.toast) toast('先给日程起个名字吧'); if(titleEl) titleEl.focus(); return; }
-    const st = document.getElementById('nbInStart');
-    const en = document.getElementById('nbInEnd');
-    const start = (st && st.value) || '';
-    const end = (en && en.value) || '';
-    if(_nbEditType !== 'all' && !start){ if(window.toast) toast('选一个开始时间吧'); return; }
-    const tasks = nbTasks();
-    let t = null;
-    if(_nbEditId){ for(let i=0;i<tasks.length;i++) if(tasks[i].id === _nbEditId) t = tasks[i]; }
-    if(!t){
-      t = { id:'nb'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), title:title, type:_nbEditType, start:start, end:end, color:_nbEditColor, done:0 };
-      tasks.push(t);
-    }
-    t.title = title; t.type = _nbEditType; t.color = _nbEditColor;
-    t.start = (_nbEditType === 'all') ? '' : start;
-    t.end = (_nbEditType === 'point') ? '' : ((end && end > start) ? end : nbAddHour(start || '09:00', 60));
-    nbSaveTasks(tasks);
-    hideModal('#modalNbEdit'); nbRefresh();
-    if(window.toast) toast(_nbEditId ? '日程已更新' : '已添加新日程');
-  }
-  function initDayBoard(){
-    if(!_nbDate) _nbDate = nbTodayISO();
-    const card = document.querySelector('.mn-dayboard');
-    if(card){ if(_nbCollapsed) card.classList.add('nb-collapsed'); else card.classList.remove('nb-collapsed'); }
-    nbRefresh();
-    const prev = document.getElementById('nbBtnPrev');
-    if(prev) prev.onclick = function(){ _nbDate = nbShiftISO(_nbDate, -1); nbRefresh(); };
-    const next = document.getElementById('nbBtnNext');
-    if(next) next.onclick = function(){ _nbDate = nbShiftISO(_nbDate, 1); nbRefresh(); };
-    const today = document.getElementById('nbBtnToday');
-    if(today) today.onclick = function(){ _nbDate = nbTodayISO(); nbRefresh(); if(window.toast) toast('已回到今天'); };
-    const close = document.getElementById('nbBtnClose');
-    if(close) close.onclick = function(){
-      _nbCollapsed = true;
-      const c = document.querySelector('.mn-dayboard');
-      if(c) c.classList.add('nb-collapsed');
-      if(window.toast) toast('日看板窗口已收起，点击下方横条可展开');
-    };
-    const tip = document.getElementById('nbCollapsedTip');
-    if(tip) tip.onclick = function(){
-      _nbCollapsed = false;
-      const c = document.querySelector('.mn-dayboard');
-      if(c) c.classList.remove('nb-collapsed');
-    };
-    const bType = document.getElementById('nbBtnType');
-    if(bType) bType.onclick = function(){ nbOpenEditModal(null, { type:'range', color:nbNextColor(), start:'09:00', end:'10:00' }); };
-    const bAdd = document.getElementById('nbBtnAdd');
-    if(bAdd) bAdd.onclick = function(){ nbOpenEditModal(null, { type:'range', color:nbNextColor(), start:'09:00', end:'10:00' }); };
-    const bEdit = document.getElementById('nbBtnEdit');
-    if(bEdit) bEdit.onclick = function(){ if(window.toast) toast('点击卡片编辑 · 长按卡片标记完成 · 长按拖动改时间'); };
-    bindNbEditModal();
-  }
-  // ================= R141 → R145：周看板（Week Board）=================
-  // 备忘录墙「第一行右边两个标签卡」合并为一个跨列大卡，承载毛玻璃周日程看板：
-  // 中部磨砂玻璃窗口（←/→ + 年月 + 今天→周→月 + 右上角 编辑(铅笔)/新增(加号) 双按钮）；
-  // 副标题「一周忙闲，一眼看清。」移入窗口顶部作为白色说明文字。
-  // + 7 列周网格（周一..周日 + 日期数字）左侧时间行（09:00~12:00）浅绿虚线网格。
-  // R144：取消点击空白新建；新建/编辑统一由窗口右上角按钮唤起 Word 风格富文本弹窗（首行缩进 + 字体/字号/颜色/加粗/斜体/下划线）；任务卡高度自适应不重叠；移除底部按钮区。
-  // R145：打开页面默认显示「今天」视图；删除今天视图第三行（日期/→/周视图，日期改由顶部年月位显示）；
-  //       删除时间轴「全天」行（全天任务并入首个小时行）；取消点击卡片/空白弹出新建；
-  //       铅笔按钮改为「编辑」一键进入编辑模式（全部日程卡可改可删），原新建职能改由「新增」加号按钮承担。
+  // ================= R141 → R146：周看板（Week Board）=================
+  // 备忘录墙跨列大卡，承载毛玻璃「今天 / 周 / 月」三版块备忘看板：
+  // 中部磨砂玻璃窗口（←/→ + 年月 + 今天→周→月 + 右上角文字按钮 编辑/取消 与 新增）；
+  // 副标题「一周忙闲，一眼看清。」位于窗口顶部作为白色说明文字。
+  // R144：取消点击空白新建；新建/编辑统一由窗口右上角按钮唤起 Word 风格富文本弹窗（首行缩进 + 字体/字号/颜色/加粗/斜体/下划线）。
+  // R145：打开页面默认显示「今天」视图；取消点击卡片/空白弹出新建；「编辑」一键进入编辑模式（全部备忘卡可改可删）。
+  // R146：① 删除左侧时间刻度列与小时行，日程区改为普通卡片式备忘内容区（卡片靠左、间距清晰、高度自适应不重叠）；
+  //       ② 右上角图标按钮统一改为文字按钮（编辑 / 取消 / 新增）；
+  //       ③ 「今天 / 周 / 月」三版块共用同一套周看板数据层，编辑态下均可新增/修改/删除；
+  //       ④ 月视图编辑态支持单日明细（_wbMonthDay）。
   const WB_WD = ['一','二','三','四','五','六','日'];
-  const WB_HOURS = ['09:00','10:00','11:00','12:00'];
-  const WB_ICO_CAL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="16" rx="2.4"/><path d="M3.5 9.4h17M8 3.2v3.6M16 3.2v3.6M8 13h3M8 16.4h3M13 13h3"/></svg>';
-  const WB_ICO_PLUS = NB_ICO_PLUS;
-  const WB_ICO_DRAG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.2v8.4M12 11.6l-3-3M12 11.6l3-3M4.6 13.6c0 1.2.9 2.2 2.1 2.2 1.5 0 1.9-1.1 3.3-1.1s1.8 1.1 3.3 1.1 1.8-1.1 3.3-1.1 2.1 1 2.1 2.2"/><path d="M12 20.8v-3M9 17.8h6"/></svg>';
-  const WB_ICO_PENCIL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9a2.1 2.1 0 0 0-3-3L5 17v3z"/><path d="M14.5 6.5l3 3"/></svg>';
   let _wbView = 'today';       // 'week' | 'month' | 'today'（R145：打开页面默认显示今天视图）
   let _wbMonday = '';          // 当前周周一 ISO
   let _wbMonthYM = '';         // 当前月 'YYYY-MM'
-  let _wbCollapsed = false;
-  let _wbEditMode = false;     // R145：编辑模式（铅笔按钮）—— 全部日程卡可修改/删除
-  let _wbEditScope = 'week';   // R145：富文本弹窗当前编辑对象所属存储（'week' 周看板 / 'day' 今天视图日看板）
+  let _wbMonthDay = '';        // R146：月视图编辑态下打开的单日明细（ISO）
+  let _wbEditMode = false;     // R145→R146：编辑模式（文字按钮「编辑」）—— 全部备忘卡可修改/删除
   let _wbEditId = '';          // 正在编辑的任务 id
   let _wbEditDate = '';        // 新建时所属日期
   let _wbEditType = 'range';
@@ -40881,8 +40332,9 @@ I'm good at running.`},
   function wbDateOf(mon, d){ return nbShiftISO(mon, d); }
   function wbTasksOn(date){ return (window.Store && window.Store.getNickWeekBoard) ? window.Store.getNickWeekBoard(date) : []; }
   function wbSaveOn(date, list){ if(window.Store && window.Store.saveNickWeekBoard) window.Store.saveNickWeekBoard(date, list); }
-  function wbFindTask(id){
-    for(let d=0; d<7; d++){ const date = wbDateOf(_wbMonday, d); const ts = wbTasksOn(date); for(let i=0;i<ts.length;i++) if(ts[i].id===id) return { task:ts[i], date:date }; }
+  function wbTaskOn(date, id){
+    const list = wbTasksOn(date);
+    for(let i=0;i<list.length;i++) if(list[i].id===id) return list[i];
     return null;
   }
   function wbTimeText(t){ if(t.type==='all') return '全天'; if(t.type==='point') return t.start || ''; return (t.start||'') + ' - ' + (t.end || nbAddHour(t.start||'09:00', 60)); }
@@ -40892,16 +40344,17 @@ I'm good at running.`},
       + '<div class="wb-win" id="wbWin" data-page-node-id="R141wbWin">'
       + '<div class="wb-win-head">'
       + '<div class="wb-nav-left">'
-      + '<button class="wb-nav-btn" id="wbBtnPrev" type="button" title="上一周/上一月" aria-label="上一周/上一月">←</button>'
+      + '<button class="wb-nav-btn" id="wbBtnPrev" type="button" title="上一周/上一月/前一天" aria-label="上一周/上一月/前一天">←</button>'
       + '<span class="wb-ym" id="wbYm"></span>'
-      + '<button class="wb-nav-btn" id="wbBtnNext" type="button" title="下一周/下一月" aria-label="下一周/下一月">→</button>'
+      + '<button class="wb-nav-btn" id="wbBtnNext" type="button" title="下一周/下一月/后一天" aria-label="下一周/下一月/后一天">→</button>'
       + '</div>'
       + '<div class="wb-nav-right">'
-      + '<button class="wb-today-btn" id="wbBtnToday" type="button">今天</button>'
+      + '<button class="wb-view-btn" id="wbBtnToday" type="button">今天</button>'
       + '<button class="wb-view-btn" id="wbBtnWeek" type="button">周</button>'
       + '<button class="wb-view-btn" id="wbBtnMonth" type="button">月</button>'
-      + '<button class="wb-x wb-edit-btn" id="wbBtnEditMode" type="button" title="编辑模式：修改或删除日程卡" aria-label="编辑模式">'+WB_ICO_PENCIL+'</button>'
-      + '<button class="wb-x wb-add-btn" id="wbBtnAdd" type="button" title="新增日程" aria-label="新增日程">'+WB_ICO_PLUS+'</button>'
+      // R146：图标按钮统一改为文字按钮（浅白圆角文字标签）；「新增」仅在编辑态显示
+      + '<button class="wb-text-btn wb-add-btn" id="wbBtnAdd" type="button" style="display:none" title="新增一条备忘">新增</button>'
+      + '<button class="wb-text-btn wb-edit-btn" id="wbBtnEditMode" type="button" aria-pressed="false" title="进入编辑状态，可新增/修改/删除备忘">编辑</button>'
       + '</div>'
       + '</div>'
       + '<div class="wb-intro" data-page-node-id="R141wbIntro">一周忙闲，一眼看清。</div>'
@@ -40911,14 +40364,22 @@ I'm good at running.`},
   }
   function wbTaskHTML(t){
     const rich = t.html ? t.html : esc(t.title);
-    return '<div class="wb-task wb-c-'+t.color+(t.done?' wb-done':'')+'" data-wb-id="'+esc(t.id)+'" data-wb-type="'+t.type+'" data-page-node-id="R141wbTask">'
+    return '<div class="wb-task wb-c-'+t.color+(t.done?' wb-done':'')+'" data-wb-id="'+esc(t.id)+'" data-wb-date="'+esc(t.date||'')+'" data-wb-type="'+t.type+'" data-page-node-id="R141wbTask">'
       + '<span class="wb-mark"></span>'
       + '<div class="wb-task-main">'
       + '<div class="wb-rte-content">'+rich+'</div>'
       + '<div class="wb-task-time">'+esc(wbTimeText(t))+'</div>'
       + '</div>'
-      + '<button class="wb-task-del" type="button" data-wb-del="'+esc(t.id)+'" title="删除此日程" aria-label="删除此日程">×</button>'
+      + '<button class="wb-task-del" type="button" data-wb-del="'+esc(t.id)+'" data-wb-date="'+esc(t.date||'')+'" title="删除此备忘" aria-label="删除此备忘">×</button>'
       + '</div>';
+  }
+  // R146：某个日期的备忘卡片列表（今天视图 / 月视图单日明细共用）—— 卡片靠左对齐、间距清晰、高度随内容自适应
+  function wbDayCardsHTML(date){
+    const tasks = wbTasksOn(date);
+    if(!tasks.length) return '<div class="wb-empty">这一天还没有备忘<br>点右上角「编辑」→「新增」开始记录吧</div>';
+    let html = '<div class="wb-day-list">';
+    tasks.forEach(function(t){ html += wbTaskHTML(t); });
+    return html + '</div>';
   }
   function renderWbHead(){
     const ym = document.getElementById('wbYm');
@@ -40927,38 +40388,37 @@ I'm good at running.`},
     const m = document.getElementById('wbBtnMonth'); if(m) m.classList.toggle('active', _wbView === 'month');
     const t = document.getElementById('wbBtnToday'); if(t) t.classList.toggle('active', _wbView === 'today');
   }
+  /* R146：周视图 —— 删除左侧时间刻度列（09:00~12:00）与小时行，日程区改为普通卡片式备忘内容区：
+     7 个「日期卡片列」（周一..周日 + 日期数字），卡片在列内纵向堆叠、靠左对齐、高度自适应不重叠。 */
   function renderWbWeek(){
     const body = document.getElementById('wbBody'); if(!body) return;
     let html = '<div class="wb-week-grid">';
-    html += '<div class="wb-corner"></div>';
     for(let d=0; d<7; d++){
       const date = wbDateOf(_wbMonday, d);
       const dt = new Date(date + 'T00:00:00');
       const isToday = date === nbTodayISO();
-      html += '<div class="wb-col-h'+(isToday?' wb-today-col':'')+'" data-wb-date="'+date+'">周'+WB_WD[d]+'<span class="wb-col-d">'+dt.getDate()+'</span></div>';
+      const tasks = wbTasksOn(date);
+      let cards = '';
+      tasks.forEach(function(t){ cards += wbTaskHTML(t); });
+      if(!cards) cards = '<div class="wb-col-empty">暂无备忘</div>';
+      html += '<div class="wb-day-col'+(isToday?' wb-today-col':'')+'" data-wb-date="'+date+'">'
+        + '<div class="wb-col-h">周'+WB_WD[d]+'<span class="wb-col-d">'+dt.getDate()+'</span></div>'
+        + '<div class="wb-day-cards">'+cards+'</div>'
+        + '</div>';
     }
-    WB_HOURS.forEach(function(h){
-      html += '<div class="wb-time">'+h+'</div>';
-      for(let d=0; d<7; d++){
-        const date = wbDateOf(_wbMonday, d);
-        const tasks = wbTasksOn(date).filter(function(t){ return t.type!=='all' && nbHourOf(t.start)===h; });
-        let inner = '';
-        tasks.forEach(function(t){ inner += wbTaskHTML(t); });
-        const isToday = date === nbTodayISO();
-        html += '<div class="wb-cell'+(isToday?' wb-today-col':'')+'" data-wb-date="'+date+'" data-wb-hour="'+h+'">'+inner+'</div>';
-      }
-    });
     html += '</div>';
     body.innerHTML = html;
-    bindWbTasks();
+    bindWbCards();
   }
+  /* R146：月视图 —— 保留 7 列日历与彩色圆点；编辑态下点击某日期 → 打开该日明细（可新增/修改/删除），
+     只读态下点击某日期 → 跳到该日期所在周的周视图。 */
   function renderWbMonth(){
     const body = document.getElementById('wbBody'); if(!body) return;
+    if(_wbMonthDay){ renderWbMonthDay(); return; }
     const a = _wbMonthYM.split('-'); const y = +a[0], m = +a[1];
     const first = new Date(y, m-1, 1); const startOff = (first.getDay() + 6) % 7;
     const p2 = n => (n<10?'0':'')+n;
     let html = '<div class="wb-month-grid">';
-    html += '<div class="wb-corner"></div>';
     WB_WD.forEach(function(w){ html += '<div class="wb-col-h">周'+w+'</div>'; });
     for(let i=0; i<42; i++){
       const day = i - startOff + 1;
@@ -40975,58 +40435,67 @@ I'm good at running.`},
     html += '</div>';
     body.innerHTML = html;
     body.querySelectorAll('.wb-mcell').forEach(function(c){
-      c.addEventListener('click', function(){ _wbMonday = wbMondayOf(c.getAttribute('data-wb-date')); _wbView = 'week'; wbRefresh(); });
+      c.addEventListener('click', function(){
+        const date = c.getAttribute('data-wb-date');
+        if(_wbEditMode){ _wbMonthDay = date; wbRefresh(); if(window.toast) toast('已打开 '+date.slice(5)+' 的备忘，可新增/修改/删除'); }
+        else { _wbMonday = wbMondayOf(date); _wbView = 'week'; wbRefresh(); }
+      });
     });
   }
-  /* R142 → R145：周看板「今天」视图 —— 复用日看板的数据层与渲染/交互逻辑（nbRefresh / renderNbTimeline / bindNbTasks），
-     将「日看板」内容嵌入周看板的今天视图内：显示当天时间轴。
-     R145：删除原第三行（日期/→/周视图导航）—— 日期改由窗口顶部年月位（wbYm）显示，
-     ←/→ 在 today 态按天偏移，切回周视图点「周」按钮即可；时间轴取消「全天」行与点击卡片/空白新建。 */
+  // R146：月视图编辑态 —— 单日明细（与今天视图共用同一套卡片列表与交互）
+  function renderWbMonthDay(){
+    const body = document.getElementById('wbBody'); if(!body) return;
+    const date = _wbMonthDay;
+    body.innerHTML = '<div class="wb-dayview" data-page-node-id="R146wbMonthDay">'
+      + '<div class="wb-sec-bar">'
+      + '<button class="wb-back-btn" id="wbMonthBack" type="button">← 返回月视图</button>'
+      + '<span class="wb-sec-title">'+esc(nbFmtCN(date))+'</span>'
+      + '</div>'
+      + wbDayCardsHTML(date)
+      + '</div>';
+    const back = document.getElementById('wbMonthBack');
+    if(back) back.onclick = function(){ _wbMonthDay = ''; wbRefresh(); };
+    bindWbCards();
+  }
+  /* R142 → R146：周看板「今天」视图 —— 与周/月视图共用同一套周看板数据层（getNickWeekBoard/saveNickWeekBoard）；
+     R146 起改为普通卡片式备忘内容区（无时间刻度、无第三行导航）：←/→ 按天切换，日期由窗口顶部年月位显示。 */
   function renderWbToday(){
     const body = document.getElementById('wbBody'); if(!body) return;
     if(!_nbDate) _nbDate = nbTodayISO();
     renderWbHead();
+    const isToday = _nbDate === nbTodayISO();
     body.innerHTML = '<div class="wb-dayview" data-page-node-id="R142wbDayview">'
-      + '<div class="nb-timeline" id="nbTimeline" data-page-node-id="R142nbTimeline"></div>'
+      + '<div class="wb-sec-bar"><span class="wb-sec-title">'+esc(nbFmtCN(_nbDate))+'</span>'
+      + (isToday ? '<span class="wb-sec-tag">今天</span>' : '')
+      + '</div>'
+      + wbDayCardsHTML(_nbDate)
       + '</div>';
-    nbRefresh();   // 填充 #nbTimeline 并绑定任务卡交互（#nbDate 已随第三行一并删除，renderNbDate 自动跳过）
+    bindWbCards();
   }
   function wbRefresh(){ renderWbHead(); if(_wbView === 'week') renderWbWeek(); else if(_wbView === 'month') renderWbMonth(); else renderWbToday(); }
-  function wbToggleDone(id){
-    const f = wbFindTask(id); if(!f) return;
-    const list = wbTasksOn(f.date); let t = null;
+  function wbToggleDoneOn(date, id){
+    const list = wbTasksOn(date); let t = null;
     for(let i=0;i<list.length;i++) if(list[i].id===id) t = list[i];
     if(!t) return;
     t.done = t.done ? 0 : 1;
-    wbSaveOn(f.date, list);
+    wbSaveOn(date, list);
     wbRefresh();
-    if(window.toast) toast(t.done ? '已完成「'+t.title+'」🎉' : '已取消「'+t.title+'」的完成标记');
+    if(window.toast) toast(t.done ? '已完成「'+(t.title||'这条备忘')+'」🎉' : '已取消完成标记');
   }
-  function wbMoveTask(id, toDate, toHour){
-    const f = wbFindTask(id); if(!f) return;
-    const fromDate = f.date; const task = f.task;
-    let src = wbTasksOn(fromDate).filter(function(x){ return x.id !== id; });
-    wbSaveOn(fromDate, src);
-    let tgt = wbTasksOn(toDate);
-    const dur = (task.start && task.end) ? (nbMinutes(task.end) - nbMinutes(task.start)) : 60;
-    task.date = toDate;
-    if(task.type === 'point'){ task.start = toHour; task.end = ''; }
-    else if(task.type === 'all'){ /* 全天：仅改日期 */ }
-    else { task.start = toHour; task.end = nbAddHour(toHour, dur > 0 ? dur : 60); }
-    tgt.push(task);
-    wbSaveOn(toDate, tgt);
-    wbRefresh();
-    if(window.toast) toast('已调整到 '+toDate.slice(5)+' '+toHour);
-  }
-  function bindWbTasks(){
+  /* R146：统一卡片交互（周视图日期列 / 今天视图列表 / 月视图单日明细共用）。
+     只读态：点击卡片不弹窗（交互约束），长按标记完成；编辑态：点击卡片 → 富文本弹窗修改，卡片右上角 × 删除。 */
+  function bindWbCards(){
     const body = document.getElementById('wbBody'); if(!body) return;
     body.querySelectorAll('.wb-task').forEach(function(card){
-      let timer = null, longFired = false, dragging = false, moved = false, sx = 0, sy = 0, targetCell = null;
+      let timer = null, longFired = false, moved = false, sx = 0, sy = 0;
+      const id = card.getAttribute('data-wb-id');
+      const date = card.getAttribute('data-wb-date');
       card.addEventListener('pointerdown', function(e){
         if(e.button !== undefined && e.button !== 0) return;
-        if(_wbEditMode) return;   // R145：编辑模式下仅响应点击（由 pointerup 的 !moved 分支唤起富文本弹窗），禁用长按与拖拽
+        if(e.target.closest && e.target.closest('.wb-task-del')) return;
+        if(_wbEditMode) return;   // 编辑模式下仅响应点击（由 pointerup 的 !moved 分支唤起富文本弹窗），禁用长按
         try{ card.setPointerCapture(e.pointerId); }catch(err){}
-        sx = e.clientX; sy = e.clientY; moved = false; longFired = false; dragging = false; targetCell = null;
+        sx = e.clientX; sy = e.clientY; moved = false; longFired = false;
         timer = setTimeout(function(){ longFired = true; card.classList.add('wb-pressing'); }, 450);
       });
       card.addEventListener('pointermove', function(e){
@@ -41035,52 +40504,34 @@ I'm good at running.`},
         if(!moved && Math.sqrt(dx*dx + dy*dy) > 8){
           moved = true;
           if(timer){ clearTimeout(timer); timer = null; }
-          card.classList.remove('wb-pressing'); dragging = true; card.classList.add('wb-dragging');
-        }
-        if(dragging){
-          e.preventDefault();
-          const el = document.elementFromPoint(e.clientX, e.clientY);
-          const cell = el ? el.closest('.wb-cell') : null;
-          if(cell !== targetCell){
-            if(targetCell) targetCell.classList.remove('wb-cell-target');
-            targetCell = cell;
-            if(cell) cell.classList.add('wb-cell-target');
-          }
+          card.classList.remove('wb-pressing');
         }
       });
       const finish = function(){
         if(timer){ clearTimeout(timer); timer = null; }
-        card.classList.remove('wb-pressing', 'wb-dragging');
-        if(targetCell) targetCell.classList.remove('wb-cell-target');
-        const id = card.getAttribute('data-wb-id');
-        if(dragging){
-          dragging = false;
-          if(targetCell) wbMoveTask(id, targetCell.getAttribute('data-wb-date'), targetCell.getAttribute('data-wb-hour'));
-        } else if(longFired){ wbToggleDone(id); }
-        else if(!moved){
-          // R145：取消点击卡片弹出新建/编辑页面；编辑模式下点击卡片 → 富文本弹窗修改
-          if(_wbEditMode){ const f = wbFindTask(id); wbOpenEditModal(f ? f.task : null, f ? { date:f.date, scope:'week' } : null); }
-        }
-        sx = 0; sy = 0; targetCell = null;
+        card.classList.remove('wb-pressing');
+        if(!moved && !longFired){
+          // R145/R146：只读态点击卡片不弹出任何新建/编辑页面；编辑态点击卡片 → 富文本弹窗修改
+          if(_wbEditMode){ const t = wbTaskOn(date, id); wbOpenEditModal(t, { date:date }); }
+        } else if(longFired && !_wbEditMode){ wbToggleDoneOn(date, id); }
+        sx = 0; sy = 0;
       };
       card.addEventListener('pointerup', finish);
       card.addEventListener('pointercancel', function(){
         if(timer){ clearTimeout(timer); timer = null; }
-        card.classList.remove('wb-pressing', 'wb-dragging');
-        if(targetCell) targetCell.classList.remove('wb-cell-target');
-        dragging = false; sx = 0; sy = 0; targetCell = null;
+        card.classList.remove('wb-pressing'); sx = 0; sy = 0;
       });
       card.addEventListener('dragstart', function(e){ e.preventDefault(); });
     });
-    // R145：编辑模式删除按钮（仅编辑模式可见，见 styles.css .mn-weekboard.wb-edit-mode）
+    // R145/R146：编辑模式删除按钮（仅编辑模式可见，见 styles.css .mn-weekboard.wb-edit-mode）
     body.querySelectorAll('.wb-task-del').forEach(function(b){
       b.addEventListener('pointerdown', function(e){ e.stopPropagation(); });
       b.addEventListener('pointerup', function(e){ e.stopPropagation(); });
       b.addEventListener('click', function(e){
         e.stopPropagation();
         const id = b.getAttribute('data-wb-del');
-        const f = wbFindTask(id);
-        if(f){ wbSaveOn(f.date, wbTasksOn(f.date).filter(function(x){ return x.id !== id; })); wbRefresh(); if(window.toast) toast('已删除该日程'); }
+        const date = b.getAttribute('data-wb-date');
+        if(date){ wbSaveOn(date, wbTasksOn(date).filter(function(x){ return x.id !== id; })); wbRefresh(); if(window.toast) toast('已删除该备忘'); }
       });
     });
   }
@@ -41152,7 +40603,6 @@ I'm good at running.`},
   function wbOpenEditModal(task, prefill){
     _wbEditId = task ? task.id : '';
     const t = task || {}, pf = prefill || {};
-    _wbEditScope = pf.scope || 'week';   // R145：'week' 周看板存储 / 'day' 今天视图日看板存储
     _wbEditType = t.type || pf.type || 'range';
     _wbEditColor = t.color || pf.color || 'blue';
     _wbEditDate = t.date || pf.date || _wbMonday || nbTodayISO();
@@ -41172,62 +40622,64 @@ I'm good at running.`},
     showModal('#modalWbEdit');
     if(ed) setTimeout(function(){ try{ ed.focus(); }catch(e){} }, 60);
   }
-  // R145：编辑模式开关（铅笔按钮）—— 开启后页面内所有日程卡显示删除×，点击卡片进入富文本修改
+  // R145 → R146：编辑模式开关（文字按钮「编辑 / 取消」）—— 开启后今天/周/月三版块均可编辑，
+  // 页面内所有备忘卡显示删除×，点击卡片进入富文本修改；「新增」按钮仅在编辑态显示。
   function wbToggleEditMode(){
     _wbEditMode = !_wbEditMode;
+    if(!_wbEditMode) _wbMonthDay = '';   // 退出编辑态时收起月视图单日明细
     const card = document.querySelector('.mn-weekboard');
     if(card) card.classList.toggle('wb-edit-mode', _wbEditMode);
     const btn = document.getElementById('wbBtnEditMode');
-    if(btn) btn.classList.toggle('active', _wbEditMode);
-    if(window.toast) toast(_wbEditMode ? '编辑模式已开启：点击卡片修改，点 × 删除' : '编辑模式已关闭');
+    if(btn){
+      btn.classList.toggle('active', _wbEditMode);
+      btn.textContent = _wbEditMode ? '取消' : '编辑';
+      btn.setAttribute('aria-pressed', _wbEditMode ? 'true' : 'false');
+      btn.title = _wbEditMode ? '退出编辑状态' : '进入编辑状态，可新增/修改/删除备忘';
+    }
+    const add = document.getElementById('wbBtnAdd');
+    if(add) add.style.display = _wbEditMode ? '' : 'none';
+    wbRefresh();
+    if(window.toast) toast(_wbEditMode ? '编辑状态已开启：可切换今天/周/月，点卡片修改，点 × 删除' : '已退出编辑状态');
+  }
+  // R146：新增备忘 —— 按当前版块决定所属日期（今天视图=当天；周视图=今天所在列，否则周一；月视图=已打开的单日，否则今天）
+  function wbAddNew(){
+    if(!_wbEditMode) wbToggleEditMode();
+    let date;
+    if(_wbView === 'today'){ date = _nbDate || nbTodayISO(); }
+    else if(_wbView === 'month'){ date = _wbMonthDay || nbTodayISO(); }
+    else {
+      const today = nbTodayISO();
+      date = (today >= wbDateOf(_wbMonday, 0) && today <= wbDateOf(_wbMonday, 6)) ? today : wbDateOf(_wbMonday, 0);
+    }
+    wbOpenEditModal(null, { type:'range', color:wbNextColor(date), date:date, start:'09:00', end:'10:00' });
   }
   function bindWbEditModal(){
     const colors = document.getElementById('wbColors');
     if(colors) colors.querySelectorAll('button').forEach(function(b){ b.onclick = function(){ _wbEditColor = b.getAttribute('data-wb-color'); wbSyncEditModal(); }; });
     const save = document.getElementById('btnWbSave');
     if(save) save.onclick = wbSaveFromModal;
-    const cancel = document.getElementById('btnWbCancel');
+    const cancel = document.getElementById('wbBtnCancel');
     if(cancel) cancel.onclick = function(){ hideModal('#modalWbEdit'); };
     const del = document.getElementById('btnWbDel');
     if(del) del.onclick = function(){
       const id = _wbEditId; if(!id){ hideModal('#modalWbEdit'); return; }
-      // R145：按 scope 分发到周看板 / 今天视图（日看板）两套存储
-      if(_wbEditScope === 'day'){
-        nbSaveTasks(nbTasks().filter(function(x){ return x.id !== id; }));
-      } else {
-        const date = _wbEditDate;
-        wbSaveOn(date, wbTasksOn(date).filter(function(x){ return x.id !== id; }));
-      }
-      hideModal('#modalWbEdit'); wbRefresh(); if(window.toast) toast('已删除该日程');
+      // R146：三版块共用同一套周看板数据层，按日期删除即可
+      const date = _wbEditDate;
+      wbSaveOn(date, wbTasksOn(date).filter(function(x){ return x.id !== id; }));
+      hideModal('#modalWbEdit'); wbRefresh(); if(window.toast) toast('已删除该备忘');
     };
   }
   function wbSaveFromModal(){
     const ed = document.getElementById('wbEditor');
     const html = wbSanitize(ed ? ed.innerHTML : '');
     const plain = wbPlainText(html);
-    if(!plain){ if(window.toast) toast('先写点日程内容吧'); if(ed) ed.focus(); return; }
+    if(!plain){ if(window.toast) toast('先写点备忘内容吧'); if(ed) ed.focus(); return; }
     const st = document.getElementById('wbInStart');
     const en = document.getElementById('wbInEnd');
     const start = (st && st.value) || '09:00';
     const end = (en && en.value) || '10:00';
     const date = _wbEditDate;
-    // R145：编辑「今天」视图的日日程 —— 存入日看板数据层（getNickDayBoard/saveNickDayBoard）
-    if(_wbEditScope === 'day'){
-      const tasks = nbTasks();
-      let t = null;
-      if(_wbEditId){ for(let i=0;i<tasks.length;i++) if(tasks[i].id === _wbEditId) t = tasks[i]; }
-      if(!t){
-        t = { id:'nb'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), title:plain.slice(0,30), html:html, type:'range', start:start, end:((end && end > start) ? end : nbAddHour(start, 60)), color:_wbEditColor, done:0 };
-        tasks.push(t);
-      } else {
-        t.title = plain.slice(0,30); t.html = html; t.color = _wbEditColor;
-        if(t.type !== 'all'){ t.start = start; t.end = (end && end > start) ? end : nbAddHour(start, 60); }
-      }
-      nbSaveTasks(tasks);
-      hideModal('#modalWbEdit'); wbRefresh();
-      if(window.toast) toast(_wbEditId ? '日程已更新' : '已添加新日程');
-      return;
-    }
+    // R146：今天/周/月三版块共用同一套周看板数据层（getNickWeekBoard/saveNickWeekBoard，按日期存取）
     let list = wbTasksOn(date);
     let t = null;
     if(_wbEditId){ for(let i=0;i<list.length;i++) if(list[i].id === _wbEditId) t = list[i]; }
@@ -41241,7 +40693,7 @@ I'm good at running.`},
     }
     wbSaveOn(date, list);
     hideModal('#modalWbEdit'); wbRefresh();
-    if(window.toast) toast(_wbEditId ? '周日程已更新' : '已添加新周日程');
+    if(window.toast) toast(_wbEditId ? '备忘已更新' : '已添加新备忘');
   }
   function initWeekBoard(){
     if(!_wbMonday) _wbMonday = wbMondayOf(nbTodayISO());
@@ -41253,24 +40705,17 @@ I'm good at running.`},
     const next = document.getElementById('wbBtnNext');
     if(next) next.onclick = function(){ if(_wbView === 'week') _wbMonday = wbShiftMonday(_wbMonday, 1); else if(_wbView === 'month') _wbMonthYM = wbShiftMonth(_wbMonthYM, 1); else _nbDate = nbShiftISO(_nbDate || nbTodayISO(), 1); wbRefresh(); };
     const week = document.getElementById('wbBtnWeek');
-    if(week) week.onclick = function(){ _wbView = 'week'; wbRefresh(); };
+    if(week) week.onclick = function(){ _wbView = 'week'; _wbMonthDay = ''; wbRefresh(); };
     const month = document.getElementById('wbBtnMonth');
-    if(month) month.onclick = function(){ _wbView = 'month'; wbRefresh(); };
+    if(month) month.onclick = function(){ _wbView = 'month'; _wbMonthDay = ''; wbRefresh(); };
     const today = document.getElementById('wbBtnToday');
-    if(today) today.onclick = function(){ _wbMonday = wbMondayOf(nbTodayISO()); _wbMonthYM = nbTodayISO().slice(0, 7); _nbDate = nbTodayISO(); _wbView = 'today'; wbRefresh(); if(window.toast) toast('已切换到今天视图'); };
-    // R145：铅笔按钮 = 编辑模式（修改/删除全部日程卡）；加号按钮 = 新增日程（原铅笔的新建职能）
+    if(today) today.onclick = function(){ _wbMonday = wbMondayOf(nbTodayISO()); _wbMonthYM = nbTodayISO().slice(0, 7); _nbDate = nbTodayISO(); _wbMonthDay = ''; _wbView = 'today'; wbRefresh(); if(window.toast) toast('已切换到今天视图'); };
+    // R145→R146：文字按钮「编辑/取消」= 编辑模式（三版块均可改可删）；「新增」= 在当前版块新建备忘
     const editMode = document.getElementById('wbBtnEditMode');
     if(editMode) editMode.onclick = function(){ wbToggleEditMode(); };
     const add = document.getElementById('wbBtnAdd');
-    if(add) add.onclick = function(){
-      const isToday = (_wbView === 'today');
-      const scope = isToday ? 'day' : 'week';
-      const date = isToday ? (_nbDate || nbTodayISO()) : (_wbMonday || nbTodayISO());
-      const color = isToday ? nbNextColor() : wbNextColor(date);
-      wbOpenEditModal(null, { type:'range', color:color, date:date, start:'09:00', end:'10:00', scope:scope });
-    };
+    if(add) add.onclick = function(){ wbAddNew(); };
     bindWbEditModal();
-    bindNbEditModal();   // 为「今天」视图的日日程复用 #modalNbEdit 弹窗接线
   }
   // R138：备忘录管理改为「统一弹窗（对话框）」编辑 —— 时间/事项/备注在
   // 同一个对话框内编辑，对话框整体放大（见 styles.css .modal-memo）。备忘墙只负责展示。
@@ -49180,6 +48625,24 @@ I'm good at running.`},
         _st.clickSfx = { nav:'a', theme:'b', sub:'b', checkin:'c' };
         _st._clickSfxReset = 'R143';
         if(window.Store && window.Store.save) window.Store.save(_st);
+      }
+    }catch(e){}
+    // R146：今天/周/月三版块统一共用周看板数据层 —— 首次打开把旧「日看板」数据（st.nickDayBoard）
+    // 按日期合并进周看板（st.nickWeekBoard，按 id 去重），确保历史日程不丢失；仅执行一次。
+    try{
+      const _st2 = (window.Store && window.Store.load) ? window.Store.load() : null;
+      if(_st2 && _st2._wbMergeDayBoard !== 'R146' && window.Store.getNickDayBoard && window.Store.saveNickWeekBoard){
+        const dayB = (_st2.nickDayBoard && typeof _st2.nickDayBoard === 'object') ? _st2.nickDayBoard : {};
+        Object.keys(dayB).forEach(function(d){
+          const src = Array.isArray(dayB[d]) ? dayB[d] : [];
+          if(!src.length) return;
+          const cur = window.Store.getNickWeekBoard(d) || [];
+          const seen = {}; cur.forEach(function(x){ seen[x.id] = 1; });
+          const add = src.filter(function(x){ return x && !seen[x.id]; }).map(function(x){ x.date = d; return x; });
+          if(add.length) window.Store.saveNickWeekBoard(d, cur.concat(add));
+        });
+        _st2._wbMergeDayBoard = 'R146';
+        if(window.Store && window.Store.save) window.Store.save(_st2);
       }
     }catch(e){}
     // 设置：合并进「任务设置」页（单一版块；系统设置锁卡片点击解锁）
