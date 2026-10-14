@@ -5533,6 +5533,26 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .mn-fld{display:grid;grid-template-columns:48px 1fr;align-items:center;gap:10px}
 .mn-fld-lab{font-size:12px;font-weight:800;color:#3f5e95;white-space:nowrap}
 
+/* R139：备忘录备注富文本编辑器（WYSIWYG，Word 操作逻辑，磨砂玻璃半透明，不遮挡陆家嘴背景） */
+.mn-rte-wrap{display:flex;flex-direction:column;gap:6px;margin:8px 0 2px}
+.mn-rte-bar{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:5px 6px;border-radius:10px;background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.7);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.mn-rte-font,.mn-rte-size{font-size:12px;padding:3px 4px;border:1.5px solid var(--tone-line-soft);border-radius:7px;background:#fff;color:#23314a;max-width:120px}
+.mn-rte-color,.mn-rte-hl{width:30px;height:28px;padding:0;border:none;background:none;cursor:pointer;border-radius:7px;box-shadow:0 0 0 1.5px rgba(255,255,255,.7)}
+.mn-rte-btn{min-width:30px;height:28px;padding:0 8px;border:1.5px solid rgba(255,255,255,.8);border-radius:7px;background:rgba(255,255,255,.72);color:#23314a;cursor:pointer;font-size:13px;line-height:1;display:inline-flex;align-items:center;justify-content:center;transition:background .12s ease,transform .12s ease}
+.mn-rte-btn:hover{background:#fff}
+.mn-rte-btn:active{transform:scale(.94)}
+.mn-rte-btn.active{background:var(--tone-600);color:#fff;border-color:var(--tone-700)}
+.mn-rte-clear{margin-left:auto;font-size:12px;padding:0 10px}
+.mn-rte{min-height:86px;max-height:240px;overflow-y:auto;padding:9px 11px;border-radius:10px;background:rgba(255,255,255,.46);border:1.5px solid rgba(255,255,255,.66);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);color:#16243f;font-size:14px;line-height:1.6;outline:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.4)}
+.mn-rte:focus{border-color:var(--tone-600);box-shadow:0 0 0 3px rgba(64,150,255,.18),inset 0 1px 0 rgba(255,255,255,.4)}
+.mn-rte p,.mn-rte div{margin:0 0 8px;text-indent:2em;line-height:1.7}
+.mn-rte p:last-child,.mn-rte div:last-child{margin-bottom:0}
+.mn-rte[data-paraspacing="2"] p,.mn-rte[data-paraspacing="2"] div{margin-bottom:14px}
+.mn-rte[data-paraspacing="3"] p,.mn-rte[data-paraspacing="3"] div{margin-bottom:22px}
+/* 备忘墙卡片正文支持富文本（首行缩进与段间距与编辑器一致） */
+.mn-note-rich p,.mn-note-rich div{margin:0 0 4px;text-indent:2em;line-height:1.4}
+.mn-note-rich p:last-child,.mn-note-rich div:last-child{margin-bottom:0}
+
 
 /* ---- R118-3：设置中心模式选择卡片（#cardModeSettings，与打卡任务等同款外壳） ---- */
 .settings-card-mode{cursor:default}
@@ -30029,7 +30049,8 @@ window.WANTONG_COVER = './assets/c6249ea2bfe3.jpg';
         note: String((m && m.note)||'').slice(0, MEMO_MAX),
         fontSize: (m && m.fontSize!==undefined && m.fontSize!=='') ? String(m.fontSize) : '',
         color: (m && m.color!==undefined && m.color!=='') ? String(m.color) : '',
-        opacity: (m && m.opacity!==undefined && m.opacity!=='') ? String(m.opacity) : ''
+        opacity: (m && m.opacity!==undefined && m.opacity!=='') ? String(m.opacity) : '',
+        noteHtml: (m && m.noteHtml) ? String(m.noteHtml).slice(0, 4000) : ''
       };
     });
     if(patched){ try{ save(st); }catch(e){} }
@@ -30046,9 +30067,10 @@ window.WANTONG_COVER = './assets/c6249ea2bfe3.jpg';
         note: String((x && x.note) || '').slice(0, MEMO_MAX),
         fontSize: (x && x.fontSize!==undefined && x.fontSize!=='') ? String(x.fontSize) : '',
         color: (x && x.color!==undefined && x.color!=='') ? String(x.color) : '',
-        opacity: (x && x.opacity!==undefined && x.opacity!=='') ? String(x.opacity) : ''
+        opacity: (x && x.opacity!==undefined && x.opacity!=='') ? String(x.opacity) : '',
+        noteHtml: (x && x.noteHtml) ? String(x.noteHtml).slice(0, 4000) : ''
       }))
-      .filter(x=>x.item.trim() || x.note.trim() || x.date.trim());
+      .filter(x=>x.item.trim() || x.note.trim() || x.date.trim() || x.noteHtml);
     save(st);
     return st.nickMemos.slice();
   }
@@ -39786,6 +39808,95 @@ I'm good at running.`},
     const t = (op - MN_OP_MIN) / (1 - MN_OP_MIN);
     return (MN_GLASS_MIN + (MN_GLASS_MAX - MN_GLASS_MIN) * t).toFixed(3);
   }
+  // R139：备忘录「备注」富文本编辑器（WYSIWYG，Word 操作逻辑，非 markdown）。
+  // 纯原生 contenteditable + execCommand 实现，零外部依赖，可直接内联进 standalone / ghpages 产物。
+  function sanitizeRich(html){
+    if(!html) return '';
+    const allowed = { B:1, STRONG:1, I:1, EM:1, U:1, INS:1, STRIKE:1, S:1, SPAN:1, DIV:1, P:1, BR:1, FONT:1, UL:1, OL:1, LI:1, A:1 };
+    const root = document.createElement('div'); root.innerHTML = html;
+    const walk = function(node){
+      Array.prototype.slice.call(node.childNodes).forEach(function(ch){
+        if(ch.nodeType === 1){
+          const tag = ch.tagName;
+          if(!allowed[tag]){ while(ch.firstChild) node.insertBefore(ch.firstChild, ch); node.removeChild(ch); return; }
+          const keep = {};
+          if(tag === 'FONT'){ if(ch.face) keep.face=ch.face; if(ch.size) keep.size=ch.size; if(ch.color) keep.color=ch.color; }
+          else if(tag === 'A'){ const h=ch.getAttribute('href')||''; if(/^https?:/i.test(h)) keep.href=h; }
+          else if(tag === 'SPAN' || tag === 'DIV' || tag === 'P'){ const st=ch.getAttribute('style')||''; if(!/url\(|expression|javascript:/i.test(st)) keep.style=st; }
+          for(let i=ch.attributes.length-1;i>=0;i--){ const a=ch.attributes[i]; if(!(a.name.toLowerCase() in keep)) ch.removeAttribute(a.name); }
+          for(const k in keep){ ch.setAttribute(k, keep[k]); }
+          walk(ch);
+        } else if(ch.nodeType === 8){ node.removeChild(ch); }
+      });
+    };
+    walk(root); return root.innerHTML;
+  }
+  function rteExec(cmd, val){
+    const ed = document.activeElement;
+    if(ed && ed.getAttribute && ed.getAttribute('data-rte')) ed.focus();
+    if(cmd==='bold') document.execCommand('bold', false, null);
+    else if(cmd==='italic') document.execCommand('italic', false, null);
+    else if(cmd==='underline') document.execCommand('underline', false, null);
+    else if(cmd==='strikeThrough') document.execCommand('strikeThrough', false, null);
+    else if(cmd==='fontName') document.execCommand('fontName', false, val);
+    else if(cmd==='fontSize') document.execCommand('fontSize', false, val);
+    else if(cmd==='foreColor') document.execCommand('foreColor', false, val);
+    else if(cmd==='hiliteColor'){ try{ document.execCommand('hiliteColor', false, val); }catch(e){ try{ document.execCommand('backColor', false, val); }catch(e2){} } }
+    else { try { document.execCommand(cmd, false, val || null); } catch(e){} }
+  }
+  function rteBarHTML(idx){
+    return '<div class="mn-rte-bar" data-page-node-id="R139rteBar'+idx+'">'
+      + '<select class="mn-rte-font" data-rte-font data-cmd="fontName" title="字体"><option value="微软雅黑">微软雅黑</option><option value="宋体">宋体</option><option value="黑体">黑体</option><option value="楷体">楷体</option><option value="Arial">Arial</option></select>'
+      + '<select class="mn-rte-size" data-rte-size data-cmd="fontSize" title="字号"><option value="1">极小</option><option value="2">小</option><option value="3" selected>中</option><option value="4">大</option><option value="5">特大</option><option value="6">巨大</option><option value="7">最大</option></select>'
+      + '<input type="color" class="mn-rte-color" data-rte-color data-cmd="foreColor" title="文字颜色" value="#1b2a44" />'
+      + '<input type="color" class="mn-rte-hl" data-rte-hl data-cmd="hiliteColor" title="背景高亮" value="#fff3a8" />'
+      + '<button type="button" class="mn-rte-btn" data-cmd="bold" title="加粗"><b>B</b></button>'
+      + '<button type="button" class="mn-rte-btn" data-cmd="italic" title="斜体"><i>I</i></button>'
+      + '<button type="button" class="mn-rte-btn" data-cmd="underline" title="下划线"><u>U</u></button>'
+      + '<button type="button" class="mn-rte-btn" data-cmd="strikeThrough" title="删除线"><s>S</s></button>'
+      + '<button type="button" class="mn-rte-btn mn-rte-indent" data-rte-indent title="首行缩进2字">⏎⇥</button>'
+      + '<button type="button" class="mn-rte-btn mn-rte-space" data-rte-space title="段间距">⇕</button>'
+      + '<button type="button" class="mn-rte-btn mn-rte-clear" data-rte-clear title="清空富文本">🗑清空</button>'
+      + '</div>';
+  }
+  function bindRichEditor(wrap, row){
+    if(!wrap) return;
+    const ed = wrap.querySelector('[data-rte]');
+    if(!ed) return;
+    wrap.querySelectorAll('button[data-cmd]').forEach(function(btn){
+      btn.addEventListener('mousedown', function(e){ e.preventDefault(); });
+      btn.addEventListener('click', function(){ ed.focus(); rteExec(btn.getAttribute('data-cmd')); });
+    });
+    const clear = wrap.querySelector('[data-rte-clear]');
+    if(clear) clear.addEventListener('click', function(){
+      ed.innerHTML = '';
+      if(row){ row.noteHtml = ''; row.note = ''; }
+      if(window.toast) toast('已清空该条富文本');
+    });
+    const font = wrap.querySelector('[data-rte-font]');
+    if(font) font.addEventListener('change', function(){ ed.focus(); rteExec('fontName', font.value); });
+    const size = wrap.querySelector('[data-rte-size]');
+    if(size) size.addEventListener('change', function(){ ed.focus(); rteExec('fontSize', size.value); });
+    const color = wrap.querySelector('[data-rte-color]');
+    if(color) color.addEventListener('input', function(){ ed.focus(); rteExec('foreColor', color.value); });
+    const hl = wrap.querySelector('[data-rte-hl]');
+    if(hl) hl.addEventListener('input', function(){ ed.focus(); rteExec('hiliteColor', hl.value); });
+    const indent = wrap.querySelector('[data-rte-indent]');
+    if(indent) indent.addEventListener('click', function(){
+      ed.focus();
+      const sel = window.getSelection(); if(!sel || !sel.rangeCount) return;
+      let node = sel.anchorNode; if(node && node.nodeType===3) node=node.parentNode;
+      let block = node;
+      while(block && block!==ed && !/^(DIV|P|BLOCKQUOTE|LI)$/.test(block.tagName||'')) block=block.parentNode;
+      if(block && block!==ed){ block.style.textIndent = (block.style.textIndent === '2em') ? '0' : '2em'; }
+    });
+    const space = wrap.querySelector('[data-rte-space]');
+    if(space) space.addEventListener('click', function(){
+      const cur = ed.getAttribute('data-paraspacing')||'1';
+      const next = cur==='1' ? '2' : (cur==='2' ? '3' : '1');
+      ed.setAttribute('data-paraspacing', next);
+    });
+  }
   function renderNickMemoView(list){
     const memos = getNickMemosSafe();
     list.className = 'mn-notes mn-view';
@@ -39799,11 +39910,13 @@ I'm good at running.`},
       const dateS = (m && m.date) ? m.date : '';
       const itemS = (m && m.item) ? m.item : '';
       const noteS = (m && m.note) ? m.note : '';
-      const body = (dateS||itemS||noteS)
+      const noteHtmlS = (m && m.noteHtml) ? sanitizeRich(m.noteHtml) : '';
+      const body = (dateS||itemS||noteS||noteHtmlS)
         ? '<div class="mn-note-body">'
           + (dateS ? '<div class="mn-note-date">🕒 '+esc(dateS)+'</div>' : '')
           + (itemS ? '<div class="mn-note-item">'+esc(itemS)+'</div>' : '')
           + (noteS ? '<div class="mn-note-note">'+esc(noteS)+'</div>' : '')
+          + (noteHtmlS ? '<div class="mn-note-rich">'+noteHtmlS+'</div>' : '')
           + '</div>'
         : '<div class="mn-note-body mn-note-empty"></div>';
       html += '<div class="mn-note-card" data-mn-id="'+esc(id)+'"'+bg+' data-page-node-id="R134memoCard'+i+'">'
@@ -39845,7 +39958,7 @@ I'm good at running.`},
   // 同一个对话框内编辑，对话框整体放大（见 styles.css .modal-memo）。备忘墙只负责展示。
   function openMemoEditModal(){
     // 兜底初始化草稿，防止异常路径下把空数组写回 store 清空全部备忘。
-    _nmDraft = getNickMemosSafe().map(function(m){ return { id:m.id, date:m.date, item:m.item, note:m.note, fontSize:m.fontSize, color:m.color, opacity:m.opacity }; });
+    _nmDraft = getNickMemosSafe().map(function(m){ return { id:m.id, date:m.date, item:m.item, note:m.note, noteHtml:m.noteHtml, fontSize:m.fontSize, color:m.color, opacity:m.opacity }; });
     renderMemoEditModalBody();
     showModal('#modalMemoEdit');
     bindMemoEditModal();
@@ -39870,7 +39983,11 @@ I'm good at running.`},
         + '<div class="mn-edit-fields">'
         + '<label class="mn-fld"><span class="mn-fld-lab">时间</span><input class="mn-in mn-in-date" placeholder="时间" maxlength="20" value="'+esc(m.date)+'" /></label>'
         + '<label class="mn-fld"><span class="mn-fld-lab">事项</span><input class="mn-in mn-in-item" placeholder="事项" maxlength="120" value="'+esc(m.item)+'" /></label>'
-        + '<label class="mn-fld"><span class="mn-fld-lab">备注</span><input class="mn-in mn-in-note" placeholder="备注" maxlength="120" value="'+esc(m.note)+'" /></label>'
+        + '</div>'
+        + '<div class="mn-rte-wrap" data-page-node-id="R139rte'+i+'">'
+        + '<div class="mn-fld-lab" style="margin:6px 0 2px">备注（富文本，所见即所得）</div>'
+        + rteBarHTML(i)
+        + "<div class='mn-rte' contenteditable=\"true\" data-rte>"+(m.noteHtml||'')+"</div>"
         + '</div>'
         + '<div class="mn-note-style">'
         + '<label>字号<input class="mn-fontsize" type="number" min="10" max="40" value="'+fs+'" /></label>'
@@ -39897,6 +40014,7 @@ I'm good at running.`},
       const id = card.getAttribute('data-id');
       const row = (_nmDraft||[]).find(function(x){ return String(x.id)===String(id); });
       if(!row) return;
+      bindRichEditor(card, row);
       card.querySelectorAll('.mn-in').forEach(function(inp){
         inp.addEventListener('input', function(){
           if(inp.classList.contains('mn-in-date')) row.date = inp.value;
@@ -39942,7 +40060,9 @@ I'm good at running.`},
         if(!row) return;
         row.date = (card.querySelector('.mn-in-date').value||'');
         row.item = (card.querySelector('.mn-in-item').value||'');
-        row.note = (card.querySelector('.mn-in-note').value||'');
+        const _rte = card.querySelector('[data-rte]');
+        row.noteHtml = _rte ? sanitizeRich(_rte.innerHTML) : (row.noteHtml||'');
+        row.note = _rte ? (String(_rte.innerText||'').slice(0,500)) : (row.note||'');
         const f = card.querySelector('.mn-fontsize'); if(f) row.fontSize = f.value;
         const c = card.querySelector('.mn-color'); if(c) row.color = c.value;
         const o = card.querySelector('.mn-opacity'); if(o) row.opacity = o.value;
