@@ -5560,13 +5560,15 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .mn-notes .mn-note-card:nth-child(4){grid-column:span 4}
 .mn-notes .mn-note-card:nth-child(5),
 .mn-notes .mn-note-card:nth-child(6){grid-column:span 6}
-/* R142：日看板内容已并入周看板「今天」视图，故周看板大卡独占整行全高（薄荷叶摄影图作底）；
+/* R142：日看板内容已并入周看板「今天」视图，故周看板大卡独占整行全高（R147 起移除底层薄荷叶摄影图，改半透明绿色底透出天际线）；
    其余 5 张备忘卡在下方重排：上行 3 张各 4 列、下行 2 张各 6 列，铺满下方两行、互不遮挡 */
 .mn-notes .mn-note-card.mn-weekboard{
   grid-column:span 12;grid-row:span 2;
   display:flex;flex-direction:column;gap:clamp(6px,1.1vh,12px);
   padding:clamp(10px,1.8vh,18px) clamp(12px,1.6vw,20px) clamp(8px,1.4vh,14px);
-  background:linear-gradient(155deg, rgba(18,46,38,.46), rgba(14,40,32,.52)), url("./assets/33fa841af2d7.jpg") center/cover no-repeat;
+  /* R147：删除底层薄荷叶背景图及其容器背景（原周看板背景贴图已下架），改为更透的绿色半透明底，
+     毛玻璃窗口直接透出整页陆家嘴天际线（.mn-stage），保留整体清新绿风格 */
+  background:linear-gradient(155deg, rgba(18,46,38,.30), rgba(14,40,32,.36));
   border-color:rgba(255,255,255,.45)
 }
 .mn-notes .mn-note-card.mn-weekboard::before{display:none}
@@ -40357,7 +40359,8 @@ I'm good at running.`},
       + '<button class="wb-text-btn wb-edit-btn" id="wbBtnEditMode" type="button" aria-pressed="false" title="进入编辑状态，可新增/修改/删除备忘">编辑</button>'
       + '</div>'
       + '</div>'
-      + '<div class="wb-intro" data-page-node-id="R141wbIntro">一周忙闲，一眼看清。</div>'
+      // R147：副标题文案按「今天/周/月」版块动态切换（id wbIntro，renderWbHead 依 _wbView 设文案）
+      + '<div class="wb-intro" id="wbIntro" data-page-node-id="R141wbIntro">一周忙闲，一眼看清。</div>'
       + '<div class="wb-body" id="wbBody" data-page-node-id="R141wbBody"></div>'
       + '</div>'
       + '</div>';
@@ -40387,6 +40390,13 @@ I'm good at running.`},
     const w = document.getElementById('wbBtnWeek'); if(w) w.classList.toggle('active', _wbView === 'week');
     const m = document.getElementById('wbBtnMonth'); if(m) m.classList.toggle('active', _wbView === 'month');
     const t = document.getElementById('wbBtnToday'); if(t) t.classList.toggle('active', _wbView === 'today');
+    // R147：副标题文案随版块切换 —— 今天→「把今天，安排的清清楚楚」；月→「站远一点，看整个月的安排」；周→「一周忙闲，一眼看清」
+    const intro = document.getElementById('wbIntro');
+    if(intro){
+      const txt = (_wbView === 'month') ? '站远一点，看整个月的安排。'
+        : (_wbView === 'today' ? '把今天，安排的清清楚楚。' : '一周忙闲，一眼看清。');
+      if(intro.textContent !== txt) intro.textContent = txt;
+    }
   }
   /* R146：周视图 —— 删除左侧时间刻度列（09:00~12:00）与小时行，日程区改为普通卡片式备忘内容区：
      7 个「日期卡片列」（周一..周日 + 日期数字），卡片在列内纵向堆叠、靠左对齐、高度自适应不重叠。 */
@@ -40457,17 +40467,14 @@ I'm good at running.`},
     if(back) back.onclick = function(){ _wbMonthDay = ''; wbRefresh(); };
     bindWbCards();
   }
-  /* R142 → R146：周看板「今天」视图 —— 与周/月视图共用同一套周看板数据层（getNickWeekBoard/saveNickWeekBoard）；
-     R146 起改为普通卡片式备忘内容区（无时间刻度、无第三行导航）：←/→ 按天切换，日期由窗口顶部年月位显示。 */
+  /* R142 → R146 → R147：周看板「今天」视图 —— 与周/月视图共用同一套周看板数据层（getNickWeekBoard/saveNickWeekBoard）；
+     R146 起改为普通卡片式备忘内容区（无时间刻度、无第三行导航）；R147 删除副标题下方的日期标题行（年月日星期 + 「今天」标签），
+     日期仅由窗口顶部年月位（renderWbHead 的 nbFmtCN）显示；←/→ 按天切换。 */
   function renderWbToday(){
     const body = document.getElementById('wbBody'); if(!body) return;
     if(!_nbDate) _nbDate = nbTodayISO();
     renderWbHead();
-    const isToday = _nbDate === nbTodayISO();
     body.innerHTML = '<div class="wb-dayview" data-page-node-id="R142wbDayview">'
-      + '<div class="wb-sec-bar"><span class="wb-sec-title">'+esc(nbFmtCN(_nbDate))+'</span>'
-      + (isToday ? '<span class="wb-sec-tag">今天</span>' : '')
-      + '</div>'
       + wbDayCardsHTML(_nbDate)
       + '</div>';
     bindWbCards();
