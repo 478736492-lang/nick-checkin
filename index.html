@@ -4704,14 +4704,18 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .wp-pie-pct{font-size:20px;font-weight:900;fill:var(--tone-900)}
 .wp-pie-sub{font-size:11px;font-weight:700;fill:#5b7ba6}
 .wp-pie-label{font-size:12px;font-weight:800;color:var(--tone-900)}
-.wp-today-bars{flex:1;display:flex;flex-direction:column;gap:6px;min-width:0}
-.wp-tbar{display:flex;align-items:center;gap:6px;font-size:12px}
-.wp-tbar-name{flex:0 0 52px;font-weight:800;color:var(--tone-900);white-space:nowrap}
-.wp-tbar-track{flex:1;height:12px;border-radius:8px;background:#e9f1fb;overflow:hidden;min-width:0}
+.wp-today-bars{flex:1;display:flex;flex-direction:column;gap:7px;min-width:0}
+/* R152：科目柱状图改两行式（上行：科目名+完成数；下行：整宽进度条）——右列统计卡仅 ~89px 宽，
+   原单行式 [名称52px][轨道][数值34px] 会把轨道压成 0px；两行式保证进度条完整可见。
+   分组与左侧打卡卡科目子卡一一对应（app.js homeGroupBySubject） */
+.wp-tbar{display:flex;flex-direction:column;gap:2px;font-size:11px;min-width:0}
+.wp-tbar-top{display:flex;align-items:baseline;justify-content:space-between;gap:4px;min-width:0}
+.wp-tbar-name{font-weight:800;color:var(--tone-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.wp-tbar-val{flex:0 0 auto;font-weight:800;color:#5b7ba6;font-size:10px;font-variant-numeric:tabular-nums}
+.wp-tbar-track{height:9px;border-radius:6px;background:#e9f1fb;overflow:hidden;min-width:0}
 .wp-tbar-fill{height:100%;border-radius:8px;background:linear-gradient(90deg,var(--tone-400),var(--tone-600));transition:width .4s ease}
 .wp-today-req .wp-tbar-fill{background:linear-gradient(90deg,#7ed492,#2f9e44)}
 .wp-today-opt .wp-tbar-fill{background:linear-gradient(90deg,#f3d979,#e0a92b)}
-.wp-tbar-val{flex:0 0 34px;text-align:right;font-weight:800;color:#5b7ba6;font-size:11px}
 .wp-tbar-empty{font-size:11px;color:#9aa9c0;text-align:center;padding:4px 0}
 
 /* ================= R150-3：月度统计 ================= */
@@ -41406,6 +41410,44 @@ I'm good at running.`},
     const en = $('#wpSloganEnInput'); if(en) en.value = b.sloganEn || '';
   }
 
+  // ===== R152：首页「必做/选做打卡卡」与「今日完成度统计」共用同一套口径 =====
+  // 目标：今日完成度中的必做/选做数据始终来自于左侧必做/选做打卡项目，
+  //       并随打卡项目增减（新增/删除/拖拽换卡/打卡）实时变化，两处永远一致。
+  // 任务归类（与左侧打卡卡 cardOfW 完全同规则）：
+  //   ① 错题不进入任何一档；② 家务小帮手仅归选做；③ 拖拽归属 card 优先，否则按 type 默认
+  function homeTaskCardOf(t){
+    if(!t) return 'hidden';
+    if(t.subject==='错题' || t.name==='错题订正复盘') return 'hidden';
+    if(t.subject==='家务小帮手') return 'optional';
+    return S.getTaskCard(t);
+  }
+  // 今日任务按 必做/选做/时间轴 拆分（隐藏项不计入任何一档）
+  function homeSplitTodayTasks(tasks){
+    const req=[], opt=[], tl=[];
+    (tasks||[]).forEach(t=>{
+      const c = homeTaskCardOf(t);
+      if(c==='required') req.push(t);
+      else if(c==='optional') opt.push(t);
+      else if(c==='timeline') tl.push(t);
+    });
+    return {req:req, opt:opt, tl:tl};
+  }
+  // 科目分组：与左侧打卡卡子卡同顺序（空科目归「其他」）——今日完成度柱状图按此动态分组，
+  // 使每根柱子对应左侧一张科目子卡，各柱总数之和恒等于饼图总数
+  const HOME_SUBJECT_ORDER = ['语文','数学','英语','阅读','百科','运动','作息','围棋','家务小帮手','文明小标兵','其他'];
+  function homeGroupBySubject(arr){
+    const map = new Map();
+    (arr||[]).forEach(t=>{
+      const sub = t.subject || '其他';
+      if(!map.has(sub)) map.set(sub, []);
+      map.get(sub).push(t);
+    });
+    return Array.from(map.entries()).sort((a,b)=>{
+      const ia = HOME_SUBJECT_ORDER.indexOf(a[0]); const ib = HOME_SUBJECT_ORDER.indexOf(b[0]);
+      return (ia<0?99:ia) - (ib<0?99:ib);
+    });
+  }
+
   // V35：三任务卡片渲染（按 card 字段归类今日任务）+ 时间轴节日
   // V38.3：必做/选做 拆成「按学科分卡片，一行两张」；任务名在上，说明/要求在下；围棋已移到选做
   // V39：① 选做中过滤掉 错题 subject；② 围棋 并入 运动 子卡片（一行两张保持），统一标题「运动」；③ 家务小帮手任务项隐藏下方说明（仅显示任务名）
@@ -41430,20 +41472,8 @@ I'm good at running.`},
       </div>`;
     };
     // V53：拆分 围棋 与 运动 两个独立子卡片（之前 V39 合并到「运动」），便于「围棋」卡显示本周局数
-    const groupBySubject = (arr)=>{
-      const map = new Map();
-      arr.forEach(t=>{
-        // R135-1：作息为独立卡片（移除 R24-2「作息并入运动」旧逻辑）
-        let sub = t.subject || '其他';
-        if(!map.has(sub)) map.set(sub, []);
-        map.get(sub).push(t);
-      });
-      const order = ['语文','数学','英语','阅读','百科','运动','作息','围棋','家务小帮手','文明小标兵','其他'];
-      return Array.from(map.entries()).sort((a,b)=>{
-        const ia = order.indexOf(a[0]); const ib = order.indexOf(b[0]);
-        return (ia<0?99:ia) - (ib<0?99:ib);
-      });
-    };
+    // R152：分组口径提取为共用助手（与今日完成度柱状图一致，两处永远同源）
+    const groupBySubject = homeGroupBySubject;
     // V39：必做/选做 → 每个学科一张子卡片，一行两张
     // V53：围棋显示项「本周 <n> 局」统计
     const weekGo = S.getWeekGoCount();
@@ -41463,17 +41493,10 @@ I'm good at running.`},
         </div>`;
       }).join('') + `</div>`;
     };
-    const cardOf = (t)=> S.getTaskCard(t);
-    const cardOfW = (t)=>{
-      // V39：错题 完全不显示（必做 / 选做 / 时间轴 三卡都跳过）
-      if(t.subject==='错题' || t.name==='错题订正复盘') return 'hidden';
-      // V59-R2：家务小帮手 仅在选做展示，必做区隐藏
-      if(t.subject==='家务小帮手') return 'optional';
-      return S.getTaskCard(t);
-    };
-    const req = tasks.filter(t=>cardOfW(t)==='required');
-    const opt = tasks.filter(t=>cardOfW(t)==='optional');
-    const tl  = tasks.filter(t=>cardOfW(t)==='timeline');
+    // R152：必做/选做/时间轴归类与今日完成度统计共用 homeSplitTodayTasks，保证两处数据始终一致
+    // （原 cardOfW：错题不显示 / 家务小帮手仅选做 / getTaskCard 拖拽归属优先，逻辑原样上提为共用助手）
+    const _split = homeSplitTodayTasks(tasks);
+    const req = _split.req, opt = _split.opt, tl = _split.tl;
     $('#wpCardRequired').innerHTML = renderSubjectCards(req);
     $('#wpCardOptional').innerHTML = renderSubjectCards(opt);
     // R59-4：节日卡固定 4 条 + 历史卡固定为节日卡片第一行
@@ -42239,15 +42262,16 @@ I'm good at running.`},
     }
     $('#homeTaskGroups').innerHTML = html || '<div class="task-item">今日暂无任务</div>';
   }
-  // R52-2 → R150-2：今日完成度拆分为【必做】【选做】两张独立统计卡片
+  // R52-2 → R150-2 → R152：今日完成度拆分为【必做】【选做】两张独立统计卡片
+  // R152：必做/选做任务集与左侧打卡卡共用 homeSplitTodayTasks 口径（不再直接按 type 过滤），
+  //       随打卡项目增减/拖拽自动保持一致
   function renderTodayRate(st){
     const today = S.todayStr();
     const tasks = S.tasksForDate(today);
     const isDone = (t)=>{ const r=st.records.find(x=>x.date===today&&x.taskId===t.id); return r&&r.completed; };
-    const reqTasks = tasks.filter(t=>t.type==='必做任务');
-    const optTasks = tasks.filter(t=>t.type==='选做拓展任务');
-    renderRateHalf('todayPieReq','todayBarsReq','必做', reqTasks, isDone);
-    renderRateHalf('todayPieOpt','todayBarsOpt','选做', optTasks, isDone);
+    const split = homeSplitTodayTasks(tasks);
+    renderRateHalf('todayPieReq','todayBarsReq','必做', split.req, isDone);
+    renderRateHalf('todayPieOpt','todayBarsOpt','选做', split.opt, isDone);
   }
   function renderRateHalf(pieId, barsId, label, tasks, isDone){
     const pieEl = document.getElementById(pieId), barsEl = document.getElementById(barsId);
@@ -42268,17 +42292,15 @@ I'm good at running.`},
         <div class="wp-pie-label">${label}</div>`;
     }
     if(barsEl){
-      const groups = label==='必做'
-        ? [ {name:'语文',pick:t=>t.subject==='语文'}, {name:'数学',pick:t=>t.subject==='数学'}, {name:'英语',pick:t=>t.subject==='英语'}, {name:'运动作息',pick:t=>t.subject==='运动'||t.subject==='作息'} ]
-        : [ {name:'语文',pick:t=>t.subject==='语文'}, {name:'数学',pick:t=>t.subject==='数学'}, {name:'英语',pick:t=>t.subject==='英语'}, {name:'素养',pick:t=>t.subject==='文明小标兵'||t.subject==='家务小帮手'} ];
-      barsEl.innerHTML = groups.map(g=>{
-        const list = tasks.filter(g.pick);
+      // R152：按科目动态分组（与左侧打卡卡子卡同顺序、同口径），每根柱子对应左侧一张科目子卡；
+      // 分组覆盖该档全部任务，各柱总数之和恒等于饼图总数，随打卡项目增减自动变化
+      const groups = homeGroupBySubject(tasks);
+      barsEl.innerHTML = groups.map(([sub, list])=>{
         const d = list.filter(isDone).length;
         const p = list.length ? Math.round(d/list.length*100) : 0;
-        return `<div class="wp-tbar" title="${esc(g.name)} ${d}/${list.length}">
-          <span class="wp-tbar-name">${esc(g.name)}</span>
+        return `<div class="wp-tbar" title="${esc(sub)} ${d}/${list.length}">
+          <div class="wp-tbar-top"><span class="wp-tbar-name">${esc(sub)}</span><span class="wp-tbar-val">${d}/${list.length}</span></div>
           <div class="wp-tbar-track"><div class="wp-tbar-fill" style="width:${p}%"></div></div>
-          <span class="wp-tbar-val">${d}/${list.length}</span>
         </div>`;
       }).join('') || '<div class="wp-tbar-empty">暂无'+label+'任务</div>';
     }
