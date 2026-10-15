@@ -2289,18 +2289,21 @@ body.child-mode .parent-edit-fab{display:none}
   background:rgba(255,255,255,.92);border-color:#ffe9a8;color:var(--sky-blue);
   box-shadow:0 3px 12px rgba(8,16,52,.4);
 }
-/* R149-2：首页【课程表】弹窗（复用课程表渲染，星月夜背景 + 毛玻璃遮罩） */
+/* R149-2：首页【课程表】弹窗（复用课程表渲染，星月夜背景 + 毛玻璃遮罩）
+   R151-1：展示不全修复 —— 弹窗加高加宽（96vh/96vw）+ 背景 local 附着，
+            使「节次表头 + 9 课时行 + 着装行 + 脚注」在 iPad 横屏(1024×768)下一屏完整可见 */
 .modal-course-table-mask{ background:rgba(8,16,52,.72); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); }
 .modal-course-table{
   background-color:#0f1a3d;
   background-image:url('./assets/dd3dd8db7338.jpg');
   background-size:cover; background-position:center center; background-repeat:no-repeat;
-  max-width:1040px; width:94vw; max-height:92vh; overflow:auto; border-radius:22px;
+  background-attachment:local;
+  max-width:1080px; width:96vw; max-height:96vh; max-height:96dvh; overflow:auto; border-radius:20px;
   border:2px solid rgba(255,255,255,.5);
   box-shadow:0 20px 60px rgba(8,16,52,.6);
-  padding:0 0 18px;
+  padding:0 0 10px;
 }
-.modal-course-table .sn-page{ min-height:auto; padding:4px 12px 24px; }
+.modal-course-table .sn-page{ min-height:auto; padding:0 12px 8px; }
 .modal-course-table .nw-back{
   position:absolute; top:12px; left:12px; z-index:6;
   background:rgba(255,255,255,.92); border-color:#ffe9a8; color:var(--sky-blue);
@@ -4267,6 +4270,41 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   .sn-table td .kb-cell.sn-cell{ min-height:44px; }
 }
 
+/* ===== R151-1：课程表弹窗「展示不全」修复 =====
+   课程表现仅在首页【🗓️ 课程表】弹窗内渲染（R149-2 起）。原弹窗内容总高 ~880px，
+   而 max-height:92vh 在 iPad 横屏(1024×768)下仅 ~705px 可视 → 底部「着装」行与脚注被裁，需内部滚动。
+   修复：① 弹窗加高加宽至 96vh/96vw；② 视口高度 ≤940px 时按下方媒体查询压缩课程表纵向度量，
+   使「表头 + 9 课时行 + 着装行 + 脚注」一屏完整可见；③ 背景改 local 附着（滚动时星月夜不漂移）。
+   注意：本块必须置于上方 R26 精修块之后——两条选择器特异性相同，后置者才优先生效
+   （放在 R26 块之前会被 min-height:50px 反向覆盖，实测 cellMinH 仍为 50px）。
+   >940px 的高屏不压缩，完整保留 R26 大点击区设计（min-height:50px）。 */
+@media (max-height:940px){
+  .sn-title{font-size:34px;letter-spacing:6px;margin:0 0 8px}
+  .sn-table thead th.sn-th{padding:9px 6px;font-size:16px;letter-spacing:2px}
+  .sn-table thead th.sn-th::after{bottom:4px;height:2px}
+  .sn-table tbody th.sn-rowhead{padding:8px 10px;border-left-width:3px}
+  /* .nw-timetable td{height:46px}（V60 基线）才是行高主导项，须显式覆盖，仅调 cell min-height 无效 */
+  .sn-table td{padding:2px;height:44px}
+  .sn-table td .kb-cell.sn-cell{min-height:38px;padding:4px;line-height:1.25}
+  .sn-attire-row th.sn-attire-head{padding:6px 10px}
+  .sn-attire-row td{padding:2px}
+  .sn-attire-cell{min-height:32px;padding:3px}
+  .sn-frame{padding:6px}
+  .sn-frame-in{padding:8px}
+  .sn-foot{margin-top:8px;padding:5px 14px;font-size:13px}
+  .modal-course-table{padding:0 0 6px}
+  .modal-course-table .sn-page{padding:0 10px 6px}
+  /* 弹窗作用域再收敛：nw-sub-body 底部 24px 内边距 + 标题区间距在原整页语境合理，弹窗内属浪费 */
+  .modal-course-table .nw-sub-title{padding:2px 6px 4px}
+  .modal-course-table .nw-sub-body{padding:0 2px 4px}
+}
+/* 更矮视口（≤700px，如小窗 / 手机横屏）再收紧一档 */
+@media (max-height:700px){
+  .sn-title{font-size:28px;letter-spacing:4px;margin:0 0 6px}
+  .sn-table td .kb-cell.sn-cell{min-height:34px}
+  .sn-attire-cell{min-height:28px}
+}
+
 /* ===== R26-1：英语小知识「➕ 添加板块」+ 用户自定义板块 ===== */
 /* 顶部添加板块按钮：与「➕ 添加」同蓝系，弱一点以区分层级 */
 .eg-add-sec-btn{
@@ -5426,15 +5464,19 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
     0 0 34px rgba(186,222,255,.72),
     0 1px 0 rgba(196,224,252,.95)
 }
-/* ② 标题下方整片区域：7 张卡片平铺（上行 4 张、下行 3 张，两行均铺满宽度）。
-   R135-2：四周留出边距，卡片区整体缩小一圈，背景图边缘天际线完整露出。
-   R136-2：继续缩小标签卡 —— 容器四周留白再放大、格间距加大、每卡自身再内缩一圈（margin），
-           夜景露出更多，视觉上更像一张张贴在玻璃上的小标签。 */
+/* ② 标题下方整片区域：卡片平铺网格。
+   R151-3：行模型改为 minmax(120px,1fr) minmax(120px,1fr) auto auto —— 周看板大卡占满前两行（120px 下限）；
+   标签卡两行（第一行 3 正方形 / 第二行 2 长方形）为隐式 auto 行，行高由 aspect-ratio 卡的传递最小高度撑起。
+   背景：若沿用 repeat(2,1fr)，fr 行只分「自动行占完之后剩余的空间」，标签卡有了真实高度后
+   （aspect-ratio 正方形 226px + 长方形 134px）周看板会被挤压到 ~150px、内容内部滚动截断；
+   早前试过 repeat(2,minmax(180px,1fr))，但 180px 下限 + 全尺寸标签卡总高超出容器 ~190px，
+   且 min-height:0 曾使自动行塌缩到 80px、卡片互相压盖；现改为 120px 下限 + 标签卡宽度封顶
+   （正方形 ≤180px / 长方形 ≤240px，居中放置），三块合计稳定收进容器内、无需滚动。 */
 .mn-notes{
   position:absolute;z-index:3;
   left:clamp(22px,4.6vw,72px);right:clamp(22px,4.6vw,72px);
   bottom:clamp(20px,4vh,58px);top:clamp(58px,11vh,106px);
-  display:grid;grid-template-columns:repeat(12,1fr);grid-template-rows:repeat(2,1fr);
+  display:grid;grid-template-columns:repeat(12,1fr);grid-template-rows:minmax(120px,1fr) minmax(120px,1fr) auto auto;
   gap:clamp(12px,2.5vh,28px);
   padding:clamp(10px,2.2vh,24px);
   overflow-y:auto;overflow-x:hidden
@@ -5525,6 +5567,43 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .mn-tool-btn svg{width:56%;height:56%;fill:#fff;filter:drop-shadow(0 1px 2px rgba(16,40,90,.5))}
 .mn-tool-del{background:rgba(255,118,118,.30);border-color:rgba(255,214,214,.82)}
 .mn-tool-del:hover{background:rgba(255,140,140,.48)}
+/* R151-3：备忘录页面级「编辑/保存」原位切换键（标题右侧毛玻璃药丸；保存态绿色高亮） */
+.mn-edit-toggle{
+  position:absolute;z-index:7;top:clamp(10px,2.2vh,22px);right:clamp(22px,4.6vw,72px);
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:clamp(12px,1.8vh,15px);font-weight:900;color:#fff;line-height:1.2;white-space:nowrap;
+  padding:clamp(5px,1vh,9px) clamp(14px,1.8vw,20px);
+  border:1.5px solid rgba(255,255,255,.68);border-radius:999px;
+  background:rgba(23,52,94,.42);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  box-shadow:0 3px 12px rgba(10,30,60,.28);
+  cursor:pointer;transition:transform .12s ease,background .12s ease
+}
+.mn-edit-toggle:hover{background:rgba(23,52,94,.6);transform:translateY(-1px)}
+.mn-edit-toggle:active{transform:scale(.96)}
+.mn-edit-toggle.active{background:rgba(47,158,68,.92);border-color:rgba(255,255,255,.85);box-shadow:0 3px 12px rgba(20,90,60,.4)}
+/* R151-3：编辑态标签卡 —— 隐藏角色/电影装饰，卡面出行内表单（日期/时间/事项/备注） */
+.mn-note-card.mn-note-editing .mn-note-char,
+.mn-note-card.mn-note-editing .mn-note-film{display:none}
+.mn-ve-form{
+  position:absolute;z-index:2;
+  top:clamp(26px,3.8vh,34px);left:clamp(9px,1.6vw,13px);right:clamp(9px,1.6vw,13px);bottom:clamp(8px,1.4vh,12px);
+  display:flex;flex-direction:column;gap:clamp(4px,.7vh,7px)
+}
+.mn-ve-row{display:flex;gap:clamp(4px,.7vw,7px)}
+.mn-ve-row .mn-ve-date{flex:1.3;min-width:0}
+.mn-ve-row .mn-ve-time{flex:1;min-width:0}
+.mn-ve-date,.mn-ve-time,.mn-ve-item,.mn-ve-note{
+  width:100%;box-sizing:border-box;
+  border:1.5px solid rgba(255,255,255,.75);border-radius:9px;
+  background:rgba(255,255,255,.82);
+  color:#16243f;font-family:inherit;font-weight:700;
+  padding:clamp(3px,.55vh,6px) clamp(6px,.9vw,9px);
+  outline:none
+}
+.mn-ve-date,.mn-ve-time,.mn-ve-item{font-size:clamp(10px,1.5vh,12.5px)}
+.mn-ve-note{flex:1 1 auto;min-height:0;resize:none;font-size:clamp(10px,1.5vh,12.5px);font-weight:600;line-height:1.45}
+.mn-ve-date:focus,.mn-ve-time:focus,.mn-ve-item:focus,.mn-ve-note:focus{border-color:var(--tone-600);box-shadow:0 0 0 2px rgba(64,150,255,.25);background:#fff}
 /* 编辑态：面板式可管理列表（含字号/颜色/透明度自定义）。
    R135-2：排版重排——顶部标题条、输入两列网格、虚线添加行、主/幽灵按钮区。 */
 .mn-notes.mn-editmode{
@@ -5698,6 +5777,18 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   border-color:rgba(255,255,255,.45)
 }
 .mn-notes .mn-note-card.mn-weekboard::before{display:none}
+/* R151-3：今日板块标签卡两行布局 —— 第一行 3 个正方形标签卡（aspect-ratio:1/1），
+   第二行 2 个长方形标签卡（aspect-ratio:5/2），整墙铺满不留空位。
+   背景：卡内正文/工具/装饰均为绝对定位、无在流内容，隐式网格行高 auto 归零 → 空卡塌缩成 2px 细条
+   （R148 起标签卡实际不可见）；现以 aspect-ratio 固定卡片高宽比，空卡也不再塌缩，两行稳定呈现。
+   尺寸封顶：正方形卡宽 ≤180px、长方形卡宽 ≤240px（居中置于各自网格列内）——
+   容器净高约 579px（1024×768），若标签卡按列宽全尺寸展开（正方形 213px + 长方形 336px→134px 高），
+   三块总高将超出容器约 190px；封顶后周看板仍保有 ~265px 可用高度，整墙无需滚动即可完整呈现。 */
+.mn-notes .mn-note-card:nth-child(2),
+.mn-notes .mn-note-card:nth-child(3),
+.mn-notes .mn-note-card:nth-child(4){aspect-ratio:1/1;width:100%;max-width:180px;justify-self:center}
+.mn-notes .mn-note-card:nth-child(5),
+.mn-notes .mn-note-card:nth-child(6){aspect-ratio:5/2;width:100%;max-width:240px;justify-self:center}
 /* R142 → R146：周看板「今天」视图（与周/月共用数据层）—— R146 起为普通卡片式备忘内容区（无时间刻度） */
 .wb-dayview{display:flex;flex-direction:column;gap:clamp(4px,.8vh,8px);min-height:0}
 /* R146：日看板（时间轴版）模块已整体移除 —— 其 CSS 一并删除；周看板改版见下方 R141→R146 区块。
@@ -6247,7 +6338,7 @@ html,body{margin:0;padding:0}
           <!-- R118-2：【Nick 的备忘录】入口按键（点击打开独立备忘录页面）；R149-2：右侧新增【课程表】按键 -->
           <div class="wp-nickmemo-row">
             <div class="wp-memo-btn-wrap">
-              <button class="wp-nickmemo-btn" id="btnNickMemo" title="打开 Nick 的备忘录" data-page-node-id="R118btnNickMemo">📒 Nick 的备忘录</button>
+              <button class="wp-nickmemo-btn" id="btnNickMemo" title="打开备忘录" data-page-node-id="R118btnNickMemo">📒 备忘录</button>
               <span class="wp-memo-bubble" id="memoBubble" hidden data-page-node-id="R150memoBubble"></span>
             </div>
             <button class="wp-nickmemo-btn wp-coursetable-btn" id="btnCourseTable" title="查看课程表">🗓️ 课程表</button>
@@ -6416,6 +6507,9 @@ html,body{margin:0;padding:0}
     <div class="mn-stage" data-page-node-id="R118memoStage">
       <!-- ① 顶部居中标题：浅白色立体发光字体，避开东方明珠等主体建筑 -->
       <h2 class="mn-title" data-page-node-id="R134memoTitle">Nick的备忘录</h2>
+      <!-- R151-3：页面级「编辑/保存」原位切换键（标题右侧）—— 点编辑：原位切为保存，标签卡出行内表单；
+           点保存：新增内容实时渲染在对应位置 -->
+      <button class="mn-edit-toggle" id="btnMemoEditToggle" type="button" aria-pressed="false" title="进入编辑状态，可直接在卡片上新增/修改内容" data-page-node-id="R151memoEditToggle">✏️ 编辑</button>
       <!-- ② 标题下方整片区域：7 张半透明磨砂玻璃便签卡平铺（赤橙黄绿青蓝紫，卡内空白，右上角编辑/删除图标） -->
       <div class="mn-notes" id="nickMemoList" data-page-node-id="R118memoList"></div>
     </div>
@@ -30448,7 +30542,9 @@ window.WANTONG_COVER = './assets/c6249ea2bfe3.jpg';
     save(st);
     return st.memos.slice();
   }
-  // R118：Nick 的备忘录（独立页面）。事项结构：{ id, date, item, note, fontSize, color, opacity }（item/note 上限 120 字）
+  // R118：Nick 的备忘录（独立页面）。事项结构：{ id, date, time, item, note, fontSize, color, opacity, noteHtml }（item/note 上限 120 字）
+  // R149-3：日期/时间拆为两个字段（date=YYYY-MM-DD，time=HH:MM 文本）；R151-3：补回 time 字段归一化
+  //（此前 get/save 均漏掉 time，管理弹窗与行内编辑填的时间会被静默丢弃）。
   function getNickMemos(){
     const st = load();
     if(!Array.isArray(st.nickMemos)) return [];
@@ -30462,6 +30558,7 @@ window.WANTONG_COVER = './assets/c6249ea2bfe3.jpg';
       return {
         id: id,
         date: String((m && m.date)||'').slice(0, 20),
+        time: String((m && m.time)||'').slice(0, 20),
         item: String((m && m.item)||'').slice(0, MEMO_MAX),
         note: String((m && m.note)||'').slice(0, MEMO_MAX),
         fontSize: (m && m.fontSize!==undefined && m.fontSize!=='') ? String(m.fontSize) : '',
@@ -30480,6 +30577,7 @@ window.WANTONG_COVER = './assets/c6249ea2bfe3.jpg';
       .map(x=>({
         id: (x && x.id) ? String(x.id) : _genMemoId(),
         date: String((x && x.date) || '').slice(0, 20),
+        time: String((x && x.time) || '').slice(0, 20),
         item: String((x && x.item) || '').slice(0, MEMO_MAX),
         note: String((x && x.note) || '').slice(0, MEMO_MAX),
         fontSize: (x && x.fontSize!==undefined && x.fontSize!=='') ? String(x.fontSize) : '',
@@ -30487,7 +30585,7 @@ window.WANTONG_COVER = './assets/c6249ea2bfe3.jpg';
         opacity: (x && x.opacity!==undefined && x.opacity!=='') ? String(x.opacity) : '',
         noteHtml: (x && x.noteHtml) ? String(x.noteHtml).slice(0, 4000) : ''
       }))
-      .filter(x=>x.item.trim() || x.note.trim() || x.date.trim() || x.noteHtml);
+      .filter(x=>x.item.trim() || x.note.trim() || x.date.trim() || x.time.trim() || x.noteHtml);
     save(st);
     return st.nickMemos.slice();
   }
@@ -34957,6 +35055,8 @@ May / Can I /we have …, please? 请问我 / 我们可以拿…… 吗？
     getNickMemos, saveNickMemos, getFestLearned, setFestLearned,
     // R140：Nick 的日看板（按日期存取日程任务）
     getNickDayBoard, saveNickDayBoard,
+    // R141→R146：Nick 的周看板（今天/周/月三版块共用数据层，按日期 ISO 存取）+ R149-4 自定义区域
+    getNickWeekBoard, saveNickWeekBoard, getNickWbZones, saveNickWbZones,
     // V88：新世界首页卡片可编辑内容
     getNWData, saveNWData, resetNWData,
     // V98：课程表可编辑（课时行数 + 每格课程/颜色）
@@ -40360,6 +40460,8 @@ I'm good at running.`},
   // R131-3：Nick 的备忘录重构 —— 编号玻璃便签卡散落背景（时间/事项/备注 + 字号/颜色/透明度自定义）
   let _nmInited = false;
   let _nmDraft = null; // 编辑态草稿：[{id,date,item,note,fontSize,color,opacity}]
+  let _nmEditMode = false; // R151-3：备忘录页面级「编辑/保存」态 —— 点编辑：原按键位置切换为保存键，标签卡出行内表单；
+                           // 点保存：各卡内容按卡位写回 store 并整体重渲染，新增内容实时展示在对应位置。
   function initNickMemo(){
     if(_nmInited) return; _nmInited = true;
     const open = document.getElementById('btnNickMemo');
@@ -40383,6 +40485,7 @@ I'm good at running.`},
     const list = document.getElementById('nickMemoList');
     if(!list) return;
     renderNickMemoView(list);
+    nmSyncEditToggle(); // R151-3：同步页面级「编辑/保存」按钮态（随重渲染即时刷新）
   }
   // R134：备忘录改为「陆家嘴天际线背景 + 7 张彩虹磨砂玻璃空白便签卡」。
   // 卡片配色 赤→橙→黄→绿→青→蓝→紫 由 CSS nth-child 上色；卡内一律空白无任何文字，
@@ -40510,22 +40613,38 @@ I'm good at running.`},
       const m = memos[i];
       const id = (m && m.id) ? String(m.id) : '';
       const bg = ' style="background:rgba(255,255,255,'+mnGlassAlpha(m)+')"';
+      // R151-3：编辑态 —— 卡内改为行内表单（日期/时间/事项/备注），由页面级「保存」按卡位写回；
+      // 查看态沿用原正文渲染（事项/备注/富文本）。
+      let body;
+      if(_nmEditMode){
+        body = '<div class="mn-ve-form" data-page-node-id="R151memoForm'+i+'">'
+          + '<div class="mn-ve-row">'
+          + '<input class="mn-ve-date" type="date" title="日期（可留白）" value="'+esc((m&&m.date)||'')+'" />'
+          + '<input class="mn-ve-time" type="text" inputmode="numeric" maxlength="20" placeholder="如 10:00" title="时间（可留白）" value="'+esc((m&&m.time)||'')+'" />'
+          + '</div>'
+          + '<input class="mn-ve-item" type="text" maxlength="120" placeholder="事项" title="事项" value="'+esc((m&&m.item)||'')+'" />'
+          + '<textarea class="mn-ve-note" maxlength="500" placeholder="备注" title="备注">'+esc((m && (m.note || (m.noteHtml ? wbPlainText(m.noteHtml) : '')))||'')+'</textarea>'
+          + '</div>';
+      } else {
       // R136-4：备忘墙卡片显示备忘录内容（事项/备注）——此前按 R134 设计是空白卡，
       // 但管理页输入的内容在墙上不可见，本次补全渲染；空卡仍保留角色/电影装饰。
       // R145：删除卡片左边的时间（🕒 日期行），改为与卡片同色的圆圈（MN_TINTS 按卡位取色）。
+      // R151-3：富文本备注（noteHtml）优先渲染，纯文本备注（note）仅在没有富文本时展示 ——
+      // 管理弹窗保存时会同时写入 note（innerText 影子）与 noteHtml，旧逻辑两条都渲染导致内容重复。
       const itemS = (m && m.item) ? m.item : '';
       const noteS = (m && m.note) ? m.note : '';
       const noteHtmlS = (m && m.noteHtml) ? sanitizeRich(m.noteHtml) : '';
       const parts = [];
       if(itemS) parts.push('<div class="mn-note-item">'+esc(itemS)+'</div>');
-      if(noteS) parts.push('<div class="mn-note-note">'+esc(noteS)+'</div>');
       if(noteHtmlS) parts.push('<div class="mn-note-rich">'+noteHtmlS+'</div>');
+      else if(noteS) parts.push('<div class="mn-note-note">'+esc(noteS)+'</div>');
       const dotColor = MN_TINTS[(i + 1) % MN_TINTS.length];
-      const body = '<div class="mn-note-body">'
+      body = '<div class="mn-note-body">'
         + '<div class="mn-note-lead"><span class="mn-note-dot" style="background:'+dotColor+'"></span>'+(parts[0]||'')+'</div>'
         + parts.slice(1).join('')
         + '</div>';
-      html += '<div class="mn-note-card" data-mn-id="'+esc(id)+'"'+bg+' data-page-node-id="R134memoCard'+i+'">'
+      }
+      html += '<div class="mn-note-card'+(_nmEditMode?' mn-note-editing':'')+'" data-mn-id="'+esc(id)+'" data-mn-idx="'+i+'"'+bg+' data-page-node-id="R134memoCard'+i+'">'
         + '<div class="mn-note-tools">'
         + '<button class="mn-tool-btn mn-tool-edit" type="button" title="编辑备忘录" aria-label="编辑备忘录" data-page-node-id="R134memoEdit'+i+'">'+MN_TOOL_EDIT+'</button>'
         + '<button class="mn-tool-btn mn-tool-del" type="button" title="删除这张备忘" aria-label="删除这张备忘" data-page-node-id="R134memoDel'+i+'">'+MN_TOOL_DEL+'</button>'
@@ -40543,6 +40662,12 @@ I'm good at running.`},
   function bindNickMemoViewTools(){
     const list = document.getElementById('nickMemoList');
     if(!list) return;
+    // R151-3：页面级「编辑/保存」切换键（按钮在列表外、不随 innerHTML 重渲染，需防重复绑定）
+    const toggle = document.getElementById('btnMemoEditToggle');
+    if(toggle && !toggle.__nmBound){
+      toggle.__nmBound = true;
+      toggle.addEventListener('click', function(){ nmToggleEditMode(); });
+    }
     list.querySelectorAll('.mn-tool-edit').forEach(function(btn){
       btn.addEventListener('click', function(){ openMemoEditModal(); });
     });
@@ -40561,6 +40686,64 @@ I'm good at running.`},
         if(window.toast) toast('已删除该备忘');
       });
     });
+  }
+  // ================= R151-3：备忘录页面级「编辑/保存」原位切换 =================
+  // 交互闭环：点页面右上角「✏️ 编辑」→ 原按键位置切换为「💾 保存」，5 张标签卡变为行内表单；
+  // 点「💾 保存」→ 各卡内容按卡位写回 store 并整体重渲染，新增/修改内容实时展示在对应位置。
+  function nmSyncEditToggle(){
+    const btn = document.getElementById('btnMemoEditToggle');
+    if(!btn) return;
+    btn.textContent = _nmEditMode ? '💾 保存' : '✏️ 编辑';
+    btn.classList.toggle('active', _nmEditMode);
+    btn.setAttribute('aria-pressed', _nmEditMode ? 'true' : 'false');
+    btn.title = _nmEditMode ? '保存并展示新内容' : '进入编辑状态，可直接在卡片上新增/修改内容';
+  }
+  function nmToggleEditMode(){
+    if(_nmEditMode){ nmSaveFromView(); return; }   // 当前按键已是「保存」→ 执行保存
+    _nmEditMode = true;
+    renderNickMemo();
+    if(window.toast) toast('编辑状态已开启：在卡片上填写后点右上角「保存」');
+  }
+  function nmSaveFromView(){
+    const list = document.getElementById('nickMemoList');
+    const memos = getNickMemosSafe().slice();
+    let added = 0, touched = 0;
+    if(list){
+      list.querySelectorAll('.mn-note-card[data-mn-idx]').forEach(function(card){
+        const idx = +card.getAttribute('data-mn-idx');
+        if(!(idx >= 0 && idx < MN_CARD_COUNT)) return;
+        const q = function(sel){ return card.querySelector(sel); };
+        const dEl = q('.mn-ve-date'), tEl = q('.mn-ve-time'), iEl = q('.mn-ve-item'), nEl = q('.mn-ve-note');
+        const date = (dEl && dEl.value || '').trim();
+        const time = (tEl && tEl.value || '').trim();
+        const item = (iEl && iEl.value || '').trim();
+        const note = (nEl && nEl.value || '').trim();
+        if(!date && !time && !item && !note) return;   // 空卡不生成幽灵数据
+        let row = memos[idx];
+        if(!row){
+          // 补齐空位，保证新内容落在「对应位置」的那张卡上（补位为空备忘，可正常删除，不算数据漏洞）
+          while(memos.length < idx) memos.push({ id:'nm'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), date:'', time:'', item:'', note:'' });
+          row = { id:'nm'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), date:'', time:'', item:'', note:'', noteHtml:'', fontSize:'', color:'', opacity:'' };
+          memos.splice(idx, 0, row);
+          added++;
+        }
+        row.date = date; row.time = time; row.item = item;
+        // 富文本备注一致性：用户改过纯文本备注则以纯文本为准（清空 html）；未改动则保留原富文本，
+        // 且不覆写 note 影子字段，避免墙上同条内容重复展示（渲染层 noteHtml 优先）。
+        const prevRich = row.noteHtml || '';
+        const prevPlain = prevRich ? wbPlainText(prevRich) : '';
+        if(prevRich){
+          if(note !== prevPlain){ row.noteHtml = ''; row.note = note; }
+        } else {
+          row.note = note;
+        }
+        touched++;
+      });
+    }
+    window.Store.saveNickMemos(memos);
+    _nmEditMode = false;
+    renderNickMemo();   // 实时重渲染：新增/修改内容即时展示在对应卡位
+    if(window.toast) toast(added ? '已添加新备忘，内容已实时展示' : (touched ? '备忘录已保存，新内容已实时展示' : '已保存'));
   }
   // ================= R140 → R146：日程共享工具函数 =================
   // R146：日看板独立模块已整体并入周看板 ——「今天 / 周 / 月」三个版块共用同一套周看板数据层
