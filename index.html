@@ -254,6 +254,13 @@ body{width:100%;height:100vh;height:100dvh;display:flex;flex-direction:row}
 .task-groups-compact .subject-col .more{font-size:11px;color:var(--muted);text-align:center;margin-top:2px}
 .task-groups{display:none} /* 旧样式保留但不再渲染 */
 .task-item{display:flex;align-items:center;gap:10px;padding:8px 10px;background:#fff;border-radius:10px;border:1px solid var(--tone-150)}
+/* R150-4：首页全部「必做」任务卡片淡绿色、「选做」任务卡片淡黄色（按任务类型着色） */
+.type-group.type-req .task-item{background:#eafaf0;border-color:#bfe3c4}
+.type-group.type-req .task-item.undone{background:#e3f6ea;border-color:#cdebd2}
+.type-group.type-opt .task-item{background:#fffbe6;border-color:#f0e3a8}
+.type-group.type-opt .task-item.undone{background:#fff8d6;border-color:#f3e6b0}
+.type-group.type-req .task-item.done{background:#d8f1e0;border-color:#9bd6ad}
+.type-group.type-opt .task-item.done{background:#fdf2c4;border-color:#ecd98f}
 .task-item.undone{border-color:var(--tone-200);background:var(--tone-100)}
 /* Req5：首页任务打卡成功后 → 水洗蓝（浅天蓝底 + 蓝边）；本轮：增强为 dceefa 让"白→蓝"对比更明显 */
 .task-item.done{background:var(--tone-175);border:1px solid #a9cdf0;box-shadow:inset 0 0 0 1px rgba(255,255,255,.5)}
@@ -4622,6 +4629,13 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .sfx-row-label{font-size:13px;font-weight:700;min-width:72px;color:var(--text)}
 .sfx-sel{flex:1;padding:6px 8px;border:1.5px solid var(--tone-200);border-radius:10px;background:#fff;font-family:inherit;font-size:13px;color:var(--text)}
 .sfx-preview{margin-left:auto;white-space:nowrap}
+/* R150-5：按键音效总开关（系统默认关闭，用户在设置中心自主开启） */
+.sfx-master-row{border-top:none;margin-bottom:4px}
+.sfx-master-row .sfx-row-label{min-width:0;flex:1}
+.sfx-switch{display:inline-flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
+.sfx-switch input{width:18px;height:18px;accent-color:var(--tone-600);cursor:pointer}
+.sfx-switch-txt{font-size:12px;font-weight:800;color:var(--tone-700);min-width:44px;text-align:left}
+.sfx-sel:disabled,.sfx-preview:disabled{opacity:.45;cursor:not-allowed}
 /* R60-2：试听中状态（播放中高亮，提示音效正在响） */
 .sfx-preview.playing{background:linear-gradient(135deg,var(--tone-300),var(--tone-600))!important;color:#fff!important;border-color:var(--tone-600)!important}
 
@@ -4636,11 +4650,19 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 
 /* ===== R52-2：今日完成度（总任务饼图 + 科目横向柱状图） ===== */
 .wp-today{padding-bottom:10px;border-bottom:1px dashed #dbe7f7;margin-bottom:10px}
-.wp-today-wrap{display:flex;align-items:center;gap:12px;padding:4px 2px 2px}
+.wp-today-wrap{display:flex;align-items:stretch;gap:10px;padding:4px 2px 2px}
+.wp-today-half{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:4px;padding:8px 10px;border-radius:12px;box-sizing:border-box}
+.wp-today-half.wp-today-req{background:rgba(232,247,234,.9);border:1px solid #bfe3c4}
+.wp-today-half.wp-today-opt{background:rgba(255,250,224,.92);border:1px solid #f0e3a8}
+.wp-today-half-head{font-size:12px;font-weight:900;text-align:center}
+.wp-today-req .wp-today-half-head{color:#1f7a36}
+.wp-today-opt .wp-today-half-head{color:#a9801a}
 .wp-today-pie{flex:0 0 96px;display:flex;flex-direction:column;align-items:center;gap:2px}
 .wp-pie-svg{width:92px;height:92px;display:block}
 .wp-pie-bg{fill:none;stroke:#e3edfa;stroke-width:11}
 .wp-pie-fill{fill:none;stroke:var(--tone-600);stroke-width:11;stroke-linecap:round;transition:stroke-dasharray .4s ease}
+.wp-pie-fill-req{stroke:#2f9e44}
+.wp-pie-fill-opt{stroke:#e0a92b}
 .wp-pie-pct{font-size:20px;font-weight:900;fill:var(--tone-900)}
 .wp-pie-sub{font-size:11px;font-weight:700;fill:#5b7ba6}
 .wp-pie-label{font-size:12px;font-weight:800;color:var(--tone-900)}
@@ -4649,7 +4671,48 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .wp-tbar-name{flex:0 0 52px;font-weight:800;color:var(--tone-900);white-space:nowrap}
 .wp-tbar-track{flex:1;height:12px;border-radius:8px;background:#e9f1fb;overflow:hidden;min-width:0}
 .wp-tbar-fill{height:100%;border-radius:8px;background:linear-gradient(90deg,var(--tone-400),var(--tone-600));transition:width .4s ease}
+.wp-today-req .wp-tbar-fill{background:linear-gradient(90deg,#7ed492,#2f9e44)}
+.wp-today-opt .wp-tbar-fill{background:linear-gradient(90deg,#f3d979,#e0a92b)}
 .wp-tbar-val{flex:0 0 34px;text-align:right;font-weight:800;color:#5b7ba6;font-size:11px}
+.wp-tbar-empty{font-size:11px;color:#9aa9c0;text-align:center;padding:4px 0}
+
+/* ================= R150-3：月度统计 ================= */
+.wp-month-head{display:flex;align-items:center;gap:8px}
+.wp-month-stats-btn{margin-left:auto;flex:0 0 auto;font-size:11px;font-weight:800;color:#16306b;
+  background:var(--tone-400);border:1.5px solid rgba(255,255,255,.8);border-radius:999px;padding:3px 10px;cursor:pointer;
+  box-shadow:0 2px 6px rgba(30,58,138,.16);transition:.15s}
+.wp-month-stats-btn:hover{filter:brightness(1.05);transform:translateY(-1px)}
+.modal-month-stats{max-width:640px;width:92%;max-height:86vh;display:flex;flex-direction:column}
+.modal-month-stats .modal-body{padding:14px 16px;overflow:auto}
+.ms-summary{display:flex;gap:10px;margin-bottom:12px}
+.ms-card{flex:1;background:#f3f8ff;border:1px solid #dbe7fb;border-radius:12px;padding:10px;text-align:center}
+.ms-card.ms-req{background:#eafaf0;border-color:#bfe3c4}
+.ms-card.ms-opt{background:#fffbe6;border-color:#f0e3a8}
+.ms-card .ms-v{font-size:22px;font-weight:900;color:var(--tone-800)}
+.ms-card.ms-req .ms-v{color:#1f7a36}
+.ms-card.ms-opt .ms-v{color:#a9801a}
+.ms-card .ms-l{font-size:11px;color:#5b7ba6;margin-top:2px}
+.ms-cmp{font-size:12px;color:#3a4a63;background:var(--tone-075);border-radius:10px;padding:8px 10px;margin-bottom:12px}
+.ms-block-title{font-size:13px;font-weight:800;color:var(--tone-800);margin:6px 0 8px}
+.ms-days{display:grid;grid-template-columns:repeat(15,1fr);gap:4px;align-items:end;height:120px;padding:4px 2px 2px;border-radius:10px;background:#f7faff;border:1px solid #e6eefb}
+.ms-day{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:3px;height:100%}
+.ms-day-bar{width:70%;border-radius:4px 4px 2px 2px;min-height:3px;transition:height .3s ease}
+.ms-day-num{font-size:9px;color:#8a9bb5;line-height:1}
+.ms-subj{display:flex;flex-direction:column;gap:6px}
+
+/* ================= R150-7：种植园货币管理 ================= */
+.farm-cur-row{display:flex;align-items:center;gap:8px;padding:7px 4px;border-bottom:1px dashed #e3ecf7}
+.farm-cur-row:last-of-type{border-bottom:none}
+.farm-cur-name{flex:0 0 64px;font-size:13px;font-weight:800;color:#3a4a63}
+.farm-cur-val{flex:0 0 48px;text-align:center;font-size:14px;font-weight:900;color:var(--tone-700);
+  background:#f1f6fd;border:1px solid #dbe7fb;border-radius:8px;padding:2px 0}
+.farm-cur-dec,.farm-cur-inc{flex:0 0 auto;font-size:12px;font-weight:800;color:#16306b;
+  background:var(--tone-400);border:1.5px solid rgba(255,255,255,.8);border-radius:8px;padding:4px 10px;cursor:pointer}
+.farm-cur-inc{background:#d8f1e0;border-color:#9bd6ad;color:#1f7a36}
+.farm-cur-dec{background:#ffe9e9;border-color:#f3b6b6;color:#c0392b}
+.farm-cur-clear{flex:0 0 auto;margin-left:auto;font-size:12px;font-weight:800;color:#8a5a12;
+  background:rgba(255,244,222,.95);border:1.5px solid #ecc98a;border-radius:8px;padding:4px 12px;cursor:pointer}
+.farm-cur-hint{font-size:11px;color:#9aa9c0;margin-top:6px}
 
 /* ===== R52-3：看图写话内容卡片 ===== */
 .kt-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
@@ -4896,6 +4959,11 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .settings-task-section{background:#fff;border:1.5px solid var(--tone-150);border-radius:14px;padding:14px;box-shadow:0 2px 8px rgba(30,58,138,.04)}
 .settings-task-sec-title{font-size:14px;font-weight:800;color:var(--sky-blue);margin-bottom:10px;display:flex;align-items:center;gap:6px}
 .settings-task-list{min-height:60px;margin-bottom:10px}
+/* R150-6：⭐奖励设置整栏（跨两列）+ 列表与提示 */
+.settings-task-sec-wide{grid-column:1 / -1}
+.settings-star-list{display:flex;flex-direction:column}
+.settings-star-list .star-set-row:last-of-type{border-bottom:none}
+.star-set-tip{font-size:12px;color:var(--muted);padding:8px 2px 0;line-height:1.6}
 .settings-game-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
 .settings-game-card{
   display:flex;align-items:center;gap:12px;
@@ -5305,6 +5373,18 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 }
 .wp-nickmemo-btn:hover{filter:brightness(1.05);transform:translateY(-1px);box-shadow:0 5px 14px rgba(30,58,138,.22)}
 .wp-nickmemo-btn:active{transform:translateY(0)}
+/* R150-1：备忘录待办提醒泡泡（按键右上角红色消息泡泡，显示待办数量） */
+.wp-memo-btn-wrap{ position:relative; flex:1 1 0; min-width:0; }
+.wp-memo-btn-wrap .wp-nickmemo-btn{ width:100%; }
+.wp-memo-bubble{
+  position:absolute; top:-8px; right:-8px; z-index:3;
+  min-width:18px; height:18px; padding:0 5px; box-sizing:border-box;
+  display:flex; align-items:center; justify-content:center;
+  font-size:11px; font-weight:800; line-height:1; color:#fff;
+  background:linear-gradient(135deg,#ff5a5f,#e23b3b);
+  border:2px solid #fff; border-radius:999px;
+  box-shadow:0 2px 6px rgba(226,59,59,.45); pointer-events:none;
+}
 /* R119-2：实测 .wp-card-body 的 padding-right:2px 覆盖了 .wp-left-body 的 12px，
    导致卡内内容（姓名块 + 备忘录键）左 12px / 右 2px 不对称、整体右偏 5px。
    以更高特异性接管这一层的内边距（R121-3 起归零，四边完全交给 .wp-card 的 padding 14px 12px 16px，
@@ -6166,7 +6246,10 @@ html,body{margin:0;padding:0}
           </div>
           <!-- R118-2：【Nick 的备忘录】入口按键（点击打开独立备忘录页面）；R149-2：右侧新增【课程表】按键 -->
           <div class="wp-nickmemo-row">
-            <button class="wp-nickmemo-btn" id="btnNickMemo" title="打开 Nick 的备忘录" data-page-node-id="R118btnNickMemo">📒 Nick 的备忘录</button>
+            <div class="wp-memo-btn-wrap">
+              <button class="wp-nickmemo-btn" id="btnNickMemo" title="打开 Nick 的备忘录" data-page-node-id="R118btnNickMemo">📒 Nick 的备忘录</button>
+              <span class="wp-memo-bubble" id="memoBubble" hidden data-page-node-id="R150memoBubble"></span>
+            </div>
             <button class="wp-nickmemo-btn wp-coursetable-btn" id="btnCourseTable" title="查看课程表">🗓️ 课程表</button>
           </div>
         </div>
@@ -6177,9 +6260,17 @@ html,body{margin:0;padding:0}
         <!-- R52-2：今日完成度（总任务饼图 + 各科目横向柱状图） -->
         <div class="wp-section wp-today" data-page-node-id="R52todaySec001">
           <div class="wp-mini-head" data-page-node-id="R52todayHead001">📈 今日完成度</div>
-          <div class="wp-today-wrap" data-page-node-id="R52todayWrap001">
-            <div class="wp-today-pie" id="todayPie" data-page-node-id="R52todayPie001"></div>
-            <div class="wp-today-bars" id="todayBars" data-page-node-id="R52todayBars001"></div>
+          <div class="wp-today-wrap" id="todayRateWrap" data-page-node-id="R52todayWrap001">
+            <div class="wp-today-half wp-today-req">
+              <div class="wp-today-half-head">⭐ 必做</div>
+              <div class="wp-today-pie" id="todayPieReq"></div>
+              <div class="wp-today-bars" id="todayBarsReq"></div>
+            </div>
+            <div class="wp-today-half wp-today-opt">
+              <div class="wp-today-half-head">✨ 选做</div>
+              <div class="wp-today-pie" id="todayPieOpt"></div>
+              <div class="wp-today-bars" id="todayBarsOpt"></div>
+            </div>
           </div>
         </div>
         <div class="wp-section wp-week" data-page-node-id="ypCtxAwLcoTjFzpTx482mi">
@@ -6188,7 +6279,9 @@ html,body{margin:0;padding:0}
           <div class="wp-week-rate" data-page-node-id="rxIrz7jLDEFqAQRgkkGbsa">完成率 <b id="weekRate" data-page-node-id="xlQlJgO78J26GbVUVzJY4p">0%</b></div>
         </div>
         <div class="wp-section wp-month" data-page-node-id="lVgm3gauRRLB3cBqDmXmHE">
-          <div class="wp-mini-head" data-page-node-id="B1IxKfPi6YJpNC10YPVntC">📅 本月完成度 · <b id="monthDone" data-page-node-id="7oL2aRSIsAYNVHRZXULP1m">0</b> 天 · 最高 <b id="monthMax" data-page-node-id="hmIL8AmVDuEqjADH2oOnzT">0</b></div>
+          <div class="wp-mini-head wp-month-head" data-page-node-id="B1IxKfPi6YJpNC10YPVntC">📅 本月完成度 · <b id="monthDone" data-page-node-id="7oL2aRSIsAYNVHRZXULP1m">0</b> 天 · 最高 <b id="monthMax" data-page-node-id="hmIL8AmVDuEqjADH2oOnzT">0</b>
+            <button class="wp-month-stats-btn" id="btnMonthStats" title="查看月度统计" data-page-node-id="R150btnMonthStats">📊 统计</button>
+          </div>
           <div class="wp-cal-weekrow" data-page-node-id="eAGDJKdj4x1PgSywUCZnnQ"><span data-page-node-id="AulImTwBBVIb8UpjFSoWlp">日</span><span data-page-node-id="5xUdT6Kw1F0yBxd3jllKYB">一</span><span data-page-node-id="Jni6tX2xolZYXWWrq16EgM">二</span><span data-page-node-id="ZmCFfw1BDcXBgy8zUH8YHS">三</span><span data-page-node-id="SA3UOjALjmoXduYaJoS4qh">四</span><span data-page-node-id="gxrcImETVCBmaDNbML2WxE">五</span><span data-page-node-id="s3kXc4ID4fBQo3sPHILEjx">六</span></div>
           <div class="wp-cal-grid" id="calGrid" data-page-node-id="NZjtT8mEpr3GdgV2OpD6BR"></div>
         </div>
@@ -6512,6 +6605,16 @@ html,body{margin:0;padding:0}
         <button type="button" class="nw-sched-gear hidden-in-child" id="btnCourseTableGear" title="课程表设置" data-page-node-id="R149btnCourseTableGear">⚙ 设置</button>
       </div>
       <div class="nw-sub-body" id="courseTableMount" data-page-node-id="R149courseTableMount"></div>
+    </div>
+  </div>
+
+  <!-- R150-3：月度统计弹窗（查看 / 对比本月各维度完成数据） -->
+  <div class="modal-mask" id="modalMonthStats" hidden data-page-node-id="R150modalMonthStats">
+    <div class="modal-box modal-month-stats" data-page-node-id="R150monthStatsBox">
+      <div class="modal-head"><span data-page-node-id="R150monthStatsTitle">📊 月度统计</span>
+        <button class="modal-close" id="btnMonthStatsClose" title="关闭" data-page-node-id="R150btnMonthStatsClose">✕</button>
+      </div>
+      <div class="modal-body" id="monthStatsBody" data-page-node-id="R150monthStatsBody"></div>
     </div>
   </div>
 
@@ -7268,6 +7371,27 @@ html,body{margin:0;padding:0}
           <button class="pbtn" id="btnFarmEditReset" data-page-node-id="R362B3PWJjTfmEUZ2mncRp">↺ 恢复默认</button>
         </div>
       </div>
+      <!-- R150-7：种植园货币管理（星星 / 水滴 / 阳光 / 金币 增减 + 一键清零；仅家长模式可操作） -->
+      <div class="parent-edit-group" data-page-node-id="R150farmCurGrp">
+        <div class="peg-title" data-page-node-id="R150farmCurTitle">💰 货币管理（星星 / 水滴 / 阳光 / 金币）</div>
+        <div class="farm-cur-row"><span class="farm-cur-name">⭐ 星星</span><span class="farm-cur-val" id="farmCurStars">0</span>
+          <button class="pbtn farm-cur-dec" data-cur="stars" data-page-node-id="R150cStarsDec">−5</button>
+          <button class="pbtn farm-cur-inc" data-cur="stars" data-page-node-id="R150cStarsInc">+5</button>
+          <button class="pbtn farm-cur-clear" data-cur="stars" data-page-node-id="R150cStarsClr">清零</button></div>
+        <div class="farm-cur-row"><span class="farm-cur-name">💧 水滴</span><span class="farm-cur-val" id="farmCurWater">0</span>
+          <button class="pbtn farm-cur-dec" data-cur="water" data-page-node-id="R150cWaterDec">−5</button>
+          <button class="pbtn farm-cur-inc" data-cur="water" data-page-node-id="R150cWaterInc">+5</button>
+          <button class="pbtn farm-cur-clear" data-cur="water" data-page-node-id="R150cWaterClr">清零</button></div>
+        <div class="farm-cur-row"><span class="farm-cur-name">☀️ 阳光</span><span class="farm-cur-val" id="farmCurSun">0</span>
+          <button class="pbtn farm-cur-dec" data-cur="sun" data-page-node-id="R150cSunDec">−5</button>
+          <button class="pbtn farm-cur-inc" data-cur="sun" data-page-node-id="R150cSunInc">+5</button>
+          <button class="pbtn farm-cur-clear" data-cur="sun" data-page-node-id="R150cSunClr">清零</button></div>
+        <div class="farm-cur-row"><span class="farm-cur-name">💰 金币</span><span class="farm-cur-val" id="farmCurCoins">0</span>
+          <button class="pbtn farm-cur-dec" data-cur="coins" data-page-node-id="R150cCoinsDec">−5</button>
+          <button class="pbtn farm-cur-inc" data-cur="coins" data-page-node-id="R150cCoinsInc">+5</button>
+          <button class="pbtn farm-cur-clear" data-cur="coins" data-page-node-id="R150cCoinsClr">清零</button></div>
+        <div class="farm-cur-hint" data-page-node-id="R150farmCurHint">家长模式下可对任意货币增减（±5）或一键清零；修改即时同步至种植园统计与首页。</div>
+      </div>
       <!-- R124：种植园 游戏开放时间（默认工作日 21:00-24:00 + 周末/法定节假日；支持自定义开放日/时段；非开放时间锁定） -->
       <div class="parent-edit-group" data-page-node-id="R124farmOpenGrp">
         <div class="peg-title" data-page-node-id="R124farmOpenTitle">📅 游戏开放时间</div>
@@ -7353,6 +7477,11 @@ html,body{margin:0;padding:0}
         <div class="settings-task-section" data-page-node-id="R85taskMaoSec">
           <div class="settings-task-sec-title" data-page-node-id="R85taskMaoTitle">📜 诗词打卡</div>
           <div id="settingsTaskMaoContent" data-page-node-id="R85taskMaoContent"></div>
+        </div>
+        <div class="settings-task-section settings-task-sec-wide" data-page-node-id="R150taskStarSec">
+          <div class="settings-task-sec-title" data-page-node-id="R150taskStarTitle">⭐ 打卡星星奖励设置（家长）</div>
+          <div class="form-warn" data-page-node-id="R150taskStarHint">设置新世界 / 乐读数学 / 学而思英语 / 大阅读 / 百科讲堂各打卡任务可获得的成长星数量（0~20，0 表示不奖励）。修改后立即生效，并同步计入种植园星星统计。</div>
+          <div id="settingsTaskStarList" class="settings-star-list" data-page-node-id="R150taskStarList"></div>
         </div>
       </div>
     </div>
@@ -29814,6 +29943,8 @@ window.WANTONG_COVER = './assets/c6249ea2bfe3.jpg';
     if(st.settings && st.settings.pin === undefined) st.settings.pin = '';
     // R51-2：点击音效配置（导航栏/主题卡/次级主题卡/打卡），缺省回退默认档
     if(!st.clickSfx) st.clickSfx = {nav:'a', theme:'b', sub:'b', checkin:'c'};
+    // R150-5：系统默认关闭所有按键音效；是否发声交由用户在设置中心自主开启（soundOn 缺省 false）
+    if(typeof st.soundOn === 'undefined') st.soundOn = false;
     // v8：题库默认 2 道公因数题（含详细解答过程）；重建后立即持久化，避免每次 load() 生成新 id
     if(!st.mathProblems || st.mathProblems.length===0){
       st.mathProblems = defaultMathProblems();
@@ -31767,7 +31898,8 @@ window.WANTONG_COVER = './assets/c6249ea2bfe3.jpg';
     {id:'oxfordunit', label:'英语·牛津整单元完成',     def:5},
     {id:'kbunit',     label:'语文·课本同步整单元完成', def:2},
     {id:'think',      label:'思维拓展打卡',           def:1},
-    {id:'ktxs',       label:'推荐书籍打卡',           def:5},
+    {id:'ktxs',       label:'大阅读·推荐书籍打卡',       def:5},
+    {id:'fest',       label:'百科讲堂·节日已学习打卡',   def:1},
   ];
   function getTaskStars(id){
     const st = load();
@@ -35784,9 +35916,11 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
 
   // 二级子页面渲染（语文/数学/英语/拓展素养 通用；课程表单独）
   function renderNwSub(page, mountId){
-    const card = NW_CARDS.find(c=>c.page===page);
     const mount = document.getElementById(mountId);
-    if(!card || !mount) return;
+    if(!mount) return;
+    const card = NW_CARDS.find(c=>c.page===page);
+    // R149-2：课程表卡已从 NW_CARDS 迁出（改由首页【🗓️ 课程表】弹窗承载），
+    // 故课程表分支不得再依赖 card 存在，否则弹窗挂载点渲染为空（R150 复核修复）。
     if(page==='newworld-schedule'){
       // V105：梵高《星月夜》油画风整页版式 —— 顶部大标题 + 居中双层圆角表格 + 四角星月/小船装饰
       const sc = (window.Store && window.Store.getSchedule) ? window.Store.getSchedule() : {rows:9,days:SCHED_DAY_LABELS.slice(),cells:{},addColor:'#ffffff',tableTextColor:'#1e3a8a',tableFontSize:15,tableCell:'#ffffff'};
@@ -35847,6 +35981,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       mount.querySelectorAll('.kb-cell').forEach(b=> b.addEventListener('click', ()=> openSchedCellEditor(parseInt(b.dataset.r), parseInt(b.dataset.c))));
       return;
     }
+    if(!card) return; // 未知页面（含已迁出的课程表）不再向下渲染
     mount.innerHTML = card.mods.map(m=>`
       <div class="nw-sub-mod">
         <div class="nw-sub-mod-head"><span class="nw-mod-ico">${m.icon}</span><span class="nw-mod-t">${m.t}</span></div>
@@ -40178,6 +40313,20 @@ I'm good at running.`},
     inp.addEventListener('blur', ()=>finish(true));
   }
 
+  // R150-1：首页 Nick 备忘录按键消息泡泡 —— 当日 / 次日存在未完成的周看板待办时展示数量
+  function renderMemoBubble(){
+    const el = document.getElementById('memoBubble'); if(!el) return;
+    const today = nbTodayISO();
+    const d = new Date(); d.setDate(d.getDate()+1); const p = n => (n<10?'0':'')+n;
+    const tomorrow = d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate());
+    let count = 0;
+    try{
+      count += (S.getNickWeekBoard(today)||[]).filter(t=>!t.done).length;
+      count += (S.getNickWeekBoard(tomorrow)||[]).filter(t=>!t.done).length;
+    }catch(e){}
+    if(count>0){ el.textContent = count>99?'99+':String(count); el.hidden = false; el.title = '今日 / 次日还有 '+count+' 项待办未完成'; }
+    else { el.hidden = true; }
+  }
   function renderHome(){
     const st = S.load();
     // 顶部 Nick 信息（"Hi, I'm Nick!" 已置于头像下方居中显示 — 此处不再需要 nickname 文本节点）
@@ -40194,7 +40343,8 @@ I'm good at running.`},
     renderWallpaperBanner();
     renderHomeAvatar(st);
     renderCalendar(st);
-    renderTodayRate(st); // R52-2：今日完成度（总任务饼图 + 科目横向柱状图）
+    renderTodayRate(st); // R52-2：今日完成度（必做/选做双卡）
+    renderMemoBubble(); // R150-1：备忘录待办提醒泡泡
     renderWeekChart(st);
     renderRecent(st);
     // 最近记录条
@@ -40204,6 +40354,7 @@ I'm good at running.`},
     renderWallpaperCards(st);
     // 拖拽 + 打卡点击（仅绑定一次）
     initWallpaperDnd();
+    bindMonthStats(); // R150-3：月度统计按钮绑定（幂等）
   }
 
   // R131-3：Nick 的备忘录重构 —— 编号玻璃便签卡散落背景（时间/事项/备注 + 字号/颜色/透明度自定义）
@@ -41624,21 +41775,23 @@ I'm good at running.`},
     const btn = document.getElementById('festLearnBtn');
     if(!btn) return;
     const learned = (window.Store && window.Store.getFestLearned) ? !!window.Store.getFestLearned()[name] : false;
+    const n = S.getTaskStars('fest');
     btn.classList.toggle('checked', learned);
     btn.textContent = learned ? '✅ 已学习（点击取消）' : '📖 已学习';
-    btn.title = learned ? '已打卡 +1⭐（点击取消，扣回 1⭐）' : '打卡 +1⭐';
+    btn.title = learned ? '已打卡 +'+n+'⭐（点击取消，扣回 '+n+'⭐）' : '打卡 +'+n+'⭐';
   }
   function onFestLearnToggle(){
     const name = _festLearnName; if(!name) return;
     const cur = (window.Store && window.Store.getFestLearned) ? !!window.Store.getFestLearned()[name] : false;
     const learned = window.Store.setFestLearned(name, !cur);
+    const n = S.getTaskStars('fest'); // R150-6：⭐数由家长在「任务设置·⭐奖励设置」配置
     if(learned){
-      addStars(1);
-      toast('🎉 「' + name + '」已学习打卡 +1⭐');
+      addStars(n);
+      toast('🎉 「' + name + '」已学习打卡 +'+n+'⭐');
       try{ playCongrats(); }catch(e){}
     } else {
-      addStars(-1, true); // 静默扣回，不播恭喜音
-      toast('已取消「' + name + '」打卡，扣回 1⭐');
+      addStars(-n, true); // 静默扣回，不播恭喜音
+      toast('已取消「' + name + '」打卡，扣回 '+n+'⭐');
     }
     renderFestLearnBtn(name);
   }
@@ -41903,40 +42056,38 @@ I'm good at running.`},
     }
     $('#homeTaskGroups').innerHTML = html || '<div class="task-item">今日暂无任务</div>';
   }
-  // R52-2：今日完成度 —— 总任务用饼图，语文/数学/英语/运动作息/选做 用横向柱状图
+  // R52-2 → R150-2：今日完成度拆分为【必做】【选做】两张独立统计卡片
   function renderTodayRate(st){
-    const pieEl = $('#todayPie'), barsEl = $('#todayBars');
-    if(!pieEl && !barsEl) return;
     const today = S.todayStr();
     const tasks = S.tasksForDate(today);
     const isDone = (t)=>{ const r=st.records.find(x=>x.date===today&&x.taskId===t.id); return r&&r.completed; };
-    const done = tasks.filter(isDone).length;
-    const total = tasks.length;
+    const reqTasks = tasks.filter(t=>t.type==='必做任务');
+    const optTasks = tasks.filter(t=>t.type==='选做拓展任务');
+    renderRateHalf('todayPieReq','todayBarsReq','必做', reqTasks, isDone);
+    renderRateHalf('todayPieOpt','todayBarsOpt','选做', optTasks, isDone);
+  }
+  function renderRateHalf(pieId, barsId, label, tasks, isDone){
+    const pieEl = document.getElementById(pieId), barsEl = document.getElementById(barsId);
+    const done = tasks.filter(isDone).length, total = tasks.length;
     const pct = total ? Math.round(done/total*100) : 0;
-    // 饼图（SVG 环形：已完成弧 + 底色环 + 中心百分比）
     if(pieEl){
       const R = 30, C = 2*Math.PI*R;
       const fill = total ? (done/total)*C : 0;
       pieEl.innerHTML = `
-        <svg class="wp-pie-svg" viewBox="0 0 80 80" role="img" aria-label="总任务完成度 ${pct}%">
+        <svg class="wp-pie-svg" viewBox="0 0 80 80" role="img" aria-label="${label}完成度 ${pct}%">
           <circle class="wp-pie-bg" cx="40" cy="40" r="${R}" />
-          <circle class="wp-pie-fill" cx="40" cy="40" r="${R}"
+          <circle class="wp-pie-fill wp-pie-fill-${label==='必做'?'req':'opt'}" cx="40" cy="40" r="${R}"
                   stroke-dasharray="${fill.toFixed(2)} ${(C-fill).toFixed(2)}"
                   transform="rotate(-90 40 40)" />
           <text class="wp-pie-pct" x="40" y="38" text-anchor="middle">${pct}%</text>
           <text class="wp-pie-sub" x="40" y="52" text-anchor="middle">${done}/${total}</text>
         </svg>
-        <div class="wp-pie-label">总任务</div>`;
+        <div class="wp-pie-label">${label}</div>`;
     }
-    // 横向柱状图：语文 / 数学 / 英语 / 运动作息 / 选做
     if(barsEl){
-      const groups = [
-        { name:'语文',     pick:(t)=>t.subject==='语文' },
-        { name:'数学',     pick:(t)=>t.subject==='数学' },
-        { name:'英语',     pick:(t)=>t.subject==='英语' },
-        { name:'运动作息', pick:(t)=>t.subject==='运动'||t.subject==='作息' },
-        { name:'选做',     pick:(t)=>t.type==='选做拓展任务' }
-      ];
+      const groups = label==='必做'
+        ? [ {name:'语文',pick:t=>t.subject==='语文'}, {name:'数学',pick:t=>t.subject==='数学'}, {name:'英语',pick:t=>t.subject==='英语'}, {name:'运动作息',pick:t=>t.subject==='运动'||t.subject==='作息'} ]
+        : [ {name:'语文',pick:t=>t.subject==='语文'}, {name:'数学',pick:t=>t.subject==='数学'}, {name:'英语',pick:t=>t.subject==='英语'}, {name:'素养',pick:t=>t.subject==='文明小标兵'||t.subject==='家务小帮手'} ];
       barsEl.innerHTML = groups.map(g=>{
         const list = tasks.filter(g.pick);
         const d = list.filter(isDone).length;
@@ -41946,8 +42097,65 @@ I'm good at running.`},
           <div class="wp-tbar-track"><div class="wp-tbar-fill" style="width:${p}%"></div></div>
           <span class="wp-tbar-val">${d}/${list.length}</span>
         </div>`;
-      }).join('');
+      }).join('') || '<div class="wp-tbar-empty">暂无'+label+'任务</div>';
     }
+  }
+  // R150-3：月度统计弹窗 —— 查看并对比本月各维度完成数据
+  function renderMonthStats(){
+    const st = S.load();
+    const now = new Date(); const p = n=>(n<10?'0':'')+n;
+    const y = now.getFullYear(), m = now.getMonth()+1;
+    const daysInMonth = new Date(y, m, 0).getDate();
+    const isDone = (ds,t)=>{ const r=st.records.find(x=>x.date===ds&&x.taskId===t.id); return r&&r.completed; };
+    let reqDone=0, reqTotal=0, optDone=0, optTotal=0;
+    const subTotal = {}, subDone = {}; const dayRows = [];
+    for(let d=1; d<=daysInMonth; d++){
+      const ds = y+'-'+p(m)+'-'+p(d);
+      const tasks = S.tasksForDate(ds);
+      let done=0;
+      tasks.forEach(t=>{
+        const on = isDone(ds,t); if(on) done++;
+        if(t.type==='必做任务'){ reqTotal++; if(on) reqDone++; }
+        else if(t.type==='选做拓展任务'){ optTotal++; if(on) optDone++; }
+        subTotal[t.subject]=(subTotal[t.subject]||0)+1; if(on) subDone[t.subject]=(subDone[t.subject]||0)+1;
+      });
+      dayRows.push({d, done, total:tasks.length, pct: tasks.length?Math.round(done/tasks.length*100):0});
+    }
+    const monthDaysDone = (yy,mm)=>{ const pre=yy+'-'+p(mm)+'-'; const set={}; st.records.forEach(r=>{ if(r.completed && r.date && r.date.indexOf(pre)===0) set[r.date]=1; }); return Object.keys(set).length; };
+    const ld = m===1? {y:y-1,m:12}:{y,m:m-1};
+    const thisMD = monthDaysDone(y,m), lastMD = monthDaysDone(ld.y,ld.m);
+    const subjOrder = ['语文','数学','英语','运动','作息','围棋','文明小标兵','家务小帮手'];
+    const subjHtml = subjOrder.filter(s=>subTotal[s]).map(s=>{
+      const t=subTotal[s], d=subDone[s], pp=t?Math.round(d/t*100):0;
+      return `<div class="wp-tbar"><span class="wp-tbar-name">${esc(s)}</span><div class="wp-tbar-track"><div class="wp-tbar-fill" style="width:${pp}%"></div></div><span class="wp-tbar-val">${d}/${t}</span></div>`;
+    }).join('');
+    const dayHtml = dayRows.map(r=>{
+      const h = Math.max(3, r.pct);
+      return `<div class="ms-day" title="${p(m)}-${p(r.d)}：${r.done}/${r.total}">
+        <div class="ms-day-bar" style="height:${h}%;background:${r.pct>=100?'#2f9e44':(r.total?'#4096ff':'#dfe7f2')}"></div>
+        <span class="ms-day-num">${r.d}</span></div>`;
+    }).join('');
+    const body = document.getElementById('monthStatsBody'); if(!body) return;
+    body.innerHTML = `
+      <div class="ms-summary">
+        <div class="ms-card ms-req"><div class="ms-v">${reqDone}/${reqTotal}</div><div class="ms-l">⭐ 必做完成</div></div>
+        <div class="ms-card ms-opt"><div class="ms-v">${optDone}/${optTotal}</div><div class="ms-l">✨ 选做完成</div></div>
+        <div class="ms-card"><div class="ms-v">${thisMD}</div><div class="ms-l">本月打卡天数</div></div>
+      </div>
+      <div class="ms-cmp">📈 打卡天数对比：本月 <b>${thisMD}</b> 天 · 上月 <b>${lastMD}</b> 天 · ${thisMD>lastMD?'↑ 多 '+(thisMD-lastMD)+' 天':(thisMD<lastMD?'↓ 少 '+(lastMD-thisMD)+' 天':'持平')}</div>
+      <div class="ms-block-title">📅 每日完成度</div>
+      <div class="ms-days">${dayHtml}</div>
+      <div class="ms-block-title">📚 各科目完成</div>
+      <div class="ms-subj">${subjHtml || '<div class="wp-tbar-empty">暂无数据</div>'}</div>
+    `;
+  }
+  let _monthStatsBound = false;
+  function bindMonthStats(){
+    if(_monthStatsBound) return; _monthStatsBound = true;
+    const b = document.getElementById('btnMonthStats');
+    if(b) b.onclick = ()=>{ renderMonthStats(); showModal('#modalMonthStats'); };
+    const c = document.getElementById('btnMonthStatsClose');
+    if(c) c.onclick = ()=> hideModal('#modalMonthStats');
   }
   function renderWeekChart(st){
     const rep = S.buildWeeklyReport();
@@ -44703,6 +44911,16 @@ I'm good at running.`},
     showModal('#modalParentEdit');
   }
   // R83：种植园设置弹窗（从背景设置迁移：种植园排版 + 农场市集 + 云上小卖部）
+  // R150-7：种植园货币（星星/水滴/阳光/金币）实时数值回填
+  let _farmCurBound = false;
+  function renderFarmCurrency(){
+    const st = S.load();
+    const set = (id,v)=>{ const el=document.getElementById(id); if(el) el.textContent = v; };
+    set('farmCurStars', st.archive.totalStars||0);
+    set('farmCurWater', (st.inventory&&st.inventory.water)||0);
+    set('farmCurSun', (st.inventory&&st.inventory.sun)||0);
+    set('farmCurCoins', st.archive.totalCoins||0);
+  }
   function openFarmSetting(){
     // R90-4：种植园排版改为「填空选择」（列数下拉 + 间距/地块数值填空）
     const layout = S.getFarmLayout();
@@ -44715,6 +44933,7 @@ I'm good at running.`},
     renderShopEditor('farmSetShopList',   ['gift']);
     // R124：游戏开放时间（工作日时段窗 + 周末/节假日 + 自定义开放日）
     initFarmOpenSetting();
+    renderFarmCurrency(); // R150-7：打开种植园设置时回填货币数值
     showModal('#modalFarmSetting');
   }
   // R83：种植园设置弹窗交互绑定（保存/恢复默认排版 + 市集/小卖部列表事件）
@@ -44746,6 +44965,38 @@ I'm good at running.`},
     }
     bindShopList('farmSetMarketList');
     bindShopList('farmSetShopList');
+    // R150-7：货币（星星/水滴/阳光/金币）增减 + 一键清零（仅家长模式）
+    if(!_farmCurBound){
+      _farmCurBound = true;
+      const adjust = (kind, delta)=>{
+        if(isChild()){ toast('仅家长模式可操作'); return; }
+        const st = S.load();
+        if(kind==='stars') S.setArchiveCounter('totalStars', Math.max(0,(st.archive.totalStars||0)+delta));
+        else if(kind==='coins') S.setArchiveCounter('totalCoins', Math.max(0,(st.archive.totalCoins||0)+delta));
+        else if(kind==='water') S.setInventory('water', Math.max(0,(st.inventory.water||0)+delta));
+        else if(kind==='sun') S.setInventory('sun', Math.max(0,(st.inventory.sun||0)+delta));
+        renderFarmCurrency(); renderHome(); renderFarm(); renderArchive();
+      };
+      const clearCur = (kind)=>{
+        if(isChild()){ toast('仅家长模式可操作'); return; }
+        const label = kind==='stars'?'星星':kind==='water'?'水滴':kind==='sun'?'阳光':'金币';
+        if(!confirm('确认将「'+label+'」清零？')) return;
+        if(kind==='stars') S.resetArchiveCounter('totalStars');
+        else if(kind==='coins') S.resetArchiveCounter('totalCoins');
+        else if(kind==='water') S.resetInventory('water');
+        else if(kind==='sun') S.resetInventory('sun');
+        renderFarmCurrency(); renderHome(); renderFarm(); renderArchive();
+        toast('✓ 已清零');
+      };
+      $$('#modalFarmSetting [data-cur]').forEach(b=>{
+        b.onclick = ()=>{
+          const kind = b.dataset.cur;
+          if(b.classList.contains('farm-cur-inc')) adjust(kind, 5);
+          else if(b.classList.contains('farm-cur-dec')) adjust(kind, -5);
+          else clearCur(kind);
+        };
+      });
+    }
   }
   // R83：bindShopList 提升为模块级 function 声明（原位于 bindParentEdit 内的 const），供 bindParentEdit 与 bindFarmSetting 共用
   function bindShopList(containerId){
@@ -46669,7 +46920,9 @@ I'm good at running.`},
   // 读取某槽位当前音效预设 id（缺省回退默认）
   function getClickSfx(slot){ const st=(window.Store&&window.Store.load)?window.Store.load():null; const cfg=(st&&st.clickSfx)||defaultClickSfx(); return cfg[slot] || (slot==='checkin'?'c':'b'); }
   // 播放某槽位音效
-  function playClickSfx(slot){ try{ const id=getClickSfx(slot); const p=SFX_PRESETS[id]; if(p&&p.play) p.play(); }catch(e){} }
+  function isSoundOn(){ try{ const st=(window.Store&&window.Store.load)?window.Store.load():null; return !!(st && st.soundOn); }catch(e){ return false; } }
+  // R150-5：系统默认不播放任何按键音效；仅当用户在设置中心主动开启 soundOn 后才发声
+  function playClickSfx(slot){ if(!isSoundOn()) return; try{ const id=getClickSfx(slot); const p=SFX_PRESETS[id]; if(p&&p.play) p.play(); }catch(e){} }
   // 在「任务设置」里保存某槽位音效选择
   function setClickSfxConfig(slot, id){
     const st = (window.Store&&window.Store.load)?window.Store.load():null; if(!st) return;
@@ -47716,16 +47969,30 @@ I'm good at running.`},
     // R76-3：下拉按「分组 · 名称」展示（经典 6 首 + 按键 10 首；苹果铃声已移除）
     const opts = Object.keys(SFX_PRESETS).map(k=>`<option value="${k}">${esc(SFX_PRESETS[k].group||'经典')} · ${esc(SFX_PRESETS[k].label)}</option>`).join('');
     const cfg = (S.load().clickSfx) || defaultClickSfx();
+    const soundOn = !!((S.load().soundOn));
     box.innerHTML = `
       <div class="sfx-set-title">🔊 点击音效设置</div>
-      <div class="sfx-set-hint">为不同操作设置点击音效（可在下拉里更换，点「试听」预览）</div>
+      <div class="sfx-set-hint">系统默认不发声；开启下方开关后，可分别为不同操作设置音效（点「试听」预览）</div>
+      <div class="sfx-row sfx-master-row">
+        <span class="sfx-row-label">🔔 按键音效总开关</span>
+        <label class="sfx-switch"><input type="checkbox" id="sfxMasterOn" ${soundOn?'checked':''}/> <span class="sfx-switch-txt">${soundOn?'已开启':'已关闭'}</span></label>
+      </div>
       ${slots.map(([slot,label])=>`
         <div class="sfx-row">
           <span class="sfx-row-label">${label}</span>
-          <select class="sfx-sel" data-sfx-slot="${slot}">${opts}</select>
-          <button class="pbtn sfx-preview" data-sfx-preview="${slot}">▶ 试听</button>
+          <select class="sfx-sel" data-sfx-slot="${slot}" ${soundOn?'':'disabled'}>${opts}</select>
+          <button class="pbtn sfx-preview" data-sfx-preview="${slot}" ${soundOn?'':'disabled'}>▶ 试听</button>
         </div>`).join('')}
     `;
+    const master = box.querySelector('#sfxMasterOn');
+    if(master){
+      master.onchange = ()=>{
+        const st = S.load(); st.soundOn = !!master.checked; save(st);
+        const txt = box.querySelector('.sfx-switch-txt'); if(txt) txt.textContent = master.checked?'已开启':'已关闭';
+        box.querySelectorAll('.sfx-sel,.sfx-preview').forEach(el=>{ el.disabled = !master.checked; });
+        if(master.checked) playClickSfx('nav'); // 开启时给一声反馈
+      };
+    }
     box.querySelectorAll('.sfx-sel').forEach(sel=>{
       const slot = sel.dataset.sfxSlot;
       sel.value = cfg[slot] || defaultClickSfx()[slot];
@@ -48500,6 +48767,41 @@ I'm good at running.`},
     });
   }
   // ============ R85：设置中心 —— 各卡片弹窗路由 ============
+  // R150-6：家长模式 —— 各板块打卡任务⭐奖励设置（新世界 / 乐读数学 / 学而思英语 / 大阅读 / 百科讲堂）
+  // 修改写入 st.taskStars，打卡链路实时读取 getTaskStars(id)；addStars 同步累加 st.archive.totalStars（即种植园星星统计）。
+  function renderTaskStarSettings(){
+    const el = document.getElementById('settingsTaskStarList');
+    if(!el) return;
+    const defs = (S.TASK_STAR_DEFS || []);
+    if(isChild()){
+      el.innerHTML = '<div class="form-warn">🔒 星星奖励设置仅家长模式可编辑（请先在「使用模式」切换到家长模式）</div>';
+      return;
+    }
+    el.innerHTML = defs.map(function(d){
+      return '<div class="star-set-row" data-star-id="'+esc(d.id)+'" title="默认 '+d.def+'⭐ · 可设 0~20">'
+        + '<span class="star-set-label">'+esc(d.label)+'</span>'
+        + '<input type="number" class="star-set-input" min="0" max="20" step="1" value="'+S.getTaskStars(d.id)+'">'
+        + '<span class="star-set-unit">⭐</span>'
+        + '<button class="pbtn small" data-star-save="'+esc(d.id)+'">保存</button>'
+        + '</div>';
+    }).join('')
+    + '<div class="star-set-tip">提示：修改后立即生效；取消打卡会按当前设置值扣回对应⭐，种植园星星统计同步更新。</div>';
+    el.querySelectorAll('[data-star-save]').forEach(function(btn){
+      btn.onclick = function(){
+        const id = btn.getAttribute('data-star-save');
+        const row = btn.closest('.star-set-row');
+        const inp = row && row.querySelector('.star-set-input');
+        let v = parseInt(inp && inp.value, 10);
+        if(isNaN(v) || v < 0) v = 0;
+        v = Math.max(0, Math.min(20, v));
+        const map = {}; map[id] = v;
+        S.setTaskStars(map);
+        if(inp) inp.value = v;
+        const def = defs.find(function(x){ return x.id === id; });
+        toast('✓ 已保存：' + (def ? def.label : id) + ' → +' + v + '⭐');
+      };
+    });
+  }
   // R87：把设置中心「打卡任务」弹窗的列表刷新封装为可复用函数（删除/保存后刷新用）
   function refreshSettingsTaskLists(){
     _forceTaskEdit = true;
@@ -48513,6 +48815,7 @@ I'm good at running.`},
     clone('#todayHouseTip', '#settingsTaskHouseTip');
     renderTodayGo(S.load(), '#settingsTaskGoContent');
     renderTodayMaoStar('#settingsTaskMaoContent');
+    renderTaskStarSettings(); // R150-6：⭐奖励设置（家长模式）
     const addHouse = $('#settingsTaskHouse').querySelector('#btnAddHouse');
     if(addHouse) addHouse.onclick = ()=> openTaskEdit(null, '家务小帮手');
     const ow = $('#btnSettingsOpenWrong'); if(ow) ow.onclick = ()=> showModal('#modalWrong');
@@ -48886,19 +49189,21 @@ I'm good at running.`},
     }
 
     // R85：设置中心 —— 7 张卡片点击路由
+    // R150-7：除「使用模式」外，其余所有设置项仅在家长模式下开放编辑（孩子模式点击拦截）
     const bindCard = (id, fn)=>{ const el = document.getElementById(id); if(el && !el._bound){ el._bound = true; el.onclick = fn; } };
-    bindCard('cardTaskSettings', openSettingsTask);
-    bindCard('cardGameSettings', ()=>showModal('#modalGameSettings'));
-    bindCard('cardMusicSettings', openMusicSettings);
-    bindCard('cardBgSettings', openParentEdit);
-    bindCard('cardSyncSettings', openSyncSettings);
-    bindCard('cardVersionSettings', openVersionSettings);
-    bindCard('cardExportSettings', openExportSettings);
+    const parentOnly = (fn)=> ()=>{ if(isChild()){ toast('该设置仅家长模式可编辑'); return; } fn(); };
+    bindCard('cardTaskSettings', parentOnly(openSettingsTask));
+    bindCard('cardGameSettings', parentOnly(()=>showModal('#modalGameSettings')));
+    bindCard('cardMusicSettings', parentOnly(openMusicSettings));
+    bindCard('cardBgSettings', parentOnly(openParentEdit));
+    bindCard('cardSyncSettings', parentOnly(openSyncSettings));
+    bindCard('cardVersionSettings', parentOnly(openVersionSettings));
+    bindCard('cardExportSettings', parentOnly(openExportSettings));
     // 游戏设置弹窗内：种植园 / 知识秘境
-    bindCard('btnSettingsFarmSet', openFarmSetting);
-    bindCard('btnSettingsKMSet', openKMSetting);
+    bindCard('btnSettingsFarmSet', parentOnly(openFarmSetting));
+    bindCard('btnSettingsKMSet', parentOnly(openKMSetting));
     // R118-3：知识秘境设置弹窗内「后台修改中心」子项 → 打开后台页
-    bindCard('btnSettingsKMAdmin', ()=>{ try{ hideModal('#modalKMSetting'); }catch(e){} goPage('kmadmin'); });
+    bindCard('btnSettingsKMAdmin', parentOnly(()=>{ try{ hideModal('#modalKMSetting'); }catch(e){} goPage('kmadmin'); }));
     // R131-2：注入设置中心【保存设置】按钮（每张卡片 + 全局）
     ensureSettingsSaveButtons();
     // R118-1：节日【已学习】打卡键（弹窗内静态元素，绑定一次）
