@@ -5438,7 +5438,7 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   background:rgba(255,255,255,.85);border:1px solid var(--tone-200);
   border-radius:999px;padding:2px 10px;white-space:nowrap
 }
-/* 超出 7 条的提示条（超出部分仅在编辑面板可见可删） */
+/* R148：超出 5 条的提示条（超出部分仅在编辑面板可见可删） */
 .mn-overflow-tip{
   flex:0 0 auto;font-size:11px;line-height:1.5;color:#8a5a12;
   background:rgba(255,244,222,.92);border:1px dashed #ecc98a;border-radius:10px;
@@ -5514,11 +5514,30 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 }
 .mn-cancel:hover{background:#fff}
 .mn-in:focus{outline:none;border-color:var(--tone-600);box-shadow:0 0 0 3px rgba(64,150,255,.18)}
-/* R138：备忘录管理改为统一弹窗（对话框），并整体放大；时间/事项/备注在同一对话框内编辑 */
+/* R138：备忘录管理改为统一弹窗（对话框），并整体放大；时间/事项/备注在同一对话框内编辑。
+   R148：整窗毛玻璃化 —— 半透明玻璃底 + 背景模糊 + 白色描边，透出底层页面（清新绿调）；
+   行卡（.mn-note-edit）与输入框保持实白底，录入可读性不受玻璃化影响。 */
 .modal-memo{
   min-width:600px;width:min(720px,92vw);max-width:min(760px,94vw);
-  max-height:88vh;max-height:88dvh;display:flex;flex-direction:column
+  max-height:88vh;max-height:88dvh;display:flex;flex-direction:column;
+  background:linear-gradient(155deg, rgba(255,255,255,.34), rgba(214,242,228,.24));
+  backdrop-filter:blur(18px) saturate(150%);
+  -webkit-backdrop-filter:blur(18px) saturate(150%);
+  border:1.5px solid rgba(255,255,255,.62);
+  box-shadow:0 18px 46px rgba(12,32,60,.34), inset 0 1px 0 rgba(255,255,255,.62)
 }
+/* R148：弹窗头部改为绿色玻璃条，标题白字与毛玻璃底协调 */
+.modal-memo .modal-head{
+  margin:-18px -18px 12px;padding:12px 18px;
+  border-radius:14px 14px 0 0;
+  background:linear-gradient(135deg, rgba(63,191,127,.62), rgba(22,110,84,.52));
+  border-bottom:1px solid rgba(255,255,255,.45);
+  box-shadow:0 4px 12px rgba(20,70,52,.22)
+}
+.modal-memo .modal-head h3{color:#fff;text-shadow:0 1px 6px rgba(10,42,30,.45)}
+.modal-memo .modal-x{background:rgba(255,255,255,.28);color:#fff;border:none}
+/* R148：毛玻璃弹窗要透出底层页面，遮罩相应调浅（默认 rgba(0,0,0,.5) 会把玻璃压成灰底） */
+#modalMemoEdit{background:rgba(10,30,52,.28)}
 .modal-memo .modal-body{overflow-y:auto;padding-right:6px}
 .modal-memo .modal-foot{display:flex;gap:10px;justify-content:flex-end;padding-top:6px;flex:0 0 auto}
 .modal-memo .mn-edit-head-count{
@@ -5608,8 +5627,8 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
    所有组件悬浮半透明，透出底层薄荷叶背景；白色文字 + 低饱和柔和配色。 */
 /* ① 顶部标题区：左上粗体白大标题 + 副标题；右上手写体浅色小字 */
 .wb-intro{flex:0 0 auto;padding:clamp(4px,.9vh,9px) clamp(8px,1.2vw,14px);font-size:clamp(11px,1.7vh,14px);font-weight:600;color:#fff;letter-spacing:.04em;text-shadow:0 1px 6px rgba(8,36,26,.55);border-bottom:1px solid rgba(255,255,255,.22)}
-/* ② 中部磨砂玻璃窗口：半透明 + 模糊 + 圆角 + 细微外发光，透出薄荷叶背景 */
-.wb-win{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;overflow:hidden;border-radius:clamp(12px,1.8vh,18px);background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.42);backdrop-filter:blur(9px) saturate(130%);-webkit-backdrop-filter:blur(9px) saturate(130%);box-shadow:0 10px 30px rgba(10,38,28,.28),0 0 22px rgba(255,255,255,.14),inset 0 1px 0 rgba(255,255,255,.4)}
+/* ② R148：中间那层毛玻璃卡（原 .wb-win）已删除 —— 头部 / 副标题 / 内容区直接铺在周看板半透明绿底上，
+      背景天际线不再被玻璃面板二次遮挡；原 .wb-win 样式整条移除。 */
 .wb-win-head{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:clamp(5px,1vh,10px) clamp(8px,1.2vw,14px);border-bottom:1px solid rgba(255,255,255,.3)}
 .wb-nav-left{display:flex;align-items:center;gap:6px;min-width:0}
 .wb-ym{font-size:clamp(12px,1.9vh,16px);font-weight:900;color:#fff;white-space:nowrap;text-shadow:0 1px 6px rgba(8,36,26,.5)}
@@ -40125,7 +40144,9 @@ I'm good at running.`},
   // 卡片配色 赤→橙→黄→绿→青→蓝→紫 由 CSS nth-child 上色；卡内一律空白无任何文字，
   // 仅在右上角放两个极简小图标（编辑 / 删除），点击后进入编辑态或删除对应备忘。
   // R135-2：每张卡左侧嵌入疯狂动物城角色人像徽章、右下角嵌入电影元素小装饰（纯图形，不引入文字）。
-  const MN_CARD_COUNT = 7;
+  // R148：备忘墙固定 5 张标签卡（周看板大卡占第 1 位，标签卡为第 2~6 位），
+  //       且标签卡从第 1 条备忘（索引 0）开始渲染 —— 此前从索引 2 起渲染，前两条（含新建的那条）永远不显示。
+  const MN_CARD_COUNT = 5;
   const MN_TOOL_EDIT = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17.25V21h3.75L17.8 9.94l-3.75-3.75L3 17.25zM20.7 7.04a1 1 0 0 0 0-1.42l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>';
   const MN_TOOL_DEL  = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>';
   // 疯狂动物城角色人像（按卡位依次：朱迪/尼克/闪电/豹警官/绵羊副市长/大先生/牦牛亚提）
@@ -40133,7 +40154,7 @@ I'm good at running.`},
   // 电影元素小装饰（按卡位依次）
   const MN_FILMS = ['🎬','🌟','🚔','📽️','🎫','🏙️','🚕'];
   // R145：便签卡同色圆圈取色 —— 与 styles.css 彩虹染色层（.mn-note-card:nth-child ::before）严格同色，
-  // 索引 = 卡位 - 1（周看板大卡占第 1 位，备忘卡从第 2 位起：橙/黄/绿/青/蓝）
+  // R148：索引 = 卡位 - 1（周看板大卡占第 1 位，备忘卡从第 2 位起：橙/黄/绿/青/蓝），卡内循环变量 i 从 0 起
   const MN_TINTS = ['rgba(255,86,86,.92)','rgba(255,152,58,.92)','rgba(255,213,64,.92)','rgba(72,214,128,.92)','rgba(34,211,238,.92)','rgba(79,140,255,.92)','rgba(167,139,250,.92)'];
   // 管理面板「透明」滑杆区间 0.2~1；R136-1：把该值换算成与管理页面行卡同一套玻璃白度
   // （CSS 变量 --mn-glass-bg = .34），滑杆拉满即与管理页面完全一致，拉低则更透。
@@ -40239,7 +40260,9 @@ I'm good at running.`},
     let html = '';
     // R142：日看板内容已并入周看板「今天」视图；备忘墙仅渲染周看板大卡（占满整行全高），其余备忘卡顺延展示
     html += weekBoardCardHTML();
-    for(let i=2;i<MN_CARD_COUNT;i++){
+    // R148：标签卡从第 1 条备忘（索引 0）开始渲染 —— 旧实现从索引 2 起取数，导致新建（追加到末尾）
+    // 与前两条备忘在标签卡上永远不显示；现在 5 张卡依次对应 memos[0]~memos[4]，新增内容即时可见。
+    for(let i=0;i<MN_CARD_COUNT;i++){
       const m = memos[i];
       const id = (m && m.id) ? String(m.id) : '';
       const bg = ' style="background:rgba(255,255,255,'+mnGlassAlpha(m)+')"';
@@ -40253,7 +40276,7 @@ I'm good at running.`},
       if(itemS) parts.push('<div class="mn-note-item">'+esc(itemS)+'</div>');
       if(noteS) parts.push('<div class="mn-note-note">'+esc(noteS)+'</div>');
       if(noteHtmlS) parts.push('<div class="mn-note-rich">'+noteHtmlS+'</div>');
-      const dotColor = MN_TINTS[(i - 1) % MN_TINTS.length];
+      const dotColor = MN_TINTS[(i + 1) % MN_TINTS.length];
       const body = '<div class="mn-note-body">'
         + '<div class="mn-note-lead"><span class="mn-note-dot" style="background:'+dotColor+'"></span>'+(parts[0]||'')+'</div>'
         + parts.slice(1).join('')
@@ -40264,8 +40287,9 @@ I'm good at running.`},
         + '<button class="mn-tool-btn mn-tool-del" type="button" title="删除这张备忘" aria-label="删除这张备忘" data-page-node-id="R134memoDel'+i+'">'+MN_TOOL_DEL+'</button>'
         + '</div>'
         + body
-        + '<span class="mn-note-char" aria-hidden="true">'+MN_CHARS[i % MN_CHARS.length]+'</span>'
-        + '<span class="mn-note-film" aria-hidden="true">'+MN_FILMS[i % MN_FILMS.length]+'</span>'
+        // R148：角色/电影装饰沿用原卡位观感（旧循环 i 从 2 起，故此处 +2 对齐）
+        + '<span class="mn-note-char" aria-hidden="true">'+MN_CHARS[(i + 2) % MN_CHARS.length]+'</span>'
+        + '<span class="mn-note-film" aria-hidden="true">'+MN_FILMS[(i + 2) % MN_FILMS.length]+'</span>'
         + '</div>';
     }
     list.innerHTML = html;
@@ -40307,8 +40331,8 @@ I'm good at running.`},
   function nbMinutes(hhmm){ const p=String(hhmm||'').split(':'); return (+p[0]||0)*60 + (+p[1]||0); }
   function nbAddHour(hhmm, addMin){ let m=nbMinutes(hhmm)+addMin; if(m<0)m=0; if(m>1439)m=1439; const p=x=>(x<10?'0':'')+x; return p(Math.floor(m/60))+':'+p(m%60); }
   // ================= R141 → R146：周看板（Week Board）=================
-  // 备忘录墙跨列大卡，承载毛玻璃「今天 / 周 / 月」三版块备忘看板：
-  // 中部磨砂玻璃窗口（←/→ + 年月 + 今天→周→月 + 右上角文字按钮 编辑/取消 与 新增）；
+  // 备忘录墙跨列大卡，承载「今天 / 周 / 月」三版块备忘看板：
+  // R148：删除中间那层毛玻璃卡（原 .wb-win），头部直接铺在半透明绿底上（←/→ + 年月 + 今天→周→月 + 右上角文字按钮 编辑/取消 与 新增）；
   // 副标题「一周忙闲，一眼看清。」位于窗口顶部作为白色说明文字。
   // R144：取消点击空白新建；新建/编辑统一由窗口右上角按钮唤起 Word 风格富文本弹窗（首行缩进 + 字体/字号/颜色/加粗/斜体/下划线）。
   // R145：打开页面默认显示「今天」视图；取消点击卡片/空白弹出新建；「编辑」一键进入编辑模式（全部备忘卡可改可删）。
@@ -40342,8 +40366,9 @@ I'm good at running.`},
   function wbTimeText(t){ if(t.type==='all') return '全天'; if(t.type==='point') return t.start || ''; return (t.start||'') + ' - ' + (t.end || nbAddHour(t.start||'09:00', 60)); }
   function wbNextColor(date){ const cs = ['blue','green','yellow','red']; return cs[wbTasksOn(date).length % 4]; }
   function weekBoardCardHTML(){
+    // R148：删除背景图与内容卡中间的毛玻璃卡（原 .wb-win）—— 头部 / 副标题 / 备忘内容区
+    // 直接铺在周看板半透明绿底上，中间不再夹一层玻璃面板，天际线背景更透。
     return '<div class="mn-note-card mn-weekboard" data-page-node-id="R141weekBoard">'
-      + '<div class="wb-win" id="wbWin" data-page-node-id="R141wbWin">'
       + '<div class="wb-win-head">'
       + '<div class="wb-nav-left">'
       + '<button class="wb-nav-btn" id="wbBtnPrev" type="button" title="上一周/上一月/前一天" aria-label="上一周/上一月/前一天">←</button>'
@@ -40362,7 +40387,6 @@ I'm good at running.`},
       // R147：副标题文案按「今天/周/月」版块动态切换（id wbIntro，renderWbHead 依 _wbView 设文案）
       + '<div class="wb-intro" id="wbIntro" data-page-node-id="R141wbIntro">一周忙闲，一眼看清。</div>'
       + '<div class="wb-body" id="wbBody" data-page-node-id="R141wbBody"></div>'
-      + '</div>'
       + '</div>';
   }
   function wbTaskHTML(t){
@@ -40737,7 +40761,7 @@ I'm good at running.`},
     const body = document.getElementById('memoEditBody');
     if(!body) return;
     const draft = _nmDraft || [];
-    // 视图只展示前 7 张卡，超出部分仅在编辑面板可见可删——给一句提示避免误以为数据丢失
+    // R148：视图只展示前 5 张卡（周看板大卡 + 5 张标签卡），超出部分仅在编辑面板可见可删——给一句提示避免误以为数据丢失
     const overflow = draft.length > MN_CARD_COUNT
       ? '<div class="mn-overflow-tip">📌 备忘墙只展示前 '+MN_CARD_COUNT+' 张，超出 '+(draft.length-MN_CARD_COUNT)+' 条仅在此处管理（可删除）</div>'
       : '';
