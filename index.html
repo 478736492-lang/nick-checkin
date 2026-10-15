@@ -5404,10 +5404,13 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
    R119-2：缝隙收窄（原 12px 上边距 → 0，仅保留容器 10px gap）；
    左右外边距归零 + width:100%，使左右边距与上方姓名内容块严格相等（同列居中）；
    底色改为与姓名介绍卡一致的 --tone-400，配色统一；保留描边/投影维持可点击感。 */
-/* R149-2：首页【Nick 的备忘录】+【课程表】同行并排，各占半宽（缩短备忘录按键宽度） */
-.wp-nickmemo-row{ display:flex; gap:10px; align-items:stretch; }
+/* R149-2：首页【Nick 的备忘录】+【课程表】同行并排，各占半宽（缩短备忘录按键宽度）
+   R153-2：两键统一尺寸 —— flex 布局下备忘录键因外层 wrap 的 min-width:0 被压缩、课程表键
+   min-width:auto 顶住，实测两键不等宽（80px vs 106px，文本等宽已排除）；改用 grid 1fr 1fr
+   + 两键 min-width:0 彻底等分（对照实验实测各 298.5px）。 */
+.wp-nickmemo-row{ display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:stretch; }
 .wp-nickmemo-row .wp-nickmemo-btn{
-  display:block;flex:1 1 0;width:auto;box-sizing:border-box;margin:0;
+  display:block;width:100%;min-width:0;box-sizing:border-box;margin:0;
   font-size:13px;font-weight:800;color:#16306b;text-align:center;white-space:nowrap;
   background:var(--tone-400);
   border:1.5px solid rgba(255,255,255,.75);border-radius:12px;padding:10px 12px;cursor:pointer;
@@ -5416,7 +5419,7 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .wp-nickmemo-btn:hover{filter:brightness(1.05);transform:translateY(-1px);box-shadow:0 5px 14px rgba(30,58,138,.22)}
 .wp-nickmemo-btn:active{transform:translateY(0)}
 /* R150-1：备忘录待办提醒泡泡（按键右上角红色消息泡泡，显示待办数量） */
-.wp-memo-btn-wrap{ position:relative; flex:1 1 0; min-width:0; }
+.wp-memo-btn-wrap{ position:relative;min-width:0; }
 .wp-memo-btn-wrap .wp-nickmemo-btn{ width:100%; }
 .wp-memo-bubble{
   position:absolute; top:-8px; right:-8px; z-index:3;
@@ -5469,24 +5472,19 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
     0 1px 0 rgba(196,224,252,.95)
 }
 /* ② 标题下方整片区域：卡片平铺网格。
-   R151-3：行模型改为 minmax(120px,1fr) minmax(120px,1fr) auto auto —— 周看板大卡占满前两行（120px 下限）；
-   标签卡两行（第一行 3 正方形 / 第二行 2 长方形）为隐式 auto 行，行高由 aspect-ratio 卡的传递最小高度撑起。
-   背景：若沿用 repeat(2,1fr)，fr 行只分「自动行占完之后剩余的空间」，标签卡有了真实高度后
-   （aspect-ratio 正方形 226px + 长方形 134px）周看板会被挤压到 ~150px、内容内部滚动截断；
-   早前试过 repeat(2,minmax(180px,1fr))，但 180px 下限 + 全尺寸标签卡总高超出容器 ~190px，
-   且 min-height:0 曾使自动行塌缩到 80px、卡片互相压盖；现改为 120px 下限 + 标签卡宽度封顶
-   （正方形 ≤180px / 长方形 ≤240px，居中放置），三块合计稳定收进容器内、无需滚动。 */
+   R151-3：行模型曾改为 minmax(120px,1fr)×2 + auto×2（周看板占前两行、标签卡两行 auto）。
+   R153：5 张标签卡已移入周看板「今天」视图（见 .wb-tagcards），备忘墙只剩周看板大卡 ——
+   行模型改回单行 1fr，大卡 12 列铺满整页；标签卡在 .wb-tagcards 内自建 3+2 两行布局，
+   不再依赖备忘墙网格的隐式 auto 行（旧行模型与 nth-child 跨度规则一并移除）。 */
 .mn-notes{
   position:absolute;z-index:3;
   left:clamp(22px,4.6vw,72px);right:clamp(22px,4.6vw,72px);
   bottom:clamp(20px,4vh,58px);top:clamp(58px,11vh,106px);
-  display:grid;grid-template-columns:repeat(12,1fr);grid-template-rows:minmax(120px,1fr) minmax(120px,1fr) auto auto;
+  display:grid;grid-template-columns:repeat(12,1fr);grid-template-rows:minmax(0,1fr);
   gap:clamp(12px,2.5vh,28px);
   padding:clamp(10px,2.2vh,24px);
-  overflow-y:auto;overflow-x:hidden
+  overflow:hidden
 }
-.mn-note-card:nth-child(-n+4){grid-column:span 3}
-.mn-note-card:nth-child(n+5){grid-column:span 4}
 /* R136-2：卡在网格单元内再内缩，卡片实际尺寸变小 */
 .mn-note-card{margin:clamp(4px,.9vh,12px) clamp(3px,.7vw,10px)}
 /* 磨砂玻璃便签卡：高透明度 + 背景模糊，底层陆家嘴建筑清晰透出。
@@ -5761,18 +5759,10 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 /* ================= R140：日看板（Day Board）=================
    备忘录墙首两卡合并后的跨列大卡：绿叶磨砂底 + 毛玻璃窗口 + 时间轴日程 + 底部圆形按钮。
    所有组件悬浮半透明，透出底层绿叶背景；白色文字 + 低饱和度柔和配色，清新治愈。 */
-/* 网格重排：日看板占左半幅全高（6 列 × 2 行）；右侧 6 列放剩余 5 张备忘卡
-   （上行 3 张各 2 列、下行 2 张各 3 列），整墙铺满不留空位。 */
-/* R141：日看板(子1) + 周看板(子2) 各占半幅全高；剩余 5 张备忘卡重排：上行 3 张各 4 列、下行 2 张各 6 列，铺满下方两行 */
-.mn-notes .mn-note-card:nth-child(2),
-.mn-notes .mn-note-card:nth-child(3),
-.mn-notes .mn-note-card:nth-child(4){grid-column:span 4}
-.mn-notes .mn-note-card:nth-child(5),
-.mn-notes .mn-note-card:nth-child(6){grid-column:span 6}
-/* R142：日看板内容已并入周看板「今天」视图，故周看板大卡独占整行全高（R147 起移除底层薄荷叶摄影图，改半透明绿色底透出天际线）；
-   其余 5 张备忘卡在下方重排：上行 3 张各 4 列、下行 2 张各 6 列，铺满下方两行、互不遮挡 */
+/* R141 → R142 → R153：备忘墙只剩周看板大卡 —— 独占 12 列铺满整页（R147 起移除底层薄荷叶摄影图，
+   改半透明绿色底透出天际线）；原「右侧 5 张备忘卡」的重排规则（nth-child 跨度）随标签卡移出一并移除 */
 .mn-notes .mn-note-card.mn-weekboard{
-  grid-column:span 12;grid-row:span 2;
+  grid-column:span 12;grid-row:span 1;
   display:flex;flex-direction:column;gap:clamp(6px,1.1vh,12px);
   padding:clamp(10px,1.8vh,18px) clamp(12px,1.6vw,20px) clamp(8px,1.4vh,14px);
   /* R147：删除底层薄荷叶背景图及其容器背景（原周看板背景贴图已下架），改为更透的绿色半透明底，
@@ -5781,20 +5771,33 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   border-color:rgba(255,255,255,.45)
 }
 .mn-notes .mn-note-card.mn-weekboard::before{display:none}
-/* R151-3：今日板块标签卡两行布局 —— 第一行 3 个正方形标签卡（aspect-ratio:1/1），
-   第二行 2 个长方形标签卡（aspect-ratio:5/2），整墙铺满不留空位。
-   背景：卡内正文/工具/装饰均为绝对定位、无在流内容，隐式网格行高 auto 归零 → 空卡塌缩成 2px 细条
-   （R148 起标签卡实际不可见）；现以 aspect-ratio 固定卡片高宽比，空卡也不再塌缩，两行稳定呈现。
-   尺寸封顶：正方形卡宽 ≤180px、长方形卡宽 ≤240px（居中置于各自网格列内）——
-   容器净高约 579px（1024×768），若标签卡按列宽全尺寸展开（正方形 213px + 长方形 336px→134px 高），
-   三块总高将超出容器约 190px；封顶后周看板仍保有 ~265px 可用高度，整墙无需滚动即可完整呈现。 */
-.mn-notes .mn-note-card:nth-child(2),
-.mn-notes .mn-note-card:nth-child(3),
-.mn-notes .mn-note-card:nth-child(4){aspect-ratio:1/1;width:100%;max-width:180px;justify-self:center}
-.mn-notes .mn-note-card:nth-child(5),
-.mn-notes .mn-note-card:nth-child(6){aspect-ratio:5/2;width:100%;max-width:240px;justify-self:center}
-/* R142 → R146：周看板「今天」视图（与周/月共用数据层）—— R146 起为普通卡片式备忘内容区（无时间刻度） */
-.wb-dayview{display:flex;flex-direction:column;gap:clamp(4px,.8vh,8px);min-height:0}
+/* R153：今天视图标签卡区 —— 备忘录页下方的 5 张标签卡移入周看板「今天」视图，排在当日日程下方，
+   与当日日程同属「今日板块」。3+2 两行填满可用高度：第一行 3 张各占 2 列、第二行 2 张各占 3 列
+   （6 列网格）；行高 1fr 均分，卡内正文/工具/装饰均为绝对定位，空卡不塌缩；编辑态行内表单同款适配。
+   配色显式按卡位声明（橙/黄/绿/青/蓝，与卡内 mn-note-dot 同色）—— 标签卡已不在备忘墙网格内，
+   不再依赖 .mn-notes 的 nth-child 位次上色；备忘墙基类 margin 在此复位为 0。 */
+.wb-tagcards{
+  flex:1 1 auto;min-height:clamp(150px,26vh,260px);
+  display:grid;grid-template-columns:repeat(6,1fr);grid-template-rows:repeat(2,minmax(0,1fr));
+  gap:clamp(6px,1.1vh,12px);padding-top:clamp(4px,.8vh,8px)
+}
+.wb-tagcards > .mn-note-card{margin:0;min-width:0;min-height:0}
+.wb-tagcards > .mn-note-card:nth-child(-n+3){grid-column:span 2}
+.wb-tagcards > .mn-note-card:nth-child(n+4){grid-column:span 3}
+.wb-tagcards > .mn-note-card:nth-child(1)::before{background:rgba(255,152,58,.16)}  /* 橙 */
+.wb-tagcards > .mn-note-card:nth-child(2)::before{background:rgba(255,213,64,.16)}  /* 黄 */
+.wb-tagcards > .mn-note-card:nth-child(3)::before{background:rgba(72,214,128,.16)}  /* 绿 */
+.wb-tagcards > .mn-note-card:nth-child(4)::before{background:rgba(34,211,238,.16)}  /* 青 */
+.wb-tagcards > .mn-note-card:nth-child(5)::before{background:rgba(79,140,255,.18)}  /* 蓝 */
+/* R153：竖屏兜底 —— 标签卡区改 5 张纵排，避免两行挤压（与全站竖屏块同断点口径） */
+@media (orientation:portrait){
+  .wb-tagcards{grid-template-columns:1fr;grid-template-rows:repeat(5,minmax(84px,1fr));min-height:0}
+  .wb-tagcards > .mn-note-card:nth-child(-n+3),
+  .wb-tagcards > .mn-note-card:nth-child(n+4){grid-column:span 1}
+}
+/* R142 → R146：周看板「今天」视图（与周/月共用数据层）—— R146 起为普通卡片式备忘内容区（无时间刻度）
+   R153：日程区不压缩（flex:0 0 auto），把剩余高度让给标签卡区；标签卡保底高度见 .wb-tagcards */
+.wb-dayview{display:flex;flex-direction:column;gap:clamp(4px,.8vh,8px);min-height:0;flex:0 0 auto}
 /* R146：日看板（时间轴版）模块已整体移除 —— 其 CSS 一并删除；周看板改版见下方 R141→R146 区块。
    .modal-nb / .nb-e-* 表单样式仍被周看板富文本弹窗 #modalWbEdit 复用，予以保留。 */
 /* R140：日看板「编辑/新建日程」弹窗（.modal-nb） */
@@ -5858,7 +5861,9 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .wb-task-del{display:none;position:absolute;top:2px;right:2px;z-index:6;width:clamp(15px,2.1vh,19px);height:clamp(15px,2.1vh,19px);align-items:center;justify-content:center;padding:0;font-size:clamp(10px,1.5vh,13px);font-weight:900;line-height:1;color:#fff;background:rgba(226,69,58,.92);border:1.5px solid rgba(255,255,255,.85);border-radius:50%;cursor:pointer;box-shadow:0 2px 6px rgba(10,38,28,.3);transition:transform .12s ease,background .12s ease}
 .mn-weekboard.wb-edit-mode .mn-weekboard.wb-edit-mode .wb-task-del{display:inline-flex}
 .wb-task-del:hover{background:rgba(226,69,58,1);transform:scale(1.1)}
-.wb-body{flex:1 1 auto;min-height:0;overflow:auto;padding:clamp(4px,.8vh,8px) clamp(6px,1vw,12px) clamp(6px,1vh,10px)}
+/* R153：.wb-body 改 flex 纵向布局 —— 今天视图内「当日日程（.wb-dayview，auto 高）+ 标签卡区
+   （.wb-tagcards，flex:1 1 auto 填满剩余高度）」；周/月视图子网格仍以 min-height:100%/height:100% 铺满 */
+.wb-body{display:flex;flex-direction:column;flex:1 1 auto;min-height:0;overflow:auto;padding:clamp(4px,.8vh,8px) clamp(6px,1vw,12px) clamp(6px,1vh,10px)}
 /* R146：周网格 —— 删除左侧时间刻度列（09:00~12:00）与小时行，改为 7 个「日期卡片列」横向展开 */
 .wb-week-grid{display:grid;grid-template-columns:repeat(7,1fr);grid-auto-rows:minmax(40px,auto);gap:clamp(4px,.7vw,8px);min-height:100%}
 .wb-day-col{display:flex;flex-direction:column;gap:clamp(3px,.5vh,5px);min-width:0;padding:clamp(3px,.5vh,5px);border-radius:10px;border:1px dashed rgba(180,230,200,.42);background:rgba(255,255,255,.05)}
@@ -40606,13 +40611,19 @@ I'm good at running.`},
     });
   }
   function renderNickMemoView(list){
-    const memos = getNickMemosSafe();
+    // R153：备忘墙仅渲染周看板大卡（铺满整页）—— 5 张标签卡已移入周看板「今天」视图
+    // （renderWbToday → mnTagCardsHTML，排在当日日程下方，同属「今日板块」）。
     list.className = 'mn-notes mn-view';
+    list.innerHTML = weekBoardCardHTML();
+    bindNickMemoViewTools();
+    initWeekBoard();
+  }
+  // R153：5 张标签卡独立渲染函数 —— 由周看板「今天」视图调用（renderWbToday 内拼入 #wbBody）。
+  // 卡位规则与 R148/R151-3 完全一致：5 张卡依次对应 memos[0]~memos[4]（从第 1 条备忘起渲染，新增内容即时可见）；
+  // 编辑态（_nmEditMode）卡内为行内表单，由页面级「保存」按卡位写回（nmSaveFromView）。
+  function mnTagCardsHTML(){
+    const memos = getNickMemosSafe();
     let html = '';
-    // R142：日看板内容已并入周看板「今天」视图；备忘墙仅渲染周看板大卡（占满整行全高），其余备忘卡顺延展示
-    html += weekBoardCardHTML();
-    // R148：标签卡从第 1 条备忘（索引 0）开始渲染 —— 旧实现从索引 2 起取数，导致新建（追加到末尾）
-    // 与前两条备忘在标签卡上永远不显示；现在 5 张卡依次对应 memos[0]~memos[4]，新增内容即时可见。
     for(let i=0;i<MN_CARD_COUNT;i++){
       const m = memos[i];
       const id = (m && m.id) ? String(m.id) : '';
@@ -40659,9 +40670,7 @@ I'm good at running.`},
         + '<span class="mn-note-film" aria-hidden="true">'+MN_FILMS[(i + 2) % MN_FILMS.length]+'</span>'
         + '</div>';
     }
-    list.innerHTML = html;
-    bindNickMemoViewTools();
-    initWeekBoard();
+    return html;
   }
   function bindNickMemoViewTools(){
     const list = document.getElementById('nickMemoList');
@@ -40836,17 +40845,26 @@ I'm good at running.`},
   function wbZonesFor(date){
     return (window.Store && window.Store.getNickWbZones) ? window.Store.getNickWbZones(date) : [{ id:'', name:'未分区', color:'blue' }];
   }
-  // R149-4：按区域渲染「今日」视图内容（无区域划分的任务归入默认「未分区」）
+  // R149-4：按区域渲染当日内容（仅渲染用户自建区域）。
+  // R153：删除「未分区」分区头 —— 未归属任何区域的任务不再套分区标题，改为平铺展示在区域列表前。
   function wbZonesRender(date, zones, tasks){
+    const custom = zones.filter(function(z){ return z.id !== ''; });
+    const inZone = function(t){ return custom.some(function(z){ return z.id === (t.zone || ''); }); };
+    const loose = tasks.filter(function(t){ return !inZone(t); });
     let html = '<div class="wb-zones">';
-    zones.forEach(function(z){
+    if(loose.length){
+      html += '<div class="wb-day-list">';
+      loose.forEach(function(t){ html += wbTaskHTML(t); });
+      html += '</div>';
+    }
+    custom.forEach(function(z){
       const zt = tasks.filter(function(t){ return (t.zone||'') === z.id; });
       html += '<div class="wb-zone" data-wb-zone="'+esc(z.id)+'">'
         + '<div class="wb-zone-h">'
         + '<span class="wb-zone-name">'+esc(z.name)+'</span>'
         + (_wbEditMode ? '<span class="wb-zone-tools">'
             + '<button class="wb-zone-add" type="button" data-wb-zone-add="'+esc(z.id)+'" title="在「'+esc(z.name)+'」新增">＋</button>'
-            + (z.id !== '' ? '<button class="wb-zone-del" type="button" data-wb-zone-del="'+esc(z.id)+'" title="删除该区域">🗑</button>' : '')
+            + '<button class="wb-zone-del" type="button" data-wb-zone-del="'+esc(z.id)+'" title="删除该区域">🗑</button>'
             + '</span>' : '')
         + '</div>'
         + '<div class="wb-zone-body">';
@@ -40858,14 +40876,16 @@ I'm good at running.`},
     return html + '</div>';
   }
   // R146：某个日期的备忘卡片列表（今天视图 / 月视图单日明细共用）。
-  // R149-4：今日视图（groupZones=true）按自定义区域分组渲染，便于按区域增减/编辑。
-  function wbDayCardsHTML(date, groupZones){
+  // R149-4：当日存在用户自建区域时按区域分组渲染，便于按区域增减/编辑。
+  // R153：删除「未分区」—— 无自建区域时当日任务一律平铺（.wb-day-list），不再套默认分区头。
+  function wbDayCardsHTML(date){
     const tasks = wbTasksOn(date);
+    const zones = wbZonesFor(date);
+    const hasCustom = zones.some(function(z){ return z.id !== ''; });
+    if(hasCustom) return wbZonesRender(date, zones, tasks);
     if(!tasks.length){
-      if(groupZones) return wbZonesRender(date, wbZonesFor(date), tasks);
       return '<div class="wb-empty">这一天还没有备忘<br>点右上角「编辑」→「新增」开始记录吧</div>';
     }
-    if(groupZones) return wbZonesRender(date, wbZonesFor(date), tasks);
     let html = '<div class="wb-day-list">';
     tasks.forEach(function(t){ html += wbTaskHTML(t); });
     return html + '</div>';
@@ -40956,16 +40976,34 @@ I'm good at running.`},
     if(back) back.onclick = function(){ _wbMonthDay = ''; wbRefresh(); };
     bindWbCards();
   }
-  /* R142 → R146 → R147：周看板「今天」视图 —— 与周/月视图共用同一套周看板数据层（getNickWeekBoard/saveNickWeekBoard）；
+  /* R142 → R146 → R147 → R153：周看板「今天」视图 —— 与周/月视图共用同一套周看板数据层（getNickWeekBoard/saveNickWeekBoard）；
      R146 起改为普通卡片式备忘内容区（无时间刻度、无第三行导航）；R147 删除副标题下方的日期标题行（年月日星期 + 「今天」标签），
-     日期仅由窗口顶部年月位（renderWbHead 的 nbFmtCN）显示；←/→ 按天切换。 */
+     日期仅由窗口顶部年月位（renderWbHead 的 nbFmtCN）显示；←/→ 按天切换。
+     R153：① 当日日程平铺展示（无「未分区」分区头，见 wbDayCardsHTML）；
+           ② 备忘录页下方的 5 张标签卡移入今天视图，排在当日日程下方（.wb-tagcards），同属「今日板块」；
+           ③ 标签卡在编辑态（_nmEditMode）是行内表单 —— 周看板侧操作（切日/切视图/增删日程/标记完成）都会触发
+              wbRefresh，若整块重渲染会丢掉用户已输入内容，故签名（日期+编辑态+备忘条数）不变时保留原 DOM 与已绑事件。 */
+  let _wbTagSig = '';   // R153：标签卡重渲染签名（_nbDate|_nmEditMode|备忘条数）
   function renderWbToday(){
     const body = document.getElementById('wbBody'); if(!body) return;
     if(!_nbDate) _nbDate = nbTodayISO();
     renderWbHead();
+    const sig = _nbDate + '|' + (_nmEditMode ? '1' : '0') + '|' + getNickMemosSafe().length;
+    let keep = null;
+    const old = body.querySelector('#wbTagCards');
+    if(old && old.children.length && _wbTagSig === sig) keep = old;
+    if(keep) keep.remove();   // 先摘除（保留子节点与已绑事件），再整体重排日程区
     body.innerHTML = '<div class="wb-dayview" data-page-node-id="R142wbDayview">'
-      + wbDayCardsHTML(_nbDate, true)
+      + wbDayCardsHTML(_nbDate)
       + '</div>';
+    if(keep){
+      body.appendChild(keep);
+    } else {
+      body.insertAdjacentHTML('beforeend', '<div class="wb-tagcards" id="wbTagCards" data-page-node-id="R153wbTagCards">' + mnTagCardsHTML() + '</div>');
+      bindNickMemoViewTools();
+      nmSyncEditToggle();
+    }
+    _wbTagSig = sig;
     bindWbCards();
   }
   function wbRefresh(){ renderWbHead(); if(_wbView === 'week') renderWbWeek(); else if(_wbView === 'month') renderWbMonth(); else renderWbToday(); }
@@ -41054,7 +41092,7 @@ I'm good at running.`},
         const list = wbTasksOn(date).map(function(t){ return (t.zone === zid) ? Object.assign({}, t, { zone:'' }) : t; });
         wbSaveOn(date, list);
         if(window.Store && window.Store.saveNickWbZones) window.Store.saveNickWbZones(date, zones);
-        wbRefresh(); if(window.toast) toast('已删除该区域（原内容归入「未分区」）');
+        wbRefresh(); if(window.toast) toast('已删除该区域（原内容并入当日列表）');
       });
     });
     body.querySelectorAll('[data-wb-zone-new]').forEach(function(b){
