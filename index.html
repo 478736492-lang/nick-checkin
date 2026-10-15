@@ -1859,7 +1859,7 @@ body.child-mode .parent-edit-fab{display:none}
 
 /* 首页横向并排 5 张圆角立体便签卡片 */
 .nw-home{
-  display:grid;grid-template-columns:repeat(5,minmax(0,1fr));
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
   gap:18px;align-items:stretch;padding-bottom:120px;position:relative;z-index:1;
 }
 .nw-card-wide{grid-column:auto}
@@ -2282,6 +2282,27 @@ body.child-mode .parent-edit-fab{display:none}
   background:rgba(255,255,255,.92);border-color:#ffe9a8;color:var(--sky-blue);
   box-shadow:0 3px 12px rgba(8,16,52,.4);
 }
+/* R149-2：首页【课程表】弹窗（复用课程表渲染，星月夜背景 + 毛玻璃遮罩） */
+.modal-course-table-mask{ background:rgba(8,16,52,.72); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); }
+.modal-course-table{
+  background-color:#0f1a3d;
+  background-image:url('./assets/dd3dd8db7338.jpg');
+  background-size:cover; background-position:center center; background-repeat:no-repeat;
+  max-width:1040px; width:94vw; max-height:92vh; overflow:auto; border-radius:22px;
+  border:2px solid rgba(255,255,255,.5);
+  box-shadow:0 20px 60px rgba(8,16,52,.6);
+  padding:0 0 18px;
+}
+.modal-course-table .sn-page{ min-height:auto; padding:4px 12px 24px; }
+.modal-course-table .nw-back{
+  position:absolute; top:12px; left:12px; z-index:6;
+  background:rgba(255,255,255,.92); border-color:#ffe9a8; color:var(--sky-blue);
+  box-shadow:0 3px 12px rgba(8,16,52,.45);
+}
+.modal-course-table .nw-sched-gear{
+  background:rgba(255,255,255,.92); border-color:#ffe9a8; color:var(--sky-blue);
+  box-shadow:0 3px 12px rgba(8,16,52,.4);
+}
 
 /* 整页容器：标题 + 居中表格 + 四角装饰 */
 .sn-page{
@@ -2345,6 +2366,10 @@ body.child-mode .parent-edit-fab{display:none}
   cursor:text;box-shadow:inset 0 1px 3px rgba(30,58,138,.1);transition:.14s;
 }
 .sn-table td .kb-cell.sn-cell:hover{box-shadow:0 0 0 2px var(--tone-400), inset 0 1px 3px rgba(30,58,138,.1)}
+/* R149-1：课程表底部「着装」行 */
+.sn-attire-row th.sn-attire-head{ background:linear-gradient(180deg,#fff3d6 0%,#ffe2a8 100%); color:#7a5200; font-weight:800; padding:9px 10px; font-size:15px; white-space:nowrap; }
+.sn-attire-row td{ background:rgba(255,255,255,.25); padding:3px; }
+.sn-attire-cell{ display:flex;align-items:center;justify-content:center;text-align:center;min-height:40px;font-weight:800;font-size:14px;color:#8a5a00;background:linear-gradient(180deg,#fff7e6,#ffeec2);border:1px solid #ffe0a0;border-radius:8px;padding:6px 4px; }
 .sn-foot{
   position:relative;z-index:2;margin-top:16px;font-size:13px;font-weight:700;
   color:#FFF8E7;text-shadow:0 1px 6px rgba(8,16,52,.75);letter-spacing:.6px;text-align:center;
@@ -5269,9 +5294,11 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
    R119-2：缝隙收窄（原 12px 上边距 → 0，仅保留容器 10px gap）；
    左右外边距归零 + width:100%，使左右边距与上方姓名内容块严格相等（同列居中）；
    底色改为与姓名介绍卡一致的 --tone-400，配色统一；保留描边/投影维持可点击感。 */
-.wp-nickmemo-btn{
-  display:block;width:100%;box-sizing:border-box;margin:0;
-  font-size:13px;font-weight:800;color:#16306b;text-align:center;
+/* R149-2：首页【Nick 的备忘录】+【课程表】同行并排，各占半宽（缩短备忘录按键宽度） */
+.wp-nickmemo-row{ display:flex; gap:10px; align-items:stretch; }
+.wp-nickmemo-row .wp-nickmemo-btn{
+  display:block;flex:1 1 0;width:auto;box-sizing:border-box;margin:0;
+  font-size:13px;font-weight:800;color:#16306b;text-align:center;white-space:nowrap;
   background:var(--tone-400);
   border:1.5px solid rgba(255,255,255,.75);border-radius:12px;padding:10px 12px;cursor:pointer;
   box-shadow:0 3px 10px rgba(30,58,138,.16);transition:.15s
@@ -5667,6 +5694,22 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .wb-col-empty{font-size:clamp(8px,1.2vh,11px);font-weight:600;color:rgba(255,255,255,.45);text-align:center;padding:6px 2px}
 /* R146：今天视图 / 月视图单日明细的卡片列表 —— 横向展开、靠左对齐、间距清晰、高度自适应 */
 .wb-day-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(clamp(170px,20vw,260px),1fr));gap:clamp(5px,.9vh,10px);align-items:start}
+/* R149-4：今日视图「自定义区域」分组 + 周视图按列新增 + 月视图空白占位 */
+.wb-zones{display:flex;flex-direction:column;gap:clamp(6px,1.1vh,12px);align-items:stretch}
+.wb-zone{background:rgba(255,255,255,.14);border:1px solid rgba(180,230,200,.45);border-radius:14px;padding:clamp(6px,1vh,10px) clamp(7px,1.1vw,11px);box-shadow:0 3px 10px rgba(10,38,28,.18)}
+.wb-zone-h{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
+.wb-zone-name{font-size:clamp(11px,1.7vh,14px);font-weight:900;color:#fff;letter-spacing:.03em;text-shadow:0 1px 5px rgba(8,36,26,.55)}
+.wb-zone-tools{display:flex;gap:5px}
+.wb-zone-add,.wb-zone-del,.wb-col-add{font-weight:900;color:#24353f;background:rgba(236,241,245,.94);border:1.5px solid rgba(255,255,255,.75);border-radius:999px;cursor:pointer;box-shadow:0 2px 8px rgba(10,38,28,.2);transition:.12s}
+.wb-zone-add{padding:1px 9px;font-size:13px;line-height:1.4}
+.wb-zone-del{padding:1px 7px;font-size:12px}
+.wb-zone-add:hover,.wb-zone-del:hover,.wb-col-add:hover{background:#fff;transform:translateY(-1px)}
+.wb-zone-body{display:grid;grid-template-columns:repeat(auto-fill,minmax(clamp(150px,18vw,230px),1fr));gap:clamp(5px,.9vh,10px);align-items:start}
+.wb-zone-add-zone{margin:2px auto 0;font-size:clamp(10px,1.5vh,13px);font-weight:900;color:#24353f;background:rgba(255,255,255,.9);border:1.5px dashed #b7e6cf;border-radius:999px;padding:clamp(3px,.6vh,6px) clamp(10px,1.4vw,16px);cursor:pointer}
+.wb-zone-add-zone:hover{background:#fff}
+.wb-col-add{margin:6px auto 0;display:block;font-size:clamp(9px,1.4vh,12px);padding:clamp(2px,.5vh,5px) clamp(8px,1vw,12px)}
+.wb-mcell.wb-blank{background:transparent;border-color:transparent;cursor:default;box-shadow:none}
+.mn-weekboard.wb-edit-mode .wb-mcell.wb-blank{border-style:solid}
 .wb-sec-bar{display:flex;align-items:center;gap:clamp(6px,1vw,10px);flex-wrap:wrap}
 .wb-sec-title{font-size:clamp(11px,1.7vh,14px);font-weight:900;color:#fff;letter-spacing:.02em;text-shadow:0 1px 5px rgba(8,36,26,.55)}
 .wb-sec-tag{font-size:clamp(9px,1.3vh,11px);font-weight:800;color:#1f4d3a;background:rgba(255,255,255,.92);border-radius:999px;padding:1px 8px}
@@ -6121,8 +6164,11 @@ html,body{margin:0;padding:0}
               <button class="wp-encourage-edit hidden-in-child" id="btnGreetEdit" title="家长编辑问候语" data-page-node-id="kU4k6ZI8gFL2Xl8pBDCbIt">✎ 编辑</button>
             </div>
           </div>
-          <!-- R118-2：【Nick 的备忘录】入口按键（点击打开独立备忘录页面） -->
-          <button class="wp-nickmemo-btn" id="btnNickMemo" title="打开 Nick 的备忘录" data-page-node-id="R118btnNickMemo">📒 Nick 的备忘录</button>
+          <!-- R118-2：【Nick 的备忘录】入口按键（点击打开独立备忘录页面）；R149-2：右侧新增【课程表】按键 -->
+          <div class="wp-nickmemo-row">
+            <button class="wp-nickmemo-btn" id="btnNickMemo" title="打开 Nick 的备忘录" data-page-node-id="R118btnNickMemo">📒 Nick 的备忘录</button>
+            <button class="wp-nickmemo-btn wp-coursetable-btn" id="btnCourseTable" title="查看课程表">🗓️ 课程表</button>
+          </div>
         </div>
       </div>
 
@@ -6458,6 +6504,17 @@ html,body{margin:0;padding:0}
     </div>
   </div>
 
+  <!-- ========== 弹窗：课程表（R149-2：首页【课程表】按键弹出，复用课程表渲染；毛玻璃效果） ========== -->
+  <div class="modal-mask modal-course-table-mask" id="modalCourseTable" hidden data-page-node-id="R149modalCourseTable">
+    <div class="modal-box modal-course-table" data-page-node-id="R149courseTableBox">
+      <button class="nw-back" id="btnCourseTableClose" title="关闭" data-page-node-id="R149btnCourseTableClose">← 返回首页</button>
+      <div class="nw-sub-title sn-toolbar" data-page-node-id="R149courseTableToolbar">
+        <button type="button" class="nw-sched-gear hidden-in-child" id="btnCourseTableGear" title="课程表设置" data-page-node-id="R149btnCourseTableGear">⚙ 设置</button>
+      </div>
+      <div class="nw-sub-body" id="courseTableMount" data-page-node-id="R149courseTableMount"></div>
+    </div>
+  </div>
+
   <!-- 二级页面：语文专区（顶部三功能卡 + 下方通栏插槽） -->
   <section class="page page-nw-sub page-yuwen" data-page="newworld-yuwen" data-zone="newworld" hidden data-page-node-id="SKzCf1MPhEKh5IwP5Gju4g">
     <button class="nw-back" data-nw-back="newworld" data-page-node-id="APX39eIxkmdVsWtReWemDR">← 返回首页</button>
@@ -6507,15 +6564,6 @@ html,body{margin:0;padding:0}
         <div class="yw-slot-body" id="szSlotBody" data-page-node-id="AE48FdlyRerYslnqZKB29O"></div>
       </div>
     </div>
-  </section>
-
-  <!-- 二级页面：课程表（V105：梵高星月夜油画风整页背景 + 居中课程表格） -->
-  <section class="page page-nw-sub page-sched" data-page="newworld-schedule" data-zone="newworld" hidden data-page-node-id="HiyhCBavdHrDNkUzXqURNp">
-    <button class="nw-back" data-nw-back="newworld" data-page-node-id="1T4s98IGG9SNsScXGlkfO0">← 返回首页</button>
-    <div class="nw-sub-title sn-toolbar" data-page-node-id="g6JqCtXeVR0e3JXqFBo1hn">
-      <button type="button" class="nw-sched-gear hidden-in-child" id="btnSchedGear" title="课程表设置" data-page-node-id="K66LlME8y8wGImZfA6LIjA">⚙ 设置</button>
-    </div>
-    <div class="nw-sub-body" id="nwSchedule" data-page-node-id="Z2oYXnZib2UNNv4w5Ds7yJ"></div>
   </section>
 
   <!-- ================= 乐读数学（R104：两个筛选按键 + 后方管理按键区 —— 板块 → 题型 → 内容区实时展示） ================= -->
@@ -30334,7 +30382,8 @@ window.WANTONG_COVER = './assets/c6249ea2bfe3.jpg';
       start: t(x && x.start),
       end: t(x && x.end),
       color: color,
-      done: (x && x.done) ? 1 : 0
+      done: (x && x.done) ? 1 : 0,
+      zone: (x && x.zone) ? String(x.zone).slice(0, 24) : ''
     };
   }
   function _nbSeedTasks(){
@@ -30400,7 +30449,8 @@ window.WANTONG_COVER = './assets/c6249ea2bfe3.jpg';
       start: t(x && x.start),
       end: t(x && x.end),
       color: color,
-      done: (x && x.done) ? 1 : 0
+      done: (x && x.done) ? 1 : 0,
+      zone: (x && x.zone) ? String(x.zone).slice(0, 24) : ''
     };
   }
   function getNickWeekBoard(date){
@@ -30423,6 +30473,32 @@ window.WANTONG_COVER = './assets/c6249ea2bfe3.jpg';
       .filter(x => (x.title || x.html));
     save(st);
     return st.nickWeekBoard[key].slice();
+  }
+  // R149-4：今日视图「自定义区域」配置（按日期存储区域列表）；区域 = {id,name,color}
+  function _wbDefaultZones(){
+    return [{ id:'', name:'未分区', color:'blue' }];
+  }
+  function getNickWbZones(date){
+    const st = load();
+    const key = String(date || '');
+    if(!st.nickWbZones || typeof st.nickWbZones !== 'object') st.nickWbZones = {};
+    if(!Array.isArray(st.nickWbZones[key])){
+      st.nickWbZones[key] = _wbDefaultZones();
+      save(st);
+    }
+    return (st.nickWbZones[key] || _wbDefaultZones()).map(function(z){
+      return { id:(z&&z.id!=null?String(z.id):''), name:(z&&z.name?String(z.name).slice(0,12):'未分区'), color:(z&&z.color?String(z.color):'blue') };
+    });
+  }
+  function saveNickWbZones(date, list){
+    const st = load();
+    const key = String(date || '');
+    if(!st.nickWbZones || typeof st.nickWbZones !== 'object') st.nickWbZones = {};
+    st.nickWbZones[key] = Array.isArray(list) ? list.map(function(z){
+      return { id:(z&&z.id!=null?String(z.id):''), name:(z&&z.name?String(z.name).slice(0,12):'未分区'), color:(z&&z.color?String(z.color):'blue') };
+    }) : _wbDefaultZones();
+    save(st);
+    return st.nickWbZones[key].slice();
   }
   // R118：节日【已学习】打卡（+1⭐ 可取消收回）。结构：{ 节日名: true }
   function getFestLearned(){
@@ -30476,8 +30552,10 @@ window.WANTONG_COVER = './assets/c6249ea2bfe3.jpg';
     return cells;
   })();
   // R127-1：种子课表默认外观 —— 星期/节次表头卡片淡蓝色（#cfe6ff）
+  // R149-1：节次底部新增「着装」行（key = 星期标签，value = 当日着装说明）
+  const SCHED_ATTIRE = { '星期一':'西装套装', '星期二':'运动套装', '星期三':'毛衣开衫套装', '星期四':'运动套装', '星期五':'自由着装' };
   function schedSeed(){
-    return { rows:9, days:SCHED_DAYS.slice(), cells:JSON.parse(JSON.stringify(SCHED_SEED_CELLS)), addColor:'#ffffff', tableTextColor:'#1e3a8a', tableFontSize:15, tableCell:'#ffffff', cornerLabel:'节次', tableHeadColor:'#cfe6ff', cornerColor:'#cfe6ff', schedSeeded:true };
+    return { rows:9, days:SCHED_DAYS.slice(), cells:JSON.parse(JSON.stringify(SCHED_SEED_CELLS)), addColor:'#ffffff', tableTextColor:'#1e3a8a', tableFontSize:15, tableCell:'#ffffff', cornerLabel:'节次', tableHeadColor:'#cfe6ff', cornerColor:'#cfe6ff', attire:JSON.parse(JSON.stringify(SCHED_ATTIRE)), schedSeeded:true };
   }
   function getSchedule(){
     const st = load();
@@ -30495,6 +30573,8 @@ window.WANTONG_COVER = './assets/c6249ea2bfe3.jpg';
     if(!('tableHeadColor' in st.schedule)) st.schedule.tableHeadColor = '';
     // R24-1：节次标签格颜色（左上角角标 + 左列「第X节」行头），空值=沿用默认 CSS 配色
     if(!('cornerColor' in st.schedule)) st.schedule.cornerColor = '';
+    // R149-1：着装行（key = 星期标签）
+    if(!st.schedule.attire || typeof st.schedule.attire !== 'object') st.schedule.attire = JSON.parse(JSON.stringify(SCHED_ATTIRE));
     // R127-1：默认课表导入（仅一次）—— 旧存档首次升级时写入种子课表内容，并把星期/节次表头卡片改为淡蓝色；
     // 之后家长在设置里改颜色/清格子不会再被覆盖（schedSeeded 标记随存档持久化）
     if(!st.schedule.schedSeeded){
@@ -35614,9 +35694,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         {t:'拓展阅读',   icon:'📚', items:['推荐书籍','美文摘选']},
         {t:'人文拓展', icon:'🏛️', items:['红色上海','华夏五千年']},
         {t:'综合素养',     icon:'🔬', items:['科学小知识','道法小课堂']}
-      ] },
-    { page:'newworld-schedule', tag:'课程表', corner:'课程', icon:'🗓️', color:'teal', green:true, mini:true,
-      capsules:['10:00','10:00'] }
+      ] }
   ];
 
   function renderNewWorld(){
@@ -35734,6 +35812,9 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         }
         body += '</tr>';
       }
+      // R149-1：底部「着装」行（key = 星期标签，从 sc.attire 读取）
+      const schedAttire = (sc.attire && typeof sc.attire === 'object') ? sc.attire : {};
+      body += `<tr class="sn-attire-row"><th class="sn-rowhead sn-attire-head">着装</th>` + days.map((d,c)=>`<td><span class="sn-attire-cell" title="${esc(d)}着装">${esc(schedAttire[d]||'')}</span></td>`).join('') + `</tr>`;
       // 表头配色：首列「节次」；周二/周四淡紫交替(.sn-th-violet)，其余天蓝(.sn-th-sky)
       const thead = `<tr><th class="sn-th sn-th-sky">节次</th>${days.map((d,i)=>`<th class="sn-th ${i===1||i===3?'sn-th-violet':'sn-th-sky'}">${esc(d)}</th>`).join('')}</tr>`;
       mount.innerHTML = `<div class="sn-page">
@@ -35771,6 +35852,11 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         <div class="nw-sub-mod-head"><span class="nw-mod-ico">${m.icon}</span><span class="nw-mod-t">${m.t}</span></div>
         <div class="nw-mod-items">${m.items.map(i=>`<span class="nw-item">${i}</span>`).join('')}</div>
       </div>`).join('');
+  }
+
+  // R149-2：首页【课程表】弹窗渲染（原 newworld-schedule 二级页面已移除，数据共用同一 store）
+  function renderScheduleAll(){
+    if(document.getElementById('courseTableMount')) renderNwSub('newworld-schedule','courseTableMount');
   }
 
   // ============ V98：课程表设置（课时增减 / 课程名 / 每格颜色单独设置） ============
@@ -35822,7 +35908,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     if(t){ sc.cells[key] = {t, c}; } else { delete sc.cells[key]; }
     S.saveSchedule(sc);
     hideModal('#modalSchedCell');
-    renderNwSub('newworld-schedule','nwSchedule');
+    renderScheduleAll();
   }
   function clearSchedCell(){
     const sc = S.getSchedule();
@@ -35830,7 +35916,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     S.saveSchedule(sc);
     $('#schedCellText').value='';
     $('#schedCellColor').value = sc.addColor || '#ffffff';
-    renderNwSub('newworld-schedule','nwSchedule');
+    renderScheduleAll();
   }
   function openSchedManage(){
     if(!isParent()) return;
@@ -35908,7 +35994,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       const s2 = S.getSchedule();
       s2.addColor = v;
       S.saveSchedule(s2);
-      renderNwSub('newworld-schedule','nwSchedule');
+      renderScheduleAll();
     };
     if(ac) ac.addEventListener('change', ()=> applyAddColor(ac.value));
     mBody.querySelectorAll('#schedAddSwatches .sw').forEach(s=> s.addEventListener('click', ()=>{
@@ -35921,7 +36007,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       const s2 = S.getSchedule();
       s2.tableTextColor = v;
       S.saveSchedule(s2);
-      renderNwSub('newworld-schedule','nwSchedule');
+      renderScheduleAll();
     };
     if(tc) tc.addEventListener('change', ()=> applyTextColor(tc.value));
     mBody.querySelectorAll('#schedTextSwatches .sw').forEach(s=> s.addEventListener('click', ()=>{
@@ -35934,7 +36020,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       const s2 = S.getSchedule();
       s2.tableFontSize = n;
       S.saveSchedule(s2);
-      renderNwSub('newworld-schedule','nwSchedule');
+      renderScheduleAll();
     };
     if(fs) fs.addEventListener('input', ()=> applyFontSize(fs.value));
     if(fs) fs.addEventListener('change', ()=> applyFontSize(fs.value));
@@ -35943,7 +36029,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       const s2 = S.getSchedule();
       s2.tableCell = v;
       S.saveSchedule(s2);
-      renderNwSub('newworld-schedule','nwSchedule');
+      renderScheduleAll();
     };
     if(cc) cc.addEventListener('change', ()=> applyCellColor(cc.value));
     mBody.querySelectorAll('#schedCellSwatches .sw').forEach(s=> s.addEventListener('click', ()=>{
@@ -35956,7 +36042,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       const s2 = S.getSchedule();
       s2.tableHeadColor = (v && v.trim()) ? v.trim() : '';
       S.saveSchedule(s2);
-      renderNwSub('newworld-schedule','nwSchedule');
+      renderScheduleAll();
     };
     if(hc) hc.addEventListener('change', ()=> applyHeadColor(hc.value));
     mBody.querySelectorAll('#schedHeadSwatches .sw').forEach(s=> s.addEventListener('click', ()=>{
@@ -35974,7 +36060,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       const s2 = S.getSchedule();
       s2.cornerColor = (v && v.trim()) ? v.trim() : '';
       S.saveSchedule(s2);
-      renderNwSub('newworld-schedule','nwSchedule');
+      renderScheduleAll();
     };
     if(nc2) nc2.addEventListener('change', ()=> applyCornerColor(nc2.value));
     mBody.querySelectorAll('#schedCornerSwatches .sw').forEach(s=> s.addEventListener('click', ()=>{
@@ -35992,7 +36078,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       const s2 = S.getSchedule();
       s2.cornerLabel = (v && v.trim()) ? v.trim() : '节次';
       S.saveSchedule(s2);
-      renderNwSub('newworld-schedule','nwSchedule');
+      renderScheduleAll();
     };
     if(corner) corner.addEventListener('input', ()=> applyCorner(corner.value));
     // 第一行表头：星期标签
@@ -36001,7 +36087,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       const s2 = S.getSchedule();
       s2.days[idx] = inp.value;
       S.saveSchedule(s2);
-      renderNwSub('newworld-schedule','nwSchedule');
+      renderScheduleAll();
     }));
     // 删除某一行（后续行整体上移，避免课程错位）
     mBody.querySelectorAll('[data-del-row]').forEach(b=> b.addEventListener('click', ()=>{
@@ -36020,7 +36106,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       s2.rows = cur-1;
       S.saveSchedule(s2);
       renderSchedManage();
-      renderNwSub('newworld-schedule','nwSchedule');
+      renderScheduleAll();
     }));
   }
   function addSchedRow(){
@@ -36030,7 +36116,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     sc.rows = (sc.rows||9)+1;
     S.saveSchedule(sc);
     renderSchedManage();
-    renderNwSub('newworld-schedule','nwSchedule');
+    renderScheduleAll();
   }
 
   // ============ V88：家长可编辑 + 专区同步块 ============
@@ -40026,7 +40112,7 @@ I'm good at running.`},
     renderMathPage();
     renderEnglishPage();
     renderSuzhiPage();
-    renderNwSub('newworld-schedule','nwSchedule');
+    renderScheduleAll();
     // 绑定所有二级页返回按钮
     // R61-4：返回按钮为静态 DOM，此前每次进入新世界都 addEventListener 一次，
     //        导致 N 次访问后点一次「返回」触发 N 次 goPage 全量渲染 → 页面卡顿。
@@ -40129,6 +40215,13 @@ I'm good at running.`},
     if(open) open.addEventListener('click', ()=>{ goPage('memonick'); });
     const back = document.getElementById('btnMemoNickBack');
     if(back) back.addEventListener('click', ()=>{ goPage('home'); });
+    // R149-2：首页【课程表】按键弹出课程表弹窗（复用课程表渲染，数据共用同一 store）
+    const btnCourseTable = document.getElementById('btnCourseTable');
+    if(btnCourseTable) btnCourseTable.addEventListener('click', ()=>{ renderScheduleAll(); showModal('#modalCourseTable'); });
+    const btnCourseTableClose = document.getElementById('btnCourseTableClose');
+    if(btnCourseTableClose) btnCourseTableClose.addEventListener('click', ()=>{ hideModal('#modalCourseTable'); });
+    const btnCourseTableGear = document.getElementById('btnCourseTableGear');
+    if(btnCourseTableGear) btnCourseTableGear.addEventListener('click', ()=>{ openSchedManage(); });
     // R146：删除页面右上角「管理备忘」按钮（#btnMemoManage）—— 备忘内容编辑改由各便签卡右上角
     // 编辑图标进入统一弹窗（openMemoEditModal），顶部只保留标题与「返回首页」。
   }
@@ -40158,7 +40251,7 @@ I'm good at running.`},
   const MN_TINTS = ['rgba(255,86,86,.92)','rgba(255,152,58,.92)','rgba(255,213,64,.92)','rgba(72,214,128,.92)','rgba(34,211,238,.92)','rgba(79,140,255,.92)','rgba(167,139,250,.92)'];
   // 管理面板「透明」滑杆区间 0.2~1；R136-1：把该值换算成与管理页面行卡同一套玻璃白度
   // （CSS 变量 --mn-glass-bg = .34），滑杆拉满即与管理页面完全一致，拉低则更透。
-  const MN_GLASS_MIN = 0.05, MN_GLASS_MAX = 0.20, MN_OP_MIN = 0.2;
+  const MN_GLASS_MIN = 0.04, MN_GLASS_MAX = 0.12, MN_OP_MIN = 0.2;
   function mnGlassAlpha(m){
     const raw = (m && m.opacity!==undefined && m.opacity!==null && m.opacity!=='') ? (+m.opacity) : 1;
     let op = raw; if(isNaN(op) || op < MN_OP_MIN) op = MN_OP_MIN; if(op > 1) op = 1;
@@ -40349,6 +40442,7 @@ I'm good at running.`},
   let _wbEditId = '';          // 正在编辑的任务 id
   let _wbEditDate = '';        // 新建时所属日期
   let _wbEditType = 'range';
+  let _wbEditZone = '';        // 新建时所属区域（仅今日视图生效）
   let _wbEditColor = 'blue';
   function wbMondayOf(iso){ const d = new Date(iso + 'T00:00:00'); const off = (d.getDay() + 6) % 7; d.setDate(d.getDate() - off); const p = n => (n<10?'0':'')+n; return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate()); }
   function wbShiftMonday(iso, w){ const d = new Date(iso + 'T00:00:00'); d.setDate(d.getDate() + w*7); const p = n => (n<10?'0':'')+n; return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate()); }
@@ -40400,10 +40494,40 @@ I'm good at running.`},
       + '<button class="wb-task-del" type="button" data-wb-del="'+esc(t.id)+'" data-wb-date="'+esc(t.date||'')+'" title="删除此备忘" aria-label="删除此备忘">×</button>'
       + '</div>';
   }
-  // R146：某个日期的备忘卡片列表（今天视图 / 月视图单日明细共用）—— 卡片靠左对齐、间距清晰、高度随内容自适应
-  function wbDayCardsHTML(date){
+  // R149-4：区域配置读取（按日期）
+  function wbZonesFor(date){
+    return (window.Store && window.Store.getNickWbZones) ? window.Store.getNickWbZones(date) : [{ id:'', name:'未分区', color:'blue' }];
+  }
+  // R149-4：按区域渲染「今日」视图内容（无区域划分的任务归入默认「未分区」）
+  function wbZonesRender(date, zones, tasks){
+    let html = '<div class="wb-zones">';
+    zones.forEach(function(z){
+      const zt = tasks.filter(function(t){ return (t.zone||'') === z.id; });
+      html += '<div class="wb-zone" data-wb-zone="'+esc(z.id)+'">'
+        + '<div class="wb-zone-h">'
+        + '<span class="wb-zone-name">'+esc(z.name)+'</span>'
+        + (_wbEditMode ? '<span class="wb-zone-tools">'
+            + '<button class="wb-zone-add" type="button" data-wb-zone-add="'+esc(z.id)+'" title="在「'+esc(z.name)+'」新增">＋</button>'
+            + (z.id !== '' ? '<button class="wb-zone-del" type="button" data-wb-zone-del="'+esc(z.id)+'" title="删除该区域">🗑</button>' : '')
+            + '</span>' : '')
+        + '</div>'
+        + '<div class="wb-zone-body">';
+      if(zt.length){ zt.forEach(function(t){ html += wbTaskHTML(t); }); }
+      else { html += '<div class="wb-col-empty">暂无备忘</div>'; }
+      html += '</div></div>';
+    });
+    if(_wbEditMode) html += '<button class="wb-zone-add-zone" type="button" data-wb-zone-new="1" title="新增区域">＋ 新增区域</button>';
+    return html + '</div>';
+  }
+  // R146：某个日期的备忘卡片列表（今天视图 / 月视图单日明细共用）。
+  // R149-4：今日视图（groupZones=true）按自定义区域分组渲染，便于按区域增减/编辑。
+  function wbDayCardsHTML(date, groupZones){
     const tasks = wbTasksOn(date);
-    if(!tasks.length) return '<div class="wb-empty">这一天还没有备忘<br>点右上角「编辑」→「新增」开始记录吧</div>';
+    if(!tasks.length){
+      if(groupZones) return wbZonesRender(date, wbZonesFor(date), tasks);
+      return '<div class="wb-empty">这一天还没有备忘<br>点右上角「编辑」→「新增」开始记录吧</div>';
+    }
+    if(groupZones) return wbZonesRender(date, wbZonesFor(date), tasks);
     let html = '<div class="wb-day-list">';
     tasks.forEach(function(t){ html += wbTaskHTML(t); });
     return html + '</div>';
@@ -40438,6 +40562,7 @@ I'm good at running.`},
       html += '<div class="wb-day-col'+(isToday?' wb-today-col':'')+'" data-wb-date="'+date+'">'
         + '<div class="wb-col-h">周'+WB_WD[d]+'<span class="wb-col-d">'+dt.getDate()+'</span></div>'
         + '<div class="wb-day-cards">'+cards+'</div>'
+        + (_wbEditMode ? '<button class="wb-col-add" type="button" data-wb-col-add="'+date+'" title="在 '+date.slice(5)+' 新增备忘">＋ 新增</button>' : '')
         + '</div>';
     }
     html += '</div>';
@@ -40458,17 +40583,19 @@ I'm good at running.`},
       const day = i - startOff + 1;
       const dt = new Date(y, m-1, day);
       const inMonth = dt.getMonth() === m-1;
+      // R149-4：月视图仅展示当月数据 —— 非当月日期渲染为空白占位（不可点、无圆点）
+      if(!inMonth){ html += '<div class="wb-mcell wb-blank"></div>'; continue; }
       const realIso = dt.getFullYear()+'-'+p2(dt.getMonth()+1)+'-'+p2(dt.getDate());
       const tasks = wbTasksOn(realIso);
       const dots = tasks.slice(0,4).map(function(t){ return '<i class="wb-dot wb-dot-'+t.color+'"></i>'; }).join('');
       const isToday = realIso === nbTodayISO();
-      html += '<div class="wb-mcell'+(inMonth?'':' wb-out')+'" data-wb-date="'+realIso+'">'
+      html += '<div class="wb-mcell" data-wb-date="'+realIso+'">'
         + '<span class="wb-m-d'+(isToday?' wb-today':'')+'">'+dt.getDate()+'</span>'
         + '<div class="wb-m-dots">'+dots+'</div></div>';
     }
     html += '</div>';
     body.innerHTML = html;
-    body.querySelectorAll('.wb-mcell').forEach(function(c){
+    body.querySelectorAll('.wb-mcell[data-wb-date]').forEach(function(c){
       c.addEventListener('click', function(){
         const date = c.getAttribute('data-wb-date');
         if(_wbEditMode){ _wbMonthDay = date; wbRefresh(); if(window.toast) toast('已打开 '+date.slice(5)+' 的备忘，可新增/修改/删除'); }
@@ -40499,7 +40626,7 @@ I'm good at running.`},
     if(!_nbDate) _nbDate = nbTodayISO();
     renderWbHead();
     body.innerHTML = '<div class="wb-dayview" data-page-node-id="R142wbDayview">'
-      + wbDayCardsHTML(_nbDate)
+      + wbDayCardsHTML(_nbDate, true)
       + '</div>';
     bindWbCards();
   }
@@ -40563,6 +40690,43 @@ I'm good at running.`},
         const id = b.getAttribute('data-wb-del');
         const date = b.getAttribute('data-wb-date');
         if(date){ wbSaveOn(date, wbTasksOn(date).filter(function(x){ return x.id !== id; })); wbRefresh(); if(window.toast) toast('已删除该备忘'); }
+      });
+    });
+    // R149-4：周视图「按日期列新增」（编辑态）
+    body.querySelectorAll('.wb-col-add').forEach(function(b){
+      b.addEventListener('click', function(e){
+        e.stopPropagation();
+        wbAddNew({ date: b.getAttribute('data-wb-col-add') });
+      });
+    });
+    // R149-4：今日视图「按区域新增 / 删除区域 / 新增区域」
+    body.querySelectorAll('[data-wb-zone-add]').forEach(function(b){
+      b.addEventListener('click', function(e){
+        e.stopPropagation();
+        const zid = b.getAttribute('data-wb-zone-add');
+        wbAddNew({ date: _nbDate || nbTodayISO(), zone: zid });
+      });
+    });
+    body.querySelectorAll('[data-wb-zone-del]').forEach(function(b){
+      b.addEventListener('click', function(e){
+        e.stopPropagation();
+        const zid = b.getAttribute('data-wb-zone-del');
+        const date = _nbDate || nbTodayISO();
+        const zones = wbZonesFor(date).filter(function(z){ return z.id !== zid; });
+        const list = wbTasksOn(date).map(function(t){ return (t.zone === zid) ? Object.assign({}, t, { zone:'' }) : t; });
+        wbSaveOn(date, list);
+        if(window.Store && window.Store.saveNickWbZones) window.Store.saveNickWbZones(date, zones);
+        wbRefresh(); if(window.toast) toast('已删除该区域（原内容归入「未分区」）');
+      });
+    });
+    body.querySelectorAll('[data-wb-zone-new]').forEach(function(b){
+      b.addEventListener('click', function(e){
+        e.stopPropagation();
+        const date = _nbDate || nbTodayISO();
+        const zones = wbZonesFor(date);
+        zones.push({ id:'z'+Date.now().toString(36)+Math.random().toString(36).slice(2,5), name:'新区域', color:'blue' });
+        if(window.Store && window.Store.saveNickWbZones) window.Store.saveNickWbZones(date, zones);
+        wbRefresh(); if(window.toast) toast('已新增区域，点 ＋ 添加该区域的备忘');
       });
     });
   }
@@ -40637,6 +40801,7 @@ I'm good at running.`},
     _wbEditType = t.type || pf.type || 'range';
     _wbEditColor = t.color || pf.color || 'blue';
     _wbEditDate = t.date || pf.date || _wbMonday || nbTodayISO();
+    _wbEditZone = t.zone || pf.zone || '';
     const st = document.getElementById('wbInStart');
     if(st) st.value = t.start || pf.start || '09:00';
     const en = document.getElementById('wbInEnd');
@@ -40672,17 +40837,22 @@ I'm good at running.`},
     wbRefresh();
     if(window.toast) toast(_wbEditMode ? '编辑状态已开启：可切换今天/周/月，点卡片修改，点 × 删除' : '已退出编辑状态');
   }
-  // R146：新增备忘 —— 按当前版块决定所属日期（今天视图=当天；周视图=今天所在列，否则周一；月视图=已打开的单日，否则今天）
-  function wbAddNew(){
+  // R146：新增备忘 —— 按当前版块决定所属日期（今天视图=当天；周视图=今天所在列，否则周一；月视图=已打开的单日，否则今天）。
+  // R149-4：支持 prefill={date,zone}，由「按日期列 / 按区域」入口调用。
+  function wbAddNew(pf){
+    pf = pf || {};
     if(!_wbEditMode) wbToggleEditMode();
-    let date;
-    if(_wbView === 'today'){ date = _nbDate || nbTodayISO(); }
-    else if(_wbView === 'month'){ date = _wbMonthDay || nbTodayISO(); }
-    else {
-      const today = nbTodayISO();
-      date = (today >= wbDateOf(_wbMonday, 0) && today <= wbDateOf(_wbMonday, 6)) ? today : wbDateOf(_wbMonday, 0);
+    let date = pf.date;
+    if(!date){
+      if(_wbView === 'today'){ date = _nbDate || nbTodayISO(); }
+      else if(_wbView === 'month'){ date = _wbMonthDay || nbTodayISO(); }
+      else {
+        const today = nbTodayISO();
+        date = (today >= wbDateOf(_wbMonday, 0) && today <= wbDateOf(_wbMonday, 6)) ? today : wbDateOf(_wbMonday, 0);
+      }
     }
-    wbOpenEditModal(null, { type:'range', color:wbNextColor(date), date:date, start:'09:00', end:'10:00' });
+    const zone = (pf.zone != null) ? pf.zone : '';
+    wbOpenEditModal(null, { type:'range', color:wbNextColor(date), date:date, start:'09:00', end:'10:00', zone:zone });
   }
   function bindWbEditModal(){
     const colors = document.getElementById('wbColors');
@@ -40715,7 +40885,7 @@ I'm good at running.`},
     let t = null;
     if(_wbEditId){ for(let i=0;i<list.length;i++) if(list[i].id === _wbEditId) t = list[i]; }
     if(!t){
-      t = { id:'wb'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), title:plain.slice(0,30), html:html, type:_wbEditType, date:date, start:start, end:end, color:_wbEditColor, done:0 };
+      t = { id:'wb'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), title:plain.slice(0,30), html:html, type:_wbEditType, date:date, start:start, end:end, color:_wbEditColor, done:0, zone:_wbEditZone };
       list.push(t);
     } else {
       t.title = plain.slice(0,30); t.html = html; t.type = _wbEditType; t.color = _wbEditColor; t.date = date;
@@ -40752,7 +40922,12 @@ I'm good at running.`},
   // 同一个对话框内编辑，对话框整体放大（见 styles.css .modal-memo）。备忘墙只负责展示。
   function openMemoEditModal(){
     // 兜底初始化草稿，防止异常路径下把空数组写回 store 清空全部备忘。
-    _nmDraft = getNickMemosSafe().map(function(m){ return { id:m.id, date:m.date, item:m.item, note:m.note, noteHtml:m.noteHtml, fontSize:m.fontSize, color:m.color, opacity:m.opacity }; });
+    // R149-3：日期 / 时间拆为两个字段；旧存档里若「时间」存的是 HH:MM 形态，归并到 time 字段。
+    _nmDraft = getNickMemosSafe().map(function(m){
+      const o = { id:m.id, date:m.date, time:m.time, item:m.item, note:m.note, noteHtml:m.noteHtml, fontSize:m.fontSize, color:m.color, opacity:m.opacity };
+      if(!o.time && o.date && /^\d{1,2}:\d{2}$/.test(String(o.date).trim())){ o.time = o.date; o.date = ''; }
+      return o;
+    });
     renderMemoEditModalBody();
     showModal('#modalMemoEdit');
     bindMemoEditModal();
@@ -40775,7 +40950,8 @@ I'm good at running.`},
         + '<span class="mn-note-edit-char" aria-hidden="true">'+char+'</span>'
         + '<button class="mn-del" type="button" title="删除该条" aria-label="删除该条">🗑</button></div>'
         + '<div class="mn-edit-fields">'
-        + '<label class="mn-fld"><span class="mn-fld-lab">时间</span><input class="mn-in mn-in-date" placeholder="时间" maxlength="20" value="'+esc(m.date)+'" /></label>'
+        + '<label class="mn-fld"><span class="mn-fld-lab">日期</span><input class="mn-in mn-in-datepicker" type="date" placeholder="日期（可留白）" value="'+esc(m.date||'')+'" /></label>'
+        + '<label class="mn-fld"><span class="mn-fld-lab">时间</span><input class="mn-in mn-in-time" type="text" inputmode="numeric" placeholder="如 10:00（可留白）" maxlength="20" value="'+esc(m.time||'')+'" /></label>'
         + '<label class="mn-fld"><span class="mn-fld-lab">事项</span><input class="mn-in mn-in-item" placeholder="事项" maxlength="120" value="'+esc(m.item)+'" /></label>'
         + '</div>'
         + '<div class="mn-rte-wrap" data-page-node-id="R139rte'+i+'">'
@@ -40792,7 +40968,8 @@ I'm good at running.`},
     body.innerHTML = overflow + cards
       + '<div class="mn-note-edit mn-add-new" data-page-node-id="R138memoAddRow">'
       + '<div class="mn-edit-fields">'
-      + '<label class="mn-fld"><span class="mn-fld-lab">时间</span><input class="mn-in mn-in-date" placeholder="时间" maxlength="20" /></label>'
+      + '<label class="mn-fld"><span class="mn-fld-lab">日期</span><input class="mn-in mn-in-datepicker" type="date" placeholder="日期（可留白）" /></label>'
+      + '<label class="mn-fld"><span class="mn-fld-lab">时间</span><input class="mn-in mn-in-time" type="text" inputmode="numeric" placeholder="如 10:00（可留白）" maxlength="20" /></label>'
       + '<label class="mn-fld"><span class="mn-fld-lab">事项</span><input class="mn-in mn-in-item" placeholder="新事项" maxlength="120" /></label>'
       + '<label class="mn-fld"><span class="mn-fld-lab">备注</span><input class="mn-in mn-in-note" placeholder="备注" maxlength="120" /></label>'
       + '</div>'
@@ -40811,7 +40988,8 @@ I'm good at running.`},
       bindRichEditor(card, row);
       card.querySelectorAll('.mn-in').forEach(function(inp){
         inp.addEventListener('input', function(){
-          if(inp.classList.contains('mn-in-date')) row.date = inp.value;
+          if(inp.classList.contains('mn-in-datepicker')) row.date = inp.value;
+          else if(inp.classList.contains('mn-in-time')) row.time = inp.value;
           else if(inp.classList.contains('mn-in-note')) row.note = inp.value;
           else row.item = inp.value;
         });
@@ -40833,12 +41011,13 @@ I'm good at running.`},
         return;
       }
       const wrap = body.querySelector('.mn-add-new'); if(!wrap) return;
-      const date = (wrap.querySelector('.mn-in-date').value||'').trim();
+      const date = (wrap.querySelector('.mn-in-datepicker').value||'').trim();
+      const time = (wrap.querySelector('.mn-in-time').value||'').trim();
       const item = (wrap.querySelector('.mn-in-item').value||'').trim();
       const note = (wrap.querySelector('.mn-in-note').value||'').trim();
-      if(!item && !note && !date) return;
+      if(!item && !note && !date && !time) return;
       _nmDraft = _nmDraft || [];
-      _nmDraft.push({ id: 'nm'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), date:date, item:item, note:note, fontSize:'', color:'', opacity:'' });
+      _nmDraft.push({ id: 'nm'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), date:date, time:time, item:item, note:note, fontSize:'', color:'', opacity:'' });
       renderMemoEditModalBody(); bindMemoEditModal();
       const ni = body.querySelector('.mn-add-new .mn-in-item'); if(ni) ni.focus();
     };
@@ -40852,7 +41031,8 @@ I'm good at running.`},
         const id = card.getAttribute('data-id');
         const row = (_nmDraft||[]).find(function(x){ return String(x.id)===String(id); });
         if(!row) return;
-        row.date = (card.querySelector('.mn-in-date').value||'');
+        row.date = (card.querySelector('.mn-in-datepicker').value||'');
+        row.time = (card.querySelector('.mn-in-time').value||'');
         row.item = (card.querySelector('.mn-in-item').value||'');
         const _rte = card.querySelector('[data-rte]');
         row.noteHtml = _rte ? sanitizeRich(_rte.innerHTML) : (row.noteHtml||'');
