@@ -2379,7 +2379,9 @@ body.child-mode .parent-edit-fab{display:none}
 /* R149-1：课程表底部「着装」行 */
 .sn-attire-row th.sn-attire-head{ background:linear-gradient(180deg,#fff3d6 0%,#ffe2a8 100%); color:#7a5200; font-weight:800; padding:9px 10px; font-size:15px; white-space:nowrap; }
 .sn-attire-row td{ background:rgba(255,255,255,.25); padding:3px; }
-.sn-attire-cell{ display:flex;align-items:center;justify-content:center;text-align:center;min-height:40px;font-weight:800;font-size:14px;color:#8a5a00;background:linear-gradient(180deg,#fff7e6,#ffeec2);border:1px solid #ffe0a0;border-radius:8px;padding:6px 4px; }
+.sn-attire-cell{ display:flex;align-items:center;justify-content:center;text-align:center;min-height:40px;font-weight:800;font-size:14px;color:#8a5a00;background:linear-gradient(180deg,#fff7e6,#ffeec2);border:1px solid #ffe0a0;border-radius:8px;padding:6px 4px;cursor:pointer;transition:.14s; }
+.sn-attire-cell:hover{box-shadow:0 0 0 2px #ffd24d, inset 0 1px 3px rgba(122,82,0,.1)}
+.sn-attire-cell.sn-cell-empty{color:#9aa6bd}
 .sn-foot{
   position:relative;z-index:2;margin-top:16px;font-size:13px;font-weight:700;
   color:#FFF8E7;text-shadow:0 1px 6px rgba(8,16,52,.75);letter-spacing:.6px;text-align:center;
@@ -2392,6 +2394,13 @@ body.child-mode .parent-edit-fab{display:none}
 .sn-dismiss-row td{ background:rgba(255,255,255,.25); padding:3px; }
 .sn-dismiss-cell{ display:flex;align-items:center;justify-content:center;text-align:center;min-height:40px;font-weight:800;font-size:14px;color:#2c6e52;background:linear-gradient(180deg,#f3fbf7,#dff2e8);border:1px solid #bfe6d2;border-radius:8px;padding:6px 4px;cursor:pointer;transition:.14s; }
 .sn-dismiss-cell:hover{box-shadow:0 0 0 2px #8fd4b2, inset 0 1px 3px rgba(31,107,74,.1)}
+.sn-dismiss-cell.sn-cell-empty{color:#9aa6bd}
+/* R157-3：课程表第一行（表头行）支持点击修改设置（仅家长模式由 JS 添加可点态） */
+.sn-table thead tr.sn-head-clickable{cursor:pointer}
+.sn-table thead tr.sn-head-clickable th{transition:.15s}
+.sn-table thead tr.sn-head-clickable:hover th{filter:brightness(1.07)}
+/* R157-3：单元格编辑弹窗区块显隐 —— 着装/放学模式隐藏「快捷科目」与「课程区域颜色」区 */
+.sched-sub-wrap[hidden],#schedCellColorWrap[hidden]{display:none!important}
 /* 四角星星 / 小船装饰（左上 + 右下） */
 .sn-deco{position:absolute;z-index:1;pointer-events:none;user-select:none;filter:drop-shadow(0 3px 8px rgba(8,16,52,.5))}
 .sn-deco-tl{top:4px;left:6px;font-size:34px;animation:snFloat 5s ease-in-out infinite}
@@ -4752,14 +4761,29 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .wp-month-stats-btn:hover{filter:brightness(1.05);transform:translateY(-1px)}
 .modal-month-stats{max-width:640px;width:92%;max-height:86vh;display:flex;flex-direction:column}
 .modal-month-stats .modal-body{padding:14px 16px;overflow:auto}
-/* R156-2b：月度统计月份选择器（‹ 年月 › + 原生月份输入，支持查询历史各月） */
+/* R157-5：月度统计月份选择改为弹窗标签形式（点击月份标签 → 打开 #modalMonthPicker） */
 .ms-month-sel{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
-.ms-month-nav{width:34px;height:34px;border-radius:50%;border:1.5px solid #dbe7fb;background:#f3f8ff;color:var(--tone-800);font-size:16px;font-weight:900;cursor:pointer;transition:.15s}
-.ms-month-nav:hover{background:#e3efff;transform:translateY(-1px)}
-.ms-month-label{font-size:15px;font-weight:900;color:var(--tone-800);min-width:104px;text-align:center;letter-spacing:.5px}
-.ms-month-input{height:32px;border:1.5px solid #dbe7fb;border-radius:9px;background:#fff;padding:0 8px;font-size:13px;font-weight:700;color:var(--tone-900);cursor:pointer}
-/* R156-2c：科目进度条默认清空（无数据不渲染填充），颜色由实际完成进度动态决定（见 renderMonthStats 内联样式） */
-.ms-subj .wp-tbar-fill{background:transparent}
+.ms-month-btn{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:6px 18px;border-radius:999px;
+  border:1.5px solid #dbe7fb;background:#f3f8ff;color:var(--tone-800);font-size:15px;font-weight:900;letter-spacing:.5px;
+  cursor:pointer;transition:.15s}
+.ms-month-btn:hover{background:#e3efff;transform:translateY(-1px);box-shadow:0 3px 8px rgba(30,58,138,.12)}
+/* R157-5：月份选择弹窗（标签网格） */
+.modal-month-picker{max-width:460px;width:92%;max-height:80vh;display:flex;flex-direction:column}
+.modal-month-picker .modal-body{padding:14px 16px;overflow:auto}
+.mp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.mp-tag{min-height:44px;border-radius:12px;border:1.5px solid #dbe7fb;background:#f3f8ff;color:var(--tone-800);
+  font-size:14px;font-weight:800;cursor:pointer;transition:.15s;padding:6px 8px}
+.mp-tag:hover{border-color:var(--tone-400);background:#e3efff;transform:translateY(-1px)}
+.mp-tag.on{border-color:var(--tone-600);background:linear-gradient(135deg,var(--tone-300),var(--tone-400));color:var(--tone-900);box-shadow:0 2px 8px rgba(64,150,255,.28)}
+@media (max-width:520px){ .mp-grid{grid-template-columns:repeat(2,1fr)} }
+/* R157-5：各科目完成数据改柱状图展示（竖柱：数值 / 柱体 / 科目名；柱高与颜色按完成度动态渲染） */
+.ms-subj-chart{display:flex;align-items:stretch;justify-content:space-around;gap:8px;height:150px;padding:8px 10px 6px;
+  border-radius:10px;background:#f7faff;border:1px solid #e6eefb;overflow-x:auto}
+.ms-subj-bar{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;flex:1 1 0;min-width:44px;height:100%}
+.ms-subj-val{font-size:11px;font-weight:900;color:var(--tone-800);line-height:1.1;white-space:nowrap}
+.ms-subj-track{flex:1 1 auto;width:70%;min-height:0;display:flex;align-items:flex-end;justify-content:center}
+.ms-subj-fill{width:100%;border-radius:5px 5px 2px 2px;min-height:0;transition:height .3s ease}
+.ms-subj-name{font-size:11px;font-weight:800;color:#3a4a63;line-height:1.1;text-align:center;white-space:nowrap}
 .ms-summary{display:flex;gap:10px;margin-bottom:12px}
 .ms-card{flex:1;background:#f3f8ff;border:1px solid #dbe7fb;border-radius:12px;padding:10px;text-align:center}
 .ms-card.ms-req{background:#eafaf0;border-color:#bfe3c4}
@@ -4774,7 +4798,6 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .ms-day{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:3px;height:100%}
 .ms-day-bar{width:70%;border-radius:4px 4px 2px 2px;min-height:3px;transition:height .3s ease}
 .ms-day-num{font-size:9px;color:#8a9bb5;line-height:1}
-.ms-subj{display:flex;flex-direction:column;gap:6px}
 
 /* ================= R150-7：种植园货币管理 ================= */
 .farm-cur-row{display:flex;align-items:center;gap:8px;padding:7px 4px;border-bottom:1px dashed #e3ecf7}
@@ -5582,6 +5605,8 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   min-height:0;overflow:hidden;
   color:#102a52;line-height:1.3
 }
+/* R157-2：等宽单排便签卡（.wb-tagcards 5 列）更窄 —— 正文右侧让位从 4vw 收到 2.2vw，文字可用宽度更足 */
+.wb-tagcards .mn-note-body{right:clamp(26px,2.2vw,34px)}
 .mn-note-lead{display:flex;align-items:center;gap:clamp(6px,.9vw,9px);min-width:0}
 .mn-note-lead > *{min-width:0}
 .mn-note-dot{flex:0 0 auto;width:clamp(11px,1.7vh,14px);height:clamp(11px,1.7vh,14px);border-radius:50%;border:1.5px solid rgba(255,255,255,.9);box-shadow:0 1px 5px rgba(16,40,90,.28)}
@@ -5612,9 +5637,6 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .mn-tool-btn svg{width:56%;height:56%;fill:#fff;filter:drop-shadow(0 1px 2px rgba(16,40,90,.5))}
 .mn-tool-del{background:rgba(255,118,118,.30);border-color:rgba(255,214,214,.82)}
 .mn-tool-del:hover{background:rgba(255,140,140,.48)}
-/* R154-6：编辑态「⌫ 清空」键 —— 蓝调，与红色删除键区分（清空保留卡位 / 删除移除整条） */
-.mn-tool-clear{background:rgba(120,170,255,.34);border-color:rgba(214,232,255,.82)}
-.mn-tool-clear:hover{background:rgba(120,170,255,.56)}
 /* R154-3：编辑态标签卡整体可点（打开富文本弹窗），光标提示可交互 */
 .mn-note-card.mn-note-editing{cursor:pointer}
 /* R151-3：备忘录页面级「编辑/保存」原位切换键（标题右侧毛玻璃药丸；保存态绿色高亮） */
@@ -5804,18 +5826,17 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 }
 .mn-notes .mn-note-card.mn-weekboard::before{display:none}
 /* R153：今天视图标签卡区 —— 备忘录页下方的 5 张标签卡移入周看板「今天」视图，排在当日日程下方，
-   与当日日程同属「今日板块」。3+2 两行填满可用高度：第一行 3 张各占 2 列、第二行 2 张各占 3 列
-   （6 列网格）；行高 1fr 均分，卡内正文/工具/装饰均为绝对定位，空卡不塌缩；编辑态行内表单同款适配。
+   与当日日程同属「今日板块」。R157-2：五张便签卡统一为等宽单排（5 列 × 1 行，各占 1fr），
+   尺寸一致、间距统一，版面更美观协调；行高 1fr 填满可用高度，卡内正文/工具/装饰均为绝对定位，
+   空卡不塌缩；编辑态工具钮仅编辑态显示（同款适配）。
    配色显式按卡位声明（橙/黄/绿/青/蓝，与卡内 mn-note-dot 同色）—— 标签卡已不在备忘墙网格内，
    不再依赖 .mn-notes 的 nth-child 位次上色；备忘墙基类 margin 在此复位为 0。 */
 .wb-tagcards{
   flex:1 1 auto;min-height:clamp(150px,26vh,260px);
-  display:grid;grid-template-columns:repeat(6,1fr);grid-template-rows:repeat(2,minmax(0,1fr));
+  display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:minmax(0,1fr);
   gap:clamp(6px,1.1vh,12px);padding-top:clamp(4px,.8vh,8px)
 }
 .wb-tagcards > .mn-note-card{margin:0;min-width:0;min-height:0}
-.wb-tagcards > .mn-note-card:nth-child(-n+3){grid-column:span 2}
-.wb-tagcards > .mn-note-card:nth-child(n+4){grid-column:span 3}
 .wb-tagcards > .mn-note-card:nth-child(1)::before{background:rgba(255,152,58,.16)}  /* 橙 */
 .wb-tagcards > .mn-note-card:nth-child(2)::before{background:rgba(255,213,64,.16)}  /* 黄 */
 .wb-tagcards > .mn-note-card:nth-child(3)::before{background:rgba(72,214,128,.16)}  /* 绿 */
@@ -5824,8 +5845,6 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 /* R153：竖屏兜底 —— 标签卡区改 5 张纵排，避免两行挤压（与全站竖屏块同断点口径） */
 @media (orientation:portrait){
   .wb-tagcards{grid-template-columns:1fr;grid-template-rows:repeat(5,minmax(84px,1fr));min-height:0}
-  .wb-tagcards > .mn-note-card:nth-child(-n+3),
-  .wb-tagcards > .mn-note-card:nth-child(n+4){grid-column:span 1}
 }
 /* R142 → R146：周看板「今天」视图（与周/月共用数据层）—— R146 起为普通卡片式备忘内容区（无时间刻度）
    R153：日程区不压缩（flex:0 0 auto），把剩余高度让给标签卡区；标签卡保底高度见 .wb-tagcards */
@@ -6358,9 +6377,8 @@ html,body{margin:0;padding:0}
 #wbMonthMemosBody .wb-task-del{ display:none; }
 
 /* ========== R155-4：着装行点击交互（与课程表其余行一致） ========== */
-.sn-attire-cell{ width:100%; min-height:34px; border:none; border-radius:8px; background:#f4f8ff; color:var(--tone-900); font-size:14px; cursor:pointer; padding:6px 4px; text-align:center; }
-.sn-attire-cell.sn-cell-empty{ color:#9aa6bd; }
-.sn-attire-cell:hover{ background:#e6f0ff; }
+/* R157-3：原 R155-4 纯色样式块已移除 —— 着装/放学行与课程表其余行统一由上方 R149-1/R156-1e 配色块承载
+   （旧块源码顺序在后会覆盖琥珀/薄荷新配色，导致着装行显示异常）；空态灰字规则已并入新块 */
 
 </style>
 </head>
@@ -6414,13 +6432,14 @@ html,body{margin:0;padding:0}
               <button class="wp-encourage-edit hidden-in-child" id="btnGreetEdit" title="家长编辑问候语" data-page-node-id="kU4k6ZI8gFL2Xl8pBDCbIt">✎ 编辑</button>
             </div>
           </div>
-          <!-- R118-2：【Nick 的备忘录】入口按键（点击打开独立备忘录页面）；R149-2：右侧新增【课程表】按键 -->
+          <!-- R118-2：【Nick 的备忘录】入口按键（点击打开独立备忘录页面）；R149-2：右侧新增【课程表】按键；
+               R157-4：【备忘录】与【课程表】按键位置互换（课程表在前，备忘录在后） -->
           <div class="wp-nickmemo-row">
+            <button class="wp-nickmemo-btn wp-coursetable-btn" id="btnCourseTable" title="查看课程表">🗓️ 课程表</button>
             <div class="wp-memo-btn-wrap">
               <button class="wp-nickmemo-btn" id="btnNickMemo" title="打开备忘录" data-page-node-id="R118btnNickMemo">📒 备忘录</button>
               <span class="wp-memo-bubble" id="memoBubble" hidden data-page-node-id="R150memoBubble"></span>
             </div>
-            <button class="wp-nickmemo-btn wp-coursetable-btn" id="btnCourseTable" title="查看课程表">🗓️ 课程表</button>
           </div>
         </div>
       </div>
@@ -6747,19 +6766,19 @@ html,body{margin:0;padding:0}
     </div>
   </div>
 
-  <!-- ========== 弹窗：课程表 · 单元格编辑 ========== -->
+  <!-- ========== 弹窗：课程表 · 单元格编辑（R157-3：着装行/放学行统一复用本弹窗，按 schedCellKind 切换标题/标签/显隐） ========== -->
   <div class="modal-mask" id="modalSchedCell" hidden data-page-node-id="NqMZOTAMWK7FH1adTdtviZ">
     <div class="modal-box modal-sm" style="min-width:360px" data-page-node-id="xWGENN7LyrbAB1uB9Gab1G">
-      <div class="modal-head" data-page-node-id="FDIaq0GFeeieUUI9ZLoZWj"><h3 data-page-node-id="CCzmS7gUFkEuWFVQUBtAiu">✏️ 填写课程</h3><button class="modal-x" data-close data-page-node-id="mrKEyNATjcIOrMexzB2uEf">×</button></div>
+      <div class="modal-head" data-page-node-id="FDIaq0GFeeieUUI9ZLoZWj"><h3 id="schedCellModalTitle" data-page-node-id="CCzmS7gUFkEuWFVQUBtAiu">✏️ 填写课程</h3><button class="modal-x" data-close data-page-node-id="mrKEyNATjcIOrMexzB2uEf">×</button></div>
       <div class="modal-body" data-page-node-id="3mX7t63c4Mk39SCjW0UFN1">
         <div class="sched-cell-where" id="schedCellWhere" data-page-node-id="GH5s5p8J4ncto7l0aoKLPg"></div>
-        <label class="sched-field" data-page-node-id="55IEV28cv7cDU1p5C3iy0J">课程名称 <input type="text" id="schedCellText" placeholder="如：语文 / 数学" maxlength="12" data-page-node-id="GrojC2FuEx9iESgjRvUzZy" /></label>
-        <div class="sched-sub-wrap" data-page-node-id="qSb7R43subjWrap001">
+        <label class="sched-field" data-page-node-id="55IEV28cv7cDU1p5C3iy0J"><span id="schedCellTextLabel">课程名称</span> <input type="text" id="schedCellText" placeholder="如：语文 / 数学" maxlength="12" data-page-node-id="GrojC2FuEx9iESgjRvUzZy" /></label>
+        <div class="sched-sub-wrap" id="schedCellSubWrap" data-page-node-id="qSb7R43subjWrap001">
           <span class="sched-sub-label" data-page-node-id="qSb7R43subjLab0001">快捷科目</span>
           <div class="sched-swatches sched-sub-quick" id="schedSubjectQuick" data-page-node-id="qSb7R43subjQuick01"></div>
           <div class="sched-manage-tip" data-page-node-id="qSb7R43subjTip0001">点击科目即可填入课程名，再点一次取消。</div>
         </div>
-        <div class="hidden-in-child" data-page-node-id="zu4ZeTuj3zKlWQ7IUPqygx">
+        <div class="hidden-in-child" id="schedCellColorWrap" data-page-node-id="zu4ZeTuj3zKlWQ7IUPqygx">
           <label class="sched-field" data-page-node-id="KVazSOXh4X4f7WKgZazRHl">课程区域颜色 <input type="color" id="schedCellColor" value="#ffffff" data-page-node-id="KeSwrJP4NZdX3RNj7U8u2L" /></label>
           <div class="sched-swatches" id="schedSwatches" data-page-node-id="gUewJXGCbgXGjvFwj3MRHA"></div>
         </div>
@@ -6791,6 +6810,16 @@ html,body{margin:0;padding:0}
         <button class="modal-close" id="btnMonthStatsClose" title="关闭" data-page-node-id="R150btnMonthStatsClose">✕</button>
       </div>
       <div class="modal-body" id="monthStatsBody" data-page-node-id="R150monthStatsBody"></div>
+    </div>
+  </div>
+
+  <!-- R157-5：月份选择弹窗（标签形式选择年月，替代原 ‹ 年月 › + 原生月份输入） -->
+  <div class="modal-mask" id="modalMonthPicker" hidden data-page-node-id="R157modalMonthPicker">
+    <div class="modal-box modal-month-picker" data-page-node-id="R157monthPickerBox">
+      <div class="modal-head"><span data-page-node-id="R157monthPickerTitle">📅 选择月份</span>
+        <button class="modal-close" id="btnMonthPickerClose" title="关闭" data-page-node-id="R157btnMonthPickerClose">✕</button>
+      </div>
+      <div class="modal-body" id="monthPickerBody" data-page-node-id="R157monthPickerBody"></div>
     </div>
   </div>
 
@@ -7332,38 +7361,6 @@ html,body{margin:0;padding:0}
     <div class="modal-body" id="wbMonthMemosBody" data-page-node-id="R155wbMonthMemosBody"></div>
     <div class="modal-foot" data-page-node-id="R155wbMonthMemosFoot">
       <button class="pbtn" id="btnWbMonthMemosClose" type="button" data-page-node-id="R155wbMonthMemosClose">关闭</button>
-    </div>
-  </div>
-</div>
-
-<!-- ========== 弹窗：课程表 · 着装行编辑（R155-4：点击着装格 → 修改内容） ========== -->
-<div class="modal-mask" id="modalSchedAttire" hidden data-page-node-id="R155schedAttire">
-  <div class="modal-box modal-sm" style="min-width:360px" data-page-node-id="R155schedAttireBox">
-    <div class="modal-head" data-page-node-id="R155schedAttireHead"><h3 data-page-node-id="R155schedAttireTitle">👕 填写着装</h3><button class="modal-x" data-close data-page-node-id="R155schedAttireX">×</button></div>
-    <div class="modal-body" data-page-node-id="R155schedAttireBody">
-      <div class="sched-cell-where" id="schedAttireWhere" data-page-node-id="R155schedAttireWhere"></div>
-      <label class="sched-field" data-page-node-id="R155schedAttireField">当日着装 <input type="text" id="schedAttireText" placeholder="如：校服 / 运动服" maxlength="20" data-page-node-id="R155schedAttireText" /></label>
-    </div>
-    <div class="modal-foot" data-page-node-id="R155schedAttireFoot">
-      <button class="primary-btn" id="btnSchedAttireSave" type="button" data-page-node-id="R155schedAttireSave">保存</button>
-      <button class="pbtn danger" id="btnSchedAttireClear" type="button" data-page-node-id="R155schedAttireClear">清空</button>
-      <button class="pbtn" data-close data-page-node-id="R155schedAttireCancel">取消</button>
-    </div>
-  </div>
-</div>
-
-<!-- ========== 弹窗：课程表 · 放学时间行编辑（R156-1e：点击放学格 → 修改放学时间，交互与着装行一致） ========== -->
-<div class="modal-mask" id="modalSchedDismiss" hidden data-page-node-id="R156schedDismiss">
-  <div class="modal-box modal-sm" style="min-width:360px" data-page-node-id="R156schedDismissBox">
-    <div class="modal-head" data-page-node-id="R156schedDismissHead"><h3 data-page-node-id="R156schedDismissTitle">🔔 填写放学时间</h3><button class="modal-x" data-close data-page-node-id="R156schedDismissX">×</button></div>
-    <div class="modal-body" data-page-node-id="R156schedDismissBody">
-      <div class="sched-cell-where" id="schedDismissWhere" data-page-node-id="R156schedDismissWhere"></div>
-      <label class="sched-field" data-page-node-id="R156schedDismissField">放学时间 <input type="text" id="schedDismissText" placeholder="如：16:30" maxlength="20" data-page-node-id="R156schedDismissText" /></label>
-    </div>
-    <div class="modal-foot" data-page-node-id="R156schedDismissFoot">
-      <button class="primary-btn" id="btnSchedDismissSave" type="button" data-page-node-id="R156btnSchedDismissSave">保存</button>
-      <button class="pbtn danger" id="btnSchedDismissClear" type="button" data-page-node-id="R156btnSchedDismissClear">清空</button>
-      <button class="pbtn" data-close data-page-node-id="R156schedDismissCancel">取消</button>
     </div>
   </div>
 </div>
@@ -36260,9 +36257,19 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         if(cTh) cTh.style.background = cornerColor;
         mount.querySelectorAll('.sn-table tbody th.sn-rowhead').forEach(th=> th.style.background = cornerColor);
       }
-      mount.querySelectorAll('.kb-cell').forEach(b=> b.addEventListener('click', ()=> openSchedCellEditor(parseInt(b.dataset.r), parseInt(b.dataset.c))));
-      mount.querySelectorAll('.sn-attire-cell').forEach(b=> b.addEventListener('click', ()=> openSchedAttireEditor(parseInt(b.dataset.attireC))));
-      mount.querySelectorAll('.sn-dismiss-cell').forEach(b=> b.addEventListener('click', ()=> openSchedDismissEditor(parseInt(b.dataset.dismissC))));
+      // R157-3：着装/放学格同时带有 .kb-cell 类，必须用 :not() 排除，否则一次点击同时触发
+      // 「填写课程」与「填写着装/放学」两个弹窗（旧双重弹窗 bug）
+      mount.querySelectorAll('.kb-cell:not(.sn-attire-cell):not(.sn-dismiss-cell)').forEach(b=> b.addEventListener('click', ()=> openSchedCellEditor(parseInt(b.dataset.r), parseInt(b.dataset.c))));
+      // R157-3：着装行/放学行统一复用「填写课程」弹窗（#modalSchedCell），按 kind 切换标题与写入字段
+      mount.querySelectorAll('.sn-attire-cell').forEach(b=> b.addEventListener('click', ()=> openSchedCellEditor(-1, parseInt(b.dataset.attireC), 'attire')));
+      mount.querySelectorAll('.sn-dismiss-cell').forEach(b=> b.addEventListener('click', ()=> openSchedCellEditor(-1, parseInt(b.dataset.dismissC), 'dismiss')));
+      // R157-3：课程表第一行（表头行）支持点击修改设置（与弹窗右上角⚙设置同入口；仅家长模式添加可点态）
+      const schedHeadRow = mount.querySelector('.sn-table thead tr');
+      if(schedHeadRow && isParent()){
+        schedHeadRow.classList.add('sn-head-clickable');
+        schedHeadRow.setAttribute('title', '点击修改课程表设置');
+        schedHeadRow.addEventListener('click', ()=> openSchedManage());
+      }
       return;
     }
     if(!card) return; // 未知页面（含已迁出的课程表）不再向下渲染
@@ -36289,116 +36296,101 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     return m ? ('星期'+m[1]) : s;
   }
   let schedCellR = -1, schedCellC = -1;
+  // R157-3：单元格编辑弹窗复用模式 —— 'cell'=课程格（默认）；'attire'=着装行；'dismiss'=放学行
+  // （原「填写着装 / 填写放学时间」独立弹窗已移除，着装/放学行统一复用 #modalSchedCell，
+  //  并按 kind 切换标题 / 输入标签 / 显隐快捷科目与颜色区）
+  let schedCellKind = 'cell';
   const SCHED_SWATCHES = ['#ffffff','#a4d0ff','#8fc1f7','#1e3a8a','#ffd24d','#a8e6a3','#ff8fa3','#c9b6ff'];
   // R43-1：课程表科目快捷选项（点击填入「课程名称」输入框，免去手打）
   const SCHED_SUBJECTS = ['班级活动','道法','科学','综合实践','体育健康','数学','艺术','语文','英语','信息技术','心理'];
-  function openSchedCellEditor(r,c){
+  // R157-3：取规范化星期键（与渲染端一致：sc.days 经 normSchedDay 后作为 attire/dismiss 的 key）
+  function schedDayKey(sc, c){
+    const labels = (sc.days && sc.days.length) ? sc.days : SCHED_DAY_LABELS;
+    return normSchedDay(labels[c] || '');
+  }
+  function openSchedCellEditor(r, c, kind){
+    schedCellKind = kind || 'cell';
     schedCellR = r; schedCellC = c;
     const sc = S.getSchedule();
-    const cell = sc.cells[r+'-'+c] || {};
-    const lb = $('#schedCellWhere');
-    if(lb) lb.textContent = `第${schedCN(r+1)}节 · ${normSchedDay((sc.days||SCHED_DAY_LABELS)[c]||'')}`;
-    $('#schedCellText').value = cell.t || '';
-    $('#schedCellColor').value = cell.c || sc.addColor || '#ffffff';
-    const sw = $('#schedSwatches');
-    sw.innerHTML = SCHED_SWATCHES.map(col=>`<span class="sw" data-col="${col}" style="background:${col}" title="${col}"></span>`).join('');
-    sw.querySelectorAll('.sw').forEach(s=> s.addEventListener('click', ()=>{ $('#schedCellColor').value = s.dataset.col; }));
-    // R43-1：科目快捷选项 —— 点击填入课程名；已选中的科目高亮
-    const sq = $('#schedSubjectQuick');
-    if(sq){
-      const cur = String(cell.t || '').trim();
-      sq.innerHTML = SCHED_SUBJECTS.map(sub=>`<span class="sched-sub-btn${sub===cur?' on':''}" data-sub="${esc(sub)}" title="填入「${esc(sub)}」">${esc(sub)}</span>`).join('');
-      sq.querySelectorAll('.sched-sub-btn').forEach(b=> b.addEventListener('click', ()=>{
-        const v = b.dataset.sub || '';
-        const inp = $('#schedCellText');
-        if(inp){
-          inp.value = (String(inp.value||'').trim()===v) ? '' : v; // 再点一次取消
-          sq.querySelectorAll('.sched-sub-btn').forEach(x=> x.classList.toggle('on', x.dataset.sub===inp.value));
-        }
-      }));
+    const isRow = (schedCellKind === 'attire' || schedCellKind === 'dismiss');
+    const dayKey = schedDayKey(sc, c);
+    const titleEl = document.getElementById('schedCellModalTitle');
+    const labelEl = document.getElementById('schedCellTextLabel');
+    const subWrap = document.getElementById('schedCellSubWrap');
+    const colorWrap = document.getElementById('schedCellColorWrap');
+    const textInp = document.getElementById('schedCellText');
+    let cur = '';
+    if(isRow){
+      const store = (sc[schedCellKind] && typeof sc[schedCellKind] === 'object') ? sc[schedCellKind] : {};
+      cur = store[dayKey] || '';
+      const isAttire = (schedCellKind === 'attire');
+      if(titleEl) titleEl.textContent = isAttire ? '👕 填写着装' : '🔔 填写放学时间';
+      if(labelEl) labelEl.textContent = isAttire ? '当日着装' : '放学时间';
+      if(textInp){ textInp.placeholder = isAttire ? '如：校服 / 运动服' : '如：16:30'; textInp.maxLength = 20; }
+      if(subWrap) subWrap.hidden = true;      // 着装/放学无「快捷科目」
+      if(colorWrap) colorWrap.hidden = true;  // 着装/放学无颜色配置
+    } else {
+      const cell = sc.cells[r+'-'+c] || {};
+      cur = cell.t || '';
+      if(titleEl) titleEl.textContent = '✏️ 填写课程';
+      if(labelEl) labelEl.textContent = '课程名称';
+      if(textInp){ textInp.placeholder = '如：语文 / 数学'; textInp.maxLength = 12; }
+      if(subWrap) subWrap.hidden = false;
+      if(colorWrap) colorWrap.hidden = false;
+      $('#schedCellColor').value = cell.c || sc.addColor || '#ffffff';
+      const sw = $('#schedSwatches');
+      sw.innerHTML = SCHED_SWATCHES.map(col=>`<span class="sw" data-col="${col}" style="background:${col}" title="${col}"></span>`).join('');
+      sw.querySelectorAll('.sw').forEach(s=> s.addEventListener('click', ()=>{ $('#schedCellColor').value = s.dataset.col; }));
+      // R43-1：科目快捷选项 —— 点击填入课程名；已选中的科目高亮
+      const sq = $('#schedSubjectQuick');
+      if(sq){
+        const curSub = String(cell.t || '').trim();
+        sq.innerHTML = SCHED_SUBJECTS.map(sub=>`<span class="sched-sub-btn${sub===curSub?' on':''}" data-sub="${esc(sub)}" title="填入「${esc(sub)}」">${esc(sub)}</span>`).join('');
+        sq.querySelectorAll('.sched-sub-btn').forEach(b=> b.addEventListener('click', ()=>{
+          const v = b.dataset.sub || '';
+          const inp = $('#schedCellText');
+          if(inp){
+            inp.value = (String(inp.value||'').trim()===v) ? '' : v; // 再点一次取消
+            sq.querySelectorAll('.sched-sub-btn').forEach(x=> x.classList.toggle('on', x.dataset.sub===inp.value));
+          }
+        }));
+      }
     }
+    const lb = $('#schedCellWhere');
+    if(lb) lb.textContent = isRow
+      ? (dayKey + (schedCellKind === 'attire' ? ' 着装' : ' 放学时间'))
+      : `第${schedCN(r+1)}节 · ${dayKey}`;
+    $('#schedCellText').value = cur;
     showModal('#modalSchedCell');
-  }
-  // R155-4：着装行点击 → 弹窗修改当日着装内容（交互样式与课程表其余行一致）
-  let schedAttireC = -1;
-  function openSchedAttireEditor(c){
-    schedAttireC = c;
-    const sc = S.getSchedule();
-    const day = (sc.days && sc.days.length ? sc.days : SCHED_DAY_LABELS)[c] || '';
-    const cur = ((sc.attire && typeof sc.attire === 'object') ? sc.attire : {})[day] || '';
-    const where = document.getElementById('schedAttireWhere');
-    if(where) where.textContent = day + ' 着装';
-    const inp = document.getElementById('schedAttireText');
-    if(inp) inp.value = cur;
-    const save = document.getElementById('btnSchedAttireSave');
-    if(save) save.onclick = saveSchedAttire;
-    const clear = document.getElementById('btnSchedAttireClear');
-    if(clear) clear.onclick = function(){
-      const s2 = S.getSchedule();
-      const d2 = (s2.days && s2.days.length ? s2.days : SCHED_DAY_LABELS)[c] || '';
-      if(s2.attire) delete s2.attire[d2];
-      S.saveSchedule(s2);
-      hideModal('#modalSchedAttire');
-      renderScheduleAll();
-    };
-    showModal('#modalSchedAttire');
-  }
-  function saveSchedAttire(){
-    const v = (document.getElementById('schedAttireText').value||'').trim();
-    const sc = S.getSchedule();
-    const day = (sc.days && sc.days.length ? sc.days : SCHED_DAY_LABELS)[schedAttireC] || '';
-    if(!sc.attire || typeof sc.attire !== 'object') sc.attire = {};
-    if(v){ sc.attire[day] = v; } else { delete sc.attire[day]; }
-    S.saveSchedule(sc);
-    hideModal('#modalSchedAttire');
-    renderScheduleAll();
-  }
-  // R156-1e：放学时间行点击 → 弹窗修改当日放学时间（交互样式与着装行一致）
-  let schedDismissC = -1;
-  function openSchedDismissEditor(c){
-    schedDismissC = c;
-    const sc = S.getSchedule();
-    const day = (sc.days && sc.days.length ? sc.days : SCHED_DAY_LABELS)[c] || '';
-    const cur = ((sc.dismiss && typeof sc.dismiss === 'object') ? sc.dismiss : {})[day] || '';
-    const where = document.getElementById('schedDismissWhere');
-    if(where) where.textContent = day + ' 放学时间';
-    const inp = document.getElementById('schedDismissText');
-    if(inp) inp.value = cur;
-    const save = document.getElementById('btnSchedDismissSave');
-    if(save) save.onclick = saveSchedDismiss;
-    const clear = document.getElementById('btnSchedDismissClear');
-    if(clear) clear.onclick = function(){
-      const s2 = S.getSchedule();
-      const d2 = (s2.days && s2.days.length ? s2.days : SCHED_DAY_LABELS)[c] || '';
-      if(s2.dismiss) delete s2.dismiss[d2];
-      S.saveSchedule(s2);
-      hideModal('#modalSchedDismiss');
-      renderScheduleAll();
-    };
-    showModal('#modalSchedDismiss');
-  }
-  function saveSchedDismiss(){
-    const v = (document.getElementById('schedDismissText').value||'').trim();
-    const sc = S.getSchedule();
-    const day = (sc.days && sc.days.length ? sc.days : SCHED_DAY_LABELS)[schedDismissC] || '';
-    if(!sc.dismiss || typeof sc.dismiss !== 'object') sc.dismiss = {};
-    if(v){ sc.dismiss[day] = v; } else { delete sc.dismiss[day]; }
-    S.saveSchedule(sc);
-    hideModal('#modalSchedDismiss');
-    renderScheduleAll();
   }
   function saveSchedCell(){
     const t = ($('#schedCellText').value||'').trim();
-    const c = $('#schedCellColor').value;
     const sc = S.getSchedule();
-    const key = schedCellR+'-'+schedCellC;
-    if(t){ sc.cells[key] = {t, c}; } else { delete sc.cells[key]; }
+    if(schedCellKind === 'attire' || schedCellKind === 'dismiss'){
+      // R157-3：着装/放学行 —— 写入 sc.attire / sc.dismiss（key = 规范化星期标签）
+      const field = schedCellKind;
+      const key = schedDayKey(sc, schedCellC);
+      if(!sc[field] || typeof sc[field] !== 'object') sc[field] = {};
+      if(t){ sc[field][key] = t; } else { delete sc[field][key]; }
+    } else {
+      const c = $('#schedCellColor').value;
+      const key = schedCellR+'-'+schedCellC;
+      if(t){ sc.cells[key] = {t, c}; } else { delete sc.cells[key]; }
+    }
     S.saveSchedule(sc);
     hideModal('#modalSchedCell');
     renderScheduleAll();
   }
   function clearSchedCell(){
     const sc = S.getSchedule();
+    if(schedCellKind === 'attire' || schedCellKind === 'dismiss'){
+      const key = schedDayKey(sc, schedCellC);
+      if(sc[schedCellKind] && typeof sc[schedCellKind] === 'object') delete sc[schedCellKind][key];
+      S.saveSchedule(sc);
+      hideModal('#modalSchedCell');
+      renderScheduleAll();
+      return;
+    }
     delete sc.cells[schedCellR+'-'+schedCellC];
     S.saveSchedule(sc);
     $('#schedCellText').value='';
@@ -40891,8 +40883,8 @@ I'm good at running.`},
   // R153：5 张标签卡独立渲染函数 —— 由周看板「今天」视图调用（renderWbToday 内拼入 #wbBody）。
   // 卡位规则与 R148/R151-3 完全一致：5 张卡依次对应 memos[0]~memos[4]（从第 1 条备忘起渲染，新增内容即时可见）。
   // R154-3/6：行内编辑表单（含备注字段）整体移除 —— 编辑态（_wbEditMode，与周看板「编辑/取消」同一状态）下：
-  //   ① 点卡片 → 打开右上角同款 Word 富文本弹窗（wbOpenMemoModal，样式/交互与「新增」完全一致）；
-  //   ② 卡工具变为 ⌫ 清空（清空该卡内容、保留卡位）+ 🗑 删除（移除该条备忘）。
+  //   ① 点卡片 / ✏️ 编辑键 → 打开右上角同款 Word 富文本弹窗（wbOpenMemoModal，样式/交互与「新增」完全一致）；
+  //   ② 卡工具为 ✏️ 编辑 + 🗑 删除（移除该条备忘）；R157-2 起「⌫ 清空」键已移除。
   // 查看态正文渲染：事项为主行；有富文本（noteHtml）时渲染富文本，否则展示纯文本备注（不再单列「备注」字段）。
   function mnTagCardsHTML(){
     const memos = getNickMemosSafe();
@@ -40917,10 +40909,10 @@ I'm good at running.`},
         + parts.slice(1).join('')
         + '</div>';
       // R156-3a②：编辑/删除按钮仅在点击大卡片右上角「编辑」按键（_wbEditMode 开启）之后才显示；
-      // 查看态不显示任何工具按钮（点卡片仅放大预览）。编辑态提供：✏️ 编辑（备忘录管理页）+ ⌫ 清空 + 🗑 删除。
+      // 查看态不显示任何工具按钮（点卡片仅放大预览）。编辑态提供：✏️ 编辑 + 🗑 删除。
+      // R157-2：移除【⌫ 清除这张卡的内容】按键（编辑/删除已覆盖全部管理诉求）。
       const tools = _wbEditMode
         ? '<button class="mn-tool-btn mn-tool-edit" type="button" title="编辑备忘录" aria-label="编辑备忘录" data-page-node-id="R134memoEdit'+i+'">'+MN_TOOL_EDIT+'</button>'
-          + '<button class="mn-tool-btn mn-tool-clear" type="button" title="清空这张卡的内容（保留卡位）" aria-label="清空这张卡的内容" data-page-node-id="R154memoClear'+i+'">⌫</button>'
           + '<button class="mn-tool-btn mn-tool-del" type="button" title="删除这张备忘" aria-label="删除这张备忘" data-page-node-id="R134memoDel'+i+'">'+MN_TOOL_DEL+'</button>'
         : '';
       html += '<div class="mn-note-card'+(_wbEditMode?' mn-note-editing':'')+'" data-mn-id="'+esc(id)+'" data-mn-idx="'+i+'"'+bg+' data-page-node-id="R134memoCard'+i+'">'
@@ -40939,27 +40931,18 @@ I'm good at running.`},
     const root = document.querySelector('.page-memonick') || document;
     // R155-3⑥：页面级「编辑/取消」原位切换键已移除，编辑/保存统一由单张备忘卡右上角编辑键承担；
     // 周看板自身的「编辑/取消」由 wbBtnEditMode + _wbEditMode 驱动（见 wbToggleEditMode）。
+    // R157-1：编辑态「✏️ 编辑」键 —— 打开与点击卡片 / 右上角「新增」同款的富文本弹窗（#modalWbEdit），
+    // 按卡位写入对应备忘（原先误开「备忘录管理」整页弹窗，已修正）。
     root.querySelectorAll('.mn-tool-edit').forEach(function(btn){
-      if(btn.__nmBound) return; btn.__nmBound = true;
-      btn.addEventListener('click', function(){ openMemoEditModal(); });
-    });
-    // R154-6：编辑态「⌫ 清空」—— 清空对应标签卡内容（事项/备注/富文本），卡位保留
-    root.querySelectorAll('.mn-tool-clear').forEach(function(btn){
       if(btn.__nmBound) return; btn.__nmBound = true;
       btn.addEventListener('click', function(){
         const card = btn.closest('.mn-note-card');
         const idx = card ? +card.getAttribute('data-mn-idx') : -1;
         const memos = getNickMemosSafe();
-        if(!(idx >= 0 && idx < MN_CARD_COUNT) || !memos[idx] ||
-           (!memos[idx].item && !memos[idx].note && !memos[idx].noteHtml)){
-          if(window.toast) toast('这张卡本来就是空的'); return;
-        }
-        memos[idx] = Object.assign({}, memos[idx], { date:'', time:'', item:'', note:'', noteHtml:'' });
-        window.Store.saveNickMemos(memos);
-        renderNickMemo();
-        if(window.toast) toast('已清空这张卡的内容（卡位保留）');
+        wbOpenMemoModal(memos[idx] || null, idx);
       });
     });
+    // R157-2：原「⌫ 清空」键（mn-tool-clear）已移除 —— 清空诉求由「✏️ 编辑」弹窗内删除/改写覆盖
     root.querySelectorAll('.mn-tool-del').forEach(function(btn){
       if(btn.__nmBound) return; btn.__nmBound = true;
       btn.addEventListener('click', function(){
@@ -41142,8 +41125,9 @@ I'm good at running.`},
     const zones = wbZonesFor(date);
     const hasCustom = zones.some(function(z){ return z.id !== ''; });
     if(hasCustom) return wbZonesRender(date, zones, tasks);
+    // R157-2：删除「这一天还没有备忘」提示文字 —— 当日无日程时留空，由下方 5 张标签卡填充版面
     if(!tasks.length){
-      return '<div class="wb-empty">这一天还没有备忘<br>点右上角「编辑」→「新增」开始记录吧</div>';
+      return '';
     }
     let html = '<div class="wb-day-list">';
     tasks.forEach(function(t){ html += wbTaskHTML(t); });
@@ -41596,7 +41580,8 @@ I'm good at running.`},
     if(colors) colors.querySelectorAll('button').forEach(function(b){ b.onclick = function(){ _wbEditColor = b.getAttribute('data-wb-color'); wbSyncEditModal(); }; });
     const save = document.getElementById('btnWbSave');
     if(save) save.onclick = wbSaveFromModal;
-    const cancel = document.getElementById('wbBtnCancel');
+    // R157 修复：取消键实际 ID 为 btnWbCancel（原先误写 wbBtnCancel 导致绑定失效、点击无响应）
+    const cancel = document.getElementById('btnWbCancel');
     if(cancel) cancel.onclick = function(){ hideModal('#modalWbEdit'); };
     const del = document.getElementById('btnWbDel');
     if(del) del.onclick = function(){
@@ -42815,11 +42800,16 @@ I'm good at running.`},
     const ld = m===1? {y:y-1,m:12}:{y,m:m-1};
     const thisMD = monthDaysDone(y,m), lastMD = monthDaysDone(ld.y,ld.m);
     const subjOrder = ['语文','数学','英语','运动','作息','围棋','文明小标兵','家务小帮手'];
+    // R157-5：各科目完成数据改柱状图展示（竖柱：数值在上、柱体居中、科目名在下；颜色按完成度动态取色）
     const subjHtml = subjOrder.filter(s=>subTotal[s]).map(s=>{
       const t=subTotal[s], d=subDone[s], pp=t?Math.round(d/t*100):0;
-      // R156-2c：默认清空（0% 不渲染填充），有进度才按实际完成度动态上色
-      const fillStyle = pp > 0 ? 'width:'+pp+'%;background:'+msBarColor(pp) : 'width:0;background:transparent';
-      return `<div class="wp-tbar"><span class="wp-tbar-name">${esc(s)}</span><div class="wp-tbar-track"><div class="wp-tbar-fill" style="${fillStyle}"></div></div><span class="wp-tbar-val">${d}/${t}</span></div>`;
+      const h = pp > 0 ? Math.max(4, pp) : 0;
+      const fill = pp > 0 ? 'height:'+h+'%;background:'+msBarColor(pp) : 'height:0;background:transparent';
+      return `<div class="ms-subj-bar" title="${esc(s)}：${d}/${t}（${pp}%）">
+        <span class="ms-subj-val">${d}/${t}</span>
+        <div class="ms-subj-track"><div class="ms-subj-fill" style="${fill}"></div></div>
+        <span class="ms-subj-name">${esc(s)}</span>
+      </div>`;
     }).join('');
     const dayHtml = dayRows.map(r=>{
       const h = Math.max(3, r.pct);
@@ -42831,11 +42821,8 @@ I'm good at running.`},
     const ymLabel = y+'年'+m+'月';
     const isCur = (ym === _msNowYM());
     body.innerHTML = `
-      <div class="ms-month-sel" data-page-node-id="R156msMonthSel">
-        <button type="button" class="ms-month-nav" id="msMonthPrev" title="上个月" data-page-node-id="R156msMonthPrev">‹</button>
-        <span class="ms-month-label" id="msMonthLabel" data-page-node-id="R156msMonthLabel">${ymLabel}</span>
-        <button type="button" class="ms-month-nav" id="msMonthNext" title="下个月" data-page-node-id="R156msMonthNext">›</button>
-        <input type="month" class="ms-month-input" id="msMonthInput" value="${ym}" max="${_msNowYM()}" title="选择月份，查看历史打卡数据" data-page-node-id="R156msMonthInput" />
+      <div class="ms-month-sel" data-page-node-id="R157msMonthSel">
+        <button type="button" class="ms-month-btn" id="msMonthLabelBtn" title="点击选择月份" data-page-node-id="R157msMonthBtn">📅 ${ymLabel} ▾</button>
       </div>
       <div class="ms-summary">
         <div class="ms-card ms-req"><div class="ms-v">${reqDone}/${reqTotal}</div><div class="ms-l">⭐ 必做完成</div></div>
@@ -42846,14 +42833,40 @@ I'm good at running.`},
       <div class="ms-block-title">📅 每日完成度</div>
       <div class="ms-days">${dayHtml}</div>
       <div class="ms-block-title">📚 各科目完成</div>
-      <div class="ms-subj">${subjHtml || '<div class="wp-tbar-empty">暂无数据</div>'}</div>
+      <div class="ms-subj-chart">${subjHtml || '<div class="wp-tbar-empty">暂无数据</div>'}</div>
     `;
-    const prev = document.getElementById('msMonthPrev');
-    if(prev) prev.onclick = function(){ renderMonthStats(_msShiftYM(_msYM, -1)); };
-    const next = document.getElementById('msMonthNext');
-    if(next) next.onclick = function(){ renderMonthStats(_msShiftYM(_msYM, 1)); };
-    const inp = document.getElementById('msMonthInput');
-    if(inp) inp.onchange = function(){ const v = (inp.value||'').trim(); if(/^\d{4}-\d{2}$/.test(v)) renderMonthStats(v); };
+    // R157-5：月份选择改为弹窗标签形式（原 ‹ 年月 › + 原生月份输入已移除）
+    const mb = document.getElementById('msMonthLabelBtn');
+    if(mb) mb.onclick = openMonthPicker;
+  }
+  // R157-5：打开月份选择弹窗 —— 标签形式，范围为「有数据的最早月份（默认最近 12 个月）~ 当月」
+  function openMonthPicker(){
+    const st = S.load();
+    const nowYM = _msNowYM();
+    let startYM = _msShiftYM(nowYM, -11); // 默认展示最近 12 个月
+    (st.records || []).forEach(function(r){
+      const mm = String((r && r.date) || '').slice(0, 7);
+      if(/^\d{4}-\d{2}$/.test(mm) && mm < startYM) startYM = mm;
+    });
+    const floorYM = _msShiftYM(nowYM, -23); // 最多回溯 24 个月，防止标签列表过长
+    if(startYM < floorYM) startYM = floorYM;
+    const tags = [];
+    let cur = startYM, guard = 0;
+    while(cur <= nowYM && guard++ < 36){ tags.push(cur); cur = _msShiftYM(cur, 1); }
+    const body = document.getElementById('monthPickerBody');
+    if(!body) return;
+    body.innerHTML = '<div class="mp-grid">' + tags.map(function(ym){
+      const a = ym.split('-');
+      const on = (ym === _msYM) ? ' on' : '';
+      return '<button type="button" class="mp-tag' + on + '" data-ym="' + ym + '" data-page-node-id="R157mpTag' + ym + '" title="查看 ' + a[0] + '年' + (+a[1]) + '月 打卡数据">' + a[0] + '年' + (+a[1]) + '月</button>';
+    }).join('') + '</div>';
+    body.querySelectorAll('.mp-tag').forEach(function(b){
+      b.addEventListener('click', function(){
+        renderMonthStats(b.dataset.ym);
+        hideModal('#modalMonthPicker');
+      });
+    });
+    showModal('#modalMonthPicker');
   }
   let _monthStatsBound = false;
   function bindMonthStats(){
@@ -42862,6 +42875,9 @@ I'm good at running.`},
     if(b) b.onclick = ()=>{ renderMonthStats(_msNowYM()); showModal('#modalMonthStats'); };
     const c = document.getElementById('btnMonthStatsClose');
     if(c) c.onclick = ()=> hideModal('#modalMonthStats');
+    // R157-5：月份选择弹窗关闭键
+    const pc = document.getElementById('btnMonthPickerClose');
+    if(pc) pc.onclick = ()=> hideModal('#modalMonthPicker');
   }
   function renderWeekChart(st){
     const rep = S.buildWeeklyReport();
