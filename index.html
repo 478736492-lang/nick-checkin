@@ -207,8 +207,8 @@ body{width:100%;height:100vh;height:100dvh;display:flex;flex-direction:row}
 .week-bar{flex:1;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;position:relative}
 .week-bar-val{font-size:8px;color:var(--muted);margin-bottom:2px}
 .week-bar-track{width:80%;display:flex;align-items:flex-end;flex:1;margin:1px 0}
-/* v10：本周打卡柱体统一为蓝色柱体 */
-.week-bar-fill{width:100%;background:linear-gradient(180deg,var(--tiffany-light),var(--tiffany-dark));border-radius:4px 4px 0 0;min-height:3px;transition:height .3s;box-shadow:0 -1px 4px rgba(30,58,138,.32)}
+/* v10：本周打卡柱体（R155-2 调整为绿色） */
+.week-bar-fill{width:100%;background:linear-gradient(180deg,#86efac,#16a34a);border-radius:4px 4px 0 0;min-height:3px;transition:height .3s;box-shadow:0 -1px 4px rgba(22,163,74,.32)}
 .week-bar-label{position:absolute;bottom:-14px;left:0;right:0;text-align:center;font-size:10px;color:var(--muted)}
 .week-rate{text-align:center;font-size:12px;color:var(--orange-dark);font-weight:700;margin-top:6px}
 
@@ -5549,12 +5549,11 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
    圆角下边界（视觉上「溢出卡片」）；现在正文区下沿让出左下角色徽章 / 右下电影装饰的高度，
    超出部分在正文区内裁剪，卡片之间互不覆盖、内容不越界。 */
 .mn-note-body{
-  position:absolute;top:clamp(20px,3.4vh,30px);left:clamp(12px,2vw,18px);right:clamp(40px,6vw,58px);
-  bottom:clamp(28px,4.8vh,40px);
-  z-index:2;display:flex;flex-direction:column;gap:3px;pointer-events:none;
+  position:absolute;top:clamp(12px,2vh,18px);left:clamp(9px,1.4vw,13px);right:clamp(30px,4vw,42px);
+  bottom:clamp(18px,3vh,26px);
+  z-index:2;display:flex;flex-direction:column;gap:2px;pointer-events:none;
   min-height:0;overflow:hidden;
-  color:#102a52;line-height:1.32;
-  text-shadow:0 1px 0 rgba(255,255,255,.7), 0 0 6px rgba(255,255,255,.5)
+  color:#102a52;line-height:1.3
 }
 .mn-note-lead{display:flex;align-items:center;gap:clamp(6px,.9vw,9px);min-width:0}
 .mn-note-lead > *{min-width:0}
@@ -5668,6 +5667,7 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 }
 .mn-note-style label{display:inline-flex;align-items:center;gap:4px}
 .mn-fontsize{width:54px;padding:2px 4px;border:1.5px solid var(--tone-line-soft);border-radius:6px;font-size:12px}
+.mn-style-font{width:96px;padding:2px 4px;border:1.5px solid var(--tone-line-soft);border-radius:6px;font-size:12px}
 .mn-color{width:34px;height:26px;border:none;background:none;padding:0;cursor:pointer}
 .mn-opacity{width:84px}
 /* 添加行：虚线卡片，与已有行区分 */
@@ -6297,6 +6297,31 @@ html,body{margin:0;padding:0}
   box-shadow:0 10px 30px rgba(30,58,138,.25)
 }
 
+/* ========== R155-3③：标签卡放大预览 ========== */
+.mn-prev-item{ font-size:22px; font-weight:700; color:#1b2a44; line-height:1.4; margin-bottom:10px; word-break:break-word; text-shadow:none; }
+.mn-prev-rich{ font-size:16px; color:#243049; line-height:1.6; word-break:break-word; text-shadow:none; }
+.mn-prev-rich p{ margin:0 0 8px; }
+.mn-prev-note{ white-space:pre-wrap; }
+.mn-prev-empty{ color:#9aa6bd; font-weight:400; font-size:15px; }
+
+/* ========== R155-3④：周视图紧凑卡片 + 详情弹窗 ========== */
+.wb-task.wb-task-compact .wb-task-main{ display:flex; flex-direction:column; gap:2px; padding:8px 6px; }
+.wb-task.wb-task-compact .wb-task-title{ font-size:15px; font-weight:600; color:#1b2a44; line-height:1.35; text-shadow:none; }
+.wb-task.wb-task-compact .wb-task-time{ font-size:12px; color:#5b6b85; }
+.wb-detail-title{ font-size:20px; font-weight:700; color:#1b2a44; margin-bottom:6px; text-shadow:none; }
+.wb-detail-time{ font-size:13px; color:#5b6b85; margin-bottom:12px; }
+.wb-detail-content{ font-size:15px; color:#243049; line-height:1.7; word-break:break-word; text-shadow:none; }
+.wb-detail-content p{ margin:0 0 8px; }
+
+/* ========== R155-3⑤：月视图日期备忘弹窗 ========== */
+#wbMonthMemosBody .wb-task{ margin-bottom:8px; }
+#wbMonthMemosBody .wb-task-del{ display:none; }
+
+/* ========== R155-4：着装行点击交互（与课程表其余行一致） ========== */
+.sn-attire-cell{ width:100%; min-height:34px; border:none; border-radius:8px; background:#f4f8ff; color:var(--tone-900); font-size:14px; cursor:pointer; padding:6px 4px; text-align:center; }
+.sn-attire-cell.sn-cell-empty{ color:#9aa6bd; }
+.sn-attire-cell:hover{ background:#e6f0ff; }
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -6525,10 +6550,8 @@ html,body{margin:0;padding:0}
     <div class="mn-stage" data-page-node-id="R118memoStage">
       <!-- ① 顶部居中标题：浅白色立体发光字体，避开东方明珠等主体建筑 -->
       <h2 class="mn-title" data-page-node-id="R134memoTitle">Nick的备忘录</h2>
-      <!-- R151-3：页面级「编辑/保存」原位切换键（标题右侧）—— 点编辑：原位切为保存，标签卡出行内表单；
-           点保存：新增内容实时渲染在对应位置 -->
-      <button class="mn-edit-toggle" id="btnMemoEditToggle" type="button" aria-pressed="false" title="进入编辑状态，可直接在卡片上新增/修改内容" data-page-node-id="R151memoEditToggle">✏️ 编辑</button>
-      <!-- ② 标题下方整片区域：7 张半透明磨砂玻璃便签卡平铺（赤橙黄绿青蓝紫，卡内空白，右上角编辑/删除图标） -->
+      <!-- R155-3⑥：页面级「编辑/保存」键已移除，编辑/保存统一由单张备忘卡右上角编辑键承担（见 .mn-tool-edit） -->
+      <!-- ② 标题下方整片区域：5 张半透明磨砂玻璃便签卡平铺（卡内右上角含编辑/删除键） -->
       <div class="mn-notes" id="nickMemoList" data-page-node-id="R118memoList"></div>
     </div>
   </section>
@@ -7224,6 +7247,66 @@ html,body{margin:0;padding:0}
     <div class="modal-foot" data-page-node-id="R138modalMemoEditFoot">
       <button class="mn-cancel" id="btnMemoCancel" type="button" data-page-node-id="R138memoCancel">取消</button>
       <button class="mn-save" id="btnMemoSave" type="button" data-page-node-id="R138memoSave">💾 保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 弹窗：标签卡放大预览（R155-3③：查看态点标签卡 → 放大预览） ========== -->
+<div class="modal-mask" id="modalMemoPreview" hidden data-page-node-id="R155memoPreview">
+  <div class="modal-box modal-memo" data-page-node-id="R155memoPreviewBox">
+    <div class="modal-head" data-page-node-id="R155memoPreviewHead">
+      <h3 data-page-node-id="R155memoPreviewTitle">🔍 标签卡预览</h3>
+      <button class="modal-x" data-close data-page-node-id="R155memoPreviewX">×</button>
+    </div>
+    <div class="modal-body" id="memoPreviewBody" data-page-node-id="R155memoPreviewBody"></div>
+    <div class="modal-foot" data-page-node-id="R155memoPreviewFoot">
+      <button class="mn-save" id="btnMemoPreviewEdit" type="button" data-page-node-id="R155memoPreviewEdit">✏️ 编辑</button>
+      <button class="mn-cancel" id="btnMemoPreviewClose" type="button" data-page-node-id="R155memoPreviewClose">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 弹窗：周视图卡片详情（R155-3④：查看态点周视图卡片 → 查看完整详情） ========== -->
+<div class="modal-mask" id="modalWbDetail" hidden data-page-node-id="R155wbDetail">
+  <div class="modal-box modal-nb" data-page-node-id="R155wbDetailBox">
+    <div class="modal-head" data-page-node-id="R155wbDetailHead">
+      <h3 data-page-node-id="R155wbDetailTitle">📋 备忘详情</h3>
+      <button class="modal-x" data-close data-page-node-id="R155wbDetailX">×</button>
+    </div>
+    <div class="modal-body" id="wbDetailBody" data-page-node-id="R155wbDetailBody"></div>
+    <div class="modal-foot" data-page-node-id="R155wbDetailFoot">
+      <button class="primary-btn" id="btnWbDetailEdit" type="button" data-page-node-id="R155wbDetailEdit">✏️ 编辑</button>
+      <button class="pbtn" id="btnWbDetailClose" type="button" data-page-node-id="R155wbDetailClose">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 弹窗：月视图日期全部备忘（R155-3⑤：查看态点日期卡 → 展示该日全部备忘） ========== -->
+<div class="modal-mask" id="modalWbMonthMemos" hidden data-page-node-id="R155wbMonthMemos">
+  <div class="modal-box modal-nb" data-page-node-id="R155wbMonthMemosBox">
+    <div class="modal-head" data-page-node-id="R155wbMonthMemosHead">
+      <h3 data-page-node-id="R155wbMonthMemosTitle">📅 <span id="wbMonthMemosTitle"></span> 的备忘</h3>
+      <button class="modal-x" data-close data-page-node-id="R155wbMonthMemosX">×</button>
+    </div>
+    <div class="modal-body" id="wbMonthMemosBody" data-page-node-id="R155wbMonthMemosBody"></div>
+    <div class="modal-foot" data-page-node-id="R155wbMonthMemosFoot">
+      <button class="pbtn" id="btnWbMonthMemosClose" type="button" data-page-node-id="R155wbMonthMemosClose">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 弹窗：课程表 · 着装行编辑（R155-4：点击着装格 → 修改内容） ========== -->
+<div class="modal-mask" id="modalSchedAttire" hidden data-page-node-id="R155schedAttire">
+  <div class="modal-box modal-sm" style="min-width:360px" data-page-node-id="R155schedAttireBox">
+    <div class="modal-head" data-page-node-id="R155schedAttireHead"><h3 data-page-node-id="R155schedAttireTitle">👕 填写着装</h3><button class="modal-x" data-close data-page-node-id="R155schedAttireX">×</button></div>
+    <div class="modal-body" data-page-node-id="R155schedAttireBody">
+      <div class="sched-cell-where" id="schedAttireWhere" data-page-node-id="R155schedAttireWhere"></div>
+      <label class="sched-field" data-page-node-id="R155schedAttireField">当日着装 <input type="text" id="schedAttireText" placeholder="如：校服 / 运动服" maxlength="20" data-page-node-id="R155schedAttireText" /></label>
+    </div>
+    <div class="modal-foot" data-page-node-id="R155schedAttireFoot">
+      <button class="primary-btn" id="btnSchedAttireSave" type="button" data-page-node-id="R155schedAttireSave">保存</button>
+      <button class="pbtn danger" id="btnSchedAttireClear" type="button" data-page-node-id="R155schedAttireClear">清空</button>
+      <button class="pbtn" data-close data-page-node-id="R155schedAttireCancel">取消</button>
     </div>
   </div>
 </div>
@@ -30591,6 +30674,7 @@ window.WANTONG_COVER = './assets/c6249ea2bfe3.jpg';
         time: String((m && m.time)||'').slice(0, 20),
         item: String((m && m.item)||'').slice(0, MEMO_MAX),
         note: String((m && m.note)||'').slice(0, MEMO_MAX),
+        font: String((m && m.font)||'').slice(0, 40),
         fontSize: (m && m.fontSize!==undefined && m.fontSize!=='') ? String(m.fontSize) : '',
         color: (m && m.color!==undefined && m.color!=='') ? String(m.color) : '',
         opacity: (m && m.opacity!==undefined && m.opacity!=='') ? String(m.opacity) : '',
@@ -30610,6 +30694,7 @@ window.WANTONG_COVER = './assets/c6249ea2bfe3.jpg';
         time: String((x && x.time) || '').slice(0, 20),
         item: String((x && x.item) || '').slice(0, MEMO_MAX),
         note: String((x && x.note) || '').slice(0, MEMO_MAX),
+        font: String((x && x.font) || '').slice(0, 40),
         fontSize: (x && x.fontSize!==undefined && x.fontSize!=='') ? String(x.fontSize) : '',
         color: (x && x.color!==undefined && x.color!=='') ? String(x.color) : '',
         opacity: (x && x.opacity!==undefined && x.opacity!=='') ? String(x.opacity) : '',
@@ -36078,9 +36163,9 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         }
         body += '</tr>';
       }
-      // R149-1：底部「着装」行（key = 星期标签，从 sc.attire 读取）
+      // R149-1：底部「着装」行（key = 星期标签，从 sc.attire 读取）；R155-4：改为可点击按钮，交互样式与课程表其余行一致
       const schedAttire = (sc.attire && typeof sc.attire === 'object') ? sc.attire : {};
-      body += `<tr class="sn-attire-row"><th class="sn-rowhead sn-attire-head">着装</th>` + days.map((d,c)=>`<td><span class="sn-attire-cell" title="${esc(d)}着装">${esc(schedAttire[d]||'')}</span></td>`).join('') + `</tr>`;
+      body += `<tr class="sn-attire-row"><th class="sn-rowhead sn-attire-head">着装</th>` + days.map((d,c)=>`<td><button type="button" class="kb-cell sn-attire-cell${schedAttire[d]?'':' sn-cell-empty'}" data-attire-c="${c}" title="点击填写${esc(d)}着装">${esc(schedAttire[d]||'')}</button></td>`).join('') + `</tr>`;
       // 表头配色：首列「节次」；周二/周四淡紫交替(.sn-th-violet)，其余天蓝(.sn-th-sky)
       const thead = `<tr><th class="sn-th sn-th-sky">节次</th>${days.map((d,i)=>`<th class="sn-th ${i===1||i===3?'sn-th-violet':'sn-th-sky'}">${esc(d)}</th>`).join('')}</tr>`;
       mount.innerHTML = `<div class="sn-page">
@@ -36111,6 +36196,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         mount.querySelectorAll('.sn-table tbody th.sn-rowhead').forEach(th=> th.style.background = cornerColor);
       }
       mount.querySelectorAll('.kb-cell').forEach(b=> b.addEventListener('click', ()=> openSchedCellEditor(parseInt(b.dataset.r), parseInt(b.dataset.c))));
+      mount.querySelectorAll('.sn-attire-cell').forEach(b=> b.addEventListener('click', ()=> openSchedAttireEditor(parseInt(b.dataset.attireC))));
       return;
     }
     if(!card) return; // 未知页面（含已迁出的课程表）不再向下渲染
@@ -36166,6 +36252,40 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       }));
     }
     showModal('#modalSchedCell');
+  }
+  // R155-4：着装行点击 → 弹窗修改当日着装内容（交互样式与课程表其余行一致）
+  let schedAttireC = -1;
+  function openSchedAttireEditor(c){
+    schedAttireC = c;
+    const sc = S.getSchedule();
+    const day = (sc.days && sc.days.length ? sc.days : SCHED_DAY_LABELS)[c] || '';
+    const cur = ((sc.attire && typeof sc.attire === 'object') ? sc.attire : {})[day] || '';
+    const where = document.getElementById('schedAttireWhere');
+    if(where) where.textContent = day + ' 着装';
+    const inp = document.getElementById('schedAttireText');
+    if(inp) inp.value = cur;
+    const save = document.getElementById('btnSchedAttireSave');
+    if(save) save.onclick = saveSchedAttire;
+    const clear = document.getElementById('btnSchedAttireClear');
+    if(clear) clear.onclick = function(){
+      const s2 = S.getSchedule();
+      const d2 = (s2.days && s2.days.length ? s2.days : SCHED_DAY_LABELS)[c] || '';
+      if(s2.attire) delete s2.attire[d2];
+      S.saveSchedule(s2);
+      hideModal('#modalSchedAttire');
+      renderScheduleAll();
+    };
+    showModal('#modalSchedAttire');
+  }
+  function saveSchedAttire(){
+    const v = (document.getElementById('schedAttireText').value||'').trim();
+    const sc = S.getSchedule();
+    const day = (sc.days && sc.days.length ? sc.days : SCHED_DAY_LABELS)[schedAttireC] || '';
+    if(!sc.attire || typeof sc.attire !== 'object') sc.attire = {};
+    if(v){ sc.attire[day] = v; } else { delete sc.attire[day]; }
+    S.saveSchedule(sc);
+    hideModal('#modalSchedAttire');
+    renderScheduleAll();
   }
   function saveSchedCell(){
     const t = ($('#schedCellText').value||'').trim();
@@ -40518,7 +40638,6 @@ I'm good at running.`},
     const list = document.getElementById('nickMemoList');
     if(!list) return;
     renderNickMemoView(list);
-    nmSyncEditToggle(); // R151-3：同步页面级「编辑/保存」按钮态（随重渲染即时刷新）
   }
   // R134：备忘录改为「陆家嘴天际线背景 + 7 张彩虹磨砂玻璃空白便签卡」。
   // 卡片配色 赤→橙→黄→绿→青→蓝→紫 由 CSS nth-child 上色；卡内一律空白无任何文字，
@@ -40584,7 +40703,7 @@ I'm good at running.`},
   function rteBarHTML(idx){
     return '<div class="mn-rte-bar" data-page-node-id="R139rteBar'+idx+'">'
       + '<select class="mn-rte-font" data-rte-font data-cmd="fontName" title="字体"><option value="微软雅黑">微软雅黑</option><option value="宋体">宋体</option><option value="黑体">黑体</option><option value="楷体">楷体</option><option value="Arial">Arial</option></select>'
-      + '<select class="mn-rte-size" data-rte-size data-cmd="fontSize" title="字号"><option value="1">极小</option><option value="2">小</option><option value="3" selected>中</option><option value="4">大</option><option value="5">特大</option><option value="6">巨大</option><option value="7">最大</option></select>'
+      + '<select class="mn-rte-size" data-rte-size data-cmd="fontSize" title="字号"><option value="3" selected>中</option><option value="4">大</option><option value="5">特大</option><option value="6">巨大</option><option value="7">最大</option></select>'
       + '<input type="color" class="mn-rte-color" data-rte-color data-cmd="foreColor" title="文字颜色" value="#1b2a44" />'
       + '<input type="color" class="mn-rte-hl" data-rte-hl data-cmd="hiliteColor" title="背景高亮" value="#fff3a8" />'
       + '<button type="button" class="mn-rte-btn" data-cmd="bold" title="加粗"><b>B</b></button>'
@@ -40641,6 +40760,7 @@ I'm good at running.`},
     list.innerHTML = weekBoardCardHTML();
     bindNickMemoViewTools();
     initWeekBoard();
+    wbSyncEditBtn();   // R155-3⑥：外壳重建后按 _wbEditMode 回填周看板「编辑/取消」按钮态（保存/删除路径也会走到这里）
   }
   // R153：5 张标签卡独立渲染函数 —— 由周看板「今天」视图调用（renderWbToday 内拼入 #wbBody）。
   // 卡位规则与 R148/R151-3 完全一致：5 张卡依次对应 memos[0]~memos[4]（从第 1 条备忘起渲染，新增内容即时可见）。
@@ -40654,7 +40774,8 @@ I'm good at running.`},
     for(let i=0;i<MN_CARD_COUNT;i++){
       const m = memos[i];
       const id = (m && m.id) ? String(m.id) : '';
-      const bg = ' style="background:rgba(255,255,255,'+mnGlassAlpha(m)+')"';
+      const fontFam = (m && m.font) ? ';font-family:'+esc(m.font) : '';
+      const bg = ' style="background:rgba(255,255,255,'+mnGlassAlpha(m)+')'+fontFam+'"';
       const itemS = (m && m.item) ? m.item : '';
       const noteS = (m && m.note) ? m.note : '';
       const noteHtmlS = (m && m.noteHtml) ? sanitizeRich(m.noteHtml) : '';
@@ -40677,9 +40798,6 @@ I'm good at running.`},
         + tools
         + '</div>'
         + body
-        // R148：角色/电影装饰沿用原卡位观感（旧循环 i 从 2 起，故此处 +2 对齐）
-        + '<span class="mn-note-char" aria-hidden="true">'+MN_CHARS[(i + 2) % MN_CHARS.length]+'</span>'
-        + '<span class="mn-note-film" aria-hidden="true">'+MN_FILMS[(i + 2) % MN_FILMS.length]+'</span>'
         + '</div>';
     }
     return html;
@@ -40689,12 +40807,8 @@ I'm good at running.`},
     // 导致卡上 ✏️/🗑 按键失灵 —— 现改绑定范围为整页（.page-memonick），覆盖备忘墙与标签卡两处；
     // 每键加 __nmBound 防重复绑定（renderWbToday 签名保留节点时不会重复挂事件）。
     const root = document.querySelector('.page-memonick') || document;
-    // R154-3：页面级「编辑/取消」与周看板右上角「编辑/取消」统一为同一编辑态（_wbEditMode）
-    const toggle = document.getElementById('btnMemoEditToggle');
-    if(toggle && !toggle.__nmBound){
-      toggle.__nmBound = true;
-      toggle.addEventListener('click', function(){ wbToggleEditMode(); });
-    }
+    // R155-3⑥：页面级「编辑/取消」原位切换键已移除，编辑/保存统一由单张备忘卡右上角编辑键承担；
+    // 周看板自身的「编辑/取消」由 wbBtnEditMode + _wbEditMode 驱动（见 wbToggleEditMode）。
     root.querySelectorAll('.mn-tool-edit').forEach(function(btn){
       if(btn.__nmBound) return; btn.__nmBound = true;
       btn.addEventListener('click', function(){ openMemoEditModal(); });
@@ -40744,18 +40858,21 @@ I'm good at running.`},
         });
       });
     }
+    // R155-3③：查看态点标签卡（非工具键）→ 放大预览该卡内容
+    if(!_wbEditMode){
+      root.querySelectorAll('.mn-note-card[data-mn-idx]').forEach(function(card){
+        if(card.__nmViewBound) return; card.__nmViewBound = true;
+        card.addEventListener('click', function(e){
+          if(e.target.closest && e.target.closest('.mn-tool-btn')) return;
+          const idx = +card.getAttribute('data-mn-idx');
+          wbOpenMemoPreview(idx);
+        });
+      });
+    }
   }
   // ================= R151-3 → R154-3：页面级「编辑/取消」与周看板编辑态合一 =================
-  // R154 起：行内表单编辑移除，页面右上角按键与周看板「编辑/取消」切换同一 _wbEditMode；
-  // 编辑态下点标签卡 → Word 富文本弹窗（与「新增」同款），⌫ 清空卡内容，🗑 删除该条。
-  function nmSyncEditToggle(){
-    const btn = document.getElementById('btnMemoEditToggle');
-    if(!btn) return;
-    btn.textContent = _wbEditMode ? '↩️ 取消' : '✏️ 编辑';
-    btn.classList.toggle('active', _wbEditMode);
-    btn.setAttribute('aria-pressed', _wbEditMode ? 'true' : 'false');
-    btn.title = _wbEditMode ? '退出编辑状态' : '进入编辑状态：点卡片新增/编辑，⌫ 清空，🗑 删除';
-  }
+  // R155-3⑥：nmSyncEditToggle（页面级「编辑/取消」同步函数）已随 #btnMemoEditToggle 一并移除；
+  // 编辑态统一由 wbToggleEditMode 驱动周看板 wbBtnEditMode + _wbEditMode。
   // ================= R140 → R146：日程共享工具函数 =================
   // R146：日看板独立模块已整体并入周看板 ——「今天 / 周 / 月」三个版块共用同一套周看板数据层
   // （window.Store.getNickWeekBoard / saveNickWeekBoard，按日期 ISO 存取任务）。
@@ -40831,14 +40948,21 @@ I'm good at running.`},
       + '<div class="wb-body" id="wbBody" data-page-node-id="R141wbBody"></div>'
       + '</div>';
   }
-  function wbTaskHTML(t){
+  function wbTaskHTML(t, compact){
     const rich = t.html ? t.html : esc(t.title);
-    return '<div class="wb-task wb-c-'+t.color+(t.done?' wb-done':'')+'" data-wb-id="'+esc(t.id)+'" data-wb-date="'+esc(t.date||'')+'" data-wb-type="'+t.type+'" data-page-node-id="R141wbTask">'
+    const timeTxt = esc(wbTimeText(t));
+    const main = compact
+      ? '<div class="wb-task-main">'
+          + '<div class="wb-task-title">'+esc(t.title||'(无主题)')+'</div>'
+          + (timeTxt ? '<div class="wb-task-time">'+timeTxt+'</div>' : '')
+        + '</div>'
+      : '<div class="wb-task-main">'
+          + '<div class="wb-rte-content">'+rich+'</div>'
+          + '<div class="wb-task-time">'+timeTxt+'</div>'
+        + '</div>';
+    return '<div class="wb-task wb-c-'+t.color+(t.done?' wb-done':'')+(compact?' wb-task-compact':'')+'" data-wb-id="'+esc(t.id)+'" data-wb-date="'+esc(t.date||'')+'" data-wb-type="'+t.type+'" data-page-node-id="R141wbTask">'
       + '<span class="wb-mark"></span>'
-      + '<div class="wb-task-main">'
-      + '<div class="wb-rte-content">'+rich+'</div>'
-      + '<div class="wb-task-time">'+esc(wbTimeText(t))+'</div>'
-      + '</div>'
+      + main
       + '<button class="wb-task-del" type="button" data-wb-del="'+esc(t.id)+'" data-wb-date="'+esc(t.date||'')+'" title="删除此备忘" aria-label="删除此备忘">×</button>'
       + '</div>';
   }
@@ -40916,7 +41040,7 @@ I'm good at running.`},
       const isToday = date === nbTodayISO();
       const tasks = wbTasksOn(date);
       let cards = '';
-      tasks.forEach(function(t){ cards += wbTaskHTML(t); });
+      tasks.forEach(function(t){ cards += wbTaskHTML(t, true); });
       if(!cards) cards = '<div class="wb-col-empty">暂无备忘</div>';
       html += '<div class="wb-day-col'+(isToday?' wb-today-col':'')+'" data-wb-date="'+date+'">'
         + '<div class="wb-col-h">周'+WB_WD[d]+'<span class="wb-col-d">'+dt.getDate()+'</span></div>'
@@ -40958,7 +41082,7 @@ I'm good at running.`},
       c.addEventListener('click', function(){
         const date = c.getAttribute('data-wb-date');
         if(_wbEditMode){ _wbMonthDay = date; wbRefresh(); if(window.toast) toast('已打开 '+date.slice(5)+' 的备忘，可新增/修改/删除'); }
-        else { _wbMonday = wbMondayOf(date); _wbView = 'week'; wbRefresh(); }
+        else { wbOpenMonthMemos(date); }
       });
     });
   }
@@ -41008,7 +41132,6 @@ I'm good at running.`},
     } else {
       body.insertAdjacentHTML('beforeend', '<div class="wb-tagcards" id="wbTagCards" data-page-node-id="R153wbTagCards">' + mnTagCardsHTML() + '</div>');
       bindNickMemoViewTools();
-      nmSyncEditToggle();
     }
     _wbTagSig = sig;
     bindWbCards();
@@ -41052,8 +41175,9 @@ I'm good at running.`},
         if(timer){ clearTimeout(timer); timer = null; }
         card.classList.remove('wb-pressing');
         if(!moved && !longFired){
-          // R145/R146：只读态点击卡片不弹出任何新建/编辑页面；编辑态点击卡片 → 富文本弹窗修改
+          // R145/R146：只读态点击卡片不弹窗（周视图查看态点卡 → 详情弹窗）；编辑态点击卡片 → 富文本弹窗修改
           if(_wbEditMode){ const t = wbTaskOn(date, id); wbOpenEditModal(t, { date:date }); }
+          else if(_wbView === 'week'){ const t = wbTaskOn(date, id); wbOpenWeekDetail(t, date); }
         } else if(longFired && !_wbEditMode){ wbToggleDoneOn(date, id); }
         sx = 0; sy = 0;
       };
@@ -41227,13 +41351,38 @@ I'm good at running.`},
     showModal('#modalWbEdit');
     if(ed) setTimeout(function(){ try{ ed.focus(); }catch(e){} }, 60);
   }
+  // R155-3④：周视图查看态点卡片 → 弹窗查看完整详情（标题 + 富文本全文 + 时间）
+  function wbOpenWeekDetail(task, date){
+    const body = document.getElementById('wbDetailBody');
+    if(!body) return;
+    const t = task || {};
+    const rich = t.html ? t.html : esc(t.title||'');
+    const timeTxt = t ? esc(wbTimeText(t)) : '';
+    body.innerHTML = '<div class="wb-detail-title">'+esc(t.title||'(无主题)')+'</div>'
+      + (timeTxt ? '<div class="wb-detail-time">'+timeTxt+'</div>' : '')
+      + '<div class="wb-detail-content">'+rich+'</div>';
+    const closeBtn = document.getElementById('btnWbDetailClose');
+    if(closeBtn) closeBtn.onclick = function(){ hideModal('#modalWbDetail'); };
+    const editBtn = document.getElementById('btnWbDetailEdit');
+    if(editBtn) editBtn.onclick = function(){ hideModal('#modalWbDetail'); wbOpenEditModal(t, { date:date }); };
+    showModal('#modalWbDetail');
+  }
+  // R155-3⑤：月视图查看态点日期卡 → 弹窗展示该日期全部备忘事项
+  function wbOpenMonthMemos(date){
+    const body = document.getElementById('wbMonthMemosBody');
+    if(!body) return;
+    const title = document.getElementById('wbMonthMemosTitle');
+    if(title) title.textContent = nbFmtCN(date);
+    body.innerHTML = wbDayCardsHTML(date);
+    const closeBtn = document.getElementById('btnWbMonthMemosClose');
+    if(closeBtn) closeBtn.onclick = function(){ hideModal('#modalWbMonthMemos'); };
+    showModal('#modalWbMonthMemos');
+  }
   // R145 → R146：编辑模式开关（文字按钮「编辑 / 取消」）—— 开启后今天/周/月三版块均可编辑，
   // 页面内所有备忘卡显示删除×，点击卡片进入富文本修改；「新增」按钮仅在编辑态显示。
-  function wbToggleEditMode(){
-    _wbEditMode = !_wbEditMode;
-    if(!_wbEditMode) _wbMonthDay = '';   // 退出编辑态时收起月视图单日明细
-    const card = document.querySelector('.mn-weekboard');
-    if(card) card.classList.toggle('wb-edit-mode', _wbEditMode);
+  // R155-3⑥：周看板「编辑/取消」按钮态唯一同步出口 —— 外壳重建（renderNickMemoView）与
+  // wbToggleEditMode 都调用它，保证按钮文字/active/aria 与 _wbEditMode 永远一致。
+  function wbSyncEditBtn(){
     const btn = document.getElementById('wbBtnEditMode');
     if(btn){
       btn.classList.toggle('active', _wbEditMode);
@@ -41243,7 +41392,13 @@ I'm good at running.`},
     }
     const add = document.getElementById('wbBtnAdd');
     if(add) add.style.display = _wbEditMode ? '' : 'none';
-    nmSyncEditToggle();   // R154-3：页面级「编辑/取消」与周看板编辑态同步
+  }
+  function wbToggleEditMode(){
+    _wbEditMode = !_wbEditMode;
+    if(!_wbEditMode) _wbMonthDay = '';   // 退出编辑态时收起月视图单日明细
+    const card = document.querySelector('.mn-weekboard');
+    if(card) card.classList.toggle('wb-edit-mode', _wbEditMode);
+    wbSyncEditBtn();
     wbRefresh();
     if(window.toast) toast(_wbEditMode ? '编辑状态已开启：可切换今天/周/月，点卡片修改，点 × 删除' : '已退出编辑状态');
   }
@@ -41303,7 +41458,7 @@ I'm good at running.`},
       let row = memos[idx];
       if(!row){
         while(memos.length < idx) memos.push({ id:'nm'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), date:'', time:'', item:'', note:'' });
-        row = { id:'nm'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), date:'', time:'', item:'', note:'', noteHtml:'', fontSize:'', color:'', opacity:'' };
+        row = { id:'nm'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), date:'', time:'', item:'', note:'', noteHtml:'', font:'', fontSize:'', color:'', opacity:'' };
         memos.splice(idx, 0, row);
       }
       row.item = plain.slice(0, 120);
@@ -41365,13 +41520,36 @@ I'm good at running.`},
     // 兜底初始化草稿，防止异常路径下把空数组写回 store 清空全部备忘。
     // R149-3：日期 / 时间拆为两个字段；旧存档里若「时间」存的是 HH:MM 形态，归并到 time 字段。
     _nmDraft = getNickMemosSafe().map(function(m){
-      const o = { id:m.id, date:m.date, time:m.time, item:m.item, note:m.note, noteHtml:m.noteHtml, fontSize:m.fontSize, color:m.color, opacity:m.opacity };
+      const o = { id:m.id, date:m.date, time:m.time, item:m.item, note:m.note, noteHtml:m.noteHtml, font:m.font, fontSize:m.fontSize, color:m.color, opacity:m.opacity };
       if(!o.time && o.date && /^\d{1,2}:\d{2}$/.test(String(o.date).trim())){ o.time = o.date; o.date = ''; }
       return o;
     });
     renderMemoEditModalBody();
     showModal('#modalMemoEdit');
     bindMemoEditModal();
+  }
+  // R155-3③：标签卡放大预览 —— 查看态点卡弹出，放大呈现主题栏 + 备忘内容（富文本），文字清晰无阴影
+  function wbOpenMemoPreview(idx){
+    const memos = getNickMemosSafe();
+    const m = (idx >= 0 && idx < memos.length) ? memos[idx] : null;
+    const body = document.getElementById('memoPreviewBody');
+    if(!body) return;
+    const item = m ? (m.item||'') : '';
+    const fontFam = (m && m.font) ? ';font-family:'+esc(m.font) : '';
+    let rich = '';
+    if(m && m.noteHtml){ rich = sanitizeRich(m.noteHtml); }
+    else if(m && m.note){ rich = '<div class="mn-prev-note">'+esc(m.note)+'</div>'; }
+    body.innerHTML =
+        '<div class="mn-prev-item"'+ (fontFam?(' style="'+fontFam+'"'):'') +'>'
+      + (item ? esc(item) : '<span class="mn-prev-empty">（这张卡还没有主题）</span>')
+      + '</div>'
+      + (rich ? '<div class="mn-prev-rich"'+ (fontFam?(' style="'+fontFam+'"'):'') +'>'+rich+'</div>'
+              : (item ? '' : '<div class="mn-prev-empty">点右上角 ✏️ 编辑，给这张卡加上备忘内容</div>'));
+    const editBtn = document.getElementById('btnMemoPreviewEdit');
+    if(editBtn) editBtn.onclick = function(){ hideModal('#modalMemoPreview'); openMemoEditModal(); };
+    const closeBtn = document.getElementById('btnMemoPreviewClose');
+    if(closeBtn) closeBtn.onclick = function(){ hideModal('#modalMemoPreview'); };
+    showModal('#modalMemoPreview');
   }
   function renderMemoEditModalBody(){
     const body = document.getElementById('memoEditBody');
@@ -41391,28 +41569,24 @@ I'm good at running.`},
         + '<span class="mn-note-edit-char" aria-hidden="true">'+char+'</span>'
         + '<button class="mn-del" type="button" title="删除该条" aria-label="删除该条">🗑</button></div>'
         + '<div class="mn-edit-fields">'
-        + '<label class="mn-fld"><span class="mn-fld-lab">日期</span><input class="mn-in mn-in-datepicker" type="date" placeholder="日期（可留白）" value="'+esc(m.date||'')+'" /></label>'
-        + '<label class="mn-fld"><span class="mn-fld-lab">时间</span><input class="mn-in mn-in-time" type="text" inputmode="numeric" placeholder="如 10:00（可留白）" maxlength="20" value="'+esc(m.time||'')+'" /></label>'
-        + '<label class="mn-fld"><span class="mn-fld-lab">事项</span><input class="mn-in mn-in-item" placeholder="事项" maxlength="120" value="'+esc(m.item)+'" /></label>'
+        + '<label class="mn-fld"><span class="mn-fld-lab">主题栏</span><input class="mn-in mn-in-item" placeholder="主题栏" maxlength="120" value="'+esc(m.item)+'" /></label>'
         + '</div>'
         + '<div class="mn-rte-wrap" data-page-node-id="R139rte'+i+'">'
-        + '<div class="mn-fld-lab" style="margin:6px 0 2px">备注（富文本，所见即所得）</div>'
+        + '<div class="mn-fld-lab" style="margin:6px 0 2px">备忘内容（富文本，所见即所得）</div>'
         + rteBarHTML(i)
         + "<div class='mn-rte' contenteditable=\"true\" data-rte>"+(m.noteHtml||'')+"</div>"
         + '</div>'
         + '<div class="mn-note-style">'
+        + '<label>字体<input class="mn-style-font" type="text" placeholder="如 微软雅黑" value="'+esc(m.font||'')+'" /></label>'
         + '<label>字号<input class="mn-fontsize" type="number" min="10" max="40" value="'+fs+'" /></label>'
-        + '<label>颜色<input class="mn-color" type="color" value="'+col+'" /></label>'
         + '<label>透明<input class="mn-opacity" type="range" min="0.2" max="1" step="0.05" value="'+op+'" /></label>'
         + '</div></div>';
     }).join('');
     body.innerHTML = overflow + cards
       + '<div class="mn-note-edit mn-add-new" data-page-node-id="R138memoAddRow">'
       + '<div class="mn-edit-fields">'
-      + '<label class="mn-fld"><span class="mn-fld-lab">日期</span><input class="mn-in mn-in-datepicker" type="date" placeholder="日期（可留白）" /></label>'
-      + '<label class="mn-fld"><span class="mn-fld-lab">时间</span><input class="mn-in mn-in-time" type="text" inputmode="numeric" placeholder="如 10:00（可留白）" maxlength="20" /></label>'
-      + '<label class="mn-fld"><span class="mn-fld-lab">事项</span><input class="mn-in mn-in-item" placeholder="新事项" maxlength="120" /></label>'
-      + '<label class="mn-fld"><span class="mn-fld-lab">备注</span><input class="mn-in mn-in-note" placeholder="备注" maxlength="120" /></label>'
+      + '<label class="mn-fld"><span class="mn-fld-lab">主题栏</span><input class="mn-in mn-in-item" placeholder="新主题" maxlength="120" /></label>'
+      + '<label class="mn-fld"><span class="mn-fld-lab">备忘内容</span><input class="mn-in mn-in-note" placeholder="备忘内容" maxlength="120" /></label>'
       + '</div>'
       + '<button class="mn-add" type="button" title="新增该条" aria-label="新增该条">＋ 添加这条备忘</button>'
       + '</div>';
@@ -41435,6 +41609,7 @@ I'm good at running.`},
           else row.item = inp.value;
         });
       });
+      const sf = card.querySelector('.mn-style-font'); if(sf) sf.addEventListener('input', function(){ row.font = sf.value; });
       const fs = card.querySelector('.mn-fontsize'); if(fs) fs.addEventListener('input', function(){ row.fontSize = fs.value; });
       const cl = card.querySelector('.mn-color'); if(cl) cl.addEventListener('input', function(){ row.color = cl.value; });
       const op = card.querySelector('.mn-opacity'); if(op) op.addEventListener('input', function(){ row.opacity = op.value; });
@@ -41452,13 +41627,11 @@ I'm good at running.`},
         return;
       }
       const wrap = body.querySelector('.mn-add-new'); if(!wrap) return;
-      const date = (wrap.querySelector('.mn-in-datepicker').value||'').trim();
-      const time = (wrap.querySelector('.mn-in-time').value||'').trim();
       const item = (wrap.querySelector('.mn-in-item').value||'').trim();
       const note = (wrap.querySelector('.mn-in-note').value||'').trim();
-      if(!item && !note && !date && !time) return;
+      if(!item && !note) return;
       _nmDraft = _nmDraft || [];
-      _nmDraft.push({ id: 'nm'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), date:date, time:time, item:item, note:note, fontSize:'', color:'', opacity:'' });
+      _nmDraft.push({ id: 'nm'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), date:'', time:'', item:item, note:note, font:'', fontSize:'', color:'', opacity:'' });
       renderMemoEditModalBody(); bindMemoEditModal();
       const ni = body.querySelector('.mn-add-new .mn-in-item'); if(ni) ni.focus();
     };
@@ -41472,14 +41645,14 @@ I'm good at running.`},
         const id = card.getAttribute('data-id');
         const row = (_nmDraft||[]).find(function(x){ return String(x.id)===String(id); });
         if(!row) return;
-        row.date = (card.querySelector('.mn-in-datepicker').value||'');
-        row.time = (card.querySelector('.mn-in-time').value||'');
+        const dp = card.querySelector('.mn-in-datepicker'); if(dp) row.date = dp.value;
+        const tp = card.querySelector('.mn-in-time'); if(tp) row.time = tp.value;
         row.item = (card.querySelector('.mn-in-item').value||'');
         const _rte = card.querySelector('[data-rte]');
         row.noteHtml = _rte ? sanitizeRich(_rte.innerHTML) : (row.noteHtml||'');
         row.note = _rte ? (String(_rte.innerText||'').slice(0,500)) : (row.note||'');
+        const sf = card.querySelector('.mn-style-font'); if(sf) row.font = sf.value;
         const f = card.querySelector('.mn-fontsize'); if(f) row.fontSize = f.value;
-        const c = card.querySelector('.mn-color'); if(c) row.color = c.value;
         const o = card.querySelector('.mn-opacity'); if(o) row.opacity = o.value;
       });
       window.Store.saveNickMemos(_nmDraft||[]);
@@ -47255,7 +47428,8 @@ I'm good at running.`},
     if(e) e.__sfxHandled = true;
     const t = e.target; if(!t || !t.closest) return;
     // 打卡类：各自 handler 已调用 playCheckinSound（已路由到 playClickSfx('checkin')），此处跳过避免重复
-    if(t.closest('[data-checkin], .ri-checkin-btn, [data-ri-checkin], .kw-checkin, .checkin-btn, [data-kw-checkin], .math-btn-mastery, .math-btn-need, [data-sfx-checkin]')) return;
+    // R155-1：补齐「新世界」各子页内部打卡键选择器，杜绝「内部按键音效重复触发（双音效）」
+    if(t.closest('[data-checkin], .ri-checkin-btn, [data-ri-checkin], .kw-checkin, .checkin-btn, [data-kw-checkin], .math-btn-mastery, .math-btn-need, [data-sfx-checkin], [data-bs-checkin-sec], [data-kw-learn-toggle], [data-sh-learn], [data-suzhi-checkin], [data-en-oxford-theme], [data-en-sentence-done], [data-kp-card], .sc-card, .sh-poem-card, .sz-grid-card[data-sz-card]')) return;
     if(t.closest('.nav-btn[data-page], [data-go]')){ playClickSfx('nav'); return; }
     if(t.closest('.kw-lesson-card, .kb-utab, .kb-card, .sub-card, .sub-tab, [data-sfx="sub"]')){ playClickSfx('sub'); return; }
     if(t.closest('.yw-round-btn, .nw-card, .wp-card, .card, .mn-note-card, [data-sfx="theme"], .kw-acc-head')){ playClickSfx('theme'); return; }
