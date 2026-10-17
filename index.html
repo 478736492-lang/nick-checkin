@@ -2301,9 +2301,13 @@ body.child-mode .parent-edit-fab{display:none}
   max-width:1080px; width:96vw; max-height:96vh; max-height:96dvh; overflow:auto; border-radius:20px;
   border:2px solid rgba(255,255,255,.5);
   box-shadow:0 20px 60px rgba(8,16,52,.6);
-  padding:0 0 10px;
+  padding:0 0 8px;
 }
-.modal-course-table .sn-page{ min-height:auto; padding:0 12px 8px; }
+/* R161-1a：课程表整体位置上移、消除大面积留白 —— 标题外边距/内外框padding/底距全面收紧 */
+.modal-course-table .sn-page{ min-height:auto; padding:0 10px 4px; }
+.modal-course-table .sn-title{ margin:0 0 8px; font-size:clamp(26px,4.4vh,38px); letter-spacing:6px; color:#FFF8E7; }
+.modal-course-table .sn-frame{ padding:7px; border-radius:20px; }
+.modal-course-table .sn-frame-in{ padding:7px; border-radius:14px; }
 .modal-course-table .nw-back{
   position:absolute; top:12px; left:12px; z-index:6;
   background:rgba(255,255,255,.92); border-color:#ffe9a8; color:var(--sky-blue);
@@ -2313,6 +2317,10 @@ body.child-mode .parent-edit-fab{display:none}
   background:rgba(255,255,255,.92); border-color:#ffe9a8; color:var(--sky-blue);
   box-shadow:0 3px 12px rgba(8,16,52,.4);
 }
+/* R161-2：课程表编辑态（右上角【✏️ 编辑】点亮后）—— 全部方格虚线高亮，提示可修改（类挂 .sn-page 容器，表格 class 属性保持静态） */
+.sn-page.sched-editing .kb-cell{border:1.5px dashed rgba(255,255,255,.9);box-shadow:inset 0 0 0 1px rgba(255,233,168,.5)}
+.sn-page.sched-editing .kb-cell:hover{filter:brightness(1.06)}
+.modal-course-table .nw-sched-gear.on{background:linear-gradient(135deg,#3fbf7f,#2f9e66);color:#fff;border-color:rgba(255,255,255,.85);box-shadow:0 3px 12px rgba(20,90,60,.45)}
 
 /* 整页容器：标题 + 居中表格 + 四角装饰 */
 .sn-page{
@@ -5527,8 +5535,8 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   overflow:hidden;
   /* R136-1：备忘「标签卡」统一玻璃白度 —— 备忘墙卡片与备忘录管理页面行卡引用同一变量，
      两处透明度严格一致；管理面板的可调「透明」值也以此为基准（见 app.js renderNickMemoView）。 */
-  --mn-glass-bg:rgba(255,255,255,.20);
-  --mn-glass-blur:7px
+  --mn-glass-bg:rgba(255,255,255,.14);
+  --mn-glass-blur:9px
 }
 .mn-back{
   position:absolute;top:14px;left:14px;z-index:8;
@@ -5585,15 +5593,16 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   transition:transform .18s ease, box-shadow .18s ease
 }
 /* 彩虹玻璃染色层：赤 → 橙 → 黄 → 绿 → 青 → 蓝 → 紫（严格依次）。
-   R135-2：染色浓度 .26/.28 → .16/.18，更透更亮。 */
+   R135-2：染色浓度 .26/.28 → .16/.18，更透更亮；R161-8：再度减淡至 .10/.12，
+   配合玻璃白度与模糊调整，底层陆家嘴天际线更清晰透出。 */
 .mn-note-card::before{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none}
-.mn-note-card:nth-child(1)::before{background:rgba(255,86,86,.16)}   /* 赤 */
-.mn-note-card:nth-child(2)::before{background:rgba(255,152,58,.16)}  /* 橙 */
-.mn-note-card:nth-child(3)::before{background:rgba(255,213,64,.16)}  /* 黄 */
-.mn-note-card:nth-child(4)::before{background:rgba(72,214,128,.16)}  /* 绿 */
-.mn-note-card:nth-child(5)::before{background:rgba(34,211,238,.16)}  /* 青 */
-.mn-note-card:nth-child(6)::before{background:rgba(79,140,255,.18)}  /* 蓝 */
-.mn-note-card:nth-child(7)::before{background:rgba(167,139,250,.18)} /* 紫 */
+.mn-note-card:nth-child(1)::before{background:rgba(255,86,86,.10)}   /* 赤 */
+.mn-note-card:nth-child(2)::before{background:rgba(255,152,58,.10)}  /* 橙 */
+.mn-note-card:nth-child(3)::before{background:rgba(255,213,64,.10)}  /* 黄 */
+.mn-note-card:nth-child(4)::before{background:rgba(72,214,128,.10)}  /* 绿 */
+.mn-note-card:nth-child(5)::before{background:rgba(34,211,238,.10)}  /* 青 */
+.mn-note-card:nth-child(6)::before{background:rgba(79,140,255,.12)}  /* 蓝 */
+.mn-note-card:nth-child(7)::before{background:rgba(167,139,250,.12)} /* 紫 */
 /* 玻璃高光斜纹，增强通透质感 */
 .mn-note-card::after{
   content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;
@@ -5847,8 +5856,9 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   display:flex;flex-direction:column;gap:clamp(6px,1.1vh,12px);
   padding:clamp(10px,1.8vh,18px) clamp(12px,1.6vw,20px) clamp(8px,1.4vh,14px);
   /* R147：删除底层薄荷叶背景图及其容器背景（原周看板背景贴图已下架），改为更透的绿色半透明底，
-     毛玻璃窗口直接透出整页陆家嘴天际线（.mn-stage），保留整体清新绿风格 */
-  background:linear-gradient(155deg, rgba(18,46,38,.30), rgba(14,40,32,.36));
+     毛玻璃窗口直接透出整页陆家嘴天际线（.mn-stage），保留整体清新绿风格；
+     R161-8：绿底白度再度下调（.30/.36 → .22/.27），天际线更清晰透出 */
+  background:linear-gradient(155deg, rgba(18,46,38,.22), rgba(14,40,32,.27));
   border-color:rgba(255,255,255,.45)
 }
 .mn-notes .mn-note-card.mn-weekboard::before{display:none}
@@ -5858,18 +5868,19 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
    空卡不塌缩。配色显式按卡位声明（橙/黄/绿/青/蓝，与卡内 mn-note-dot 同色）—— 标签卡已不在备忘墙网格内，
    不再依赖 .mn-notes 的 nth-child 位次上色；备忘墙基类 margin 在此复位为 0。 */
 .wb-tagcards{
-  flex:1 1 auto;min-height:clamp(210px,34vh,330px);
+  /* R161-8：适度放大备忘录玻璃卡片尺寸（保底高度 210~330 → 240~360，行高仍 1fr 均分填满可用高度） */
+  flex:1 1 auto;min-height:clamp(240px,38vh,360px);
   display:grid;grid-template-columns:repeat(6,1fr);grid-template-rows:repeat(2,minmax(0,1fr));
-  gap:clamp(6px,1.1vh,12px);padding-top:clamp(4px,.8vh,8px)
+  gap:clamp(7px,1.3vh,14px);padding-top:clamp(5px,1vh,10px)
 }
 .wb-tagcards > .mn-note-card:nth-child(-n+3){grid-column:span 2}
 .wb-tagcards > .mn-note-card:nth-child(n+4){grid-column:span 3}
 .wb-tagcards > .mn-note-card{margin:0;min-width:0;min-height:0}
-.wb-tagcards > .mn-note-card:nth-child(1)::before{background:rgba(255,152,58,.16)}  /* 橙 */
-.wb-tagcards > .mn-note-card:nth-child(2)::before{background:rgba(255,213,64,.16)}  /* 黄 */
-.wb-tagcards > .mn-note-card:nth-child(3)::before{background:rgba(72,214,128,.16)}  /* 绿 */
-.wb-tagcards > .mn-note-card:nth-child(4)::before{background:rgba(34,211,238,.16)}  /* 青 */
-.wb-tagcards > .mn-note-card:nth-child(5)::before{background:rgba(79,140,255,.18)}  /* 蓝 */
+.wb-tagcards > .mn-note-card:nth-child(1)::before{background:rgba(255,152,58,.10)}  /* 橙 */
+.wb-tagcards > .mn-note-card:nth-child(2)::before{background:rgba(255,213,64,.10)}  /* 黄 */
+.wb-tagcards > .mn-note-card:nth-child(3)::before{background:rgba(72,214,128,.10)}  /* 绿 */
+.wb-tagcards > .mn-note-card:nth-child(4)::before{background:rgba(34,211,238,.10)}  /* 青 */
+.wb-tagcards > .mn-note-card:nth-child(5)::before{background:rgba(79,140,255,.12)}  /* 蓝 */
 /* R153：竖屏兜底 —— 标签卡区改 5 张纵排，避免两行挤压（与全站竖屏块同断点口径） */
 @media (orientation:portrait){
   .wb-tagcards{grid-template-columns:1fr;grid-template-rows:repeat(5,minmax(84px,1fr));min-height:0}
@@ -5966,6 +5977,8 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .wb-zone-add-zone{margin:2px auto 0;font-size:clamp(10px,1.5vh,13px);font-weight:900;color:#24353f;background:rgba(255,255,255,.9);border:1.5px dashed #b7e6cf;border-radius:999px;padding:clamp(3px,.6vh,6px) clamp(10px,1.4vw,16px);cursor:pointer}
 .wb-zone-add-zone:hover{background:#fff}
 .wb-col-add{margin:6px auto 0;display:block;font-size:clamp(9px,1.4vh,12px);padding:clamp(2px,.5vh,5px) clamp(8px,1vw,12px)}
+/* R161-h：今日板块 / 月视图单日明细的「＋ 新增」入口（编辑态显示，位于日程列表下方） */
+.wb-day-add{margin:8px auto 2px;font-size:clamp(10px,1.5vh,13px);padding:clamp(4px,.7vh,7px) clamp(12px,1.4vw,18px)}
 .wb-mcell.wb-blank{background:transparent;border-color:transparent;cursor:default;box-shadow:none}
 .mn-weekboard.wb-edit-mode .wb-mcell.wb-blank{border-style:solid}
 .wb-sec-bar{display:flex;align-items:center;gap:clamp(6px,1vw,10px);flex-wrap:wrap}
@@ -6020,6 +6033,67 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .wb-dot-yellow{background:rgba(245,215,120,.95)}
 .wb-dot-red{background:rgba(240,140,135,.95)}
 .wb-dot-gray{background:rgba(200,210,220,.95)}
+/* ================= R161：备忘录 / 课程表本轮迭代样式 ================= */
+/* R161-5：备忘卡可选颜色由 4 色扩充到 8 色（与编辑弹窗 #wbColors 色板一致） */
+.wb-c-purple{background:rgba(150,120,235,.36);border:1px solid rgba(196,176,248,.5)}
+.wb-c-purple .wb-mark{background:rgba(178,152,246,.98)}
+.wb-c-orange{background:rgba(242,160,74,.36);border:1px solid rgba(250,200,140,.5)}
+.wb-c-orange .wb-mark{background:rgba(250,186,110,.98)}
+.wb-c-teal{background:rgba(60,180,180,.34);border:1px solid rgba(140,220,220,.5)}
+.wb-c-teal .wb-mark{background:rgba(110,214,214,.98)}
+.wb-c-pink{background:rgba(238,130,170,.34);border:1px solid rgba(250,180,205,.5)}
+.wb-c-pink .wb-mark{background:rgba(250,160,196,.98)}
+.wb-dot-purple{background:rgba(165,135,240,.95)}
+.wb-dot-orange{background:rgba(245,170,85,.95)}
+.wb-dot-teal{background:rgba(75,195,195,.95)}
+.wb-dot-pink{background:rgba(242,145,180,.95)}
+/* R161-5：编辑弹窗色板同步补 4 色（紫/橙/青/粉） */
+.nb-e-c-purple{background:rgba(150,120,235,.9)}
+.nb-e-c-orange{background:rgba(242,160,74,.92)}
+.nb-e-c-teal{background:rgba(60,180,180,.9)}
+.nb-e-c-pink{background:rgba(238,130,170,.9)}
+/* R161-5：周板块紧凑卡片 —— 仅展示主题；毛玻璃底 + 圆角，窄列内文字换行不溢出 */
+.wb-task.wb-task-compact{overflow:hidden;background:rgba(255,255,255,.5);backdrop-filter:blur(6px) saturate(140%);-webkit-backdrop-filter:blur(6px) saturate(140%);border:1px solid rgba(255,255,255,.66);min-height:clamp(30px,4.2vh,40px)}
+.wb-task.wb-task-compact .wb-task-main{padding:2px 4px}
+.wb-task.wb-task-compact .wb-task-title{font-size:clamp(11px,1.6vh,14px);font-weight:800;color:#16283c;line-height:1.32;text-shadow:none;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
+.wb-task.wb-task-compact .wb-mark{width:3px;border-radius:999px}
+.wb-day-col{overflow:hidden}
+/* R161-g：左上角日期改为弹窗标签选择模式（可点击的日期签 + ▾  caret） */
+.wb-ym-btn{display:inline-flex;align-items:center;gap:4px;background:rgba(255,255,255,.16);border:1.5px solid rgba(255,255,255,.55);border-radius:999px;padding:clamp(2px,.5vh,5px) clamp(8px,1vw,12px);cursor:pointer;transition:background .12s ease,transform .12s ease}
+.wb-ym-btn:hover{background:rgba(255,255,255,.34);transform:translateY(-1px)}
+.wb-ym-btn:active{transform:scale(.96)}
+.wb-ym-caret{font-size:clamp(9px,1.3vh,12px);font-weight:900;color:#fff;text-shadow:0 1px 4px rgba(8,36,26,.6)}
+/* R161-g：日期选择弹窗（毛玻璃，口径与 #modalWbEdit 一致） */
+#modalWbDatePick{background:rgba(8,16,52,.5)}
+#modalWbDatePick .modal-box{width:min(430px,92vw);background:rgba(255,255,255,.88);backdrop-filter:blur(16px) saturate(150%);-webkit-backdrop-filter:blur(16px) saturate(150%);border:1.5px solid rgba(255,255,255,.66);box-shadow:0 18px 50px rgba(8,16,52,.45)}
+.wb-datepick-box .modal-head{margin:-18px -18px 12px;padding:12px 18px;border-radius:14px 14px 0 0;background:linear-gradient(135deg, rgba(64,150,255,.62), rgba(28,95,184,.52));color:#fff;border-bottom:1px solid rgba(255,255,255,.45)}
+.wb-dp-tags{display:flex;gap:8px;flex-wrap:wrap;padding:2px 2px 10px}
+.wb-dp-tag{flex:1;min-width:64px;padding:8px 6px;font-size:13px;font-weight:800;color:#1f4d3a;background:rgba(255,255,255,.9);border:1.5px solid rgba(40,80,60,.28);border-radius:10px;cursor:pointer;transition:background .12s ease,border-color .12s ease}
+.wb-dp-tag:hover{background:#fff;border-color:#3fbf7f}
+.wb-dp-nav{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 2px 8px}
+.wb-dp-ym{font-size:15px;font-weight:900;color:#1f4d3a}
+.wb-dp-navbtn{width:32px;height:32px;font-size:15px;font-weight:900;color:#1f4d3a;background:rgba(255,255,255,.9);border:1.5px solid rgba(40,80,60,.28);border-radius:999px;cursor:pointer}
+.wb-dp-navbtn:hover{background:#fff}
+.wb-dp-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.wb-dp-wd{text-align:center;font-size:11px;font-weight:800;color:#5a7a6a;padding:2px 0}
+.wb-dp-cell{display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 2px 4px;border:1.5px solid rgba(40,80,60,.16);border-radius:9px;background:rgba(255,255,255,.72);cursor:pointer;transition:background .12s ease,border-color .12s ease}
+.wb-dp-cell:hover{background:#fff;border-color:#3fbf7f}
+.wb-dp-cell.wb-dp-blank{background:transparent;border-color:transparent;cursor:default;pointer-events:none}
+.wb-dp-cell.wb-dp-today{border-color:#3fbf7f}
+.wb-dp-cell.on{background:linear-gradient(135deg,#3fbf7f,#2f9e66);border-color:#2f9e66}
+.wb-dp-cell.on .wb-dp-d{color:#fff}
+.wb-dp-d{font-size:12px;font-weight:800;color:#1f4d3a;line-height:1.1}
+.wb-dp-dots{display:flex;gap:2px;min-height:6px}
+.wb-dp-dots .wb-dot{width:5px;height:5px;box-shadow:0 0 0 1px rgba(255,255,255,.7)}
+/* R161-2：日期模式切换（单日 / 区间）—— 与色板按钮同款小胶囊 */
+.wb-rte-dmode{display:inline-flex;gap:4px;padding:2px;background:rgba(255,255,255,.72);border:1.5px solid rgba(40,80,60,.24);border-radius:999px}
+.wb-dmode-btn{padding:4px 12px;font-size:12px;font-weight:800;color:#3f5e95;background:transparent;border:none;border-radius:999px;cursor:pointer;transition:background .12s ease,color .12s ease}
+.wb-dmode-btn:hover{background:rgba(64,150,255,.14)}
+/* R161-2：选中态用色阶令牌（--tone-600 → --tone-800），避免字面量重复（R106-15） */
+.wb-dmode-btn.on{background:linear-gradient(135deg,var(--tone-600),var(--tone-800));color:#fff}
+.wb-rte-date-end input[type=date]{font-size:13px;padding:3px 6px;border-radius:8px;border:1.5px solid rgba(40,80,60,.35);background:#fff;color:#1f4d3a}
+#modalWbEdit .wb-rte-date-end input[type=date]{font-size:15px;padding:5px 8px}
+#modalWbEdit .wb-dmode-btn{padding:6px 14px;font-size:13px}
 /* R144：已移除收起态与底部 3 圆形按钮区 —— 新建/编辑日程统一走窗口右上角铅笔按钮 */
 /* R144：周看板编辑弹窗 —— Word 风格富文本编辑器（所见即所得 + 首行缩进 + 字体/字号/颜色/加粗/斜体/下划线） */
 .wb-rte-modal{max-width:min(720px,94vw)}
@@ -6868,6 +6942,7 @@ html,body{margin:0;padding:0}
           <div class="sched-swatches sched-sub-quick" id="schedSubjectQuick" data-page-node-id="qSb7R43subjQuick01"></div>
           <div class="sched-manage-tip" data-page-node-id="qSb7R43subjTip0001">点击科目即可填入课程名，再点一次取消。</div>
         </div>
+        <!-- R161-3：着装/放学行方格同样支持编辑区域颜色（hidden-in-child 保留：颜色区仍仅家长模式可见） -->
         <div class="hidden-in-child" id="schedCellColorWrap" data-page-node-id="zu4ZeTuj3zKlWQ7IUPqygx">
           <label class="sched-field" data-page-node-id="KVazSOXh4X4f7WKgZazRHl">课程区域颜色 <input type="color" id="schedCellColor" value="#ffffff" data-page-node-id="KeSwrJP4NZdX3RNj7U8u2L" /></label>
           <div class="sched-swatches" id="schedSwatches" data-page-node-id="gUewJXGCbgXGjvFwj3MRHA"></div>
@@ -6887,7 +6962,8 @@ html,body{margin:0;padding:0}
     <div class="modal-box modal-course-table" data-page-node-id="R149courseTableBox">
       <div class="ct-head-row" data-page-node-id="R156ctHeadRow">
         <button class="nw-back" id="btnCourseTableClose" title="关闭" data-page-node-id="R149btnCourseTableClose">← 返回首页</button>
-        <button type="button" class="nw-sched-gear hidden-in-child" id="btnCourseTableGear" title="课程表设置" data-page-node-id="R149btnCourseTableGear">⚙ 设置</button>
+        <!-- R161-2：【设置】改为【编辑】—— 点击进入/退出编辑状态；仅编辑状态下所有方格可修改（JS 依 _schedEditMode 门控） -->
+        <button type="button" class="nw-sched-gear hidden-in-child" id="btnCourseTableGear" title="进入编辑状态后可修改所有方格" data-page-node-id="R149btnCourseTableGear">✏️ 编辑</button>
       </div>
       <div class="nw-sub-body" id="courseTableMount" data-page-node-id="R149courseTableMount"></div>
     </div>
@@ -7457,6 +7533,21 @@ html,body{margin:0;padding:0}
   </div>
 </div>
 
+<!-- ========== 弹窗：周看板 左上角日期选择（R161-g：备忘录页面左上角日期使用弹窗标签选择模式） ========== -->
+<div class="modal-mask" id="modalWbDatePick" hidden data-page-node-id="R161modalWbDatePick">
+  <div class="modal-box wb-datepick-box" data-page-node-id="R161wbDatePickBox">
+    <div class="modal-head" data-page-node-id="R161wbDatePickHead">
+      <h3 data-page-node-id="R161wbDatePickTitle">📅 选择日期</h3>
+      <button class="modal-x" data-close data-page-node-id="R161wbDatePickX">×</button>
+    </div>
+    <div class="modal-body" id="wbDatePickBody" data-page-node-id="R161wbDatePickBody"></div>
+    <div class="modal-foot" data-page-node-id="R161wbDatePickFoot">
+      <button class="primary-btn" id="btnWbDatePickToday" type="button" data-page-node-id="R161btnWbDatePickToday">回到今天</button>
+      <button class="pbtn" data-close data-page-node-id="R161btnWbDatePickClose">关闭</button>
+    </div>
+  </div>
+</div>
+
 <!-- ========== 弹窗：周看板 备忘编辑/新增（R144 Word 风格富文本编辑器，所见即所得；R146 今天/周/月三版块共用；R156-3a③ 表单与备忘录管理页统一） ========== -->
 <div class="modal-mask" id="modalWbEdit" hidden data-page-node-id="R141modalWbEdit">
   <div class="modal-box modal-nb wb-rte-modal" data-page-node-id="R141modalWbEditBox">
@@ -7466,11 +7557,19 @@ html,body{margin:0;padding:0}
     </div>
     <div class="modal-body" data-page-node-id="R141modalWbEditBody">
       <!-- R160-1：主题栏 / 日期 / 时间 三者同行排布；日期选择交互逻辑与时间选择一致（原生 date 控件），时间控件移至日期右侧 -->
+      <!-- R161-c：日期支持「单日 / 日期区间」两种模式（区间模式显示第二个日期输入，至 某月某日） -->
       <div class="wb-rte-title-field" data-page-node-id="R156wbTitleField">
         <span class="wb-rte-lbl">主题栏</span>
         <input id="wbInTitle" type="text" maxlength="30" placeholder="给这条备忘起个主题" data-page-node-id="R156wbInTitle" />
         <label class="wb-rte-date"><span>日期</span>
           <input id="wbInDate" type="date" data-page-node-id="R160wbInDate" />
+        </label>
+        <div class="wb-rte-dmode" id="wbDateMode" data-page-node-id="R161wbDateMode">
+          <button type="button" class="wb-dmode-btn on" data-dmode="single" title="单日备忘">单日</button>
+          <button type="button" class="wb-dmode-btn" data-dmode="range" title="日期区间备忘（某月某日至某月某日）">区间</button>
+        </div>
+        <label class="wb-rte-date wb-rte-date-end" id="wbInDateEndWrap" hidden><span>至</span>
+          <input id="wbInDateEnd" type="date" data-page-node-id="R161wbInDateEnd" />
         </label>
         <label class="wb-rte-time"><span>时间</span>
           <input id="wbInStart" type="time" data-page-node-id="R141wbInStart" />
@@ -7484,6 +7583,10 @@ html,body{margin:0;padding:0}
           <button type="button" class="nb-e-c-green" data-wb-color="green" title="绿色"></button>
           <button type="button" class="nb-e-c-yellow" data-wb-color="yellow" title="浅黄色"></button>
           <button type="button" class="nb-e-c-red" data-wb-color="red" title="红色"></button>
+          <button type="button" class="nb-e-c-purple" data-wb-color="purple" title="紫色"></button>
+          <button type="button" class="nb-e-c-orange" data-wb-color="orange" title="橙色"></button>
+          <button type="button" class="nb-e-c-teal" data-wb-color="teal" title="青色"></button>
+          <button type="button" class="nb-e-c-pink" data-wb-color="pink" title="粉色"></button>
         </div>
       </div>
       <div class="wb-rte-toolbar" id="wbRteToolbar" data-page-node-id="R141wbRteToolbar">
@@ -7495,13 +7598,17 @@ html,body{margin:0;padding:0}
           <option value="Arial,sans-serif">Arial</option>
           <option value="'Comic Sans MS',cursive">Comic Sans</option>
         </select>
+        <!-- R161-e：字号改为类似 Word 的数字选择展示（12~32 数字档位） -->
         <select id="wbRteSize" class="wb-rte-sel" title="字号" data-page-node-id="R141wbRteSize">
-          <option value="14">字号</option>
-          <option value="12">小</option>
-          <option value="16">中</option>
-          <option value="20">大</option>
-          <option value="26">特大</option>
-          <option value="32">超大</option>
+          <option value="">字号</option>
+          <option value="12">12</option>
+          <option value="14">14</option>
+          <option value="16">16</option>
+          <option value="18">18</option>
+          <option value="20">20</option>
+          <option value="24">24</option>
+          <option value="28">28</option>
+          <option value="32">32</option>
         </select>
         <input type="color" id="wbRteColor" class="wb-rte-color" title="文字颜色" value="#ffffff" data-page-node-id="R141wbRteColor" />
         <input type="color" id="wbRteHl" class="wb-rte-color" title="背景高亮" value="#fff3a8" data-page-node-id="R156wbRteHl" />
@@ -7515,11 +7622,8 @@ html,body{margin:0;padding:0}
         <button type="button" class="wb-rte-btn" id="wbRteClear" title="清空富文本" data-page-node-id="R156wbRteClear">🗑清空</button>
       </div>
       <div class="wb-rte-editor" id="wbEditor" contenteditable="true" data-placeholder="在这里写备忘内容，支持换行、首行缩进、字体/字号/颜色与加粗…" data-page-node-id="R141wbEditor"></div>
-      <!-- R156-3a③：字体/字号样式行，与管理页面 .mn-note-style 同款字段 -->
-      <div class="wb-rte-style" data-page-node-id="R156wbStyleRow">
-        <label>字体<input id="wbStyleFont" type="text" placeholder="如 微软雅黑" maxlength="40" data-page-node-id="R156wbStyleFont" /></label>
-        <label>字号<input id="wbStyleSize" type="number" min="10" max="40" step="1" data-page-node-id="R156wbStyleSize" /></label>
-      </div>
+      <!-- R161-e：移除新建备忘页面底部「字体 / 字号」输入行 —— 字号统一由工具条 Word 式数字下拉设置；
+           既有任务的字体/字号在编辑保存时原样保留，不清空 -->
     </div>
     <div class="modal-foot" data-page-node-id="R141modalWbEditFoot">
       <button class="nb-e-del" id="btnWbDel" type="button" data-page-node-id="R141btnWbDel">🗑 删除</button>
@@ -30837,6 +30941,8 @@ window.WANTONG_COVER = './assets/c6249ea2bfe3.jpg';
         id: id,
         date: String((m && m.date)||'').slice(0, 20),
         time: String((m && m.time)||'').slice(0, 20),
+        // R161-c：标签卡备忘同样支持日期区间（dateEnd 为空即单日）
+        dateEnd: String((m && m.dateEnd)||'').slice(0, 10),
         item: String((m && m.item)||'').slice(0, MEMO_MAX),
         note: String((m && m.note)||'').slice(0, MEMO_MAX),
         font: String((m && m.font)||'').slice(0, 40),
@@ -30857,6 +30963,8 @@ window.WANTONG_COVER = './assets/c6249ea2bfe3.jpg';
         id: (x && x.id) ? String(x.id) : _genMemoId(),
         date: String((x && x.date) || '').slice(0, 20),
         time: String((x && x.time) || '').slice(0, 20),
+        // R161-c：日期区间（dateEnd 为空即单日）
+        dateEnd: String((x && x.dateEnd) || '').slice(0, 10),
         item: String((x && x.item) || '').slice(0, MEMO_MAX),
         note: String((x && x.note) || '').slice(0, MEMO_MAX),
         font: String((x && x.font) || '').slice(0, 40),
@@ -30876,7 +30984,8 @@ window.WANTONG_COVER = './assets/c6249ea2bfe3.jpg';
   // { id, title, type:'all'|'range'|'point', start:'HH:MM', end:'HH:MM', color:'blue'|'green'|'yellow'|'red'|'gray', done:0|1 }
   // 存储形态：st.nickDayBoard = { 'YYYY-MM-DD': [task,...] }；今日首次读取时植入默认日程，其余日期从空白开始。
   const NB_TYPES = { all:1, range:1, point:1 };
-  const NB_COLORS = { blue:1, green:1, yellow:1, red:1, gray:1 };
+  // R161-f：备忘卡片可选颜色由 4 色扩充到 8 色（蓝/绿/黄/红/紫/橙/青/粉 + 灰）
+  const NB_COLORS = { blue:1, green:1, yellow:1, red:1, gray:1, purple:1, orange:1, teal:1, pink:1 };
   function _nbTodayISO(){
     const d = new Date(), p = n => (n<10?'0':'')+n;
     return d.getFullYear() + '-' + p(d.getMonth()+1) + '-' + p(d.getDate());
@@ -30952,7 +31061,12 @@ window.WANTONG_COVER = './assets/c6249ea2bfe3.jpg';
       zone: (x && x.zone) ? String(x.zone).slice(0, 24) : '',
       // R156-3a③：周看板备忘编辑弹窗与备忘录管理页表单统一 —— 字体/字号随任务持久化
       font: String((x && x.font) || '').slice(0, 40),
-      fontSize: (x && x.fontSize!==undefined && x.fontSize!=='') ? String(x.fontSize).slice(0, 3) : ''
+      fontSize: (x && x.fontSize!==undefined && x.fontSize!=='') ? String(x.fontSize).slice(0, 3) : '',
+      // R161-c：日期区间备忘 —— 同一 id 物化到区间内每一天，rangeStart/rangeEnd 记录原始区间，
+      // rangeId 标识同组副本（改区间/删除时按组清理各日副本，避免残留幽灵数据）
+      rangeStart: (x && x.rangeStart) ? String(x.rangeStart).slice(0, 10) : '',
+      rangeEnd: (x && x.rangeEnd) ? String(x.rangeEnd).slice(0, 10) : '',
+      rangeId: (x && x.rangeId) ? String(x.rangeId).slice(0, 24) : ''
     };
   }
   function getNickWeekBoard(date){
@@ -31056,8 +31170,10 @@ window.WANTONG_COVER = './assets/c6249ea2bfe3.jpg';
   // R127-1：种子课表默认外观 —— 星期/节次表头卡片淡蓝色（#cfe6ff）
   // R149-1：节次底部新增「着装」行（key = 星期标签，value = 当日着装说明）
   const SCHED_ATTIRE = { '星期一':'西装套装', '星期二':'运动套装', '星期三':'毛衣开衫套装', '星期四':'运动套装', '星期五':'自由着装' };
+  // R161-3：放学行（key = 星期标签，value = {t, c}：t=放学时间，c=区域颜色；默认空由用户自填）
+  const SCHED_DISMISS = {};
   function schedSeed(){
-    return { rows:9, days:SCHED_DAYS.slice(), cells:JSON.parse(JSON.stringify(SCHED_SEED_CELLS)), addColor:'#ffffff', tableTextColor:'#1e3a8a', tableFontSize:15, tableCell:'#ffffff', cornerLabel:'节次', tableHeadColor:'#cfe6ff', cornerColor:'#cfe6ff', attire:JSON.parse(JSON.stringify(SCHED_ATTIRE)), schedSeeded:true };
+    return { rows:9, days:SCHED_DAYS.slice(), cells:JSON.parse(JSON.stringify(SCHED_SEED_CELLS)), addColor:'#ffffff', tableTextColor:'#1e3a8a', tableFontSize:15, tableCell:'#ffffff', cornerLabel:'节次', tableHeadColor:'#cfe6ff', cornerColor:'#cfe6ff', attire:JSON.parse(JSON.stringify(SCHED_ATTIRE)), dismiss:JSON.parse(JSON.stringify(SCHED_DISMISS)), schedSeeded:true };
   }
   function getSchedule(){
     const st = load();
@@ -31077,6 +31193,8 @@ window.WANTONG_COVER = './assets/c6249ea2bfe3.jpg';
     if(!('cornerColor' in st.schedule)) st.schedule.cornerColor = '';
     // R149-1：着装行（key = 星期标签）
     if(!st.schedule.attire || typeof st.schedule.attire !== 'object') st.schedule.attire = JSON.parse(JSON.stringify(SCHED_ATTIRE));
+    // R156-1e→R161-3：放学行（key = 星期标签，value = {t, c} 内容 + 区域颜色；旧存档缺省为空对象）
+    if(!st.schedule.dismiss || typeof st.schedule.dismiss !== 'object') st.schedule.dismiss = JSON.parse(JSON.stringify(SCHED_DISMISS));
     // R127-1：默认课表导入（仅一次）—— 旧存档首次升级时写入种子课表内容，并把星期/节次表头卡片改为淡蓝色；
     // 之后家长在设置里改颜色/清格子不会再被覆盖（schedSeeded 标记随存档持久化）
     if(!st.schedule.schedSeeded){
@@ -36320,14 +36438,23 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         body += '</tr>';
       }
       // R149-1：底部「着装」行（key = 星期标签，从 sc.attire 读取）；R155-4：改为可点击按钮，交互样式与课程表其余行一致
+      // R161-3：着装/放学行取值兼容 {t, c}（t=内容，c=区域颜色；旧存档为纯字符串），有颜色时按颜色渲染区域底色
       const schedAttire = (sc.attire && typeof sc.attire === 'object') ? sc.attire : {};
-      body += `<tr class="sn-attire-row"><th class="sn-rowhead sn-attire-head">着装</th>` + days.map((d,c)=>`<td><button type="button" class="kb-cell sn-attire-cell${schedAttire[d]?'':' sn-cell-empty'}" data-attire-c="${c}" title="点击填写${esc(d)}着装">${esc(schedAttire[d]||'')}</button></td>`).join('') + `</tr>`;
+      body += `<tr class="sn-attire-row"><th class="sn-rowhead sn-attire-head">着装</th>` + days.map((d,c)=>{
+        const v = schedRowVal(schedAttire[d]);
+        const bg = v.c ? ` style="background:${v.c}"` : '';
+        return `<td><button type="button" class="kb-cell sn-attire-cell${v.t?'':' sn-cell-empty'}" data-attire-c="${c}"${bg} title="${_schedEditMode ? '点击填写'+esc(d)+'着装' : '编辑状态下方可修改'}">${esc(v.t||'')}</button></td>`;
+      }).join('') + `</tr>`;
       // R156-1e：底层新增「放学」行（key = 星期标签，从 sc.dismiss 读取）；与着装行一致可点击编辑
       const schedDismiss = (sc.dismiss && typeof sc.dismiss === 'object') ? sc.dismiss : {};
-      body += `<tr class="sn-dismiss-row"><th class="sn-rowhead sn-dismiss-head">放学</th>` + days.map((d,c)=>`<td><button type="button" class="kb-cell sn-dismiss-cell${schedDismiss[d]?'':' sn-cell-empty'}" data-dismiss-c="${c}" title="点击填写${esc(d)}放学时间">${esc(schedDismiss[d]||'')}</button></td>`).join('') + `</tr>`;
+      body += `<tr class="sn-dismiss-row"><th class="sn-rowhead sn-dismiss-head">放学</th>` + days.map((d,c)=>{
+        const v = schedRowVal(schedDismiss[d]);
+        const bg = v.c ? ` style="background:${v.c}"` : '';
+        return `<td><button type="button" class="kb-cell sn-dismiss-cell${v.t?'':' sn-cell-empty'}" data-dismiss-c="${c}"${bg} title="${_schedEditMode ? '点击填写'+esc(d)+'放学时间' : '编辑状态下方可修改'}">${esc(v.t||'')}</button></td>`;
+      }).join('') + `</tr>`;
       // 表头配色：首列「节次」；周二/周四淡紫交替(.sn-th-violet)，其余天蓝(.sn-th-sky)
       const thead = `<tr><th class="sn-th sn-th-sky">节次</th>${days.map((d,i)=>`<th class="sn-th ${i===1||i===3?'sn-th-violet':'sn-th-sky'}">${esc(d)}</th>`).join('')}</tr>`;
-      mount.innerHTML = `<div class="sn-page">
+      mount.innerHTML = `<div class="sn-page${_schedEditMode?' sched-editing':''}">
         <div class="sn-deco sn-deco-tl">✨</div>
         <div class="sn-deco sn-deco-tl2">⭐</div>
         <div class="sn-deco sn-deco-br">⛵</div>
@@ -36340,6 +36467,8 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
           </table>
         </div></div>
       </div>`;
+      // R161-2：同步右上角【✏️ 编辑 / ✓ 完成】按键文案与态（弹窗重开/重渲染时保持一致）
+      schedSyncEditBtn();
       // R18-4b：运行时注入可编辑的「节次」角标（R12-1 要求源码保留字面 <th>节次</th>，故此处动态覆盖）
       const cornerTh = mount.querySelector('.sn-table thead th:first-child');
       if(cornerTh) cornerTh.textContent = cornerLabel;
@@ -36355,10 +36484,20 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       }
       // R157-3：着装/放学格同时带有 .kb-cell 类，必须用 :not() 排除，否则一次点击同时触发
       // 「填写课程」与「填写着装/放学」两个弹窗（旧双重弹窗 bug）
-      mount.querySelectorAll('.kb-cell:not(.sn-attire-cell):not(.sn-dismiss-cell)').forEach(b=> b.addEventListener('click', ()=> openSchedCellEditor(parseInt(b.dataset.r), parseInt(b.dataset.c))));
+      // R161-2：仅编辑状态（_schedEditMode）下才可修改所有方格 —— 查看态点击仅提示先进入编辑态
+      mount.querySelectorAll('.kb-cell:not(.sn-attire-cell):not(.sn-dismiss-cell)').forEach(b=> b.addEventListener('click', ()=>{
+        if(!_schedEditMode){ if(window.toast) toast('先点右上角【✏️ 编辑】进入编辑状态'); return; }
+        openSchedCellEditor(parseInt(b.dataset.r), parseInt(b.dataset.c));
+      }));
       // R157-3：着装行/放学行统一复用「填写课程」弹窗（#modalSchedCell），按 kind 切换标题与写入字段
-      mount.querySelectorAll('.sn-attire-cell').forEach(b=> b.addEventListener('click', ()=> openSchedCellEditor(-1, parseInt(b.dataset.attireC), 'attire')));
-      mount.querySelectorAll('.sn-dismiss-cell').forEach(b=> b.addEventListener('click', ()=> openSchedCellEditor(-1, parseInt(b.dataset.dismissC), 'dismiss')));
+      mount.querySelectorAll('.sn-attire-cell').forEach(b=> b.addEventListener('click', ()=>{
+        if(!_schedEditMode){ if(window.toast) toast('先点右上角【✏️ 编辑】进入编辑状态'); return; }
+        openSchedCellEditor(-1, parseInt(b.dataset.attireC), 'attire');
+      }));
+      mount.querySelectorAll('.sn-dismiss-cell').forEach(b=> b.addEventListener('click', ()=>{
+        if(!_schedEditMode){ if(window.toast) toast('先点右上角【✏️ 编辑】进入编辑状态'); return; }
+        openSchedCellEditor(-1, parseInt(b.dataset.dismissC), 'dismiss');
+      }));
       // R157-3：课程表第一行（表头行）支持点击修改设置（与弹窗右上角⚙设置同入口；仅家长模式添加可点态）
       const schedHeadRow = mount.querySelector('.sn-table thead tr');
       if(schedHeadRow && isParent()){
@@ -36396,6 +36535,29 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
   // （原「填写着装 / 填写放学时间」独立弹窗已移除，着装/放学行统一复用 #modalSchedCell，
   //  并按 kind 切换标题 / 输入标签 / 显隐快捷科目与颜色区）
   let schedCellKind = 'cell';
+  // R161-2：课程表编辑状态 —— 默认查看态（所有方格只读）；点右上角【✏️ 编辑】进入编辑态后才可修改方格，
+  // 再点一次（【✓ 完成】）退出。着装/放学行沿用同一状态门控（R161-3 起两行方格亦支持区域颜色）。
+  let _schedEditMode = false;
+  // R161-3：着装/放学行取值兼容 —— 旧存档为纯字符串（仅内容），R161 起支持 {t, c}（t=内容，c=区域颜色）
+  function schedRowVal(v){
+    if(v && typeof v === 'object') return { t: String(v.t||''), c: String(v.c||'') };
+    return { t: String(v==null?'':v), c: '' };
+  }
+  // R161-2：右上角【✏️ 编辑 / ✓ 完成】按键文案与选中态同步（渲染/开关时调用，保持一致）
+  function schedSyncEditBtn(){
+    const gear = document.getElementById('btnCourseTableGear');
+    if(!gear) return;
+    gear.textContent = _schedEditMode ? '✓ 完成' : '✏️ 编辑';
+    gear.classList.toggle('on', _schedEditMode);
+    gear.title = _schedEditMode ? '完成编辑（退出编辑状态）' : '进入编辑状态后可修改所有方格';
+  }
+  // R161-2：课程表编辑状态切换 —— 进入编辑态后才可对所有方格执行修改（课程/着装/放学一致）
+  function schedToggleEditMode(){
+    _schedEditMode = !_schedEditMode;
+    schedSyncEditBtn();
+    renderScheduleAll();
+    if(window.toast) toast(_schedEditMode ? '编辑状态已开启：可修改所有方格' : '已退出编辑状态');
+  }
   const SCHED_SWATCHES = ['#ffffff','#a4d0ff','#8fc1f7','#1e3a8a','#ffd24d','#a8e6a3','#ff8fa3','#c9b6ff'];
   // R43-1：课程表科目快捷选项（点击填入「课程名称」输入框，免去手打）
   const SCHED_SUBJECTS = ['班级活动','道法','科学','综合实践','体育健康','数学','艺术','语文','英语','信息技术','心理'];
@@ -36418,13 +36580,24 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     let cur = '';
     if(isRow){
       const store = (sc[schedCellKind] && typeof sc[schedCellKind] === 'object') ? sc[schedCellKind] : {};
-      cur = store[dayKey] || '';
+      // R161-3：着装/放学行取值兼容 {t, c} / 纯字符串
+      const rowVal = schedRowVal(store[dayKey]);
+      cur = rowVal.t;
       const isAttire = (schedCellKind === 'attire');
       if(titleEl) titleEl.textContent = isAttire ? '👕 填写着装' : '🔔 填写放学时间';
       if(labelEl) labelEl.textContent = isAttire ? '当日着装' : '放学时间';
       if(textInp){ textInp.placeholder = isAttire ? '如：校服 / 运动服' : '如：16:30'; textInp.maxLength = 20; }
       if(subWrap) subWrap.hidden = true;      // 着装/放学无「快捷科目」
-      if(colorWrap) colorWrap.hidden = true;  // 着装/放学无颜色配置
+      // R161-3：着装/放学行全部方格支持编辑区域颜色（与课程格同一套色板 + 取色器）
+      if(colorWrap) colorWrap.hidden = false;
+      const colInpRow = document.getElementById('schedCellColor');
+      if(colInpRow) colInpRow.value = rowVal.c || sc.tableCell || sc.addColor || '#ffffff';
+      // R161-3：色板与课程格同一套（SCHED_SWATCHES），点选即写入取色器
+      const swRow = $('#schedSwatches');
+      if(swRow){
+        swRow.innerHTML = SCHED_SWATCHES.map(col=>`<span class="sw" data-col="${col}" style="background:${col}" title="${col}"></span>`).join('');
+        swRow.querySelectorAll('.sw').forEach(s=> s.addEventListener('click', ()=>{ $('#schedCellColor').value = s.dataset.col; }));
+      }
     } else {
       const cell = sc.cells[r+'-'+c] || {};
       cur = cell.t || '';
@@ -36434,13 +36607,18 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       if(subWrap) subWrap.hidden = false;
       if(colorWrap) colorWrap.hidden = false;
       $('#schedCellColor').value = cell.c || sc.addColor || '#ffffff';
-      const sw = $('#schedSwatches');
+    }
+    // 色板（课程格 / 着装 / 放学共用同一套 SCHED_SWATCHES）
+    const sw = $('#schedSwatches');
+    if(sw){
       sw.innerHTML = SCHED_SWATCHES.map(col=>`<span class="sw" data-col="${col}" style="background:${col}" title="${col}"></span>`).join('');
       sw.querySelectorAll('.sw').forEach(s=> s.addEventListener('click', ()=>{ $('#schedCellColor').value = s.dataset.col; }));
+    }
+    if(!isRow){
       // R43-1：科目快捷选项 —— 点击填入课程名；已选中的科目高亮
       const sq = $('#schedSubjectQuick');
       if(sq){
-        const curSub = String(cell.t || '').trim();
+        const curSub = String(cur || '').trim();
         sq.innerHTML = SCHED_SUBJECTS.map(sub=>`<span class="sched-sub-btn${sub===curSub?' on':''}" data-sub="${esc(sub)}" title="填入「${esc(sub)}」">${esc(sub)}</span>`).join('');
         sq.querySelectorAll('.sched-sub-btn').forEach(b=> b.addEventListener('click', ()=>{
           const v = b.dataset.sub || '';
@@ -36464,10 +36642,12 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     const sc = S.getSchedule();
     if(schedCellKind === 'attire' || schedCellKind === 'dismiss'){
       // R157-3：着装/放学行 —— 写入 sc.attire / sc.dismiss（key = 规范化星期标签）
+      // R161-3：内容 + 区域颜色一并持久化为 {t, c}（读取端 schedRowVal 兼容旧纯字符串存档）
       const field = schedCellKind;
       const key = schedDayKey(sc, schedCellC);
       if(!sc[field] || typeof sc[field] !== 'object') sc[field] = {};
-      if(t){ sc[field][key] = t; } else { delete sc[field][key]; }
+      const color = ($('#schedCellColor').value || '').trim();
+      if(t){ sc[field][key] = { t: t, c: color }; } else { delete sc[field][key]; }
     } else {
       const c = $('#schedCellColor').value;
       const key = schedCellR+'-'+schedCellC;
@@ -40840,8 +41020,10 @@ I'm good at running.`},
     if(btnCourseTable) btnCourseTable.addEventListener('click', ()=>{ renderScheduleAll(); showModal('#modalCourseTable'); });
     const btnCourseTableClose = document.getElementById('btnCourseTableClose');
     if(btnCourseTableClose) btnCourseTableClose.addEventListener('click', ()=>{ hideModal('#modalCourseTable'); });
+    // R161-2：【⚙ 设置】改为【✏️ 编辑】—— 点击进入/退出编辑状态，仅编辑态下所有方格可修改；
+    // 课程表设置（增删行/列、整表外观配色）仍由表头行点击进入（仅家长模式，见 renderNwSub）
     const btnCourseTableGear = document.getElementById('btnCourseTableGear');
-    if(btnCourseTableGear) btnCourseTableGear.addEventListener('click', ()=>{ openSchedManage(); });
+    if(btnCourseTableGear) btnCourseTableGear.addEventListener('click', ()=>{ schedToggleEditMode(); });
     // R146：删除页面右上角「管理备忘」按钮（#btnMemoManage）—— 备忘内容编辑改由各便签卡右上角
     // 编辑图标进入统一弹窗（openMemoEditModal），顶部只保留标题与「返回首页」。
   }
@@ -40871,7 +41053,9 @@ I'm good at running.`},
   const MN_TINTS = ['rgba(255,86,86,.92)','rgba(255,152,58,.92)','rgba(255,213,64,.92)','rgba(72,214,128,.92)','rgba(34,211,238,.92)','rgba(79,140,255,.92)','rgba(167,139,250,.92)'];
   // 管理面板「透明」滑杆区间 0.2~1；R136-1：把该值换算成与管理页面行卡同一套玻璃白度
   // （CSS 变量 --mn-glass-bg = .34），滑杆拉满即与管理页面完全一致，拉低则更透。
-  const MN_GLASS_MIN = 0.02, MN_GLASS_MAX = 0.07, MN_OP_MIN = 0.2;   // R160-5：调低玻璃白度，使背景图（陆家嘴天际线）更清晰透出
+  // R160-5：0.04/0.12 → 0.02/0.07（背景图更透）；R161-8：再度适度下调至 0.015/0.05，
+  // 配合染色层/高光减淡与模糊提升，底层陆家嘴天际线更清晰透出且文字仍可读。
+  const MN_GLASS_MIN = 0.015, MN_GLASS_MAX = 0.05, MN_OP_MIN = 0.2;
   function mnGlassAlpha(m){
     const raw = (m && m.opacity!==undefined && m.opacity!==null && m.opacity!=='') ? (+m.opacity) : 1;
     let op = raw; if(isNaN(op) || op < MN_OP_MIN) op = MN_OP_MIN; if(op > 1) op = 1;
@@ -40977,17 +41161,31 @@ I'm good at running.`},
     // R160-3：wbSyncEditBtn（同步大卡「新增」按钮显隐）已随大卡「新增」按钮移除一并删除，此处不再调用
   }
   // R153：5 张标签卡独立渲染函数 —— 由周看板「今天」视图调用（renderWbToday 内拼入 #wbBody）。
-  // 卡位规则与 R148/R151-3 完全一致：5 张卡依次对应 memos[0]~memos[4]（从第 1 条备忘起渲染，新增内容即时可见）。
-  // R154-3/6：行内编辑表单（含备注字段）整体移除 —— 编辑态（_wbEditMode，与周看板「编辑/取消」同一状态）下：
+  // 卡位规则与 R148/R151-3 完全一致：5 张卡依次填充备忘（从第 1 条备忘起渲染，新增内容即时可见）。
+  // R161-1：今天/周/月三板块数据互通（同一套 nickMemos + 周看板按日期存取，任意板块新增即三端同步）——
+  //       今日视图的 5 个卡片位按「落在今日（或无日期）的备忘优先，其余日期备忘顺延排后」填充，
+  //       保证今日区只见今日内容；data-mn-idx 仍指向 memos 原下标，编辑/删除按原下标精确定位。
+  // R154-3/6：行内编辑表单（含备注字段）整体移除 —— 编辑态（_wbEditMode）下：
   //   ① 点卡片 / ✏️ 编辑键 → 打开右上角同款 Word 富文本弹窗（wbOpenMemoModal，样式/交互与「新增」完全一致）；
   //   ② 卡工具为 ✏️ 编辑 + 🗑 删除（移除该条备忘）；R157-2 起「⌫ 清空」键已移除。
   // 查看态正文渲染：事项为主行；有富文本（noteHtml）时渲染富文本，否则展示纯文本备注（不再单列「备注」字段）。
+  // R161-h：✏️/🗑 工具与卡面编辑态仅在 _wbEditMode 下渲染；查看态点卡片 → 放大预览详情。
   function mnTagCardsHTML(){
     const memos = getNickMemosSafe();
+    const today = _nbDate || nbTodayISO();
+    // R161-1：今日卡片位填充顺序 —— 今日/无日期备忘优先，其它日期备忘顺延排后
+    const idxToday = [], idxOther = [];
+    for(let i=0;i<memos.length;i++){
+      const d = memos[i] && memos[i].date;
+      if(!d || d === today) idxToday.push(i); else idxOther.push(i);
+    }
+    const order = idxToday.concat(idxOther).slice(0, MN_CARD_COUNT);
     let html = '';
-    for(let i=0;i<MN_CARD_COUNT;i++){
-      const m = memos[i];
+    for(let s=0;s<MN_CARD_COUNT;s++){
+      const i = order[s];
+      const m = (i !== undefined) ? memos[i] : null;
       const id = (m && m.id) ? String(m.id) : '';
+      const idxAttr = (i === undefined) ? -1 : i;
       const fontFam = (m && m.font) ? ';font-family:'+esc(m.font) : '';
       // R156-3a③：标签卡同样支持字号（与管理页/编辑弹窗字段统一）
       const fontSz = (m && m.fontSize && +m.fontSize > 0) ? ';font-size:'+Math.max(10, Math.min(40, +m.fontSize))+'px' : '';
@@ -40999,19 +41197,19 @@ I'm good at running.`},
       if(itemS) parts.push('<div class="mn-note-item">'+esc(itemS)+'</div>');
       if(noteHtmlS) parts.push('<div class="mn-note-rich">'+noteHtmlS+'</div>');
       else if(noteS) parts.push('<div class="mn-note-note">'+esc(noteS)+'</div>');
-      const dotColor = MN_TINTS[(i + 1) % MN_TINTS.length];
+      // 卡位色（s）与 .wb-tagcards nth-child 染色层严格同色；R161-1 改按卡位取色（内容顺延后仍与底色一致）
+      const dotColor = MN_TINTS[(s + 1) % MN_TINTS.length];
       const body = '<div class="mn-note-body">'
         + '<div class="mn-note-lead"><span class="mn-note-dot" style="background:'+dotColor+'"></span>'+(parts[0]||'')+'</div>'
         + parts.slice(1).join('')
         + '</div>';
-      // R156-3a②：编辑/删除按钮随 _wbEditMode 显示；R158-1 起一级卡片右上角「编辑」键已移除、
-      // _wbEditMode 恒为 true，故标签卡上的 ✏️ 编辑 + 🗑 删除常驻显示，点卡片亦可直接唤起编辑弹窗。
-      // R157-2：移除【⌫ 清除这张卡的内容】按键（编辑/删除已覆盖全部管理诉求）。
+      // R161-h：✏️/🗑 工具与卡面编辑态仅在 _wbEditMode 下渲染；查看态点卡片 → 放大预览详情
+      // R157-2：移除【⌫ 清除这张卡的内容】按键（编辑/删除已覆盖全部管理诉求）
       const tools = _wbEditMode
-        ? '<button class="mn-tool-btn mn-tool-edit" type="button" title="编辑备忘录" aria-label="编辑备忘录" data-page-node-id="R134memoEdit'+i+'">'+MN_TOOL_EDIT+'</button>'
-          + '<button class="mn-tool-btn mn-tool-del" type="button" title="删除这张备忘" aria-label="删除这张备忘" data-page-node-id="R134memoDel'+i+'">'+MN_TOOL_DEL+'</button>'
+        ? '<button class="mn-tool-btn mn-tool-edit" type="button" title="编辑备忘录" aria-label="编辑备忘录" data-page-node-id="R134memoEdit'+s+'">'+MN_TOOL_EDIT+'</button>'
+          + '<button class="mn-tool-btn mn-tool-del" type="button" title="删除这张备忘" aria-label="删除这张备忘" data-page-node-id="R134memoDel'+s+'">'+MN_TOOL_DEL+'</button>'
         : '';
-      html += '<div class="mn-note-card'+(_wbEditMode?' mn-note-editing':'')+'" data-mn-id="'+esc(id)+'" data-mn-idx="'+i+'"'+bg+' data-page-node-id="R134memoCard'+i+'">'
+      html += '<div class="mn-note-card'+(_wbEditMode?' mn-note-editing':'')+'" data-mn-id="'+esc(id)+'" data-mn-idx="'+idxAttr+'"'+bg+' data-page-node-id="R134memoCard'+s+'">'
         + '<div class="mn-note-tools">'
         + tools
         + '</div>'
@@ -41035,7 +41233,8 @@ I'm good at running.`},
         const card = btn.closest('.mn-note-card');
         const idx = card ? +card.getAttribute('data-mn-idx') : -1;
         const memos = getNickMemosSafe();
-        wbOpenMemoModal(memos[idx] || null, idx);
+        // R161-1：空卡位（idx<0，今日无更多备忘）→ 追加一条新备忘，顺延落入今日卡片位
+        wbOpenMemoModal((idx >= 0 ? memos[idx] : null) || null, idx);
       });
     });
     // R157-2：原「⌫ 清空」键（mn-tool-clear）已移除 —— 清空诉求由「✏️ 编辑」弹窗内删除/改写覆盖
@@ -41062,12 +41261,13 @@ I'm good at running.`},
         card.addEventListener('click', function(e){
           if(e.target.closest && e.target.closest('.mn-tool-btn')) return;
           const idx = +card.getAttribute('data-mn-idx');
-          // R160-2：点击任意标签卡 → 放大预览该卡全部内容（主题 + 富文本全文）；编辑仍走 ✏️ 键
-          wbOpenMemoPreview(idx);
+          const memos = getNickMemosSafe();
+          // R161-1：空卡位（idx<0）→ 追加新备忘；否则编辑该卡对应备忘
+          wbOpenMemoModal((idx >= 0 ? memos[idx] : null) || null, idx);
         });
       });
     }
-    // R155-3③：查看态点标签卡（非工具键）→ 放大预览该卡内容
+    // R155-3③ → R161-h：查看态点标签卡（非工具键）→ 放大预览该卡内容（详情查看页面，不做任何修改）
     if(!_wbEditMode){
       root.querySelectorAll('.mn-note-card[data-mn-idx]').forEach(function(card){
         if(card.__nmViewBound) return; card.__nmViewBound = true;
@@ -41112,9 +41312,10 @@ I'm good at running.`},
   let _wbMonthDay = '';        // R146：月视图编辑态下打开的单日明细（ISO）
   let _wbMonthPickDate = '';   // R158-2：月视图最近点击的日期（供毛玻璃弹窗刷新与头部「新增」定位归属日）
   let _wbMonthMemosDate = '';  // R158-2：当前打开的「月视图单日备忘」毛玻璃弹窗对应日期
-  // R158-2：一级卡片右上角「编辑/取消」键移除后，编辑能力改为「直接点卡片唤起富文本弹窗」，
-  // 因此 _wbEditMode 恒为 true（今天/周/月三版块的卡片一律可点可改可删），不再需要开关切换。
-  let _wbEditMode = true;      // R145→R146：编辑模式（文字按钮「编辑」）—— 全部备忘卡可修改/删除
+  // R161-h：右上角【月】旁新增【编辑】按键 —— 默认查看态（_wbEditMode=false）：点标签卡片弹出详情查看页面
+  // （#modalMemoPreview / #modalWbDetail），各版块「＋ 新增」键与 ✏️/🗑 工具一律隐藏；
+  // 点【编辑】进入编辑态后才可执行各板块备忘的新增 / 编辑 / 删除操作（再点一次【完成】退出）。
+  let _wbEditMode = false;     // R161-h：编辑模式（右上角「编辑 / 完成」按键）—— 仅编辑态可增改删备忘
   let _wbEditId = '';          // 正在编辑的任务 id
   let _wbEditDate = '';        // 新建时所属日期
   let _wbEditType = 'range';
@@ -41122,7 +41323,42 @@ I'm good at running.`},
   let _wbEditColor = 'blue';
   // R154-3c：弹窗编辑目标 —— 'task'=周看板日程（原有）；'memo'=5 张标签卡对应备忘（与「新增」同款弹窗）
   let _wbEditTarget = 'task';
-  let _wbEditMemoIdx = -1;     // memo 模式下正在编辑的卡位（memos 下标）
+  let _wbEditMemoIdx = -1;     // memo 模式下正在编辑的卡位（memos 下标；-1 = 空卡位 → 追加新备忘）
+  // R161-2：新建/编辑弹窗日期模式 —— 'single'=单日；'range'=日期区间（某月某日至某月某日）
+  let _wbDateMode = 'single';
+  // R161-4：字号改为 Word 式数字选择（工具栏 #wbRteSize）后，卡片级字体/字号改由工具栏选择值持久化
+  let _wbRteFontPick = '', _wbRteSizePick = '';
+  // R161-2：日期区间展开 —— 区间内每日各落一条同内容备忘（共享 rangeId，成员携带 rangeStart/dateEnd），
+  // 周/月视图按日落位展示，今日视图亦可见落在今日的那条，实现三板块数据互通。
+  function wbIsoList(from, to){
+    const p = n=>(n<10?'0':'')+n;
+    const s = new Date(from+'T00:00:00'), e = new Date(to+'T00:00:00');
+    if(isNaN(s.getTime()) || isNaN(e.getTime()) || e < s) return [from];
+    const out = [];
+    for(let x = new Date(s); x <= e; x.setDate(x.getDate()+1)){
+      out.push(x.getFullYear()+'-'+p(x.getMonth()+1)+'-'+p(x.getDate()));
+      if(out.length >= 62) break;   // 兜底上限（约两个月），防呆
+    }
+    return out;
+  }
+  // R161-2：清除旧区间组成员（按 rangeId + 已知起止日期范围定位，避免全库扫描）
+  function wbRemoveRange(rangeId, from, to){
+    if(!rangeId) return;
+    wbIsoList(from, to).forEach(function(d){
+      const list = wbTasksOn(d);
+      const next = list.filter(function(x){ return x.rangeId !== rangeId; });
+      if(next.length !== list.length) wbSaveOn(d, next);
+    });
+  }
+  // R161-2：日期模式切换（单日 / 区间）—— 区间模式显示第二个日期输入（至 某月某日）
+  function wbSyncDateMode(){
+    const wrap = document.getElementById('wbInDateEndWrap');
+    if(wrap) wrap.hidden = (_wbDateMode !== 'range');
+    const box = document.getElementById('wbDateMode');
+    if(box) box.querySelectorAll('.wb-dmode-btn').forEach(function(b){
+      b.classList.toggle('on', b.getAttribute('data-dmode') === _wbDateMode);
+    });
+  }
   function wbMondayOf(iso){ const d = new Date(iso + 'T00:00:00'); const off = (d.getDay() + 6) % 7; d.setDate(d.getDate() - off); const p = n => (n<10?'0':'')+n; return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate()); }
   function wbShiftMonday(iso, w){ const d = new Date(iso + 'T00:00:00'); d.setDate(d.getDate() + w*7); const p = n => (n<10?'0':'')+n; return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate()); }
   function wbShiftMonth(ym, delta){ let a = ym.split('-'); let y = +a[0], m = +a[1] + delta; while(m > 12){ m -= 12; y++; } while(m < 1){ m += 12; y--; } return y + '-' + (m<10?'0':'') + m; }
@@ -41137,7 +41373,8 @@ I'm good at running.`},
     return null;
   }
   function wbTimeText(t){ if(t.type==='all') return '全天'; if(t.type==='point') return t.start || ''; return (t.start||'') + ' - ' + (t.end || nbAddHour(t.start||'09:00', 60)); }
-  function wbNextColor(date){ const cs = ['blue','green','yellow','red']; return cs[wbTasksOn(date).length % 4]; }
+  // R161-5：可选颜色由 4 色扩充到 8 色（与编辑弹窗 #wbColors 色板一致：蓝/绿/黄/红/紫/橙/青/粉）
+  function wbNextColor(date){ const cs = ['blue','green','yellow','red','purple','orange','teal','pink']; return cs[wbTasksOn(date).length % cs.length]; }
   function weekBoardCardHTML(){
     // R148：删除背景图与内容卡中间的毛玻璃卡（原 .wb-win）—— 头部 / 副标题 / 备忘内容区
     // 直接铺在周看板半透明绿底上，中间不再夹一层玻璃面板，天际线背景更透。
@@ -41145,13 +41382,17 @@ I'm good at running.`},
       + '<div class="wb-win-head">'
       + '<div class="wb-nav-left">'
       + '<button class="wb-nav-btn" id="wbBtnPrev" type="button" title="上一周/上一月/前一天" aria-label="上一周/上一月/前一天">←</button>'
-      + '<span class="wb-ym" id="wbYm"></span>'
+      // R161-g：左上角日期改为弹窗标签选择模式（点击年月/日期签 → 弹出日期选择弹窗 #modalWbDatePick）
+      + '<button class="wb-ym wb-ym-btn" id="wbYmBtn" type="button" title="点击选择日期"><span class="wb-ym" id="wbYm"></span><span class="wb-ym-caret">▾</span></button>'
       + '<button class="wb-nav-btn" id="wbBtnNext" type="button" title="下一周/下一月/后一天" aria-label="下一周/下一月/后一天">→</button>'
       + '</div>'
       + '<div class="wb-nav-right">'
       + '<button class="wb-view-btn" id="wbBtnToday" type="button">今天</button>'
       + '<button class="wb-view-btn" id="wbBtnWeek" type="button">周</button>'
       + '<button class="wb-view-btn" id="wbBtnMonth" type="button">月</button>'
+      // R161-h：【月】旁新增【编辑】按键 —— 点击进入编辑状态后，才可执行各板块备忘的新增/编辑操作；
+      // 非编辑状态点击标签卡片 → 弹出详情查看页面（#modalWbDetail / #modalMemoPreview）
+      + '<button class="wb-view-btn wb-edit-btn" id="wbBtnEditMode" type="button" title="进入编辑状态后才可新增 / 编辑备忘">编辑</button>'
       // R160-3：移除一级标签卡（周看板大卡）右上角「新增」按钮及其功能 —— 新增入口统一由各版块内
       // 的「＋ 新增」键承担（如 .wb-col-add / .wb-zone-add-zone / .wb-zone-add-zone），大卡不再保留新增。
       + '</div>'
@@ -41161,6 +41402,8 @@ I'm good at running.`},
       + '<div class="wb-body" id="wbBody" data-page-node-id="R141wbBody"></div>'
       + '</div>';
   }
+  // R161-5：周板块卡片仅展示主题（时间行仅在「今天/单日明细」的完整卡片展示，周视图紧凑卡只留主题，
+  // 避免窄列内文字换行溢出；毛玻璃 + 尺寸由 .wb-task-compact 样式保证内容不溢出）。
   function wbTaskHTML(t, compact){
     const rich = t.html ? t.html : esc(t.title);
     const timeTxt = esc(wbTimeText(t));
@@ -41171,7 +41414,6 @@ I'm good at running.`},
     const main = compact
       ? '<div class="wb-task-main">'
           + '<div class="wb-task-title">'+esc(t.title||'(无主题)')+'</div>'
-          + (timeTxt ? '<div class="wb-task-time">'+timeTxt+'</div>' : '')
         + '</div>'
       : '<div class="wb-task-main">'
           + '<div class="wb-rte-content">'+rich+'</div>'
@@ -41239,6 +41481,8 @@ I'm good at running.`},
     const w = document.getElementById('wbBtnWeek'); if(w) w.classList.toggle('active', _wbView === 'week');
     const m = document.getElementById('wbBtnMonth'); if(m) m.classList.toggle('active', _wbView === 'month');
     const t = document.getElementById('wbBtnToday'); if(t) t.classList.toggle('active', _wbView === 'today');
+    // R161-h：右上角【编辑 / 完成】按键态同步（今天/周/月三版块共用同一编辑状态）
+    wbSyncEditBtn();
     // R147：副标题文案随版块切换 —— 今天→「把今天，安排的清清楚楚」；月→「站远一点，看整个月的安排」；周→「一周忙闲，一眼看清」
     const intro = document.getElementById('wbIntro');
     if(intro){
@@ -41299,9 +41543,11 @@ I'm good at running.`},
     body.querySelectorAll('.wb-mcell[data-wb-date]').forEach(function(c){
       c.addEventListener('click', function(){
         const date = c.getAttribute('data-wb-date');
-        // R160-4：月视图日期格 → 直接唤起标签卡编辑弹窗（#modalWbEdit）：当日有任务编辑首条，
-        // 无任务则按该日新建（与今日/周板块点卡片行为一致）；不再经过月板块详情弹窗。
         _wbMonthPickDate = date;
+        // R161-h：查看态点日期格 → 弹窗展示该日全部备忘（详情查看）；编辑态才可直接编辑/新建
+        if(!_wbEditMode){ wbOpenMonthMemos(date); return; }
+        // R160-4：编辑态点日期格 → 直接唤起标签卡编辑弹窗（#modalWbEdit）：当日有任务编辑首条，
+        // 无任务则按该日新建（与今日/周板块点卡片行为一致）。
         const list = wbTasksOn(date);
         if(list.length){ wbOpenEditModal(list[0], { date: date }); }
         else { wbAddNew({ date: date, zone: '' }); }
@@ -41312,12 +41558,17 @@ I'm good at running.`},
   function renderWbMonthDay(){
     const body = document.getElementById('wbBody'); if(!body) return;
     const date = _wbMonthDay;
+    // R161-h：月视图单日明细（编辑态）同样提供「＋ 新增」入口
+    const dayAdd = _wbEditMode
+      ? '<button class="wb-col-add wb-day-add" type="button" data-wb-col-add="'+date+'" title="在 '+nbFmtCN(date)+' 新增备忘">＋ 新增</button>'
+      : '';
     body.innerHTML = '<div class="wb-dayview" data-page-node-id="R146wbMonthDay">'
       + '<div class="wb-sec-bar">'
       + '<button class="wb-back-btn" id="wbMonthBack" type="button">← 返回月视图</button>'
       + '<span class="wb-sec-title">'+esc(nbFmtCN(date))+'</span>'
       + '</div>'
       + wbDayCardsHTML(date)
+      + dayAdd
       + '</div>';
     const back = document.getElementById('wbMonthBack');
     if(back) back.onclick = function(){ _wbMonthDay = ''; wbRefresh(); };
@@ -41346,8 +41597,13 @@ I'm good at running.`},
     const old = body.querySelector('#wbTagCards');
     if(old && old.children.length && _wbTagSig === sig) keep = old;
     if(keep) keep.remove();   // 先摘除（保留子节点与已绑事件），再整体重排日程区
+    // R161-h：今日板块「＋ 新增」入口（仅编辑态显示）—— R160-3 移除大卡新增键后，今日视图改在此处新增
+    const todayAdd = _wbEditMode
+      ? '<button class="wb-col-add wb-day-add" type="button" data-wb-col-add="'+_nbDate+'" title="在 '+nbFmtCN(_nbDate)+' 新增备忘">＋ 新增</button>'
+      : '';
     body.innerHTML = '<div class="wb-dayview" data-page-node-id="R142wbDayview">'
       + wbDayCardsHTML(_nbDate)
+      + todayAdd
       + '</div>';
     if(keep){
       body.appendChild(keep);
@@ -41369,8 +41625,8 @@ I'm good at running.`},
     if(window.toast) toast(t.done ? '已完成「'+(t.title||'这条备忘')+'」🎉' : '已取消完成标记');
   }
   /* R146：统一卡片交互（周视图日期列 / 今天视图列表 / 月视图单日明细共用）。
-     R158-2：编辑态开关移除后统一为「点击卡片 → 富文本弹窗编辑」（与今日板块标签卡同款），
-     长按仍保留标记完成/取消完成；长按与点击互不干扰（位移 > 8px 或已触发长按则不再弹窗）。 */
+     R161-h：点击行为随编辑态门控 —— 编辑态点卡片 → 富文本弹窗编辑；查看态点卡片 → 弹窗查看完整详情
+     （#modalWbDetail，与月板块详情弹窗同款）；长按仍保留标记完成/取消完成（两态均可用）。 */
   function bindWbCards(){
     const body = document.getElementById('wbBody'); if(!body) return;
     body.querySelectorAll('.wb-task').forEach(function(card){
@@ -41398,8 +41654,10 @@ I'm good at running.`},
         if(timer){ clearTimeout(timer); timer = null; }
         card.classList.remove('wb-pressing');
         if(!moved && !longFired){
-          // R158-2：点击卡片 → 富文本弹窗编辑（今天/周/月三版块统一，弹窗样式与今日板块标签卡一致）
-          const t = wbTaskOn(date, id); wbOpenEditModal(t, { date:date });
+          // R161-h：编辑态点卡片 → 富文本弹窗编辑；查看态点卡片 → 弹窗查看完整详情
+          const t = wbTaskOn(date, id);
+          if(_wbEditMode){ wbOpenEditModal(t, { date:date }); }
+          else { wbOpenWeekDetail(t, date); }
         } else if(longFired){ wbToggleDoneOn(date, id); }
         sx = 0; sy = 0;
       };
@@ -41514,9 +41772,9 @@ I'm good at running.`},
         b.addEventListener('click', function(){ wbRteRestoreRange(); try{ document.execCommand(b.getAttribute('data-cmd'), false, null); }catch(e){} wbRteSaveRange(); });
       });
       const font = document.getElementById('wbRteFont');
-      if(font) font.addEventListener('change', function(){ wbRteRestoreRange(); try{ document.execCommand('fontName', false, font.value); }catch(e){} wbRteSaveRange(); });
+      if(font) font.addEventListener('change', function(){ wbRteRestoreRange(); try{ document.execCommand('fontName', false, font.value); }catch(e){} wbRteSaveRange(); _wbRteFontPick = (font.value && font.value !== 'inherit') ? font.value : ''; });
       const size = document.getElementById('wbRteSize');
-      if(size) size.addEventListener('change', function(){ wbRteWrap('fontSize', size.value + 'px'); size.value = ''; });
+      if(size) size.addEventListener('change', function(){ wbRteWrap('fontSize', size.value + 'px'); _wbRteSizePick = size.value || ''; size.value = ''; });
       const col = document.getElementById('wbRteColor');
       if(col) col.addEventListener('input', function(){ wbRteRestoreRange(); try{ document.execCommand('foreColor', false, col.value); }catch(e){} wbRteSaveRange(); });
       // R156-3a③：工具栏补齐与管理页面同款控件 —— 背景高亮 / 首行缩进 / 段间距 / 清空
@@ -41564,12 +41822,20 @@ I'm good at running.`},
     const ti = document.getElementById('wbInTitle');
     if(ti) ti.value = t.title || '';
     // R160-1：日期选择（主题栏右侧，交互逻辑与时间选择一致）—— 默认取任务归属日
+    // R161-2：日期区间 —— 区间成员回填区间首日（rangeStart）与区间尾日（rangeEnd）
     const dt = document.getElementById('wbInDate');
-    if(dt) dt.value = _wbEditDate;
-    const sf = document.getElementById('wbStyleFont');
+    if(dt) dt.value = (t.rangeStart || _wbEditDate);
+    const de = document.getElementById('wbInDateEnd');
+    if(de) de.value = (t.rangeStart && t.rangeEnd) ? t.rangeEnd : '';
+    _wbDateMode = (t.rangeStart && t.rangeEnd) ? 'range' : 'single';
+    wbSyncDateMode();
+    // R161-4：字体/字号改由工具栏 Word 式数字选择持久化（底部字体/字号输入行已移除）
+    const sf = document.getElementById('wbRteFont');
     if(sf) sf.value = t.font || '';
-    const ss = document.getElementById('wbStyleSize');
+    _wbRteFontPick = t.font || '';
+    const ss = document.getElementById('wbRteSize');
     if(ss) ss.value = t.fontSize || '';
+    _wbRteSizePick = t.fontSize || '';
     const ed = document.getElementById('wbEditor');
     if(ed){ ed.innerHTML = wbSanitize(t.html || (t.title ? esc(t.title) : '')); _wbSavedRange = null;
       try{ document.execCommand('defaultParagraphSeparator', false, 'p'); }catch(e){} }
@@ -41601,10 +41867,17 @@ I'm good at running.`},
     // R160-1：日期选择 —— 取该条备忘的 date，缺省回退到今天
     const dt = document.getElementById('wbInDate');
     if(dt) dt.value = m.date || nbTodayISO();
-    const sf = document.getElementById('wbStyleFont');
+    const de = document.getElementById('wbInDateEnd');
+    if(de) de.value = (m.dateEnd) ? m.dateEnd : '';
+    _wbDateMode = (m.date && m.dateEnd) ? 'range' : 'single';
+    wbSyncDateMode();
+    // R161-4：字体/字号改由工具栏 Word 式数字选择持久化（底部字体/字号输入行已移除）
+    const sf = document.getElementById('wbRteFont');
     if(sf) sf.value = m.font || '';
-    const ss = document.getElementById('wbStyleSize');
+    _wbRteFontPick = m.font || '';
+    const ss = document.getElementById('wbRteSize');
     if(ss) ss.value = m.fontSize || '';
+    _wbRteSizePick = m.fontSize || '';
     const ed = document.getElementById('wbEditor');
     if(ed){ ed.innerHTML = wbSanitize(m.noteHtml || (m.item ? esc(m.item) : '')); _wbSavedRange = null;
       try{ document.execCommand('defaultParagraphSeparator', false, 'p'); }catch(e){} }
@@ -41630,7 +41903,7 @@ I'm good at running.`},
     const closeBtn = document.getElementById('btnWbDetailClose');
     if(closeBtn) closeBtn.onclick = function(){ hideModal('#modalWbDetail'); };
     const editBtn = document.getElementById('btnWbDetailEdit');
-    if(editBtn) editBtn.onclick = function(){ hideModal('#modalWbDetail'); wbOpenEditModal(t, { date:date }); };
+    if(editBtn) editBtn.onclick = function(){ hideModal('#modalWbDetail'); wbEnsureEditMode(); wbOpenEditModal(t, { date:date }); };
     showModal('#modalWbDetail');
   }
   // R155-3⑤：月视图查看态点日期卡 → 弹窗展示该日期全部备忘事项
@@ -41652,10 +41925,11 @@ I'm good at running.`},
     const mmEditBtn = document.getElementById('btnWbMonthMemosEdit');
     if(mmEditBtn) mmEditBtn.onclick = function(){
       const list = wbTasksOn(_wbMonthMemosDate || date);
-      if(!list.length){ if(window.toast) toast('这一天还没有备忘，可先在月板块点「新增」创建'); return; }
+      if(!list.length){ if(window.toast) toast('这一天还没有备忘，可先进入编辑态后点「新增」创建'); return; }
       const t = list[0];
       // 不关闭本弹窗：编辑弹窗叠在其上，保存/删除后由 wbRefreshMonthMemos() 同步刷新，
       // 关闭编辑窗即可看到更新后的当日备忘（与点击卡片编辑的行为一致）。
+      wbEnsureEditMode();
       wbOpenEditModal(t, { date: _wbMonthMemosDate || date });
       if(list.length > 1 && window.toast) toast('已打开第 1 条，编辑后返回可继续点其它卡片');
     };
@@ -41665,6 +41939,8 @@ I'm good at running.`},
         const id = card.getAttribute('data-wb-id');
         const d = card.getAttribute('data-wb-date') || date;
         const t = wbTaskOn(d, id);
+        // R161-h：详情弹窗内点卡片即编辑 —— 自动进入编辑态（与底部【✏️ 编辑】键同一路径）
+        wbEnsureEditMode();
         wbOpenEditModal(t, { date:d });
       });
     });
@@ -41675,17 +41951,34 @@ I'm good at running.`},
     const box = document.getElementById('modalWbMonthMemos');
     if(box && !box.hidden && _wbMonthMemosDate) wbOpenMonthMemos(_wbMonthMemosDate);
   }
-  // R145 → R146：编辑模式开关（文字按钮「编辑 / 取消」）—— 开启后今天/周/月三版块均可编辑，
-  // 页面内所有备忘卡显示删除×，点击卡片进入富文本修改；「新增」按钮仅在编辑态显示。
-  // R158-1：周看板「编辑/取消」按钮已从外壳移除（编辑改为直接点卡片唤起弹窗）；_wbEditMode 恒为 true，
-  // 原 wbSyncEditBtn（同步大卡「新增」按钮显隐）已随 R160-3 移除大卡「新增」按钮一并删除。
+  // R158-1：周看板「编辑/取消」按钮曾从外壳移除；R161-h 重新加回（右上角【月】旁新增【编辑】按键）——
+  // 查看态（默认）点卡片只弹详情；编辑态才可新增 / 编辑 / 删除，按钮文案在【编辑】↔【完成】间切换。
+  function wbSyncEditBtn(){
+    const b = document.getElementById('wbBtnEditMode');
+    if(!b) return;
+    b.textContent = _wbEditMode ? '完成' : '编辑';
+    b.classList.toggle('active', _wbEditMode);
+    b.title = _wbEditMode ? '完成编辑（退出编辑状态）' : '进入编辑状态后才可新增 / 编辑备忘';
+  }
+  // R145 → R146 → R161-h：编辑模式开关（右上角「编辑 / 完成」）—— 开启后今天/周/月三版块均可编辑，
+  // 页面内所有备忘卡显示删除×，点卡片进入富文本修改，「＋ 新增」按钮仅在编辑态显示；
+  // 查看态点卡片 → 弹出详情查看页面（#modalWbDetail / #modalMemoPreview）。
   function wbToggleEditMode(){
     _wbEditMode = !_wbEditMode;
     if(!_wbEditMode) _wbMonthDay = '';   // 退出编辑态时收起月视图单日明细
     const card = document.querySelector('.mn-weekboard');
     if(card) card.classList.toggle('wb-edit-mode', _wbEditMode);
+    wbSyncEditBtn();
     wbRefresh();
     if(window.toast) toast(_wbEditMode ? '编辑状态已开启：可切换今天/周/月，点卡片修改，点 × 删除' : '已退出编辑状态');
+  }
+  // R161-h：详情/预览页的编辑入口 —— 自动进入编辑态（不弹 toast），供各弹窗【✏️ 编辑】键复用
+  function wbEnsureEditMode(){
+    if(_wbEditMode) return;
+    _wbEditMode = true;
+    const wbc = document.querySelector('.mn-weekboard');
+    if(wbc) wbc.classList.add('wb-edit-mode');
+    wbSyncEditBtn(); wbRefresh();
   }
   // R146：新增备忘 —— 按当前版块决定所属日期（今天视图=当天；周视图=今天所在列，否则周一；月视图=已打开的单日，否则今天）。
   // R149-4：支持 prefill={date,zone}，由「按日期列 / 按区域」入口调用。
@@ -41705,7 +41998,93 @@ I'm good at running.`},
     const zone = (pf.zone != null) ? pf.zone : '';
     wbOpenEditModal(null, { type:'range', color:wbNextColor(date), date:date, start:'09:00', end:'10:00', zone:zone });
   }
+  // R161-g：左上角日期弹窗标签选择模式 —— 快捷标签（今天/昨天/明天）+ 月历网格，点选即跳到对应日期
+  let _wbDpYM = '';   // 日期选择弹窗当前展示的月份 'YYYY-MM'
+  function wbOpenDatePick(){
+    const base = (_wbView === 'week') ? _wbMonday : (_wbView === 'month' ? (_wbMonthYM + '-01') : (_nbDate || nbTodayISO()));
+    if(!_wbDpYM) _wbDpYM = String(base).slice(0, 7);
+    wbRenderDatePick();
+    showModal('#modalWbDatePick');
+  }
+  function wbRenderDatePick(){
+    const body = document.getElementById('wbDatePickBody');
+    if(!body) return;
+    const a = _wbDpYM.split('-'); const y = +a[0], m = +a[1];
+    const first = new Date(y, m-1, 1); const startOff = (first.getDay() + 6) % 7;
+    const p2 = n => (n<10?'0':'')+n;
+    const todayIso = nbTodayISO();
+    const curIso = (_wbView === 'week') ? wbDateOf(_wbMonday, 0) : (_wbView === 'month' ? (_wbMonthDay || todayIso) : (_nbDate || todayIso));
+    let html = '<div class="wb-dp-tags">'
+      + '<button type="button" class="wb-dp-tag" data-dp-quick="today">今天</button>'
+      + '<button type="button" class="wb-dp-tag" data-dp-quick="yesterday">昨天</button>'
+      + '<button type="button" class="wb-dp-tag" data-dp-quick="tomorrow">明天</button>'
+      + '</div>'
+      + '<div class="wb-dp-nav">'
+      + '<button type="button" class="wb-dp-navbtn" data-dp-nav="-1" title="上一月">←</button>'
+      + '<span class="wb-dp-ym">'+wbFmtMonth(_wbDpYM)+'</span>'
+      + '<button type="button" class="wb-dp-navbtn" data-dp-nav="1" title="下一月">→</button>'
+      + '</div>'
+      + '<div class="wb-dp-grid">';
+    WB_WD.forEach(function(w){ html += '<div class="wb-dp-wd">周'+w+'</div>'; });
+    for(let i=0;i<42;i++){
+      const day = i - startOff + 1;
+      const dt = new Date(y, m-1, day);
+      const inMonth = dt.getMonth() === m-1;
+      if(!inMonth){ html += '<div class="wb-dp-cell wb-dp-blank"></div>'; continue; }
+      const iso = dt.getFullYear()+'-'+p2(dt.getMonth()+1)+'-'+p2(dt.getDate());
+      const cls = ['wb-dp-cell'];
+      if(iso === todayIso) cls.push('wb-dp-today');
+      if(iso === curIso) cls.push('on');
+      const dots = wbTasksOn(iso).slice(0,3).map(function(t){ return '<i class="wb-dot wb-dot-'+t.color+'"></i>'; }).join('');
+      html += '<button type="button" class="'+cls.join(' ')+'" data-dp-date="'+iso+'">'
+        + '<span class="wb-dp-d">'+dt.getDate()+'</span>'
+        + '<span class="wb-dp-dots">'+dots+'</span>'
+        + '</button>';
+    }
+    html += '</div>';
+    body.innerHTML = html;
+    // 快捷标签：今天 / 昨天 / 明天
+    body.querySelectorAll('.wb-dp-tag').forEach(function(b){
+      b.addEventListener('click', function(){
+        const q = b.getAttribute('data-dp-quick');
+        const iso = (q === 'yesterday') ? nbShiftISO(todayIso, -1) : (q === 'tomorrow' ? nbShiftISO(todayIso, 1) : todayIso);
+        wbDatePickGo(iso);
+      });
+    });
+    // 月历翻月
+    body.querySelectorAll('.wb-dp-navbtn').forEach(function(b){
+      b.addEventListener('click', function(){
+        _wbDpYM = wbShiftMonth(_wbDpYM, parseInt(b.getAttribute('data-dp-nav'), 10) || 0);
+        wbRenderDatePick();
+      });
+    });
+    // 点选日期 → 按当前版块跳转（今天=当日；周=所在周；月=该月）
+    body.querySelectorAll('.wb-dp-cell[data-dp-date]').forEach(function(b){
+      b.addEventListener('click', function(){ wbDatePickGo(b.getAttribute('data-dp-date')); });
+    });
+  }
+  function wbDatePickGo(iso){
+    if(!iso) return;
+    if(_wbView === 'week') _wbMonday = wbMondayOf(iso);
+    else if(_wbView === 'month'){ _wbMonthYM = iso.slice(0, 7); _wbMonthDay = ''; }
+    else _nbDate = iso;
+    hideModal('#modalWbDatePick');
+    wbRefresh();
+  }
   function bindWbEditModal(){
+    // R161-2：日期模式（单日 / 日期区间）切换
+    const dm = document.getElementById('wbDateMode');
+    if(dm) dm.querySelectorAll('.wb-dmode-btn').forEach(function(b){
+      b.addEventListener('click', function(){
+        _wbDateMode = b.getAttribute('data-dmode') === 'range' ? 'range' : 'single';
+        wbSyncDateMode();
+        // 切到区间时，若结束日早于开始日则自动顺延为同一天，避免出现空区间
+        if(_wbDateMode === 'range'){
+          const s = document.getElementById('wbInDate'), e = document.getElementById('wbInDateEnd');
+          if(s && e){ if(!e.value || e.value < s.value) e.value = s.value; }
+        }
+      });
+    });
     const colors = document.getElementById('wbColors');
     if(colors) colors.querySelectorAll('button').forEach(function(b){ b.onclick = function(){ _wbEditColor = b.getAttribute('data-wb-color'); wbSyncEditModal(); }; });
     const save = document.getElementById('btnWbSave');
@@ -41738,10 +42117,9 @@ I'm good at running.`},
     // R156-3a③：主题栏 + 字体/字号（与管理页表单统一；主题栏为空时回退为正文首句）
     const ti = document.getElementById('wbInTitle');
     const titleText = (ti && ti.value ? ti.value : '').trim().slice(0, 30);
-    const sf = document.getElementById('wbStyleFont');
-    const font = (sf && sf.value ? sf.value : '').trim().slice(0, 40);
-    const ss = document.getElementById('wbStyleSize');
-    let fontSize = (ss && ss.value !== '') ? parseInt(ss.value, 10) : '';
+    // R161-4：字体/字号改由工具栏 Word 式数字选择持久化（#wbRteFont / #wbRteSize；底部输入行已移除）
+    const font = _wbRteFontPick || '';
+    let fontSize = (_wbRteSizePick !== '' && _wbRteSizePick != null) ? parseInt(_wbRteSizePick, 10) : '';
     if(isNaN(fontSize) || fontSize === '') fontSize = '';
     else fontSize = Math.max(10, Math.min(40, fontSize));
     // R160-1：读取日期选择控件（原生 date），用于写回任务归属日 / 标签卡 date
@@ -41750,8 +42128,9 @@ I'm good at running.`},
     // R154-3c：标签卡（memo）模式 —— 写回对应卡位的备忘，不动周看板日程
     if(_wbEditTarget === 'memo'){
       const memos = getNickMemosSafe();
-      const idx = _wbEditMemoIdx;
-      if(!(idx >= 0 && idx < MN_CARD_COUNT)){ hideModal('#modalWbEdit'); return; }
+      let idx = _wbEditMemoIdx;
+      // R161-1：空卡位（idx<0）→ 追加一条新备忘，顺延落入今日 5 个卡片位
+      if(!(idx >= 0 && idx < MN_CARD_COUNT)) idx = memos.length;
       const stM = document.getElementById('wbInStart');
       const time = (stM && stM.value) || '';
       let row = memos[idx];
@@ -41765,6 +42144,9 @@ I'm good at running.`},
       row.note = plain.slice(0, 500);   // 纯文本影子（渲染层 noteHtml 优先，不会重复展示）
       row.time = time;
       row.date = _wbInDateVal;   // R160-1：写回日期选择
+      // R161-2：标签卡同样支持日期区间（与周看板日程一致的单日/区间模式）
+      const _memoDeEl = document.getElementById('wbInDateEnd');
+      row.dateEnd = (_wbDateMode === 'range' && _memoDeEl && _memoDeEl.value && _memoDeEl.value >= row.date) ? _memoDeEl.value : '';
       row.font = font;
       row.fontSize = fontSize;
       window.Store.saveNickMemos(memos);
@@ -41783,6 +42165,34 @@ I'm good at running.`},
     let list = wbTasksOn(date);
     let t = null;
     if(_wbEditId){ for(let i=0;i<list.length;i++) if(list[i].id === _wbEditId) t = list[i]; }
+    // R161-2：日期区间（某月某日至某月某日）—— 区间内每日各落一条同内容备忘（共享 rangeId），
+    // 周/月视图按日落位展示，今日视图亦可见落在今日的那条（三板块数据互通）
+    const deEl = document.getElementById('wbInDateEnd');
+    const rangeEndVal = (deEl && deEl.value) ? deEl.value : '';
+    const isRange = (_wbDateMode === 'range' && rangeEndVal && rangeEndVal >= date);
+    if(isRange){
+      const rangeId = (t && t.rangeId) || ('wr'+Date.now().toString(36)+Math.random().toString(36).slice(2,5));
+      // 先清旧区间成员（按原起止范围定位），再按新区间重建，避免改区间后残留旧日期的备忘
+      if(t && t.rangeId) wbRemoveRange(t.rangeId, t.rangeStart || t.date || date, t.rangeEnd || date);
+      else if(t && _wbEditId) wbSaveOn(date, wbTasksOn(date).filter(function(x){ return x.id !== _wbEditId; }));
+      const baseId = _wbEditId || ('wb'+Date.now().toString(36)+Math.random().toString(36).slice(2,6));
+      wbIsoList(date, rangeEndVal).forEach(function(d, di){
+        const l2 = wbTasksOn(d);
+        l2.push({
+          id: (di === 0) ? baseId : (baseId + '_' + di),
+          title: titleText || plain.slice(0,30), html: html, type: _wbEditType,
+          date: d, rangeStart: date, rangeEnd: rangeEndVal, rangeId: rangeId,
+          start: (_wbEditType === 'all') ? '' : start,
+          end: (_wbEditType === 'point') ? '' : ((end && end > start) ? end : nbAddHour(start || '09:00', 60)),
+          color: _wbEditColor, done: (di === 0 && t && t.done) ? t.done : 0, zone: _wbEditZone, font: font, fontSize: fontSize
+        });
+        wbSaveOn(d, l2);
+      });
+      hideModal('#modalWbEdit'); wbRefresh();
+      wbRefreshMonthMemos();
+      if(window.toast) toast('已保存区间备忘（' + date + ' 至 ' + rangeEndVal + '）');
+      return;
+    }
     if(!t){
       t = { id:'wb'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), title:titleText || plain.slice(0,30), html:html, type:_wbEditType, date:date, start:start, end:end, color:_wbEditColor, done:0, zone:_wbEditZone, font:font, fontSize:fontSize };
       list.push(t);
@@ -41812,7 +42222,19 @@ I'm good at running.`},
     if(month) month.onclick = function(){ _wbView = 'month'; _wbMonthDay = ''; wbRefresh(); };
     const today = document.getElementById('wbBtnToday');
     if(today) today.onclick = function(){ _wbMonday = wbMondayOf(nbTodayISO()); _wbMonthYM = nbTodayISO().slice(0, 7); _nbDate = nbTodayISO(); _wbMonthDay = ''; _wbView = 'today'; wbRefresh(); if(window.toast) toast('已切换到今天视图'); };
-    // R158-1：#wbBtnEditMode（编辑/取消切换键）已移除，此处不再绑定 —— 编辑能力改为直接点卡片唤起弹窗。
+    // R161-h：右上角【月】旁【编辑 / 完成】—— 进入编辑状态后才可执行各板块备忘的新增/编辑/删除
+    const editBtn = document.getElementById('wbBtnEditMode');
+    if(editBtn) editBtn.onclick = function(){ wbToggleEditMode(); };
+    wbSyncEditBtn();
+    // R161-g：左上角日期改为弹窗标签选择模式（点击年月/日期签 → 弹出日期选择弹窗 #modalWbDatePick）
+    const ymBtn = document.getElementById('wbYmBtn');
+    if(ymBtn) ymBtn.onclick = function(){ wbOpenDatePick(); };
+    const dpToday = document.getElementById('btnWbDatePickToday');
+    if(dpToday) dpToday.onclick = function(){
+      _nbDate = nbTodayISO(); _wbMonday = wbMondayOf(_nbDate); _wbMonthYM = _nbDate.slice(0, 7); _wbMonthDay = ''; _wbView = 'today';
+      hideModal('#modalWbDatePick'); wbRefresh();
+    };
+    // R158-1：#wbBtnEditMode 曾移除；R161-h 重新加回（见上）。
     // R160-3：周看板大卡「新增」按钮（#wbBtnAdd）已移除，此处不再绑定 —— 新增入口统一由各版块内「＋ 新增」键承担。
     bindWbEditModal();
   }
@@ -41847,8 +42269,13 @@ I'm good at running.`},
       + '</div>'
       + (rich ? '<div class="mn-prev-rich"'+ (fontFam?(' style="'+fontFam+'"'):'') +'>'+rich+'</div>'
               : (item ? '' : '<div class="mn-prev-empty">点右上角 ✏️ 编辑，给这张卡加上备忘内容</div>'));
+    // R161-h：预览页【✏️ 编辑】—— 自动进入编辑态并打开该卡同款富文本弹窗（与周/月详情页编辑入口一致）
     const editBtn = document.getElementById('btnMemoPreviewEdit');
-    if(editBtn) editBtn.onclick = function(){ hideModal('#modalMemoPreview'); openMemoEditModal(); };
+    if(editBtn) editBtn.onclick = function(){
+      hideModal('#modalMemoPreview');
+      wbEnsureEditMode();
+      wbOpenMemoModal((idx >= 0 ? memos[idx] : null) || null, idx);
+    };
     const closeBtn = document.getElementById('btnMemoPreviewClose');
     if(closeBtn) closeBtn.onclick = function(){ hideModal('#modalMemoPreview'); };
     showModal('#modalMemoPreview');
