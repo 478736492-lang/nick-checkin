@@ -4767,6 +4767,12 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   border:1.5px solid #dbe7fb;background:#f3f8ff;color:var(--tone-800);font-size:15px;font-weight:900;letter-spacing:.5px;
   cursor:pointer;transition:.15s}
 .ms-month-btn:hover{background:#e3efff;transform:translateY(-1px);box-shadow:0 3px 8px rgba(30,58,138,.12)}
+/* R160-6：月度统计月份选择改为原生 <input type="month">，交互样式与备忘录编辑弹窗时间控件保持一致 */
+.ms-month-input{font-size:15px;font-weight:800;color:#1f4d3a;padding:7px 14px;border-radius:999px;
+  border:1.5px solid #dbe7fb;background:#f3f8ff;cursor:pointer;transition:.15s;letter-spacing:.5px}
+.ms-month-input:hover{background:#e3efff;transform:translateY(-1px);box-shadow:0 3px 8px rgba(30,58,138,.12)}
+.ms-month-input::-webkit-calendar-picker-indicator{cursor:pointer;opacity:.7}
+.ms-month-input::-webkit-inner-spin-button{display:none}
 /* R158-4：月份选择弹窗改「滚动选择」模式（纵向可滚列表 + 当前月份高亮居中），弹窗整体毛玻璃
    （遮罩与面板均 backdrop-filter，与月视图单日备忘弹窗 #modalWbMonthMemos 同一视觉口径） */
 .modal-month-picker{max-width:520px;width:92%;max-height:80vh;display:flex;flex-direction:column}
@@ -5928,7 +5934,6 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .wb-text-btn:active{transform:scale(.95)}
 /* 「编辑」激活态（编辑模式开启，按钮文字变为「取消」）—— 绿色高亮 + 「新增」浅绿底 */
 .wb-edit-btn.active{background:rgba(63,191,127,.92);border-color:rgba(255,255,255,.85);box-shadow:0 2px 10px rgba(20,90,60,.4)}
-.wb-add-btn{background:rgba(255,255,255,.34);border-color:rgba(255,255,255,.75)}
 /* R145：编辑模式 —— 页面内所有日程卡虚线高亮并显示右上角删除×；点击卡片进入富文本修改 */
 .mn-weekboard.wb-edit-mode .wb-task{outline:1.5px dashed rgba(255,255,255,.8);outline-offset:1px}
 .wb-task-del{display:none;position:absolute;top:2px;right:2px;z-index:6;width:clamp(15px,2.1vh,19px);height:clamp(15px,2.1vh,19px);align-items:center;justify-content:center;padding:0;font-size:clamp(10px,1.5vh,13px);font-weight:900;line-height:1;color:#fff;background:rgba(226,69,58,.92);border:1.5px solid rgba(255,255,255,.85);border-radius:50%;cursor:pointer;box-shadow:0 2px 6px rgba(10,38,28,.3);transition:transform .12s ease,background .12s ease}
@@ -6023,8 +6028,13 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .wb-rte-time input[type=time]{font-size:13px;padding:3px 6px;border-radius:8px;border:1.5px solid rgba(40,80,60,.35);background:#fff;color:#1f4d3a}
 .wb-rte-tilde{color:#5a7a6a;font-weight:700}
 /* R156-3a③⑥：编辑/新增弹窗表单与备忘录管理页面统一 —— 主题栏 + 字体/字号样式行 */
-.wb-rte-title-field{display:flex;align-items:center;gap:8px;padding:clamp(8px,1.4vh,12px) clamp(8px,1.2vw,14px) 2px;font-size:13px;font-weight:800;color:#1f4d3a}
-.wb-rte-title-field input{flex:1;height:32px;border:1.5px solid rgba(40,80,60,.3);border-radius:8px;background:#fff;padding:0 10px;font-size:14px;font-weight:700;color:#12352a}
+/* R160-1：主题栏 / 日期 / 时间 三者同行排布（主题栏弹性撑满，日期与时间固定宽） */
+.wb-rte-title-field{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:clamp(8px,1.4vh,12px) clamp(8px,1.2vw,14px) 6px;font-size:13px;font-weight:800;color:#1f4d3a}
+.wb-rte-title-field > .wb-rte-lbl{white-space:nowrap}
+.wb-rte-title-field > input#wbInTitle{flex:1 1 200px;min-width:150px;height:32px;border:1.5px solid rgba(40,80,60,.3);border-radius:8px;background:#fff;padding:0 10px;font-size:14px;font-weight:700;color:#12352a}
+.wb-rte-date{display:inline-flex;align-items:center;gap:6px;font-weight:800;color:#1f4d3a;white-space:nowrap}
+.wb-rte-date input[type=date]{font-size:13px;padding:3px 6px;border-radius:8px;border:1.5px solid rgba(40,80,60,.35);background:#fff;color:#1f4d3a}
+.wb-rte-time{flex:0 0 auto}
 .wb-rte-style{display:flex;flex-wrap:wrap;align-items:center;gap:14px;padding:clamp(8px,1.4vh,12px) clamp(8px,1.2vw,14px);border-top:1px solid rgba(40,80,60,.16);background:rgba(244,248,246,.92);font-size:13px;font-weight:700;color:#1f4d3a}
 .wb-rte-style label{display:inline-flex;align-items:center;gap:6px}
 .wb-rte-style input[type=text]{width:132px;height:30px;border:1.5px solid rgba(40,80,60,.3);border-radius:8px;background:#fff;padding:0 8px;font-size:13px;color:#12352a}
@@ -6066,8 +6076,9 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 #modalWbEdit .wb-rte-sep{height:26px}
 #modalWbEdit .wb-rte-toolbar{gap:8px;padding:clamp(8px,1.3vh,12px) clamp(10px,1.6vw,18px)}
 /* 主题栏 / 字体字号行放大 */
-#modalWbEdit .wb-rte-title-field{font-size:clamp(13px,1.8vh,15px);padding:clamp(10px,1.8vh,14px) clamp(10px,1.6vw,18px) 4px}
-#modalWbEdit .wb-rte-title-field input{height:40px;font-size:15px}
+#modalWbEdit .wb-rte-title-field{font-size:clamp(13px,1.8vh,15px);padding:clamp(10px,1.8vh,14px) clamp(10px,1.6vw,18px) 6px}
+#modalWbEdit .wb-rte-title-field > input#wbInTitle{height:40px;font-size:15px}
+#modalWbEdit .wb-rte-date input[type=date]{font-size:15px;padding:5px 8px}
 #modalWbEdit .wb-rte-style{font-size:clamp(13px,1.8vh,15px);gap:18px;padding:clamp(10px,1.8vh,14px) clamp(10px,1.6vw,18px)}
 #modalWbEdit .wb-rte-style input[type=text]{width:150px;height:36px;font-size:14px}
 #modalWbEdit .wb-rte-style input[type=number]{width:74px;height:36px;font-size:14px}
@@ -7454,16 +7465,20 @@ html,body{margin:0;padding:0}
       <button class="modal-x" data-close data-page-node-id="R141modalWbEditX">×</button>
     </div>
     <div class="modal-body" data-page-node-id="R141modalWbEditBody">
-      <!-- R156-3a③⑥：新增「主题栏」输入，表单与备忘录管理页面（#modalMemoEdit）保持统一 -->
-      <label class="wb-rte-title-field" data-page-node-id="R156wbTitleField"><span>主题栏</span>
+      <!-- R160-1：主题栏 / 日期 / 时间 三者同行排布；日期选择交互逻辑与时间选择一致（原生 date 控件），时间控件移至日期右侧 -->
+      <div class="wb-rte-title-field" data-page-node-id="R156wbTitleField">
+        <span class="wb-rte-lbl">主题栏</span>
         <input id="wbInTitle" type="text" maxlength="30" placeholder="给这条备忘起个主题" data-page-node-id="R156wbInTitle" />
-      </label>
-      <div class="wb-rte-meta" data-page-node-id="R141wbMeta">
+        <label class="wb-rte-date"><span>日期</span>
+          <input id="wbInDate" type="date" data-page-node-id="R160wbInDate" />
+        </label>
         <label class="wb-rte-time"><span>时间</span>
           <input id="wbInStart" type="time" data-page-node-id="R141wbInStart" />
           <span class="wb-rte-tilde">至</span>
           <input id="wbInEnd" type="time" data-page-node-id="R141wbInEnd" />
         </label>
+      </div>
+      <div class="wb-rte-meta" data-page-node-id="R141wbMeta">
         <div class="nb-e-colors" id="wbColors" data-page-node-id="R141wbColors">
           <button type="button" class="nb-e-c-blue" data-wb-color="blue" title="蓝色"></button>
           <button type="button" class="nb-e-c-green" data-wb-color="green" title="绿色"></button>
@@ -40856,7 +40871,7 @@ I'm good at running.`},
   const MN_TINTS = ['rgba(255,86,86,.92)','rgba(255,152,58,.92)','rgba(255,213,64,.92)','rgba(72,214,128,.92)','rgba(34,211,238,.92)','rgba(79,140,255,.92)','rgba(167,139,250,.92)'];
   // 管理面板「透明」滑杆区间 0.2~1；R136-1：把该值换算成与管理页面行卡同一套玻璃白度
   // （CSS 变量 --mn-glass-bg = .34），滑杆拉满即与管理页面完全一致，拉低则更透。
-  const MN_GLASS_MIN = 0.04, MN_GLASS_MAX = 0.12, MN_OP_MIN = 0.2;
+  const MN_GLASS_MIN = 0.02, MN_GLASS_MAX = 0.07, MN_OP_MIN = 0.2;   // R160-5：调低玻璃白度，使背景图（陆家嘴天际线）更清晰透出
   function mnGlassAlpha(m){
     const raw = (m && m.opacity!==undefined && m.opacity!==null && m.opacity!=='') ? (+m.opacity) : 1;
     let op = raw; if(isNaN(op) || op < MN_OP_MIN) op = MN_OP_MIN; if(op > 1) op = 1;
@@ -40959,7 +40974,7 @@ I'm good at running.`},
     list.innerHTML = weekBoardCardHTML();
     bindNickMemoViewTools();
     initWeekBoard();
-    wbSyncEditBtn();   // R155-3⑥：外壳重建后按 _wbEditMode 回填周看板「编辑/取消」按钮态（保存/删除路径也会走到这里）
+    // R160-3：wbSyncEditBtn（同步大卡「新增」按钮显隐）已随大卡「新增」按钮移除一并删除，此处不再调用
   }
   // R153：5 张标签卡独立渲染函数 —— 由周看板「今天」视图调用（renderWbToday 内拼入 #wbBody）。
   // 卡位规则与 R148/R151-3 完全一致：5 张卡依次对应 memos[0]~memos[4]（从第 1 条备忘起渲染，新增内容即时可见）。
@@ -41047,8 +41062,8 @@ I'm good at running.`},
         card.addEventListener('click', function(e){
           if(e.target.closest && e.target.closest('.mn-tool-btn')) return;
           const idx = +card.getAttribute('data-mn-idx');
-          const memos = getNickMemosSafe();
-          wbOpenMemoModal(memos[idx] || null, idx);
+          // R160-2：点击任意标签卡 → 放大预览该卡全部内容（主题 + 富文本全文）；编辑仍走 ✏️ 键
+          wbOpenMemoPreview(idx);
         });
       });
     }
@@ -41137,9 +41152,8 @@ I'm good at running.`},
       + '<button class="wb-view-btn" id="wbBtnToday" type="button">今天</button>'
       + '<button class="wb-view-btn" id="wbBtnWeek" type="button">周</button>'
       + '<button class="wb-view-btn" id="wbBtnMonth" type="button">月</button>'
-      // R158-1：一级卡片右上角「编辑 / 取消」切换键已移除（编辑能力改为直接点卡片唤起弹窗）；
-      // 「新增」改为常驻显示（原仅在编辑态出现），保证移除编辑键后新增入口不丢失。
-      + '<button class="wb-text-btn wb-add-btn" id="wbBtnAdd" type="button" title="新增一条备忘">新增</button>'
+      // R160-3：移除一级标签卡（周看板大卡）右上角「新增」按钮及其功能 —— 新增入口统一由各版块内
+      // 的「＋ 新增」键承担（如 .wb-col-add / .wb-zone-add-zone / .wb-zone-add-zone），大卡不再保留新增。
       + '</div>'
       + '</div>'
       // R147：副标题文案按「今天/周/月」版块动态切换（id wbIntro，renderWbHead 依 _wbView 设文案）
@@ -41285,10 +41299,12 @@ I'm good at running.`},
     body.querySelectorAll('.wb-mcell[data-wb-date]').forEach(function(c){
       c.addEventListener('click', function(){
         const date = c.getAttribute('data-wb-date');
-        // R158-2：月视图点日期格 → 统一弹窗展示该日全部备忘（毛玻璃），弹窗内点卡片 → 富文本弹窗编辑，
-        // 与今日板块标签卡弹窗完全一致；_wbMonthPickDate 记录当前查看日期，供头部「新增」定位归属日。
+        // R160-4：月视图日期格 → 直接唤起标签卡编辑弹窗（#modalWbEdit）：当日有任务编辑首条，
+        // 无任务则按该日新建（与今日/周板块点卡片行为一致）；不再经过月板块详情弹窗。
         _wbMonthPickDate = date;
-        wbOpenMonthMemos(date);
+        const list = wbTasksOn(date);
+        if(list.length){ wbOpenEditModal(list[0], { date: date }); }
+        else { wbAddNew({ date: date, zone: '' }); }
       });
     });
   }
@@ -41547,6 +41563,9 @@ I'm good at running.`},
     // R156-3a③：主题栏 + 字体/字号（与备忘录管理页表单统一）
     const ti = document.getElementById('wbInTitle');
     if(ti) ti.value = t.title || '';
+    // R160-1：日期选择（主题栏右侧，交互逻辑与时间选择一致）—— 默认取任务归属日
+    const dt = document.getElementById('wbInDate');
+    if(dt) dt.value = _wbEditDate;
     const sf = document.getElementById('wbStyleFont');
     if(sf) sf.value = t.font || '';
     const ss = document.getElementById('wbStyleSize');
@@ -41579,6 +41598,9 @@ I'm good at running.`},
     // R156-3a③：主题栏 + 字体/字号（与备忘录管理页表单统一）
     const ti = document.getElementById('wbInTitle');
     if(ti) ti.value = m.item || '';
+    // R160-1：日期选择 —— 取该条备忘的 date，缺省回退到今天
+    const dt = document.getElementById('wbInDate');
+    if(dt) dt.value = m.date || nbTodayISO();
     const sf = document.getElementById('wbStyleFont');
     if(sf) sf.value = m.font || '';
     const ss = document.getElementById('wbStyleSize');
@@ -41655,20 +41677,13 @@ I'm good at running.`},
   }
   // R145 → R146：编辑模式开关（文字按钮「编辑 / 取消」）—— 开启后今天/周/月三版块均可编辑，
   // 页面内所有备忘卡显示删除×，点击卡片进入富文本修改；「新增」按钮仅在编辑态显示。
-  // R155-3⑥：周看板「编辑/取消」按钮态唯一同步出口 —— 外壳重建（renderNickMemoView）与
-  // wbToggleEditMode 都调用它，保证按钮文字/active/aria 与 _wbEditMode 永远一致。
-  // R158-1：周看板「编辑/取消」按钮已从外壳移除（编辑改为点卡片弹窗），此处仅保留「新增」键同步，
-  // 且「新增」恒常驻显示（不再随 _wbEditMode 隐藏，保证移除编辑键后新增入口不丢失）。
-  function wbSyncEditBtn(){
-    const add = document.getElementById('wbBtnAdd');
-    if(add) add.style.display = '';
-  }
+  // R158-1：周看板「编辑/取消」按钮已从外壳移除（编辑改为直接点卡片唤起弹窗）；_wbEditMode 恒为 true，
+  // 原 wbSyncEditBtn（同步大卡「新增」按钮显隐）已随 R160-3 移除大卡「新增」按钮一并删除。
   function wbToggleEditMode(){
     _wbEditMode = !_wbEditMode;
     if(!_wbEditMode) _wbMonthDay = '';   // 退出编辑态时收起月视图单日明细
     const card = document.querySelector('.mn-weekboard');
     if(card) card.classList.toggle('wb-edit-mode', _wbEditMode);
-    wbSyncEditBtn();
     wbRefresh();
     if(window.toast) toast(_wbEditMode ? '编辑状态已开启：可切换今天/周/月，点卡片修改，点 × 删除' : '已退出编辑状态');
   }
@@ -41729,6 +41744,9 @@ I'm good at running.`},
     let fontSize = (ss && ss.value !== '') ? parseInt(ss.value, 10) : '';
     if(isNaN(fontSize) || fontSize === '') fontSize = '';
     else fontSize = Math.max(10, Math.min(40, fontSize));
+    // R160-1：读取日期选择控件（原生 date），用于写回任务归属日 / 标签卡 date
+    const _wbInDateEl = document.getElementById('wbInDate');
+    const _wbInDateVal = (_wbInDateEl && _wbInDateEl.value) ? _wbInDateEl.value : '';
     // R154-3c：标签卡（memo）模式 —— 写回对应卡位的备忘，不动周看板日程
     if(_wbEditTarget === 'memo'){
       const memos = getNickMemosSafe();
@@ -41746,6 +41764,7 @@ I'm good at running.`},
       row.noteHtml = html;
       row.note = plain.slice(0, 500);   // 纯文本影子（渲染层 noteHtml 优先，不会重复展示）
       row.time = time;
+      row.date = _wbInDateVal;   // R160-1：写回日期选择
       row.font = font;
       row.fontSize = fontSize;
       window.Store.saveNickMemos(memos);
@@ -41758,6 +41777,7 @@ I'm good at running.`},
     const en = document.getElementById('wbInEnd');
     const start = (st && st.value) || '09:00';
     const end = (en && en.value) || '10:00';
+    _wbEditDate = _wbInDateVal || _wbEditDate;   // R160-1：优先采用日期选择控件值
     const date = _wbEditDate;
     // R146：今天/周/月三版块共用同一套周看板数据层（getNickWeekBoard/saveNickWeekBoard，按日期存取）
     let list = wbTasksOn(date);
@@ -41793,9 +41813,7 @@ I'm good at running.`},
     const today = document.getElementById('wbBtnToday');
     if(today) today.onclick = function(){ _wbMonday = wbMondayOf(nbTodayISO()); _wbMonthYM = nbTodayISO().slice(0, 7); _nbDate = nbTodayISO(); _wbMonthDay = ''; _wbView = 'today'; wbRefresh(); if(window.toast) toast('已切换到今天视图'); };
     // R158-1：#wbBtnEditMode（编辑/取消切换键）已移除，此处不再绑定 —— 编辑能力改为直接点卡片唤起弹窗。
-    // R145→R146：「新增」= 在当前版块新建备忘（常驻显示）
-    const add = document.getElementById('wbBtnAdd');
-    if(add) add.onclick = function(){ wbAddNew(); };
+    // R160-3：周看板大卡「新增」按钮（#wbBtnAdd）已移除，此处不再绑定 —— 新增入口统一由各版块内「＋ 新增」键承担。
     bindWbEditModal();
   }
   // R138：备忘录管理改为「统一弹窗（对话框）」编辑 —— 时间/事项/备注在
@@ -42937,8 +42955,8 @@ I'm good at running.`},
     const ymLabel = y+'年'+m+'月';
     const isCur = (ym === _msNowYM());
     body.innerHTML = `
-      <div class="ms-month-sel" data-page-node-id="R157msMonthSel">
-        <button type="button" class="ms-month-btn" id="msMonthLabelBtn" title="点击选择月份" data-page-node-id="R157msMonthBtn">📅 ${ymLabel} ▾</button>
+      <div class="ms-month-sel" data-page-node-id="R160msMonthSel">
+        <input type="month" id="msMonthInput" class="ms-month-input" value="${ym}" title="选择月份" data-page-node-id="R160msMonthInput" />
       </div>
       <div class="ms-summary">
         <div class="ms-card ms-req"><div class="ms-v">${reqDone}/${reqTotal}</div><div class="ms-l">⭐ 必做完成</div></div>
@@ -42951,9 +42969,10 @@ I'm good at running.`},
       <div class="ms-block-title">📚 各科目完成</div>
       <div class="ms-subj-chart">${subjHtml || '<div class="wp-tbar-empty">暂无数据</div>'}</div>
     `;
-    // R158-4：月份选择为弹窗滚动选择模式（原标签网格 / ‹ 年月 › + 原生月份输入已移除）
-    const mb = document.getElementById('msMonthLabelBtn');
-    if(mb) mb.onclick = openMonthPicker;
+    // R160-6：月份选择改为原生 <input type="month">，交互样式与备忘录编辑弹窗时间控件保持一致；
+    // change 即切换统计月份（month input 原生弹层，无需自定义弹窗）。
+    const mi = document.getElementById('msMonthInput');
+    if(mi) mi.onchange = function(){ const v = mi.value; if(/^\d{4}-\d{2}$/.test(v)) renderMonthStats(v); };
   }
   // R159-4：打开月份选择弹窗 —— 「年 / 月」双列独立滑动选择（原 R158-4 单列滚「YYYY年M月」已废弃）。
   // 左列选年份（仅切换高亮 + 刷新右列可用月份），右列点月份立即应用并关闭弹窗；
