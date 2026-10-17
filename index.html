@@ -4769,8 +4769,17 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .ms-month-btn:hover{background:#e3efff;transform:translateY(-1px);box-shadow:0 3px 8px rgba(30,58,138,.12)}
 /* R158-4：月份选择弹窗改「滚动选择」模式（纵向可滚列表 + 当前月份高亮居中），弹窗整体毛玻璃
    （遮罩与面板均 backdrop-filter，与月视图单日备忘弹窗 #modalWbMonthMemos 同一视觉口径） */
-.modal-month-picker{max-width:420px;width:90%;max-height:80vh;display:flex;flex-direction:column}
+.modal-month-picker{max-width:520px;width:92%;max-height:80vh;display:flex;flex-direction:column}
 .modal-month-picker .modal-body{padding:12px 12px 14px;overflow:hidden}
+/* R159-4：改「年 / 月」双列独立滑动（左列年份、右列月份），面板加宽以并排容纳两列 */
+.mp-cols{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start}
+.mp-col{display:flex;flex-direction:column;gap:6px;min-width:0}
+.mp-col-title{font-size:12px;font-weight:900;color:var(--tone-700);letter-spacing:1px;text-align:center;
+  padding:3px 0;border-radius:8px;background:rgba(219,231,251,.55)}
+.mp-hint{margin-top:10px;text-align:center;font-size:12px;font-weight:700;color:#5b7ba6;line-height:1.5}
+.mp-item-mo{justify-content:space-between}
+.mp-item-off,.mp-item-mo:disabled{opacity:.38;cursor:not-allowed;filter:grayscale(.7)}
+.mp-item-mo:disabled:hover{transform:none;border-color:rgba(219,231,251,.9);background:rgba(243,248,255,.72)}
 #modalMonthPicker{background:rgba(8,16,52,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 #modalMonthPicker .modal-box{background:rgba(255,255,255,.84);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
   border:1.5px solid rgba(255,255,255,.66);box-shadow:0 18px 50px rgba(8,16,52,.45)}
@@ -4786,14 +4795,16 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   color:var(--tone-900);box-shadow:0 2px 10px rgba(64,150,255,.30)}
 .mp-item-m{font-size:12px;font-weight:700;color:var(--tone-500)}
 .mp-item.on .mp-item-m{color:var(--tone-900);opacity:.78}
-/* R157-5：各科目完成数据改柱状图展示（竖柱：数值 / 柱体 / 科目名；柱高与颜色按完成度动态渲染） */
-.ms-subj-chart{display:flex;align-items:stretch;justify-content:space-around;gap:8px;height:150px;padding:8px 10px 6px;
-  border-radius:10px;background:#f7faff;border:1px solid #e6eefb;overflow-x:auto}
-.ms-subj-bar{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;flex:1 1 0;min-width:44px;height:100%}
-.ms-subj-val{font-size:11px;font-weight:900;color:var(--tone-800);line-height:1.1;white-space:nowrap}
-.ms-subj-track{flex:1 1 auto;width:70%;min-height:0;display:flex;align-items:flex-end;justify-content:center}
-.ms-subj-fill{width:100%;border-radius:5px 5px 2px 2px;min-height:0;transition:height .3s ease}
-.ms-subj-name{font-size:11px;font-weight:800;color:#3a4a63;line-height:1.1;text-align:center;white-space:nowrap}
+/* R159-5：各科目完成恢复横向条形图（科目名 → 横条 → 完成数 一行排开；条宽/颜色按完成度动态渲染） */
+.ms-subj-chart{display:flex;flex-direction:column;gap:8px;padding:9px 12px;
+  border-radius:10px;background:#f7faff;border:1px solid #e6eefb}
+.ms-subj-bar{display:flex;align-items:center;gap:9px;min-width:0}
+.ms-subj-name{flex:0 0 auto;min-width:60px;font-size:12px;font-weight:800;color:#3a4a63;
+  text-align:right;line-height:1.1;white-space:nowrap}
+.ms-subj-track{flex:1 1 auto;min-width:0;height:14px;border-radius:7px;background:#e9f1fb;overflow:hidden}
+.ms-subj-fill{height:100%;border-radius:7px;min-width:0;transition:width .4s ease}
+.ms-subj-val{flex:0 0 auto;min-width:54px;font-size:11px;font-weight:900;color:var(--tone-800);
+  text-align:right;line-height:1.1;white-space:nowrap;font-variant-numeric:tabular-nums}
 .ms-summary{display:flex;gap:10px;margin-bottom:12px}
 .ms-card{flex:1;background:#f3f8ff;border:1px solid #dbe7fb;border-radius:12px;padding:10px;text-align:center}
 .ms-card.ms-req{background:#eafaf0;border-color:#bfe3c4}
@@ -6021,6 +6032,62 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 /* R156-3a④：月板块点击弹出的详情页面使用毛玻璃效果 */
 #modalWbMonthMemos{background:rgba(8,16,52,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 #modalWbMonthMemos .modal-box{background:rgba(255,255,255,.84);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1.5px solid rgba(255,255,255,.66);box-shadow:0 18px 50px rgba(8,16,52,.45)}
+/* ---- R159-1：备忘录编辑弹窗（#modalWbEdit）整窗毛玻璃 + 整体放大 ----
+   原尺寸仅 min(430px,92vw)，富文本编辑区被挤窄、工具条换行严重；本轮扩到 min(760px,94vw)，
+   并同步放大编辑区高度 / 工具条按键 / 输入控件，保证 iPad 上展示清晰、点按舒适。
+   遮罩调浅（原 rgba(0,0,0,.5) 会把玻璃压成灰底），面板玻璃化沿用月板块同一视觉口径。 */
+#modalWbEdit{background:rgba(8,16,52,.5)}
+#modalWbEdit .modal-box{
+  width:min(760px,94vw);min-width:min(560px,92vw);max-width:min(860px,96vw);
+  max-height:88vh;max-height:88dvh;
+  display:flex;flex-direction:column;
+  background:rgba(255,255,255,.86);
+  backdrop-filter:blur(16px) saturate(150%);
+  -webkit-backdrop-filter:blur(16px) saturate(150%);
+  border:1.5px solid rgba(255,255,255,.66);
+  box-shadow:0 18px 50px rgba(8,16,52,.45)
+}
+/* 头部玻璃条：白字 + 半透明底，与玻璃面板协调 */
+#modalWbEdit .modal-head{
+  margin:-18px -18px 12px;padding:14px 20px;border-radius:14px 14px 0 0;
+  background:linear-gradient(135deg, rgba(64,150,255,.62), rgba(28,95,184,.52));
+  border-bottom:1px solid rgba(255,255,255,.45)
+}
+#modalWbEdit .modal-head h3{font-size:clamp(16px,2.1vh,20px)}
+#modalWbEdit .modal-x{width:34px;height:34px;font-size:20px}
+/* 主体撑满剩余高度并独立滚动，底部按钮组固定不被内容顶出视野 */
+#modalWbEdit .modal-body{flex:1 1 auto;min-height:0;overflow-y:auto}
+/* 编辑区放大（原 min 150px/34vh/340px、max 46vh） */
+#modalWbEdit .wb-rte-editor{min-height:clamp(230px,40vh,420px);max-height:54vh;font-size:clamp(14px,2.1vh,17px);padding:clamp(12px,2vh,18px) clamp(14px,2vw,22px);border-radius:0 0 14px 14px}
+/* 工具条按键 / 下拉 / 取色器放大（原 32×30、13px） */
+#modalWbEdit .wb-rte-btn{width:42px;height:38px;font-size:17px}
+#modalWbEdit .wb-rte-sel{font-size:14px;padding:6px 8px;min-height:36px}
+#modalWbEdit .wb-rte-color{width:38px;height:36px}
+#modalWbEdit .wb-rte-sep{height:26px}
+#modalWbEdit .wb-rte-toolbar{gap:8px;padding:clamp(8px,1.3vh,12px) clamp(10px,1.6vw,18px)}
+/* 主题栏 / 字体字号行放大 */
+#modalWbEdit .wb-rte-title-field{font-size:clamp(13px,1.8vh,15px);padding:clamp(10px,1.8vh,14px) clamp(10px,1.6vw,18px) 4px}
+#modalWbEdit .wb-rte-title-field input{height:40px;font-size:15px}
+#modalWbEdit .wb-rte-style{font-size:clamp(13px,1.8vh,15px);gap:18px;padding:clamp(10px,1.8vh,14px) clamp(10px,1.6vw,18px)}
+#modalWbEdit .wb-rte-style input[type=text]{width:150px;height:36px;font-size:14px}
+#modalWbEdit .wb-rte-style input[type=number]{width:74px;height:36px;font-size:14px}
+/* 时间控件与底部按键放大 */
+#modalWbEdit .wb-rte-time{font-size:clamp(12px,1.8vh,15px)}
+#modalWbEdit .wb-rte-time input[type=time]{font-size:15px;padding:5px 8px}
+#modalWbEdit .modal-foot{gap:12px;padding-top:clamp(10px,1.6vh,14px)}
+#modalWbEdit .modal-foot button{min-height:42px;font-size:15px;padding:0 20px}
+/* R159-1：备忘录另两个「带编辑入口」的弹出页（周视图卡片详情 #modalWbDetail、标签卡放大预览
+   #modalMemoPreview）同步玻璃化，口径与 #modalWbEdit / #modalWbMonthMemos 一致。 */
+#modalWbDetail,#modalMemoPreview{background:rgba(8,16,52,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+#modalWbDetail .modal-box,#modalMemoPreview .modal-box{
+  background:rgba(255,255,255,.85);
+  backdrop-filter:blur(14px) saturate(140%);
+  -webkit-backdrop-filter:blur(14px) saturate(140%);
+  border:1.5px solid rgba(255,255,255,.66);
+  box-shadow:0 18px 50px rgba(8,16,52,.45)
+}
+#modalWbDetail .modal-box,#modalMemoPreview .modal-box{min-width:min(520px,92vw);width:min(620px,94vw);max-width:min(680px,96vw)}
+#modalWbDetail .modal-foot button,#modalMemoPreview .modal-foot button{min-height:40px;font-size:15px;padding:0 18px}
 .wb-rte-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:clamp(6px,1vh,10px) clamp(8px,1.2vw,14px);background:rgba(244,248,246,.92);border-bottom:1px solid rgba(40,80,60,.16)}
 .wb-rte-sel{font-size:13px;padding:4px 6px;border-radius:8px;border:1.5px solid rgba(40,80,60,.3);background:#fff;color:#1f4d3a;cursor:pointer}
 .wb-rte-color{width:30px;height:30px;padding:0;border:1.5px solid rgba(40,80,60,.3);border-radius:8px;background:#fff;cursor:pointer}
@@ -6444,13 +6511,14 @@ html,body{margin:0;padding:0}
             </div>
           </div>
           <!-- R118-2：【Nick 的备忘录】入口按键（点击打开独立备忘录页面）；R149-2：右侧新增【课程表】按键；
-               R157-4：【备忘录】与【课程表】按键位置互换（课程表在前，备忘录在后） -->
+               R157-4：【备忘录】与【课程表】按键位置互换（课程表在前，备忘录在后）；
+               R159-3：再次互换 —— 恢复为【备忘录】在前、【课程表】在后 -->
           <div class="wp-nickmemo-row">
-            <button class="wp-nickmemo-btn wp-coursetable-btn" id="btnCourseTable" title="查看课程表">🗓️ 课程表</button>
             <div class="wp-memo-btn-wrap">
               <button class="wp-nickmemo-btn" id="btnNickMemo" title="打开备忘录" data-page-node-id="R118btnNickMemo">📒 备忘录</button>
               <span class="wp-memo-bubble" id="memoBubble" hidden data-page-node-id="R150memoBubble"></span>
             </div>
+            <button class="wp-nickmemo-btn wp-coursetable-btn" id="btnCourseTable" title="查看课程表">🗓️ 课程表</button>
           </div>
         </div>
       </div>
@@ -7371,6 +7439,8 @@ html,body{margin:0;padding:0}
     </div>
     <div class="modal-body" id="wbMonthMemosBody" data-page-node-id="R155wbMonthMemosBody"></div>
     <div class="modal-foot" data-page-node-id="R155wbMonthMemosFoot">
+      <!-- R159-2：月板块详情弹窗新增【✏️ 编辑】按键 —— 唤起与今日/周板块完全一致的 #modalWbEdit 编辑弹窗 -->
+      <button class="primary-btn" id="btnWbMonthMemosEdit" type="button" data-page-node-id="R159wbMonthMemosEdit">✏️ 编辑</button>
       <button class="pbtn" id="btnWbMonthMemosClose" type="button" data-page-node-id="R155wbMonthMemosClose">关闭</button>
     </div>
   </div>
@@ -41554,6 +41624,19 @@ I'm good at running.`},
     body.innerHTML = cards || '<div class="wb-col-empty">暂无备忘</div>';
     const closeBtn = document.getElementById('btnWbMonthMemosClose');
     if(closeBtn) closeBtn.onclick = function(){ hideModal('#modalWbMonthMemos'); };
+    // R159-2：弹窗底部【✏️ 编辑】—— 唤起与今日/周板块同一套 #modalWbEdit 富文本编辑弹窗。
+    // 单条备忘直接编辑该条；多条时默认编辑第 1 条并提示「也可直接点击卡片编辑其它条目」；
+    // 当日无备忘时给出提示，不打开空弹窗。
+    const mmEditBtn = document.getElementById('btnWbMonthMemosEdit');
+    if(mmEditBtn) mmEditBtn.onclick = function(){
+      const list = wbTasksOn(_wbMonthMemosDate || date);
+      if(!list.length){ if(window.toast) toast('这一天还没有备忘，可先在月板块点「新增」创建'); return; }
+      const t = list[0];
+      // 不关闭本弹窗：编辑弹窗叠在其上，保存/删除后由 wbRefreshMonthMemos() 同步刷新，
+      // 关闭编辑窗即可看到更新后的当日备忘（与点击卡片编辑的行为一致）。
+      wbOpenEditModal(t, { date: _wbMonthMemosDate || date });
+      if(list.length > 1 && window.toast) toast('已打开第 1 条，编辑后返回可继续点其它卡片');
+    };
     body.querySelectorAll('.wb-task[data-wb-id]').forEach(function(card){
       card.addEventListener('click', function(e){
         if(e.target.closest && e.target.closest('.wb-task-del')) return;
@@ -42832,15 +42915,16 @@ I'm good at running.`},
     const ld = m===1? {y:y-1,m:12}:{y,m:m-1};
     const thisMD = monthDaysDone(y,m), lastMD = monthDaysDone(ld.y,ld.m);
     const subjOrder = ['语文','数学','英语','运动','作息','围棋','文明小标兵','家务小帮手'];
-    // R157-5：各科目完成数据改柱状图展示（竖柱：数值在上、柱体居中、科目名在下；颜色按完成度动态取色）
+    // R159-5：各科目完成恢复为横向条形图（科目名在左、横条居中、完成数在右）；
+    // 条宽按完成度百分比伸缩、颜色沿用 R156-2c 的 msBarColor 动态取色，0% 不渲染填充。
     const subjHtml = subjOrder.filter(s=>subTotal[s]).map(s=>{
       const t=subTotal[s], d=subDone[s], pp=t?Math.round(d/t*100):0;
-      const h = pp > 0 ? Math.max(4, pp) : 0;
-      const fill = pp > 0 ? 'height:'+h+'%;background:'+msBarColor(pp) : 'height:0;background:transparent';
+      const w = pp > 0 ? Math.max(3, pp) : 0;
+      const fill = pp > 0 ? 'width:'+w+'%;background:'+msBarColor(pp) : 'width:0;background:transparent';
       return `<div class="ms-subj-bar" title="${esc(s)}：${d}/${t}（${pp}%）">
-        <span class="ms-subj-val">${d}/${t}</span>
-        <div class="ms-subj-track"><div class="ms-subj-fill" style="${fill}"></div></div>
         <span class="ms-subj-name">${esc(s)}</span>
+        <div class="ms-subj-track"><div class="ms-subj-fill" style="${fill}"></div></div>
+        <span class="ms-subj-val">${d}/${t}</span>
       </div>`;
     }).join('');
     const dayHtml = dayRows.map(r=>{
@@ -42871,11 +42955,14 @@ I'm good at running.`},
     const mb = document.getElementById('msMonthLabelBtn');
     if(mb) mb.onclick = openMonthPicker;
   }
-  // R158-4：打开月份选择弹窗 —— 滚动选择模式（纵向可滚列表，当前月份高亮并自动居中滚入视野），
-  // 弹窗整体毛玻璃（见 styles.css #modalMonthPicker）。范围为「有数据的最早月份（默认最近 12 个月）~ 当月」。
+  // R159-4：打开月份选择弹窗 —— 「年 / 月」双列独立滑动选择（原 R158-4 单列滚「YYYY年M月」已废弃）。
+  // 左列选年份（仅切换高亮 + 刷新右列可用月份），右列点月份立即应用并关闭弹窗；
+  // 可选范围仍为「有数据的最早月份（默认最近 12 个月，最多回溯 24 个月）~ 当月」，超出范围的月份置灰不可点。
+  // 弹窗整体毛玻璃（见 styles.css #modalMonthPicker，R158-4 已加，本轮保留并补双列样式）。
   function openMonthPicker(){
     const st = S.load();
     const nowYM = _msNowYM();
+    const pad2 = function(n){ return (n < 10 ? '0' : '') + n; };
     let startYM = _msShiftYM(nowYM, -11); // 默认展示最近 12 个月
     (st.records || []).forEach(function(r){
       const mm = String((r && r.date) || '').slice(0, 7);
@@ -42883,34 +42970,101 @@ I'm good at running.`},
     });
     const floorYM = _msShiftYM(nowYM, -23); // 最多回溯 24 个月，防止滚动列表过长
     if(startYM < floorYM) startYM = floorYM;
-    const list = [];
-    let cur = startYM, guard = 0;
-    while(cur <= nowYM && guard++ < 36){ list.push(cur); cur = _msShiftYM(cur, 1); }
+
+    const startY = +startYM.slice(0, 4), endY = +nowYM.slice(0, 4);
+    const years = [];
+    for(let y = endY; y >= startY; y--) years.push(y);
+    const curYM = (/^\d{4}-\d{2}$/.test(_msYM) ? _msYM : nowYM);
+    let selY = +curYM.slice(0, 4), selM = +curYM.slice(5, 7);
+    if(selY > endY) selY = endY;
+    if(selY < startY) selY = startY;
+    const ymOK = function(y, m){ const ym = y + '-' + pad2(m); return ym >= startYM && ym <= nowYM; };
+    if(!ymOK(selY, selM)){
+      // 当前选中月份落在范围外（如切到边界年份），收敛到该年第一个合法月份
+      for(let m = 1; m <= 12; m++){ if(ymOK(selY, m)){ selM = m; break; } }
+    }
+
     const body = document.getElementById('monthPickerBody');
     if(!body) return;
-    body.innerHTML = '<div class="mp-scroll" id="mpScroll" role="listbox" aria-label="选择月份">'
-      + list.map(function(ym){
-          const a = ym.split('-');
-          const on = (ym === _msYM) ? ' on' : '';
-          return '<button type="button" class="mp-item' + on + '" data-ym="' + ym + '" role="option" aria-selected="'
-            + (on ? 'true' : 'false') + '" data-page-node-id="R158mpItem' + ym
-            + '" title="查看 ' + a[0] + '年' + (+a[1]) + '月 打卡数据">'
-            + '<span class="mp-item-t">' + a[0] + '年' + (+a[1]) + '月</span>'
-            + '<span class="mp-item-m">' + (ym === nowYM ? '本月' : '') + '</span>'
-            + '</button>';
-        }).join('')
-      + '</div>';
-    body.querySelectorAll('.mp-item').forEach(function(b){
+
+    function paintYear(){
+      const ys = document.getElementById('mpYearScroll');
+      if(!ys) return;
+      ys.querySelectorAll('.mp-item-y').forEach(function(b){
+        const on = (+b.dataset.y === selY);
+        b.classList.toggle('on', on);
+        b.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+    }
+    function paintMonth(){
+      const ms = document.getElementById('mpMonthScroll');
+      if(!ms) return;
+      ms.querySelectorAll('.mp-item-mo').forEach(function(b){
+        const m = +b.dataset.m;
+        const ok = ymOK(selY, m);
+        const on = ok && (m === selM);
+        b.classList.toggle('on', on);
+        b.classList.toggle('mp-item-off', !ok);
+        b.disabled = !ok;
+        b.setAttribute('aria-selected', on ? 'true' : 'false');
+        b.setAttribute('aria-disabled', ok ? 'false' : 'true');
+      });
+    }
+    function center(sel){
+      const box = document.querySelector(sel);
+      if(!box) return;
+      const on = box.querySelector('.mp-item.on');
+      if(on) box.scrollTop = Math.max(0, on.offsetTop - box.clientHeight / 2 + on.offsetHeight / 2);
+    }
+
+    body.innerHTML =
+        '<div class="mp-cols" data-page-node-id="R159mpCols">'
+      +   '<div class="mp-col" data-page-node-id="R159mpColYear">'
+      +     '<div class="mp-col-title">年份</div>'
+      +     '<div class="mp-scroll" id="mpYearScroll" role="listbox" aria-label="选择年份">'
+      +       years.map(function(y){
+                return '<button type="button" class="mp-item mp-item-y" data-y="' + y + '" role="option"'
+                  + ' aria-selected="false" data-page-node-id="R159mpY' + y + '" title="选择 ' + y + ' 年">'
+                  + '<span class="mp-item-t">' + y + ' 年</span></button>';
+              }).join('')
+      +     '</div>'
+      +   '</div>'
+      +   '<div class="mp-col" data-page-node-id="R159mpColMonth">'
+      +     '<div class="mp-col-title">月份</div>'
+      +     '<div class="mp-scroll" id="mpMonthScroll" role="listbox" aria-label="选择月份">'
+      +       [1,2,3,4,5,6,7,8,9,10,11,12].map(function(m){
+                const ym = selY + '-' + pad2(m);
+                const isNow = (ym === nowYM);
+                return '<button type="button" class="mp-item mp-item-mo" data-m="' + m + '" role="option"'
+                  + ' aria-selected="false" data-page-node-id="R159mpM' + m + '" title="查看 ' + selY + ' 年 ' + m + ' 月打卡数据">'
+                  + '<span class="mp-item-t">' + m + ' 月</span>'
+                  + '<span class="mp-item-m">' + (isNow ? '本月' : '') + '</span></button>';
+              }).join('')
+      +     '</div>'
+      +   '</div>'
+      + '</div>'
+      + '<div class="mp-hint" data-page-node-id="R159mpHint">① 上下滑动左列选年份　② 再点右列月份即可查看</div>';
+
+    body.querySelectorAll('.mp-item-y').forEach(function(b){
       b.addEventListener('click', function(){
-        renderMonthStats(b.dataset.ym);
+        selY = +b.dataset.y;
+        if(!ymOK(selY, selM)){ for(let m = 1; m <= 12; m++){ if(ymOK(selY, m)){ selM = m; break; } } }
+        paintYear(); paintMonth();
+      });
+    });
+    body.querySelectorAll('.mp-item-mo').forEach(function(b){
+      b.addEventListener('click', function(){
+        if(b.disabled) return;
+        selM = +b.dataset.m;
+        renderMonthStats(selY + '-' + pad2(selM));
         hideModal('#modalMonthPicker');
       });
     });
+
     showModal('#modalMonthPicker');
-    // 当前查看月份自动滚入视野（垂直居中），月份多时不用手动翻找
-    const sc = document.getElementById('mpScroll');
-    const on = sc ? sc.querySelector('.mp-item.on') : null;
-    if(sc && on) sc.scrollTop = Math.max(0, on.offsetTop - sc.clientHeight / 2 + on.offsetHeight / 2);
+    paintYear(); paintMonth();
+    // 当前年 / 月分别自动滚入各自列视野（垂直居中）
+    center('#mpYearScroll'); center('#mpMonthScroll');
   }
   let _monthStatsBound = false;
   function bindMonthStats(){
