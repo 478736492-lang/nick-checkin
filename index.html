@@ -5534,9 +5534,10 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   background:linear-gradient(180deg,#9ed2f8,#cfe9ff);
   overflow:hidden;
   /* R136-1：备忘「标签卡」统一玻璃白度 —— 备忘墙卡片与备忘录管理页面行卡引用同一变量，
-     两处透明度严格一致；管理面板的可调「透明」值也以此为基准（见 app.js renderNickMemoView）。 */
+     两处透明度严格一致；管理面板的可调「透明」值也以此为基准（见 app.js renderNickMemoView）。
+     R166-1：磨砂模糊 9px → 5px（保留轻微磨砂质感，底层城市背景图更清晰透出）。 */
   --mn-glass-bg:rgba(255,255,255,.14);
-  --mn-glass-blur:9px
+  --mn-glass-blur:5px
 }
 .mn-back{
   position:absolute;top:14px;left:14px;z-index:8;
@@ -5846,6 +5847,9 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 /* 备忘墙卡片正文支持富文本（首行缩进与段间距与编辑器一致） */
 .mn-note-rich p,.mn-note-rich div{margin:0 0 4px;text-indent:2em;line-height:1.4}
 .mn-note-rich p:last-child,.mn-note-rich div:last-child{margin-bottom:0}
+/* R166-4：卡片正文段间距三档（与 .mn-rte 编辑器同口径；编辑页工具栏「段间距」设置随卡片持久化展示） */
+.mn-note-rich[data-paraspacing="2"] p,.mn-note-rich[data-paraspacing="2"] div{margin-bottom:14px}
+.mn-note-rich[data-paraspacing="3"] p,.mn-note-rich[data-paraspacing="3"] div{margin-bottom:22px}
 /* ================= R140：日看板（Day Board）=================
    备忘录墙首两卡合并后的跨列大卡：绿叶磨砂底 + 毛玻璃窗口 + 时间轴日程 + 底部圆形按钮。
    所有组件悬浮半透明，透出底层绿叶背景；白色文字 + 低饱和度柔和配色，清新治愈。 */
@@ -5859,7 +5863,8 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
      毛玻璃窗口直接透出整页陆家嘴天际线（.mn-stage），保留整体清新绿风格；
      R161-8：绿底白度再度下调（.30/.36 → .22/.27），天际线更清晰透出 */
   /* R164-7：大卡透明度进一步下调（.34/.4 → .18/.24），底层背景图更清晰透出 */
-  background:linear-gradient(155deg, rgba(18,46,38,.18), rgba(14,40,32,.24));
+  /* R166-1：继续下调（.18/.24 → .10/.14），城市背景图最大程度透出 */
+  background:linear-gradient(155deg, rgba(18,46,38,.10), rgba(14,40,32,.14));
   border-color:rgba(255,255,255,.45)
 }
 .mn-notes .mn-note-card.mn-weekboard::before{display:none}
@@ -5879,11 +5884,12 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .wb-tagcards > .mn-note-card{margin:0;min-width:0;min-height:0}
 .wb-tagcards > .mn-note-card:nth-child(-n+3){grid-column:span 2}   /* 第一行 3 张各跨 2 列 */
 .wb-tagcards > .mn-note-card:nth-child(n+4){grid-column:span 3}   /* 第二行 2 张各跨 3 列 */
-.wb-tagcards > .mn-note-card:nth-child(1)::before{background:rgba(255,152,58,.10)}  /* 橙 */
-.wb-tagcards > .mn-note-card:nth-child(2)::before{background:rgba(255,213,64,.10)}  /* 黄 */
-.wb-tagcards > .mn-note-card:nth-child(3)::before{background:rgba(72,214,128,.10)}  /* 绿 */
-.wb-tagcards > .mn-note-card:nth-child(4)::before{background:rgba(34,211,238,.10)}  /* 青 */
-.wb-tagcards > .mn-note-card:nth-child(5)::before{background:rgba(79,140,255,.12)}  /* 蓝 */
+/* R166-1：染色层再度减淡（.10/.12 → .06/.07），配合玻璃白度与模糊下调，城市背景图更清晰透出 */
+.wb-tagcards > .mn-note-card:nth-child(1)::before{background:rgba(255,152,58,.06)}  /* 橙 */
+.wb-tagcards > .mn-note-card:nth-child(2)::before{background:rgba(255,213,64,.06)}  /* 黄 */
+.wb-tagcards > .mn-note-card:nth-child(3)::before{background:rgba(72,214,128,.06)}  /* 绿 */
+.wb-tagcards > .mn-note-card:nth-child(4)::before{background:rgba(34,211,238,.06)}  /* 青 */
+.wb-tagcards > .mn-note-card:nth-child(5)::before{background:rgba(79,140,255,.07)}  /* 蓝 */
 /* R165-1：原「周/月板块底部 3 张正方形同步卡页脚」（.wb-tagcards-foot）随卡片模型统一一并移除 */
 /* R153：竖屏兜底 —— 标签卡区改 5 张纵排，避免两行挤压（与全站竖屏块同断点口径） */
 @media (orientation:portrait){
@@ -6228,11 +6234,15 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 #modalWbEdit .modal-foot{gap:12px;padding-top:clamp(10px,1.6vh,14px)}
 #modalWbEdit .modal-foot button{min-height:42px;font-size:15px;padding:0 20px}
 /* R159-1：备忘录另两个「带编辑入口」的弹出页（周视图卡片详情 #modalWbDetail、标签卡放大预览
-   #modalMemoPreview）同步玻璃化，口径与 #modalWbEdit / #modalWbMonthMemos 一致。 */
-#modalWbDetail,#modalMemoPreview{background:rgba(8,16,52,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+   #modalMemoPreview）同步玻璃化，口径与 #modalWbEdit / #modalWbMonthMemos 一致。
+   R166-2：预览页独立调浅遮罩（.55 → .45，与详情页拆分），玻璃底色更透；底色实际由 app.js
+   wbOpenMemoPreview 按对应标签卡颜色内联覆盖（彩色卡 rgba(rgb,.30) / 白玻璃 .42），此处为兜底。 */
+#modalWbDetail{background:rgba(8,16,52,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+#modalMemoPreview{background:rgba(8,16,52,.45);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 #modalWbDetail .modal-box,#modalMemoPreview .modal-box{
-  /* R165-1：标签卡详情（备忘预览）卡片启用毛玻璃效果，透明度改为 50%（R159-1 为 85%） */
-  background:rgba(255,255,255,.50);
+  /* R165-1：标签卡详情（备忘预览）卡片启用毛玻璃效果，透明度改为 50%（R159-1 为 85%）
+     R166-2：兜底白度再下调（.50 → .40），实际颜色由 JS 按标签卡内联覆盖 */
+  background:rgba(255,255,255,.40);
   backdrop-filter:blur(14px) saturate(140%);
   -webkit-backdrop-filter:blur(14px) saturate(140%);
   border:1.5px solid rgba(255,255,255,.66);
@@ -6240,6 +6250,9 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 }
 #modalWbDetail .modal-box,#modalMemoPreview .modal-box{min-width:min(520px,92vw);width:min(620px,94vw);max-width:min(680px,96vw)}
 #modalWbDetail .modal-foot button,#modalMemoPreview .modal-foot button{min-height:40px;font-size:15px;padding:0 18px}
+/* R166-2：预览页编辑键已移除，底部仅剩【关闭】—— 居中展示避免孤独右对齐 */
+#modalMemoPreview .modal-foot{justify-content:center}
+#modalMemoPreview .modal-foot #btnMemoPreviewClose{min-width:160px}
 .wb-rte-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:clamp(6px,1vh,10px) clamp(8px,1.2vw,14px);background:rgba(244,248,246,.92);border-bottom:1px solid rgba(40,80,60,.16)}
 .wb-rte-sel{font-size:13px;padding:4px 6px;border-radius:8px;border:1.5px solid rgba(40,80,60,.3);background:#fff;color:#1f4d3a;cursor:pointer}
 .wb-rte-color{width:30px;height:30px;padding:0;border:1.5px solid rgba(40,80,60,.3);border-radius:8px;background:#fff;cursor:pointer}
@@ -6593,6 +6606,9 @@ html,body{margin:0;padding:0}
 .mn-prev-item{ font-size:22px; font-weight:700; color:#1b2a44; line-height:1.4; margin-bottom:10px; word-break:break-word; text-shadow:none; }
 .mn-prev-rich{ font-size:16px; color:#243049; line-height:1.6; word-break:break-word; text-shadow:none; }
 .mn-prev-rich p{ margin:0 0 8px; }
+/* R166-4：预览页段间距三档（与卡片正文同规则，随卡片持久化展示） */
+.mn-prev-rich[data-paraspacing="2"] p,.mn-prev-rich[data-paraspacing="2"] div{margin-bottom:14px}
+.mn-prev-rich[data-paraspacing="3"] p,.mn-prev-rich[data-paraspacing="3"] div{margin-bottom:22px}
 .mn-prev-note{ white-space:pre-wrap; }
 .mn-prev-empty{ color:#9aa6bd; font-weight:400; font-size:15px; }
 
@@ -7562,7 +7578,7 @@ html,body{margin:0;padding:0}
   </div>
 </div>
 
-<!-- ========== 弹窗：标签卡放大预览（R155-3③：查看态点标签卡 → 放大预览） ========== -->
+<!-- ========== 弹窗：标签卡放大预览（R155-3③：查看态点标签卡 → 放大预览；R166-2：移除预览页编辑键，仅留关闭） ========== -->
 <div class="modal-mask" id="modalMemoPreview" hidden data-page-node-id="R155memoPreview">
   <div class="modal-box modal-memo" data-page-node-id="R155memoPreviewBox">
     <div class="modal-head" data-page-node-id="R155memoPreviewHead">
@@ -7571,7 +7587,6 @@ html,body{margin:0;padding:0}
     </div>
     <div class="modal-body" id="memoPreviewBody" data-page-node-id="R155memoPreviewBody"></div>
     <div class="modal-foot" data-page-node-id="R155memoPreviewFoot">
-      <button class="mn-save" id="btnMemoPreviewEdit" type="button" data-page-node-id="R155memoPreviewEdit">✏️ 编辑</button>
       <button class="mn-cancel" id="btnMemoPreviewClose" type="button" data-page-node-id="R155memoPreviewClose">关闭</button>
     </div>
   </div>
@@ -31050,6 +31065,8 @@ window.WANTONG_COVER = './assets/c6249ea2bfe3.jpg';
         opacity: (m && m.opacity!==undefined && m.opacity!=='') ? String(m.opacity) : '',
         // R165-2：内容区文字颜色（标签卡预设样式，编辑弹窗保存后同步渲染）
         textColor: (m && m.textColor!==undefined && m.textColor!=='') ? String(m.textColor).slice(0, 20) : '',
+        // R166-4：段间距（编辑页工具栏「段间距」三档：1 标准 / 2 宽松 / 3 分离，随卡片持久化）
+        paraSpacing: (m && m.paraSpacing!==undefined && m.paraSpacing!=='') ? String(m.paraSpacing).slice(0, 2) : '',
         noteHtml: (m && m.noteHtml) ? String(m.noteHtml).slice(0, 4000) : ''
       };
     });
@@ -31074,6 +31091,8 @@ window.WANTONG_COVER = './assets/c6249ea2bfe3.jpg';
         opacity: (x && x.opacity!==undefined && x.opacity!=='') ? String(x.opacity) : '',
         // R165-2：内容区文字颜色（标签卡预设样式，编辑弹窗保存后同步渲染）
         textColor: (x && x.textColor!==undefined && x.textColor!=='') ? String(x.textColor).slice(0, 20) : '',
+        // R166-4：段间距（编辑页工具栏「段间距」三档，随卡片持久化）
+        paraSpacing: (x && x.paraSpacing!==undefined && x.paraSpacing!=='') ? String(x.paraSpacing).slice(0, 2) : '',
         noteHtml: (x && x.noteHtml) ? String(x.noteHtml).slice(0, 4000) : ''
       }))
       // R154-6：不再丢弃「内容为空但有 id」的行 —— 编辑态「⌫ 清空」需要真正保留卡位
@@ -41168,14 +41187,16 @@ I'm good at running.`},
     rose:'234,152,184', lime:'170,202,96', cocoa:'182,150,120', sky:'132,186,242'
   };
   // R163-5：备忘录底层一级标签卡（第一行 3 张正方形同步卡）透明度固定为 80%（= opacity 0.2，更通透）。
-  const MN_PRIMARY_ALPHA = 0.2;
+  // R166-1：再度下调（0.2 → 0.14），配合玻璃白度/模糊同步减弱，底层城市背景图更清晰透出。
+  const MN_PRIMARY_ALPHA = 0.14;
   // 卡位引导圆点配色（长标签卡沿用，与 .wb-tagcards nth-child 染色层同色系；正方形卡改由整卡着色，不再用圆点）
   function mnDotOf(s){ return MN_TINTS[(s + 1) % MN_TINTS.length]; }
   // 管理面板「透明」滑杆区间 0.2~1；R136-1：把该值换算成与管理页面行卡同一套玻璃白度
   // （CSS 变量 --mn-glass-bg = .34），滑杆拉满即与管理页面完全一致，拉低则更透。
   // R160-5：0.04/0.12 → 0.02/0.07（背景图更透）；R161-8：再度适度下调至 0.015/0.05，
   // 配合染色层/高光减淡与模糊提升，底层陆家嘴天际线更清晰透出且文字仍可读。
-  const MN_GLASS_MIN = 0.015, MN_GLASS_MAX = 0.05, MN_OP_MIN = 0.2;
+  // R166-1：继续下调至 0.008/0.03（卡片近乎纯透），底层城市背景图清晰可见。
+  const MN_GLASS_MIN = 0.008, MN_GLASS_MAX = 0.03, MN_OP_MIN = 0.2;
   function mnGlassAlpha(m){
     const raw = (m && m.opacity!==undefined && m.opacity!==null && m.opacity!=='') ? (+m.opacity) : 1;
     let op = raw; if(isNaN(op) || op < MN_OP_MIN) op = MN_OP_MIN; if(op > 1) op = 1;
@@ -41333,15 +41354,20 @@ I'm good at running.`},
       const itemS = (m && m.item) ? m.item : '';
       const noteS = (m && m.note) ? m.note : '';
       const noteHtmlS = (m && m.noteHtml) ? sanitizeRich(m.noteHtml) : '';
+      // R166-3：卡位内容判定（item/note/noteHtml 有任一即算有内容）—— 删除后原位保留的空占位行
+      // 也按空卡渲染（无工具键、占位文案、点击唤起新增弹窗），保证 5 张卡位置稳定不串位。
+      const hasContent = !!(m && (m.item || m.note || m.noteHtml));
+      // R166-4：段间距（编辑页工具栏「段间距」三档）随卡片持久化，卡片正文与编辑页同规则展示
+      const ps = (m && m.paraSpacing) ? String(m.paraSpacing) : '1';
       const parts = [];
       if(itemS) parts.push('<div class="mn-note-item">'+esc(itemS)+'</div>');
-      if(noteHtmlS) parts.push('<div class="mn-note-rich">'+noteHtmlS+'</div>');
+      if(noteHtmlS) parts.push('<div class="mn-note-rich" data-paraspacing="'+esc(ps)+'">'+noteHtmlS+'</div>');
       else if(noteS) parts.push('<div class="mn-note-note">'+esc(noteS)+'</div>');
       const body = '<div class="mn-note-body">'
         + '<div class="mn-note-lead"><span class="mn-note-dot" style="background:'+mnDotOf(s)+'"></span>'+(parts[0]||'<div class="mn-note-ph">＋ 点这张卡，写上今天的事</div>')+'</div>'
         + parts.slice(1).join('')
         + '</div>';
-      html += mnCardHTML(s, 'memo', (m && m.id) ? String(m.id) : '', m ? s : -1, bg, body);
+      html += mnCardHTML(s, 'memo', (m && m.id) ? String(m.id) : '', hasContent ? s : -1, bg, body);
     }
     return html;
   }
@@ -41378,7 +41404,9 @@ I'm good at running.`},
         if(mi < 0){ if(window.toast) toast('这张备忘还是空的'); return; }
         if(typeof confirm !== 'function' || !confirm('确定删除这张备忘吗？此操作不可撤销。')) return;
         const next = memos.slice();
-        next.splice(mi,1);
+        // R166-3：删除 = 该卡位内容清空为占位行（保留卡位与 id）—— 后续卡内容整体不前移串位，
+        // 五张标签卡与数字卡位恒保持「卡位 N = memos[N]」的稳定对应。
+        next[mi] = wbEmptyMemoRow(next[mi] && next[mi].id);
         window.Store.saveNickMemos(next);
         renderNickMemo();
         if(window.toast) toast('已删除该备忘');
@@ -41466,11 +41494,21 @@ I'm good at running.`},
   // R161-4：字号改为 Word 式数字选择（工具栏 #wbRteSize）后，卡片级字体/字号改由工具栏选择值持久化
   let _wbRteFontPick = '', _wbRteSizePick = '';
   // R165-3：第一个空标签卡卡位（0~4）；五张全有内容时返回 0（保存时顺延插入，不覆盖旧内容）
+  // R166-3：空判定改为按内容（item/note/noteHtml）—— 删除后原位保留的空占位行同样算空卡位
   function wbFirstEmptySlot(){
     const memos = getNickMemosSafe();
-    for(let s=0;s<MN_CARD_COUNT;s++){ if(!memos[s]) return s; }
+    for(let s=0;s<MN_CARD_COUNT;s++){ const r = memos[s]; if(!(r && (r.item || r.note || r.noteHtml))) return s; }
     return 0;
   }
+  // R166-3：空占位行 —— 删除某卡内容时原位替换（保留 id 与卡位），后续卡内容整体不前移串位；
+  // 新增内容落到超出当前长度的卡位时，也先用占位行把中间卡位补齐，保证「卡位 N = memos[N]」恒成立。
+  function wbEmptyMemoRow(id){
+    return { id: id || ('nm'+Date.now().toString(36)+Math.random().toString(36).slice(2,6)),
+      date:'', time:'', dateEnd:'', item:'', note:'', noteHtml:'',
+      font:'', fontSize:'', color:'', opacity:'', textColor:'', paraSpacing:'' };
+  }
+  // R166-3：行是否有实际内容（供保存落位判定：目标卡位是空占位 → 原位填充，不推挤其它卡）
+  function wbMemoRowHasContent(r){ return !!(r && (r.item || r.note || r.noteHtml)); }
   // R165-2：内容区文字样式读取所选标签卡预设（字体/字号/文字颜色）进行渲染，取色器同步预设值
   function wbApplyMemoTextStyle(m){
     const ed = document.getElementById('wbEditor');
@@ -42055,6 +42093,8 @@ I'm good at running.`},
     _wbEditSlot = (typeof slot === 'number' && slot >= 0) ? slot
       : ((_wbEditMemoIdx >= 0) ? _wbEditMemoIdx : wbFirstEmptySlot());
     const m = memo || {};
+    // R166-5：卡片颜色随打开/切换的卡位同步到色板（此前漏同步，切换卡位后颜色残留上一张卡的值）
+    _wbEditColor = (m && m.color) ? m.color : 'blue';
     const hasContent = !!(m.item || m.note || m.noteHtml);
     const st = document.getElementById('wbInStart');
     if(st) st.value = m.time || '09:00';
@@ -42080,6 +42120,8 @@ I'm good at running.`},
     const ed = document.getElementById('wbEditor');
     if(ed){ ed.innerHTML = wbSanitize(m.noteHtml || (m.item ? esc(m.item) : '')); _wbSavedRange = null;
       try{ document.execCommand('defaultParagraphSeparator', false, 'p'); }catch(e){} }
+    // R166-4：段间距随该卡持久化值回填编辑器（工具栏「段间距」三档：1 标准 / 2 宽松 / 3 分离）
+    if(ed) ed.setAttribute('data-paraspacing', (m && m.paraSpacing) ? String(m.paraSpacing) : '1');
     // R165-2：内容区文字样式读取所选标签卡预设（字体/字号/文字颜色）渲染
     wbApplyMemoTextStyle(m);
     // R165-3：标签卡下拉列表刷新并选中目标卡位（备忘模式可见）
@@ -42309,7 +42351,8 @@ I'm good at running.`},
       if(_wbEditTarget === 'memo'){
         const idx = _wbEditMemoIdx;
         const memos = getNickMemosSafe();
-        if(idx >= 0 && idx < memos.length){ memos.splice(idx, 1); window.Store.saveNickMemos(memos); }
+        // R166-3：删除 = 该卡位内容清空为占位行（保留卡位），后续卡内容不前移串位
+        if(idx >= 0 && idx < memos.length){ memos[idx] = wbEmptyMemoRow(memos[idx] && memos[idx].id); window.Store.saveNickMemos(memos); }
         hideModal('#modalWbEdit'); renderNickMemo(); if(window.toast) toast('已删除该备忘');
         return;
       }
@@ -42362,11 +42405,20 @@ I'm good at running.`},
       row.textColor = _wbRteTextColor || '';
       // R165-1：卡片底色取自色板选择（20 色轮），与标签卡渲染联动
       row.color = _wbEditColor || '';
+      // R166-4：段间距（编辑页工具栏「段间距」三档）随保存写回，卡片/预览页按同规则展示
+      row.paraSpacing = (ed && ed.getAttribute('data-paraspacing')) || '1';
       // 落位：同卡位原位更新（row 已在数组内）；跨卡位/新增先移除再插入目标卡位
+      // R166-3：新增落到指定数字卡位 —— 目标卡位是空占位行 → 原位填充（不推挤其它卡内容）；
+      //          目标卡位超出当前长度 → 先用空占位行补齐中间卡位，再精确落入该卡位（卡位 N = memos[N]）。
       if(srcIdx >= 0 && srcIdx < memos.length){
         if(srcIdx !== slot){ memos.splice(srcIdx, 1); memos.splice(Math.min(slot, memos.length), 0, row); }
+      } else if(slot < memos.length && !wbMemoRowHasContent(memos[slot])){
+        memos[slot] = row;
+      } else if(slot < memos.length){
+        memos.splice(slot, 0, row);
       } else {
-        memos.splice(Math.min(slot, memos.length), 0, row);
+        while(memos.length < slot) memos.push(wbEmptyMemoRow());
+        memos.splice(slot, 0, row);
       }
       window.Store.saveNickMemos(memos);
       hideModal('#modalWbEdit');
@@ -42456,7 +42508,7 @@ I'm good at running.`},
     // 兜底初始化草稿，防止异常路径下把空数组写回 store 清空全部备忘。
     // R149-3：日期 / 时间拆为两个字段；旧存档里若「时间」存的是 HH:MM 形态，归并到 time 字段。
     _nmDraft = getNickMemosSafe().map(function(m){
-      const o = { id:m.id, date:m.date, time:m.time, item:m.item, note:m.note, noteHtml:m.noteHtml, font:m.font, fontSize:m.fontSize, color:m.color, opacity:m.opacity, textColor:m.textColor };
+      const o = { id:m.id, date:m.date, time:m.time, dateEnd:m.dateEnd, item:m.item, note:m.note, noteHtml:m.noteHtml, font:m.font, fontSize:m.fontSize, color:m.color, opacity:m.opacity, textColor:m.textColor, paraSpacing:m.paraSpacing };
       if(!o.time && o.date && /^\d{1,2}:\d{2}$/.test(String(o.date).trim())){ o.time = o.date; o.date = ''; }
       return o;
     });
@@ -42465,6 +42517,8 @@ I'm good at running.`},
     bindMemoEditModal();
   }
   // R155-3③：标签卡放大预览 —— 查看态点卡弹出，放大呈现主题栏 + 备忘内容（富文本），文字清晰无阴影
+  // R166-2：预览页底色与对应标签卡一致（彩色卡取该卡 20 色轮颜色，无彩色走白玻璃），整体更通透；
+  //          预览页不再放【✏️ 编辑】键 —— 编辑入口统一走卡片 ✏️ 工具 / 页面右上角【编辑】态。
   function wbOpenMemoPreview(idx){
     const memos = getNickMemosSafe();
     const m = (idx >= 0 && idx < memos.length) ? memos[idx] : null;
@@ -42477,6 +42531,9 @@ I'm good at running.`},
     if(m && m.fontSize && +m.fontSize > 0) styleCss += ';font-size:'+Math.max(10, Math.min(40, +m.fontSize))+'px';
     if(m && m.textColor) styleCss += ';color:'+esc(m.textColor);
     const fontFam = styleCss;
+    // R166-4：段间距（编辑页工具栏「段间距」三档）随卡片持久化，预览与卡片同规则展示
+    const ps = (m && m.paraSpacing) ? String(m.paraSpacing) : '1';
+    const psAttr = ' data-paraspacing="'+esc(ps)+'"';
     let rich = '';
     if(m && m.noteHtml){ rich = sanitizeRich(m.noteHtml); }
     else if(m && m.note){ rich = '<div class="mn-prev-note">'+esc(m.note)+'</div>'; }
@@ -42484,15 +42541,14 @@ I'm good at running.`},
         '<div class="mn-prev-item"'+ (fontFam?(' style="'+fontFam+'"'):'') +'>'
       + (item ? esc(item) : '<span class="mn-prev-empty">（这张卡还没有主题）</span>')
       + '</div>'
-      + (rich ? '<div class="mn-prev-rich"'+ (fontFam?(' style="'+fontFam+'"'):'') +'>'+rich+'</div>'
-              : (item ? '' : '<div class="mn-prev-empty">点右上角 ✏️ 编辑，给这张卡加上备忘内容</div>'));
-    // R161-h：预览页【✏️ 编辑】—— 自动进入编辑态并打开该卡同款富文本弹窗（与周/月详情页编辑入口一致）
-    const editBtn = document.getElementById('btnMemoPreviewEdit');
-    if(editBtn) editBtn.onclick = function(){
-      hideModal('#modalMemoPreview');
-      wbEnsureEditMode();
-      wbOpenMemoModal((idx >= 0 ? memos[idx] : null) || null, idx, idx);
-    };
+      + (rich ? '<div class="mn-prev-rich"'+ (fontFam?(' style="'+fontFam+'"'):'') + psAttr +'>'+rich+'</div>'
+              : (item ? '' : '<div class="mn-prev-empty">点页面右上角【编辑】进入编辑态，即可给这张卡加上备忘内容</div>'));
+    // R166-2：预览页玻璃底色与对应标签卡同色（彩色卡 rgba(rgb,0.30)，无彩色白玻璃 0.42）—— 比旧 50% 实白更透
+    const rgb = (m && m.color && MN_PRIMARY_COLORS[m.color]) ? MN_PRIMARY_COLORS[m.color] : '';
+    const box = document.querySelector('#modalMemoPreview .modal-box');
+    if(box) box.style.background = rgb
+      ? 'rgba('+rgb+',0.30)'
+      : 'rgba(255,255,255,0.42)';
     const closeBtn = document.getElementById('btnMemoPreviewClose');
     if(closeBtn) closeBtn.onclick = function(){ hideModal('#modalMemoPreview'); };
     showModal('#modalMemoPreview');
@@ -42561,15 +42617,20 @@ I'm good at running.`},
       const op = card.querySelector('.mn-opacity'); if(op) op.addEventListener('input', function(){ row.opacity = op.value; });
       const del = card.querySelector('.mn-del');
       if(del) del.addEventListener('click', function(){
-        _nmDraft = (_nmDraft||[]).filter(function(x){ return String(x.id)!==String(id); });
+        // R166-3：卡位内（前 MN_CARD_COUNT 条）删除 = 清空为占位行保卡位稳定；溢出区的行直接移除
+        const pos = (_nmDraft||[]).findIndex(function(x){ return String(x.id)===String(id); });
+        if(pos >= 0 && pos < MN_CARD_COUNT){ _nmDraft[pos] = wbEmptyMemoRow(_nmDraft[pos].id); }
+        else { _nmDraft = (_nmDraft||[]).filter(function(x){ return String(x.id)!==String(id); }); }
         renderMemoEditModalBody(); bindMemoEditModal();
       });
     });
     const addBtn = body.querySelector('.mn-add-new .mn-add');
     const doAdd = function(){
-      // 备忘墙固定 7 张卡，新增上限 7 条，杜绝「加了却看不见也删不到」的幽灵数据
-      if((_nmDraft||[]).length >= MN_CARD_COUNT){
-        if(window.toast) toast('备忘墙最多 '+MN_CARD_COUNT+' 张，先删掉一张再加吧');
+      // 备忘墙固定 5 张卡，新增上限 5 条，杜绝「加了却看不见也删不到」的幽灵数据
+      // R166-3：上限判定改为按有内容的卡位计数（空占位行不占名额）；新增落入第一个空卡位
+      const filled = (_nmDraft||[]).filter(wbMemoRowHasContent).length;
+      if(filled >= MN_CARD_COUNT){
+        if(window.toast) toast('五张标签卡都有内容了，先清空一张再加吧');
         return;
       }
       const wrap = body.querySelector('.mn-add-new'); if(!wrap) return;
@@ -42577,7 +42638,9 @@ I'm good at running.`},
       const note = (wrap.querySelector('.mn-in-note').value||'').trim();
       if(!item && !note) return;
       _nmDraft = _nmDraft || [];
-      _nmDraft.push({ id: 'nm'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), date:'', time:'', item:item, note:note, font:'', fontSize:'', color:'', opacity:'' });
+      const newRow = { id: 'nm'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), date:'', time:'', item:item, note:note, font:'', fontSize:'', color:'', opacity:'' };
+      const di = _nmDraft.findIndex(function(x){ return !wbMemoRowHasContent(x); });
+      if(di >= 0) _nmDraft[di] = newRow; else _nmDraft.push(newRow);
       renderMemoEditModalBody(); bindMemoEditModal();
       const ni = body.querySelector('.mn-add-new .mn-in-item'); if(ni) ni.focus();
     };
