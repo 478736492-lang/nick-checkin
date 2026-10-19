@@ -5652,6 +5652,8 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .mn-note-rich *{max-width:100%;word-break:break-word;overflow-wrap:anywhere}
 .mn-note-rich img,.mn-note-rich table{max-width:100%;height:auto}
 .mn-note-empty{display:none}
+/* R165-1：空卡位占位提示（五张标签卡内无内容的卡位，保持排版位置稳定） */
+.mn-note-ph{font-size:clamp(12px,1.9vh,17px);font-weight:700;color:rgba(16,42,82,.5);word-break:break-word}
 /* ③ 卡片右上角两个极简小图标：编辑 / 删除 */
 .mn-note-tools{
   position:absolute;top:clamp(5px,1vh,9px);right:clamp(5px,1vw,9px);
@@ -5862,32 +5864,32 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 }
 .mn-notes .mn-note-card.mn-weekboard::before{display:none}
 /* R153：今天视图标签卡区 —— 备忘录页下方的 5 张标签卡移入周看板「今天」视图，排在当日日程下方，
-   与当日日程同属「今日板块」。R158-3：恢复两行布局 —— 6 列网格，第一行 3 张各占 2 列（正方形），
+   与当日日程同属「今日板块」。R158-3：两行布局 —— 6 列网格，第一行 3 张各占 2 列（正方形），
    第二行 2 张各占 3 列（长方形），两行行高 1fr 均分填满可用高度；卡内正文/工具/装饰均为绝对定位，
    空卡不塌缩。配色显式按卡位声明（橙/黄/绿/青/蓝，与卡内 mn-note-dot 同色）—— 标签卡已不在备忘墙网格内，
    不再依赖 .mn-notes 的 nth-child 位次上色；备忘墙基类 margin 在此复位为 0。 */
-/* R164-3：统一 5 张标签卡样式规范 —— 全部以底部 2 张长方形卡为基准：6 列网格改为 2 列，5 张均为等宽长方形 */
+/* R164-3 曾统一为 2 列 × 3 行等宽长方形；R165-1 恢复原五张标签卡排版位置（第一行 3 张 + 第二行 2 张）——
+   5 张卡位全部取自 nickMemos（memos[0..4]），新增内容只在五张卡内落位，空卡位占位保持排版稳定 */
 .wb-tagcards{
   /* R161-8：适度放大备忘录玻璃卡片尺寸（保底高度 210~330 → 240~360，行高仍 1fr 均分填满可用高度） */
   flex:1 1 auto;min-height:clamp(240px,38vh,360px);
-  display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(3,minmax(0,1fr));
+  display:grid;grid-template-columns:repeat(6,1fr);grid-template-rows:repeat(2,minmax(0,1fr));
   gap:clamp(7px,1.3vh,14px);padding-top:clamp(5px,1vh,10px)
 }
 .wb-tagcards > .mn-note-card{margin:0;min-width:0;min-height:0}
+.wb-tagcards > .mn-note-card:nth-child(-n+3){grid-column:span 2}   /* 第一行 3 张各跨 2 列 */
+.wb-tagcards > .mn-note-card:nth-child(n+4){grid-column:span 3}   /* 第二行 2 张各跨 3 列 */
 .wb-tagcards > .mn-note-card:nth-child(1)::before{background:rgba(255,152,58,.10)}  /* 橙 */
 .wb-tagcards > .mn-note-card:nth-child(2)::before{background:rgba(255,213,64,.10)}  /* 黄 */
 .wb-tagcards > .mn-note-card:nth-child(3)::before{background:rgba(72,214,128,.10)}  /* 绿 */
 .wb-tagcards > .mn-note-card:nth-child(4)::before{background:rgba(34,211,238,.10)}  /* 青 */
 .wb-tagcards > .mn-note-card:nth-child(5)::before{background:rgba(79,140,255,.12)}  /* 蓝 */
-/* R163-3：周/月板块底部「第一行 3 张正方形同步卡」页脚 —— 单排 3 列，与今日视图第一行对齐；
-   整卡按任务颜色着色（见 mnSquareCardsHTML），故关闭彩虹 ::before 叠色防冲突。 */
-.wb-tagcards.wb-tagcards-foot{grid-template-columns:repeat(3,1fr);grid-template-rows:auto;grid-auto-rows:minmax(96px,1fr);gap:clamp(7px,1.3vh,14px);flex:0 0 auto}
-.wb-tagcards.wb-tagcards-foot > .mn-note-card{grid-column:span 1}
-.wb-tagcards.wb-tagcards-foot > .mn-note-card:nth-child(-n+3){grid-column:span 1}
-.wb-tagcards.wb-tagcards-foot > .mn-note-card::before{display:none}
+/* R165-1：原「周/月板块底部 3 张正方形同步卡页脚」（.wb-tagcards-foot）随卡片模型统一一并移除 */
 /* R153：竖屏兜底 —— 标签卡区改 5 张纵排，避免两行挤压（与全站竖屏块同断点口径） */
 @media (orientation:portrait){
   .wb-tagcards{grid-template-columns:1fr;grid-template-rows:repeat(5,minmax(84px,1fr));min-height:0}
+  .wb-tagcards > .mn-note-card:nth-child(-n+3),
+  .wb-tagcards > .mn-note-card:nth-child(n+4){grid-column:span 1}
 }
 /* R142 → R146：周看板「今天」视图（与周/月共用数据层）—— R146 起为普通卡片式备忘内容区（无时间刻度）
    R153：日程区不压缩（flex:0 0 auto），把剩余高度让给标签卡区；标签卡保底高度见 .wb-tagcards */
@@ -6168,8 +6170,8 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   width:min(760px,94vw);min-width:min(560px,92vw);max-width:min(860px,96vw);
   max-height:88vh;max-height:88dvh;
   display:flex;flex-direction:column;
-  /* R164-2：编辑弹窗透明度设置为 70% */
-  background:rgba(255,255,255,.70);
+  /* R165-2：编辑备忘页面透明度设置为 50%（R164-2 为 70%） */
+  background:rgba(255,255,255,.50);
   backdrop-filter:blur(16px) saturate(150%);
   -webkit-backdrop-filter:blur(16px) saturate(150%);
   border:1.5px solid rgba(255,255,255,.66);
@@ -6191,6 +6193,14 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 #modalWbEdit .modal-x{width:34px;height:34px;font-size:20px}
 /* 主体撑满剩余高度并独立滚动，底部按钮组固定不被内容顶出视野 */
 #modalWbEdit .modal-body{flex:1 1 auto;min-height:0;overflow-y:auto}
+/* R165-2：调整各组件区域位置，杜绝元素互相遮挡 —— .modal-body 为纵向 flex 容器，
+   固定区块（主题栏 / 日期行 / 颜色行 / 工具条）一律 flex:0 0 auto 不被压缩，
+   剩余高度全部交给编辑区（.wb-rte-editor flex:1 1 auto），总高超出时整体滚动而非互相叠压
+   （修复 R164 期 .wb-rte-dt-row 被压成 11px、日期/时间控件互相遮挡的问题） */
+#modalWbEdit .wb-rte-title-field,
+#modalWbEdit .wb-rte-dt-row,
+#modalWbEdit .wb-rte-meta,
+#modalWbEdit .wb-rte-toolbar{flex:0 0 auto}
 /* 编辑区放大（原 min 150px/34vh/340px、max 46vh） */
 #modalWbEdit .wb-rte-editor{min-height:clamp(230px,40vh,420px);max-height:54vh;font-size:clamp(14px,2.1vh,17px);padding:clamp(12px,2vh,18px) clamp(14px,2vw,22px);border-radius:0 0 14px 14px}
 /* 工具条按键 / 下拉 / 取色器放大（原 32×30、13px） */
@@ -6204,6 +6214,13 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 /* 主题栏放大（R161-4：字体/字号行已移除，改工具栏数字档位） */
 #modalWbEdit .wb-rte-title-field{font-size:clamp(13px,1.8vh,15px);padding:clamp(10px,1.8vh,14px) clamp(10px,1.6vw,18px) 6px}
 #modalWbEdit .wb-rte-title-field > input#wbInTitle{height:40px;font-size:15px}
+/* R165-3：主题栏右侧「标签卡」选择下拉 —— 固定宽度不参与主题栏伸缩，窄屏随 title-field 换行不遮挡 */
+#modalWbEdit .wb-rte-slot-wrap{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;min-width:0}
+#modalWbEdit .wb-rte-slot-lbl{white-space:nowrap}
+#modalWbEdit .wb-rte-slot{flex:0 0 auto;min-width:0;max-width:min(250px,36vw);height:40px;font-size:14px;font-weight:700;color:#12352a;border:1.5px solid rgba(40,80,60,.3);border-radius:8px;background:#fff;padding:0 8px;cursor:pointer}
+#modalWbEdit .wb-rte-slot:focus{outline:none;border-color:var(--tone-500)}
+/* R165-2：颜色选择项标题标注（位于日期下方颜色行首） */
+.wb-rte-meta-lbl{white-space:nowrap;align-self:center}
 #modalWbEdit .wb-rte-date input[type=date]{font-size:15px;padding:5px 8px}
 /* 时间控件与底部按键放大 */
 #modalWbEdit .wb-rte-time{font-size:clamp(12px,1.8vh,15px)}
@@ -6214,7 +6231,8 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
    #modalMemoPreview）同步玻璃化，口径与 #modalWbEdit / #modalWbMonthMemos 一致。 */
 #modalWbDetail,#modalMemoPreview{background:rgba(8,16,52,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 #modalWbDetail .modal-box,#modalMemoPreview .modal-box{
-  background:rgba(255,255,255,.85);
+  /* R165-1：标签卡详情（备忘预览）卡片启用毛玻璃效果，透明度改为 50%（R159-1 为 85%） */
+  background:rgba(255,255,255,.50);
   backdrop-filter:blur(14px) saturate(140%);
   -webkit-backdrop-filter:blur(14px) saturate(140%);
   border:1.5px solid rgba(255,255,255,.66);
@@ -7617,6 +7635,12 @@ html,body{margin:0;padding:0}
       <div class="wb-rte-title-field" data-page-node-id="R156wbTitleField">
         <span class="wb-rte-lbl">主题栏</span>
         <input id="wbInTitle" type="text" maxlength="30" placeholder="给这条备忘起个主题" data-page-node-id="R156wbInTitle" />
+        <!-- R165-3：主题栏右侧「标签卡」选择下拉 —— 可选列表即备忘录首页五张标签卡，保存写入所选卡位；
+             整组（标签+下拉）包在 #wbCardSlotWrap 内，仅备忘（memo）模式可见，日程模式整体隐藏 -->
+        <span class="wb-rte-slot-wrap" id="wbCardSlotWrap" hidden>
+          <span class="wb-rte-lbl wb-rte-slot-lbl">标签卡</span>
+          <select id="wbCardSlot" class="wb-rte-slot" data-page-node-id="R165wbCardSlot" title="选择保存到备忘录首页的哪张标签卡"></select>
+        </span>
       </div>
       <div class="wb-rte-dt-row" data-page-node-id="R164wbDtRow">
         <label class="wb-rte-date"><span>日期</span>
@@ -7637,6 +7661,8 @@ html,body{margin:0;padding:0}
         </label>
       </div>
       <div class="wb-rte-meta" data-page-node-id="R141wbMeta">
+        <!-- R165-2：日期下方颜色选择项增加标题标注 -->
+        <span class="wb-rte-lbl wb-rte-meta-lbl">卡片颜色</span>
         <div class="nb-e-colors" id="wbColors" data-page-node-id="R141wbColors">
           <button type="button" class="nb-e-c-blue" data-wb-color="blue" title="蓝色"></button>
           <button type="button" class="nb-e-c-green" data-wb-color="green" title="绿色"></button>
@@ -31022,6 +31048,8 @@ window.WANTONG_COVER = './assets/c6249ea2bfe3.jpg';
         fontSize: (m && m.fontSize!==undefined && m.fontSize!=='') ? String(m.fontSize) : '',
         color: (m && m.color!==undefined && m.color!=='') ? String(m.color) : '',
         opacity: (m && m.opacity!==undefined && m.opacity!=='') ? String(m.opacity) : '',
+        // R165-2：内容区文字颜色（标签卡预设样式，编辑弹窗保存后同步渲染）
+        textColor: (m && m.textColor!==undefined && m.textColor!=='') ? String(m.textColor).slice(0, 20) : '',
         noteHtml: (m && m.noteHtml) ? String(m.noteHtml).slice(0, 4000) : ''
       };
     });
@@ -31044,6 +31072,8 @@ window.WANTONG_COVER = './assets/c6249ea2bfe3.jpg';
         fontSize: (x && x.fontSize!==undefined && x.fontSize!=='') ? String(x.fontSize) : '',
         color: (x && x.color!==undefined && x.color!=='') ? String(x.color) : '',
         opacity: (x && x.opacity!==undefined && x.opacity!=='') ? String(x.opacity) : '',
+        // R165-2：内容区文字颜色（标签卡预设样式，编辑弹窗保存后同步渲染）
+        textColor: (x && x.textColor!==undefined && x.textColor!=='') ? String(x.textColor).slice(0, 20) : '',
         noteHtml: (x && x.noteHtml) ? String(x.noteHtml).slice(0, 4000) : ''
       }))
       // R154-6：不再丢弃「内容为空但有 id」的行 —— 编辑态「⌫ 清空」需要真正保留卡位
@@ -41115,11 +41145,10 @@ I'm good at running.`},
   // R148：备忘墙固定 5 张标签卡（周看板大卡占第 1 位，标签卡为第 2~6 位），
   //       且标签卡从第 1 条备忘（索引 0）开始渲染 —— 此前从索引 2 起渲染，前两条（含新建的那条）永远不显示。
   const MN_CARD_COUNT = 5;
-  // R162-d：5 个卡片位拆成两行两种数据口径 ——
-  //   第一行 3 张正方形 = 周 / 月板块新增、归属今日的备忘（周看板数据层，三板块实时同步）；
-  //   第二行 2 张长方形 = 今日板块独立备忘（nickMemos），不参与周 / 月板块同步。
-  const MN_SQ_COUNT = 3;
-  const MN_RECT_COUNT = 2;
+  // R165-1：5 个卡片位统一为备忘录标签卡 —— 全部取自 nickMemos（卡位 0~4 = memos[0..4]），
+  //   新增备忘内容不再单独新增卡片展示，仅在原有五张标签卡内落位；空卡位以占位卡保持排版位置稳定。
+  //   （R162-d 起的「第一行 3 张正方形 kind=task + 第二行 2 张长方形 kind=memo」分区模型废止，
+  //     mnSquareCardsHTML 一并移除；当日日程仍由周看板数据层在 .wb-dayview 平铺展示，不占标签卡位。）
   const MN_TOOL_EDIT = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17.25V21h3.75L17.8 9.94l-3.75-3.75L3 17.25zM20.7 7.04a1 1 0 0 0 0-1.42l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>';
   const MN_TOOL_DEL  = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>';
   // 疯狂动物城角色人像（按卡位依次：朱迪/尼克/闪电/豹警官/绵羊副市长/大先生/牦牛亚提）
@@ -41264,61 +41293,43 @@ I'm good at running.`},
   // R162-d：标签卡外壳（第一行正方形 / 第二行长方形共用）——
   //   kind = 'task'（周 / 月同步，三板块共用周看板数据层）| 'memo'（今日板块独立，nickMemos）。
   //   ✏️/🗑 工具与卡面编辑态仅在 _wbEditMode 下渲染；查看态点卡片 → 放大/详情查看页面。
+  // R165-1：今天视图 5 张标签卡统一 kind='memo'（全部取自 nickMemos），新增 data-mn-slot 卡位属性
+  //   （0~4，与 data-mn-idx 一致：有内容时为 memos 下标，空卡位为 -1）；kind 参数保留供周/月
+  //   遗留渲染路径兼容（R164-1 起周/月视图已不可达）。
   function mnCardHTML(s, kind, id, idxAttr, bg, body){
     const has = (idxAttr >= 0);
     const tools = (_wbEditMode && has)
       ? '<button class="mn-tool-btn mn-tool-edit" type="button" title="编辑备忘录" aria-label="编辑备忘录" data-page-node-id="R134memoEdit'+s+'">'+MN_TOOL_EDIT+'</button>'
         + '<button class="mn-tool-btn mn-tool-del" type="button" title="删除这张备忘" aria-label="删除这张备忘" data-page-node-id="R134memoDel'+s+'">'+MN_TOOL_DEL+'</button>'
       : '';
-    return '<div class="mn-note-card'+(_wbEditMode?' mn-note-editing':'')+'" data-mn-kind="'+kind+'" data-mn-id="'+esc(id)+'" data-mn-idx="'+idxAttr+'"'+bg+' data-page-node-id="R134memoCard'+s+'">'
+    return '<div class="mn-note-card'+(_wbEditMode?' mn-note-editing':'')+'" data-mn-kind="'+kind+'" data-mn-slot="'+s+'" data-mn-id="'+esc(id)+'" data-mn-idx="'+idxAttr+'"'+bg+' data-page-node-id="R134memoCard'+s+'">'
       + '<div class="mn-note-tools">'
       + tools
       + '</div>'
       + body
       + '</div>';
   }
-  // R163-3 → R163-5：仅渲染第一行 3 张正方形同步卡（kind=task，来源 wbTasksOn(date)，今日/周/月三板块统一）。
-  // R163-4：正方形卡按任务自身颜色（t.color，8 色轮，编辑弹窗 #wbColors 可选）着色 —— 实现卡片颜色各异。
-  // R163-5：一级标签卡背景透明度固定为 80%（opacity 0.2，更通透；与任务颜色叠加 tint）。
-  function mnSquareCardsHTML(today){
-    today = today || _nbDate || nbTodayISO();
-    const tasks = wbTasksOn(today);
-    let html = '';
-    for(let s=0;s<MN_SQ_COUNT;s++){
-      const t = tasks[s] || null;
-      // R156-3a③：字体/字号随任务持久化并渲染（与管理页卡片一致）
-      let fontCss = '';
-      if(t){
-        if(t.font) fontCss += ';font-family:'+esc(t.font);
-        if(t.fontSize && +t.fontSize > 0) fontCss += ';font-size:'+Math.max(10, Math.min(40, +t.fontSize))+'px';
-      }
-      // R163-5：一级卡固定 80% 透明（alpha 0.2）；R163-4：有任务时用其颜色着色，空卡白底
-      const rgb = (t && t.color && MN_PRIMARY_COLORS[t.color]) ? MN_PRIMARY_COLORS[t.color] : '255,255,255';
-      const bg = ' style="background:rgba('+rgb+','+MN_PRIMARY_ALPHA+')'+fontCss+'"';
-      const parts = [];
-      if(t) parts.push('<div class="mn-note-item">'+esc(t.title||'(无主题)')+'</div>');
-      if(t) parts.push('<div class="mn-note-note">'+esc(wbTimeText(t))+'</div>');
-      const body = '<div class="mn-note-body">'
-        + '<div class="mn-note-lead">'+(parts[0]||'')+'</div>'
-        + parts.slice(1).join('')
-        + '</div>';
-      html += mnCardHTML(s, 'task', (t && t.id) ? String(t.id) : '', t ? s : -1, bg, body);
-    }
-    return html;
-  }
+  // R165-1：5 张标签卡统一渲染 —— 全部取自 nickMemos（卡位 0~4 = memos[0..4]），
+  // 恢复 R153 期「第一行 3 张 + 第二行 2 张」排版位置（CSS .wb-tagcards 6 列网格：前 3 张各跨 2 列、
+  // 后 2 张各跨 3 列）。新增备忘内容不单独新增卡片，仅在原有五张标签卡内落位；空卡位渲染占位卡，
+  // 保持排版位置稳定，点击即可填写。
+  // R165-2：字体/字号/文字颜色随备忘持久化并渲染；卡片底色取备忘自身颜色（m.color，20 色轮），
+  // 未选颜色时走原白玻璃底（与管理页/编辑弹窗色板联动）。
   function mnTagCardsHTML(){
     const memos = getNickMemosSafe();
-    const today = _nbDate || nbTodayISO();
-    // ① 第一行 3 张正方形：周 / 月板块新增、归属今日的备忘（三板块实时同步，着色见 mnSquareCardsHTML）
-    let html = mnSquareCardsHTML(today);
-    // ② 第二行 2 张长方形：今日板块独立备忘（nickMemos），仅在今日板块展示，不参与周 / 月同步
-    for(let r=0;r<MN_RECT_COUNT;r++){
-      const s = MN_SQ_COUNT + r;          // 卡位 3 / 4（第 4、5 张）
-      const m = memos[r] || null;
-      const fontFam = (m && m.font) ? ';font-family:'+esc(m.font) : '';
-      // R156-3a③：标签卡同样支持字号（与管理页/编辑弹窗字段统一）
-      const fontSz = (m && m.fontSize && +m.fontSize > 0) ? ';font-size:'+Math.max(10, Math.min(40, +m.fontSize))+'px' : '';
-      const bg = ' style="background:rgba(255,255,255,'+mnGlassAlpha(m)+')'+fontFam+fontSz+'"';
+    let html = '';
+    for(let s=0;s<MN_CARD_COUNT;s++){
+      const m = memos[s] || null;
+      let fontCss = '';
+      if(m){
+        if(m.font) fontCss += ';font-family:'+esc(m.font);
+        if(m.fontSize && +m.fontSize > 0) fontCss += ';font-size:'+Math.max(10, Math.min(40, +m.fontSize))+'px';
+        if(m.textColor) fontCss += ';color:'+esc(m.textColor);
+      }
+      const rgb = (m && m.color && MN_PRIMARY_COLORS[m.color]) ? MN_PRIMARY_COLORS[m.color] : '';
+      const bg = rgb
+        ? ' style="background:rgba('+rgb+','+MN_PRIMARY_ALPHA+')'+fontCss+'"'
+        : ' style="background:rgba(255,255,255,'+mnGlassAlpha(m)+')'+fontCss+'"';
       const itemS = (m && m.item) ? m.item : '';
       const noteS = (m && m.note) ? m.note : '';
       const noteHtmlS = (m && m.noteHtml) ? sanitizeRich(m.noteHtml) : '';
@@ -41327,10 +41338,10 @@ I'm good at running.`},
       if(noteHtmlS) parts.push('<div class="mn-note-rich">'+noteHtmlS+'</div>');
       else if(noteS) parts.push('<div class="mn-note-note">'+esc(noteS)+'</div>');
       const body = '<div class="mn-note-body">'
-        + '<div class="mn-note-lead"><span class="mn-note-dot" style="background:'+mnDotOf(s)+'"></span>'+(parts[0]||'')+'</div>'
+        + '<div class="mn-note-lead"><span class="mn-note-dot" style="background:'+mnDotOf(s)+'"></span>'+(parts[0]||'<div class="mn-note-ph">＋ 点这张卡，写上今天的事</div>')+'</div>'
         + parts.slice(1).join('')
         + '</div>';
-      html += mnCardHTML(s, 'memo', (m && m.id) ? String(m.id) : '', m ? r : -1, bg, body);
+      html += mnCardHTML(s, 'memo', (m && m.id) ? String(m.id) : '', m ? s : -1, bg, body);
     }
     return html;
   }
@@ -41339,9 +41350,8 @@ I'm good at running.`},
     // 导致卡上 ✏️/🗑 按键失灵 —— 现改绑定范围为整页（.page-memonick），覆盖备忘墙与标签卡两处；
     // 每键加 __nmBound 防重复绑定（renderWbToday 签名保留节点时不会重复挂事件）。
     const root = document.querySelector('.page-memonick') || document;
-    // R162-d：第一行 3 张正方形 = 'task'（周/月同步，走周看板数据层）；第二行 2 张长方形 = 'memo'（今日独立）
-    const today = _nbDate || nbTodayISO();
-    const kindOf = function(card){ return (card && card.getAttribute('data-mn-kind') === 'task') ? 'task' : 'memo'; };
+    // R165-1：5 张标签卡统一为备忘卡位（kind='memo'，全部取自 nickMemos）——
+    //   data-mn-idx = 卡位 s（有内容时为 memos 下标；空卡位为 -1），编辑/删除/预览一律按卡位精确定位。
     // R155-3⑥：页面级「编辑/取消」原位切换键已移除，编辑/保存统一由单张备忘卡右上角编辑键承担；
     // R157-1：编辑态「✏️ 编辑」键 —— 打开与点击卡片同款的富文本弹窗（#modalWbEdit），按卡位写入对应备忘。
     root.querySelectorAll('.mn-tool-edit').forEach(function(btn){
@@ -41351,12 +41361,8 @@ I'm good at running.`},
         if(!card) return;
         const idx = +card.getAttribute('data-mn-idx');
         if(idx < 0) return;
-        if(kindOf(card) === 'task'){
-          wbOpenEditModal(wbTasksOn(today)[idx] || null, { date: today });
-          return;
-        }
         const memos = getNickMemosSafe();
-        wbOpenMemoModal(memos[idx] || null, idx);
+        wbOpenMemoModal(memos[idx] || null, idx, idx);
       });
     });
     // R157-2：原「⌫ 清空」键（mn-tool-clear）已移除 —— 清空诉求由「✏️ 编辑」弹窗内删除/改写覆盖
@@ -41367,17 +41373,6 @@ I'm good at running.`},
         if(!card) return;
         const idx = +card.getAttribute('data-mn-idx');
         if(idx < 0) return;
-        if(kindOf(card) === 'task'){
-          const id = card.getAttribute('data-mn-id');
-          const list = wbTasksOn(today);
-          const next = list.filter(function(x){ return String(x.id) !== String(id); });
-          if(next.length === list.length){ if(window.toast) toast('这张备忘还是空的'); return; }
-          if(typeof confirm !== 'function' || !confirm('确定删除这张备忘吗？此操作不可撤销。')) return;
-          wbSaveOn(today, next);
-          renderNickMemo();
-          if(window.toast) toast('已删除该备忘');
-          return;
-        }
         const memos = getNickMemosSafe();
         const mi = memos.findIndex(function(m){ return String(m.id)===String(card.getAttribute('data-mn-id')); });
         if(mi < 0){ if(window.toast) toast('这张备忘还是空的'); return; }
@@ -41396,23 +41391,15 @@ I'm good at running.`},
         card.addEventListener('click', function(e){
           if(e.target.closest && e.target.closest('.mn-tool-btn')) return;
           const idx = +card.getAttribute('data-mn-idx');
-          if(idx < 0){
-            // R164-1：周/月板块已移除 —— 今天视图空卡位直接唤起对应新增弹窗
-            // （任务卡 → 周看板新增；备忘卡 → 新增今日独立备忘）
-            if(kindOf(card) === 'task'){ wbAddNew({ date: nbTodayISO() }); return; }
-            wbOpenMemoModal(null, -1);
-            return;
-          }
-          if(kindOf(card) === 'task'){
-            wbOpenEditModal(wbTasksOn(today)[idx] || null, { date: today });
-            return;
-          }
+          const slot = +card.getAttribute('data-mn-slot');
+          // R165-1：空卡位直接唤起新增弹窗，并预选中该卡位（与 R165-3 下拉联动）
+          if(idx < 0){ wbOpenMemoModal(null, -1, slot >= 0 ? slot : -1); return; }
           const memos = getNickMemosSafe();
-          wbOpenMemoModal(memos[idx] || null, idx);
+          wbOpenMemoModal(memos[idx] || null, idx, slot >= 0 ? slot : idx);
         });
       });
     }
-    // R155-3③ → R161-h：查看态点标签卡（非工具键）→ 放大/详情查看页面（不做任何修改）
+    // R155-3③ → R161-h：查看态点标签卡（非工具键）→ 放大预览该卡全部内容（不做任何修改）
     if(!_wbEditMode){
       root.querySelectorAll('.mn-note-card[data-mn-idx]').forEach(function(card){
         if(card.__nmViewBound) return; card.__nmViewBound = true;
@@ -41420,10 +41407,6 @@ I'm good at running.`},
           if(e.target.closest && e.target.closest('.mn-tool-btn')) return;
           const idx = +card.getAttribute('data-mn-idx');
           if(idx < 0) return;
-          if(kindOf(card) === 'task'){
-            wbOpenWeekDetail(wbTasksOn(today)[idx] || null, today);
-            return;
-          }
           wbOpenMemoPreview(idx);
         });
       });
@@ -41473,11 +41456,57 @@ I'm good at running.`},
   let _wbEditColor = 'blue';
   // R154-3c：弹窗编辑目标 —— 'task'=周看板日程（原有）；'memo'=5 张标签卡对应备忘（与「新增」同款弹窗）
   let _wbEditTarget = 'task';
-  let _wbEditMemoIdx = -1;     // memo 模式下正在编辑的卡位（memos 下标；-1 = 空卡位 → 追加新备忘）
+  let _wbEditMemoIdx = -1;     // memo 模式下正在编辑的备忘（memos 下标；-1 = 新增）
+  // R165-3：标签卡选择下拉目标卡位（0~4）—— 保存时写入该卡位；切换下拉即整体切换编辑目标（含内容与样式）
+  let _wbEditSlot = -1;
+  // R165-2：内容区文字颜色 —— 读取所选标签卡预设（m.textColor）渲染，保存后同步写回该卡
+  let _wbRteTextColor = '';
   // R161-2：新建/编辑弹窗日期模式 —— 'single'=单日；'range'=日期区间（某月某日至某月某日）
   let _wbDateMode = 'single';
   // R161-4：字号改为 Word 式数字选择（工具栏 #wbRteSize）后，卡片级字体/字号改由工具栏选择值持久化
   let _wbRteFontPick = '', _wbRteSizePick = '';
+  // R165-3：第一个空标签卡卡位（0~4）；五张全有内容时返回 0（保存时顺延插入，不覆盖旧内容）
+  function wbFirstEmptySlot(){
+    const memos = getNickMemosSafe();
+    for(let s=0;s<MN_CARD_COUNT;s++){ if(!memos[s]) return s; }
+    return 0;
+  }
+  // R165-2：内容区文字样式读取所选标签卡预设（字体/字号/文字颜色）进行渲染，取色器同步预设值
+  function wbApplyMemoTextStyle(m){
+    const ed = document.getElementById('wbEditor');
+    if(ed){
+      const fam = (m && m.font) ? m.font : '';
+      const sz = (m && m.fontSize && +m.fontSize > 0) ? Math.max(10, Math.min(40, +m.fontSize)) : 0;
+      const col = (m && m.textColor) ? m.textColor : '';
+      ed.style.fontFamily = fam || '';
+      ed.style.fontSize = sz ? (sz + 'px') : '';
+      ed.style.color = col || '';
+    }
+    const cp = document.getElementById('wbRteColor');
+    if(cp) cp.value = (m && m.textColor) ? m.textColor : '#1b2a44';
+    _wbRteTextColor = (m && m.textColor) ? m.textColor : '';
+  }
+  // R165-3：主题栏右侧「标签卡」选择下拉 —— 可选列表即备忘录首页五张标签卡（含各卡当前主题，空卡标注）
+  function wbSyncSlotSelect(){
+    const sel = document.getElementById('wbCardSlot');
+    if(!sel) return;
+    const memos = getNickMemosSafe();
+    let html = '';
+    for(let s=0;s<MN_CARD_COUNT;s++){
+      const m = memos[s];
+      const topic = m ? String(m.item || m.note || '').replace(/\s+/g,' ').trim().slice(0, 12) : '';
+      const label = '标签卡 ' + (s+1) + (topic ? ('：' + topic) : '（空）');
+      html += '<option value="'+s+'">'+esc(label)+'</option>';
+    }
+    sel.innerHTML = html;
+    sel.value = String((_wbEditSlot >= 0 && _wbEditSlot < MN_CARD_COUNT) ? _wbEditSlot : 0);
+  }
+  // R165-3：标签卡下拉仅备忘（memo）模式可见 —— 日程（task）模式保存目标是周看板当日日程，不涉及标签卡。
+  // 隐藏整组（#wbCardSlotWrap 包住标签 + 下拉）；沿用项目内 [hidden] 兜底惯例防其它 display 规则压过。
+  function wbSyncSlotVisibility(){
+    const wrap = document.getElementById('wbCardSlotWrap');
+    if(wrap){ wrap.hidden = (_wbEditTarget !== 'memo'); wrap.style.display = (_wbEditTarget !== 'memo') ? 'none' : ''; }
+  }
   // R161-2：日期区间展开 —— 区间内每日各落一条同内容备忘（共享 rangeId，成员携带 rangeStart/dateEnd），
   // 周/月视图按日落位展示，今日视图亦可见落在今日的那条，实现三板块数据互通。
   function wbIsoList(from, to){
@@ -41660,8 +41689,8 @@ I'm good at running.`},
     html += '</div>';
     body.innerHTML = html;
     bindWbCards();
-    // R163-3：周视图底部追加与今日一致的 3 张正方形同步卡（三板块统一），绑定同步卡交互
-    body.insertAdjacentHTML('beforeend', '<div class="wb-tagcards wb-tagcards-foot" id="wbTagCards" data-page-node-id="R163wbTagCards">'+mnSquareCardsHTML(nbTodayISO())+'</div>');
+    // R165-1：原「周视图底部追加 3 张正方形同步卡页脚」（mnSquareCardsHTML）随卡片模型统一一并移除 ——
+    // 周/月视图自 R164-1 起已不可达（今天为唯一视图），此处仅保留绑定调用防遗留路径断裂。
     bindNickMemoViewTools(nbTodayISO());
   }
   /* R146：月视图 —— 保留 7 列日历与彩色圆点；编辑态下点击某日期 → 打开该日明细（可新增/修改/删除），
@@ -41703,8 +41732,8 @@ I'm good at running.`},
         else { wbAddNew({ date: date, zone: '' }); }
       });
     });
-    // R163-3：月视图底部追加与今日一致的 3 张正方形同步卡（三板块统一），绑定同步卡交互
-    body.insertAdjacentHTML('beforeend', '<div class="wb-tagcards wb-tagcards-foot" id="wbTagCards" data-page-node-id="R163wbTagCards">'+mnSquareCardsHTML(nbTodayISO())+'</div>');
+    // R165-1：原「月视图底部追加 3 张正方形同步卡页脚」（mnSquareCardsHTML）随卡片模型统一一并移除 ——
+    // 周/月视图自 R164-1 起已不可达（今天为唯一视图），此处仅保留绑定调用防遗留路径断裂。
     bindNickMemoViewTools(nbTodayISO());
   }
   // R146：月视图编辑态 —— 单日明细（与今天视图共用同一套卡片列表与交互）
@@ -41737,15 +41766,13 @@ I'm good at running.`},
               R154-5：指纹取备忘内容（条数 + 事项/备注/富文本拼接）—— 仅清空内容而条数不变时也能正确重渲染。 */
   let _wbTagSig = '';   // R153→R154：标签卡重渲染签名（_nbDate|_wbEditMode|备忘内容指纹）
   function wbMemoFingerprint(){
-    // R162-d：指纹同时覆盖 nickMemos（第二行长方形）与当日周看板任务（第一行正方形），
-    // 保证周 / 月板块新增的今日备忘也能即时刷新到今日板块的正方形卡上。
-    const memos = getNickMemosSafe().map(function(m){
-      return [m && m.date, m && m.time, m && m.item, m && m.note, m && m.noteHtml].join('~');
+    // R165-1：5 张标签卡全部取自 nickMemos（卡位 = memos[0..4]），指纹只覆盖 nickMemos 即可 ——
+    // 当日周看板任务仅在 .wb-dayview 日程区展示，不再影响标签卡区重渲染。
+    // R156-3a③/R165-2：指纹补充 font/fontSize/color/textColor/opacity，样式变更同样触发重渲染。
+    return getNickMemosSafe().map(function(m){
+      return [m && m.date, m && m.time, m && m.item, m && m.note, m && m.noteHtml,
+              m && m.font, m && m.fontSize, m && m.color, m && m.textColor, m && m.opacity].join('~');
     }).join('#');
-    const tasks = wbTasksOn(_nbDate || nbTodayISO()).map(function(t){
-      return [t && t.id, t && t.title, t && t.start, t && t.end, t && t.done, t && t.color].join('~');
-    }).join('#');
-    return memos + '||' + tasks;
   }
   function renderWbToday(){
     const body = document.getElementById('wbBody'); if(!body) return;
@@ -41756,8 +41783,8 @@ I'm good at running.`},
     const old = body.querySelector('#wbTagCards');
     if(old && old.children.length && _wbTagSig === sig) keep = old;
     if(keep) keep.remove();   // 先摘除（保留子节点与已绑事件），再整体重排日程区
-    // R162-d：移除标签卡区（3 张正方形卡）上方的「＋ 新增」按键及其功能 —— 今日板块不再提供周看板新增入口，
-    // 同步类备忘统一由「周 / 月」板块新增；今日独立内容走第二行 2 张长方形卡。
+    // R165-1：今日板块 = 当日日程区（周看板数据层平铺）+ 5 张备忘标签卡（nickMemos 卡位 0~4）；
+    // 新增备忘内容只在五张标签卡内落位，不单独新增卡片。
     body.innerHTML = '<div class="wb-dayview" data-page-node-id="R142wbDayview">'
       + wbDayCardsHTML(_nbDate)
       + '</div>';
@@ -41934,7 +41961,7 @@ I'm good at running.`},
       const size = document.getElementById('wbRteSize');
       if(size) size.addEventListener('change', function(){ wbRteWrap('fontSize', size.value + 'px'); _wbRteSizePick = size.value || ''; size.value = ''; });
       const col = document.getElementById('wbRteColor');
-      if(col) col.addEventListener('input', function(){ wbRteRestoreRange(); try{ document.execCommand('foreColor', false, col.value); }catch(e){} wbRteSaveRange(); });
+      if(col) col.addEventListener('input', function(){ wbRteRestoreRange(); try{ document.execCommand('foreColor', false, col.value); }catch(e){} wbRteSaveRange(); _wbRteTextColor = col.value; });
       // R156-3a③：工具栏补齐与管理页面同款控件 —— 背景高亮 / 首行缩进 / 段间距 / 清空
       const hl = document.getElementById('wbRteHl');
       if(hl) hl.addEventListener('input', function(){ wbRteRestoreRange(); try{ document.execCommand('hiliteColor', false, hl.value); }catch(e){ try{ document.execCommand('backColor', false, hl.value); }catch(e2){} } wbRteSaveRange(); });
@@ -42001,18 +42028,32 @@ I'm good at running.`},
     if(h) h.textContent = task ? '✏️ 编辑备忘' : '✏️ 新建备忘';
     const del = document.getElementById('btnWbDel');
     if(del) del.style.display = task ? '' : 'none';
+    // R165-3：日程（task）模式隐藏标签卡选择下拉（保存目标为周看板当日日程，非五张标签卡）
+    wbSyncSlotVisibility();
     wbSyncEditModal();
     wbRteBindToolbar();
     showModal('#modalWbEdit');
     if(ed) setTimeout(function(){ try{ ed.focus(); }catch(e){} }, 60);
   }
-  // R154-3c：标签卡新增/编辑弹窗 —— 复用右上角「新增」同款 Word 富文本弹窗（#modalWbEdit），
-  // 样式与交互逻辑完全一致；差异仅在保存目标：写回对应卡位的备忘（nickMemos），不动周看板日程。
+  // R154-3c → R165-1/R165-3：标签卡新增/编辑弹窗 —— 复用右上角「新增」同款 Word 富文本弹窗（#modalWbEdit），
+  // 样式与交互逻辑完全一致；差异仅在保存目标：写回所选卡位的备忘（nickMemos），不动周看板日程。
   // 时间取「开始」写入备忘 time 字段；删除键 → 删除该条备忘；空卡打开即「新增标签卡」。
-  function wbOpenMemoModal(memo, idx){
+  // R165-3：第三参 slot 指定目标卡位（0~4，缺省取 idx 或第一个空卡位）；主题栏右侧下拉 #wbCardSlot
+  //        可随时切换编辑目标（切换即载入该卡内容与预设样式，保存后写回该卡）。
+  function wbOpenMemoModal(memo, idx, slot){
     _wbEditTarget = 'memo';
-    _wbEditMemoIdx = (typeof idx === 'number') ? idx : -1;
     _wbEditId = '';
+    wbFillMemoForm(memo, idx, slot);
+    wbRteBindToolbar();
+    showModal('#modalWbEdit');
+    const ed = document.getElementById('wbEditor');
+    if(ed) setTimeout(function(){ try{ ed.focus(); }catch(e){} }, 60);
+  }
+  // R165-3：弹窗表单填充（打开 / 切换卡位下拉共用）—— idx 为 memos 下标（-1 = 新增），slot 为目标卡位。
+  function wbFillMemoForm(memo, idx, slot){
+    _wbEditMemoIdx = (typeof idx === 'number') ? idx : -1;
+    _wbEditSlot = (typeof slot === 'number' && slot >= 0) ? slot
+      : ((_wbEditMemoIdx >= 0) ? _wbEditMemoIdx : wbFirstEmptySlot());
     const m = memo || {};
     const hasContent = !!(m.item || m.note || m.noteHtml);
     const st = document.getElementById('wbInStart');
@@ -42039,14 +42080,16 @@ I'm good at running.`},
     const ed = document.getElementById('wbEditor');
     if(ed){ ed.innerHTML = wbSanitize(m.noteHtml || (m.item ? esc(m.item) : '')); _wbSavedRange = null;
       try{ document.execCommand('defaultParagraphSeparator', false, 'p'); }catch(e){} }
+    // R165-2：内容区文字样式读取所选标签卡预设（字体/字号/文字颜色）渲染
+    wbApplyMemoTextStyle(m);
+    // R165-3：标签卡下拉列表刷新并选中目标卡位（备忘模式可见）
+    wbSyncSlotVisibility();
+    wbSyncSlotSelect();
     const h = document.getElementById('wbEditTitle');
     if(h) h.textContent = hasContent ? '✏️ 编辑标签卡' : '✏️ 新增标签卡';
     const del = document.getElementById('btnWbDel');
     if(del) del.style.display = hasContent ? '' : 'none';
     wbSyncEditModal();
-    wbRteBindToolbar();
-    showModal('#modalWbEdit');
-    if(ed) setTimeout(function(){ try{ ed.focus(); }catch(e){} }, 60);
   }
   // R155-3④：周视图查看态点卡片 → 弹窗查看完整详情（标题 + 富文本全文 + 时间）
   function wbOpenWeekDetail(task, date){
@@ -42245,6 +42288,16 @@ I'm good at running.`},
     });
     const colors = document.getElementById('wbColors');
     if(colors) colors.querySelectorAll('button').forEach(function(b){ b.onclick = function(){ _wbEditColor = b.getAttribute('data-wb-color'); wbSyncEditModal(); }; });
+    // R165-3：标签卡选择下拉 —— 切换即整体切换编辑目标：载入该卡内容 + 预设样式（字体/字号/文字颜色），
+    // 保存后写回该卡；标题与删除键可见性随目标卡是否有内容同步切换。
+    const slotSel = document.getElementById('wbCardSlot');
+    if(slotSel) slotSel.onchange = function(){
+      const s = parseInt(slotSel.value, 10);
+      if(isNaN(s) || s < 0 || s >= MN_CARD_COUNT) return;
+      const memos = getNickMemosSafe();
+      const m = (s < memos.length) ? memos[s] : null;
+      wbFillMemoForm(m, m ? s : -1, s);
+    };
     const save = document.getElementById('btnWbSave');
     if(save) save.onclick = wbSaveFromModal;
     // R157 修复：取消键实际 ID 为 btnWbCancel（原先误写 wbBtnCancel 导致绑定失效、点击无响应）
@@ -42283,19 +42336,17 @@ I'm good at running.`},
     // R160-1：读取日期选择控件（原生 date），用于写回任务归属日 / 标签卡 date
     const _wbInDateEl = document.getElementById('wbInDate');
     const _wbInDateVal = (_wbInDateEl && _wbInDateEl.value) ? _wbInDateEl.value : '';
-    // R154-3c：标签卡（memo）模式 —— 写回对应卡位的备忘，不动周看板日程
+    // R154-3c → R165-1/R165-3：标签卡（memo）模式 —— 写回所选卡位（#wbCardSlot）的备忘，不动周看板日程。
+    // 新增内容只在五张标签卡内落位；跨卡位保存 = 先移除原卡位再插入目标卡位（顺延，不覆盖其它卡内容）。
     if(_wbEditTarget === 'memo'){
       const memos = getNickMemosSafe();
-      let idx = _wbEditMemoIdx;
-      // R161-1：空卡位（idx<0）→ 追加一条新备忘，顺延落入今日 5 个卡片位
-      if(!(idx >= 0 && idx < MN_CARD_COUNT)) idx = memos.length;
+      const slot = (_wbEditSlot >= 0 && _wbEditSlot < MN_CARD_COUNT) ? _wbEditSlot : wbFirstEmptySlot();
+      const srcIdx = _wbEditMemoIdx;
       const stM = document.getElementById('wbInStart');
       const time = (stM && stM.value) || '';
-      let row = memos[idx];
+      let row = (srcIdx >= 0 && srcIdx < memos.length) ? memos[srcIdx] : null;
       if(!row){
-        while(memos.length < idx) memos.push({ id:'nm'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), date:'', time:'', item:'', note:'' });
         row = { id:'nm'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), date:'', time:'', item:'', note:'', noteHtml:'', font:'', fontSize:'', color:'', opacity:'' };
-        memos.splice(idx, 0, row);
       }
       row.item = titleText || plain.slice(0, 120);
       row.noteHtml = html;
@@ -42307,6 +42358,16 @@ I'm good at running.`},
       row.dateEnd = (_wbDateMode === 'range' && _memoDeEl && _memoDeEl.value && _memoDeEl.value >= row.date) ? _memoDeEl.value : '';
       row.font = font;
       row.fontSize = fontSize;
+      // R165-2：内容区文字颜色随保存同步写回该标签卡（卡片渲染时读取）
+      row.textColor = _wbRteTextColor || '';
+      // R165-1：卡片底色取自色板选择（20 色轮），与标签卡渲染联动
+      row.color = _wbEditColor || '';
+      // 落位：同卡位原位更新（row 已在数组内）；跨卡位/新增先移除再插入目标卡位
+      if(srcIdx >= 0 && srcIdx < memos.length){
+        if(srcIdx !== slot){ memos.splice(srcIdx, 1); memos.splice(Math.min(slot, memos.length), 0, row); }
+      } else {
+        memos.splice(Math.min(slot, memos.length), 0, row);
+      }
       window.Store.saveNickMemos(memos);
       hideModal('#modalWbEdit');
       renderNickMemo();
@@ -42395,7 +42456,7 @@ I'm good at running.`},
     // 兜底初始化草稿，防止异常路径下把空数组写回 store 清空全部备忘。
     // R149-3：日期 / 时间拆为两个字段；旧存档里若「时间」存的是 HH:MM 形态，归并到 time 字段。
     _nmDraft = getNickMemosSafe().map(function(m){
-      const o = { id:m.id, date:m.date, time:m.time, item:m.item, note:m.note, noteHtml:m.noteHtml, font:m.font, fontSize:m.fontSize, color:m.color, opacity:m.opacity };
+      const o = { id:m.id, date:m.date, time:m.time, item:m.item, note:m.note, noteHtml:m.noteHtml, font:m.font, fontSize:m.fontSize, color:m.color, opacity:m.opacity, textColor:m.textColor };
       if(!o.time && o.date && /^\d{1,2}:\d{2}$/.test(String(o.date).trim())){ o.time = o.date; o.date = ''; }
       return o;
     });
@@ -42410,7 +42471,12 @@ I'm good at running.`},
     const body = document.getElementById('memoPreviewBody');
     if(!body) return;
     const item = m ? (m.item||'') : '';
-    const fontFam = (m && m.font) ? ';font-family:'+esc(m.font) : '';
+    // R165-2：预览同样读取该标签卡预设样式（字体/字号/文字颜色）渲染
+    let styleCss = '';
+    if(m && m.font) styleCss += ';font-family:'+esc(m.font);
+    if(m && m.fontSize && +m.fontSize > 0) styleCss += ';font-size:'+Math.max(10, Math.min(40, +m.fontSize))+'px';
+    if(m && m.textColor) styleCss += ';color:'+esc(m.textColor);
+    const fontFam = styleCss;
     let rich = '';
     if(m && m.noteHtml){ rich = sanitizeRich(m.noteHtml); }
     else if(m && m.note){ rich = '<div class="mn-prev-note">'+esc(m.note)+'</div>'; }
@@ -42425,7 +42491,7 @@ I'm good at running.`},
     if(editBtn) editBtn.onclick = function(){
       hideModal('#modalMemoPreview');
       wbEnsureEditMode();
-      wbOpenMemoModal((idx >= 0 ? memos[idx] : null) || null, idx);
+      wbOpenMemoModal((idx >= 0 ? memos[idx] : null) || null, idx, idx);
     };
     const closeBtn = document.getElementById('btnMemoPreviewClose');
     if(closeBtn) closeBtn.onclick = function(){ hideModal('#modalMemoPreview'); };
