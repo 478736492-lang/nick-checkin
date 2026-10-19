@@ -5549,7 +5549,7 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 /* 舞台：整页铺满的背景图载体（陆家嘴天际线，cover 填充，不裁切主体建筑） */
 .mn-stage{
   position:absolute;inset:0;
-  background:url('./assets/201a7b396035.jpg') center/cover no-repeat
+  background:url('./assets/6e1e8839aca1.jpg') center/cover no-repeat
 }
 /* ① 顶部居中标题：位于天空区、避开东方明珠等主体建筑。
    R162-e：取消原「立体发光」文字阴影（全部文字阴影清零），改用一块极轻的深色磨砂底板保证白字清晰可读。 */
@@ -5856,7 +5856,8 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   /* R147：删除底层薄荷叶背景图及其容器背景（原周看板背景贴图已下架），改为更透的绿色半透明底，
      毛玻璃窗口直接透出整页陆家嘴天际线（.mn-stage），保留整体清新绿风格；
      R161-8：绿底白度再度下调（.30/.36 → .22/.27），天际线更清晰透出 */
-  background:linear-gradient(155deg, rgba(18,46,38,.34), rgba(14,40,32,.4));
+  /* R164-7：大卡透明度进一步下调（.34/.4 → .18/.24），底层背景图更清晰透出 */
+  background:linear-gradient(155deg, rgba(18,46,38,.18), rgba(14,40,32,.24));
   border-color:rgba(255,255,255,.45)
 }
 .mn-notes .mn-note-card.mn-weekboard::before{display:none}
@@ -5865,14 +5866,13 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
    第二行 2 张各占 3 列（长方形），两行行高 1fr 均分填满可用高度；卡内正文/工具/装饰均为绝对定位，
    空卡不塌缩。配色显式按卡位声明（橙/黄/绿/青/蓝，与卡内 mn-note-dot 同色）—— 标签卡已不在备忘墙网格内，
    不再依赖 .mn-notes 的 nth-child 位次上色；备忘墙基类 margin 在此复位为 0。 */
+/* R164-3：统一 5 张标签卡样式规范 —— 全部以底部 2 张长方形卡为基准：6 列网格改为 2 列，5 张均为等宽长方形 */
 .wb-tagcards{
   /* R161-8：适度放大备忘录玻璃卡片尺寸（保底高度 210~330 → 240~360，行高仍 1fr 均分填满可用高度） */
   flex:1 1 auto;min-height:clamp(240px,38vh,360px);
-  display:grid;grid-template-columns:repeat(6,1fr);grid-template-rows:repeat(2,minmax(0,1fr));
+  display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(3,minmax(0,1fr));
   gap:clamp(7px,1.3vh,14px);padding-top:clamp(5px,1vh,10px)
 }
-.wb-tagcards > .mn-note-card:nth-child(-n+3){grid-column:span 2}
-.wb-tagcards > .mn-note-card:nth-child(n+4){grid-column:span 3}
 .wb-tagcards > .mn-note-card{margin:0;min-width:0;min-height:0}
 .wb-tagcards > .mn-note-card:nth-child(1)::before{background:rgba(255,152,58,.10)}  /* 橙 */
 .wb-tagcards > .mn-note-card:nth-child(2)::before{background:rgba(255,213,64,.10)}  /* 黄 */
@@ -6056,6 +6056,19 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .nb-e-c-orange{background:rgba(242,160,74,.92)}
 .nb-e-c-teal{background:rgba(60,180,180,.9)}
 .nb-e-c-pink{background:rgba(238,130,170,.9)}
+/* R164-5：可选颜色由 8 色扩充到 20 色（RGB 与 app.js MN_PRIMARY_COLORS 严格一致） */
+.nb-e-c-gray{background:rgba(200,210,225,.95)}
+.nb-e-c-navy{background:rgba(78,104,176,.9)}
+.nb-e-c-mint{background:rgba(108,198,152,.9)}
+.nb-e-c-lemon{background:rgba(240,216,110,.95)}
+.nb-e-c-coral{background:rgba(244,148,132,.9)}
+.nb-e-c-violet{background:rgba(176,142,224,.9)}
+.nb-e-c-amber{background:rgba(232,172,78,.92)}
+.nb-e-c-cyan{background:rgba(82,196,214,.9)}
+.nb-e-c-rose{background:rgba(234,152,184,.9)}
+.nb-e-c-lime{background:rgba(170,202,96,.9)}
+.nb-e-c-cocoa{background:rgba(182,150,120,.9)}
+.nb-e-c-sky{background:rgba(132,186,242,.9)}
 /* R161-5：周板块紧凑卡片 —— 仅展示主题；毛玻璃底 + 圆角，窄列内文字换行不溢出 */
 .wb-task.wb-task-compact{overflow:hidden;background:rgba(255,255,255,.5);backdrop-filter:blur(6px) saturate(140%);-webkit-backdrop-filter:blur(6px) saturate(140%);border:1px solid rgba(255,255,255,.66);min-height:clamp(30px,4.2vh,40px)}
 .wb-task.wb-task-compact .wb-task-main{padding:2px 4px}
@@ -6122,6 +6135,26 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .wb-rte-date{display:inline-flex;align-items:center;gap:6px;font-weight:800;color:#1f4d3a;white-space:nowrap}
 .wb-rte-date input[type=date]{font-size:13px;padding:3px 6px;border-radius:8px;border:1.5px solid rgba(40,80,60,.35);background:#fff;color:#1f4d3a}
 .wb-rte-time{flex:0 0 auto}
+/* R164-4：日期 + 时间控件行（位于主题栏下方，二者同行横向展示、禁止换行） */
+.wb-rte-dt-row{display:flex;flex-wrap:nowrap;align-items:center;gap:10px;padding:0 clamp(8px,1.2vw,14px) clamp(6px,1vh,10px);font-size:13px;font-weight:800;color:#1f4d3a}
+.wb-rte-dt-row > *{flex:0 0 auto;white-space:nowrap}
+#modalWbEdit .wb-rte-dt-row{padding:0 clamp(10px,1.6vw,18px) clamp(8px,1.4vh,12px);font-size:clamp(13px,1.8vh,15px)}
+/* R164-4b：日期/时间标签恢复横向排列 —— 通用规则 .modal-body label{display:flex;flex-direction:column}
+   优先级(0,1,1)高于 .wb-rte-date/.wb-rte-time(0,1,0)，会把本弹窗的横排标签打成纵排
+  （时间行被拆成「时间/开始」「至/结束」两行，日期输入掉到「日期」文字下方）；
+   这里以 #modalWbEdit 前缀(1,1,0)覆盖回 row，保证 R164-4「日期+时间同行横向展示、禁止换行」真正生效 */
+#modalWbEdit .wb-rte-date,
+#modalWbEdit .wb-rte-date-end,
+#modalWbEdit .wb-rte-time-row{flex-direction:row;flex-wrap:nowrap;align-items:center;gap:6px}
+/* R164-4c：单日模式下「至 + 结束日期」必须真正隐藏 —— .modal-body label{display:flex}(0,1,1)
+   会压过 UA 的 [hidden]{display:none}，导致隐藏标签仍占 ~160px、把整行顶溢出；
+   沿用项目内 button[hidden]/.sched-sub-wrap[hidden] 的 !important 兜底惯例 */
+#wbInDateEndWrap[hidden]{display:none!important}
+/* R164-4d：区间模式下「日期 + 至 + 结束日期 + 时间行」共处一行（R164-4 要求禁止换行）——
+   面板宽度覆盖见下方 R164-4d（生效位）；此处先加窄屏滚动兜底 */
+/* R164-4e：极端窄屏兜底 —— 行内允许横向滚动而非裁切/换行（滚动条隐藏，避免视觉噪音） */
+#modalWbEdit .wb-rte-dt-row{overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
+#modalWbEdit .wb-rte-dt-row::-webkit-scrollbar{display:none}
 /* R161-4：底部「字体/字号」输入行（.wb-rte-style）已移除 —— 字体/字号改由工具栏 #wbRteFont/#wbRteSize 数字档位承担，相关 CSS 一并删除 */
 /* R156-3a④：月板块点击弹出的详情页面使用毛玻璃效果 */
 #modalWbMonthMemos{background:rgba(8,16,52,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
@@ -6135,12 +6168,19 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   width:min(760px,94vw);min-width:min(560px,92vw);max-width:min(860px,96vw);
   max-height:88vh;max-height:88dvh;
   display:flex;flex-direction:column;
-  background:rgba(255,255,255,.86);
+  /* R164-2：编辑弹窗透明度设置为 70% */
+  background:rgba(255,255,255,.70);
   backdrop-filter:blur(16px) saturate(150%);
   -webkit-backdrop-filter:blur(16px) saturate(150%);
   border:1.5px solid rgba(255,255,255,.66);
   box-shadow:0 18px 50px rgba(8,16,52,.45)
 }
+/* R164-4d（生效位）：区间模式整行不换行需要更宽面板 —— 同选择器后者优先，覆盖上方 R159-1 基础规则的
+   width:min(760px,94vw) → min(840px,94vw)（仍在 R159-1 探索过的 max-width:min(860px,96vw) 上限内）。
+   1024 横屏（94vw=962）下 840 完整生效，日期+至+结束日期+时间行同行展示不裁切不换行 */
+#modalWbEdit .modal-box{width:min(840px,94vw)}
+/* R164-4f：dt-row 子项间距 10 → 8，给区间模式再省 6px（单日模式本就有充裕余量） */
+#modalWbEdit .wb-rte-dt-row{gap:8px}
 /* 头部玻璃条：白字 + 半透明底，与玻璃面板协调 */
 #modalWbEdit .modal-head{
   margin:-18px -18px 12px;padding:14px 20px;border-radius:14px 14px 0 0;
@@ -6155,6 +6195,8 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 #modalWbEdit .wb-rte-editor{min-height:clamp(230px,40vh,420px);max-height:54vh;font-size:clamp(14px,2.1vh,17px);padding:clamp(12px,2vh,18px) clamp(14px,2vw,22px);border-radius:0 0 14px 14px}
 /* 工具条按键 / 下拉 / 取色器放大（原 32×30、13px） */
 #modalWbEdit .wb-rte-btn{width:42px;height:38px;font-size:17px}
+/* R164-6：清空键「🗑清空」图标+文字自适应宽度、禁止换行，保证不超出工具条容器边界 */
+#modalWbEdit #wbRteClear{width:auto;min-width:42px;height:38px;padding:0 12px;white-space:nowrap;flex:0 0 auto;gap:5px;font-size:15px;font-weight:800}
 #modalWbEdit .wb-rte-sel{font-size:14px;padding:6px 8px;min-height:36px}
 #modalWbEdit .wb-rte-color{width:38px;height:36px}
 #modalWbEdit .wb-rte-sep{height:26px}
@@ -6552,6 +6594,8 @@ html,body{margin:0;padding:0}
 /* ========== R155-4：着装行点击交互（与课程表其余行一致） ========== */
 /* R157-3：原 R155-4 纯色样式块已移除 —— 着装/放学行与课程表其余行统一由上方 R149-1/R156-1e 配色块承载
    （旧块源码顺序在后会覆盖琥珀/薄荷新配色，导致着装行显示异常）；空态灰字规则已并入新块 */
+/* R164-8：备忘录背景图自带「Nick的备忘录」标题，隐藏应用内 .mn-title 避免重复 */
+.mn-title{display:none}
 
 </style>
 </head>
@@ -7569,11 +7613,12 @@ html,body{margin:0;padding:0}
       <button class="modal-x" data-close data-page-node-id="R141modalWbEditX">×</button>
     </div>
     <div class="modal-body" data-page-node-id="R141modalWbEditBody">
-      <!-- R160-1：主题栏 / 日期 / 时间 三者同行排布；日期选择交互逻辑与时间选择一致（原生 date 控件），时间控件移至日期右侧 -->
-      <!-- R161-c：日期支持「单日 / 日期区间」两种模式（区间模式显示第二个日期输入，至 某月某日） -->
+      <!-- R164-4：主题栏（标题输入）单独一行；日期 + 时间控件移至其下方新的 .wb-rte-dt-row，二者同行横向展示、禁止换行 -->
       <div class="wb-rte-title-field" data-page-node-id="R156wbTitleField">
         <span class="wb-rte-lbl">主题栏</span>
         <input id="wbInTitle" type="text" maxlength="30" placeholder="给这条备忘起个主题" data-page-node-id="R156wbInTitle" />
+      </div>
+      <div class="wb-rte-dt-row" data-page-node-id="R164wbDtRow">
         <label class="wb-rte-date"><span>日期</span>
           <input id="wbInDate" type="date" data-page-node-id="R160wbInDate" />
         </label>
@@ -7601,6 +7646,19 @@ html,body{margin:0;padding:0}
           <button type="button" class="nb-e-c-orange" data-wb-color="orange" title="橙色"></button>
           <button type="button" class="nb-e-c-teal" data-wb-color="teal" title="青色"></button>
           <button type="button" class="nb-e-c-pink" data-wb-color="pink" title="粉色"></button>
+          <!-- R164-5：可选颜色由 8 色扩充到 20 色 -->
+          <button type="button" class="nb-e-c-gray" data-wb-color="gray" title="灰色"></button>
+          <button type="button" class="nb-e-c-navy" data-wb-color="navy" title="深蓝"></button>
+          <button type="button" class="nb-e-c-mint" data-wb-color="mint" title="薄荷绿"></button>
+          <button type="button" class="nb-e-c-lemon" data-wb-color="lemon" title="柠檬黄"></button>
+          <button type="button" class="nb-e-c-coral" data-wb-color="coral" title="珊瑚色"></button>
+          <button type="button" class="nb-e-c-violet" data-wb-color="violet" title="紫罗兰"></button>
+          <button type="button" class="nb-e-c-amber" data-wb-color="amber" title="琥珀色"></button>
+          <button type="button" class="nb-e-c-cyan" data-wb-color="cyan" title="青蓝"></button>
+          <button type="button" class="nb-e-c-rose" data-wb-color="rose" title="玫红"></button>
+          <button type="button" class="nb-e-c-lime" data-wb-color="lime" title="青柠"></button>
+          <button type="button" class="nb-e-c-cocoa" data-wb-color="cocoa" title="可可色"></button>
+          <button type="button" class="nb-e-c-sky" data-wb-color="sky" title="天蓝"></button>
         </div>
       </div>
       <div class="wb-rte-toolbar" id="wbRteToolbar" data-page-node-id="R141wbRteToolbar">
@@ -41071,9 +41129,15 @@ I'm good at running.`},
   // R145：便签卡同色圆圈取色 —— 与 styles.css 彩虹染色层（.mn-note-card:nth-child ::before）严格同色，
   // R148：索引 = 卡位 - 1（周看板大卡占第 1 位，备忘卡从第 2 位起：橙/黄/绿/青/蓝），卡内循环变量 i 从 0 起
   const MN_TINTS = ['rgba(255,86,86,.92)','rgba(255,152,58,.92)','rgba(255,213,64,.92)','rgba(72,214,128,.92)','rgba(34,211,238,.92)','rgba(79,140,255,.92)','rgba(167,139,250,.92)'];
-  // R163-4：标签卡（正方形同步卡）按任务自身颜色（t.color，8 色轮，编辑弹窗 #wbColors 可选）着色，实现卡片颜色各异。
-  // 颜色取值与 .wb-c-* 背景 RGB 严格一致（如 .wb-c-blue{background:rgba(88,148,238,.36)} → 88,148,238）。
-  const MN_PRIMARY_COLORS = { blue:'88,148,238', green:'84,178,128', yellow:'238,204,112', red:'230,122,118', purple:'150,120,235', orange:'242,160,74', teal:'60,180,180', pink:'238,130,170', gray:'200,210,225' };
+  // R163-4 → R164-5：标签卡按任务自身颜色（t.color）着色，实现卡片颜色各异；可选颜色由 8 色扩充到 20 色
+  // （与编辑弹窗 #wbColors 色板一一对应）。颜色取值与 .nb-e-c-* 色板背景 RGB 严格一致。
+  const MN_PRIMARY_COLORS = {
+    blue:'88,148,238', green:'84,178,128', yellow:'238,204,112', red:'230,122,118',
+    purple:'150,120,235', orange:'242,160,74', teal:'60,180,180', pink:'238,130,170',
+    gray:'200,210,225', navy:'78,104,176', mint:'108,198,152', lemon:'240,216,110',
+    coral:'244,148,132', violet:'176,142,224', amber:'232,172,78', cyan:'82,196,214',
+    rose:'234,152,184', lime:'170,202,96', cocoa:'182,150,120', sky:'132,186,242'
+  };
   // R163-5：备忘录底层一级标签卡（第一行 3 张正方形同步卡）透明度固定为 80%（= opacity 0.2，更通透）。
   const MN_PRIMARY_ALPHA = 0.2;
   // 卡位引导圆点配色（长标签卡沿用，与 .wb-tagcards nth-child 染色层同色系；正方形卡改由整卡着色，不再用圆点）
@@ -41333,9 +41397,10 @@ I'm good at running.`},
           if(e.target.closest && e.target.closest('.mn-tool-btn')) return;
           const idx = +card.getAttribute('data-mn-idx');
           if(idx < 0){
-            // R163-3：周 / 月视图底部的同步卡空位可直接为「今天」新增；今日视图仍提示去周 / 月板块
-            if(_wbView === 'today'){ if(kindOf(card) === 'task' && window.toast) toast('请到「周 / 月」板块新增同步备忘'); return; }
-            wbAddNew({ date: nbTodayISO() });
+            // R164-1：周/月板块已移除 —— 今天视图空卡位直接唤起对应新增弹窗
+            // （任务卡 → 周看板新增；备忘卡 → 新增今日独立备忘）
+            if(kindOf(card) === 'task'){ wbAddNew({ date: nbTodayISO() }); return; }
+            wbOpenMemoModal(null, -1);
             return;
           }
           if(kindOf(card) === 'task'){
@@ -41472,11 +41537,8 @@ I'm good at running.`},
       + '<button class="wb-ym wb-ym-btn" id="wbYmBtn" type="button" title="点击选择日期"><span class="wb-ym" id="wbYm"></span><span class="wb-ym-caret">▾</span></button>'
       + '</div>'
       + '<div class="wb-nav-right">'
-      + '<button class="wb-view-btn" id="wbBtnToday" type="button">今天</button>'
-      + '<button class="wb-view-btn" id="wbBtnWeek" type="button">周</button>'
-      + '<button class="wb-view-btn" id="wbBtnMonth" type="button">月</button>'
-      // R161-h：【月】旁新增【编辑】按键 —— 点击进入编辑状态后，才可执行各板块备忘的新增/编辑操作；
-      // 非编辑状态点击标签卡片 → 弹出详情查看页面（#modalWbDetail / #modalMemoPreview）
+      // R164-1：删除【今天 / 周 / 月】三个视图切换键 —— 周/月板块整体移除，今天成为唯一视图，无需切换；
+      // 头部右侧仅保留【编辑】键（进入编辑态后才可新增 / 编辑 / 删除备忘）。
       + '<button class="wb-view-btn wb-edit-btn" id="wbBtnEditMode" type="button" title="进入编辑状态后才可新增 / 编辑备忘">编辑</button>'
       // R160-3：移除一级标签卡（周看板大卡）右上角「新增」按钮及其功能 —— 新增入口统一由各版块内
       // 的「＋ 新增」键承担（如 .wb-col-add / .wb-zone-add-zone / .wb-zone-add-zone），大卡不再保留新增。
@@ -41708,7 +41770,9 @@ I'm good at running.`},
     _wbTagSig = sig;
     bindWbCards();
   }
-  function wbRefresh(){ renderWbHead(); if(_wbView === 'week') renderWbWeek(); else if(_wbView === 'month') renderWbMonth(); else renderWbToday(); }
+  // R164-1：周/月视图及切换键已移除，今天为唯一视图 —— wbRefresh 恒渲染 renderWbToday。
+  // （renderWbWeek / renderWbMonth / renderWbMonthDay 保留但不再可达，避免连带引用断裂。）
+  function wbRefresh(){ renderWbHead(); renderWbToday(); }
   function wbToggleDoneOn(date, id){
     const list = wbTasksOn(date); let t = null;
     for(let i=0;i<list.length;i++) if(list[i].id===id) t = list[i];
@@ -42308,13 +42372,8 @@ I'm good at running.`},
     wbRefresh();
     // R162-a：原 ←/→ 按键（#wbBtnPrev / #wbBtnNext）及其按天/周/月翻页绑定已随按键一并移除 ——
     // 日期切换统一由左上角日期签唤起的日期弹窗 #modalWbDatePick 承担（弹窗内仍保留月历翻月 ←/→）。
-    const week = document.getElementById('wbBtnWeek');
-    if(week) week.onclick = function(){ _wbView = 'week'; _wbMonthDay = ''; wbRefresh(); };
-    const month = document.getElementById('wbBtnMonth');
-    if(month) month.onclick = function(){ _wbView = 'month'; _wbMonthDay = ''; wbRefresh(); };
-    const today = document.getElementById('wbBtnToday');
-    if(today) today.onclick = function(){ _wbMonday = wbMondayOf(nbTodayISO()); _wbMonthYM = nbTodayISO().slice(0, 7); _nbDate = nbTodayISO(); _wbMonthDay = ''; _wbView = 'today'; wbRefresh(); if(window.toast) toast('已切换到今天视图'); };
-    // R161-h：右上角【月】旁【编辑 / 完成】—— 进入编辑状态后才可执行各板块备忘的新增/编辑/删除
+    // R164-1：原【今天 / 周 / 月】视图切换键及其 onclick 绑定已随按键一并删除 —— 今天为唯一视图。
+    // R161-h：右上角【编辑 / 完成】—— 进入编辑状态后才可执行备忘的新增/编辑/删除
     const editBtn = document.getElementById('wbBtnEditMode');
     if(editBtn) editBtn.onclick = function(){ wbToggleEditMode(); };
     wbSyncEditBtn();
