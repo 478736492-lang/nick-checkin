@@ -642,8 +642,8 @@ button[hidden]{display:none!important}
 .xs-add-words textarea:focus{outline:none;border-color:var(--tiffany);box-shadow:0 0 0 3px rgba(79,179,169,.18)}
 .xs-page-gap{color:var(--muted);font-size:12px;padding:0 2px}
 
-/* 语法卡片重排版（V16-2：4 个一行，划区排列，例句翻译紧凑美观） */
-.xs-list-grammar{grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+/* 语法卡片重排版（V16-2：4 个一行；R168-1：每页一行、每行 3 个条目） */
+.xs-list-grammar{grid-template-columns:repeat(3,1fr);gap:10px}
 .xs-card.gram{padding:10px;display:flex;flex-direction:column;gap:8px}
 .xs-card.gram .gram-title{font-size:15px;font-weight:800;color:var(--tone-800);margin-bottom:2px;line-height:1.3}
 .gram-section{margin-top:4px;background:#f7f5ff;border:1px solid #ece8ff;border-radius:10px;padding:7px 9px}
@@ -663,6 +663,21 @@ button[hidden]{display:none!important}
 .gram-ex-list .ge-en-row .ge-en{font-weight:700;color:var(--tone-800);font-size:12.5px;line-height:1.4}
 .gram-ex-list .ge-en{font-weight:700;color:var(--tone-800);font-size:12.5px}
 .gram-ex-list .ge-zh{font-size:11.5px;color:var(--muted);margin-top:2px;padding-left:6px;border-left:2px solid #ece8ff;line-height:1.5}
+
+/* ========== R168：语法页排版（每行 3 条）+ 语法筛选（按键/列表/详情） ========== */
+/* 汇总头部右侧按键组：新增 + 筛选 并列（hidden 由全局 button[hidden]{display:none!important} 兜底） */
+.xs-summary-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+/* 语法筛选弹窗：主题列表 */
+.xs-gf-list{display:flex;flex-direction:column;gap:6px}
+.xs-gf-item{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:#fff;border:var(--card-line-soft);border-radius:10px;padding:9px 12px;cursor:pointer;transition:.15s;font-size:13px}
+.xs-gf-item:hover{border-color:var(--tone-400);background:var(--tone-050);transform:translateY(-1px)}
+.xs-gf-no{flex:0 0 26px;height:26px;border-radius:999px;background:rgba(64,150,255,.14);color:#2f6fd0;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.xs-gf-title{flex:1;min-width:0;font-weight:700;color:var(--tone-900);line-height:1.45;overflow-wrap:anywhere}
+.xs-gf-kind{flex:0 0 auto;font-size:10px;font-weight:700;color:#2f6fd0;background:rgba(64,150,255,.12);padding:1px 8px;border-radius:999px;white-space:nowrap}
+.xs-gf-empty{color:var(--muted);padding:24px 12px;text-align:center}
+/* 语法详情弹窗内的卡片：去掉列表态的点击指针与 hover 位移，避免误以为可点 */
+.xs-gram-detail{cursor:default}
+.xs-gram-detail:hover{transform:none;box-shadow:none}
 
 /* 弹窗内 学习汇总分类切换 */
 .xs-add-words.hidden,.xs-add-grammar.hidden,.xs-add-story.hidden{display:none}
@@ -4646,7 +4661,9 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   .yuwen-grid{grid-template-columns:repeat(auto-fill,minmax(212px,1fr))}
   .sh-poem-grid{grid-template-columns:repeat(auto-fill,minmax(262px,1fr))}
   .bk-lib-cat-items{grid-template-columns:repeat(auto-fill,minmax(224px,1fr))}
-  .xs-list,.xs-list-grammar{grid-template-columns:repeat(auto-fill,minmax(202px,1fr))}
+  /* R168-1：语法列表横屏同样固定 3 列（与基础规则一致，防止被本断点的 auto-fill 覆盖回多列） */
+  .xs-list{grid-template-columns:repeat(auto-fill,minmax(202px,1fr))}
+  .xs-list-grammar{grid-template-columns:repeat(3,1fr)}
   .reading-list{grid-template-columns:repeat(auto-fill,minmax(242px,1fr))}
   .en-unit-grid{grid-template-columns:repeat(auto-fill,minmax(268px,1fr))}
   .en-vocab-list{grid-template-columns:repeat(auto-fill,minmax(132px,1fr))}
@@ -7221,7 +7238,11 @@ html,body{margin:0;padding:0}
       </div>
       <div class="xs-summary-head" data-page-node-id="1NAcvcEaODAm6qmvuIldQ2">
         <span class="xs-summary-hint" id="xsSummaryHint" data-page-node-id="GGBLPthRlsOWDFK2qdMQw6">📒 点击右下方"新增"，可单条新增词汇 / 语法知识点</span>
-        <button class="primary-btn" id="btnXsContentAdd" data-page-node-id="Z0fOpoY8DOjm4BIxvaJogS">＋ 新增</button>
+        <!-- R168-2：新增键右侧并列「筛选」键（仅语法 tab 显示；词汇/打卡/已默写子页隐藏） -->
+        <div class="xs-summary-actions" data-page-node-id="QFPM5GEErB6Bs0hm6FnGUA">
+          <button class="primary-btn" id="btnXsContentAdd" data-page-node-id="Z0fOpoY8DOjm4BIxvaJogS">＋ 新增</button>
+          <button class="pbtn" id="btnXsGramFilter" title="快速查找语法知识点" hidden data-page-node-id="BFv8xP29DGAwpbBNSmqlf4">🔍 筛选</button>
+        </div>
       </div>
       <div class="xs-list" id="xsSummaryList" data-page-node-id="YDjIvMVxlsL8Uek4SCYodG"></div>
       <div class="xs-pager" id="xsPager" data-page-node-id="Iu2e498LLOW7VFwmUNwkMS"></div>
@@ -8658,6 +8679,34 @@ html,body{margin:0;padding:0}
       </div>
     </div>
   </div>
+
+<!-- ========== 弹窗：语法知识点筛选（R168-2：全部主题列表，点主题看详情） ========== -->
+<div class="modal-mask" id="modalXsGramFilter" hidden data-page-node-id="r5nixKi8p1DJLFNv1iugrL">
+  <div class="modal-box" style="min-width:520px" data-page-node-id="BLpV8yrTEj40RDp4Izkjnf">
+    <div class="modal-head" data-page-node-id="JpQ801pXak50WLegdbUIOj">
+      <h3 data-page-node-id="eM38FxAbSyli2VkkJ9APrm">🔍 语法知识点筛选</h3>
+      <button class="modal-x" data-close data-page-node-id="kvBkHxa2cgzdSRSTfro9Pq">×</button>
+    </div>
+    <div class="modal-body" id="xsGramFilterBody" data-page-node-id="776YmVXmoX7Z8yu5zDQXIE"></div>
+    <div class="modal-foot" data-page-node-id="dXa9CnYClut75iWpN1zaCM">
+      <button class="pbtn" data-close data-page-node-id="cw3LSkbAvfluxo9tidn6xL">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 弹窗：语法知识点详情（R168-2：结构 + 例句，例句可点击朗读） ========== -->
+<div class="modal-mask" id="modalXsGramDetail" hidden data-page-node-id="e6CAG9RQMV27Ox6uL2xUoq">
+  <div class="modal-box" style="min-width:540px" data-page-node-id="t6rctxBJfcVX6gZGh1FJJP">
+    <div class="modal-head" data-page-node-id="3J0xY44SS63H0ctVmtJAiw">
+      <h3 id="xsGramDetailTitle" data-page-node-id="88fNB8oWYX8CNatzCVMf2c">📐 语法详情</h3>
+      <button class="modal-x" data-close data-page-node-id="Qf7hKd2mWxTpLcVbN9rYsA4">×</button>
+    </div>
+    <div class="modal-body" id="xsGramDetailBody" data-page-node-id="Wq3nZt8vBmHpJx5KdLfRa2"></div>
+    <div class="modal-foot" data-page-node-id="Hn6yUc4pTsXvMw9BqZeKd7">
+      <button class="pbtn" data-close data-page-node-id="Lp8tRm2wQvXnYb5CjHgFs3">关闭</button>
+    </div>
+  </div>
+</div>
 
 <!-- ========== 弹窗：学而思英语答题（v6） ========== -->
 <div class="modal-mask" id="modalXsQuiz" hidden data-page-node-id="c6EyMsMDStoeBG0KZMSqVn">
@@ -47856,7 +47905,8 @@ I'm good at running.`},
   }
   // ---- 汇总（v10：词汇/语法 两子页） ----
   // 第十二轮：词汇每页 12 个、语法每页 4 个（分页展示）
-  const XS_PAGE_SIZE = {words:12, grammar:4};
+  // R168-1：语法排版改「每页一行、每行 3 个条目」，分页大小同步 4 → 3
+  const XS_PAGE_SIZE = {words:12, grammar:3};
   const xsPage = {words:1, grammar:1};
   function renderXueersiSummary(){
     if(xsCat === 'stories') xsCat = 'words'; // V12.3：仅过滤绘本；恢复语法
@@ -47874,6 +47924,9 @@ I'm good at running.`},
       xsAddBtn.classList.remove('hidden');
       xsAddBtn.style.display = '';
     }
+    // R168-2：语法筛选键仅「语法」子页显示（词汇/打卡/已默写子页隐藏）
+    const xsFilterBtn = $('#btnXsGramFilter');
+    if(xsFilterBtn) xsFilterBtn.hidden = (xsCat !== 'grammar');
     const all = S.xsGetAll(xsCat);
     const size = XS_PAGE_SIZE[xsCat] || 12;
     const pages = Math.max(1, Math.ceil(all.length / size));
@@ -47915,12 +47968,18 @@ I'm good at running.`},
         </div>`;
       }).join('');
     } else if(xsCat === 'grammar'){
+      // R168-1：单卡单 head —— 原外层包装与 grammarCardHtml 各产出一个 head（kind 文案重复显示两遍），
+      // 现统一由本分支产出唯一 head（kind + 编辑/删除），grammarCardHtml 只产内容；
+      // 卡框带 gram 类，.xs-card.gram 的左侧蓝条 / 内边距 / 标题字号等既有样式全部继续生效
       target.innerHTML = list.map(g=>{
         const checked = S.xsIsChecked('grammar', g.id);
-        return `<div class="xs-card ${g.source==='user'?'user-added':''} ${checked?'checked':''}" data-xs-check-card="grammar::${esc(g.id)}">
+        return `<div class="xs-card gram ${g.source==='user'?'user-added':''} ${checked?'checked':''}" data-xs-check-card="grammar::${esc(g.id)}">
           <div class="xs-card-head">
             <span class="xs-card-kind">${g.source==='user'?'我的':'语法'}</span>
-            <button class="xs-card-del ${g.source==='user'?'':'hidden-in-child'}" data-xs-del="grammar::${esc(g.id)}" title="删除">✕</button>
+            <span class="xs-card-actions">
+              <button class="xs-card-edit only-in-parent hidden-in-child" data-xs-edit="grammar::${esc(g.id)}" title="编辑此语法知识点">✎ 编辑</button>
+              <button class="xs-card-del ${g.source==='user'?'':'hidden-in-child'}" data-xs-del="grammar::${esc(g.id)}" title="删除">✕</button>
+            </span>
           </div>
           ${grammarCardHtml(g)}
         </div>`;
@@ -47993,6 +48052,9 @@ I'm good at running.`},
       xsAddBtn.classList.add('hidden');
       xsAddBtn.style.display = 'none';
     }
+    // R168-2：巩固打卡页同样隐藏语法筛选键
+    const xsFilterBtnCk = $('#btnXsGramFilter');
+    if(xsFilterBtnCk) xsFilterBtnCk.hidden = true;
     const hintEl = $('#xsSummaryHint');
     if(hintEl){
       hintEl.innerHTML = `<div class="xs-adv-head-in">
@@ -48193,6 +48255,9 @@ I'm good at running.`},
     const xsAddBtn = $('#btnXsContentAdd');
     if(xsHead) xsHead.classList.add('xs-checkin-head');
     if(xsAddBtn){ xsAddBtn.classList.add('hidden'); xsAddBtn.style.display = 'none'; }
+    // R168-2：已默写页同样隐藏语法筛选键
+    const xsFilterBtnDn = $('#btnXsGramFilter');
+    if(xsFilterBtnDn) xsFilterBtnDn.hidden = true;
     const hintEl = $('#xsSummaryHint');
     if(hintEl){
       hintEl.innerHTML = `<div class="xs-done-head-in">
@@ -48363,16 +48428,9 @@ I'm good at running.`},
           </li>`;
         }).join('')}</ol>`
       : '';
-    return `<div class="xs-card gram ${g.source==='user'?'user-added':''}">
-      <div class="xs-card-head">
-        <span class="xs-card-kind">${g.source==='user'?'我的':'语法'}</span>
-        <!-- V61-R2：家长模式下显示编辑按钮 -->
-        <span class="xs-card-actions">
-          <button class="xs-card-edit only-in-parent hidden-in-child" data-xs-edit="grammar::${esc(g.id)}" title="编辑此语法知识点">✎ 编辑</button>
-          <button class="xs-card-del ${g.source==='user'?'':'hidden-in-child'}" data-xs-del="grammar::${esc(g.id)}" title="删除">✕</button>
-        </span>
-      </div>
-      <div class="gram-title">📐 ${esc(g.title||'语法')}</div>
+    // R168-1：只产内容（标题 + 用法与结构 + 例句）；卡框与 head 由调用方产出
+    // （原实现自带卡片外壳与 head，与列表页外层包装叠加后一张卡出现两个 head）
+    return `<div class="gram-title">📐 ${esc(g.title||'语法')}</div>
       ${(notesHtml||rowsHtml)?`<div class="gram-section">
         <div class="gram-section-title">💡 用法与结构</div>
         ${notesHtml}${rowsHtml}
@@ -48380,8 +48438,41 @@ I'm good at running.`},
       ${exHtml?`<div class="gram-section">
         <div class="gram-section-title">📌 例句</div>
         ${exHtml}
-      </div>`:''}
-    </div>`;
+      </div>`:''}`;
+  }
+  // ---- R168-2：语法知识点筛选（全部主题列表 → 点主题看详情） ----
+  function openXsGramFilter(){
+    const body = $('#xsGramFilterBody');
+    if(!body) return;
+    const all = S.xsGetAll('grammar');
+    if(!all.length){
+      body.innerHTML = `<div class="xs-gf-empty">暂无语法内容，可在词汇页面新增</div>`;
+      showModal('#modalXsGramFilter');
+      return;
+    }
+    body.innerHTML = `<div class="xs-gf-list">${all.map((g,i)=>`
+      <button type="button" class="xs-gf-item" data-xs-gf="${i}">
+        <span class="xs-gf-no">${i+1}</span>
+        <span class="xs-gf-title">${esc(g.title||'语法')}</span>
+        <span class="xs-gf-kind">${g.source==='user'?'我的':'语法'}</span>
+      </button>`).join('')}</div>`;
+    body.querySelectorAll('[data-xs-gf]').forEach(b=>{
+      b.onclick = ()=>{
+        const g = all[parseInt(b.dataset.xsGf, 10)];
+        if(g) openXsGramDetail(g);
+      };
+    });
+    showModal('#modalXsGramFilter');
+  }
+  // R168-2：语法详情弹窗（复用语法卡内容渲染，例句保留点击朗读）
+  function openXsGramDetail(g){
+    const body = $('#xsGramDetailBody');
+    const titleEl = $('#xsGramDetailTitle');
+    if(!body) return;
+    if(titleEl) titleEl.textContent = '📐 ' + (g.title || '语法');
+    body.innerHTML = `<div class="xs-card gram xs-gram-detail">${grammarCardHtml(g)}</div>`;
+    bindXsTapSpeak(body);
+    showModal('#modalXsGramDetail');
   }
   // ---- 弹窗：新增学习汇总（R53-3：词汇改单条录入 —— 词汇 / 例句 / 中文翻译） ----
   function openXsAdd(){
@@ -52262,6 +52353,8 @@ I'm good at running.`},
     // ====== V20：学而思英语事件绑定（恢复 V18：仅学习汇总 词汇/语法） ======
     $$('.xs-summary-pane .xs-sub-tabs [data-xs-cat]').forEach(b=>b.onclick=()=>{ xsCat=b.dataset.xsCat; renderXueersiSummary(); });
     if($('#btnXsContentAdd')) $('#btnXsContentAdd').onclick = openXsAdd;
+// R168-2：语法筛选键 → 全部语法主题列表弹窗
+if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
     if($('#btnXsSave')) $('#btnXsSave').onclick = saveXsAdd;
     // V12.3：xsAddKind 词汇/语法 选择器 + onXsAddKindChange
     if($('#xsAddKind')) $('#xsAddKind').onchange = onXsAddKindChange;
