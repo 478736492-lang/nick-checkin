@@ -5573,7 +5573,9 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 /* 舞台：整页铺满的背景图载体（陆家嘴天际线，cover 填充，不裁切主体建筑） */
 .mn-stage{
   position:absolute;inset:0;
-  background:url('./assets/6e1e8839aca1.jpg') center/cover no-repeat
+  /* R169-4b：背景图更换为上海天际线高清图（1920×1364，图内自带「Nick的备忘录」标题）——
+     cover 铺满 + 居中，随容器自适应且不拉伸失真，保持高清画质 */
+  background:url('./assets/36c0463d83ad.jpg') center/cover no-repeat;
 }
 /* ① 顶部居中标题：位于天空区、避开东方明珠等主体建筑。
    R162-e：取消原「立体发光」文字阴影（全部文字阴影清零），改用一块极轻的深色磨砂底板保证白字清晰可读。 */
@@ -6656,7 +6658,14 @@ html,body{margin:0;padding:0}
 /* R157-3：原 R155-4 纯色样式块已移除 —— 着装/放学行与课程表其余行统一由上方 R149-1/R156-1e 配色块承载
    （旧块源码顺序在后会覆盖琥珀/薄荷新配色，导致着装行显示异常）；空态灰字规则已并入新块 */
 /* R164-8：备忘录背景图自带「Nick的备忘录」标题，隐藏应用内 .mn-title 避免重复 */
+/* R169-4b：背景图更换为带「Nick的备忘录」标题的天际线图 → 标题已烧在图内，重新隐藏 DOM 标题避免重复 */
 .mn-title{display:none}
+
+/* ========== R169-1：设置中心「作息打卡」模块编辑/删除键禁用态 ========== */
+/* 置灰 + 禁光标 + 屏蔽 hover 变色（disabled 按钮仍会命中 :hover，需显式覆盖） */
+.settings-task-list .task-act-disabled{opacity:.45;cursor:not-allowed;filter:grayscale(1)}
+.settings-task-list .task-act-disabled:hover{background:#fff;color:var(--orange)}
+.settings-task-list .task-act-disabled.pbtn.danger:hover{background:#fff;color:var(--danger)}
 
 </style>
 </head>
@@ -37616,28 +37625,55 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     const addCol = $('#btnSchedAddCol');
     if(addCol) addCol.addEventListener('click', ()=> addSchedCol());
     // 删除某一列（后续列整体左移：课程格/着装/放学时间按索引重键，保留各自配色与内容，不错位）
+    // R169-3：删除前弹确认窗
     mBody.querySelectorAll('[data-del-col]').forEach(b=> b.addEventListener('click', ()=>{
       const idx = parseInt(b.dataset.delCol);
       const s2 = S.getSchedule();
       const days = (s2.days && s2.days.length ? s2.days : SCHED_DAY_LABELS);
       if(days.length<=1){ toast('至少保留 1 个星期列'); return; }
       const removedDay = days[idx] || '';
-      const nc = {};
-      Object.keys(s2.cells).forEach(k=>{
-        const p = k.split('-');
-        const r = parseInt(p[0],10), c = parseInt(p[1],10);
-        if(c===idx) return;
-        nc[r+'-'+(c>idx ? c-1 : c)] = s2.cells[k];
-      });
-      s2.cells = nc;
-      s2.days = days.filter((d,i)=> i!==idx);
-      ['attire','dismiss'].forEach(field=>{
-        if(s2[field] && typeof s2[field] === 'object' && removedDay) delete s2[field][removedDay];
-      });
-      S.saveSchedule(s2);
-      renderSchedManage();
-      renderScheduleAll();
-      if(window.toast) toast('已删除「'+removedDay+'」列，后续列已左移');
+      confirmDelete('星期列「' + removedDay + '」', ()=>{
+        const s3 = S.getSchedule();
+        const nc = {};
+        Object.keys(s3.cells).forEach(k=>{
+          const p = k.split('-');
+          const r = parseInt(p[0],10), c = parseInt(p[1],10);
+          if(c===idx) return;
+          nc[r+'-'+(c>idx ? c-1 : c)] = s3.cells[k];
+        });
+        s3.cells = nc;
+        s3.days = (s3.days && s3.days.length ? s3.days : SCHED_DAY_LABELS).filter((d,i)=> i!==idx);
+        ['attire','dismiss'].forEach(field=>{
+          if(s3[field] && typeof s3[field] === 'object' && removedDay) delete s3[field][removedDay];
+        });
+        S.saveSchedule(s3);
+        renderSchedManage();
+        renderScheduleAll();
+        if(window.toast) toast('已删除「'+removedDay+'」列，后续列已左移');
+      }, '该列的课程安排、着装与放学时间将一并删除，后续列自动左移。');
+    }));
+    // R169-3：删除某一行（原「× 删除本行」按钮无点击绑定，本次补实现 + 删除前弹确认窗）
+    mBody.querySelectorAll('[data-del-row]').forEach(b=> b.addEventListener('click', ()=>{
+      if(!isParent()) return;
+      const idx = parseInt(b.dataset.delRow);
+      const s2 = S.getSchedule();
+      if((s2.rows||9)<=1){ toast('至少保留 1 行'); return; }
+      confirmDelete('第' + schedCN(idx+1) + '节课', ()=>{
+        const s3 = S.getSchedule();
+        const nc = {};
+        Object.keys(s3.cells).forEach(k=>{
+          const p = k.split('-');
+          const r = parseInt(p[0],10), c = parseInt(p[1],10);
+          if(r===idx) return;
+          nc[(r>idx ? r-1 : r)+'-'+c] = s3.cells[k];
+        });
+        s3.cells = nc;
+        s3.rows = (s3.rows||9)-1;
+        S.saveSchedule(s3);
+        renderSchedManage();
+        renderScheduleAll();
+        if(window.toast) toast('已删除第' + schedCN(idx+1) + '节课，后续行已上移');
+      }, '该行的课程安排将一并删除，后续行自动上移。');
     }));
   }
   function addSchedRow(){
@@ -38101,9 +38137,12 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       slotBody.querySelectorAll('[data-kt-del]').forEach(btn=>{
         btn.addEventListener('click', (e)=>{
           e.stopPropagation();
+          // R169-3：删除自定义看图卡片前弹确认窗
           const id = btn.getAttribute('data-kt-del');
-          if(window.Store && window.Store.delCustomList) window.Store.delCustomList('kantu', id);
-          renderYuwenSlot('kantu', label, slotBody);
+          confirmDelete('这张自定义内容', ()=>{
+            if(window.Store && window.Store.delCustomList) window.Store.delCustomList('kantu', id);
+            renderYuwenSlot('kantu', label, slotBody);
+          });
         });
       });
     }
@@ -38116,9 +38155,12 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       slotBody.querySelectorAll('[data-sc-del]').forEach(btn=>{
         btn.addEventListener('click', (e)=>{
           e.stopPropagation();
+          // R169-3：删除自定义作文素材前弹确认窗
           const id = btn.getAttribute('data-sc-del');
-          if(window.Store && window.Store.delCustomList) window.Store.delCustomList('sucai', id);
-          renderYuwenSlot('sucai', label, slotBody);
+          confirmDelete('这条作文素材', ()=>{
+            if(window.Store && window.Store.delCustomList) window.Store.delCustomList('sucai', id);
+            renderYuwenSlot('sucai', label, slotBody);
+          });
         });
       });
       slotBody.querySelectorAll('.sc-tab').forEach(tab=>{
@@ -38171,9 +38213,12 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       slotBody.querySelectorAll('[data-gs-del]').forEach(btn=>{
         btn.addEventListener('click', (e)=>{
           e.stopPropagation();
+          // R169-3：删除自定义古诗词/文言文前弹确认窗
           const id = btn.getAttribute('data-gs-del');
-          if(window.Store && window.Store.delCustomList) window.Store.delCustomList('gushi', id);
-          renderYuwenSlot(key, label, slotBody);
+          confirmDelete('这首自定义诗词', ()=>{
+            if(window.Store && window.Store.delCustomList) window.Store.delCustomList('gushi', id);
+            renderYuwenSlot(key, label, slotBody);
+          });
         });
       });
       const shToggle = (card)=>{
@@ -39174,10 +39219,15 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     });
     slotBody.querySelectorAll('[data-nw-del]').forEach(btn=>{
       btn.addEventListener('click', ()=>{
+        // R169-3：删除专区自建内容前弹确认窗
         const key = btn.getAttribute('data-nw-del');
         const idx = parseInt(btn.getAttribute('data-nw-idx'),10);
-        if(window.Store && window.Store.delNwZone) window.Store.delNwZone(key, idx);
-        if(rerender) rerender();
+        const list = (window.Store && window.Store.getNwZone) ? window.Store.getNwZone(key) : [];
+        const it = list[idx];
+        confirmDelete((it && it.t) ? String(it.t).slice(0,20) : '这条内容', ()=>{
+          if(window.Store && window.Store.delNwZone) window.Store.delNwZone(key, idx);
+          if(rerender) rerender();
+        });
       });
     });
     const tianAdd = slotBody.querySelector('#ywTianAdd');
@@ -39404,10 +39454,15 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       if(btn._egDelBound) return; btn._egDelBound = true;
       btn.addEventListener('click', (e)=>{
         e.stopPropagation();
+        // R169-3：删除英语小知识自定义卡片前弹确认窗
         const zk = btn.getAttribute('data-eg-del-key') || '';
         const di = parseInt(btn.getAttribute('data-eg-del'), 10);
-        if(window.Store && window.Store.delNwZone && !isNaN(di)) window.Store.delNwZone(zk, di);
-        if(rerender) rerender();
+        const list = (window.Store && window.Store.getNwZone) ? window.Store.getNwZone(zk) : [];
+        const it = list[di];
+        confirmDelete((it && it.t) ? String(it.t).slice(0,20) : '这张卡片', ()=>{
+          if(window.Store && window.Store.delNwZone && !isNaN(di)) window.Store.delNwZone(zk, di);
+          if(rerender) rerender();
+        });
       });
     });
     // R41-1：牛津英语课本点读 — 每单元按主题(板块)打卡，全部主题完成获得 5⭐️
@@ -39628,18 +39683,22 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       if(btn._egDelSecBound) return; btn._egDelSecBound = true;
       btn.addEventListener('click', (e)=>{
         e.stopPropagation();
+        // R169-3：删除整个用户板块（连同其下卡片）前弹确认窗
         const mi = parseInt(btn.getAttribute('data-eg-del-section'),10);
-        if(window.Store && window.Store.delNwZone && !isNaN(mi)){
-          const us = window.Store.getNwZone('eg_sections') || [];
-          const sid = us[mi] && us[mi].id;
-          if(sid){
-            let guard = 0;
-            while(window.Store.getNwZone('eg_usec_' + sid).length && guard < 300){ window.Store.delNwZone('eg_usec_' + sid, 0); guard++; }
+        const us = (window.Store && window.Store.getNwZone) ? window.Store.getNwZone('eg_sections') : [];
+        const sec = us[mi];
+        confirmDelete((sec && sec.t) ? String(sec.t).slice(0,20) : '这个板块', ()=>{
+          if(window.Store && window.Store.delNwZone && !isNaN(mi)){
+            const sid = us[mi] && us[mi].id;
+            if(sid){
+              let guard = 0;
+              while(window.Store.getNwZone('eg_usec_' + sid).length && guard < 300){ window.Store.delNwZone('eg_usec_' + sid, 0); guard++; }
+            }
+            window.Store.delNwZone('eg_sections', mi);
           }
-          window.Store.delNwZone('eg_sections', mi);
-        }
-        _egCurSec = 0;
-        rerender();
+          _egCurSec = 0;
+          rerender();
+        });
       });
     });
     // R24-4：拓展素养卡片分页按钮（一页 9 篇）
@@ -42047,14 +42106,17 @@ I'm good at running.`},
         const memos = getNickMemosSafe();
         const mi = memos.findIndex(function(m){ return String(m.id)===String(card.getAttribute('data-mn-id')); });
         if(mi < 0){ if(window.toast) toast('这张备忘还是空的'); return; }
-        if(typeof confirm !== 'function' || !confirm('确定删除这张备忘吗？此操作不可撤销。')) return;
-        const next = memos.slice();
-        // R166-3：删除 = 该卡位内容清空为占位行（保留卡位与 id）—— 后续卡内容整体不前移串位，
-        // 五张标签卡与数字卡位恒保持「卡位 N = memos[N]」的稳定对应。
-        next[mi] = wbEmptyMemoRow(next[mi] && next[mi].id);
-        window.Store.saveNickMemos(next);
-        renderNickMemo();
-        if(window.toast) toast('已删除该备忘');
+        // R169-3：删除备忘卡前弹统一确认窗（替换原生 confirm）
+        const memoItem = (memos[mi] && memos[mi].item) ? String(memos[mi].item).slice(0,20) : '';
+        confirmDelete(memoItem || '这张备忘', ()=>{
+          const next = memos.slice();
+          // R166-3：删除 = 该卡位内容清空为占位行（保留卡位与 id）—— 后续卡内容整体不前移串位，
+          // 五张标签卡与数字卡位恒保持「卡位 N = memos[N]」的稳定对应。
+          next[mi] = wbEmptyMemoRow(next[mi] && next[mi].id);
+          window.Store.saveNickMemos(next);
+          renderNickMemo();
+          if(window.toast) toast('已删除该备忘');
+        }, '此操作不可撤销。');
       });
     });
     // R154-3c：编辑态点标签卡 → 打开右上角同款 Word 富文本弹窗（按卡位编辑，样式与交互完全一致）
@@ -42542,9 +42604,13 @@ I'm good at running.`},
       b.addEventListener('pointerup', function(e){ e.stopPropagation(); });
       b.addEventListener('click', function(e){
         e.stopPropagation();
+        // R169-3：删除周看板备忘前弹统一确认窗
         const id = b.getAttribute('data-wb-del');
         const date = b.getAttribute('data-wb-date');
-        if(date){ wbSaveOn(date, wbTasksOn(date).filter(function(x){ return x.id !== id; })); wbRefresh(); if(window.toast) toast('已删除该备忘'); }
+        const tk = date ? wbTasksOn(date).find(function(x){ return String(x.id)===String(id); }) : null;
+        confirmDelete((tk && tk.item) || '此备忘', ()=>{
+          if(date){ wbSaveOn(date, wbTasksOn(date).filter(function(x){ return x.id !== id; })); wbRefresh(); if(window.toast) toast('已删除该备忘'); }
+        });
       });
     });
     // R149-4：周视图「按日期列新增」（编辑态）
@@ -42565,13 +42631,17 @@ I'm good at running.`},
     body.querySelectorAll('[data-wb-zone-del]').forEach(function(b){
       b.addEventListener('click', function(e){
         e.stopPropagation();
+        // R169-3：删除备忘区域前弹统一确认窗（原内容并入当日列表）
         const zid = b.getAttribute('data-wb-zone-del');
         const date = _nbDate || nbTodayISO();
-        const zones = wbZonesFor(date).filter(function(z){ return z.id !== zid; });
-        const list = wbTasksOn(date).map(function(t){ return (t.zone === zid) ? Object.assign({}, t, { zone:'' }) : t; });
-        wbSaveOn(date, list);
-        if(window.Store && window.Store.saveNickWbZones) window.Store.saveNickWbZones(date, zones);
-        wbRefresh(); if(window.toast) toast('已删除该区域（原内容并入当日列表）');
+        const zone = wbZonesFor(date).find(function(z){ return z.id === zid; });
+        confirmDelete((zone && zone.name) || '该区域', ()=>{
+          const zones = wbZonesFor(date).filter(function(z){ return z.id !== zid; });
+          const list = wbTasksOn(date).map(function(t){ return (t.zone === zid) ? Object.assign({}, t, { zone:'' }) : t; });
+          wbSaveOn(date, list);
+          if(window.Store && window.Store.saveNickWbZones) window.Store.saveNickWbZones(date, zones);
+          wbRefresh(); if(window.toast) toast('已删除该区域（原内容并入当日列表）');
+        }, '删除后该区域下的备忘内容会保留，并入当日未分区列表。');
       });
     });
     body.querySelectorAll('[data-wb-zone-new]').forEach(function(b){
@@ -43598,7 +43668,7 @@ I'm good at running.`},
       return `<div class="wp-task-item ${on?'done':''} ${isHomework?'nowp-sub':''}" draggable="true" data-task-id="${t.id}">
         <div class="wp-task-check ${on?'on':''}" data-check="${t.id}" title="点击打卡"></div>
         <div class="wp-task-main">
-          <div class="wp-task-name">${esc(t.name)}</div>
+          <div class="wp-task-name">${esc(t.name)} <span class="task-star-badge" title="完成可得成长星">⭐${taskStarN(t)}</span></div>
           ${subHtml}
         </div>
       </div>`;
@@ -43796,11 +43866,16 @@ I'm good at running.`},
         else if(hOp.dataset.histEdit){ const hk = hOp.dataset.histEdit.split(':')[0]; histEditState.editing={k:hk, idx:parseInt(hOp.dataset.histEdit.split(':')[1],10)}; }
         else if(hOp.dataset.histAdd){ histEditState.editing={k:hOp.dataset.histAdd, idx:-1}; }
         else if(hOp.dataset.histDel){
+          // R169-3：删除历史上的今天自定义事件前弹确认窗
           const parts = hOp.dataset.histDel.split(':');
-          const arr = histDayData(parts[0]); arr.splice(parseInt(parts[1],10),1);
-          const edits = histEdits(); edits[parts[0]]=arr; saveHistEdits(edits);
-          toast('🗑 已删除该条事件');
-          renderHistoryAllBody(); refreshHistoryHomeCard();
+          const ev = (histDayData(parts[0])[parseInt(parts[1],10)]||[])[1] || '';
+          confirmDelete(ev, ()=>{
+            const arr = histDayData(parts[0]); arr.splice(parseInt(parts[1],10),1);
+            const edits = histEdits(); edits[parts[0]]=arr; saveHistEdits(edits);
+            toast('🗑 已删除该条事件');
+            renderHistoryAllBody(); refreshHistoryHomeCard();
+          });
+          return;
         }
         renderHistoryAllBody();
         return;
@@ -44322,7 +44397,14 @@ I'm good at running.`},
     };
     overlay.querySelector('#greetList').addEventListener('click', (e)=>{
       const d = e.target.closest('[data-greet-del]');
-      if(d){ window.Store.delHomeGreet(parseInt(d.dataset.greetDel,10)); renderList(); renderHome(); }
+      if(d){
+        // R169-3：删除问候语前弹确认窗
+        const gi = parseInt(d.dataset.greetDel,10);
+        const cur = (window.Store.getHomeGreets ? window.Store.getHomeGreets() : [])[gi];
+        confirmDelete(cur || ('第 ' + (gi+1) + ' 条'), ()=>{
+          window.Store.delHomeGreet(gi); renderList(); renderHome();
+        });
+      }
     });
     overlay.querySelector('#greetClose').onclick = () => overlay.remove();
     overlay.onclick = (e)=>{ if(e.target===overlay) overlay.remove(); };
@@ -44810,9 +44892,15 @@ I'm good at running.`},
       if(add) add.onclick = ()=> openTaskEdit(null, '家务小帮手');
     }
   }
+  // R169-2：任务⭐数量共用口径 —— 首页选做/必做卡与「任务设置」页取同一数据源（设置中心打卡任务配置 st.tasks），
+  // 保证两处显示的⭐获取数量永远一致
+  function taskStarN(t){
+    return (t && typeof t.stars==='number') ? t.stars
+      : (t && (t.type==='必做任务' || t.subject==='家务小帮手' || t.subject==='习惯家务') ? 2 : 1);
+  }
   function renderTaskItem(t, st){
     // v5：无打卡圆圈；右侧显示打卡日期；家长可编辑/删除（设置管理模式下显示删除）
-    const starN = typeof t.stars==='number' ? t.stars : (t.type==='必做任务' || t.subject==='家务小帮手' || t.subject==='习惯家务' ? 2 : 1);
+    const starN = taskStarN(t);
     return `<div class="task-item">
       <div class="task-main">
         <div class="task-name">${esc(t.name)} <span class="task-star-badge" title="完成可得成长星">⭐${starN}</span></div>
@@ -45819,12 +45907,15 @@ I'm good at running.`},
       };
     });
     body.querySelectorAll('[data-bk-del]').forEach(b=>{
+      // R169-3：删除自建百科内容前弹统一确认窗（替换原生 confirm）
       b.onclick = ()=>{
-        if(confirm('确认删除这条自建百科内容？')){
-          S.delBaikeItem(b.getAttribute('data-bk-del'));
+        const id = b.getAttribute('data-bk-del');
+        const it = ((S.getBaikeByCat && S.getBaikeByCat(_bkLibTab)) || []).find(x=>String(x.id)===String(id));
+        confirmDelete((it && it.title) || '这条百科内容', ()=>{
+          S.delBaikeItem(id);
           toast('已删除');
           renderBaikeLib();
-        }
+        });
       };
     });
   }
@@ -47516,12 +47607,15 @@ I'm good at running.`},
       }
       const del = e.target.closest('[data-peg-del]');
       if(del){
+        // R169-3：删除农场设置物品前弹统一确认窗（替换原生 confirm）
         const [kind, id] = del.dataset.pegDel.split('::');
-        if(!confirm('确认删除该物品？')) return;
-        S.removeShopItem(kind, id);
-        openFarmSetting();
-        renderFarm();
-        toast('✓ 已删除');
+        const it = (S.getShopItems(kind)||[]).find(x=>x.id===id);
+        confirmDelete((it && it.name) || '该物品', ()=>{
+          S.removeShopItem(kind, id);
+          openFarmSetting();
+          renderFarm();
+          toast('✓ 已删除');
+        });
         return;
       }
       const icoEl = e.target.closest('[data-peg-ico]');
@@ -47991,11 +48085,14 @@ I'm good at running.`},
     target.querySelectorAll('[data-xs-del]').forEach(b=>{
       b.onclick = e=>{
         e.stopPropagation();
+        // R169-3：删除学而思词汇/语法卡前弹统一确认窗（替换原生 confirm）
         const [kind,id] = b.dataset.xsDel.split('::');
-        if(!confirm('确认删除？')) return;
-        S.xsDelete(kind, id);
-        toast('已删除');
-        renderXueersiSummary();
+        const item = (S.xsGetAll(kind)||[]).find(x=>String(x.id)===String(id));
+        confirmDelete((item && item.title) || (kind==='grammar' ? '这个语法知识点' : '这个词汇'), ()=>{
+          S.xsDelete(kind, id);
+          toast('已删除');
+          renderXueersiSummary();
+        });
       };
     });
     // V61-R2：家长模式下语法卡片「✎ 编辑」键
@@ -48222,7 +48319,12 @@ I'm good at running.`},
       b.onclick = e=>{ e.stopPropagation(); openXsEditGrammar(b.dataset.xsGramEdit); };
     });
     target.querySelectorAll('[data-xs-gram-del]').forEach(b=>{
-      b.onclick = e=>{ e.stopPropagation(); if(confirm('确认删除这道语法题？')){ S.xsDelete('grammar', b.dataset.xsGramDel); toast('已删除'); renderXsCheckin(); } };
+      // R169-3：删除语法题前弹统一确认窗（替换原生 confirm）
+      b.onclick = e=>{ e.stopPropagation();
+        const gid = b.dataset.xsGramDel;
+        const g = (S.xsGetAll('grammar')||[]).find(x=>String(x.id)===String(gid));
+        confirmDelete((g && g.title) || '这道语法题', ()=>{ S.xsDelete('grammar', gid); toast('已删除'); renderXsCheckin(); });
+      };
     });
     // R40-5：已默写卡片的翻页绑定（紧跟在主巩固打卡后面）
     const donePager = target.querySelector('#xsAdvDonePager');
@@ -49080,12 +49182,15 @@ I'm good at running.`},
       c.addEventListener('click', e=>{
         const del = e.target.closest('[data-shop-del]');
         if(del){
-          if(!confirm('确认删除该物品？')) return;
+          // R169-3：删除商店物品前弹统一确认窗（替换原生 confirm）
           const [kind,id] = del.dataset.shopDel.split('::');
-          S.removeShopItem(kind, id);
-          renderShopEditList();
-          renderFarm();
-          toast('✓ 已删除');
+          const it = (S.getShopItems(kind)||[]).find(x=>x.id===id);
+          confirmDelete((it && it.name) || '该物品', ()=>{
+            S.removeShopItem(kind, id);
+            renderShopEditList();
+            renderFarm();
+            toast('✓ 已删除');
+          });
           return;
         }
         const icoEl = e.target.closest('[data-shop-ico]');
@@ -50188,13 +50293,15 @@ I'm good at running.`},
       delBtn._bound = true;
       delBtn.onclick = ()=>{
         if(!_certEditingId) return;
-        if(confirm('确认删除此奖状？')){
+        // R169-3：删除电子奖状前弹统一确认窗（替换原生 confirm）
+        const certName = (($('#certEditName').value || '').trim()) || '这张奖状';
+        confirmDelete(certName, ()=>{
           S.deleteCustomCert(_certEditingId);
           toast('✓ 已删除');
           renderCertManageList();
           $('#certEditPane').style.display = 'none';
           renderArchive();
-        }
+        });
       };
     }
   }
@@ -50207,6 +50314,14 @@ I'm good at running.`},
       const ok = onConfirm && onConfirm();
       if(ok!==false) hideModal('#modalConfirm');
     };
+  }
+  // R169-3：全平台所有板块的删除操作统一走此确认弹窗（复用 openCustomModal，替换散落的原生 confirm）
+  // onOk 返回 false 时保持弹窗打开（用于删除失败场景）
+  function confirmDelete(name, onOk, detail){
+    openCustomModal('确认删除',
+      '确定删除' + (name ? '「<b>' + esc(name) + '」</b>' : '此项') + '吗？'
+      + '<div style="margin-top:8px;color:#5b6b85;font-size:13px">' + (detail || '删除后不可恢复，请再次确认。') + '</div>',
+      onOk);
   }
 
   // ============ 任务编辑 ============
@@ -51356,6 +51471,13 @@ I'm good at running.`},
     clone('#todayRoutine', '#settingsTaskRoutine');
     clone('#todayHouse', '#settingsTaskHouse');
     clone('#todayHouseTip', '#settingsTaskHouseTip');
+    // R169-1：设置中心「打卡任务」弹窗内「😴 作息打卡」模块 —— 编辑/删除键禁用（不可点击）
+    const rtBox = $('#settingsTaskRoutine');
+    if(rtBox) rtBox.querySelectorAll('[data-edit-task],[data-del-task]').forEach(function(b){
+      b.disabled = true;
+      b.classList.add('task-act-disabled');
+      b.title = b.hasAttribute('data-edit-task') ? '作息任务不可修改' : '作息任务不可删除';
+    });
     renderTodayGo(S.load(), '#settingsTaskGoContent');
     renderTodayMaoStar('#settingsTaskMaoContent');
     renderTaskStarSettings(); // R150-6：⭐奖励设置（家长模式）
@@ -51476,10 +51598,13 @@ I'm good at running.`},
       list._bound = true;
       list.addEventListener('click', (e) => {
         const b = e.target.closest('[data-km-open-del]'); if(!b) return;
+        // R169-3：移除知识秘境开放日前弹统一确认窗
         const d = b.getAttribute('data-km-open-del');
-        const dates = S.getKMOpenInfo().dates || [];
-        setKMOpenPatch({ dates: dates.filter(x => x !== d) });
-        toast('已移除开放日 ' + d);
+        confirmDelete('开放日 ' + d, ()=>{
+          const dates = S.getKMOpenInfo().dates || [];
+          setKMOpenPatch({ dates: dates.filter(x => x !== d) });
+          toast('已移除开放日 ' + d);
+        }, '移除后该日期将按默认规则（周末 / 法定节假日）判定是否开放。');
       });
     }
     renderKMOpenDates(); renderKMOpenStatus();
@@ -51634,10 +51759,13 @@ I'm good at running.`},
       list._bound = true;
       list.addEventListener('click', (e) => {
         const b = e.target.closest('[data-farm-open-del]'); if(!b) return;
+        // R169-3：移除农场开放日前弹统一确认窗
         const d = b.getAttribute('data-farm-open-del');
-        const dates = S.getFarmOpenConfig().dates || [];
-        farmSaveOpenPatch({ dates: dates.filter(x => x.date !== d) });
-        toast('已移除开放日 ' + d);
+        confirmDelete('开放日 ' + d, ()=>{
+          const dates = S.getFarmOpenConfig().dates || [];
+          farmSaveOpenPatch({ dates: dates.filter(x => x.date !== d) });
+          toast('已移除开放日 ' + d);
+        }, '移除后该日期将按默认开放时段判定是否可以进入种植园。');
       });
     }
     renderFarmOpenDates(); renderFarmOpenStatus();
@@ -51877,17 +52005,26 @@ I'm good at running.`},
       if(ed){ const st=S.load(); const t=st.tasks.find(x=>x.id===ed.dataset.editTask); openTaskEdit(t); return; }
       const dl=e.target.closest('[data-del-task]');
       if(dl){
+        // R169-3：删除打卡任务前弹统一确认窗（替换原生 confirm）
         const st=S.load(); const t=st.tasks.find(x=>x.id===dl.dataset.delTask);
-        if(t && confirm(`确认删除任务「${t.name}」？`)){
+        if(!t) return;
+        confirmDelete(t.name, ()=>{
           S.deleteTask(t.id); toast('已删除');
           if(!$('#modalTaskSettings').hidden){ refreshSettingsTaskLists(); }
           else { renderToday(); }
           renderHome();
-        }
+        });
         return;
       }
       const dg=e.target.closest('[data-del-go]');
-      if(dg){ S.deleteGoRecord(dg.dataset.delGo); renderToday(); renderArchive(); toast('已删除'); }
+      if(dg){
+        // R169-3：删除围棋对弈记录前弹统一确认窗
+        const st=S.load(); const g=(st.goRecords||[]).find(x=>String(x.id)===String(dg.dataset.delGo));
+        confirmDelete(g ? (g.date + ' 对 ' + (g.opponent||'陪练') + '（' + g.result + '）') : '这条对弈记录', ()=>{
+          S.deleteGoRecord(dg.dataset.delGo); renderToday(); renderArchive(); toast('已删除');
+        });
+        return;
+      }
     }
     // 顶部「编辑」键：切换管理模式（显示任务项删除键）
     $('#btnTaskSettings').onclick = ()=>{
@@ -51958,7 +52095,14 @@ I'm good at running.`},
       $('#btnGradeEdit').onclick = (e) => { e.stopPropagation(); openHomeGradeEditor(); };
     }
     $('#btnSaveTask').onclick=saveTaskFromModal;
-    $('#btnDeleteTask').onclick=()=>{ if(editingTaskId){S.deleteTask(editingTaskId); hideModal('#modalTaskEdit'); toast('已删除'); renderToday(); renderHome();} };
+    $('#btnDeleteTask').onclick=()=>{
+      if(!editingTaskId) return;
+      // R169-3：任务编辑弹窗内删除前弹统一确认窗
+      const st=S.load(); const t=st.tasks.find(x=>x.id===editingTaskId);
+      confirmDelete(t ? t.name : '此任务', ()=>{
+        S.deleteTask(editingTaskId); hideModal('#modalTaskEdit'); toast('已删除'); renderToday(); renderHome();
+      });
+    };
     // V11.4：日期多选实时预览
     $('#tDaysWeek').addEventListener('change', renderDaysPreview);
     $('#tCheckDate').addEventListener('change', renderDaysPreview);
@@ -52172,13 +52316,16 @@ I'm good at running.`},
     const onBsDel = (e)=>{
       const btn = e.target.closest('[data-bs-del]');
       if(!btn) return;
+      // R169-3：删除书屋自建阅读条目前弹统一确认窗
       const raw = btn.dataset.bsDel || '';
       const sep = raw.indexOf('::');
       if(sep<0) return;
       const kind = raw.slice(0, sep), title = raw.slice(sep+2);
-      S.deleteUserReading(kind, title);
-      toast('已删除');
-      renderReading();
+      confirmDelete(title, ()=>{
+        S.deleteUserReading(kind, title);
+        toast('已删除');
+        renderReading();
+      });
     };
     const bsBodyAll = document.getElementById('bsBodyAll');
     if(bsBodyAll && !bsBodyAll._bsDelBound){ bsBodyAll._bsDelBound = true; bsBodyAll.addEventListener('click', onBsDel); }
