@@ -387,6 +387,19 @@ button[hidden]{display:none!important}
 .go-progress-text{font-size:14px;color:#3a6f1f;font-weight:700}
 .go-actions{display:flex;gap:8px;flex-wrap:wrap}
 .go-record-list{display:flex;flex-direction:column;gap:6px}
+/* R170-2：完成奖励 ⭐ 弹窗数字选择 */
+.star-pick-label{ display:flex; flex-direction:row; align-items:center; gap:8px; flex-wrap:wrap; }
+.star-pick-btn{ cursor:pointer; border:1px solid var(--tiffany); color:var(--tiffany-deep); background:#fff; border-radius:10px; padding:6px 14px; font-size:14px; font-weight:700; line-height:1.2; }
+.star-pick-btn:hover{ background:var(--tiffany); color:#fff; }
+.star-pop{ position:fixed; z-index:9999; background:#fff; border:1px solid var(--tiffany); border-radius:12px; box-shadow:0 8px 28px rgba(20,80,120,.22); padding:10px; min-width:210px; }
+.star-pop[hidden]{ display:none; }
+.star-pop-title{ font-size:12px; color:var(--tone-700,#64748b); margin-bottom:6px; }
+.star-pop-grid{ display:grid; grid-template-columns:repeat(5,1fr); gap:6px; max-height:210px; overflow:auto; }
+.star-chip{ cursor:pointer; border:1px solid #d7e6f2; background:#f4faff; border-radius:8px; padding:6px 2px; font-size:12px; text-align:center; }
+.star-chip:hover{ background:#e6f4fb; }
+.star-chip.sel{ background:var(--tiffany); color:#fff; border-color:var(--tiffany-deep); font-weight:700; }
+.star-chip.sel:hover{ background:var(--tiffany); }
+.go-section-label{ font-size:13px; font-weight:700; color:var(--tiffany-deep); margin:10px 0 4px; }
 .go-record-item{display:flex;justify-content:space-between;align-items:center;background:#fff;padding:8px 12px;border-radius:8px;border:1px solid #d5e8c5}
 .go-record-item .gr-info{display:flex;flex-direction:column;gap:2px}
 .go-record-item .gr-meta{font-size:11px;color:var(--muted)}
@@ -6857,7 +6870,7 @@ html,body{margin:0;padding:0}
         </div>
         <!-- R74-3：围棋对弈（选做任务下方；⭐设置 + 记录新对弈 + 最近记录；原每周进度条已移除） -->
         <div class="today-go today-go-compact" data-page-node-id="fylSs0psIzOlHrgVVaK00L">
-          <h3 class="col-head go" data-page-node-id="wXB1tVMCHDOyQqIlFbScIv">♟️ 围棋对弈获得⭐设置</h3>
+          <h3 class="col-head go" data-page-node-id="wXB1tVMCHDOyQqIlFbScIv">♟️ 围棋对弈打卡</h3>
           <div class="go-content" id="todayGoContent" data-page-node-id="TpZ4q1fdrcLVGU8yBdWUyG"></div>
         </div>
 
@@ -7591,7 +7604,14 @@ html,body{margin:0;padding:0}
       <button type="button" class="pbtn small" id="btnAddExtraDate" data-page-node-id="mPLs8T9i8u8HRBv5UHdkdD">＋ 添加日期</button>
       <span style="font-size:11px;color:var(--muted);margin-left:6px" data-page-node-id="Hta0CJT7btLwwHoWmARsxg">不选任何日期 = 每天打卡</span>
       <div class="form-hint" id="tDaysPreview" data-page-node-id="k9gIBhatUVjuQ8icDl16BH"></div>
-      <label data-page-node-id="10xN629n9QmB7dOGBAzrHU">完成奖励 ⭐（打卡可得成长星数量） <input type="number" id="tStars" min="0" max="20" value="2" data-page-node-id="WLYclGCBuzORKjKsTHElJg"></label>
+      <label class="star-pick-label" data-page-node-id="10xN629n9QmB7dOGBAzrHU">完成奖励 ⭐（打卡可得成长星数量）
+        <input type="hidden" id="tStars" value="2">
+        <button type="button" class="star-pick-btn" id="tStarsBtn">⭐ 2</button>
+        <div class="star-pop" id="tStarsPop" hidden>
+          <div class="star-pop-title">选择完成奖励 ⭐ 数量（0~20）</div>
+          <div class="star-pop-grid" id="tStarsGrid"></div>
+        </div>
+      </label>
       <label data-page-node-id="IHE6D0k28EMB3mrhGcwErM">是否周末专属 <select id="tWeekend" data-page-node-id="jfwmT2iacC5DscfCGH72t8"><option value="0" data-page-node-id="cC0Et3BQHvO3JIfHhMHZXC">否</option><option value="1" data-page-node-id="33ABn4izWy07nqhkQoU21R">是</option></select></label>
       <div class="form-warn" id="tWarn" data-page-node-id="lqDbvL6V4Jl6kpiY4lDfng"></div>
     </div>
@@ -44868,7 +44888,6 @@ I'm good at running.`},
       $('#todayHouse').innerHTML='<div style="color:var(--muted);text-align:center;padding:10px;font-size:12px">暂无家务小帮手任务</div>';
     } else {
       $('#todayHouse').innerHTML = houses.map(t=>{
-        const del = isP ? `<button class="pbtn danger task-del" data-del-task="${t.id}" ${taskManage?'':'hidden'}>✕</button>` : '';
         const edit = isP ? `<button class="pbtn" data-edit-task="${t.id}">✏️</button>` : '';
         const checked = (st.records.find(r=>r.date===today && r.taskId===t.id && r.completed)) ? 'done' : '';
         const starN = typeof t.stars==='number' ? t.stars : 2;
@@ -44879,7 +44898,7 @@ I'm good at running.`},
           </div>
           <span class="task-date-label">${taskDateLabel(t)}</span>
           <button class="ri-checkin-btn ${checked?'checked':''}" data-ri-checkin="task::${t.id}" title="${checked?'已打卡（点击取消）':'点击打卡 +'+starN+'⭐'}"></button>
-          ${edit}${del}
+          ${edit}
         </div>`;
       }).join('');
     }
@@ -44908,8 +44927,7 @@ I'm good at running.`},
       </div>
       <span class="task-date-label">${taskDateLabel(t)}</span>
       ${isChild() && !_forceTaskEdit ? '' : `
-        <button class="pbtn" data-edit-task="${t.id}">✏️</button>
-        <button class="pbtn danger task-del" data-del-task="${t.id}" ${(taskManage || _forceTaskEdit)?'':'hidden'}>✕</button>`}
+        <button class="pbtn" data-edit-task="${t.id}">✏️</button>`}
     </div>`;
   }
   // 错题订正历史
@@ -44928,17 +44946,12 @@ I'm good at running.`},
   }
   // R74-3：围棋对弈（选做任务下方）—— ⭐数量设置（排版同各打卡获得⭐功能）+ 记录新对弈 + 最近记录
   // 原每周进度条与「⭐奖励设置」卡已按需求移除
+  // R170-1：首页围棋对弈板块（选做卡下方）—— 仅保留「记录新对弈」+ 最近记录；
+  // ⭐ 奖励数量统一在「编辑任务」弹窗内设置（R170-2 弹窗数字选择），此处不再提供数字输入框。
   function renderTodayGo(st, target){
     const root = $(target || '#todayGoContent');
     const records = (st.goRecords||[]).slice(0,5);
     root.innerHTML = `
-      ${isChild()?'':`
-      <div class="star-set-row go-star-row" title="家长设置：围棋对弈完成加⭐数量（每次对弈完成获得）">
-        <span class="star-set-label">♟️ 围棋对弈完成加⭐</span>
-        <input type="number" class="star-set-input" id="goStarsInput" min="1" max="10" step="1" value="${(S.getGoStars&&typeof S.getGoStars==='function')?S.getGoStars():2}">
-        <span class="star-set-unit">⭐ / 局</span>
-        <button class="pbtn small" id="btnGoStarsSave">保存</button>
-      </div>`}
       <div class="go-actions">
         <button class="primary-btn" id="btnAddGo">＋ 记录新对弈</button>
         ${isChild()?'':`<button class="pbtn" id="btnClearGo">清空历史</button>`}
@@ -44960,14 +44973,32 @@ I'm good at running.`},
       if(!confirm('确认清空所有围棋对弈记录？')) return;
       const st=S.load(); st.goRecords=[]; S.save(st); renderToday(); renderHome(); toast('已清空');
     };
-    // R63-5：保存围棋打卡⭐数量设置
-    const gsBtn = root.querySelector('#btnGoStarsSave');
-    if(gsBtn) gsBtn.onclick = ()=>{
-      const inp = root.querySelector('#goStarsInput');
-      const v = S.setGoStars(inp && inp.value);
-      inp.value = v;
-      toast('✓ 已保存：围棋对弈完成加⭐ +' + v);
-    };
+  }
+  // R170-1：设置中心「打卡任务」弹窗内的围棋对弈 —— 与普通打卡任务一致，作为普通任务行展示
+  // （带 ✏️ 编辑键 → openTaskEdit），其「完成奖励 ⭐」在编辑弹窗内设置；下方保留「对弈记录」列表。
+  function renderSettingsGoTask(st, target){
+    const root = $(target || '#settingsTaskGoContent');
+    const goTask = (st.tasks||[]).find(t=>t.subject==='围棋');
+    const records = (st.goRecords||[]).slice(0,5);
+    let html = '';
+    if(goTask){
+      html += renderTaskItem(goTask, st);
+    } else {
+      html += '<div style="color:var(--muted);font-size:13px;padding:4px 0">尚未配置围棋对弈任务，点击下方「＋ 新增」按钮添加。</div>';
+    }
+    html += `
+      <div class="go-section-label">♟️ 对弈记录</div>
+      <div class="go-record-list">
+        ${records.length? records.map(g=>`
+          <div class="go-record-item">
+            <div class="gr-info">
+              <div><b>${esc(g.opponent)}</b> · ${esc(g.result)}${g.note?` · ${esc(g.note)}`:''}</div>
+              <div class="gr-meta">${g.date}</div>
+            </div>
+            <div class="gr-result">${g.result==='胜'?'😄':g.result==='负'?'😢':'🤝'}</div>
+          </div>`).join('') : '<div style="color:var(--muted);font-size:13px">还没有对弈记录。</div>'}
+      </div>`;
+    root.innerHTML = html;
   }
   // R74-3：「⭐奖励设置」卡已按需求整体移除（各阅读类打卡⭐数沿用 store 内已有配置，不再提供界面）
   // R90-6：打开《毛泽东诗词集》打卡（关闭设置弹窗 → 拓展素养 → 推荐书籍 → 毛泽东诗词集）
@@ -50339,6 +50370,7 @@ I'm good at running.`},
     $('#tStandard').value = task? task.standard||'' : '';
     $('#tCheckDate').value = task && task.checkDate ? task.checkDate : '';
     $('#tStars').value = task && typeof task.stars==='number' ? task.stars : (task && (task.type==='必做任务' || task.subject==='家务小帮手' || task.subject==='习惯家务') ? 2 : 1);
+    syncStarsUI();
     $('#tWeekend').value = task && task.weekendOnly? '1':'0';
     $('#tWarn').textContent = '';
     $('#btnDeleteTask').style.display = task? 'inline-block':'none';
@@ -50349,6 +50381,51 @@ I'm good at running.`},
     renderExtraDates();
     renderDaysPreview();
     showModal('#modalTaskEdit');
+  }
+  // R170-2：完成奖励 ⭐ 改为弹窗选择数字（0~20）；底层值仍存于隐藏 #tStars，兼容 openTaskEdit/saveTaskFromModal
+  function buildStarsGrid(){
+    const grid = document.getElementById('tStarsGrid'); if(!grid) return;
+    if(grid.dataset.built) return;
+    let s = '';
+    for(let n=0;n<=20;n++){ s += `<button type="button" class="star-chip" data-star="${n}">⭐ ${n}</button>`; }
+    grid.innerHTML = s;
+    grid.dataset.built = '1';
+    grid.querySelectorAll('.star-chip').forEach(c=>{
+      c.addEventListener('click', ()=> selectStars(parseInt(c.getAttribute('data-star'),10)));
+    });
+  }
+  function syncStarsUI(){
+    const hid = document.getElementById('tStars');
+    const btn = document.getElementById('tStarsBtn');
+    const v = hid ? (parseInt(hid.value,10)||0) : 0;
+    if(btn) btn.textContent = '⭐ ' + v;
+    const pop = document.getElementById('tStarsPop');
+    if(pop) pop.querySelectorAll('.star-chip').forEach(c=>{
+      c.classList.toggle('sel', parseInt(c.getAttribute('data-star'),10)===v);
+    });
+  }
+  function selectStars(n){
+    const hid = document.getElementById('tStars');
+    if(hid) hid.value = n;
+    const pop = document.getElementById('tStarsPop');
+    if(pop) pop.hidden = true;
+    syncStarsUI();
+  }
+  function openStarsPop(){
+    const btn = document.getElementById('tStarsBtn');
+    const pop = document.getElementById('tStarsPop');
+    if(!btn || !pop) return;
+    buildStarsGrid();
+    pop.hidden = false;
+    const r = btn.getBoundingClientRect();
+    const pw = pop.offsetWidth || 220, ph = pop.offsetHeight || 160;
+    let left = Math.min(r.left, window.innerWidth - pw - 8);
+    let top = r.bottom + 6;
+    if(top + ph > window.innerHeight - 8) top = Math.max(8, r.top - ph - 6);
+    pop.style.position = 'fixed';
+    pop.style.left = Math.max(8, left) + 'px';
+    pop.style.top = top + 'px';
+    syncStarsUI();
   }
   function renderExtraDates(){
     const target = document.getElementById('tExtraDates');
@@ -50425,8 +50502,9 @@ I'm good at running.`},
     const note = $('#goNote').value.trim();
     S.addGoRecord({date:S.todayStr(), opponent:opp, result:res, note});
     hideModal('#modalGo');
-    // R62-1/R63-5：围棋对弈打卡成功 → 获得⭐（数量由任务设置自定义，默认 2）
-    const goStars = (S.getGoStars && typeof S.getGoStars==='function') ? S.getGoStars() : 2;
+    // R170-1：围棋对弈打卡成功 → 获得⭐（数量取「围棋」任务的 stars 配置，默认 2）
+    const goTask = (S.load().tasks||[]).find(t=>t.subject==='围棋');
+    const goStars = (goTask && typeof goTask.stars==='number') ? goTask.stars : 2;
     addStars(goStars);
     playCheckinSound();
     toast('对弈已记录 🏆 +'+goStars+'⭐');
@@ -51478,7 +51556,7 @@ I'm good at running.`},
       b.classList.add('task-act-disabled');
       b.title = b.hasAttribute('data-edit-task') ? '作息任务不可修改' : '作息任务不可删除';
     });
-    renderTodayGo(S.load(), '#settingsTaskGoContent');
+    renderSettingsGoTask(S.load(), '#settingsTaskGoContent');
     renderTodayMaoStar('#settingsTaskMaoContent');
     renderTaskStarSettings(); // R150-6：⭐奖励设置（家长模式）
     const addHouse = $('#settingsTaskHouse').querySelector('#btnAddHouse');
@@ -52030,7 +52108,7 @@ I'm good at running.`},
     $('#btnTaskSettings').onclick = ()=>{
       taskManage = !taskManage;
       renderToday();
-      toast(taskManage ? '管理模式：可点击 ✕ 删除任务' : '已退出管理模式');
+      toast(taskManage ? '编辑模式：点击 ✏️ 可编辑任务（删除请在编辑弹窗内）' : '已退出编辑模式');
     };
     // 错题按钮
     $('#btnOpenWrong').onclick=()=>showModal('#modalWrong');
@@ -52095,6 +52173,16 @@ I'm good at running.`},
       $('#btnGradeEdit').onclick = (e) => { e.stopPropagation(); openHomeGradeEditor(); };
     }
     $('#btnSaveTask').onclick=saveTaskFromModal;
+    // R170-2：完成奖励 ⭐ 弹窗数字选择（绑定按钮 + 点击外部关闭）
+    const tStarsBtn = document.getElementById('tStarsBtn');
+    if(tStarsBtn && !tStarsBtn._bound){ tStarsBtn._bound = true; tStarsBtn.onclick = (e)=>{ e.stopPropagation(); openStarsPop(); }; }
+    document.addEventListener('click', (e)=>{
+      const pop = document.getElementById('tStarsPop');
+      if(pop && !pop.hidden){
+        const btn = document.getElementById('tStarsBtn');
+        if(btn && !btn.contains(e.target) && !pop.contains(e.target)) pop.hidden = true;
+      }
+    }, true);
     $('#btnDeleteTask').onclick=()=>{
       if(!editingTaskId) return;
       // R169-3：任务编辑弹窗内删除前弹统一确认窗
