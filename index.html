@@ -487,6 +487,12 @@ button[hidden]{display:none!important}
 .xs-card-zh{font-size:13px;color:var(--muted);line-height:1.5}
 .xs-card-example{font-size:11px;background:var(--tone-100);padding:6px 8px;border-radius:6px;color:var(--tone-800);line-height:1.5;margin-top:4px}
 .xs-card-example-zh{display:block;color:#7a8aa0;font-size:10px;margin-top:1px}
+/* R167-4：doc 导入词汇的 课次徽标 / 音标 / 英文释义 / 拓展 */
+.xs-card-chip{margin-left:2px;padding:1px 8px;border-radius:999px;background:rgba(64,150,255,.14);color:#2f6fd0;font-size:10px;font-weight:700;line-height:16px;white-space:nowrap}
+.xs-card-phon{margin-left:8px;color:#8a94a6;font-size:12px;font-weight:400;letter-spacing:.2px}
+.xs-card-defen{margin-top:1px;color:#8a94a6;font-size:11px;line-height:1.5}
+.xs-card-extra{margin-top:1px;color:#b07a00;font-size:11px;line-height:1.5}
+.xs-card.checked .xs-card-defen,.xs-card.checked .xs-card-extra{color:var(--z-xs-main)}
 .xs-card-source{position:absolute;top:8px;right:8px;font-size:9px;color:var(--tone-800);background:rgba(64,150,255,.15);padding:1px 6px;border-radius:6px}
 /* 语法卡片：title + body + examples */
 .xs-card.gram{border-left:4px solid var(--tone-800)}
@@ -6260,6 +6266,10 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .wb-rte-btn{width:32px;height:30px;display:inline-flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;color:#1f4d3a;background:#fff;border:1.5px solid rgba(40,80,60,.3);border-radius:8px;cursor:pointer;transition:background .12s ease,transform .12s ease}
 .wb-rte-btn:hover{background:#eaf3ee;transform:translateY(-1px)}
 .wb-rte-btn:active{transform:scale(.94)}
+/* R167-3：工具条按钮多选激活态 —— 加粗/斜体/下划线/删除线可同时点亮（深绿底白字），
+   与「字体/字号/颜色/高亮」组合使用；放在 :hover/:active 之后，同特异性时后者胜出压过 hover 底色 */
+.wb-rte-btn.on{background:#1f4d3a;color:#fff;border-color:#1f4d3a}
+.wb-rte-btn.on:hover{background:#2a6b52;color:#fff}
 /* R162-e：编辑区域色系与主题栏（#wbInTitle / .wb-rte-title-field）统一 —— 白底 + 深绿正文 + 同款描边，
    不再使用深色（原 rgba(18,46,38,.9) 底 + 白字）的彩色样式；占位符同步改深色半透明；
    R162-e 附：编辑区文字一律无阴影，保证清晰。 */
@@ -30764,6 +30774,46 @@ window.WANTONG_COVER = './assets/c6249ea2bfe3.jpg';
       });
       if(changed) save(st);
     }
+    // R167-4：导入《单词.docx》（106 条：Lesson 1-8 主词表 + Lesson4 运动类 + Let's read! 故事词汇）
+    //         与《语法.docx》（10 个主题）至学而思「词汇」「语法」板块 —— 按 id 去重追加，不清空用户数据；
+    //         落位顺序：用户新增 → doc 导入 → 旧种子（导入内容前置，首屏即可见）
+    (function mergeDocSeeds(){
+      const docWords = (typeof xsDocWordsSeed === 'function') ? xsDocWordsSeed() : [];
+      const docGrammar = (typeof xsDocGrammarSeed === 'function') ? xsDocGrammarSeed() : [];
+      if(!docWords.length && !docGrammar.length) return;
+      let changed = false;
+      const words = st.xueersiContent.words || (st.xueersiContent.words = []);
+      const haveW = new Set(words.map(w=>w && w.id));
+      const addW = docWords.filter(v=>v && v.id && !haveW.has(v.id))
+        .map(v=>Object.assign({}, JSON.parse(JSON.stringify(v))));
+      if(addW.length){
+        const userW = words.filter(w=>w && w.source==='user');
+        const restW = words.filter(w=>!(w && w.source==='user'));
+        st.xueersiContent.words = userW.concat(addW, restW);
+        changed = true;
+      }
+      const grams = st.xueersiContent.grammar || (st.xueersiContent.grammar = []);
+      const haveG = new Set(grams.map(g=>g && g.id));
+      const addG = docGrammar.filter(v=>v && v.id && !haveG.has(v.id))
+        .map(v=>Object.assign({}, JSON.parse(JSON.stringify(v))));
+      if(addG.length){
+        const userG = grams.filter(g=>g && g.source==='user');
+        const restG = grams.filter(g=>!(g && g.source==='user'));
+        st.xueersiContent.grammar = userG.concat(addG, restG);
+        changed = true;
+      }
+      if(changed) save(st);
+    })();
+    // R167-1：问候语知识库 20 条 → 365 条（六类）。未改过默认列表的用户自动升级；
+    //         自己增删过的保留原列表（家长可在问候语编辑器点「恢复默认 365 条」获取新版）
+    if(st.homeGreetsVer !== 2){
+      const v1 = (typeof HOME_GREETS_V1_DEFAULT !== 'undefined') ? HOME_GREETS_V1_DEFAULT : [];
+      const cur = st.homeGreets;
+      const isV1Default = !cur || (cur.length === v1.length && cur.every((g,i)=>g === v1[i]));
+      if(isV1Default) st.homeGreets = DEFAULT_HOME_GREETS.slice();
+      st.homeGreetsVer = 2;
+      save(st);
+    }
     // V15-T6：RAZ 已删除，清理旧数据
     if(st.xueersiRaz){ delete st.xueersiRaz; }
     if(st.xueersiRazRead){ delete st.xueersiRazRead; }
@@ -34598,6 +34648,176 @@ May / Can I /we have …, please? 请问我 / 我们可以拿…… 吗？
       {id:'st_p4',title:'The Lost Puppy',zh:'迷路的小狗',body:'A puppy is lost in the forest. A kind girl finds him and takes him home. The puppy is happy and becomes her best friend.',en:'A puppy is lost in the forest. A kind girl finds him and takes him home. The puppy is happy and becomes her best friend.',zhBody:'一只小狗在森林里迷路了。一个善良的女孩找到它并带回家。小狗很开心，成为了她最好的朋友。',source:'system'}
     ];
   }
+  // R167-4：学而思词汇板块 —— 导入《单词.docx》
+  // 组成：Lesson 1-8 主词表 + Lesson4 运动类 Let's say + Let's read! 故事词汇（第1-7页），共 106 条
+  // 字段：en 单词 / phonetic 音标 / pos 词性 / zh+wordZh 释义 / defEn 英文释义 / example 例句 / exampleZh 例句翻译 / lesson 课次 / page 故事页
+  function xsDocWordsSeed(){
+    return [
+      {id:"docw_L1_1", en:"furniture", zh:"n. 家具", wordZh:"n. 家具", phonetic:"ˈfɜːnɪtʃə(r)", pos:"n.", defEn:"things in a room such as tables and beds that can be moved around", example:"We need to buy some new furniture.", exampleZh:"我们需要买一些新家具。", lesson:1, source:'doc'},
+      {id:"docw_L1_2", en:"carpet", zh:"n. 地毯", wordZh:"n. 地毯", phonetic:"ˈkɑːpɪt", pos:"n.", defEn:"things used for covering floors", example:"We need a new carpet for our living room.", exampleZh:"我们的客厅需要一块新地毯。", lesson:1, source:'doc'},
+      {id:"docw_L1_3", en:"curtain", zh:"n. 窗帘", wordZh:"n. 窗帘", phonetic:"ˈkɜːtn", pos:"n.", defEn:"the pieces of cloth that hang down in front of a window", example:"The curtain is colourful.", exampleZh:"窗帘是彩色的。", lesson:1, source:'doc'},
+      {id:"docw_L1_4", en:"shelf", zh:"n. 架子", wordZh:"n. 架子", phonetic:"ʃelf", pos:"n.", defEn:"a long narrow board fixed to a wall or inside a cupboard for putting things on", example:"I can’t reach the top shelf.", exampleZh:"我够不着最上面的架子。", lesson:1, source:'doc'},
+      {id:"docw_L1_5", en:"bookshelf", zh:"n. 书架", wordZh:"n. 书架", phonetic:"ˈbʊkʃelf", pos:"n.", defEn:"shelves for putting books on", example:"This is my father’s bookshelf.", exampleZh:"这是我父亲的书架。", lesson:1, source:'doc'},
+      {id:"docw_L1_6", en:"cooker", zh:"n. 厨灶，炉具", wordZh:"n. 厨灶，炉具", phonetic:"ˈkʊkə(r)", pos:"n.", defEn:"a big machine that people use for cooking food", example:"The milk is heating on the cooker.", exampleZh:"牛奶正在炉子上加热。", lesson:1, source:'doc'},
+      {id:"docw_L1_7", en:"oven", zh:"n. 烤箱", wordZh:"n. 烤箱", phonetic:"ˈʌvn", pos:"n.", defEn:"the box-like part inside a cooker, used to bake food", example:"Place the cake in the oven.", exampleZh:"将蛋糕放入烤箱中。", lesson:1, source:'doc'},
+      {id:"docw_L2_1", en:"put (sth) away", zh:"phr. 把……收起来", wordZh:"phr. 把……收起来", phonetic:"pʊt əˈweɪ", pos:"phr.", defEn:"to move something to a certain place", example:"Put your toys away now.", exampleZh:"现在把你的玩具收起来。", lesson:2, source:'doc'},
+      {id:"docw_L2_2", en:"make the bed", zh:"phr. 整理床铺", wordZh:"phr. 整理床铺", phonetic:"meɪk ðə bed", pos:"phr.", defEn:"to make a bed neat after you have slept in it", example:"Tidy up your room. And don’t forget to make the bed!", exampleZh:"把你的房间整理一下。别忘了整理床铺！", lesson:2, source:'doc'},
+      {id:"docw_L3_1", en:"electricity", zh:"n. 电", wordZh:"n. 电", phonetic:"ɪˌlekˈtrɪsəti", pos:"n.", defEn:"a type of energy that flows down wires", example:"The electricity has been turned off.", exampleZh:"电已被断掉了。", lesson:3, source:'doc'},
+      {id:"docw_L3_2", en:"gas", zh:"n. 煤气，天然气", wordZh:"n. 煤气，天然气", phonetic:"ɡæs", pos:"n.", defEn:"a substance like air that is burnt for cooking and heating", example:"She cooks with gas at home.", exampleZh:"她在家用天然气做饭。", lesson:3, source:'doc'},
+      {id:"docw_L3_3", en:"gate", zh:"n. 大门", wordZh:"n. 大门", phonetic:"ɡeɪt", pos:"n.", defEn:"a type of door built in a fence or an outside wall", example:"She closed the gate behind her.", exampleZh:"她关上了身后的大门。", lesson:3, source:'doc'},
+      {id:"docw_L3_4", en:"heating", zh:"n. 供暖系统；暖气", wordZh:"n. 供暖系统；暖气", phonetic:"ˈhiːtɪŋ", pos:"n.", defEn:"the system that keeps a building warm", example:"The heating can keep our house warm.", exampleZh:"暖气可以使我们房子保持温暖。", lesson:3, source:'doc'},
+      {id:"docw_L3_5", en:"iron", zh:"n. 熨斗", wordZh:"n. 熨斗", phonetic:"ˈaɪən", pos:"n.", defEn:"a flat metal tool that is heated and used to make clothes smooth", example:"My mother bought a new iron.", exampleZh:"我妈妈买了一个新熨斗。", lesson:3, source:'doc'},
+      {id:"docw_L3_6", en:"key", zh:"n. 钥匙", wordZh:"n. 钥匙", phonetic:"kiː", pos:"n.", defEn:"a small piece of metal used to turn a lock", example:"He turned the key in the lock.", exampleZh:"他转动钥匙开锁。", lesson:3, source:'doc'},
+      {id:"docw_L3_7", en:"light", zh:"n. 灯", wordZh:"n. 灯", phonetic:"laɪt", pos:"n.", defEn:"something that shines and allows you to see things", example:"My front bike light isn’t working.", exampleZh:"我的自行车前灯不亮了。", lesson:3, source:'doc'},
+      {id:"docw_L3_8", en:"modern", zh:"adj. 现代的", wordZh:"adj. 现代的", phonetic:"ˈmɒdn", pos:"adj.", defEn:"very new or using all the latest ideas or machines", example:"The house has a lot of modern furniture.", exampleZh:"这所房子有许多现代家具。", lesson:3, source:'doc'},
+      {id:"docw_L3_9", en:"rubbish", zh:"n. 垃圾", wordZh:"n. 垃圾", phonetic:"ˈrʌbɪʃ", pos:"n.", defEn:"waste material that people throw away", example:"Put your rubbish in the bin.", exampleZh:"把你的垃圾放进垃圾箱里。", lesson:3, source:'doc'},
+      {id:"docw_L3_10", en:"sitting room", zh:"n. 客厅", wordZh:"n. 客厅", phonetic:"ˈsɪtɪŋ ruːm", pos:"n.", defEn:"a living room", example:"We bought a new sofa for the sitting room.", exampleZh:"我们为客厅买了一个新沙发。", lesson:3, source:'doc'},
+      {id:"docw_L3_11", en:"tap", zh:"n. 水龙头", wordZh:"n. 水龙头", phonetic:"tæp", pos:"n.", defEn:"something you turn to control water or gas flowing through a pipe", example:"Please turn off the tap.", exampleZh:"请把水龙头关上。", lesson:3, source:'doc'},
+      {id:"docw_L3_12", en:"turn off", zh:"phr. 关掉", wordZh:"phr. 关掉", phonetic:"tɜːn ɒf", pos:"phr.", defEn:"to stop making something work", example:"Would you turn off the TV, please?", exampleZh:"请把电视关掉，好吗？", lesson:3, source:'doc'},
+      {id:"docw_L4_1", en:"go snowboarding", zh:"phr. 去滑雪（单板）", wordZh:"phr. 去滑雪（单板）", phonetic:"ɡəʊ ˈsnəʊbɔːdɪŋ", pos:"phr.", defEn:"the sport or activity of moving over snow on a snowboard", example:"Do you often go snowboarding?", exampleZh:"你平时经常去滑雪吗？", extra:"snowboarding 表示单板滑雪运动", lesson:4, source:'doc'},
+      {id:"docw_L4_2", en:"go skiing", zh:"phr. 去滑雪", wordZh:"phr. 去滑雪", phonetic:"ɡəʊ ˈskiːɪŋ", pos:"phr.", defEn:"the sport or activity of moving over snow on skis", example:"We went skiing in France in March.", exampleZh:"三月份我们去法国滑雪了。", lesson:4, source:'doc'},
+      {id:"docw_L5_1", en:"cycling", zh:"n. 骑自行车运动", wordZh:"n. 骑自行车运动", phonetic:"ˈsaɪklɪŋ", pos:"n.", defEn:"the sport or activity of riding a bicycle", example:"I’d like to go cycling with my friends.", exampleZh:"我想和我的朋友们去骑自行车。", lesson:5, source:'doc'},
+      {id:"docw_L5_2", en:"bicycle", zh:"n. 自行车", wordZh:"n. 自行车", phonetic:"ˈbaɪsɪkl", pos:"n.", defEn:"a bike", example:"Oscar had a new bicycle.", exampleZh:"Oscar 有一辆新自行车。", lesson:5, source:'doc'},
+      {id:"docw_L5_3", en:"exercise", zh:"n. 锻炼；运动", wordZh:"n. 锻炼；运动", phonetic:"ˈeksəsaɪz", pos:"n.", defEn:"things you do such as running or swimming to keep your body healthy", example:"You should take more exercise.", exampleZh:"你应该多进行体育锻炼。", lesson:5, source:'doc'},
+      {id:"docw_L5_4", en:"track", zh:"n. 跑道", wordZh:"n. 跑道", phonetic:"træk", pos:"n.", defEn:"a type of road built for sports events", example:"You can run on a track.", exampleZh:"你可以在跑道上跑步。", lesson:5, source:'doc'},
+      {id:"docw_L5_5", en:"tracksuit", zh:"n. 运动服", wordZh:"n. 运动服", phonetic:"ˈtræksuːt", pos:"n.", defEn:"loose clothes people wear to relax or do exercise", example:"I changed into a tracksuit.", exampleZh:"我换上了一身运动装。", lesson:5, source:'doc'},
+      {id:"docw_L5_6", en:"trainers", zh:"n. 运动鞋", wordZh:"n. 运动鞋", phonetic:"ˈtreɪnəz", pos:"n.", defEn:"shoes that you wear when you do sports", example:"Please wear trainers in the gym.", exampleZh:"在健身房请穿运动鞋。", lesson:5, source:'doc'},
+      {id:"docw_L5_7", en:"jogging", zh:"n. 慢跑", wordZh:"n. 慢跑", phonetic:"ˈdʒɒɡɪŋ", pos:"n.", defEn:"the activity of running slowly as a form of exercise", example:"He usually goes jogging before breakfast.", exampleZh:"他通常在早饭前慢跑。", lesson:5, source:'doc'},
+      {id:"docw_L5_8", en:"gymnastics", zh:"n. 体操", wordZh:"n. 体操", phonetic:"dʒɪmˈnæstɪks", pos:"n.", defEn:"physical exercises that develop your strength", example:"My favourite sport is gymnastics.", exampleZh:"我最喜欢的运动是体操。", lesson:5, source:'doc'},
+      {id:"docw_L5_9", en:"yoga", zh:"n. 瑜伽", wordZh:"n. 瑜伽", phonetic:"ˈjəʊɡə", pos:"n.", defEn:"a type of exercise to give control over the body and mind", example:"I always do yoga on Fridays.", exampleZh:"我总是在星期五做瑜伽。", lesson:5, source:'doc'},
+      {id:"docw_L5_10", en:"swimsuit", zh:"n. 泳衣", wordZh:"n. 泳衣", phonetic:"ˈswɪmsuːt", pos:"n.", defEn:"a piece of clothing that you wear for swimming", example:"You should put on your swimsuit.", exampleZh:"你应该穿上泳衣。", lesson:5, source:'doc'},
+      {id:"docw_L5_11", en:"squash", zh:"n. 壁球", wordZh:"n. 壁球", phonetic:"skwɒʃ", pos:"n.", defEn:"a game that people play where they hit a ball against a wall", example:"I enjoy playing tennis and squash.", exampleZh:"我喜欢打网球和壁球。", lesson:5, source:'doc'},
+      {id:"docw_L5_12", en:"court", zh:"n. 球场", wordZh:"n. 球场", phonetic:"kɔːt", pos:"n.", defEn:"a place used for playing sports", example:"The hotel has a squash court.", exampleZh:"这家酒店有一个壁球场。", lesson:5, source:'doc'},
+      {id:"docw_L6_1", en:"race", zh:"n. / v. n.比赛；v.参加比赛", wordZh:"n. / v. n.比赛；v.参加比赛", phonetic:"reɪs", pos:"n. / v.", defEn:"a competition to see who or what is the fastest", example:"Can they win the race?", exampleZh:"他们能赢得比赛吗？", lesson:6, source:'doc'},
+      {id:"docw_L6_2", en:"team", zh:"n. 队，组", wordZh:"n. 队，组", phonetic:"tiːm", pos:"n.", defEn:"a group of people who play games or sports together against other people", example:"Our team came third in the competition.", exampleZh:"我们队在比赛中得了第三名。", lesson:6, source:'doc'},
+      {id:"docw_L6_3", en:"cyclist", zh:"n. 骑自行车的人", wordZh:"n. 骑自行车的人", phonetic:"ˈsaɪklɪst", pos:"n.", defEn:"a person who rides a bicycle", example:"The coach is talking to the cyclists.", exampleZh:"教练正在和这些骑自行车的人谈话。", lesson:6, source:'doc'},
+      {id:"docw_L6_4", en:"athlete", zh:"n. 运动员", wordZh:"n. 运动员", phonetic:"ˈæθliːt", pos:"n.", defEn:"a person who has trained in a sport", example:"She is a great athlete.", exampleZh:"她是一位很棒的运动员。", lesson:6, source:'doc'},
+      {id:"docw_L6_5", en:"enter a competition", zh:"phr. 参加比赛", wordZh:"phr. 参加比赛", phonetic:"ˈentə(r) ə ˌkɒmpəˈtɪʃn", pos:"phr.", defEn:"take part in a game or race where people try to win", example:"Should I enter a competition?", exampleZh:"我应该参加比赛吗？", lesson:6, source:'doc'},
+      {id:"docw_L6_6", en:"prize", zh:"n. 奖；奖品", wordZh:"n. 奖；奖品", phonetic:"praɪz", pos:"n.", defEn:"something you get for good work, or for winning in a game or competition", example:"Did you win a prize?", exampleZh:"你得奖了吗？", lesson:6, source:'doc'},
+      {id:"docw_L6_7", en:"practice", zh:"n. 练习；训练", wordZh:"n. 练习；训练", phonetic:"ˈpræktɪs", pos:"n.", defEn:"the act of doing something lots of times to get skill from it", example:"It takes a lot of practice to play football well.", exampleZh:"踢好足球需要多加练习。", lesson:6, source:'doc'},
+      {id:"docw_L6_8", en:"rest", zh:"v. 休息", wordZh:"v. 休息", phonetic:"rest", pos:"v.", defEn:"to stop doing something like working", example:"You should rest for a few days.", exampleZh:"你应该休息几天。", lesson:6, source:'doc'},
+      {id:"docw_L6_9", en:"winner", zh:"n. 获胜者；冠军", wordZh:"n. 获胜者；冠军", phonetic:"ˈwɪnə(r)", pos:"n.", defEn:"someone who wins a game", example:"There is a prize for the winner.", exampleZh:"获胜者会得到奖品。", lesson:6, source:'doc'},
+      {id:"docw_L6_10", en:"medal", zh:"n. 奖牌", wordZh:"n. 奖牌", phonetic:"ˈmedl", pos:"n.", defEn:"a piece of metal on a ribbon given to someone for winning a competition", example:"She won a medal in the high jump.", exampleZh:"她跳高得了奖牌。", lesson:6, source:'doc'},
+      {id:"docw_L7_1", en:"belt", zh:"n. 腰带", wordZh:"n. 腰带", phonetic:"belt", pos:"n.", defEn:"a long narrow piece of leather, cloth, etc. that you wear around the waist", example:"She is wearing a black belt.", exampleZh:"她系着一条黑色腰带。", lesson:7, source:'doc'},
+      {id:"docw_L7_2", en:"blouse", zh:"n. 女式衬衫", wordZh:"n. 女式衬衫", phonetic:"blaʊz", pos:"n.", defEn:"a shirt for a girl or woman", example:"She is wearing a green blouse.", exampleZh:"她穿着一件绿色衬衫。", lesson:7, source:'doc'},
+      {id:"docw_L7_3", en:"swimming costume", zh:"n. （尤指女式）游泳衣", wordZh:"n. （尤指女式）游泳衣", phonetic:"ˈswɪmɪŋ ˈkɒstjuːm", pos:"n.", defEn:"a piece of clothing worn for swimming, especially by women and girls", example:"Please bring your swimming costume to school.", exampleZh:"请把你的游泳衣带到学校来。", lesson:7, source:'doc'},
+      {id:"docw_L7_4", en:"pyjamas", zh:"n. 睡衣裤", wordZh:"n. 睡衣裤", phonetic:"pəˈdʒɑːməz", pos:"n.", defEn:"soft clothes that people wear to sleep in, made up of trousers and a shirt", example:"I need a new pair of pyjamas.", exampleZh:"我需要一套新的睡衣裤。", lesson:7, source:'doc'},
+      {id:"docw_L7_5", en:"go with", zh:"phr. 与……相配", wordZh:"phr. 与……相配", phonetic:"ɡəʊ wɪð", pos:"phr.", defEn:"If one thing goes with another, they look nice together.", example:"The jacket doesn’t go with the trousers.", exampleZh:"这件夹克和这条裤子不相配。", lesson:7, source:'doc'},
+      {id:"docw_L7_6", en:"sweatshirt", zh:"n. 长袖运动衫", wordZh:"n. 长袖运动衫", phonetic:"ˈswetʃɜːt", pos:"n.", defEn:"a piece of clothing for the upper part of the body, with long sleeves, usually made of thick cotton", example:"He is wearing a grey sweatshirt.", exampleZh:"他穿着一件灰色运动衫。", lesson:7, source:'doc'},
+      {id:"docw_L7_7", en:"sleeve", zh:"n. 袖子", wordZh:"n. 袖子", phonetic:"sliːv", pos:"n.", defEn:"the part of a piece of clothing that covers your arm", example:"The sleeves are too long for me.", exampleZh:"对我来说，这袖子太长了。", lesson:7, source:'doc'},
+      {id:"docw_L7_8", en:"glove", zh:"n. 手套", wordZh:"n. 手套", phonetic:"ɡlʌv", pos:"n.", defEn:"something that covers and protects your hand", example:"Those gloves look nice and warm.", exampleZh:"那些手套看起来又漂亮又暖和。", lesson:7, source:'doc'},
+      {id:"docw_L7_9", en:"raincoat", zh:"n. 雨衣", wordZh:"n. 雨衣", phonetic:"ˈreɪnkəʊt", pos:"n.", defEn:"a long light coat that keeps you dry in the rain", example:"Take your raincoat with you when you go to school.", exampleZh:"上学时带上雨衣。", lesson:7, source:'doc'},
+      {id:"docw_L7_10", en:"suit", zh:"n. 套装；西装", wordZh:"n. 套装；西装", phonetic:"suːt", pos:"n.", defEn:"a set of clothes made of the same cloth, including a jacket and trousers or a skirt", example:"He was dressed in a blue suit.", exampleZh:"他穿着一套蓝色西装。", lesson:7, source:'doc'},
+      {id:"docw_L7_11", en:"pocket", zh:"n. 口袋", wordZh:"n. 口袋", phonetic:"ˈpɒkɪt", pos:"n.", defEn:"a small cloth bag for carrying things that is fixed into clothes", example:"Take your hands out of your pockets!", exampleZh:"把手从口袋里拿出来！", lesson:7, source:'doc'},
+      {id:"docw_L7_12", en:"top", zh:"n. 上衣", wordZh:"n. 上衣", phonetic:"tɒp", pos:"n.", defEn:"a piece of clothing worn on the upper part of the body", example:"I need a top to go with this skirt.", exampleZh:"我需要一件上衣来配这条裙子。", lesson:7, source:'doc'},
+      {id:"docw_L8_1", en:"comb", zh:"n. 梳子", wordZh:"n. 梳子", phonetic:"kəʊm", pos:"n.", defEn:"a piece of plastic or wood with little teeth that you use to make your hair neat", example:"Can I borrow your comb?", exampleZh:"我能借用一下你的梳子吗？", lesson:8, source:'doc'},
+      {id:"docw_L8_2", en:"wallet", zh:"n. 钱包", wordZh:"n. 钱包", phonetic:"ˈwɒlɪt", pos:"n.", defEn:"a little folding case for carrying money or credit cards", example:"There was some money in his wallet.", exampleZh:"他钱包里有些钱。", lesson:8, source:'doc'},
+      {id:"docw_L8_3", en:"purse", zh:"n. （常指女用）钱包", wordZh:"n. （常指女用）钱包", phonetic:"pɜːs", pos:"n.", defEn:"a little bag for carrying money, usually used by a woman", example:"She put the money into her purse.", exampleZh:"她把钱放进了钱包里。", lesson:8, source:'doc'},
+      {id:"docw_L8_4", en:"tie", zh:"n. 领带", wordZh:"n. 领带", phonetic:"taɪ", pos:"n.", defEn:"a long narrow piece of cloth with a knot in it that men and boys wear around their necks", example:"Which tie do you like best?", exampleZh:"你最喜欢哪条领带？", lesson:8, source:'doc'},
+      {id:"docw_L8_5", en:"button", zh:"n. 纽扣", wordZh:"n. 纽扣", phonetic:"ˈbʌtn", pos:"n.", defEn:"a small round object used to fasten something, like a shirt or a coat", example:"How many buttons are there on your jacket?", exampleZh:"你的夹克上有多少扣子？", lesson:8, source:'doc'},
+      {id:"docw_L8_6", en:"sunglasses", zh:"n. 墨镜，太阳镜", wordZh:"n. 墨镜，太阳镜", phonetic:"ˈsʌnɡlɑːsɪz", pos:"n.", defEn:"dark glasses that you wear to protect your eyes from bright light from the sun", example:"I gave a pair of sunglasses to my friend.", exampleZh:"我给了我的朋友一副太阳镜。", lesson:8, source:'doc'},
+      {id:"docw_L8_7", en:"jewellery", zh:"n. 珠宝，首饰", wordZh:"n. 珠宝，首饰", phonetic:"ˈdʒuːəlri", pos:"n.", defEn:"objects such as rings and necklaces that people wear as decoration", example:"Can we go to the jewellery shop now?", exampleZh:"我们现在能去珠宝店吗？", lesson:8, source:'doc'},
+      {id:"docw_L4X_1", en:"go riding", zh:"phr. 去骑马", wordZh:"phr. 去骑马", phonetic:"ɡəʊ ˈraɪdɪŋ", pos:"phr.", defEn:"the sport or activity of riding horses", example:"She goes riding on Saturdays.", exampleZh:"她周六常去骑马。", lesson:4, source:'doc'},
+      {id:"docw_L4X_2", en:"play rugby", zh:"phr. 打橄榄球", wordZh:"phr. 打橄榄球", phonetic:"pleɪ ˈrʌɡbi", pos:"phr.", defEn:"a sport that people play with a ball shaped like an egg", example:"He plays rugby every Saturday.", exampleZh:"他每周六都打橄榄球。", lesson:4, source:'doc'},
+      {id:"docw_L4X_3", en:"play golf", zh:"phr. 打高尔夫球", wordZh:"phr. 打高尔夫球", phonetic:"pleɪ ɡɒlf", pos:"phr.", defEn:"a game where people use sticks to hit little white balls into holes", example:"We often play golf at the weekend.", exampleZh:"我们经常在周末打高尔夫球。", lesson:4, source:'doc'},
+      {id:"docw_L4X_4", en:"play cricket", zh:"phr. 打板球", wordZh:"phr. 打板球", phonetic:"pleɪ ˈkrɪkɪt", pos:"phr.", defEn:"a game where two teams of people try to hit a ball with a bat", example:"I enjoyed playing cricket.", exampleZh:"我喜欢打板球。", lesson:4, source:'doc'},
+      {id:"docw_L4X_5", en:"play volleyball", zh:"phr. 打排球", wordZh:"phr. 打排球", phonetic:"pleɪ ˈvɒlibɔːl", pos:"phr.", defEn:"a game in which two teams hit a large ball with their hands backwards and forwards over a high net", example:"The children are playing volleyball now.", exampleZh:"孩子们正在打排球。", lesson:4, source:'doc'},
+      {id:"docw_L4X_6", en:"go surfing", zh:"phr. 去冲浪", wordZh:"phr. 去冲浪", phonetic:"ɡəʊ ˈsɜːfɪŋ", pos:"phr.", defEn:"the sport of riding on a wave on a special board", example:"They go surfing every weekend.", exampleZh:"他们每周末都去冲浪。", lesson:4, source:'doc'},
+      {id:"docw_L4X_7", en:"go surfboarding", zh:"phr. 去冲浪", wordZh:"phr. 去冲浪", phonetic:"ɡəʊ ˈsɜːfbɔːdɪŋ", pos:"phr.", defEn:"the sport of riding on a wave on a special board", example:"Jack goes surfboarding every Sunday.", exampleZh:"Jack 每周日去冲浪。", extra:"go surfboarding = go surfing", lesson:4, source:'doc'},
+      {id:"docw_L4X_8", en:"go sailing", zh:"phr. 驾驶帆船", wordZh:"phr. 驾驶帆船", phonetic:"ɡəʊ ˈseɪlɪŋ", pos:"phr.", defEn:"the sport or activity of sailing boats", example:"We love to go sailing on the lake in summer.", exampleZh:"我们喜欢在夏天泛舟湖上。", lesson:4, source:'doc'},
+      {id:"docw_L4X_9", en:"go water skiing", zh:"phr. 去滑水", wordZh:"phr. 去滑水", phonetic:"ɡəʊ ˈwɔːtə(r) ˈskiːɪŋ", pos:"phr.", defEn:"the sport of standing on skis in the water while being pulled along by a boat", example:"He wants to go water skiing.", exampleZh:"他想去滑水。", lesson:4, source:'doc'},
+      {id:"docw_L4X_10", en:"go windsurfing", zh:"phr. 去冲浪（风帆冲浪）", wordZh:"phr. 去冲浪（风帆冲浪）", phonetic:"ɡəʊ ˈwɪndsɜːfɪŋ", pos:"phr.", defEn:"a sport in which you sail across water by standing on a board and holding onto a large sail", example:"Do you want to go windsurfing?", exampleZh:"你想去冲浪吗？", extra:"windsurfing 表示风帆冲浪运动", lesson:4, source:'doc'},
+      {id:"docw_L4X_11", en:"go diving", zh:"phr. 去跳水；去潜水", wordZh:"phr. 去跳水；去潜水", phonetic:"ɡəʊ ˈdaɪvɪŋ", pos:"phr.", defEn:"the sport of jumping into water or swimming underwater", example:"We can go diving in the swimming pool.", exampleZh:"我们可以去泳池跳水。", lesson:4, source:'doc'},
+      {id:"docw_L4X_12", en:"surfboard", zh:"n. 冲浪板", wordZh:"n. 冲浪板", phonetic:"ˈsɜːfbɔːd", pos:"n.", defEn:"a long narrow board used for surfing", example:"I’m going to buy a surfboard.", exampleZh:"我要买一块冲浪板。", lesson:4, source:'doc'},
+      {id:"docw_R1_1", en:"dangerous", zh:"adj. 危险的", wordZh:"adj. 危险的", pos:"adj.", example:"It might be dangerous.", exampleZh:"这可能很危险。", page:1, source:'doc'},
+      {id:"docw_R1_2", en:"dust", zh:"n. 尘土", wordZh:"n. 尘土", pos:"n.", example:"Before he goes, Norbi throws some silver dust from space.", exampleZh:"在他离开前，诺比撒下一些来自太空的银色尘土。", page:1, source:'doc'},
+      {id:"docw_R1_3", en:"adventure", zh:"n. 冒险，奇遇", wordZh:"n. 冒险，奇遇", pos:"n.", example:"The friends forget their adventure.", exampleZh:"朋友们忘记了他们的奇遇。", page:1, source:'doc'},
+      {id:"docw_R1_4", en:"medal", zh:"n. 奖牌", wordZh:"n. 奖牌", pos:"n.", example:"It's a medal.", exampleZh:"这是一块奖牌。", page:1, source:'doc'},
+      {id:"docw_R1_5", en:"silver", zh:"adj. 银制的；银色的", wordZh:"adj. 银制的；银色的", pos:"adj.", example:"Norbi throws some silver dust from space.", exampleZh:"诺比撒下一些来自太空的银色尘土。", page:1, source:'doc'},
+      {id:"docw_R2_1", en:"Mars", zh:"n. 火星", wordZh:"n. 火星", pos:"n.", example:"Life on Mars", exampleZh:"火星上的生命", page:2, source:'doc'},
+      {id:"docw_R2_2", en:"mission", zh:"n. 任务", wordZh:"n. 任务", pos:"n.", example:"We spoke to Lucy Bird, one of the people on the mission.", exampleZh:"我们和本次任务中的一员露西·伯德交谈过。", page:2, source:'doc'},
+      {id:"docw_R2_3", en:"spacesuit", zh:"n. 太空服", wordZh:"n. 太空服", pos:"n.", example:"When we went outside, we wore spacesuits.", exampleZh:"我们外出的时候，穿着太空服。", page:2, source:'doc'},
+      {id:"docw_R2_4", en:"get on well", zh:"phr. 进展顺利", wordZh:"phr. 进展顺利", pos:"phr.", example:"We all got on really well and when it finished, we were good mates.", exampleZh:"我们相处得非常融洽，任务结束后，我们成了好朋友。", page:2, source:'doc'},
+      {id:"docw_R3_1", en:"hop", zh:"v. 快速跳上", wordZh:"v. 快速跳上", pos:"v.", example:"OK, hop on. Now stand like this.", exampleZh:"好，快跳上来。现在像这样站好。", page:3, source:'doc'},
+      {id:"docw_R3_2", en:"fall over", zh:"phr. 摔倒", wordZh:"phr. 摔倒", pos:"phr.", example:"Put your feet like this so you don't fall over.", exampleZh:"把脚摆成这样，你就不会摔倒了。", page:3, source:'doc'},
+      {id:"docw_R3_3", en:"deep water", zh:"phr. 深水", wordZh:"phr. 深水", pos:"phr.", example:"You can't go into the deep water yet.", exampleZh:"你还不能去深水区。", page:3, source:'doc'},
+      {id:"docw_R3_4", en:"brilliant", zh:"adj. 非常好的，出色的", wordZh:"adj. 非常好的，出色的", pos:"adj.", example:"This is brilliant fun!", exampleZh:"这太好玩了！", page:3, source:'doc'},
+      {id:"docw_R4_1", en:"point", zh:"n. 得分", wordZh:"n. 得分", pos:"n.", example:"Yes! That's a point for us.", exampleZh:"太棒了！我们得一分。", page:4, source:'doc'},
+      {id:"docw_R4_2", en:"fantastic", zh:"adj. 极好的", wordZh:"adj. 极好的", pos:"adj.", example:"That was fantastic, Zan!", exampleZh:"赞，刚才表现太棒了！", page:4, source:'doc'},
+      {id:"docw_R4_3", en:"amazing", zh:"adj. 令人惊喜的", wordZh:"adj. 令人惊喜的", pos:"adj.", example:"You were amazing at surfboarding, Harry…", exampleZh:"哈里，你的冲浪表现太惊艳了……", page:4, source:'doc'},
+      {id:"docw_R4_4", en:"be good at", zh:"phr. 擅长", wordZh:"phr. 擅长", pos:"phr.", example:"We are all good at something.", exampleZh:"我们每个人都有擅长的事情。", page:4, source:'doc'},
+      {id:"docw_R5_1", en:"activity", zh:"n. 活动", wordZh:"n. 活动", pos:"n.", example:"There are lots of activities to choose and everyone has fun.", exampleZh:"有很多活动可以选择，每个人都玩得很开心。", page:5, source:'doc'},
+      {id:"docw_R5_2", en:"choose", zh:"v. 选择", wordZh:"v. 选择", pos:"v.", example:"There are lots of activities to choose and everyone has fun.", exampleZh:"有很多活动可以选择，每个人都玩得很开心。", page:5, source:'doc'},
+      {id:"docw_R5_3", en:"sign", zh:"n. 指示牌", wordZh:"n. 指示牌", pos:"n.", example:"You just need to look for the signs in the forest.", exampleZh:"你只需要在森林里寻找指示牌。", page:5, source:'doc'},
+      {id:"docw_R6_1", en:"naughty", zh:"adj. 顽皮的", wordZh:"adj. 顽皮的", pos:"adj.", example:"Charlie's naughty neighbour", exampleZh:"查理顽皮的邻居", page:6, source:'doc'},
+      {id:"docw_R6_2", en:"wave", zh:"v. 挥手", wordZh:"v. 挥手", pos:"v.", example:"Charlie waved to his neighbour…", exampleZh:"查理向他的邻居挥手……", page:6, source:'doc'},
+      {id:"docw_R6_3", en:"surprised", zh:"adj. 惊讶的", wordZh:"adj. 惊讶的", pos:"adj.", example:"Mrs Peters was surprised.", exampleZh:"彼得斯夫人很惊讶。", page:6, source:'doc'},
+      {id:"docw_R6_4", en:"suddenly", zh:"adv. 突然", wordZh:"adv. 突然", pos:"adv.", example:"They walked into the shop and suddenly there was a loud noise…", exampleZh:"他们走进商店，突然传来一声巨响……", page:6, source:'doc'},
+      {id:"docw_R6_5", en:"buy sth. for sb.", zh:"phr. 为某人买某物", wordZh:"phr. 为某人买某物", pos:"phr.", example:"She wanted to buy a necklace for her granny.", exampleZh:"她想给奶奶买一条项链。", page:6, source:'doc'},
+      {id:"docw_R6_6", en:"help sb. (to) do sth.", zh:"phr. 帮助某人做某事", wordZh:"phr. 帮助某人做某事", pos:"phr.", example:"Charlie helped Anna (to) choose a necklace…", exampleZh:"查理帮安娜挑选项链……", page:6, source:'doc'},
+      {id:"docw_R6_7", en:"decide to do sth.", zh:"phr. 决定做某事", wordZh:"phr. 决定做某事", pos:"phr.", example:"Charlie helped Anna to choose a necklace and then they decided to go home.", exampleZh:"查理帮安娜挑选好项链，然后他们决定回家。", page:6, source:'doc'},
+      {id:"docw_R7_1", en:"July", zh:"n. 七月", wordZh:"n. 七月", pos:"n.", example:"In July, Class 6A went on a trip.", exampleZh:"在七月，6A班去旅行了。", page:7, source:'doc'},
+      {id:"docw_R7_2", en:"bright", zh:"adj. 明亮的", wordZh:"adj. 明亮的", pos:"adj.", example:"Your torch is very bright!", exampleZh:"你的手电筒很亮！", page:7, source:'doc'},
+      {id:"docw_R7_3", en:"owl", zh:"n. 猫头鹰", wordZh:"n. 猫头鹰", pos:"n.", example:"Can you hear the owl?", exampleZh:"你能听见猫头鹰的叫声吗？", page:7, source:'doc'},
+    ];
+  }
+  // R167-4：学而思语法板块 —— 导入《语法.docx》10 个主题（编号接续既有 g77 → 32.-41.）
+  // 字段：title 标题 / body 用法与结构（肯定/否定/一般疑问/疑问/注意 行会被解析为结构行）/ examples 例句数组（单行「英文 中文」双语）
+  function xsDocGrammarSeed(){
+    return [
+      {id:"docg_1", title:"32. have to 不得不，必须（规则与义务）", body:`谈论规则和义务：肯定表示“不得不”，否定表示“没必要”。
+肯定：主语 + have/has to + 动词原形…
+否定：主语 + don't/doesn't have to + 动词原形…
+一般疑问：Do/Does + 主语 + have to + 动词原形…?（Yes, 主语 + do/does. / No, 主语 + don't/doesn't.）
+注意：第三人称单数用 has to（He/She/It has to…）。`, examples:["You have to ask before you can play on the court. 在球场上打球前你必须先询问。", "You don't have to bring a racket. 你不必带球拍。", "Does she have to take part? 她必须参加吗？", "Yes, she does. 是的，她必须。", "No, she doesn't. 不，她不必。"], source:'doc'},
+      {id:"docg_2", title:"33. may / might 表推测（可能）", body:`常用于谈论现在不确定的事情，或将来可能的事情，表示“可能”。
+肯定：主语 + may/might + 动词原形…
+否定：主语 + may/might not + 动词原形…`, examples:["Whose bag is this? 这是谁的包？", "It may/might be Vicky's. 这可能是薇琪的。", "Can I wear Ben's trainers, Mum? 妈妈，我能穿本的运动鞋吗？", "Hmm. He may/might not like it. 嗯，他可能不会愿意。"], source:'doc'},
+      {id:"docg_3", title:"34. 礼貌询问或寻求他人帮助 Could you…? / Would you mind…?", body:`礼貌表达请求：Could you + 动词原形…, please?
+礼貌表达提议：Would you mind + 动词 ing…, please?
+肯定回答：Of course! / Sure! / No problem!（当然！/ 好的！/ 没问题！）
+否定回答：Sorry, I can't. + 解释原因 / 建议寻求他人帮助（抱歉，我不行。）`, examples:["Could you dry the dishes, please? 请问你可以把碗擦干吗？", "Would you mind turning down the music, please? 请问你介意把音乐调小一点吗？"], source:'doc'},
+      {id:"docg_4", title:"35. 疑问词 Wh- words（Who / Where / When…）", body:`Who 提问人｜Where 提问地点｜When 提问时间｜Why 提问原因
+What 提问什么｜How 提问方式｜Which 提问选择｜Whose 提问所属
+How many 提问数量｜How often 提问频率`, examples:["Who turned off the lights? 谁把灯关掉了？", "Where do they live? 他们住在哪里？", "When did he go? 他什么时候走的？", "Why is the gate open? 大门为什么开着？", "What's that rubbish in your garden? 你花园里那是什么垃圾？", "How do you get to school? 你怎么去上学？", "Which house do you live in? 你住哪一栋房子？", "Whose iron is that? 那是谁的熨斗？", "How many rooms are there in your house? 你的房子有多少个房间？", "How often do you tidy up your bedroom? 你多久整理一次你的卧室？"], source:'doc'},
+      {id:"docg_5", title:"36. 情态动词 can 的用法（能力 / 许可 / 请求）", body:`can 有三种常见用法：
+1. 能力：是否具备做某事的能力（He can play golf.）
+2. 许可：请求他人许可做某事，通常是疑问句，主语为第一人称 I/we
+3. 请求：请求他人帮忙做某事，通常是疑问句，主语为第二人称 you
+肯定：主语 + can + 动词原形…
+否定：主语 + can't + 动词原形…
+一般疑问：Can + 主语 + 动词原形…?（Yes, 主语 + can. / No, 主语 + can't.）`, examples:["He can play golf. 他会打高尔夫球。", "She can't play golf. 她不会打高尔夫球。", "Can we go diving in the pool? 我们可以去泳池潜水吗？", "Can I go to the bathroom? 我可以去洗手间吗？", "Can you throw me the volleyball? 你可以把排球扔给我吗？", "Can you help me with my homework? 你可以帮我辅导作业吗？"], source:'doc'},
+      {id:"docg_6", title:"37. need to 需要，有必要", body:`谈论必要的事情：肯定表示“需要”，否定表示“没必要”。
+肯定：主语 + need/needs to + 动词原形…
+否定：主语 + don't/doesn't need to + 动词原形…
+一般疑问：Do/Does + 主语 + need to + 动词原形…?（Yes, 主语 + do/does. / No, 主语 + don't/doesn't.）
+注意：have to 的三单形式为 has to，need to 的三单形式为 needs to，需要注意句子主语。`, examples:["I need to buy a new tracksuit. 我需要买一套新的运动服。", "You don't need to bring your bike. 你不必带上你的自行车。", "Does she need to bring her swimsuit? 她需要带泳衣吗？", "Yes, she does. 是的，她需要。", "No, she doesn't. 不，她不需要。"], source:'doc'},
+      {id:"docg_7", title:"38. should 应该（表建议）", body:`表建议：should 表示“应该”，shouldn't 表示“不应该”。
+肯定：主语 + should + 动词原形…
+否定：主语 + shouldn't + 动词原形…
+疑问：Should + 主语 + 动词原形…?
+注意：should 无三单变化。`, examples:["You should rest before a race. 比赛前你应该休息。", "He shouldn't wear those old trainers. 他不应该穿那双旧运动鞋。", "Should I enter the competition? 我应该参加比赛吗？"], source:'doc'},
+      {id:"docg_8", title:"39. must 必须（表义务）/ mustn't 禁止", body:`表义务：must 表示“必须”，mustn't 表示“禁止”。
+肯定：主语 + must + 动词原形…
+否定：主语 + mustn't + 动词原形…
+注意：must 无三单变化。`, examples:["Cyclists must wear helmets in the race. 自行车选手在比赛中必须佩戴头盔。", "Children mustn't drive cars. 儿童禁止开车。"], source:'doc'},
+      {id:"docg_9", title:"40. 一般过去时（be 动词 + 实义动词）", body:`表示发生在过去的动作或状态。
+be 动词：am / is → was；are → were
+实义动词规则变化：+ ed；去 e + ed（love→loved）；双写尾字母 + ed（stop→stopped）；改 y 为 i + ed（try→tried）
+实义动词不规则变化：bring→brought；buy→bought；do→did；get→got；go→went；have→had；meet→met；put→put；ride→rode；sleep→slept；swim→swam；see→saw；take→took；wear→wore
+肯定：主语 + was/were…（be 动词）｜主语 + 动词过去式…（实义动词）
+否定：主语 + was/were + not…（be 动词）｜主语 + didn't + 动词原形…（实义动词）
+一般疑问：Was/Were + 主语…? / Did + 主语 + 动词原形…?（Yes, 主语 + was/were/did. / No, 主语 + wasn't/weren't/didn't.）
+疑问：特殊疑问词 + was/were + 主语…? / 特殊疑问词 + did + 主语 + 动词原形…?
+注意：didn't 后接动词原形；时间标志词有 yesterday, two days ago, last night 等。`, examples:["It was rainy. 那天下雨。", "On Sunday the weather wasn't good. 周日天气不好。", "Was Anna at the party last week? 安娜上周参加派对了吗？", "Where were the children last night? 孩子们昨晚在哪里？", "I saw Anna last month. 我上个月见到安娜了。", "We didn't go on holiday in May. 我们五月份没有去度假。", "Did Kim meet her penfriend last week? 金上周见到她的笔友了吗？", "When did the children go on a trip? 孩子们什么时候去旅行的？"], source:'doc'},
+      {id:"docg_10", title:"41. 过去进行时 was/were + V-ing", body:`表示在过去某个时间点或某个时间段内正在发生的事情。
+肯定：主语 + was/were + V-ing…
+否定：主语 + was/were + not + V-ing…
+一般疑问：Was/Were + 主语 + V-ing…?（Yes, 主语 + was/were. / No, 主语 + wasn't/weren't.）
+疑问：What + was/were + 主语 + V-ing…?
+注意：时间标志词有 at 3 o'clock yesterday, at that moment, at that time, on Sunday afternoon, yesterday morning 等。`, examples:["I was watching TV. 我当时正在看电视。", "My brother wasn't watching TV. 我弟弟当时没有看电视。", "Were you listening to music? 你当时在听音乐吗？", "What were you doing at 3 o'clock yesterday? 昨天三点钟你正在做什么？"], source:'doc'},
+    ];
+  }
   function xsAdd(kind, item){
     const st = load();
     // v8：兼容映射 grammar → grammar；旧 'sentences' 仍写入 sentences 字段
@@ -35253,8 +35473,10 @@ May / Can I /we have …, please? 请问我 / 我们可以拿…… 吗？
     return st.homeBanner;
   }
 
-  // R28-3：首页问候语知识库（家长模式可编辑，默认 20 条，每日轮换显示 1 条）
-  const DEFAULT_HOME_GREETS = [
+  // R28-3：首页问候语知识库（家长模式可编辑，每日轮换显示 1 条）
+  // R167-1：扩至 365 条 —— 动物城经典 20（R28-3 原有）+ 名人名言 56 / 励志类 64 / 文明礼仪 55 / 温柔治愈 55 / 安全教育 60 / 自我激励 55
+  // 旧版 20 条默认（保留用于迁移比对：未改过默认列表的用户自动升级到 365 条版）
+  const HOME_GREETS_V1_DEFAULT = [
     '今天又是元气满满的一天哦～',
     'Nick 说：每一次努力都算数！',
     '朱迪警官为你加油！坚持就是胜利～',
@@ -35274,7 +35496,381 @@ May / Can I /we have …, please? 请问我 / 我们可以拿…… 吗？
     '写一手好字，从每天练习开始～',
     '坚持打卡，惊喜在路上！',
     '你的努力，爸爸妈妈都看得到～',
-    '元气满满，快乐成长每一天！'
+    '元气满满，快乐成长每一天！',
+  ];
+  const DEFAULT_HOME_GREETS = [
+    /* ---- 动物城经典（R28-3 原有 20 条） ---- */
+    '今天又是元气满满的一天哦～',
+    'Nick 说：每一次努力都算数！',
+    '朱迪警官为你加油！坚持就是胜利～',
+    '闪电提醒：慢慢来，比较快～',
+    '完成今天的任务，就能去种菜啦！',
+    '你比昨天更棒一点啦！',
+    '新的开始，新的收获，加油！',
+    '小狐狸尼克陪你一起闯关～',
+    '今天的你，闪闪发光！',
+    '知识像种子，越积越多～',
+    '一步一步来，目标就在前方！',
+    '爱学习的小 Nick 最可爱啦！',
+    '今日事今日毕，棒棒哒！',
+    '阅读让世界更大一点点～',
+    '数学小达人，今天也要动脑哦！',
+    '英语开口说，自信又快乐！',
+    '写一手好字，从每天练习开始～',
+    '坚持打卡，惊喜在路上！',
+    '你的努力，爸爸妈妈都看得到～',
+    '元气满满，快乐成长每一天！',
+    /* ---- 名人名言 ---- */
+    '书山有路勤为径，学海无涯苦作舟。',
+    '黑发不知勤学早，白首方悔读书迟。',
+    '一日之计在于晨，一年之计在于春。',
+    '千里之行，始于足下。',
+    '知之为知之，不知为不知，是知也。',
+    '学而不思则罔，思而不学则殆。',
+    '温故而知新，可以为师矣。',
+    '三人行，必有我师焉。',
+    '己所不欲，勿施于人。',
+    '吾生也有涯，而知也无涯。',
+    '少壮不努力，老大徒伤悲。',
+    '纸上得来终觉浅，绝知此事要躬行。',
+    '问渠那得清如许？为有源头活水来。',
+    '读书破万卷，下笔如有神。',
+    '天生我材必有用，千金散尽还复来。',
+    '长风破浪会有时，直挂云帆济沧海。',
+    '会当凌绝顶，一览众山小。',
+    '欲穷千里目，更上一层楼。',
+    '海内存知己，天涯若比邻。',
+    '先天下之忧而忧，后天下之乐而乐。',
+    '不以规矩，不能成方圆。',
+    '富贵不能淫，贫贱不能移，威武不能屈。',
+    '天下兴亡，匹夫有责。',
+    '为中华之崛起而读书。',
+    '时间就像海绵里的水，只要愿挤，总还是有的。',
+    '其实地上本没有路，走的人多了，也便成了路。',
+    '书籍是人类进步的阶梯。',
+    '我扑在书上，就像饥饿的人扑在面包上。',
+    '读一本好书，就是和许多高尚的人谈话。',
+    '成功=艰苦的劳动+正确的方法+少说空话。',
+    '天才是百分之一的灵感，百分之九十九的汗水。',
+    '聪明在于学习，天才在于积累。',
+    '勤能补拙是良训，一分辛苦一分才。',
+    '走自己的路，让别人说去吧。',
+    '天下无难事，只怕有心人。',
+    '只要功夫深，铁杵磨成针。',
+    '知己知彼，百战不殆。',
+    '不畏浮云遮望眼，自缘身在最高层。',
+    '山重水复疑无路，柳暗花明又一村。',
+    '沉舟侧畔千帆过，病树前头万木春。',
+    '野火烧不尽，春风吹又生。',
+    '谁言寸草心，报得三春晖。',
+    '谁知盘中餐，粒粒皆辛苦。',
+    '春蚕到死丝方尽，蜡炬成灰泪始干。',
+    '人生自古谁无死？留取丹心照汗青。',
+    '生当作人杰，死亦为鬼雄。',
+    '莫等闲，白了少年头，空悲切。',
+    '千磨万击还坚劲，任尔东西南北风。',
+    '小荷才露尖尖角，早有蜻蜓立上头。',
+    '接天莲叶无穷碧，映日荷花别样红。',
+    '竹外桃花三两枝，春江水暖鸭先知。',
+    '一年好景君须记，最是橙黄橘绿时。',
+    '宝剑锋从磨砺出，梅花香自苦寒来。',
+    '知识就是力量。',
+    '少年强则国强。',
+    '一寸光阴一寸金，寸金难买寸光阴。',
+    /* ---- 励志类 ---- */
+    '今天的努力，是明天的底气。',
+    '慢慢走，稳稳走，每天进步一点点。',
+    '认真学习的你最帅！',
+    '困难像弹簧，你强它就弱。',
+    '只要开始，就不算晚。',
+    '每一次坚持，都在悄悄变强。',
+    '努力的人，运气都不会太差。',
+    '今天的汗水，会是明天的礼物。',
+    '别怕错，错一次就学会一点。',
+    '相信自己，你比想象中更棒。',
+    '目标不用太大，今天完成就好。',
+    '专注十分钟，收获一整天。',
+    '努力是会上瘾的，尤其是尝到甜头以后。',
+    '今天的作业，是明天的翅膀。',
+    '把不会的学会，你就是最厉害的。',
+    '一步一个脚印，走到哪里都不怕。',
+    '不怕慢，就怕站。',
+    '今天的付出，明天会发光。',
+    '今日的努力，明日的实力。',
+    '用心做好每一件小事。',
+    '勤奋是成功之母。',
+    '坚持一下，胜利就在前面。',
+    '每个优秀的人，都有一段沉默的时光。',
+    '越努力，越幸运。',
+    '想要收获，先要学会播种。',
+    '行动是最好的计划。',
+    '今日事，今日毕。',
+    '自律的人，未来更自由。',
+    '你认真学习的样子真好看。',
+    '不懂就问，问完就懂。',
+    '每天进步一小步，一年就是一大步。',
+    '学习如灯，努力如油，灯才会亮。',
+    '再难的题，也有解开的时候。',
+    '冷静思考，办法总比困难多。',
+    '勤奋的孩子，运气都在敲门。',
+    '别放弃，你已经走了很远。',
+    '相信自己，你就是答案。',
+    '认真写字，认真读书，认真长大。',
+    '今天的积累，是明天的财富。',
+    '努力不一定成功，放弃一定失败。',
+    '热爱可抵岁月漫长。',
+    '眼是懒汉，手是好汉。',
+    '动手做一做，比看十遍都强。',
+    '好记性不如烂笔头。',
+    '读书有三到：心到、眼到、口到。',
+    '先完成，再完美。',
+    '勇敢尝试，就是进步。',
+    '失败是成功的朋友。',
+    '错题是我们的好老师。',
+    '每天改正一个小错误。',
+    '今天比昨天多懂一点，就很好。',
+    '学习是自己的事，为自己努力。',
+    '现在的努力，未来的选择。',
+    '知识改变命运，学习成就未来。',
+    '梦想不会逃跑，逃跑的永远是自己。',
+    '有梦想，就去追。',
+    '心中有目标，脚下有力量。',
+    '把大目标拆成小任务。',
+    '完成一件事，就夸自己一次。',
+    '坚持到底，就是胜利。',
+    '永不言弃，未来可期。',
+    '加油，少年！',
+    '今天也要元气满满地学习呀！',
+    '朱迪警官说：永不放弃！',
+    /* ---- 文明礼仪 ---- */
+    '见到老师问声好，礼貌用语不能少。',
+    '请、谢谢、对不起，三句话挂嘴边。',
+    '受人帮助说谢谢，分别时候说再见。',
+    '打扰别人先道歉，得到允许再行动。',
+    '站有站相，坐有坐相。',
+    '吃饭细嚼慢咽，不敲餐具不喧哗。',
+    '长者先，幼者后，好传统要记牢。',
+    '尊敬长辈，是做人的第一条。',
+    '父母呼唤，立刻回应。',
+    '出门回家，主动打招呼。',
+    '借东西先征得同意。',
+    '好借好还，再借不难。',
+    '捡到东西要归还，不是自己的不能拿。',
+    '别人的东西不乱动。',
+    '未经允许不翻看别人东西。',
+    '不随便给同学起外号。',
+    '不嘲笑别人的缺点。',
+    '学会倾听，不打断别人说话。',
+    '别人说话时，看着对方的眼睛。',
+    '见到客人主动问好。',
+    '主动让座给需要的人。',
+    '排队等候，不插队。',
+    '公共场所轻声细语。',
+    '看电影不喧哗，手机调静音。',
+    '楼梯靠右行，不追逐打闹。',
+    '见到垃圾弯腰捡，校园干净我出力。',
+    '不随地吐痰，不乱扔垃圾。',
+    '爱护花草树木，不摘不踩。',
+    '节约用水，随手关灯。',
+    '爱惜粮食，践行光盘。',
+    '吃饭不掉饭粒，不剩饭菜。',
+    '勤洗手，勤剪指甲。',
+    '衣着整洁，穿戴得体。',
+    '每天自己整理书包。',
+    '自己房间自己收拾。',
+    '今日家务我来做。',
+    '帮忙做家务，是爱家人的方式。',
+    '对爸爸妈妈说声"辛苦了"。',
+    '爸爸妈妈累了，给他们倒杯水。',
+    '家人的爱，要用行动回报。',
+    '不说谎话，做诚实的孩子。',
+    '知错就改，还是好孩子。',
+    '说到就要做到。',
+    '守时是美德，迟到不礼貌。',
+    '约定的事情要记牢。',
+    '借用同桌文具要说谢谢。',
+    '不欺负同学，也不让别人欺负。',
+    '学会分享，快乐会变多。',
+    '比赛赢了不骄傲。',
+    '输了也不哭闹，下次再来。',
+    '为别人的进步鼓掌。',
+    '每天微笑，传递善意。',
+    '礼貌是一张最好的名片。',
+    '良言一句三冬暖。',
+    '恶语伤人六月寒。',
+    /* ---- 温柔治愈 ---- */
+    '今天累了，就早点休息。',
+    '慢慢来，你已经很努力了。',
+    '难过的日子，都会过去的。',
+    '哭一场也没关系，哭完继续加油。',
+    '深呼吸，一切都是最好的安排。',
+    '天黑之后，星星就会出现。',
+    '雨天过后，会有彩虹。',
+    '每一朵花都有自己的开放时间。',
+    '你不必事事完美，尽力就好。',
+    '慢一点也没关系，方向对了就行。',
+    '今天也要好好爱自己。',
+    '记得多喝水，好好吃饭。',
+    '睡前，原谅自己所有的小错误。',
+    '世界很好，你也是。',
+    '你值得被温柔对待。',
+    '抱抱自己，说声辛苦了。',
+    '每一天都是新的开始。',
+    '太阳每天都会升起。',
+    '春天会来，花会开。',
+    '一切都会好起来的。',
+    '不开心就出去走走，风会吹散烦恼。',
+    '星星在为你眨眼。',
+    '月亮悄悄对你说晚安。',
+    '云朵是天空的棉花糖。',
+    '大自然在悄悄爱你。',
+    '看一本好书，心就静了。',
+    '和好朋友说说心里话。',
+    '把烦恼写进日记，合上就不再想。',
+    '深呼吸，一二三，放轻松。',
+    '伸个懒腰，肩膀松一松。',
+    '早点睡觉，做个好梦。',
+    '梦里什么都有，明天见。',
+    '今天的你，已经很棒了。',
+    '不用跟别人比，你就是你。',
+    '做喜欢的事，就是充电。',
+    '慢慢走，欣赏啊。',
+    '生活明朗，万物可爱。',
+    '人间值得，未来可期。',
+    '愿你被这个世界温柔以待。',
+    '愿你的努力都有回报。',
+    '愿你眼里有光，心中有爱。',
+    '愿你每天都能发现小确幸。',
+    '吃到好吃的，就是小幸福。',
+    '阳光落在身上，暖暖的。',
+    '岁月静好，安心长大。',
+    '家是永远的避风港。',
+    '爸爸妈妈永远爱你。',
+    '有家在，什么都不怕。',
+    '被爱着的孩子，运气不会差。',
+    '善良的人，会被世界善待。',
+    '温柔的人，也会被温柔拥抱。',
+    '对世界温柔，也对自己温柔。',
+    '一切都是暂时的，包括不开心。',
+    '明天又是新的一天。',
+    '晚安，好梦，明天见。',
+    /* ---- 安全教育 ---- */
+    '过马路走斑马线，红灯停，绿灯行。',
+    '不在马路上追逐打闹。',
+    '未满十二周岁不骑自行车上路。',
+    '坐电动车要戴好安全头盔。',
+    '坐汽车要系好安全带。',
+    '不把头手伸出车窗外。',
+    '下车前先看后面来车。',
+    '雨天路滑，慢慢走。',
+    '远离大货车、工程车的盲区。',
+    '不在停车场、路口玩耍。',
+    '一个人不去河边、池塘玩水。',
+    '游泳要去正规场馆，有大人陪。',
+    '见到有人落水，大声呼救，不盲目下水。',
+    '不私自下水游泳。',
+    '雷雨天气不在树下避雨。',
+    '打雷时不打手机、不摸金属。',
+    '湿手不碰插座和开关。',
+    '不用金属捅插座孔。',
+    '电器着火先断电，不用水泼。',
+    '充电线不拆、不咬、不拉。',
+    '手机充电时不玩手机。',
+    '燃气用完要关阀门。',
+    '闻到煤气味，先开窗、勿动火。',
+    '不玩火柴、打火机。',
+    '遇到火灾用湿毛巾捂口鼻，弯腰走楼梯。',
+    '记住火警电话 119。',
+    '记住报警电话 110。',
+    '记住急救电话 120。',
+    '一个人在家不给陌生人开门。',
+    '不跟陌生人走，不坐陌生人的车。',
+    '陌生人给的东西不能要。',
+    '陌生人问路，可以指路但不带路。',
+    '不告诉陌生人自己家的住址。',
+    '网上不随便加陌生好友。',
+    '不点陌生链接，不扫陌生二维码。',
+    '不向网友透露真实信息。',
+    '网上遇到奇怪的话，告诉家长。',
+    '不沉迷网络游戏。',
+    '控制看屏幕的时间。',
+    '看电视、用电脑，保持一臂距离。',
+    '看书画画光线要充足。',
+    '不在强光下、车上看书。',
+    '生水不能喝，变质食物不能吃。',
+    '路边无证小摊的零食要少吃。',
+    '饭前便后要洗手。',
+    '不吃陌生人给的食物饮料。',
+    '过敏的东西不能碰。',
+    '药物不是糖果，不能乱吃。',
+    '吃药要按说明书或遵医嘱。',
+    '运动前要先热身。',
+    '运动后不马上喝冰水。',
+    '楼梯不追逐，扶手要扶好。',
+    '高处危险，不攀爬窗台阳台。',
+    '窗户边不放可攀爬的家具。',
+    '剪刀、刀口不对人。',
+    '文具不往嘴里放。',
+    '拿笔不打闹，笔尖会伤人。',
+    '上下学结伴行，跟紧队伍。',
+    '放学按时回家，不跟别人乱跑。',
+    '遇到危险大声呼救，往人多的地方跑。',
+    /* ---- 自我激励 ---- */
+    '我是最棒的！',
+    '我可以的！',
+    '今天我要挑战自己！',
+    '我是小小超人，能量满满！',
+    '我很勇敢，不怕困难！',
+    '我有一双会发现的眼睛。',
+    '我有一双会思考的大脑。',
+    '我有一双勤劳的小手。',
+    '我的声音很好听，敢说就赢了一半。',
+    '我每天进步一点点。',
+    '我比昨天更厉害了。',
+    '我是时间的小主人。',
+    '我说到就能做到。',
+    '我做事有始有终。',
+    '我遇到难题不逃跑。',
+    '我会自己想办法。',
+    '我敢举手发言。',
+    '我敢大声朗读。',
+    '我敢承认错误。',
+    '我敢重新再来。',
+    '我是一个诚实的人。',
+    '我是一个守信用的人。',
+    '我是一个有礼貌的人。',
+    '我是一个爱干净的人。',
+    '我是一个有条理的人。',
+    '我是一个有耐心的人。',
+    '我是一个专注的人。',
+    '我是一个细心的人。',
+    '我是一个有爱心的人。',
+    '我是一个懂得感恩的人。',
+    '我是一个爱笑的人。',
+    '微笑是我的超能力。',
+    '我是独一无二的。',
+    '我做我自己，不用模仿谁。',
+    '我的想法很重要，我要说出来。',
+    '我的努力，我自己做主。',
+    '我的未来，由我书写。',
+    '我的梦想，我来守护。',
+    '我要做知识的小富翁。',
+    '我要做勇敢的探险家。',
+    '我要做细心的观察家。',
+    '我要做坚持的运动员。',
+    '我要做热心的好伙伴。',
+    '加油，Nick！',
+    'Nick 最棒！',
+    '我是学习小达人！',
+    '我是识字小能手！',
+    '我是计算小能手！',
+    '我是英语小喇叭！',
+    '我是阅读小书虫！',
+    '我是运动小健将！',
+    '我是家务小帮手！',
+    '今天也要做更好的自己！',
+    '热爱学习，热爱生活！',
+    '我要长成自己的大树！',
   ];
   function getHomeGreets(){
     const st = load();
@@ -41964,8 +42560,22 @@ I'm good at running.`},
   }
   function wbRteRestoreRange(){
     const ed = document.getElementById('wbEditor'); if(!ed) return;
+    const sel = window.getSelection();
+    // R167-3：先记录实时选区是否有效（非塌缩且落在编辑器内）—— Range 是活对象，旧内容被替换后
+    // 存档选区会自动塌缩（如 DIV:0->DIV:0），此时若盲目恢复会把用户的活选区顶掉，导致后续
+    // 样式应用 early-return（表现即「设置不生效」）。
+    const liveOk = !!(sel && sel.rangeCount && !sel.getRangeAt(0).collapsed && ed.contains(sel.getRangeAt(0).commonAncestorContainer));
     ed.focus();
-    if(_wbSavedRange){ try{ const s=window.getSelection(); s.removeAllRanges(); s.addRange(_wbSavedRange); }catch(e){} }
+    if(_wbSavedRange){
+      try{
+        const sc = _wbSavedRange.startContainer, ec = _wbSavedRange.endContainer;
+        // 存档选区仍「存活」= 两端容器都在文档内、公共祖先在编辑器内、且未塌缩
+        const alive = !_wbSavedRange.collapsed && document.contains(sc) && document.contains(ec) && ed.contains(_wbSavedRange.commonAncestorContainer);
+        if(alive){ sel.removeAllRanges(); sel.addRange(_wbSavedRange); }
+        else if(!liveOk){ _wbSavedRange = null; }
+        // 存档已死但实时选区有效 → 保留实时选区，不恢复
+      }catch(e){}
+    }
   }
   function wbRteWrap(cssProp, value){
     const ed = document.getElementById('wbEditor'); if(!ed) return;
@@ -41985,6 +42595,175 @@ I'm good at running.`},
     const colors = document.getElementById('wbColors');
     if(colors) colors.querySelectorAll('button').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-wb-color') === _wbEditColor); });
   }
+  // R167-3：选区级样式稳健应用（字体/字号/文字色/背景高亮与 B/I/U/S 多选组合的公共件）。
+  // 做法：遍历选区内所有文本节点（含跨段落、含既有 b/i/u/font 嵌套），按边界切分后逐段包
+  // <span style="prop:value">；同值幂等（父链已有同款样式则跳过），后应用的值天然压过先应用的。
+  // 旧路 wbRteWrap 的 surroundContents 在跨段落时抛异常走 extractContents 兜底，会产生
+  // span>p 的非法嵌套；execCommand('fontName') 跨段落则只插空 font 标签 —— 均不可组合，已换成本函数。
+  function wbRteStyleRange(cssProp, value){
+    const ed = document.getElementById('wbEditor'); if(!ed || !cssProp || !value) return;
+    wbRteRestoreRange();
+    const sel = window.getSelection(); if(!sel || !sel.rangeCount) return;
+    const range = sel.getRangeAt(0);
+    if(range.collapsed) return;   // 无选区不应用（与旧口径一致）
+    const nodes = [];
+    try{
+      const walker = document.createTreeWalker(ed, NodeFilter.SHOW_TEXT, {
+        acceptNode: function(n){
+          if(!n.nodeValue) return NodeFilter.FILTER_REJECT;
+          try{ if(!range.intersectsNode(n)) return NodeFilter.FILTER_REJECT; }catch(e){
+            // 兜底：文本节点整体在选区之前/之后则拒绝
+            const before = range.comparePoint(n, 0) < 0 && range.comparePoint(n, n.nodeValue.length) < 0;
+            const after = range.comparePoint(n, 0) > 0 && range.comparePoint(n, n.nodeValue.length) > 0;
+            if(before || after) return NodeFilter.FILTER_REJECT;
+          }
+          return NodeFilter.FILTER_ACCEPT;
+        }
+      });
+      let n; while((n = walker.nextNode())) nodes.push(n);
+    }catch(e){ return; }
+    const spans = [];
+    nodes.forEach(function(tn){
+      let s = 0, e = tn.nodeValue.length;
+      if(range.startContainer === tn) s = range.startOffset;
+      if(range.endContainer === tn) e = range.endOffset;
+      if(e <= s) return;
+      let target = tn;
+      if(s > 0) target = tn.splitText(s);
+      const remain = target.nodeValue.length;
+      if(e - s < remain) target.splitText(e - s);
+      // 幂等：最近祖先已是同 prop 同值的 span 则跳过
+      const par = target.parentNode;
+      if(par && par.nodeType === 1 && par.tagName === 'SPAN'){
+        try{ if(par.style[cssProp] === value) { if(s === 0 && e === tn.nodeValue.length) spans.push(par); return; } }catch(e2){}
+      }
+      const span = document.createElement('span');
+      try{ span.style[cssProp] = value; }catch(e3){ return; }
+      target.parentNode.insertBefore(span, target);
+      span.appendChild(target);
+      spans.push(span);
+    });
+    // 收尾：选区恢复到刚包裹的内容，便于连续再套其它设置（真正的多选组合）
+    if(spans.length){
+      try{
+        const s2 = window.getSelection(); s2.removeAllRanges();
+        const r2 = document.createRange();
+        r2.setStartBefore(spans[0]); r2.setEndAfter(spans[spans.length-1]);
+        s2.addRange(r2); _wbSavedRange = r2.cloneRange();
+      }catch(e4){}
+    }
+  }
+  // R167-3：工具条多选态同步 —— B/I/U/S 按选区内 queryCommandState 点亮（可多个同时亮，
+  // 视觉上即「多选组合」）；字体/字号/取色器/高亮按「选区内全部文本节点的有效内联值一致」
+  // 回填（混合值复位占位，避免把混排样式显示成单一值）。
+  function wbRteSyncBtnStates(){
+    const ed = document.getElementById('wbEditor');
+    const tb = document.getElementById('wbRteToolbar');
+    if(!ed || !tb) return;
+    const mask = document.getElementById('modalWbEdit');
+    if(mask && mask.hasAttribute('hidden')) return;
+    const sel = window.getSelection();
+    const inEd = !!(sel && sel.rangeCount && ed.contains(sel.getRangeAt(0).commonAncestorContainer));
+    ['bold','italic','underline','strikeThrough'].forEach(function(cmd){
+      const btn = tb.querySelector('button[data-cmd="'+cmd+'"]');
+      if(!btn) return;
+      let on = false;
+      if(inEd && typeof document.queryCommandState === 'function'){
+        try{ on = document.queryCommandState(cmd); }catch(e){ on = false; }
+      }
+      btn.classList.toggle('on', !!on);
+    });
+    // 选区内文本节点的有效内联样式（含编辑器默认样式兜底）
+    const vals = wbRteSelInlineValues();
+    const font = document.getElementById('wbRteFont');
+    if(font){
+      let hit = '';
+      if(vals.fontFamily){
+        const want = wbRteNormFamily(vals.fontFamily);
+        Array.prototype.some.call(font.options, function(o){ if(wbRteNormFamily(o.value) === want){ hit = o.value; return true; } return false; });
+      }
+      font.value = hit;
+    }
+    const size = document.getElementById('wbRteSize');
+    if(size){
+      let hit = '';
+      if(vals.fontSize){
+        const px = parseFloat(vals.fontSize);
+        if(px > 0) Array.prototype.some.call(size.options, function(o){ if(o.value === String(px)){ hit = o.value; return true; } return false; });
+      }
+      size.value = hit;
+    }
+    const col = document.getElementById('wbRteColor');
+    if(col){ col.value = wbRteToHex(vals.color) || '#1b2a44'; }
+    const hl = document.getElementById('wbRteHl');
+    if(hl){ hl.value = wbRteToHex(vals.backgroundColor) || '#fff3a8'; }
+  }
+  // R167-3：字体族串归一化（去引号与空白）—— 选项值是 "'KaiTi','楷体',serif"，
+  // 而元素 style 回读是 "KaiTi, 楷体, serif"，直接比永远不相等
+  function wbRteNormFamily(v){ return String(v || '').replace(/['"\s]/g, ''); }
+  // R167-3：rgb(...)/rgba(...) → #rrggbb；已是 hex 或空则原样返回
+  function wbRteToHex(c){
+    const v = String(c || '').trim();
+    if(!v) return '';
+    const m = v.match(/^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i);
+    if(m){
+      const h = n => ('0' + Math.max(0, Math.min(255, parseInt(n, 10))).toString(16)).slice(-2);
+      return '#' + h(m[1]) + h(m[2]) + h(m[3]);
+    }
+    return v;
+  }
+  // R167-3：选区内所有文本节点逐一看「最近祖先内联样式」（无则取编辑器默认），
+  // 全部一致才返回该值，否则返回空串（混合样式）
+  function wbRteSelInlineValues(){
+    const out = { fontFamily:'', fontSize:'', color:'', backgroundColor:'' };
+    const ed = document.getElementById('wbEditor'); if(!ed) return out;
+    const sel = window.getSelection(); if(!sel || !sel.rangeCount) return out;
+    const range = sel.getRangeAt(0);
+    if(!ed.contains(range.commonAncestorContainer)) return out;
+    const nodes = [];
+    try{
+      const walker = document.createTreeWalker(ed, NodeFilter.SHOW_TEXT, {
+        acceptNode: function(n){
+          if(!n.nodeValue) return NodeFilter.FILTER_REJECT;
+          try{ if(!range.intersectsNode(n)) return NodeFilter.FILTER_REJECT; }catch(e){}
+          return NodeFilter.FILTER_ACCEPT;
+        }
+      });
+      let n; while((n = walker.nextNode())) nodes.push(n);
+    }catch(e){ return out; }
+    if(!nodes.length) return out;
+    const props = ['fontFamily','fontSize','color','backgroundColor'];
+    props.forEach(function(prop){
+      let val = null;
+      for(let i=0;i<nodes.length;i++){
+        const v = wbRteInlineValueAt(prop, nodes[i]);
+        if(v === ''){ val = null; break; }          // 有一个没有 → 视为未设置/混合
+        if(val === null) val = v;
+        else if(val !== v){ val = null; break; }     // 值不一致 → 混合
+      }
+      out[prop] = val || '';
+    });
+    return out;
+  }
+  // R167-3：从指定文本节点（缺省取选区起点）向上取最近的内联样式值，直到编辑器默认样式
+  function wbRteInlineValueAt(cssProp, fromNode){
+    const ed = document.getElementById('wbEditor'); if(!ed) return '';
+    let node = fromNode;
+    if(!node){
+      const sel = window.getSelection();
+      node = (sel && sel.rangeCount) ? sel.getRangeAt(0).startContainer : null;
+    }
+    if(!node) return '';
+    if(node.nodeType === 3) node = node.parentNode;
+    while(node){
+      if(node === ed){ try{ return ed.style[cssProp] || ''; }catch(e){ return ''; } }
+      if(node.nodeType === 1 && node.style){
+        try{ if(node.style[cssProp]) return node.style[cssProp]; }catch(e2){}
+      }
+      node = node.parentNode;
+    }
+    return '';
+  }
   function wbRteBindToolbar(){
     const ed = document.getElementById('wbEditor'); if(!ed || ed.__rteBound) return; ed.__rteBound = true;
     try{ document.execCommand('styleWithCSS', false, false); }catch(e){}
@@ -41992,17 +42771,30 @@ I'm good at running.`},
     if(tb){
       tb.querySelectorAll('button[data-cmd]').forEach(function(b){
         b.addEventListener('mousedown', function(e){ e.preventDefault(); });
-        b.addEventListener('click', function(){ wbRteRestoreRange(); try{ document.execCommand(b.getAttribute('data-cmd'), false, null); }catch(e){} wbRteSaveRange(); });
+        b.addEventListener('click', function(){ wbRteRestoreRange(); try{ document.execCommand(b.getAttribute('data-cmd'), false, null); }catch(e){} wbRteSaveRange(); wbRteSyncBtnStates(); });
       });
+      // R167-3：字体/字号/文字色/背景高亮改走选区级稳健包裹 wbRteStyleRange —— 与加粗/斜体/
+      // 下划线/删除线任意多选组合。旧实现用 execCommand('fontName'/'fontSize')：选区跨段落或
+      // 已含粗斜体样式时，Chrome 只在选区边界插空 <font> 标签、文字本身不生效（用户侧表现即
+      // 「只能单选一个设置」），故整体替换为自研多节点包裹。
       const font = document.getElementById('wbRteFont');
-      if(font) font.addEventListener('change', function(){ wbRteRestoreRange(); try{ document.execCommand('fontName', false, font.value); }catch(e){} wbRteSaveRange(); _wbRteFontPick = (font.value && font.value !== 'inherit') ? font.value : ''; });
+      if(font) font.addEventListener('change', function(){
+        const v = font.value;
+        if(v && v !== 'inherit') wbRteStyleRange('font-family', v);
+        _wbRteFontPick = (v && v !== 'inherit') ? v : '';
+        wbRteSyncBtnStates();
+      });
       const size = document.getElementById('wbRteSize');
-      if(size) size.addEventListener('change', function(){ wbRteWrap('fontSize', size.value + 'px'); _wbRteSizePick = size.value || ''; size.value = ''; });
+      if(size) size.addEventListener('change', function(){
+        if(size.value) wbRteStyleRange('font-size', size.value + 'px');
+        _wbRteSizePick = size.value || '';
+        wbRteSyncBtnStates();
+      });
       const col = document.getElementById('wbRteColor');
-      if(col) col.addEventListener('input', function(){ wbRteRestoreRange(); try{ document.execCommand('foreColor', false, col.value); }catch(e){} wbRteSaveRange(); _wbRteTextColor = col.value; });
+      if(col) col.addEventListener('input', function(){ wbRteStyleRange('color', col.value); _wbRteTextColor = col.value; wbRteSyncBtnStates(); });
       // R156-3a③：工具栏补齐与管理页面同款控件 —— 背景高亮 / 首行缩进 / 段间距 / 清空
       const hl = document.getElementById('wbRteHl');
-      if(hl) hl.addEventListener('input', function(){ wbRteRestoreRange(); try{ document.execCommand('hiliteColor', false, hl.value); }catch(e){ try{ document.execCommand('backColor', false, hl.value); }catch(e2){} } wbRteSaveRange(); });
+      if(hl) hl.addEventListener('input', function(){ wbRteStyleRange('background-color', hl.value); wbRteSyncBtnStates(); });
       const ind = document.getElementById('wbRteIndent');
       if(ind) ind.addEventListener('click', function(){
         wbRteRestoreRange();
@@ -42028,6 +42820,12 @@ I'm good at running.`},
     ed.addEventListener('keyup', wbRteSaveRange);
     ed.addEventListener('mouseup', wbRteSaveRange);
     ed.addEventListener('blur', wbRteSaveRange);
+    // R167-3：选区内光标移动即同步工具条多选态（文档级一次绑定，弹窗隐藏时同步函数自动短路）
+    if(!document.__wbRteSelBound){
+      document.__wbRteSelBound = true;
+      document.addEventListener('selectionchange', function(){ wbRteSyncBtnStates(); });
+    }
+    wbRteSyncBtnStates();
   }
   function wbOpenEditModal(task, prefill){
     _wbEditTarget = 'task';   // R154-3c：周看板日程编辑（默认目标）
@@ -43001,7 +43799,7 @@ I'm good at running.`},
     {date:'2026-09-25', name:'中秋', emoji:'🌕', kind:'trad'},
     {date:'2026-10-01', name:'国庆节', emoji:'🇨🇳', kind:'solar'},
     {date:'2026-10-08', name:'寒露', emoji:'🌧️', kind:'term'},
-    {date:'2026-10-19', name:'重阳', emoji:'🌾', kind:'trad'},
+    {date:'2026-10-18', name:'重阳', emoji:'🌾', kind:'trad'},
     {date:'2026-10-23', name:'霜降', emoji:'❄️', kind:'term'},
     {date:'2026-11-07', name:'立冬', emoji:'🧣', kind:'term'},
     {date:'2026-11-11', name:'双十一', emoji:'🛒', kind:'solar'},
@@ -43445,7 +44243,7 @@ I'm good at running.`},
         </div>
         <div class="greet-foot">
           <button class="pbtn" id="greetImportBtn">📥 导入</button>
-          <button class="pbtn" id="greetReset" style="border-color:#e67e22;color:#e67e22">↺ 恢复默认 20 条</button>
+          <button class="pbtn" id="greetReset" style="border-color:#e67e22;color:#e67e22">↺ 恢复默认 365 条</button>
           <button class="pbtn" id="greetClose" style="background:#2f7ed8;color:#fff;border-color:#2f7ed8">💾 完成</button>
         </div>
       </div>`;
@@ -43471,7 +44269,7 @@ I'm good at running.`},
       toast('已导入 ' + lines.length + ' 条');
     };
     overlay.querySelector('#greetReset').onclick = () => {
-      window.Store.resetHomeGreets(); renderList(); renderHome(); toast('已恢复默认 20 条');
+      window.Store.resetHomeGreets(); renderList(); renderHome(); toast('已恢复默认 365 条');
     };
     overlay.querySelector('#greetList').addEventListener('click', (e)=>{
       const d = e.target.closest('[data-greet-del]');
@@ -47098,16 +47896,21 @@ I'm good at running.`},
     }
     if(xsCat === 'words'){
       // V17-1：删除朗读按键 🔊，改为点击单词/例句自动朗读
+      // R167-4：doc 导入词汇附带 音标/课次(L)/故事页(读)/英文释义/拓展，卡片一并展示
       target.innerHTML = list.map(w=>{
         const checked = S.xsIsChecked('words', w.id);
+        const chip = w.page ? ('读'+w.page) : (w.lesson ? ('L'+w.lesson) : '');
         return `<div class="xs-card ${w.source==='user'?'user-added':''} ${checked?'checked':''}" data-xs-check-card="words::${esc(w.id)}">
           <div class="xs-card-head">
             <span class="xs-card-kind">${w.source==='user'?'我的':'词汇'}</span>
+            ${chip?`<span class="xs-card-chip">${chip}</span>`:''}
             <button class="xs-card-del ${w.source==='user'?'':'hidden-in-child'}" data-xs-del="words::${esc(w.id)}" title="删除">✕</button>
           </div>
-          <div class="xs-card-en xs-tap-speak" data-xs-speak="${esc(w.en)}" data-xs-speak-zh="${esc(w.wordZh||w.zh||'')}" title="点击朗读">${esc(w.en)}</div>
+          <div class="xs-card-en xs-tap-speak" data-xs-speak="${esc(w.en)}" data-xs-speak-zh="${esc(w.wordZh||w.zh||'')}" title="点击朗读">${esc(w.en)}${w.phonetic?`<span class="xs-card-phon">/${esc(w.phonetic)}/</span>`:''}</div>
           <!-- R56-3：此处为「词汇翻译」（wordZh，兼容旧数据 zh） -->
           <div class="xs-card-zh">${esc(w.wordZh||w.zh||'')}</div>
+          ${w.defEn?`<div class="xs-card-defen">${esc(w.defEn)}</div>`:''}
+          ${w.extra?`<div class="xs-card-extra">💡 ${esc(w.extra)}</div>`:''}
           ${w.example?`<div class="xs-card-example xs-tap-speak" data-xs-speak="${esc(w.example)}" data-xs-speak-zh="${esc(w.exampleZh||'')}" title="点击朗读例句">${esc(w.example)}${w.exampleZh?`<span class="xs-card-example-zh">${esc(w.exampleZh)}</span>`:''}</div>`:''}
         </div>`;
       }).join('');
@@ -51056,7 +51859,7 @@ I'm good at running.`},
         fi.click();
       };
     }
-    // R28-3：家长模式编辑首页问候语知识库（20 条，每日轮换 1 条）
+    // R28-3：家长模式编辑首页问候语知识库（R167-1 起 365 条，每日轮换 1 条）
     if($('#btnGreetEdit')){ $('#btnGreetEdit').onclick = () => { openGreetEditor(); }; }
     // R104：首页学段文字编辑（✎ 带 hidden-in-child，普通用户模式不可见；此处再作 click 层的家长态兜底）
     if($('#btnGradeEdit') && !$('#btnGradeEdit')._gradeBound){
