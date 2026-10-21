@@ -1361,7 +1361,7 @@ button[hidden]{display:none!important}
 /* ========== 提示 ========== */
 .toast{position:fixed;top:80px;left:50%;transform:translateX(-50%);background:rgba(44,44,52,.95);color:#fff;padding:10px 18px;border-radius:20px;font-size:14px;z-index:2000;font-weight:600}
 
-/* ========== 孩子模式隐藏家长功能 ========== */
+/* ========== 学生模式隐藏家长功能 ========== */
 body.child-mode .hidden-in-child{display:none!important}
 
 
@@ -5503,7 +5503,7 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .page[data-page="settings"] .page-title{--title-bg-image:var(--title-bg-settings)}
 
 /* ================= R115：设置中心模式选择按键移到主题卡下方 =================
-   需求：模式选择按键（孩子/家长，#modeSegSettings）从主题卡「上方」移到「下方」。
+   需求：模式选择按键（学生/家长，#modeSegSettings）从主题卡「上方」移到「下方」。
    DOM 顺序（index.html）：.page-title.settings-title-card → .settings-mode-topbar → .page-content。
    ① ID / 交互 / seg 自身样式一律不变（.settings-mode-seg-mini 系列规则沿用）；
    ② 本块仅覆盖 R113 的 topbar 间距与主题卡下边距：
@@ -5571,9 +5571,10 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   overflow:visible;
   /* R136-1：备忘「标签卡」统一玻璃白度 —— 备忘墙卡片与备忘录管理页面行卡引用同一变量，
      两处透明度严格一致；管理面板的可调「透明」值也以此为基准（见 app.js renderNickMemoView）。
-     R166-1：磨砂模糊 9px → 5px（保留轻微磨砂质感，底层城市背景图更清晰透出）。 */
+     R166-1：磨砂模糊 9px → 5px（保留轻微磨砂质感，底层城市背景图更清晰透出）。
+     R174-2：磨砂模糊 5px → 3px（配合玻璃白度下调，背景图更清晰透出）。 */
   --mn-glass-bg:rgba(255,255,255,.30);
-  --mn-glass-blur:5px
+  --mn-glass-blur:3px
 }
 .mn-back{
   position:absolute;top:14px;left:14px;z-index:8;
@@ -6122,17 +6123,24 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .wb-ym-caret{font-size:clamp(9px,1.3vh,12px);font-weight:900;color:#fff;text-shadow:none}
 /* R162-b → 日期选择弹窗整体毛玻璃（口径与 #modalWbEdit 一致）：
    遮罩加 backdrop-filter 打底；面板降白度（.88 → .76）+ 大圆角裁切，头部改半透明玻璃条，
-   月历网格与日期格同步玻璃化，底层页面在弹窗后清晰透出。 */
+   月历网格与日期格同步玻璃化，底层页面在弹窗后清晰透出。
+   R174-3：面板白度 .84 → .30（弹窗整体透明度 30%），月份选择改弹窗内上下滑动滚轮。 */
 #modalWbDatePick{background:rgba(8,16,52,.30);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
-#modalWbDatePick .modal-box{width:min(430px,92vw);background:rgba(255,255,255,.84);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1.5px solid rgba(255,255,255,.66);box-shadow:0 18px 50px rgba(8,16,52,.45);border-radius:16px;overflow:hidden}
+#modalWbDatePick .modal-box{width:min(430px,92vw);background:rgba(255,255,255,.30);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1.5px solid rgba(255,255,255,.66);box-shadow:0 18px 50px rgba(8,16,52,.45);border-radius:16px;overflow:hidden}
 .wb-datepick-box .modal-head{margin:-18px -18px 12px;padding:12px 18px;border-radius:14px 14px 0 0;background:linear-gradient(135deg, rgba(64,150,255,.42), rgba(28,95,184,.34));backdrop-filter:blur(6px) saturate(140%);-webkit-backdrop-filter:blur(6px) saturate(140%);color:#fff;border-bottom:1px solid rgba(255,255,255,.45)}
 .wb-dp-tags{display:flex;gap:8px;flex-wrap:wrap;padding:2px 2px 10px}
 .wb-dp-tag{flex:1;min-width:64px;padding:8px 6px;font-size:13px;font-weight:800;color:var(--tone-800);background:rgba(243,248,255,.72);border:1.5px solid rgba(219,231,251,.9);border-radius:10px;cursor:pointer;transition:background .12s ease,border-color .12s ease}
 .wb-dp-tag:hover{background:#fff;border-color:#3f9bf0}
-.wb-dp-nav{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 2px 8px}
-.wb-dp-ym{font-size:15px;font-weight:900;color:var(--tone-800)}
-.wb-dp-navbtn{width:32px;height:32px;font-size:15px;font-weight:900;color:var(--tone-800);background:rgba(243,248,255,.72);border:1.5px solid rgba(219,231,251,.9);border-radius:999px;cursor:pointer}
-.wb-dp-navbtn:hover{background:#fff;border-color:#3f9bf0}
+/* R174-3：月份选择改为弹窗内「上下滑动选择」滚轮（▲▼ 微调 / 点行直选 / 停止滑动吸附取居中行） */
+.wb-dp-mwheel{display:flex;align-items:stretch;gap:8px;padding:0 2px 8px}
+.wb-dp-mnav{width:34px;border:1.5px solid rgba(219,231,251,.9);border-radius:10px;background:rgba(243,248,255,.72);color:var(--tone-800);font-size:14px;font-weight:900;cursor:pointer}
+.wb-dp-mnav:hover{background:#fff;border-color:#3f9bf0}
+.wb-dp-mlist{flex:1;height:clamp(120px,22vh,160px);overflow-y:auto;scroll-snap-type:y mandatory;border:1.5px solid rgba(219,231,251,.9);border-radius:12px;background:rgba(255,255,255,.42);padding:4px 0;-webkit-overflow-scrolling:touch;
+  mask-image:linear-gradient(180deg,transparent 0,#000 16%,#000 84%,transparent 100%);
+  -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 16%,#000 84%,transparent 100%)}
+.wb-dp-mrow{display:block;width:100%;height:40px;line-height:40px;border:none;background:transparent;color:var(--tone-800);font-size:15px;font-weight:700;cursor:pointer;scroll-snap-align:center}
+.wb-dp-mrow:hover{background:rgba(243,248,255,.8)}
+.wb-dp-mrow.on{background:linear-gradient(135deg,#3f9bf0,#2f7fd0);color:#fff;font-weight:900;border-radius:8px}
 /* R163-2：月历网格外框与日期格对齐月度统计蓝色调玻璃化 */
 .wb-dp-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;padding:6px;border-radius:12px;background:rgba(236,245,255,.5);border:1px solid rgba(219,231,251,.9)}
 .wb-dp-wd{text-align:center;font-size:11px;font-weight:800;color:#6f8fb5;padding:2px 0}
@@ -6709,6 +6717,100 @@ html,body{margin:0;padding:0}
   color:#fff;text-shadow:0 2px 10px rgba(4,12,40,.55)
 }
 
+/* ============================================================
+   R174：备忘输入栏 10% / 标签卡查看态仅有内容卡且更透出 / 日期弹窗 30% 与月份上下滑动滚轮 /
+         课程表编辑键学生态可见 / 档案与设置卡片首页蓝系 / 设置弹窗毛玻璃
+   （统一追加于文件末尾；历史轮次规则与断言保持不动）
+   ============================================================ */
+
+/* ---- R174-1：备忘内容输入栏透明度 10% + 主题栏/输入栏说明文字加深（仅 #modalWbEdit 作用域） ---- */
+#modalWbEdit .wb-rte-editor{background:rgba(255,255,255,.10)}
+#modalWbEdit .wb-rte-editor:empty:before{color:rgba(18,53,42,.78)}
+#modalWbEdit .wb-rte-title-field > input#wbInTitle::placeholder{color:rgba(18,53,42,.66);font-weight:600}
+#modalWbEdit .wb-rte-title-field > .wb-rte-lbl{color:#123a2c}
+
+/* ---- R174-6：成长档案 / 设置中心 各层级卡片配色与首页 .wp-card 蓝系统一 ----
+   一级区块卡（档案 4 张 + 设置 8 张）取首页主题卡同款 var(--tone-300) 底；
+   二级内嵌卡取浅蓝 var(--tone-100) 保留层次；箭头/说明文字同步加深保对比度。 */
+.page-archive .card{background:var(--tone-300);border-radius:22px;box-shadow:0 6px 18px rgba(160,200,240,.3)}
+.page-archive .card-head h3{color:var(--tone-900)}
+.page-archive .as-item,
+.page-archive .badge,
+.page-archive .cert,
+.page-archive .report-line{background:var(--tone-100);border-color:var(--tone-200)}
+.page-settings{--set-card-bg:var(--tone-300);--set-card-border:rgba(255,255,255,.55);--set-card-shadow:0 6px 18px rgba(160,200,240,.3)}
+.page-settings .settings-card:hover{border-color:#fff}
+.page-settings .settings-card-desc{color:#33507e}
+.page-settings .settings-card-arrow{color:var(--tone-700)}
+.page-settings .settings-task-section,
+.page-settings .settings-game-card{background:var(--tone-100);border-color:var(--tone-200)}
+
+/* ---- R174-7：设置中心板块弹窗统一毛玻璃（遮罩深蓝 + 面板 55% 白 frost + 蓝色渐变头 + 按键蓝调） ---- */
+#modalTaskSettings,#modalGameSettings,#modalKMSetting,#modalMusicSettings,
+#modalSyncSettings,#modalVersionSettings,#modalExportSettings,
+#modalFarmSetting,#modalParentEdit,#modalSectionBg{background:rgba(8,16,52,.42);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+#modalTaskSettings .modal-box,
+#modalGameSettings .modal-box,
+#modalKMSetting .modal-box,
+#modalMusicSettings .modal-box,
+#modalSyncSettings .modal-box,
+#modalVersionSettings .modal-box,
+#modalExportSettings .modal-box,
+#modalFarmSetting .modal-box,
+#modalParentEdit .modal-box,
+#modalSectionBg .modal-box{
+  background:rgba(255,255,255,.55);
+  backdrop-filter:blur(18px) saturate(150%);
+  -webkit-backdrop-filter:blur(18px) saturate(150%);
+  border:1.5px solid rgba(255,255,255,.66);
+  box-shadow:0 18px 50px rgba(8,16,52,.35)
+}
+#modalTaskSettings .modal-head,
+#modalGameSettings .modal-head,
+#modalKMSetting .modal-head,
+#modalMusicSettings .modal-head,
+#modalSyncSettings .modal-head,
+#modalVersionSettings .modal-head,
+#modalExportSettings .modal-head,
+#modalFarmSetting .modal-head,
+#modalParentEdit .modal-head,
+#modalSectionBg .modal-head{
+  margin:-18px -18px 12px;padding:12px 18px;border-radius:14px 14px 0 0;
+  background:linear-gradient(135deg,rgba(64,150,255,.42),rgba(28,95,184,.34));
+  backdrop-filter:blur(6px) saturate(140%);-webkit-backdrop-filter:blur(6px) saturate(140%);
+  color:#fff;text-shadow:0 1px 2px rgba(30,58,138,.35)
+}
+#modalTaskSettings .modal-head .modal-x,
+#modalGameSettings .modal-head .modal-x,
+#modalKMSetting .modal-head .modal-x,
+#modalMusicSettings .modal-head .modal-x,
+#modalSyncSettings .modal-head .modal-x,
+#modalVersionSettings .modal-head .modal-x,
+#modalExportSettings .modal-head .modal-x,
+#modalFarmSetting .modal-head .modal-x,
+#modalParentEdit .modal-head .modal-x,
+#modalSectionBg .modal-head .modal-x{background:rgba(255,255,255,.25);color:#fff}
+#modalTaskSettings .pbtn:not(.danger),
+#modalGameSettings .pbtn:not(.danger),
+#modalKMSetting .pbtn:not(.danger),
+#modalMusicSettings .pbtn:not(.danger),
+#modalSyncSettings .pbtn:not(.danger),
+#modalVersionSettings .pbtn:not(.danger),
+#modalExportSettings .pbtn:not(.danger),
+#modalFarmSetting .pbtn:not(.danger),
+#modalParentEdit .pbtn:not(.danger),
+#modalSectionBg .pbtn:not(.danger){background:rgba(255,255,255,.88);border-color:var(--tone-400);color:var(--tone-700)}
+#modalTaskSettings .pbtn:not(.danger):hover,
+#modalGameSettings .pbtn:not(.danger):hover,
+#modalKMSetting .pbtn:not(.danger):hover,
+#modalMusicSettings .pbtn:not(.danger):hover,
+#modalSyncSettings .pbtn:not(.danger):hover,
+#modalVersionSettings .pbtn:not(.danger):hover,
+#modalExportSettings .pbtn:not(.danger):hover,
+#modalFarmSetting .pbtn:not(.danger):hover,
+#modalParentEdit .pbtn:not(.danger):hover,
+#modalSectionBg .pbtn:not(.danger):hover{background:#fff;border-color:var(--tone-600);color:var(--tone-800)}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -6967,11 +7069,11 @@ html,body{margin:0;padding:0}
           <div class="settings-card-title" data-page-node-id="R118cardModeTitle">使用模式</div>
           <!-- R121-2：模式按键移至「使用模式」说明文字右侧并靠右摆放（说明文字在左，按键贴行尾） -->
           <div class="settings-card-row settings-card-row-mode" data-page-node-id="R121cardModeRow">
-          <div class="settings-card-desc" data-page-node-id="R118cardModeDesc">孩子模式 / 家长模式切换</div>
+          <div class="settings-card-desc" data-page-node-id="R118cardModeDesc">学生模式 / 家长模式切换</div>
           <div class="settings-mode-seg settings-mode-seg-mini settings-mode-seg-card" id="modeSegSettings" data-page-node-id="R85modeSeg">
             <button class="mode-opt" data-mode="child" id="modeChildSettings" data-page-node-id="R85modeChild">
               <span class="mode-ico" data-page-node-id="R85modeChildIco"><svg width="20" height="20" viewBox="0 0 24 24" style="display:inline-block;vertical-align:middle"><circle cx="12" cy="10" r="8" fill="#ffdbac"/><path d="M6,6 Q8,3 12,3 Q16,3 18,6" fill="#4a3b2a"/><circle cx="9.5" cy="10" r="1.2" fill="#333"/><circle cx="14.5" cy="10" r="1.2" fill="#333"/><path d="M10,13 Q12,15 14,13" fill="none" stroke="#333" stroke-width="1" stroke-linecap="round"/><path d="M8,18 Q12,16 16,18 L16,22 Q12,21 8,22 Z" fill="#ff8c42"/></svg></span>
-              <span class="mode-name" data-page-node-id="R85modeChildLbl">孩子</span>
+              <span class="mode-name" data-page-node-id="R85modeChildLbl">学生</span>
             </button>
             <button class="mode-opt" data-mode="parent" id="modeParentSettings" data-page-node-id="R85modeParent">
               <span class="mode-ico" data-page-node-id="R85modeParentIco"><svg width="24" height="20" viewBox="0 0 28 24" style="display:inline-block;vertical-align:middle"><g><circle cx="7" cy="8" r="4.5" fill="#ffdbac"/><path d="M3,5 Q5,2 9,2" fill="none" stroke="#4a3b2a" stroke-width="1.5"/><circle cx="5.8" cy="8" r="0.7" fill="#333"/><circle cx="8.2" cy="8" r="0.7" fill="#333"/><path d="M6.2,10 Q7,11 7.8,10" fill="none" stroke="#333" stroke-width="0.8" stroke-linecap="round"/><rect x="4" y="12" width="6" height="8" rx="2" fill="#4fa8e0"/></g><g><circle cx="20" cy="8" r="4.5" fill="#ffdbac"/><circle cx="20" cy="5" r="3.5" fill="#4a3b2a"/><circle cx="17.5" cy="4.5" r="1.8" fill="#4a3b2a"/><circle cx="22.5" cy="4.5" r="1.8" fill="#4a3b2a"/><circle cx="18.8" cy="8" r="0.7" fill="#333"/><circle cx="21.2" cy="8" r="0.7" fill="#333"/><path d="M19.2,10 Q20,11 20.8,10" fill="none" stroke="#333" stroke-width="0.8" stroke-linecap="round"/><path d="M16,12 L24,12 L22,22 L18,22 Z" fill="#ff7fae"/></g></svg></span>
@@ -7136,7 +7238,7 @@ html,body{margin:0;padding:0}
       <div class="ct-head-row" data-page-node-id="R156ctHeadRow">
         <button class="nw-back" id="btnCourseTableClose" title="关闭" data-page-node-id="R149btnCourseTableClose">← 返回首页</button>
         <!-- R161-2：【设置】改为【编辑】—— 点击进入/退出编辑状态；仅编辑状态下所有方格可修改（JS 依 _schedEditMode 门控） -->
-        <button type="button" class="nw-sched-gear hidden-in-child" id="btnCourseTableGear" title="进入编辑状态后可修改所有方格" data-page-node-id="R149btnCourseTableGear">✏️ 编辑</button>
+        <button type="button" class="nw-sched-gear" id="btnCourseTableGear" title="进入编辑状态后可修改所有方格" data-page-node-id="R149btnCourseTableGear">✏️ 编辑</button>
       </div>
       <div class="nw-sub-body" id="courseTableMount" data-page-node-id="R149courseTableMount"></div>
     </div>
@@ -41943,7 +42045,7 @@ I'm good at running.`},
   };
   // R163-5：备忘录底层一级标签卡（第一行 3 张正方形同步卡）透明度固定为 80%（= opacity 0.2，更通透）。
   // R166-1：再度下调（0.2 → 0.14），配合玻璃白度/模糊同步减弱，底层城市背景图更清晰透出。
-  const MN_PRIMARY_ALPHA = 0.14;
+  const MN_PRIMARY_ALPHA = 0.10;
   // 卡位引导圆点配色（长标签卡沿用，与 .wb-tagcards nth-child 染色层同色系；正方形卡改由整卡着色，不再用圆点）
   function mnDotOf(s){ return MN_TINTS[(s + 1) % MN_TINTS.length]; }
   // 管理面板「透明」滑杆区间 0.2~1；R136-1：把该值换算成与管理页面行卡同一套玻璃白度
@@ -41951,7 +42053,7 @@ I'm good at running.`},
   // R160-5：0.04/0.12 → 0.02/0.07（背景图更透）；R161-8：再度适度下调至 0.015/0.05，
   // 配合染色层/高光减淡与模糊提升，底层陆家嘴天际线更清晰透出且文字仍可读。
   // R166-1：继续下调至 0.008/0.03（卡片近乎纯透），底层城市背景图清晰可见。
-  const MN_GLASS_MIN = 0.10, MN_GLASS_MAX = 0.10, MN_OP_MIN = 0.2;
+  const MN_GLASS_MIN = 0.06, MN_GLASS_MAX = 0.06, MN_OP_MIN = 0.2;
   function mnGlassAlpha(m){
     const raw = (m && m.opacity!==undefined && m.opacity!==null && m.opacity!=='') ? (+m.opacity) : 1;
     let op = raw; if(isNaN(op) || op < MN_OP_MIN) op = MN_OP_MIN; if(op > 1) op = 1;
@@ -42112,6 +42214,9 @@ I'm good at running.`},
       // R166-3：卡位内容判定（item/note/noteHtml 有任一即算有内容）—— 删除后原位保留的空占位行
       // 也按空卡渲染（无工具键、占位文案、点击唤起新增弹窗），保证 5 张卡位置稳定不串位。
       const hasContent = !!(m && (m.item || m.note || m.noteHtml));
+      // R174-2：非编辑态仅显示有备忘内容的标签卡（空卡位不占位）；编辑态 5 张全部显示，
+      // 位置稳定占位行照常可点选新增 —— data-mn-slot 仍指向真实卡位，编辑/删除/预览不错位。
+      if(!_wbEditMode && !hasContent) continue;
       // R166-4：段间距（编辑页工具栏「段间距」三档）随卡片持久化，卡片正文与编辑页同规则展示
       const ps = (m && m.paraSpacing) ? String(m.paraSpacing) : '1';
       const parts = [];
@@ -43196,25 +43301,14 @@ I'm good at running.`},
     wbRenderDatePick();
     showModal('#modalWbDatePick');
   }
-  function wbRenderDatePick(){
-    const body = document.getElementById('wbDatePickBody');
-    if(!body) return;
+  // R174-3：日期网格 HTML（周标题 + 42 格）—— 整窗渲染与月份切换共用，避免重建滚轮丢失滑动位置
+  function wbDpGridHTML(){
     const a = _wbDpYM.split('-'); const y = +a[0], m = +a[1];
     const first = new Date(y, m-1, 1); const startOff = (first.getDay() + 6) % 7;
     const p2 = n => (n<10?'0':'')+n;
     const todayIso = nbTodayISO();
     const curIso = (_wbView === 'week') ? wbDateOf(_wbMonday, 0) : (_wbView === 'month' ? (_wbMonthDay || todayIso) : (_nbDate || todayIso));
-    let html = '<div class="wb-dp-tags">'
-      + '<button type="button" class="wb-dp-tag" data-dp-quick="today">今天</button>'
-      + '<button type="button" class="wb-dp-tag" data-dp-quick="yesterday">昨天</button>'
-      + '<button type="button" class="wb-dp-tag" data-dp-quick="tomorrow">明天</button>'
-      + '</div>'
-      + '<div class="wb-dp-nav">'
-      + '<button type="button" class="wb-dp-navbtn" data-dp-nav="-1" title="上一月">←</button>'
-      + '<span class="wb-dp-ym">'+wbFmtMonth(_wbDpYM)+'</span>'
-      + '<button type="button" class="wb-dp-navbtn" data-dp-nav="1" title="下一月">→</button>'
-      + '</div>'
-      + '<div class="wb-dp-grid">';
+    let html = '';
     WB_WD.forEach(function(w){ html += '<div class="wb-dp-wd">周'+w+'</div>'; });
     for(let i=0;i<42;i++){
       const day = i - startOff + 1;
@@ -43231,27 +43325,99 @@ I'm good at running.`},
         + '<span class="wb-dp-dots">'+dots+'</span>'
         + '</button>';
     }
-    html += '</div>';
+    return html;
+  }
+  // R174-3：绑定日期网格点击（整窗渲染 / 网格局部刷新共用）
+  function wbDpBindCells(root){
+    (root || document).querySelectorAll('.wb-dp-cell[data-dp-date]').forEach(function(b){
+      b.addEventListener('click', function(){ wbDatePickGo(b.getAttribute('data-dp-date')); });
+    });
+  }
+  // R174-3：把选中月份行滚到滚轮容器中心（jsdom 无布局引擎时各偏移为 0，无副作用）
+  function wbDpScrollToYM(mlist, ym){
+    const row = mlist.querySelector('.wb-dp-mrow[data-dp-ym="'+ym+'"]');
+    if(!row) return;
+    try{ mlist.scrollTop = Math.max(0, row.offsetTop - (mlist.clientHeight - row.offsetHeight)/2); }catch(e){}
+  }
+  // R174-3：切换展示月份 —— 更新行高亮 + 局部重绘日期网格（不重建滚轮，保持滑动位置）
+  function wbDpApplyYM(ym, scrollIt){
+    if(!ym) return;
+    _wbDpYM = ym;
+    const mlist = document.getElementById('wbDpMList');
+    if(mlist){
+      mlist.querySelectorAll('.wb-dp-mrow').forEach(function(r){ r.classList.toggle('on', r.getAttribute('data-dp-ym') === ym); });
+      if(scrollIt) wbDpScrollToYM(mlist, ym);
+    }
+    const grid = document.getElementById('wbDpGrid');
+    if(grid){ grid.innerHTML = wbDpGridHTML(); wbDpBindCells(grid); }
+  }
+  // R161-g→R174-3：左上角日期弹窗标签选择模式 —— 快捷标签（今天/昨天/明天）+ 月份上下滑动滚轮 + 月历网格
+  function wbRenderDatePick(){
+    const body = document.getElementById('wbDatePickBody');
+    if(!body) return;
+    const p2 = n => (n<10?'0':'')+n;
+    // R174-3：月份选择改为弹窗内「上下滑动选择」滚轮（点行直选 / ▲▼ 微调一月 / 停止滑动吸附取居中行），替换原 ←→ 翻月条
+    const y0 = new Date().getFullYear();
+    let mrows = '';
+    for(let yy=y0-2; yy<=y0+6; yy++){
+      for(let mm=1; mm<=12; mm++){
+        const ym = yy+'-'+p2(mm);
+        mrows += '<button type="button" class="wb-dp-mrow'+(ym===_wbDpYM?' on':'')+'" data-dp-ym="'+ym+'">'+wbFmtMonth(ym)+'</button>';
+      }
+    }
+    let html = '<div class="wb-dp-tags">'
+      + '<button type="button" class="wb-dp-tag" data-dp-quick="today">今天</button>'
+      + '<button type="button" class="wb-dp-tag" data-dp-quick="yesterday">昨天</button>'
+      + '<button type="button" class="wb-dp-tag" data-dp-quick="tomorrow">明天</button>'
+      + '</div>'
+      + '<div class="wb-dp-mwheel">'
+      + '<button type="button" class="wb-dp-mnav" data-dp-mnav="-1" title="上一月">▲</button>'
+      + '<div class="wb-dp-mlist" id="wbDpMList">'+mrows+'</div>'
+      + '<button type="button" class="wb-dp-mnav" data-dp-mnav="1" title="下一月">▼</button>'
+      + '</div>'
+      + '<div class="wb-dp-grid" id="wbDpGrid">'+wbDpGridHTML()+'</div>';
     body.innerHTML = html;
     // 快捷标签：今天 / 昨天 / 明天
     body.querySelectorAll('.wb-dp-tag').forEach(function(b){
       b.addEventListener('click', function(){
         const q = b.getAttribute('data-dp-quick');
+        const todayIso = nbTodayISO();
         const iso = (q === 'yesterday') ? nbShiftISO(todayIso, -1) : (q === 'tomorrow' ? nbShiftISO(todayIso, 1) : todayIso);
         wbDatePickGo(iso);
       });
     });
-    // 月历翻月
-    body.querySelectorAll('.wb-dp-navbtn').forEach(function(b){
+    // 月份滚轮：▲▼ 微调一月 / 点行直选
+    body.querySelectorAll('.wb-dp-mnav').forEach(function(b){
       b.addEventListener('click', function(){
-        _wbDpYM = wbShiftMonth(_wbDpYM, parseInt(b.getAttribute('data-dp-nav'), 10) || 0);
-        wbRenderDatePick();
+        wbDpApplyYM(wbShiftMonth(_wbDpYM, parseInt(b.getAttribute('data-dp-mnav'), 10) || 0), true);
       });
     });
-    // 点选日期 → 按当前版块跳转（今天=当日；周=所在周；月=该月）
-    body.querySelectorAll('.wb-dp-cell[data-dp-date]').forEach(function(b){
-      b.addEventListener('click', function(){ wbDatePickGo(b.getAttribute('data-dp-date')); });
+    body.querySelectorAll('.wb-dp-mrow').forEach(function(b){
+      b.addEventListener('click', function(){ wbDpApplyYM(b.getAttribute('data-dp-ym'), true); });
     });
+    // 月份滚轮：滑动吸附（停止滚动 140ms 后取最接近容器中心的月份行）
+    const mlist = document.getElementById('wbDpMList');
+    if(mlist){
+      let _dpScrollT = 0;
+      mlist.addEventListener('scroll', function(){
+        clearTimeout(_dpScrollT);
+        _dpScrollT = setTimeout(function(){
+          const rows = mlist.querySelectorAll('.wb-dp-mrow');
+          if(!rows.length) return;
+          const mid = mlist.scrollTop + mlist.clientHeight/2;
+          let best = null, bestD = 1e9;
+          rows.forEach(function(r){
+            const c = r.offsetTop + r.offsetHeight/2;
+            const d = Math.abs(c - mid);
+            if(d < bestD){ bestD = d; best = r; }
+          });
+          if(best){ const ym = best.getAttribute('data-dp-ym'); if(ym && ym !== _wbDpYM) wbDpApplyYM(ym, false); }
+        }, 140);
+      });
+      wbDpScrollToYM(mlist, _wbDpYM);
+    }
+    // 点选日期 → 按当前版块跳转（今天=当日；周=所在周；月=该月）
+    wbDpBindCells(body);
   }
   function wbDatePickGo(iso){
     if(!iso) return;
@@ -50871,7 +51037,7 @@ I'm good at running.`},
     if(childBtn) childBtn.classList.toggle('active', mode==='child');
     if(parentBtn) parentBtn.classList.toggle('active', mode==='parent');
     if(tip) tip.textContent = mode==='child'
-      ? '孩子模式下隐藏所有编辑/补签/导出等家长功能'
+      ? '学生模式下隐藏所有编辑/补签/导出等家长功能'
       : '家长模式：可执行任务编辑、补签、数据导入导出等管理操作';
     document.body.classList.toggle('child-mode', mode==='child');
   }
@@ -51934,7 +52100,7 @@ I'm good at running.`},
           const st=S.load(); st.profile.mode = child?'child':'parent'; S.save(st);
           setModeUI(child?'child':'parent');
           renderHome(); renderToday(); renderMath(); renderArchive(); renderXueersi();
-          toast(child?'已切换为孩子模式（编辑/导出/管理隐藏）':'已切换为家长模式');
+          toast(child?'已切换为学生模式（编辑/导出/管理隐藏）':'已切换为家长模式');
         };
       });
     }
@@ -51948,7 +52114,7 @@ I'm good at running.`},
     }
 
     // R85：设置中心 —— 7 张卡片点击路由
-    // R150-7：除「使用模式」外，其余所有设置项仅在家长模式下开放编辑（孩子模式点击拦截）
+    // R150-7：除「使用模式」外，其余所有设置项仅在家长模式下开放编辑（学生模式点击拦截）
     const bindCard = (id, fn)=>{ const el = document.getElementById(id); if(el && !el._bound){ el._bound = true; el.onclick = fn; } };
     const parentOnly = (fn)=> ()=>{ if(isChild()){ toast('该设置仅家长模式可编辑'); return; } fn(); };
     bindCard('cardTaskSettings', parentOnly(openSettingsTask));
