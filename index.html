@@ -6105,16 +6105,12 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 /* R164-5：可选颜色由 8 色扩充到 20 色（RGB 与 app.js MN_PRIMARY_COLORS 严格一致） */
 .nb-e-c-gray{background:rgba(200,210,225,.95)}
 .nb-e-c-navy{background:rgba(78,104,176,.9)}
-.nb-e-c-mint{background:rgba(108,198,152,.9)}
-.nb-e-c-lemon{background:rgba(240,216,110,.95)}
 .nb-e-c-coral{background:rgba(244,148,132,.9)}
-.nb-e-c-violet{background:rgba(176,142,224,.9)}
 .nb-e-c-amber{background:rgba(232,172,78,.92)}
 .nb-e-c-cyan{background:rgba(82,196,214,.9)}
 .nb-e-c-rose{background:rgba(234,152,184,.9)}
 .nb-e-c-lime{background:rgba(170,202,96,.9)}
 .nb-e-c-cocoa{background:rgba(182,150,120,.9)}
-.nb-e-c-sky{background:rgba(132,186,242,.9)}
 /* R161-5：周板块紧凑卡片 —— 仅展示主题；毛玻璃底 + 圆角，窄列内文字换行不溢出 */
 .wb-task.wb-task-compact{overflow:hidden;background:rgba(255,255,255,.5);backdrop-filter:blur(6px) saturate(140%);-webkit-backdrop-filter:blur(6px) saturate(140%);border:1px solid rgba(255,255,255,.66);min-height:clamp(30px,4.2vh,40px)}
 .wb-task.wb-task-compact .wb-task-main{padding:2px 4px}
@@ -6129,7 +6125,7 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 /* R162-b → 日期选择弹窗整体毛玻璃（口径与 #modalWbEdit 一致）：
    遮罩加 backdrop-filter 打底；面板降白度（.88 → .76）+ 大圆角裁切，头部改半透明玻璃条，
    月历网格与日期格同步玻璃化，底层页面在弹窗后清晰透出。 */
-#modalWbDatePick{background:rgba(8,16,52,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+#modalWbDatePick{background:rgba(8,16,52,.80);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 #modalWbDatePick .modal-box{width:min(430px,92vw);background:rgba(255,255,255,.84);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1.5px solid rgba(255,255,255,.66);box-shadow:0 18px 50px rgba(8,16,52,.45);border-radius:16px;overflow:hidden}
 .wb-datepick-box .modal-head{margin:-18px -18px 12px;padding:12px 18px;border-radius:14px 14px 0 0;background:linear-gradient(135deg, rgba(64,150,255,.42), rgba(28,95,184,.34));backdrop-filter:blur(6px) saturate(140%);-webkit-backdrop-filter:blur(6px) saturate(140%);color:#fff;border-bottom:1px solid rgba(255,255,255,.45)}
 .wb-dp-tags{display:flex;gap:8px;flex-wrap:wrap;padding:2px 2px 10px}
@@ -6680,6 +6676,34 @@ html,body{margin:0;padding:0}
 .settings-task-list .task-act-disabled:hover{background:#fff;color:var(--orange)}
 .settings-task-list .task-act-disabled.pbtn.danger:hover{background:#fff;color:var(--danger)}
 
+/* ================= R171：备忘录顶部工具条（返回/日期/编辑同行）+ 副标题放大 + 日期弹窗透明度 ================= */
+/* ① 顶部工具条：返回首页 → 日期 → 编辑 三键同行 */
+.mn-topbar{position:absolute;top:14px;left:14px;right:14px;z-index:9;display:flex;align-items:center;gap:10px}
+.mn-topbar .mn-back{position:static;top:auto;left:auto;z-index:auto}
+.mn-topbar .wb-ym-btn,
+.mn-topbar .wb-edit-btn{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:13px;font-weight:800;color:#16306b;white-space:nowrap;
+  background:rgba(255,255,255,.88);border:1.5px solid var(--tone-200);border-radius:999px;
+  padding:8px 14px;cursor:pointer;box-shadow:0 2px 8px rgba(3,18,52,.25);
+  transition:background .12s ease,transform .12s ease
+}
+.mn-topbar .wb-ym-btn:hover,
+.mn-topbar .wb-edit-btn:hover{background:#fff;transform:translateY(-1px)}
+.mn-topbar .wb-ym-btn:active,
+.mn-topbar .wb-edit-btn:active{transform:scale(.97)}
+.mn-topbar .wb-ym{color:#16306b;font-size:13px;font-weight:900;white-space:nowrap;text-shadow:none}
+.mn-topbar .wb-ym-caret{font-size:10px;font-weight:900;color:#16306b}
+/* 编辑态激活：绿色高亮（覆盖通用 .wb-edit-btn.active 旧色，保持_topbar 内可读） */
+.mn-topbar .wb-edit-btn.active{background:rgba(63,191,127,.92);border-color:rgba(255,255,255,.85);box-shadow:0 2px 10px rgba(20,90,60,.4);color:#fff}
+/* ② 副标题「把今天，安排的清清楚楚」：置于背景图标题下方、放大字号并加阴影 */
+.mn-stage .wb-intro{
+  position:absolute;top:clamp(54px,9.5vh,96px);left:50%;transform:translateX(-50%);z-index:5;
+  flex:none;padding:0 .4em;border-bottom:none;
+  font-size:clamp(15px,2.7vh,24px);font-weight:800;letter-spacing:.06em;text-align:center;white-space:nowrap;
+  color:#fff;text-shadow:0 2px 10px rgba(4,12,40,.55)
+}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -6906,10 +6930,17 @@ html,body{margin:0;padding:0}
 
   <!-- ================= R134：Nick 的备忘录（陆家嘴天际线背景 + 发光标题 + 7 张彩虹磨砂玻璃便签卡） ================= -->
   <section class="page page-memonick" data-page="memonick" hidden data-page-node-id="R118pageMemoNick">
-    <button class="mn-back" id="btnMemoNickBack" title="返回首页" data-page-node-id="R118memoNickBack">← 返回首页</button>
+    <!-- R171-1/3/4：顶部工具条三键同行 —— 返回首页 → 日期选择 → 编辑（日期签 #wbYmBtn 与编辑键 #wbBtnEditMode 由 JS 注入状态/文案，节点静态化提前至页面层） -->
+    <div class="mn-topbar" data-page-node-id="R171topbar">
+      <button class="mn-back" id="btnMemoNickBack" title="返回首页" data-page-node-id="R118memoNickBack">← 返回首页</button>
+      <button class="wb-ym wb-ym-btn" id="wbYmBtn" type="button" title="点击选择日期"><span class="wb-ym" id="wbYm"></span><span class="wb-ym-caret">▾</span></button>
+      <button class="wb-view-btn wb-edit-btn" id="wbBtnEditMode" type="button" title="进入编辑状态后才可新增 / 编辑备忘">编辑</button>
+    </div>
     <div class="mn-stage" data-page-node-id="R118memoStage">
       <!-- ① 顶部居中标题：浅白色立体发光字体，避开东方明珠等主体建筑 -->
       <h2 class="mn-title" data-page-node-id="R134memoTitle">Nick的备忘录</h2>
+      <!-- R171-2：副标题「把今天，安排的清清楚楚」改为页面级静态节点，置于背景图标题下方、放大字号并加阴影 -->
+      <div class="wb-intro" id="wbIntro" data-page-node-id="R171wbIntro">把今天，安排的清清楚楚。</div>
       <!-- R155-3⑥：页面级「编辑/保存」键已移除，编辑/保存统一由单张备忘卡右上角编辑键承担（见 .mn-tool-edit） -->
       <!-- ② 标题下方整片区域：5 张半透明磨砂玻璃便签卡平铺（卡内右上角含编辑/删除键） -->
       <div class="mn-notes" id="nickMemoList" data-page-node-id="R118memoList"></div>
@@ -7738,28 +7769,24 @@ html,body{margin:0;padding:0}
       <div class="wb-rte-meta" data-page-node-id="R141wbMeta">
         <!-- R165-2：日期下方颜色选择项增加标题标注 -->
         <span class="wb-rte-lbl wb-rte-meta-lbl">卡片颜色</span>
+        <!-- R171-5：可选颜色由 20 色精简为 16 色（移除与邻近色过近的 mint/lemon/violet/sky），并按「暖↔冷交替」排列使相邻位置色相差明显 -->
         <div class="nb-e-colors" id="wbColors" data-page-node-id="R141wbColors">
-          <button type="button" class="nb-e-c-blue" data-wb-color="blue" title="蓝色"></button>
-          <button type="button" class="nb-e-c-green" data-wb-color="green" title="绿色"></button>
-          <button type="button" class="nb-e-c-yellow" data-wb-color="yellow" title="浅黄色"></button>
           <button type="button" class="nb-e-c-red" data-wb-color="red" title="红色"></button>
-          <button type="button" class="nb-e-c-purple" data-wb-color="purple" title="紫色"></button>
+          <button type="button" class="nb-e-c-blue" data-wb-color="blue" title="蓝色"></button>
           <button type="button" class="nb-e-c-orange" data-wb-color="orange" title="橙色"></button>
-          <button type="button" class="nb-e-c-teal" data-wb-color="teal" title="青色"></button>
-          <button type="button" class="nb-e-c-pink" data-wb-color="pink" title="粉色"></button>
-          <!-- R164-5：可选颜色由 8 色扩充到 20 色 -->
-          <button type="button" class="nb-e-c-gray" data-wb-color="gray" title="灰色"></button>
           <button type="button" class="nb-e-c-navy" data-wb-color="navy" title="深蓝"></button>
-          <button type="button" class="nb-e-c-mint" data-wb-color="mint" title="薄荷绿"></button>
-          <button type="button" class="nb-e-c-lemon" data-wb-color="lemon" title="柠檬黄"></button>
-          <button type="button" class="nb-e-c-coral" data-wb-color="coral" title="珊瑚色"></button>
-          <button type="button" class="nb-e-c-violet" data-wb-color="violet" title="紫罗兰"></button>
           <button type="button" class="nb-e-c-amber" data-wb-color="amber" title="琥珀色"></button>
+          <button type="button" class="nb-e-c-purple" data-wb-color="purple" title="紫色"></button>
+          <button type="button" class="nb-e-c-yellow" data-wb-color="yellow" title="浅黄色"></button>
           <button type="button" class="nb-e-c-cyan" data-wb-color="cyan" title="青蓝"></button>
-          <button type="button" class="nb-e-c-rose" data-wb-color="rose" title="玫红"></button>
           <button type="button" class="nb-e-c-lime" data-wb-color="lime" title="青柠"></button>
+          <button type="button" class="nb-e-c-teal" data-wb-color="teal" title="青色"></button>
+          <button type="button" class="nb-e-c-coral" data-wb-color="coral" title="珊瑚色"></button>
+          <button type="button" class="nb-e-c-green" data-wb-color="green" title="绿色"></button>
+          <button type="button" class="nb-e-c-pink" data-wb-color="pink" title="粉色"></button>
+          <button type="button" class="nb-e-c-gray" data-wb-color="gray" title="灰色"></button>
+          <button type="button" class="nb-e-c-rose" data-wb-color="rose" title="玫红"></button>
           <button type="button" class="nb-e-c-cocoa" data-wb-color="cocoa" title="可可色"></button>
-          <button type="button" class="nb-e-c-sky" data-wb-color="sky" title="天蓝"></button>
         </div>
       </div>
       <div class="wb-rte-toolbar" id="wbRteToolbar" data-page-node-id="R141wbRteToolbar">
@@ -41901,14 +41928,13 @@ I'm good at running.`},
   // R145：便签卡同色圆圈取色 —— 与 styles.css 彩虹染色层（.mn-note-card:nth-child ::before）严格同色，
   // R148：索引 = 卡位 - 1（周看板大卡占第 1 位，备忘卡从第 2 位起：橙/黄/绿/青/蓝），卡内循环变量 i 从 0 起
   const MN_TINTS = ['rgba(255,86,86,.92)','rgba(255,152,58,.92)','rgba(255,213,64,.92)','rgba(72,214,128,.92)','rgba(34,211,238,.92)','rgba(79,140,255,.92)','rgba(167,139,250,.92)'];
-  // R163-4 → R164-5：标签卡按任务自身颜色（t.color）着色，实现卡片颜色各异；可选颜色由 8 色扩充到 20 色
+  // R163-4 → R164-5：标签卡按任务自身颜色（t.color）着色，实现卡片颜色各异；可选颜色由 8 色扩充到 16 色
   // （与编辑弹窗 #wbColors 色板一一对应）。颜色取值与 .nb-e-c-* 色板背景 RGB 严格一致。
   const MN_PRIMARY_COLORS = {
-    blue:'88,148,238', green:'84,178,128', yellow:'238,204,112', red:'230,122,118',
-    purple:'150,120,235', orange:'242,160,74', teal:'60,180,180', pink:'238,130,170',
-    gray:'200,210,225', navy:'78,104,176', mint:'108,198,152', lemon:'240,216,110',
-    coral:'244,148,132', violet:'176,142,224', amber:'232,172,78', cyan:'82,196,214',
-    rose:'234,152,184', lime:'170,202,96', cocoa:'182,150,120', sky:'132,186,242'
+    red:'230,122,118', blue:'88,148,238', orange:'242,160,74', navy:'78,104,176',
+    amber:'232,172,78', purple:'150,120,235', yellow:'238,204,112', cyan:'82,196,214',
+    lime:'170,202,96', teal:'60,180,180', coral:'244,148,132', green:'84,178,128',
+    pink:'238,130,170', gray:'200,210,225', rose:'234,152,184', cocoa:'182,150,120'
   };
   // R163-5：备忘录底层一级标签卡（第一行 3 张正方形同步卡）透明度固定为 80%（= opacity 0.2，更通透）。
   // R166-1：再度下调（0.2 → 0.14），配合玻璃白度/模糊同步减弱，底层城市背景图更清晰透出。
@@ -42322,24 +42348,7 @@ I'm good at running.`},
   function weekBoardCardHTML(){
     // R148：删除背景图与内容卡中间的毛玻璃卡（原 .wb-win）—— 头部 / 副标题 / 备忘内容区
     // 直接铺在周看板半透明绿底上，中间不再夹一层玻璃面板，天际线背景更透。
-    return '<div class="mn-note-card mn-weekboard" data-page-node-id="R141weekBoard">'
-      + '<div class="wb-win-head">'
-      + '<div class="wb-nav-left">'
-      // R162-a：删除日期两侧 ←/→ 箭头按键（原 #wbBtnPrev / #wbBtnNext）—— 日期切换统一由左上角日期签
-      // 唤起的日期弹窗 #modalWbDatePick 承担，头部只保留日期签本身。
-      // R161-g：左上角日期改为弹窗标签选择模式（点击年月/日期签 → 弹出日期选择弹窗 #modalWbDatePick）
-      + '<button class="wb-ym wb-ym-btn" id="wbYmBtn" type="button" title="点击选择日期"><span class="wb-ym" id="wbYm"></span><span class="wb-ym-caret">▾</span></button>'
-      + '</div>'
-      + '<div class="wb-nav-right">'
-      // R164-1：删除【今天 / 周 / 月】三个视图切换键 —— 周/月板块整体移除，今天成为唯一视图，无需切换；
-      // 头部右侧仅保留【编辑】键（进入编辑态后才可新增 / 编辑 / 删除备忘）。
-      + '<button class="wb-view-btn wb-edit-btn" id="wbBtnEditMode" type="button" title="进入编辑状态后才可新增 / 编辑备忘">编辑</button>'
-      // R160-3：移除一级标签卡（周看板大卡）右上角「新增」按钮及其功能 —— 新增入口统一由各版块内
-      // 的「＋ 新增」键承担（如 .wb-col-add / .wb-zone-add-zone / .wb-zone-add-zone），大卡不再保留新增。
-      + '</div>'
-      + '</div>'
-      // R147：副标题文案按「今天/周/月」版块动态切换（id wbIntro，renderWbHead 依 _wbView 设文案）
-      + '<div class="wb-intro" id="wbIntro" data-page-node-id="R141wbIntro">一周忙闲，一眼看清。</div>'
+        return '<div class="mn-note-card mn-weekboard" data-page-node-id="R141weekBoard">'
       + '<div class="wb-body" id="wbBody" data-page-node-id="R141wbBody"></div>'
       + '</div>';
   }
