@@ -5568,7 +5568,7 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .page-memonick{
   position:relative;min-height:calc(100vh - 40px);min-height:calc(100dvh - 40px);
   background:linear-gradient(180deg,#9ed2f8,#cfe9ff);
-  overflow:hidden;
+  overflow:visible;
   /* R136-1：备忘「标签卡」统一玻璃白度 —— 备忘墙卡片与备忘录管理页面行卡引用同一变量，
      两处透明度严格一致；管理面板的可调「透明」值也以此为基准（见 app.js renderNickMemoView）。
      R166-1：磨砂模糊 9px → 5px（保留轻微磨砂质感，底层城市背景图更清晰透出）。 */
@@ -6287,6 +6287,13 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 #modalMemoPreview .modal-foot #btnMemoPreviewClose{min-width:160px}
 .wb-rte-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:clamp(6px,1vh,10px) clamp(8px,1.2vw,14px);background:rgba(244,248,246,.92);border-bottom:1px solid rgba(40,80,60,.16)}
 .wb-rte-sel{font-size:13px;padding:4px 6px;border-radius:8px;border:1.5px solid rgba(40,80,60,.3);background:#fff;color:#1f4d3a;cursor:pointer}
+/* R173-3：备忘录「新增标签卡」弹窗内 填写/选择区域 透明度改为 10%（仅作用于 #modalWbEdit，不影响其它编辑弹窗） */
+#modalWbEdit .wb-rte-title-field > input#wbInTitle,
+#modalWbEdit .wb-rte-date input[type=date],
+#modalWbEdit .wb-rte-date-end input[type=date],
+#modalWbEdit .wb-rte-time input[type=time],
+#modalWbEdit .wb-rte-slot,
+#modalWbEdit .wb-rte-sel{background:rgba(255,255,255,.10)}
 .wb-rte-color{width:30px;height:30px;padding:0;border:1.5px solid rgba(40,80,60,.3);border-radius:8px;background:#fff;cursor:pointer}
 .wb-rte-sep{width:1px;height:22px;background:rgba(40,80,60,.25);margin:0 2px}
 .wb-rte-btn{width:32px;height:30px;display:inline-flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;color:#1f4d3a;background:#fff;border:1.5px solid rgba(40,80,60,.3);border-radius:8px;cursor:pointer;transition:background .12s ease,transform .12s ease}
@@ -6676,7 +6683,7 @@ html,body{margin:0;padding:0}
 
 /* ================= R171：备忘录顶部工具条（返回/日期/编辑同行）+ 副标题放大 + 日期弹窗透明度 ================= */
 /* ① 顶部工具条：返回首页 → 日期 → 编辑 三键同行 */
-.mn-topbar{position:absolute;top:14px;left:14px;right:14px;z-index:9;display:flex;align-items:center;gap:10px}
+.mn-topbar{position:sticky;top:0;left:14px;right:14px;z-index:9;display:flex;align-items:center;gap:10px;padding:10px 0 6px;background:linear-gradient(180deg,rgba(255,255,255,.60),rgba(255,255,255,0));backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
 .mn-topbar .mn-back{position:static;top:auto;left:auto;z-index:auto;background:rgba(255,255,255,.50)}
 .mn-topbar .wb-ym-btn,
 .mn-topbar .wb-edit-btn{
@@ -6696,7 +6703,7 @@ html,body{margin:0;padding:0}
 .mn-topbar .wb-edit-btn.active{background:rgba(63,191,127,.92);border-color:rgba(255,255,255,.85);box-shadow:0 2px 10px rgba(20,90,60,.4);color:#fff}
 /* ② 副标题「把今天，安排的清清楚楚」：置于背景图标题下方、放大字号并加阴影 */
 .mn-stage .wb-intro{
-  position:absolute;top:clamp(54px,9.5vh,96px);left:50%;transform:translateX(-50%);z-index:5;
+  position:absolute;top:clamp(60px,9vh,84px);left:50%;transform:translateX(-50%);z-index:5;
   flex:none;padding:0 .4em;border-bottom:none;
   font-size:clamp(15px,2.7vh,24px);font-weight:800;letter-spacing:.06em;text-align:center;white-space:nowrap;
   color:#fff;text-shadow:0 2px 10px rgba(4,12,40,.55)
@@ -41944,7 +41951,7 @@ I'm good at running.`},
   // R160-5：0.04/0.12 → 0.02/0.07（背景图更透）；R161-8：再度适度下调至 0.015/0.05，
   // 配合染色层/高光减淡与模糊提升，底层陆家嘴天际线更清晰透出且文字仍可读。
   // R166-1：继续下调至 0.008/0.03（卡片近乎纯透），底层城市背景图清晰可见。
-  const MN_GLASS_MIN = 0.30, MN_GLASS_MAX = 0.30, MN_OP_MIN = 0.2;
+  const MN_GLASS_MIN = 0.10, MN_GLASS_MAX = 0.10, MN_OP_MIN = 0.2;
   function mnGlassAlpha(m){
     const raw = (m && m.opacity!==undefined && m.opacity!==null && m.opacity!=='') ? (+m.opacity) : 1;
     let op = raw; if(isNaN(op) || op < MN_OP_MIN) op = MN_OP_MIN; if(op > 1) op = 1;
