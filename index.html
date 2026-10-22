@@ -6824,6 +6824,154 @@ html,body{margin:0;padding:0}
 .wb-ym-row:hover{background:rgba(243,248,255,.8)}
 .wb-ym-row.on{background:linear-gradient(135deg,#3f9bf0,#2f7fd0);color:#fff;font-weight:900;border-radius:8px}
 
+
+/* ================= R176：推荐书籍 · 半寸书目卡 + 双页书本阅读弹窗 ================= */
+/* ① R176-1：书籍卡半寸化 —— 网格 6 列（现有 3 列的一半宽），卡片更矮、文字更紧凑 */
+.ktxs-book-grid{grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin-top:12px}
+@media (max-width:1100px){ .ktxs-book-grid{grid-template-columns:repeat(4,minmax(0,1fr))} }
+@media (max-width:640px){ .ktxs-book-grid{grid-template-columns:repeat(3,minmax(0,1fr))} }
+.ktxs-mini-card{min-height:0;padding:12px 12px 11px;gap:0}
+.ktxs-mini-card .sz-card-top{margin-bottom:6px;gap:5px}
+.ktxs-mini-card .sz-book-no{width:18px;height:18px;font-size:10.5px}
+.ktxs-mini-card .sz-daily-badge{font-size:10.5px;padding:2px 8px;letter-spacing:.2px}
+.ktxs-mini-card .sz-card-state{font-size:10px;padding:1px 7px}
+.ktxs-mini-card .sz-daily-title{font-size:13px;line-height:1.4;margin-bottom:4px}
+.ktxs-mini-card .sz-book-body{font-size:11px;line-height:1.62;max-height:54px;padding-right:2px;color:#5a6b88}
+
+/* ② R176-2：阅读弹窗覆盖除导航栏（.sidebar）以外的全部页面区域 —— 阅读态下导航栏浮于弹窗之上 */
+body.ktxs-read-open .sidebar{z-index:999999}
+.modal-book-read-mask{
+  position:fixed;inset:0;z-index:1000;
+  background:rgba(8,16,52,.62);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  display:flex;align-items:stretch;justify-content:stretch;padding:0;
+}
+.modal-book-read{
+  width:100%;height:100%;max-width:none;max-height:none;min-width:0;
+  border-radius:0;padding:0;display:flex;flex-direction:column;
+  background:linear-gradient(180deg,#e9f2fd 0%,#d9e8fa 100%);
+  border:none;box-shadow:none;overflow:hidden;
+}
+.br-head-row{
+  display:flex;align-items:center;gap:12px;flex:0 0 auto;
+  padding:10px 16px 9px;border-bottom:1.5px solid rgba(126,200,255,.42);
+  background:rgba(255,255,255,.6);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+}
+.br-head-row .nw-back{position:static;top:auto;left:auto;margin:0}
+.br-head-title{font-size:17px;font-weight:900;color:var(--tone-900);letter-spacing:.5px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.br-add-btn{margin-left:auto;flex:0 0 auto}
+.br-stage{flex:1;min-height:0;display:flex;align-items:stretch;justify-content:center;padding:12px clamp(10px,2vw,26px)}
+.br-foot-row{display:flex;align-items:center;justify-content:center;gap:14px;flex:0 0 auto;padding:8px 16px 12px}
+.br-nav-btn{
+  display:inline-flex;align-items:center;gap:6px;padding:8px 18px;min-height:40px;
+  border:1.5px solid var(--tone-300);border-radius:999px;background:rgba(255,255,255,.9);
+  color:var(--tone-800);font-size:13.5px;font-weight:800;cursor:pointer;transition:.15s;
+  box-shadow:0 2px 8px rgba(30,58,138,.14);
+}
+.br-nav-btn:hover:not(:disabled){background:#fff;border-color:var(--tone-500);transform:translateY(-1px)}
+.br-nav-btn:disabled{opacity:.4;cursor:not-allowed}
+.br-page-info{font-size:13px;font-weight:800;color:#33507e;min-width:160px;text-align:center;letter-spacing:.5px}
+
+/* ③ R176-3：双页书本（纸纹 + 书脊 + 书口层叠 + 左右内阴影） */
+.ktxs-book{
+  position:relative;display:flex;width:100%;max-width:1240px;min-width:0;
+  border-radius:16px;
+  background:linear-gradient(90deg,#f2e9d6 0%,#fbf7ec 46%,#fbf7ec 54%,#f2e9d6 100%);
+  box-shadow:0 22px 60px rgba(8,16,52,.42),0 0 0 1px rgba(122,94,52,.16);
+  transition:transform .18s ease,opacity .18s ease;
+  overflow:hidden;
+}
+.ktxs-book.ktxs-dragging{transition:none}
+.ktxs-spine{
+  position:absolute;left:50%;top:0;bottom:0;width:32px;transform:translateX(-50%);
+  background:linear-gradient(90deg,rgba(122,94,52,0) 0%,rgba(122,94,52,.09) 30%,rgba(122,94,52,.26) 50%,rgba(122,94,52,.09) 70%,rgba(122,94,52,0) 100%);
+  pointer-events:none;z-index:6;
+}
+.ktxs-book-edge{
+  position:absolute;top:8px;bottom:8px;right:0;width:10px;border-radius:0 8px 8px 0;
+  background:repeating-linear-gradient(180deg,#f7efdd 0 2px,#e4d6b8 2px 4px);
+  box-shadow:inset -2px 0 3px rgba(122,94,52,.28);z-index:2;pointer-events:none;
+}
+.ktxs-page{
+  flex:1 1 0;min-width:0;display:flex;flex-direction:column;
+  padding:clamp(16px,3vh,32px) clamp(18px,2.4vw,38px);
+  overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;
+  font-family:"KaiTi","STKaiti","Kaiti SC","Songti SC","STSong",serif;
+}
+.ktxs-page-l{border-radius:16px 0 0 16px;box-shadow:inset -16px 0 20px -18px rgba(122,94,52,.55)}
+.ktxs-page-r{border-radius:0 16px 16px 0;box-shadow:inset 16px 0 20px -18px rgba(122,94,52,.55)}
+.ktxs-page-blank{flex:1;display:flex;align-items:center;justify-content:center;color:rgba(122,94,52,.32);font-size:42px;letter-spacing:8px}
+.ktxs-page::-webkit-scrollbar{width:5px}
+.ktxs-page::-webkit-scrollbar-thumb{background:rgba(122,94,52,.28);border-radius:3px}
+
+/* 正文页 */
+.ktxs-pg-scroll{flex:1;min-height:0;overflow-y:auto;padding-right:4px}
+.ktxs-pg-title{font-size:clamp(18px,2.6vh,23px);font-weight:900;color:#4a3618;text-align:center;margin:4px 0 14px;letter-spacing:1px;font-family:"Songti SC","STSong","SimSun",serif}
+.ktxs-pg-title.ktxs-pg-cont{color:#8a6a3a;font-size:clamp(15px,2.1vh,18px)}
+.ktxs-pg-txt{font-size:clamp(15px,2vh,18.5px);line-height:2.08;color:#3c2f1c;white-space:pre-wrap;word-break:break-word}
+
+/* 目录页 */
+.ktxs-toc{flex:1;display:flex;flex-direction:column;min-height:0}
+.ktxs-toc-h{font-size:clamp(20px,3vh,26px);font-weight:900;color:#4a3618;text-align:center;letter-spacing:5px;margin:4px 0 12px;font-family:"Songti SC","STSong","SimSun",serif}
+.ktxs-toc-list{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column}
+.ktxs-toc-item{
+  display:flex;align-items:center;gap:9px;width:100%;text-align:left;
+  background:none;border:none;border-bottom:1px dashed rgba(122,94,52,.3);
+  padding:8px 4px;cursor:pointer;font-family:inherit;color:#3c2f1c;transition:background .14s;
+}
+.ktxs-toc-item:hover{background:rgba(122,94,52,.07)}
+.ktxs-toc-item:last-child{border-bottom:none}
+.ktxs-toc-no{
+  flex:0 0 auto;width:25px;height:25px;border-radius:50%;
+  background:linear-gradient(135deg,#8a6a3a,#6b4e26);color:#fff;
+  font-size:12.5px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;
+}
+.ktxs-toc-t{font-size:clamp(14px,1.9vh,16.5px);font-weight:700;line-height:1.5}
+.ktxs-toc-dots{flex:1;min-width:12px;border-bottom:1px dotted rgba(122,94,52,.45);margin-bottom:3px}
+.ktxs-toc-pg{flex:0 0 auto;font-size:12.5px;font-weight:800;color:#8a6a3a}
+.ktxs-toc-done{flex:0 0 auto;font-size:12px;line-height:1}
+.ktxs-toc-item.is-done .ktxs-toc-t{color:#8a6a3a}
+.ktxs-toc-item.is-done .ktxs-toc-no{background:linear-gradient(135deg,#3fbf7f,#2f9e66)}
+.ktxs-toc-foot{margin-top:10px;text-align:center;font-size:12px;color:rgba(122,94,52,.62);letter-spacing:1px}
+.ktxs-toc-empty{padding:36px 10px;text-align:center;color:#8a6a3a;font-size:14px}
+
+/* 封面页 */
+.ktxs-cover{flex:1;display:flex;align-items:center;justify-content:center;border-radius:10px;background-size:cover;background-position:center}
+.ktxs-cover.has-img .ktxs-cover-frame{background:rgba(255,252,244,.88);box-shadow:0 6px 22px rgba(122,94,52,.22)}
+.ktxs-cover-frame{
+  text-align:center;padding:clamp(18px,4vh,38px) clamp(16px,3vw,34px);
+  border:2.5px double rgba(122,94,52,.52);border-radius:8px;max-width:470px;
+}
+.ktxs-cover-cat{
+  display:inline-block;font-size:12.5px;font-weight:800;color:#6b4e26;
+  background:rgba(122,94,52,.12);border:1px solid rgba(122,94,52,.36);
+  border-radius:999px;padding:3px 14px;letter-spacing:2px;
+}
+.ktxs-cover-title{font-size:clamp(24px,4.4vh,36px);font-weight:900;color:#3c2a10;letter-spacing:2px;margin:16px 0 8px;line-height:1.42;font-family:"Songti SC","STSong","SimSun",serif}
+.ktxs-cover-orn{color:#a3825a;letter-spacing:6px;margin:6px 0 10px;font-size:14px}
+.ktxs-cover-intro{font-size:clamp(13.5px,1.9vh,16px);line-height:2;color:#5c4526;text-align:justify;text-indent:2em}
+.ktxs-cover-tip{margin-top:16px;font-size:12.5px;color:#a3825a;letter-spacing:1px}
+
+/* 空书页 */
+.ktxs-pg-center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:20px}
+.ktxs-empty-ico{font-size:52px}
+.ktxs-empty-t{font-size:19px;font-weight:900;color:#4a3618}
+.ktxs-empty-s{font-size:13.5px;color:#8a6a3a;line-height:1.8}
+
+/* 弹窗内诗词/童话详情页（复用 .mao-detail 系列，微调适配书页） */
+.ktxs-page .mao-detail{background:rgba(255,255,255,.72);border-color:rgba(122,94,52,.3);box-shadow:none;margin:2px 0 10px}
+.ktxs-page .mao-sec-b{background:rgba(255,255,255,.66);border-color:rgba(122,94,52,.22);color:#4c3a20}
+.ktxs-page .mao-line{color:#33291a}
+.ktxs-page .mao-sec-h{color:#4a3618;border-left-color:#8a6a3a}
+.ktxs-page .mao-check-btn{background:linear-gradient(135deg,#8a6a3a,#5f4423);box-shadow:0 4px 12px rgba(122,94,52,.35)}
+
+/* 窄屏（手机）兜底：双页收为单页，保证可读 */
+@media (max-width:760px){
+  .ktxs-page-r{display:none}
+  .ktxs-spine,.ktxs-book-edge{display:none}
+  .ktxs-page-l{border-radius:16px;box-shadow:none}
+}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -7254,6 +7402,23 @@ html,body{margin:0;padding:0}
         <button type="button" class="nw-sched-gear" id="btnCourseTableGear" title="进入编辑状态后可修改所有方格" data-page-node-id="R149btnCourseTableGear">✏️ 编辑</button>
       </div>
       <div class="nw-sub-body" id="courseTableMount" data-page-node-id="R149courseTableMount"></div>
+    </div>
+  </div>
+
+  <!-- ========== R176：推荐书籍 · 双页书本阅读弹窗（覆盖除导航栏外全部页面区域；左上角【← 返回书目】） ========== -->
+  <div class="modal-mask modal-book-read-mask" id="modalKtxsRead" hidden data-page-node-id="R176modalKtxsRead">
+    <div class="modal-box modal-book-read" data-page-node-id="R176bookReadBox">
+      <div class="br-head-row" data-page-node-id="R176brHeadRow">
+        <button class="nw-back br-back" id="btnKtxsReadBack" title="返回推荐书目" data-page-node-id="R176btnKtxsReadBack">← 返回书目</button>
+        <span class="br-head-title" id="ktxsReadTitle" data-page-node-id="R176ktxsReadTitle">书籍阅读</span>
+        <button type="button" class="ktxs-head-btn br-add-btn" id="btnKtxsReadAdd" title="为本书添加一段正文" hidden data-page-node-id="R176btnKtxsReadAdd">➕ 添加内容</button>
+      </div>
+      <div class="br-stage" id="ktxsReadStage" data-page-node-id="R176ktxsReadStage"></div>
+      <div class="br-foot-row" data-page-node-id="R176brFootRow">
+        <button type="button" class="br-nav-btn" id="btnKtxsReadPrev" title="上一页" data-page-node-id="R176btnKtxsReadPrev">‹ 上一页</button>
+        <span class="br-page-info" id="ktxsReadPageInfo" data-page-node-id="R176ktxsReadPageInfo">第 1 页</span>
+        <button type="button" class="br-nav-btn" id="btnKtxsReadNext" title="下一页" data-page-node-id="R176btnKtxsReadNext">下一页 ›</button>
+      </div>
     </div>
   </div>
 
@@ -39498,83 +39663,15 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         openKtxsBookAdd(()=>{ _szCurPage = 0; if(rerender) rerender(); toast('📚 已添加书籍'); });
       });
     }
+    // R176：点击书籍卡片弹出双页书本阅读弹窗（原页内正文/诗词视图已由阅读器替代）
     slotBody.querySelectorAll('[data-ktxs-book]').forEach(card=>{
       if(card._ktBound) return; card._ktBound = true;
       card.addEventListener('click', (e)=>{
         if(e.target.closest('[data-suzhi-checkin]')) return; // 打卡键独立
-        _ktxsOpenBook = card.getAttribute('data-ktxs-book');
-        _ktxsBookPage = 0;
-        _ktxsOpenPoem = -1;
-        _ktxsMaoPageIndex = 0;
-        if(rerender) rerender();
+        openKtxsReader(card.getAttribute('data-ktxs-book'));
       });
     });
-    const ktBack = slotBody.querySelector('[data-ktxs-back]');
-    if(ktBack && !ktBack._ktBound){
-      ktBack._ktBound = true;
-      ktBack.addEventListener('click', (e)=>{ e.stopPropagation(); _ktxsOpenBook = null; _ktxsOpenPoem = -1; if(rerender) rerender(); });
-    }
-    const addCntBtn = slotBody.querySelector('[data-ktxs-add-content]');
-    if(addCntBtn && !addCntBtn._ktBound){
-      addCntBtn._ktBound = true;
-      addCntBtn.addEventListener('click', (e)=>{
-        e.stopPropagation();
-        if(!_ktxsOpenBook) return;
-        const bk = _ktxsOpenBook;
-        openNwAdd('ktxs_' + bk, '《' + bk + '》正文', '输入本书正文内容…', ()=>{ if(rerender) rerender(); toast('📝 已添加正文'); });
-      });
-    }
-    slotBody.querySelectorAll('[data-ktxs-page]').forEach(b=>{
-      if(b._ktBound) return; b._ktBound = true;
-      b.addEventListener('click', ()=>{
-        if(b.disabled) return;
-        const p = parseInt(b.getAttribute('data-ktxs-page'), 10);
-        if(isNaN(p) || p < 0) return;
-        _ktxsBookPage = p;
-        if(rerender) rerender();
-      });
-    });
-    // R73-5 / R76-2：诗词书 —— 方格点击进入诗词详情；详情页「返回目录」回到方格（目录已取消分页）
-    slotBody.querySelectorAll('[data-mao-poem]').forEach(b=>{
-      if(b._maoBound) return; b._maoBound = true;
-      b.addEventListener('click', (e)=>{
-        e.stopPropagation();
-        const i = parseInt(b.getAttribute('data-mao-poem'), 10);
-        if(isNaN(i)) return;
-        _ktxsOpenPoem = i;
-        if(rerender) rerender();
-      });
-    });
-    const maoBack = slotBody.querySelector('[data-mao-back]');
-    if(maoBack && !maoBack._maoBackBound){
-      maoBack._maoBackBound = true;
-      maoBack.addEventListener('click', (e)=>{ e.stopPropagation(); _ktxsOpenPoem = -1; if(rerender) rerender(); });
-    }
-    /* R77-3 / R79-2：诗词打卡键 —— 打卡获得⭐（数量由任务设置配置，默认 2）；
-       R79-2：已打卡时再点一次可取消打卡，并按打卡当时记录的⭐数扣回。 */
-    slotBody.querySelectorAll('[data-mao-check]').forEach(b=>{
-      if(b._maoCheckBound) return; b._maoCheckBound = true;
-      b.addEventListener('click', (e)=>{
-        e.stopPropagation();
-        const i = parseInt(b.getAttribute('data-mao-check'), 10);
-        if(isNaN(i)) return;
-        const poems = (window.MAO_POEMS && Array.isArray(window.MAO_POEMS)) ? window.MAO_POEMS : [];
-        const title = (poems[i] && poems[i].t) || '';
-        const wasChecked = S.isMaoPoemChecked ? S.isMaoPoemChecked(i) : false;
-        if(wasChecked){
-          const r = S.uncheckMaoPoem ? S.uncheckMaoPoem(i) : {ok:false, stars:0};
-          if(!r.ok){ toast('这首诗还没打过卡'); return; }
-          if(typeof addStars === 'function') addStars(-r.stars, true); // 静默扣回，不播恭喜音
-          toast('已取消《' + title + '》打卡，扣回 ' + r.stars + '⭐');
-        } else {
-          const r = S.checkMaoPoem(i);
-          if(!r.ok){ toast('这首诗已经打过卡啦 ✅'); return; }
-          if(typeof addStars === 'function') addStars(r.stars);
-          toast('打卡成功《' + title + '》 +' + r.stars + '⭐');
-        }
-        if(rerender) rerender();
-      });
-    });
+
     // R25-2 英语小知识：板块「➕ 添加」→ 弹窗录入小标题 + 内容
     slotBody.querySelectorAll('[data-eg-add]').forEach(btn=>{
       if(btn._egAddBound) return; btn._egAddBound = true;
@@ -41649,7 +41746,6 @@ I'm good at running.`},
     return KTXS_BOOKS.concat(extra);
   }
   function ktxsSlot(label){
-    if(_ktxsOpenBook) return ktxsBookPage(label);
     const items = ktxsBooksAll();
     const rk = 'suzhi_ktxs';
     const perPage = 6;
@@ -41660,13 +41756,14 @@ I'm good at running.`},
     _szCurPage = page;
     const start = page * perPage;
     const pageItems = items.slice(start, start + perPage);
+    // R176-1：卡片半寸化（ktxs-mini-card + ktxs-book-grid 6 列）；删除卡片下方打卡按键与说明文字
     const cards = pageItems.map((it, i)=>{
       const done = S.isReadingRead(rk, it.title);
       const no = start + i + 1;
       // R130：《万物的童话-你是一座花园》标题卡用书封截图作背景
       const coverUrl = (it.poemKey === 'wtb' && window.WANTONG_COVER) ? window.WANTONG_COVER : '';
       return `
-        <div class="sz-daily-card sz-grid-card sz-book-card ${done?'is-checked':''} ${it.poemKey?'sz-book-flag':''} ${coverUrl?'sz-book-cover':''}"${coverUrl?` style="background-image:url('${coverUrl}')"`:''} data-ktxs-book="${esc(it.title)}" title="点击进入《${esc(it.title)}》正文">
+        <div class="sz-daily-card sz-grid-card sz-book-card ${done?'is-checked':''} ${it.poemKey?'sz-book-flag':''} ${coverUrl?'sz-book-cover':''} ktxs-mini-card"${coverUrl?` style="background-image:url('${coverUrl}')"`:''} data-ktxs-book="${esc(it.title)}" title="点击阅读《${esc(it.title)}》">
           <div class="sz-card-top">
             <span class="sz-book-no">${no}</span>
             <span class="sz-daily-badge">${esc(it.cat)}</span>
@@ -41674,10 +41771,6 @@ I'm good at running.`},
           </div>
           <div class="sz-daily-title sz-book-title">《${esc(it.title)}》</div>
           <div class="sz-daily-body sz-book-body">${esc(it.body)}</div>
-          <div class="bk-checkin-row">
-            <span class="sz-hint">${done?'✓ 已读完，点按钮可取消':'👆 点右侧按钮读完打卡 · 点卡片看正文'}</span>
-            <button class="ri-checkin-btn ${done?'checked':''}" data-suzhi-checkin="${esc(rk)}::${esc(it.title)}" title="${done?'已打卡（点击取消）':'点击打卡'}"></button>
-          </div>
         </div>`;
     }).join('') || '<div class="nw-zone-empty">书目整理中～</div>';
     // R71-5：新增「➕ 添加书籍」按键；已删除原书目下方的「添加内容卡片」
@@ -41685,10 +41778,11 @@ I'm good at running.`},
       <div class="yw-comp-head">${esc(label||'推荐书籍')} · 共 ${items.length} 本
         <button type="button" class="ktxs-head-btn" data-ktxs-add-book="1" title="添加一本新书">➕ 添加书籍</button>
       </div>
-      <div class="sz-card-grid">${cards}</div>
+      <div class="sz-card-grid ktxs-book-grid">${cards}</div>
       ${szPager(page, totalPages)}
-      <div class="sz-page-foot">本页第 ${items.length?start+1:0}–${start+pageItems.length} 本 · 每页 ${perPage} 本（一行 ${SZ_ROW_SIZE} 本）· 共 ${totalPages} 页 · 点击书籍卡片进入正文</div>`;
+      <div class="sz-page-foot">本页第 ${items.length?start+1:0}–${start+pageItems.length} 本 · 每页 ${perPage} 本（一行 6 本）· 共 ${totalPages} 页 · 点击书籍卡片开始阅读</div>`;
   }
+
   // R73-5 / R75-3：诗词正文按「书本标准」排版 —— 每一小句单独一行（按 。？！；，、 断句），原段落之间留空行
   function fmtMaoPoem(c){
     const out = [];
@@ -41702,118 +41796,313 @@ I'm good at running.`},
     });
     return out.join('');
   }
-  // R73-5：诗词书 —— 目录方格视图（正方形卡片，一行 4 首、一页 2 行 = 8 首/页）+ 点击进入诗词详情（诗行排版 + 赏析）
-  function ktxsMaoPage(label, book, poems, kind){
-    kind = kind || 'mao';
-    const isPoem = (kind === 'mao');
-    if(!poems || !Array.isArray(poems)) poems = (window.MAO_POEMS && Array.isArray(window.MAO_POEMS)) ? window.MAO_POEMS : [];
-    // 详情视图：打开某一首
-    if(_ktxsOpenPoem >= 0 && _ktxsOpenPoem < poems.length){
-      const po = poems[_ktxsOpenPoem];
-      return `
-      <div class="yw-comp-head">${esc(label||'推荐书籍')} · 《${esc(book.title)}》
-        <button type="button" class="ktxs-head-btn ktxs-back-btn" data-mao-back="1" title="返回诗词目录">← 返回目录</button>
-        <button type="button" class="ktxs-head-btn ktxs-book-back-btn" data-ktxs-back="1" title="返回推荐书目">← 书目</button>
-      </div>
-      <div class="mao-detail">
-        <div class="mao-detail-title">${esc(po.t)}</div>
-        ${isPoem?`<div class="mao-detail-author">现代 ${esc(book.author||'毛泽东')}</div>`:''}
-        ${po.d?`<div class="mao-detail-date">${esc(po.d)}</div>`:''}
-        <div class="mao-poem-content">${fmtMaoPoem(po.c)}</div>
-        ${isPoem?`<div class="mao-check-wrap">
-          <button type="button" class="mao-check-btn ${(S.isMaoPoemChecked&&S.isMaoPoemChecked(_ktxsOpenPoem))?'done':''}" data-mao-check="${_ktxsOpenPoem}" title="点击打卡获得⭐；已打卡时再点一次可取消打卡（⭐数可在任务设置更改）">
-            ${(S.isMaoPoemChecked&&S.isMaoPoemChecked(_ktxsOpenPoem))
-              ? '✅ 已打卡 · 再点一次取消打卡'
-              : '📌 诗词打卡 +'+(S.getMaoStars?S.getMaoStars():1)+'⭐'}
-          </button>
-          <div class="mao-check-tip">已打卡 ${(S.maoPoemCheckedList?S.maoPoemCheckedList().length:0)} / ${poems.length} 首</div>
-        </div>
-        <div class="mao-sec">
-          <div class="mao-sec-h">📜 创作背景</div>
-          <div class="mao-sec-b">${esc(po.b || '')}</div>
-        </div>
-        <div class="mao-sec">
-          <div class="mao-sec-h">🔍 专业赏析</div>
-          <div class="mao-sec-b">${esc(po.a || '')}</div>
-        </div>`:''}
-      </div>`;
+  // ---------- R176：推荐书籍 · 双页书本阅读弹窗（书籍介绍/目录/正文还原实体书本，支持左右滑动翻页） ----------
+  // 页型：cover 封面/介绍 | toc 目录 | text 正文 | poem 诗词/童话详情 | empty 空书 | blank 尾页
+  let _ktxsReader = null;       // { book, pages:[], spread:0, kind:'mao'|'wtb'|'txt' }
+  let _ktxsBookEl = null;       // 当前书本 DOM（滑动跟随时引用）
+  let _ktxsSwipe = null;        // 滑动跟踪 { sx, sy, dx, axis, on }
+  let _ktxsSwipeBound = false;  // window 级滑动/键盘/导航监听只绑一次
+  // 正文长文按句末标点切分为书页（每页约 300 字，适配双页固定开度）
+  function ktxsSplitText(t){
+    const s = String(t||'').trim();
+    if(!s) return [];
+    if(s.length <= 300) return [s];
+    const out = []; let cur = '';
+    s.split(/(?<=[。？！；])/).forEach(seg=>{
+      if((cur + seg).length > 300 && cur){ out.push(cur); cur = seg; }
+      else cur += seg;
+    });
+    if(cur) out.push(cur);
+    return out;
+  }
+  // 由书籍数据生成双页书页数组：封面 + 目录 + 内容页（奇数总页数补 blank 尾页）
+  function ktxsReaderPages(book){
+    const kind = (book.poemKey === 'mao' && window.MAO_POEMS && Array.isArray(window.MAO_POEMS)) ? 'mao'
+               : (book.poemKey === 'wtb' && window.WANTONG_STORIES && Array.isArray(window.WANTONG_STORIES)) ? 'wtb' : 'txt';
+    const entries = []; const body = [];
+    if(kind === 'txt'){
+      const contents = (window.Store && window.Store.getNwZone) ? window.Store.getNwZone('ktxs_' + book.title) : [];
+      contents.forEach((it, ci)=>{
+        const title = String(it.t||'').trim();
+        const text = String(it.c||'').trim() || title;
+        const chunks = ktxsSplitText(text);
+        entries.push({ no: ci+1, label: title || ('正文 ' + (ci+1)), page: body.length + 2 });
+        chunks.forEach((ch, ki)=> body.push({ type:'text', title: title, text: ch, cont: ki>0 }));
+      });
+      if(!contents.length) body.push({ type:'empty' });
+    } else {
+      const arr = (kind === 'mao') ? window.MAO_POEMS : window.WANTONG_STORIES;
+      arr.forEach((po, i)=>{
+        entries.push({ no: i+1, label: po.t || ('第 ' + (i+1) + ' 篇'), page: i + 2, done: !!(S.isMaoPoemChecked && S.isMaoPoemChecked(i)) });
+        body.push({ type:'poem', po: po, idx: i });
+      });
     }
-    // 目录方格视图（R76-2：取消分页 —— 全部诗词在同一页一次展示完，一行 16 首自动换行）
-    const start = 0;
-    const pageItems = poems;
-    const grid = pageItems.length ? pageItems.map((po, i)=>{
-      const gi = start + i;
-      if(isPoem){
-        return `
-        <div class="mao-grid-card${(S.isMaoPoemChecked&&S.isMaoPoemChecked(gi))?' mao-done':''}" data-mao-poem="${gi}" title="点击阅读《${esc(po.t)}》">
-          <span class="mao-grid-no">${gi+1}</span>
-          ${(S.isMaoPoemChecked&&S.isMaoPoemChecked(gi))?'<span class="mao-grid-check" title="已打卡">✅</span>':''}
-          <span class="mao-grid-title">${esc(po.t)}</span>
-          ${po.d?`<span class="mao-grid-date">${esc(po.d)}</span>`:''}
-        </div>`;
-      }
-      return `
-        <div class="mao-grid-card" data-mao-poem="${gi}" title="点击阅读《${esc(po.t)}》">
-          <span class="mao-grid-no">${gi+1}</span>
-          <span class="mao-grid-title">${esc(po.t)}</span>
-          ${po.d?`<span class="mao-grid-date">${esc(po.d)}</span>`:''}
-        </div>`;
-    }).join('') : `<div class="nw-zone-empty">${isPoem?'诗词内容整理中～':'童话内容整理中～'}</div>`;
-    const footTip = isPoem
-      ? `全部 ${poems.length} 首 · 已打卡 ${(S.maoPoemCheckedList&&S.maoPoemCheckedList().length)||0} / ${poems.length} 首 · 一页展示完毕`
-      : `全部 ${poems.length} 篇 · 一页展示完毕`;
-    const tipText = isPoem
-      ? '点击任意方格阅读全文与赏析；进入详情可「📌 诗词打卡」领取⭐ ▾'
-      : '点击任意方格阅读全文 ▾';
-    return `
-      <div class="yw-comp-head">${esc(label||'推荐书籍')} · 正文
-        <button type="button" class="ktxs-head-btn ktxs-back-btn" data-ktxs-back="1" title="返回推荐书目">← 返回书目</button>
-      </div>
-      <div class="ktxs-book-title">《${esc(book.title)}》</div>
-      ${book.body?`<div class="ktxs-book-intro">${esc(book.body)}</div>`:''}
-      <div class="mao-tip">${tipText}</div>
-      <div class="mao-grid">${grid}</div>
-      <div class="sz-page-foot">${footTip}</div>`;
+    const pages = [{ type:'cover', book: book }, { type:'toc', book: book, entries: entries, kind: kind }];
+    body.forEach(pg=>{ pg.kind = kind; pages.push(pg); });
+    if(pages.length % 2) pages.push({ type:'blank' });
+    return pages;
   }
-  // R71-5：书籍正文页 —— 书名 + 简介 + 正文内容分页展示 + 「➕ 添加内容」按键 + 返回书目
-  function ktxsBookPage(label){
-    const title = _ktxsOpenBook;
-    const book = ktxsBooksAll().find(b=>b.title === title) || { title:title, cat:'我的书籍', body:'' };
-    // R72：诗词书走专用目录 + 赏析视图（R130：收紧为 poemKey==='mao'，防止童话书误入诗词数据）
-    if(book.poemKey === 'mao' && window.MAO_POEMS && Array.isArray(window.MAO_POEMS)) return ktxsMaoPage(label, book);
-    // R129：童话散文书复用同一「目录方格 + 逐句排版」视图（kind='wtb'，无作者/赏析/逐首打卡）
-    if(book.poemKey === 'wtb' && window.WANTONG_STORIES && Array.isArray(window.WANTONG_STORIES)) return ktxsMaoPage(label, book, window.WANTONG_STORIES, 'wtb');
-    const zoneKey = 'ktxs_' + title;
-    const contents = (window.Store && window.Store.getNwZone) ? window.Store.getNwZone(zoneKey) : [];
-    const perPage = 5;
-    const totalPages = Math.max(1, Math.ceil((contents||[]).length / perPage));
-    _ktxsBookPage = Math.min(Math.max(0, _ktxsBookPage || 0), totalPages - 1);
-    const start = _ktxsBookPage * perPage;
-    const pageItems = (contents||[]).slice(start, start + perPage);
-    const listHtml = pageItems.length ? pageItems.map((it, i)=>{
-      const head = String(it.t||'').trim();
-      const body = String(it.c||'').trim();
-      const txt = body || head;
+  function ktxsReaderPageHTML(pg, book, kind){
+    if(!pg || pg.type === 'blank') return '<div class="ktxs-page-blank">❦</div>';
+    if(pg.type === 'cover'){
+      const coverUrl = (book.poemKey === 'wtb' && window.WANTONG_COVER) ? window.WANTONG_COVER : '';
       return `
-      <div class="ktxs-content-item">
-        <div class="ktxs-content-no">${start+i+1}</div>
-        <div class="ktxs-content-txt">${esc(txt)}</div>
+        <div class="ktxs-cover${coverUrl?' has-img':''}"${coverUrl?` style="background-image:url('${coverUrl}')"`:''}>
+          <div class="ktxs-cover-frame">
+            <div class="ktxs-cover-cat">${esc(book.cat||'推荐书籍')}</div>
+            <div class="ktxs-cover-title">《${esc(book.title)}》</div>
+            <div class="ktxs-cover-orn">✦ ❦ ✦</div>
+            <div class="ktxs-cover-intro">${esc(book.body||'')}</div>
+            <div class="ktxs-cover-tip">▸ 向右翻页，开始阅读</div>
+          </div>
+        </div>`;
+    }
+    if(pg.type === 'toc'){
+      const items = (pg.entries||[]).length ? pg.entries.map(e=>`
+        <button type="button" class="ktxs-toc-item${e.done?' is-done':''}" data-ktxs-toc="${e.page}">
+          <span class="ktxs-toc-no">${e.no}</span>
+          <span class="ktxs-toc-t">${esc(e.label)}</span>
+          <span class="ktxs-toc-dots"></span>
+          ${e.done?'<span class="ktxs-toc-done" title="已打卡">✅</span>':''}
+          <span class="ktxs-toc-pg">P ${e.page}</span>
+        </button>`).join('') : '<div class="ktxs-toc-empty">本书目录整理中～</div>';
+      return `
+        <div class="ktxs-toc">
+          <div class="ktxs-toc-h">📖 目录</div>
+          <div class="ktxs-toc-list">${items}</div>
+          <div class="ktxs-toc-foot">点击条目可快速跳转 ▸</div>
+        </div>`;
+    }
+    if(pg.type === 'empty'){
+      return `
+        <div class="ktxs-pg-center">
+          <div class="ktxs-empty-ico">📝</div>
+          <div class="ktxs-empty-t">本书还没有正文内容</div>
+          <div class="ktxs-empty-s">点右上角「➕ 添加内容」<br>为本书录入第一段文字</div>
+        </div>`;
+    }
+    if(pg.type === 'text'){
+      return `
+        <div class="ktxs-pg-scroll">
+          ${pg.title?`<div class="ktxs-pg-title${pg.cont?' ktxs-pg-cont':''}">${esc(pg.title)}${pg.cont?'（续）':''}</div>`:''}
+          <div class="ktxs-pg-txt">${esc(pg.text)}</div>
+        </div>`;
+    }
+    if(pg.type === 'poem'){
+      const po = pg.po || {};
+      const isPoem = (kind === 'mao');
+      const poems = isPoem ? (window.MAO_POEMS || []) : [];
+      const checkedN = (S.maoPoemCheckedList ? S.maoPoemCheckedList().length : 0);
+      return `
+        <div class="ktxs-pg-scroll">
+          <div class="mao-detail">
+            <div class="mao-detail-title">${esc(po.t||'')}</div>
+            ${isPoem?`<div class="mao-detail-author">现代 ${esc(book.author||'毛泽东')}</div>`:''}
+            ${po.d?`<div class="mao-detail-date">${esc(po.d)}</div>`:''}
+            <div class="mao-poem-content">${fmtMaoPoem(po.c)}</div>
+            ${isPoem?`<div class="mao-check-wrap">
+              <button type="button" class="mao-check-btn ${(S.isMaoPoemChecked&&S.isMaoPoemChecked(pg.idx))?'done':''}" data-mao-check="${pg.idx}" title="点击打卡获得⭐；已打卡时再点一次可取消打卡">
+                ${(S.isMaoPoemChecked&&S.isMaoPoemChecked(pg.idx))
+                  ? '✅ 已打卡 · 再点一次取消打卡'
+                  : '📌 诗词打卡 +'+(S.getMaoStars?S.getMaoStars():1)+'⭐'}
+              </button>
+              <div class="mao-check-tip">已打卡 ${checkedN} / ${poems.length} 首</div>
+            </div>
+            <div class="mao-sec">
+              <div class="mao-sec-h">📜 创作背景</div>
+              <div class="mao-sec-b">${esc(po.b || '')}</div>
+            </div>
+            <div class="mao-sec">
+              <div class="mao-sec-h">🔍 专业赏析</div>
+              <div class="mao-sec-b">${esc(po.a || '')}</div>
+            </div>`:''}
+          </div>
+        </div>`;
+    }
+    return '';
+  }
+  function ktxsReaderRender(){
+    const st = _ktxsReader; if(!st) return;
+    const stage = document.getElementById('ktxsReadStage');
+    if(!stage) return;
+    const total = st.pages.length;
+    const maxSpread = Math.max(0, Math.ceil(total/2) - 1);
+    if(st.spread > maxSpread) st.spread = maxSpread;
+    if(st.spread < 0) st.spread = 0;
+    const li = st.spread*2, ri = li + 1;
+    stage.innerHTML = `
+      <div class="ktxs-book" id="ktxsBook">
+        <div class="ktxs-book-edge"></div>
+        <div class="ktxs-page ktxs-page-l">${ktxsReaderPageHTML(st.pages[li], st.book, st.kind)}</div>
+        <div class="ktxs-page ktxs-page-r">${ri<total ? ktxsReaderPageHTML(st.pages[ri], st.book, st.kind) : '<div class="ktxs-page-blank">❦</div>'}</div>
+        <div class="ktxs-spine"></div>
       </div>`;
-    }).join('') : '<div class="nw-zone-empty">还没有正文内容，点上方「➕ 添加内容」录入第一条～</div>';
-    return `
-      <div class="yw-comp-head">${esc(label||'推荐书籍')} · 正文
-        <button type="button" class="ktxs-head-btn" data-ktxs-add-content="1" title="为本书添加一段正文">➕ 添加内容</button>
-        <button type="button" class="ktxs-head-btn ktxs-back-btn" data-ktxs-back="1" title="返回推荐书目">← 返回书目</button>
-      </div>
-      <div class="ktxs-book-title">《${esc(book.title)}》</div>
-      ${book.body?`<div class="ktxs-book-intro">${esc(book.body)}</div>`:''}
-      <div class="ktxs-content-list">${listHtml}</div>
-      ${totalPages>1?`<div class="ktxs-pager">
-        <button type="button" class="ktxs-page-btn" data-ktxs-page="${_ktxsBookPage-1}" ${_ktxsBookPage<=0?'disabled':''}>‹ 上一页</button>
-        <span class="ktxs-page-info">第 ${_ktxsBookPage+1} / ${totalPages} 页</span>
-        <button type="button" class="ktxs-page-btn" data-ktxs-page="${_ktxsBookPage+1}" ${_ktxsBookPage>=totalPages-1?'disabled':''}>下一页 ›</button>
-      </div>`:''}`;
+    _ktxsBookEl = document.getElementById('ktxsBook');
+    const info = document.getElementById('ktxsReadPageInfo');
+    if(info) info.textContent = '第 ' + Math.min(li+1, total) + (ri<total?(' – ' + (ri+1)):'') + ' 页 / 共 ' + total + ' 页';
+    const prev = document.getElementById('btnKtxsReadPrev'), next = document.getElementById('btnKtxsReadNext');
+    if(prev) prev.disabled = st.spread <= 0;
+    if(next) next.disabled = st.spread >= maxSpread;
+    ktxsBindReaderInner(stage);
   }
+  function ktxsBindReaderInner(root){
+    root.querySelectorAll('[data-ktxs-toc]').forEach(b=>{
+      if(b._ktToc) return; b._ktToc = true;
+      b.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        const pg = parseInt(b.getAttribute('data-ktxs-toc'), 10);
+        if(isNaN(pg)) return;
+        const st = _ktxsReader; if(!st) return;
+        st.spread = Math.max(0, Math.min(Math.ceil(st.pages.length/2)-1, Math.floor(pg/2)));
+        ktxsReaderRender();
+      });
+    });
+    root.querySelectorAll('[data-mao-check]').forEach(b=>{
+      if(b._ktMao) return; b._ktMao = true;
+      b.addEventListener('click', (e)=>{ e.stopPropagation(); ktxsReaderPoemCheck(b); });
+    });
+  }
+  // 诗词打卡（逻辑与原正文页一致：打卡得⭐ / 再点一次取消并扣回）
+  function ktxsReaderPoemCheck(btn){
+    const i = parseInt(btn.getAttribute('data-mao-check'), 10);
+    if(isNaN(i)) return;
+    const poems = (window.MAO_POEMS && Array.isArray(window.MAO_POEMS)) ? window.MAO_POEMS : [];
+    const title = (poems[i] && poems[i].t) || '';
+    if(S.isMaoPoemChecked && S.isMaoPoemChecked(i)){
+      const r = S.uncheckMaoPoem ? S.uncheckMaoPoem(i) : {ok:false, stars:0};
+      if(!r.ok){ toast('这首诗还没打过卡'); return; }
+      if(typeof addStars === 'function') addStars(-r.stars, true); // 静默扣回，不播恭喜音
+      toast('已取消《' + title + '》打卡，扣回 ' + r.stars + '⭐');
+    } else {
+      const r = S.checkMaoPoem(i);
+      if(!r.ok){ toast('这首诗已经打过卡啦 ✅'); return; }
+      if(typeof addStars === 'function') addStars(r.stars);
+      toast('打卡成功《' + title + '》 +' + r.stars + '⭐');
+    }
+    ktxsReaderRender();
+  }
+  // 翻页（带位移动画）：dir=1 下一页 / -1 上一页
+  function ktxsFlip(dir){
+    const st = _ktxsReader; if(!st) return;
+    const maxSpread = Math.max(0, Math.ceil(st.pages.length/2) - 1);
+    const target = st.spread + dir;
+    const book = _ktxsBookEl;
+    if(target < 0 || target > maxSpread){ if(book) book.style.transform = ''; return; }
+    if(book){
+      book.style.transform = 'translateX(' + (-dir*64) + 'px)';
+      book.style.opacity = '.45';
+    }
+    setTimeout(()=>{
+      st.spread = target;
+      ktxsReaderRender();
+      const nb = document.getElementById('ktxsBook');
+      if(nb){
+        nb.style.transform = 'translateX(' + (dir*48) + 'px)';
+        nb.style.opacity = '.45';
+        requestAnimationFrame(()=>{ nb.style.transform = ''; nb.style.opacity = ''; });
+      }
+    }, 170);
+  }
+  // 左右滑动翻页：pointer 事件（触屏 + 鼠标通用）；纵向滚动让位（.ktxs-page 设 touch-action:pan-y）
+  function ktxsSwipeMove(e){
+    const sw = _ktxsSwipe, book = _ktxsBookEl;
+    if(!sw || !sw.on || !book) return;
+    const mx = e.clientX - sw.sx, my = e.clientY - sw.sy;
+    if(!sw.axis){
+      if(Math.abs(mx) > 10 && Math.abs(mx) > Math.abs(my)) sw.axis = 'x';
+      else if(Math.abs(my) > 10){ sw.on = false; return; }
+      else return;
+    }
+    if(sw.axis !== 'x') return;
+    sw.dx = mx;
+    const st = _ktxsReader; if(!st) return;
+    const maxSpread = Math.max(0, Math.ceil(st.pages.length/2) - 1);
+    let d = sw.dx;
+    if((sw.dx < 0 && st.spread >= maxSpread) || (sw.dx > 0 && st.spread <= 0)) d = sw.dx * 0.25; // 边缘阻尼
+    book.classList.add('ktxs-dragging');
+    book.style.transform = 'translateX(' + d + 'px)';
+  }
+  function ktxsSwipeUp(){
+    const sw = _ktxsSwipe, book = _ktxsBookEl;
+    if(!sw){ return; }
+    if(!sw.on){ if(book){ book.style.transform = ''; book.classList.remove('ktxs-dragging'); } return; }
+    sw.on = false;
+    const TH = 56;
+    const dx = sw.dx, axis = sw.axis;
+    sw.dx = 0; sw.axis = null;
+    if(book){ book.style.transform = ''; book.classList.remove('ktxs-dragging'); }
+    if(axis === 'x' && dx <= -TH) ktxsFlip(1);
+    else if(axis === 'x' && dx >= TH) ktxsFlip(-1);
+  }
+  function ktxsBindSwipe(book){
+    if(!book) return;
+    book.addEventListener('pointerdown', (e)=>{
+      if(e.button && e.button !== 0) return;
+      if(e.target.closest && e.target.closest('button')) return; // 按钮不触发滑动
+      _ktxsSwipe = { sx: e.clientX, sy: e.clientY, dx: 0, axis: null, on: true };
+    });
+  }
+  // 导航栏浮于弹窗之上：阅读态下点击导航自动收起阅读器
+  function _ktxsNavClose(e){
+    if(e.target && e.target.closest && e.target.closest('.nav-btn[data-page]')) closeKtxsReader();
+  }
+  function _ktxsKeyHandler(e){
+    if(!_ktxsReader) return;
+    if(e.key === 'Escape') closeKtxsReader();
+    else if(e.key === 'ArrowRight') ktxsFlip(1);
+    else if(e.key === 'ArrowLeft') ktxsFlip(-1);
+  }
+  function openKtxsReader(title){
+    const book = ktxsBooksAll().find(b=>b.title === title);
+    if(!book) return;
+    const kind = (book.poemKey === 'mao' && window.MAO_POEMS && Array.isArray(window.MAO_POEMS)) ? 'mao'
+               : (book.poemKey === 'wtb' && window.WANTONG_STORIES && Array.isArray(window.WANTONG_STORIES)) ? 'wtb' : 'txt';
+    _ktxsReader = { book: book, pages: ktxsReaderPages(book), spread: 0, kind: kind };
+    _ktxsOpenBook = title; _ktxsBookPage = 0; _ktxsOpenPoem = -1; _ktxsMaoPageIndex = 0;
+    const titleEl = document.getElementById('ktxsReadTitle');
+    if(titleEl) titleEl.textContent = '《' + title + '》';
+    const addBtn = document.getElementById('btnKtxsReadAdd');
+    if(addBtn){
+      addBtn.hidden = (kind !== 'txt'); // 仅普通/自建书可追加正文
+      if(!addBtn._ktBound){
+        addBtn._ktBound = true;
+        addBtn.addEventListener('click', ()=>{
+          const st = _ktxsReader; if(!st) return;
+          openNwAdd('ktxs_' + st.book.title, '《' + st.book.title + '》正文', '输入本书正文内容…', ()=>{
+            st.pages = ktxsReaderPages(st.book);
+            ktxsReaderRender();
+            toast('📝 已添加正文');
+          });
+        });
+      }
+    }
+    const backBtn = document.getElementById('btnKtxsReadBack');
+    if(backBtn && !backBtn._ktBound){
+      backBtn._ktBound = true;
+      backBtn.addEventListener('click', ()=> closeKtxsReader());
+    }
+    const prevBtn = document.getElementById('btnKtxsReadPrev'), nextBtn = document.getElementById('btnKtxsReadNext');
+    if(prevBtn && !prevBtn._ktBound){ prevBtn._ktBound = true; prevBtn.addEventListener('click', ()=> ktxsFlip(-1)); }
+    if(nextBtn && !nextBtn._ktBound){ nextBtn._ktBound = true; nextBtn.addEventListener('click', ()=> ktxsFlip(1)); }
+    if(!_ktxsSwipeBound){
+      _ktxsSwipeBound = true;
+      window.addEventListener('pointermove', ktxsSwipeMove, { passive: true });
+      window.addEventListener('pointerup', ktxsSwipeUp);
+      window.addEventListener('pointercancel', ktxsSwipeUp);
+      document.addEventListener('keydown', _ktxsKeyHandler);
+      document.addEventListener('click', _ktxsNavClose, true);
+    }
+    showModal('#modalKtxsRead');
+    document.body.classList.add('ktxs-read-open');
+    ktxsReaderRender();
+    ktxsBindSwipe(_ktxsBookEl);
+  }
+  function closeKtxsReader(){
+    hideModal('#modalKtxsRead');
+    document.body.classList.remove('ktxs-read-open');
+    _ktxsReader = null; _ktxsBookEl = null;
+  }
+
   // R71-5：「➕ 添加书籍」—— 书名 + 一句话简介（复用美文弹窗容器，双字段）
   function openKtxsBookAdd(onDone){
     const mask = document.getElementById('modalMeiwenAdd');
