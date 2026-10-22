@@ -6128,19 +6128,8 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 #modalWbDatePick{background:rgba(8,16,52,.30);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 #modalWbDatePick .modal-box{width:min(430px,92vw);background:rgba(255,255,255,.30);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1.5px solid rgba(255,255,255,.66);box-shadow:0 18px 50px rgba(8,16,52,.45);border-radius:16px;overflow:hidden}
 .wb-datepick-box .modal-head{margin:-18px -18px 12px;padding:12px 18px;border-radius:14px 14px 0 0;background:linear-gradient(135deg, rgba(64,150,255,.42), rgba(28,95,184,.34));backdrop-filter:blur(6px) saturate(140%);-webkit-backdrop-filter:blur(6px) saturate(140%);color:#fff;border-bottom:1px solid rgba(255,255,255,.45)}
-.wb-dp-tags{display:flex;gap:8px;flex-wrap:wrap;padding:2px 2px 10px}
-.wb-dp-tag{flex:1;min-width:64px;padding:8px 6px;font-size:13px;font-weight:800;color:var(--tone-800);background:rgba(243,248,255,.72);border:1.5px solid rgba(219,231,251,.9);border-radius:10px;cursor:pointer;transition:background .12s ease,border-color .12s ease}
-.wb-dp-tag:hover{background:#fff;border-color:#3f9bf0}
-/* R174-3：月份选择改为弹窗内「上下滑动选择」滚轮（▲▼ 微调 / 点行直选 / 停止滑动吸附取居中行） */
-.wb-dp-mwheel{display:flex;align-items:stretch;gap:8px;padding:0 2px 8px}
-.wb-dp-mnav{width:34px;border:1.5px solid rgba(219,231,251,.9);border-radius:10px;background:rgba(243,248,255,.72);color:var(--tone-800);font-size:14px;font-weight:900;cursor:pointer}
-.wb-dp-mnav:hover{background:#fff;border-color:#3f9bf0}
-.wb-dp-mlist{flex:1;height:clamp(120px,22vh,160px);overflow-y:auto;scroll-snap-type:y mandatory;border:1.5px solid rgba(219,231,251,.9);border-radius:12px;background:rgba(255,255,255,.42);padding:4px 0;-webkit-overflow-scrolling:touch;
-  mask-image:linear-gradient(180deg,transparent 0,#000 16%,#000 84%,transparent 100%);
-  -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 16%,#000 84%,transparent 100%)}
-.wb-dp-mrow{display:block;width:100%;height:40px;line-height:40px;border:none;background:transparent;color:var(--tone-800);font-size:15px;font-weight:700;cursor:pointer;scroll-snap-align:center}
-.wb-dp-mrow:hover{background:rgba(243,248,255,.8)}
-.wb-dp-mrow.on{background:linear-gradient(135deg,#3f9bf0,#2f7fd0);color:#fff;font-weight:900;border-radius:8px}
+/* R175-2：快捷标签（今天/昨天/明天）与弹窗内月份滚轮（▲▼ 微调 / .wb-dp-mrow）均已删除 ——
+   年月改为独立按键（.wb-dp-ymbtn），点击后弹出 #modalWbYmPick 上下滑动分别选年、选月（样式见文件末尾 R175 块） */
 /* R163-2：月历网格外框与日期格对齐月度统计蓝色调玻璃化 */
 .wb-dp-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;padding:6px;border-radius:12px;background:rgba(236,245,255,.5);border:1px solid rgba(219,231,251,.9)}
 .wb-dp-wd{text-align:center;font-size:11px;font-weight:800;color:#6f8fb5;padding:2px 0}
@@ -6710,10 +6699,11 @@ html,body{margin:0;padding:0}
 /* 编辑态激活：绿色高亮（覆盖通用 .wb-edit-btn.active 旧色，保持_topbar 内可读） */
 .mn-topbar .wb-edit-btn.active{background:rgba(63,191,127,.92);border-color:rgba(255,255,255,.85);box-shadow:0 2px 10px rgba(20,90,60,.4);color:#fff}
 /* ② 副标题「把今天，安排的清清楚楚」：置于背景图标题下方、放大字号并加阴影 */
+/* R175-1：副标题移至最左边（left 贴边 + 左对齐），不再遮挡底层背景图（天际线图内自带标题）上的文字 */
 .mn-stage .wb-intro{
-  position:absolute;top:clamp(60px,9vh,84px);left:50%;transform:translateX(-50%);z-index:5;
+  position:absolute;top:clamp(60px,9vh,84px);left:clamp(12px,2vw,24px);transform:none;z-index:5;
   flex:none;padding:0 .4em;border-bottom:none;
-  font-size:clamp(15px,2.7vh,24px);font-weight:800;letter-spacing:.06em;text-align:center;white-space:nowrap;
+  font-size:clamp(15px,2.7vh,24px);font-weight:800;letter-spacing:.06em;text-align:left;white-space:nowrap;
   color:#fff;text-shadow:0 2px 10px rgba(4,12,40,.55)
 }
 
@@ -6810,6 +6800,29 @@ html,body{margin:0;padding:0}
 #modalFarmSetting .pbtn:not(.danger):hover,
 #modalParentEdit .pbtn:not(.danger):hover,
 #modalSectionBg .pbtn:not(.danger):hover{background:#fff;border-color:var(--tone-600);color:var(--tone-800)}
+
+
+/* ========== R175-1：备忘录副标题贴左 + R175-2：日期弹窗独立年月按键 + 年月滑动弹窗 ========== */
+/* R175-2：日期选择弹窗内的「年月」独立按键（居中大胶囊，点击弹窗上下滑动分别选年/月） */
+.wb-dp-ymrow{display:flex;justify-content:center;padding:2px 2px 10px}
+.wb-dp-ymbtn{display:inline-flex;align-items:center;gap:8px;padding:9px 18px;font-size:clamp(14px,2.2vh,17px);font-weight:900;color:var(--tone-800);background:rgba(243,248,255,.82);border:1.5px solid rgba(219,231,251,.95);border-radius:999px;cursor:pointer;transition:background .12s ease,border-color .12s ease,transform .12s ease}
+.wb-dp-ymbtn:hover{background:#fff;border-color:#3f9bf0;transform:translateY(-1px)}
+.wb-dp-ymbtn:active{transform:scale(.97)}
+.wb-dp-ymcaret{font-size:11px;font-weight:900;color:var(--tone-700)}
+/* R175-2：年月选择弹窗（层叠于日期弹窗之上）—— 毛玻璃口径与设置中心弹窗一致（55% 白 + frost blur(18px)） */
+#modalWbYmPick{background:rgba(8,16,52,.42);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+#modalWbYmPick .modal-box{width:min(360px,92vw);background:rgba(255,255,255,.55);backdrop-filter:blur(18px) saturate(150%);-webkit-backdrop-filter:blur(18px) saturate(150%);border:1.5px solid rgba(255,255,255,.66);box-shadow:0 18px 50px rgba(8,16,52,.45);border-radius:16px;overflow:hidden}
+.wb-ympick-box .modal-head{margin:-18px -18px 12px;padding:12px 18px;border-radius:14px 14px 0 0;background:linear-gradient(135deg, rgba(64,150,255,.42), rgba(28,95,184,.34));backdrop-filter:blur(6px) saturate(140%);-webkit-backdrop-filter:blur(6px) saturate(140%);color:#fff;border-bottom:1px solid rgba(255,255,255,.45)}
+/* R175-2：年/月两个纵向滚轮（点行直选 / 停止滑动 140ms 吸附取居中行；选中行蓝色渐变高亮） */
+.wb-ym-wheels{display:flex;gap:10px;padding:2px 2px 8px}
+.wb-ym-col{flex:1;min-width:0}
+.wb-ym-cap{text-align:center;font-size:12px;font-weight:900;color:var(--tone-700);padding:2px 0 6px;letter-spacing:.2em}
+.wb-ym-list{height:clamp(150px,26vh,200px);overflow-y:auto;scroll-snap-type:y mandatory;border:1.5px solid rgba(219,231,251,.9);border-radius:12px;background:rgba(255,255,255,.42);padding:4px 0;-webkit-overflow-scrolling:touch;
+  mask-image:linear-gradient(180deg,transparent 0,#000 16%,#000 84%,transparent 100%);
+  -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 16%,#000 84%,transparent 100%)}
+.wb-ym-row{display:block;width:100%;height:40px;line-height:40px;border:none;background:transparent;color:var(--tone-800);font-size:15px;font-weight:700;cursor:pointer;scroll-snap-align:center}
+.wb-ym-row:hover{background:rgba(243,248,255,.8)}
+.wb-ym-row.on{background:linear-gradient(135deg,#3f9bf0,#2f7fd0);color:#fff;font-weight:900;border-radius:8px}
 
 </style>
 </head>
@@ -7832,6 +7845,21 @@ html,body{margin:0;padding:0}
     <div class="modal-foot" data-page-node-id="R161wbDatePickFoot">
       <button class="primary-btn" id="btnWbDatePickToday" type="button" data-page-node-id="R161btnWbDatePickToday">回到今天</button>
       <button class="pbtn" data-close data-page-node-id="R161btnWbDatePickClose">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 弹窗：日期选择-年月（R175-2：点击年月按键后弹窗上下滑动分别选择年、月） ========== -->
+<div class="modal-mask" id="modalWbYmPick" hidden data-page-node-id="R175modalWbYmPick">
+  <div class="modal-box wb-ympick-box" data-page-node-id="R175wbYmPickBox">
+    <div class="modal-head" data-page-node-id="R175wbYmPickHead">
+      <h3 data-page-node-id="R175wbYmPickTitle">🗓 选择年月</h3>
+      <button class="modal-x" data-close data-page-node-id="R175wbYmPickX">×</button>
+    </div>
+    <div class="modal-body" id="wbYmPickBody" data-page-node-id="R175wbYmPickBody"></div>
+    <div class="modal-foot" data-page-node-id="R175wbYmPickFoot">
+      <button class="pbtn" id="btnWbYmPickCancel" type="button" data-page-node-id="R175btnWbYmPickCancel">取消</button>
+      <button class="primary-btn" id="btnWbYmPickOk" type="button" data-page-node-id="R175btnWbYmPickOk">确定</button>
     </div>
   </div>
 </div>
@@ -43293,8 +43321,8 @@ I'm good at running.`},
     const zone = (pf.zone != null) ? pf.zone : '';
     wbOpenEditModal(null, { type:'range', color:wbNextColor(date), date:date, start:'09:00', end:'10:00', zone:zone });
   }
-  // R161-g：左上角日期弹窗标签选择模式 —— 快捷标签（今天/昨天/明天）+ 月历网格，点选即跳到对应日期
-  let _wbDpYM = '';   // 日期选择弹窗当前展示的月份 'YYYY-MM'
+  // R161-g→R175-2：左上角日期弹窗 —— 年月独立按键（点击弹窗上下滑动分别选年/月）+ 月历网格点选（R175-2 删除快捷标签与弹窗内滚轮）
+  let _wbDpYM = '';   // 日期选择弹窗当前展示的月份 'YYYY-MM'（R175-2：年月改由 #modalWbYmPick 弹窗双滚轮选择）
   function wbOpenDatePick(){
     const base = (_wbView === 'week') ? _wbMonday : (_wbView === 'month' ? (_wbMonthYM + '-01') : (_nbDate || nbTodayISO()));
     if(!_wbDpYM) _wbDpYM = String(base).slice(0, 7);
@@ -43333,91 +43361,124 @@ I'm good at running.`},
       b.addEventListener('click', function(){ wbDatePickGo(b.getAttribute('data-dp-date')); });
     });
   }
-  // R174-3：把选中月份行滚到滚轮容器中心（jsdom 无布局引擎时各偏移为 0，无副作用）
-  function wbDpScrollToYM(mlist, ym){
-    const row = mlist.querySelector('.wb-dp-mrow[data-dp-ym="'+ym+'"]');
-    if(!row) return;
-    try{ mlist.scrollTop = Math.max(0, row.offsetTop - (mlist.clientHeight - row.offsetHeight)/2); }catch(e){}
-  }
-  // R174-3：切换展示月份 —— 更新行高亮 + 局部重绘日期网格（不重建滚轮，保持滑动位置）
-  function wbDpApplyYM(ym, scrollIt){
+  // R161-g→R174-3→R175-2：切换展示月份 —— 更新年月按键文案 + 局部重绘日期网格
+  // （R175-2：年月改由独立按键呼起 #modalWbYmPick 弹窗上下滑动选择，不再有弹窗内滚轮）
+  function wbDpApplyYM(ym){
     if(!ym) return;
     _wbDpYM = ym;
-    const mlist = document.getElementById('wbDpMList');
-    if(mlist){
-      mlist.querySelectorAll('.wb-dp-mrow').forEach(function(r){ r.classList.toggle('on', r.getAttribute('data-dp-ym') === ym); });
-      if(scrollIt) wbDpScrollToYM(mlist, ym);
-    }
+    const btn = document.getElementById('wbDpYmBtn');
+    if(btn) btn.innerHTML = '<span class="wb-dp-ymtxt">'+wbFmtMonth(ym)+'</span><span class="wb-dp-ymcaret">▾</span>';
     const grid = document.getElementById('wbDpGrid');
     if(grid){ grid.innerHTML = wbDpGridHTML(); wbDpBindCells(grid); }
   }
-  // R161-g→R174-3：左上角日期弹窗标签选择模式 —— 快捷标签（今天/昨天/明天）+ 月份上下滑动滚轮 + 月历网格
+  // R161-g→R174-3→R175-2：左上角日期弹窗 —— 年月独立按键（点击弹窗上下滑动分别选年/月）+ 月历网格点选
+  // （R175-2：删除今天/昨天/明天快捷标签与弹窗内月份滚轮及 ▲▼ 微调键）
   function wbRenderDatePick(){
     const body = document.getElementById('wbDatePickBody');
     if(!body) return;
-    const p2 = n => (n<10?'0':'')+n;
-    // R174-3：月份选择改为弹窗内「上下滑动选择」滚轮（点行直选 / ▲▼ 微调一月 / 停止滑动吸附取居中行），替换原 ←→ 翻月条
-    const y0 = new Date().getFullYear();
-    let mrows = '';
-    for(let yy=y0-2; yy<=y0+6; yy++){
-      for(let mm=1; mm<=12; mm++){
-        const ym = yy+'-'+p2(mm);
-        mrows += '<button type="button" class="wb-dp-mrow'+(ym===_wbDpYM?' on':'')+'" data-dp-ym="'+ym+'">'+wbFmtMonth(ym)+'</button>';
-      }
-    }
-    let html = '<div class="wb-dp-tags">'
-      + '<button type="button" class="wb-dp-tag" data-dp-quick="today">今天</button>'
-      + '<button type="button" class="wb-dp-tag" data-dp-quick="yesterday">昨天</button>'
-      + '<button type="button" class="wb-dp-tag" data-dp-quick="tomorrow">明天</button>'
-      + '</div>'
-      + '<div class="wb-dp-mwheel">'
-      + '<button type="button" class="wb-dp-mnav" data-dp-mnav="-1" title="上一月">▲</button>'
-      + '<div class="wb-dp-mlist" id="wbDpMList">'+mrows+'</div>'
-      + '<button type="button" class="wb-dp-mnav" data-dp-mnav="1" title="下一月">▼</button>'
+    let html = '<div class="wb-dp-ymrow">'
+      + '<button type="button" class="wb-dp-ymbtn" id="wbDpYmBtn" title="选择年月">'
+      + '<span class="wb-dp-ymtxt">'+wbFmtMonth(_wbDpYM)+'</span><span class="wb-dp-ymcaret">▾</span>'
+      + '</button>'
       + '</div>'
       + '<div class="wb-dp-grid" id="wbDpGrid">'+wbDpGridHTML()+'</div>';
     body.innerHTML = html;
-    // 快捷标签：今天 / 昨天 / 明天
-    body.querySelectorAll('.wb-dp-tag').forEach(function(b){
+    // 年月独立按键 → 弹出年月选择弹窗（上下滑动分别选年、月）
+    const ymBtn = document.getElementById('wbDpYmBtn');
+    if(ymBtn) ymBtn.onclick = function(){ wbOpenYmPick(); };
+    // 点选日期 → 按当前版块跳转（今天=当日；周=所在周；月=该月）
+    wbDpBindCells(body);
+  }
+  // R175-2：年月选择弹窗 —— 年/月两个纵向滚轮（scroll-snap 吸附 + 点行直选 + 停止滑动 140ms 取居中行）
+  let _wbYmPickY = 0, _wbYmPickM = 0;
+  function wbYmScrollTo(list, attr, val){
+    const row = list.querySelector('.wb-ym-row['+attr+'="'+val+'"]');
+    if(!row) return;
+    try{ list.scrollTop = Math.max(0, row.offsetTop - (list.clientHeight - row.offsetHeight)/2); }catch(e){}
+  }
+  function wbYmSelectY(y, scrollIt){
+    if(!y || y === _wbYmPickY) return;
+    _wbYmPickY = y;
+    const list = document.getElementById('wbYmYList');
+    if(list){
+      list.querySelectorAll('.wb-ym-row').forEach(function(r){ r.classList.toggle('on', +r.getAttribute('data-ym-y') === y); });
+      if(scrollIt) wbYmScrollTo(list, 'data-ym-y', y);
+    }
+  }
+  function wbYmSelectM(m, scrollIt){
+    if(!m || m === _wbYmPickM) return;
+    _wbYmPickM = m;
+    const list = document.getElementById('wbYmMList');
+    if(list){
+      list.querySelectorAll('.wb-ym-row').forEach(function(r){ r.classList.toggle('on', +r.getAttribute('data-ym-m') === m); });
+      if(scrollIt) wbYmScrollTo(list, 'data-ym-m', m);
+    }
+  }
+  function wbYmPickRender(){
+    const body = document.getElementById('wbYmPickBody');
+    if(!body) return;
+    const y0 = new Date().getFullYear();
+    let yrows = '', mrows = '';
+    for(let yy=y0-5; yy<=y0+5; yy++){
+      yrows += '<button type="button" class="wb-ym-row'+(yy===_wbYmPickY?' on':'')+'" data-ym-y="'+yy+'">'+yy+'年</button>';
+    }
+    for(let mm=1; mm<=12; mm++){
+      mrows += '<button type="button" class="wb-ym-row'+(mm===_wbYmPickM?' on':'')+'" data-ym-m="'+mm+'">'+mm+'月</button>';
+    }
+    body.innerHTML = '<div class="wb-ym-wheels">'
+      + '<div class="wb-ym-col"><div class="wb-ym-cap">年</div><div class="wb-ym-list" id="wbYmYList">'+yrows+'</div></div>'
+      + '<div class="wb-ym-col"><div class="wb-ym-cap">月</div><div class="wb-ym-list" id="wbYmMList">'+mrows+'</div></div>'
+      + '</div>';
+    // 点行直选
+    body.querySelectorAll('.wb-ym-row').forEach(function(b){
       b.addEventListener('click', function(){
-        const q = b.getAttribute('data-dp-quick');
-        const todayIso = nbTodayISO();
-        const iso = (q === 'yesterday') ? nbShiftISO(todayIso, -1) : (q === 'tomorrow' ? nbShiftISO(todayIso, 1) : todayIso);
-        wbDatePickGo(iso);
+        if(b.hasAttribute('data-ym-y')) wbYmSelectY(+b.getAttribute('data-ym-y'), true);
+        else wbYmSelectM(+b.getAttribute('data-ym-m'), true);
       });
     });
-    // 月份滚轮：▲▼ 微调一月 / 点行直选
-    body.querySelectorAll('.wb-dp-mnav').forEach(function(b){
-      b.addEventListener('click', function(){
-        wbDpApplyYM(wbShiftMonth(_wbDpYM, parseInt(b.getAttribute('data-dp-mnav'), 10) || 0), true);
-      });
-    });
-    body.querySelectorAll('.wb-dp-mrow').forEach(function(b){
-      b.addEventListener('click', function(){ wbDpApplyYM(b.getAttribute('data-dp-ym'), true); });
-    });
-    // 月份滚轮：滑动吸附（停止滚动 140ms 后取最接近容器中心的月份行）
-    const mlist = document.getElementById('wbDpMList');
-    if(mlist){
-      let _dpScrollT = 0;
-      mlist.addEventListener('scroll', function(){
-        clearTimeout(_dpScrollT);
-        _dpScrollT = setTimeout(function(){
-          const rows = mlist.querySelectorAll('.wb-dp-mrow');
+    // 滑动吸附（停止滚动 140ms 后取最接近容器中心的年份/月份行）
+    [['wbYmYList','data-ym-y'],['wbYmMList','data-ym-m']].forEach(function(pair){
+      const list = document.getElementById(pair[0]);
+      if(!list) return;
+      let _ymScrollT = 0;
+      list.addEventListener('scroll', function(){
+        clearTimeout(_ymScrollT);
+        _ymScrollT = setTimeout(function(){
+          const rows = list.querySelectorAll('.wb-ym-row');
           if(!rows.length) return;
-          const mid = mlist.scrollTop + mlist.clientHeight/2;
+          const mid = list.scrollTop + list.clientHeight/2;
           let best = null, bestD = 1e9;
           rows.forEach(function(r){
             const c = r.offsetTop + r.offsetHeight/2;
             const d = Math.abs(c - mid);
             if(d < bestD){ bestD = d; best = r; }
           });
-          if(best){ const ym = best.getAttribute('data-dp-ym'); if(ym && ym !== _wbDpYM) wbDpApplyYM(ym, false); }
+          if(best){
+            if(pair[1] === 'data-ym-y') wbYmSelectY(+best.getAttribute('data-ym-y'), false);
+            else wbYmSelectM(+best.getAttribute('data-ym-m'), false);
+          }
         }, 140);
       });
-      wbDpScrollToYM(mlist, _wbDpYM);
-    }
-    // 点选日期 → 按当前版块跳转（今天=当日；周=所在周；月=该月）
-    wbDpBindCells(body);
+      wbYmScrollTo(list, pair[1], pair[1] === 'data-ym-y' ? _wbYmPickY : _wbYmPickM);
+    });
+    // 确定 / 取消
+    const ok = document.getElementById('btnWbYmPickOk');
+    if(ok) ok.onclick = function(){ wbYmPickConfirm(); };
+    const cancel = document.getElementById('btnWbYmPickCancel');
+    if(cancel) cancel.onclick = function(){ hideModal('#modalWbYmPick'); };
+  }
+  function wbOpenYmPick(){
+    const a = String(_wbDpYM || '').split('-');
+    _wbYmPickY = +a[0] || new Date().getFullYear();
+    _wbYmPickM = +a[1] || (new Date().getMonth() + 1);
+    wbYmPickRender();
+    showModal('#modalWbYmPick');
+  }
+  function wbYmPickConfirm(){
+    if(!_wbYmPickY || !_wbYmPickM){ hideModal('#modalWbYmPick'); return; }
+    const p2 = n => (n<10?'0':'')+n;
+    wbDpApplyYM(_wbYmPickY + '-' + p2(_wbYmPickM));
+    hideModal('#modalWbYmPick');
   }
   function wbDatePickGo(iso){
     if(!iso) return;
