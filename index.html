@@ -2103,7 +2103,7 @@ body.child-mode .parent-edit-fab{display:none}
 .yw-fade{animation:ywFade .28s ease}
 @keyframes ywFade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 /* ========== V70：各板块「添加内容」交互 ========== */
-.nw-zone{margin-top:18px;border-top:1px dashed #cfe3ff;padding-top:14px}
+.nw-zone{margin-top:18px;background:#e9f3fd;border:1px solid #bcd9f5;border-radius:14px;padding:14px 16px}
 .nw-zone-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
 .nw-zone-count{font-size:14px;color:#5a7ba0;font-weight:700}
 .nw-zone-add{background:linear-gradient(135deg,var(--tone-900),var(--tone-300));color:#fff;border:none;border-radius:10px;padding:7px 14px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(64,150,255,.3);transition:.15s}
@@ -2177,7 +2177,7 @@ body.child-mode .parent-edit-fab{display:none}
 .sz-grid-card{display:flex;flex-direction:column;padding:14px 16px 40px;min-height:190px}
 .sz-grid-card .sz-daily-title{font-size:16px;line-height:1.35}
 .sz-grid-card .sz-daily-body{font-size:13.5px;line-height:1.7;max-height:126px;overflow-y:auto;padding-right:4px}
-.sz-pager{display:flex;align-items:center;justify-content:center;gap:16px;margin:16px 0 4px}
+.sz-pager{display:flex;align-items:center;justify-content:center;gap:16px;margin:16px 0 4px;background:#e9f3fd;border:1px solid #bcd9f5;border-radius:14px;padding:10px 16px}
 .sz-page-btn{background:var(--tone-100);color:var(--sky-blue);border:1px solid var(--tone-200);border-radius:999px;padding:7px 16px;font-size:13px;font-weight:800;cursor:pointer;transition:background .15s,color .15s}
 .sz-page-btn:hover:not(:disabled){background:var(--tone-600);color:#fff;border-color:var(--tone-600)}
 .sz-page-btn:disabled{opacity:.4;cursor:not-allowed}
@@ -6831,15 +6831,14 @@ html,body{margin:0;padding:0}
 .ktxs-book-grid{grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin-top:12px}
 @media (max-width:1100px){ .ktxs-book-grid{grid-template-columns:repeat(4,minmax(0,1fr))} }
 @media (max-width:640px){ .ktxs-book-grid{grid-template-columns:repeat(3,minmax(0,1fr))} }
-.ktxs-mini-card{min-height:0;padding:12px 12px 11px;gap:0}
-.ktxs-mini-card .sz-card-top{margin-bottom:6px;gap:5px}
+.ktxs-mini-card{min-height:0;padding:9px 12px 8px;gap:0}
+.ktxs-mini-card .sz-card-top{margin-bottom:4px;gap:5px}
 .ktxs-mini-card .sz-book-no{width:18px;height:18px;font-size:10.5px}
 .ktxs-mini-card .sz-daily-badge{font-size:10.5px;padding:2px 8px;letter-spacing:.2px}
 .ktxs-mini-card .sz-card-state{font-size:10px;padding:1px 7px}
 .ktxs-mini-card .sz-card-state.has-prog{color:#b9770a;background:#fff4e0;border-color:#ffd591}
 .ktxs-mini-card .sz-card-state.is-read{color:#1f8a4c;background:#e7f8ee;border-color:#aee3c6}
-.ktxs-mini-card .sz-daily-title{font-size:13px;line-height:1.4;margin-bottom:4px}
-.ktxs-mini-card .sz-book-body{font-size:11px;line-height:1.62;max-height:54px;padding-right:2px;color:#5a6b88}
+.ktxs-mini-card .sz-daily-title{font-size:12.5px;line-height:1.4;margin-bottom:0}
 
 /* ② R176-2：阅读弹窗覆盖除导航栏（.sidebar）以外的全部页面区域 —— 阅读态下导航栏浮于弹窗之上 */
 body.ktxs-read-open .sidebar{z-index:999999}
@@ -6884,21 +6883,13 @@ body.ktxs-read-open .sidebar{z-index:999999}
 .br-add-btn{margin-left:auto;flex:0 0 auto}
 .br-stage{flex:1;min-height:0;display:flex;align-items:stretch;justify-content:center;padding:12px clamp(10px,2vw,26px)}
 .br-foot-row{display:flex;align-items:center;justify-content:center;gap:14px;flex:0 0 auto;padding:8px 16px 12px}
-.br-nav-btn{
-  display:inline-flex;align-items:center;gap:6px;padding:8px 18px;min-height:40px;
-  border:1.5px solid var(--tone-300);border-radius:999px;background:rgba(255,255,255,.9);
-  color:var(--tone-800);font-size:13.5px;font-weight:800;cursor:pointer;transition:.15s;
-  box-shadow:0 2px 8px rgba(30,58,138,.14);
-}
-.br-nav-btn:hover:not(:disabled){background:#fff;border-color:var(--tone-500);transform:translateY(-1px)}
-.br-nav-btn:disabled{opacity:.4;cursor:not-allowed}
-.br-page-info{font-size:13px;font-weight:800;color:#33507e;min-width:160px;text-align:center;letter-spacing:.5px}
+/* R181-4：板块底部上一页/下一页键已删除，翻页改由书页内左右下角键 + 左右滑动承载 */
 
 /* ③ R180：2D 平面国风翻书 —— 中等饱和度蓝色圆角外框 + 米奶白双页 + 细书缝中线（无纸纹/无书口层叠/无立体阴影） */
 .ktxs-book{
   position:relative;display:flex;width:100%;max-width:1240px;min-width:0;
   border-radius:18px;
-  background:#fbfaf5;
+  background:#dceafd;
   border:2px solid #5b86c4;
   transition:transform .3s cubic-bezier(.4,0,.2,1),opacity .3s;
   overflow:hidden;
@@ -6918,7 +6909,7 @@ body.ktxs-read-open .sidebar{z-index:999999}
   flex:1 1 0;min-width:0;display:flex;flex-direction:column;
   padding:clamp(16px,3vh,32px) clamp(18px,2.4vw,38px);
   overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;
-  background:#fbfaf5;
+  background:#dceafd;
   font-family:"KaiTi","STKaiti","Kaiti SC","Songti SC","STSong",serif;
 }
 .ktxs-page-l{border-radius:16px 0 0 16px}
@@ -6993,7 +6984,7 @@ body.ktxs-read-open .sidebar{z-index:999999}
   .ktxs-page-r{display:none}
   .ktxs-page-edge{display:none}
   .ktxs-pg-no-r{display:none}
-  .ktxs-pg-no-l{display:inline}
+  .ktxs-pg-no-l{display:inline;left:50%}
   .ktxs-page-l{border-radius:16px}
 }
 
@@ -7033,10 +7024,10 @@ body.ktxs-read-open .sidebar{z-index:999999}
     radial-gradient(circle 15px at 100% 0,transparent 0 11.5px,#cfe6fb 11.5px 13px,transparent 13px),
     radial-gradient(circle 15px at 0 100%,transparent 0 11.5px,#cfe6fb 11.5px 13px,transparent 13px),
     radial-gradient(circle 15px at 100% 100%,transparent 0 11.5px,#cfe6fb 11.5px 13px,transparent 13px),
-    radial-gradient(circle 16px at 0 0,#fbfaf5 0 15px,transparent 15px),
-    radial-gradient(circle 16px at 100% 0,#fbfaf5 0 15px,transparent 15px),
-    radial-gradient(circle 16px at 0 100%,#fbfaf5 0 15px,transparent 15px),
-    radial-gradient(circle 16px at 100% 100%,#fbfaf5 0 15px,transparent 15px);
+    radial-gradient(circle 16px at 0 0,#dceafd 0 15px,transparent 15px),
+    radial-gradient(circle 16px at 100% 0,#dceafd 0 15px,transparent 15px),
+    radial-gradient(circle 16px at 0 100%,#dceafd 0 15px,transparent 15px),
+    radial-gradient(circle 16px at 100% 100%,#dceafd 0 15px,transparent 15px);
 }
 .ktxs-pg-card:hover{ border-color:#4096ff; }
 .ktxs-pg-card.is-page-done{
@@ -7051,10 +7042,10 @@ body.ktxs-read-open .sidebar{z-index:999999}
 .ktxs-pg-card.is-page-done .ktxs-pg-done-tag{ display:inline; }
 
 /* R178-4：封面弹窗 */
-.modal-book-cover{ width:min(440px,92vw); }
+.modal-book-cover{ width:min(720px,94vw,calc((88dvh - 150px) * 130 / 184)); }
 .ktxs-cover-body{ display:flex; flex-direction:column; align-items:center; gap:12px; }
 .ktxs-cover-img{
-  height:clamp(300px,52vh,600px); width:auto; max-width:100%; aspect-ratio:130/184; border-radius:14px;
+  width:100%; height:auto; aspect-ratio:130/184; border-radius:14px;
   background:#dbe9ff center/cover no-repeat; display:flex; align-items:center; justify-content:center;
   border:1px solid #bcdcff; overflow:hidden;
 }
@@ -7110,12 +7101,38 @@ body.ktxs-read-open .sidebar{z-index:999999}
 .ktxs-cover-img-click:hover{ box-shadow:0 0 0 3px rgba(64,150,255,.55), 0 6px 16px rgba(64,150,255,0.22); }
 /* R179-3：内容页页号徽标；R180：移至右页底部 · 小字浅灰蓝（不随正文滚动） */
 .ktxs-pg-no{ position:absolute; bottom:clamp(8px,1.6vh,14px); font-size:12px; font-weight:700; color:#9fb4cf; letter-spacing:1px; font-family:"Songti SC","STSong","SimSun",serif; pointer-events:none; z-index:7; }
-.ktxs-pg-no-r{ right:clamp(18px,2.4vw,38px); }
-.ktxs-pg-no-l{ left:clamp(18px,2.4vw,38px); display:none; }
+.ktxs-pg-no-r{ left:75%; transform:translateX(-50%); display:inline; }
+.ktxs-pg-no-l{ left:25%; transform:translateX(-50%); display:inline; }
 .ktxs-pg-card{ position:relative; }
 /* R179-4：家长态拖拽手柄 */
 .ktxs-drag-handle{ margin-left:auto; cursor:grab; color:#5b86c4; font-size:18px; line-height:1; user-select:none; touch-action:none; padding:0 4px; }
 .ktxs-drag-handle:active{ cursor:grabbing; color:#1e3a8a; }
+
+
+/* ===================== R181：书页蓝底 + 双页码居中 + 页内翻页键 + 拖拽跨页 + 封面放大 + 卡高减半 ===================== */
+/* R181-3：页内翻页键 —— 左页左下角「上一页」/ 右页右下角「下一页」，半透明胶囊与书页协调 */
+.ktxs-pg-nav{
+  position:absolute;bottom:clamp(8px,1.6vh,14px);z-index:7;
+  display:inline-flex;align-items:center;justify-content:center;gap:5px;
+  min-height:34px;padding:6px 15px;border-radius:999px;
+  border:1.5px solid rgba(91,134,196,.45);background:rgba(255,255,255,.86);
+  color:#3f639b;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;
+  transition:background .15s,border-color .15s,color .15s;letter-spacing:.5px;
+}
+.ktxs-pg-nav:hover:not(:disabled){background:#fff;border-color:#5b86c4;color:#3f639b}
+.ktxs-pg-nav:active:not(:disabled){transform:scale(.96)}
+.ktxs-pg-nav:disabled{opacity:.34;cursor:default}
+.ktxs-pg-prev{left:clamp(18px,2.4vw,38px)}
+.ktxs-pg-next{right:clamp(18px,2.4vw,38px)}
+/* R181-6：拖拽影子（跟手克隆卡）+ 原卡半透明占位 */
+.ktxs-drag-ghost{position:fixed;z-index:99999;pointer-events:none;opacity:.94;animation:none !important;box-shadow:0 14px 34px rgba(30,58,138,.3)}
+.ktxs-drag-src{opacity:.32}
+/* R181-7b：封面弹窗通栏 —— 封面宽与弹窗页面一致（头部保留左右内边距，封面区左右通栏贴边）；
+   弹窗宽度带高度自适应项，保证 32 开（130/184）整张封面可见、弹窗内不出现滚动条 */
+.modal-book-cover.modal-box{padding:18px 0 0}
+.modal-book-cover .ktxs-cover-head{padding:0 18px}
+.modal-book-cover .ktxs-cover-body{padding:0;align-items:stretch;gap:0}
+.modal-book-cover .ktxs-cover-img{border-radius:0 0 16px 16px}
 
 </style>
 </head>
@@ -7560,8 +7577,6 @@ body.ktxs-read-open .sidebar{z-index:999999}
       </div>
       <div class="br-stage" id="ktxsReadStage" data-page-node-id="R176ktxsReadStage"></div>
       <div class="br-foot-row" data-page-node-id="R176brFootRow">
-        <button type="button" class="br-nav-btn" id="btnKtxsReadPrev" title="上一页" data-page-node-id="R176btnKtxsReadPrev">‹ 上一页</button>
-        <button type="button" class="br-nav-btn" id="btnKtxsReadNext" title="下一页" data-page-node-id="R176btnKtxsReadNext">下一页 ›</button>
         <button type="button" class="ktxs-bm-btn" id="btnKtxsBm" title="书签与注释">🔖 书签</button>
       </div>
     </div>
@@ -36872,7 +36887,7 @@ be 动词：am / is → was；are → were
     // V17-8：电子奖状管理
     getCertMetrics, getMetricValue, getCustomCerts, addCustomCert, updateCustomCert, deleteCustomCert,
     // V70：新世界各板块用户添加内容
-    getNwZone, addNwZone, delNwZone,
+    getNwZone, addNwZone, delNwZone, setNwZone, // R181-6c：补导出（R179 漏导出致拖拽排序静默不落库）
     // R122：新世界·英语专区「重点知识」单元图片（含删除后打卡下标重排）
     getEnKeyPoints, addEnKeyPoint, delEnKeyPoint, shiftEnKeyPointReads,
     // R178：书籍封面 / 正文完成 / 书签 / 目录
@@ -39992,39 +40007,96 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         openKtxsCover(card.getAttribute('data-ktxs-book'));
       });
     });
-    // R179-4：家长模式拖拽排序书籍（按住手柄在书架内重排，持久化到 nwZone['ktxs_order']）
+    // R181-6：家长模式拖拽排序书籍（按住手柄可上下左右/跨页移动；落点插入后其余书籍自动顺延；
+    // 全量顺序持久化到 nwZone['ktxs_order']，靠近网格上/下边缘停留即自动翻页继续排序）
     if(typeof isParent === 'function' && isParent()){
       slotBody.querySelectorAll('[data-ktxs-book]').forEach(card=>{
         const handle = card.querySelector('[data-ktxs-drag]');
         if(!handle || handle._ktDragBound) return; handle._ktDragBound = true;
         handle.addEventListener('pointerdown', (e)=>{
           e.preventDefault(); e.stopPropagation();
-          const startY = e.clientY; let moved = false;
+          const title = card.getAttribute('data-ktxs-book');
+          const allTitles = ktxsBooksAll().map(b=>b.title);
+          const from = allTitles.indexOf(title);
+          if(from < 0) return;
+          const perPage = 16; // 与 ktxsSlot 保持一致（一行 4 本 · 一页 4 行）
+          const totalPages = Math.max(1, Math.ceil(allTitles.length / perPage));
+          const grid = slotBody.querySelector('.ktxs-book-grid');
+          const r0 = card.getBoundingClientRect();
+          const ghost = card.cloneNode(true);
+          ghost.classList.add('ktxs-drag-ghost');
+          ghost.removeAttribute('data-ktxs-book');
+          ghost.style.width = r0.width + 'px';
+          ghost.style.height = r0.height + 'px';
+          ghost.style.left = r0.left + 'px';
+          ghost.style.top = r0.top + 'px';
+          document.body.appendChild(ghost);
+          card.classList.add('ktxs-drag-src');
+          const findSrc = ()=> Array.from(slotBody.querySelectorAll('[data-ktxs-book]')).filter(c=>c.getAttribute('data-ktxs-book')===title)[0] || null;
+          let moved = false, hot = 0, hotAt = 0;
+          const sx = e.clientX, sy = e.clientY;
           const onMove = (ev)=>{
-            const dy = ev.clientY - startY;
-            if(Math.abs(dy) > 6) moved = true;
-            if(moved){ card.style.transform = 'translateY('+dy+'px)'; card.style.zIndex = '50'; }
+            const dx = ev.clientX - sx, dy = ev.clientY - sy;
+            if(!moved && Math.abs(dx) + Math.abs(dy) > 6) moved = true;
+            if(!moved) return;
+            ghost.style.transform = 'translate(' + dx + 'px,' + dy + 'px)';
+            // 跨页热区：靠近网格上/下边缘停留即自动翻页（拖拽中换页继续排）
+            const g = grid ? grid.getBoundingClientRect() : null;
+            const now = Date.now ? Date.now() : 0;
+            let h = 0;
+            if(g){
+              if(ev.clientY < g.top + 42 && _szCurPage > 0) h = -1;
+              else if(ev.clientY > g.bottom - 42 && _szCurPage < totalPages - 1) h = 1;
+            }
+            if(h !== hot){ hot = h; hotAt = now; }
+            if(hot !== 0 && now - hotAt > 520){
+              hotAt = now;
+              const np = Math.min(Math.max(_szCurPage + hot, 0), totalPages - 1);
+              if(np !== _szCurPage){
+                _szCurPage = np;
+                rerender();
+                const ns = findSrc(); if(ns) ns.classList.add('ktxs-drag-src');
+              }
+            }
           };
           const onUp = (ev)=>{
             document.removeEventListener('pointermove', onMove);
             document.removeEventListener('pointerup', onUp);
-            card.style.transform = ''; card.style.zIndex = '';
+            document.removeEventListener('pointercancel', onUp);
+            if(ghost.parentNode) ghost.parentNode.removeChild(ghost);
+            const src = findSrc();
+            if(src){ src.classList.remove('ktxs-drag-src'); src.style.transform = ''; }
             if(!moved) return;
+            // 落点定位：以影子中心找目标页内插入位，再换算为全量下标
+            const g = grid ? grid.getBoundingClientRect() : null;
             const cards = Array.from(slotBody.querySelectorAll('[data-ktxs-book]'));
-            const rects = cards.map(c=>c.getBoundingClientRect());
-            let targetIdx = rects.findIndex(r=> ev.clientY < r.top + r.height/2);
-            if(targetIdx < 0) targetIdx = rects.length;
-            const titles = cards.map(c=>c.getAttribute('data-ktxs-book'));
-            const from = titles.indexOf(card.getAttribute('data-ktxs-book'));
-            if(from < 0 || from === targetIdx) return;
-            titles.splice(from, 1);
-            const ins = targetIdx > from ? targetIdx - 1 : targetIdx;
-            titles.splice(ins, 0, card.getAttribute('data-ktxs-book'));
-            if(window.Store && window.Store.setNwZone) window.Store.setNwZone('ktxs_order', titles);
+            const gx = ev.clientX, gy = ev.clientY;
+            let pageIdx;
+            if(g && gy < g.top - 8) pageIdx = 0;
+            else if(g && gy > g.bottom + 8) pageIdx = cards.length;
+            else {
+              let best = -1, bestD = Infinity, after = false;
+              for(let i=0;i<cards.length;i++){
+                const r = cards[i].getBoundingClientRect();
+                const cx = r.left + r.width/2, cy = r.top + r.height/2;
+                const d = (gx-cx)*(gx-cx) + (gy-cy)*(gy-cy);
+                if(d < bestD){ bestD = d; best = i; after = gy > cy; }
+              }
+              pageIdx = best < 0 ? cards.length : (after ? best + 1 : best);
+            }
+            let target = _szCurPage * perPage + pageIdx;
+            if(target > allTitles.length) target = allTitles.length;
+            if(target === from) return;
+            const arr = allTitles.slice();
+            arr.splice(from, 1);
+            const ins = target > from ? target - 1 : target;
+            arr.splice(ins, 0, title);
+            if(window.Store && window.Store.setNwZone) window.Store.setNwZone('ktxs_order', arr);
             if(typeof rerender === 'function') rerender();
           };
           document.addEventListener('pointermove', onMove);
           document.addEventListener('pointerup', onUp);
+          document.addEventListener('pointercancel', onUp);
         });
       });
     }
@@ -42110,16 +42182,10 @@ I'm good at running.`},
     }
     return all;
   }
-  // R179-4：根据书籍类型返回「共 N 页/首/篇」静态文案
-  function ktxsBookTotalLabel(book){
-    if(book.poemKey === 'mao') return '共 ' + ((window.MAO_POEMS||[]).length) + ' 首';
-    if(book.poemKey === 'wtb') return '共 ' + ((window.WANTONG_STORIES||[]).length) + ' 篇';
-    return '共 ' + ktxsBookTextPageTotal(book) + ' 页';
-  }
   function ktxsSlot(label){
     const items = ktxsBooksAll();
     const rk = 'suzhi_ktxs';
-    const perPage = 8;  // R178-8：一行 4 本、一页两行（共 8 本）
+    const perPage = 16; // R181-9：一行 4 本、一页 4 行（共 16 本）
     const totalPages = Math.max(1, Math.ceil(items.length / perPage));
     let page = _szCurPage;
     if(page < 0) page = 0;
@@ -42136,7 +42202,7 @@ I'm good at running.`},
       let coverUrl = (S.getBookCover ? S.getBookCover(it.title) : '') || '';
       if(!coverUrl && it.poemKey === 'wtb' && window.WANTONG_COVER) coverUrl = window.WANTONG_COVER;
       const stateCls = done ? 'is-read' : (prog>0 ? 'has-prog' : '');
-      const stateTxt = (done ? '✓ 已读完 · ' : '') + ktxsBookTotalLabel(it);
+      const stateTxt = done ? '✓ 已读完' : '未读'; // R181-5：删除页数统计
       return `
         <div class="sz-daily-card sz-grid-card sz-book-card ktxs-blue-card ${done?'is-checked':''} ${it.poemKey?'sz-book-flag':''} ${coverUrl?'sz-book-cover':''} ktxs-mini-card"${coverUrl?` style="background-image:url('${coverUrl}')"`:''} data-ktxs-book="${esc(it.title)}" title="点击查看《${esc(it.title)}》封面">
           <div class="sz-card-top">
@@ -42146,7 +42212,6 @@ I'm good at running.`},
             ${isParent()? '<span class="ktxs-drag-handle" data-ktxs-drag="1" title="按住拖动调整顺序">⠿</span>' : ''}
           </div>
           <div class="sz-daily-title sz-book-title">《${esc(it.title)}》</div>
-          <div class="sz-daily-body sz-book-body">${esc(it.body)}</div>
         </div>`;
     }).join('') || '<div class="nw-zone-empty">书目整理中～</div>';
     // R71-5：新增「➕ 添加书籍」按键；已删除原书目下方的「添加内容卡片」
@@ -42317,16 +42382,25 @@ I'm good at running.`},
         <div class="ktxs-page ktxs-page-r">${ri<total ? ktxsReaderPageHTML(st.pages[ri], st.book, st.kind) : '<div class="ktxs-page-blank">❦</div>'}</div>
         <div class="ktxs-page-edge"></div>
         <div class="ktxs-slide-fade"></div>
+        <button type="button" class="ktxs-pg-nav ktxs-pg-prev" data-ktxs-nav="-1" title="上一页"${st.spread<=0?' disabled':''}>‹ 上一页</button>
+        <button type="button" class="ktxs-pg-nav ktxs-pg-next" data-ktxs-nav="1" title="下一页"${st.spread>=maxSpread?' disabled':''}>下一页 ›</button>
         ${ri<total ? '<span class="ktxs-pg-no ktxs-pg-no-r">P ' + (ri+1) + '</span>' : ''}
         <span class="ktxs-pg-no ktxs-pg-no-l">P ${li+1}</span>
       </div>`;
     _ktxsBookEl = document.getElementById('ktxsBook');
-    const prev = document.getElementById('btnKtxsReadPrev'), next = document.getElementById('btnKtxsReadNext');
-    if(prev) prev.disabled = st.spread <= 0;
-    if(next) next.disabled = st.spread >= maxSpread;
     ktxsBindReaderInner(stage);
+    ktxsBindSwipe(_ktxsBookEl); // R181-3d：render 每次整体换新书本元素，滑动监听须随 render 重绑（否则首次翻页后滑动失效）
   }
   function ktxsBindReaderInner(root){
+    // R181-3：页内翻页键（左页左下角上一页 / 右页右下角下一页，与书页同协调的半透明胶囊样式）
+    root.querySelectorAll('[data-ktxs-nav]').forEach(b=>{
+      if(b._ktNav) return; b._ktNav = true;
+      b.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        const d = parseInt(b.getAttribute('data-ktxs-nav'), 10);
+        if(d) ktxsFlip(d);
+      });
+    });
     root.querySelectorAll('[data-ktxs-toc]').forEach(b=>{
       if(b._ktToc) return; b._ktToc = true;
       b.addEventListener('click', (e)=>{
@@ -42615,9 +42689,6 @@ I'm good at running.`},
       backBtn._ktBound = true;
       backBtn.addEventListener('click', ()=> closeKtxsReader());
     }
-    const prevBtn = document.getElementById('btnKtxsReadPrev'), nextBtn = document.getElementById('btnKtxsReadNext');
-    if(prevBtn && !prevBtn._ktBound){ prevBtn._ktBound = true; prevBtn.addEventListener('click', ()=> ktxsFlip(-1)); }
-    if(nextBtn && !nextBtn._ktBound){ nextBtn._ktBound = true; nextBtn.addEventListener('click', ()=> ktxsFlip(1)); }
     if(!_ktxsSwipeBound){
       _ktxsSwipeBound = true;
       window.addEventListener('pointermove', ktxsSwipeMove, { passive: true });
