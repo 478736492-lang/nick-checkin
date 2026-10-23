@@ -6851,11 +6851,29 @@ body.ktxs-read-open .sidebar{z-index:999999}
 }
 @media (max-width:1023px){ .modal-book-read-mask{ left:102px } }
 .modal-book-read{
+  position:relative;
   width:100%;height:100%;max-width:none;max-height:none;min-width:0;
   border-radius:0;padding:0;display:flex;flex-direction:column;
-  background:linear-gradient(180deg,#e9f2fd 0%,#d9e8fa 100%);
+  background:linear-gradient(180deg,#e9f3fd 0%,#dceefc 58%,#cfe7fa 100%);
   border:none;box-shadow:none;overflow:hidden;
 }
+/* R180-2：整体画布底部柔和流动的浅蓝波浪朦胧底纹（低透明度，不抢主体） */
+.modal-book-read::before,.modal-book-read::after{
+  content:'';position:absolute;left:0;right:0;bottom:0;pointer-events:none;z-index:0;
+  background-repeat:no-repeat;background-position:center bottom;background-size:100% 100%;
+}
+.modal-book-read::before{
+  height:34%;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 220' preserveAspectRatio='none'%3E%3Cpath d='M0,96 C180,150 340,36 600,88 C860,140 1020,44 1200,92 L1200,220 L0,220 Z' fill='%23add8f7'/%3E%3C/svg%3E");
+  opacity:.5;
+}
+.modal-book-read::after{
+  height:26%;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 180' preserveAspectRatio='none'%3E%3Cpath d='M0,72 C200,26 380,116 620,66 C840,22 1000,104 1200,58 L1200,180 L0,180 Z' fill='%23bfe3fb'/%3E%3C/svg%3E");
+  opacity:.42;
+}
+/* 画布三层（头部/舞台/页脚）浮于波浪底纹之上 */
+.modal-book-read>.br-head-row,.modal-book-read>.br-stage,.modal-book-read>.br-foot-row{position:relative;z-index:1}
 .br-head-row{
   display:flex;align-items:center;gap:12px;flex:0 0 auto;
   padding:10px 16px 9px;border-bottom:1.5px solid rgba(126,200,255,.42);
@@ -6876,108 +6894,107 @@ body.ktxs-read-open .sidebar{z-index:999999}
 .br-nav-btn:disabled{opacity:.4;cursor:not-allowed}
 .br-page-info{font-size:13px;font-weight:800;color:#33507e;min-width:160px;text-align:center;letter-spacing:.5px}
 
-/* ③ R176-3：双页书本（纸纹 + 书脊 + 书口层叠 + 左右内阴影） */
+/* ③ R180：2D 平面国风翻书 —— 中等饱和度蓝色圆角外框 + 米奶白双页 + 细书缝中线（无纸纹/无书口层叠/无立体阴影） */
 .ktxs-book{
   position:relative;display:flex;width:100%;max-width:1240px;min-width:0;
-  border-radius:16px;
-  background:linear-gradient(90deg,#f2e9d6 0%,#fbf7ec 46%,#fbf7ec 54%,#f2e9d6 100%);
-  box-shadow:0 22px 60px rgba(8,16,52,.42),0 0 0 1px rgba(122,94,52,.16);
+  border-radius:18px;
+  background:#fbfaf5;
+  border:2px solid #5b86c4;
   transition:transform .3s cubic-bezier(.4,0,.2,1),opacity .3s;
   overflow:hidden;
 }
 .ktxs-book.ktxs-dragging{transition:none}
-/* R177-1：翻页动画阴影；R177-2：诗词打卡键置底 */
-.ktxs-flip-shade{position:absolute;inset:0;pointer-events:none;opacity:0;background:linear-gradient(90deg,rgba(8,16,52,0) 42%,rgba(8,16,52,.22) 100%);transition:opacity .3s ease;z-index:8}
-.ktxs-book.ktxs-flipping .ktxs-flip-shade{opacity:1}
+/* R180：翻页轻纱（纯 2D 淡入淡出，替代旧翻页阴影层） */
+.ktxs-slide-fade{position:absolute;inset:0;pointer-events:none;opacity:0;background:linear-gradient(90deg,rgba(255,255,255,0) 40%,rgba(173,216,247,.20) 100%);transition:opacity .3s ease;z-index:8}
+.ktxs-book.ktxs-flipping .ktxs-slide-fade{opacity:1}
 
-.ktxs-spine{
-  position:absolute;left:50%;top:0;bottom:0;width:32px;transform:translateX(-50%);
-  background:linear-gradient(90deg,rgba(122,94,52,0) 0%,rgba(122,94,52,.09) 30%,rgba(122,94,52,.26) 50%,rgba(122,94,52,.09) 70%,rgba(122,94,52,0) 100%);
-  pointer-events:none;z-index:6;
-}
-.ktxs-book-edge{
-  position:absolute;top:8px;bottom:8px;right:0;width:10px;border-radius:0 8px 8px 0;
-  background:repeating-linear-gradient(180deg,#f7efdd 0 2px,#e4d6b8 2px 4px);
-  box-shadow:inset -2px 0 3px rgba(122,94,52,.28);z-index:2;pointer-events:none;
+/* R180：书缝 —— 两页中间一条细细的垂直中线 */
+.ktxs-page-edge{
+  position:absolute;left:50%;top:14px;bottom:14px;width:1.5px;transform:translateX(-50%);
+  background:linear-gradient(180deg,rgba(91,134,196,0) 0%,rgba(91,134,196,.30) 14%,rgba(91,134,196,.30) 86%,rgba(91,134,196,0) 100%);
+  border-radius:1px;pointer-events:none;z-index:6;
 }
 .ktxs-page{
   flex:1 1 0;min-width:0;display:flex;flex-direction:column;
   padding:clamp(16px,3vh,32px) clamp(18px,2.4vw,38px);
   overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;
+  background:#fbfaf5;
   font-family:"KaiTi","STKaiti","Kaiti SC","Songti SC","STSong",serif;
 }
-.ktxs-page-l{border-radius:16px 0 0 16px;box-shadow:inset -16px 0 20px -18px rgba(122,94,52,.55)}
-.ktxs-page-r{border-radius:0 16px 16px 0;box-shadow:inset 16px 0 20px -18px rgba(122,94,52,.55)}
-.ktxs-page-blank{flex:1;display:flex;align-items:center;justify-content:center;color:rgba(122,94,52,.32);font-size:42px;letter-spacing:8px}
+.ktxs-page-l{border-radius:16px 0 0 16px}
+.ktxs-page-r{border-radius:0 16px 16px 0}
+.ktxs-page-blank{flex:1;display:flex;align-items:center;justify-content:center;color:rgba(91,134,196,.3);font-size:42px;letter-spacing:8px}
 .ktxs-page::-webkit-scrollbar{width:5px}
-.ktxs-page::-webkit-scrollbar-thumb{background:rgba(122,94,52,.28);border-radius:3px}
+.ktxs-page::-webkit-scrollbar-thumb{background:rgba(91,134,196,.3);border-radius:3px}
 
 /* 正文页 */
 .ktxs-pg-scroll{flex:1;min-height:0;overflow-y:auto;padding-right:4px}
-.ktxs-pg-title{font-size:clamp(18px,2.6vh,23px);font-weight:900;color:#4a3618;text-align:center;margin:4px 0 14px;letter-spacing:1px;font-family:"Songti SC","STSong","SimSun",serif}
-.ktxs-pg-title.ktxs-pg-cont{color:#8a6a3a;font-size:clamp(15px,2.1vh,18px)}
-.ktxs-pg-txt{font-size:clamp(15px,2vh,18.5px);line-height:2.08;color:#3c2f1c;white-space:pre-wrap;word-break:break-word}
+.ktxs-pg-title{font-size:clamp(18px,2.6vh,23px);font-weight:900;color:#243042;text-align:center;margin:4px 0 14px;letter-spacing:1px;font-family:"Songti SC","STSong","SimSun",serif}
+.ktxs-pg-title.ktxs-pg-cont{color:#5b86c4;font-size:clamp(15px,2.1vh,18px)}
+.ktxs-pg-txt{font-size:clamp(15px,2vh,18.5px);line-height:2.12;color:#243042;white-space:pre-wrap;word-break:break-word}
 
 /* 目录页 */
 .ktxs-toc{flex:1;display:flex;flex-direction:column;min-height:0}
-.ktxs-toc-h{font-size:clamp(20px,3vh,26px);font-weight:900;color:#4a3618;text-align:center;letter-spacing:5px;margin:4px 0 12px;font-family:"Songti SC","STSong","SimSun",serif}
+.ktxs-toc-h{font-size:clamp(20px,3vh,26px);font-weight:900;color:#243042;text-align:center;letter-spacing:5px;margin:4px 0 12px;font-family:"Songti SC","STSong","SimSun",serif}
 .ktxs-toc-list{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column}
 .ktxs-toc-item{
   display:flex;align-items:center;gap:9px;width:100%;text-align:left;
-  background:none;border:none;border-bottom:1px dashed rgba(122,94,52,.3);
-  padding:8px 4px;cursor:pointer;font-family:inherit;color:#3c2f1c;transition:background .14s;
+  background:none;border:none;border-bottom:1px dashed rgba(91,134,196,.3);
+  padding:8px 4px;cursor:pointer;font-family:inherit;color:#243042;transition:background .14s;
 }
-.ktxs-toc-item:hover{background:rgba(122,94,52,.07)}
+.ktxs-toc-item:hover{background:rgba(91,134,196,.08)}
 .ktxs-toc-item:last-child{border-bottom:none}
 .ktxs-toc-no{
   flex:0 0 auto;width:25px;height:25px;border-radius:50%;
-  background:linear-gradient(135deg,#8a6a3a,#6b4e26);color:#fff;
+  background:linear-gradient(135deg,#7aa8dd,#5b86c4);color:#fff;
   font-size:12.5px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;
 }
 .ktxs-toc-t{font-size:clamp(14px,1.9vh,16.5px);font-weight:700;line-height:1.5}
-.ktxs-toc-dots{flex:1;min-width:12px;border-bottom:1px dotted rgba(122,94,52,.45);margin-bottom:3px}
-.ktxs-toc-pg{flex:0 0 auto;font-size:12.5px;font-weight:800;color:#8a6a3a}
+.ktxs-toc-dots{flex:1;min-width:12px;border-bottom:1px dotted rgba(91,134,196,.4);margin-bottom:3px}
+.ktxs-toc-pg{flex:0 0 auto;font-size:12.5px;font-weight:800;color:#5b86c4}
 .ktxs-toc-done{flex:0 0 auto;font-size:12px;line-height:1}
-.ktxs-toc-item.is-done .ktxs-toc-t{color:#8a6a3a}
+.ktxs-toc-item.is-done .ktxs-toc-t{color:#5b86c4}
 .ktxs-toc-item.is-done .ktxs-toc-no{background:linear-gradient(135deg,#3fbf7f,#2f9e66)}
-.ktxs-toc-foot{margin-top:10px;text-align:center;font-size:12px;color:rgba(122,94,52,.62);letter-spacing:1px}
-.ktxs-toc-empty{padding:36px 10px;text-align:center;color:#8a6a3a;font-size:14px}
+.ktxs-toc-foot{margin-top:10px;text-align:center;font-size:12px;color:rgba(91,134,196,.6);letter-spacing:1px}
+.ktxs-toc-empty{padding:36px 10px;text-align:center;color:#5b86c4;font-size:14px}
 
 /* 封面页 */
 .ktxs-cover{flex:1;display:flex;align-items:center;justify-content:center;border-radius:10px;background-size:cover;background-position:center}
-.ktxs-cover.has-img .ktxs-cover-frame{background:rgba(255,252,244,.88);box-shadow:0 6px 22px rgba(122,94,52,.22)}
+.ktxs-cover.has-img .ktxs-cover-frame{background:rgba(255,255,255,.9);box-shadow:0 6px 22px rgba(30,58,138,.14)}
 .ktxs-cover-frame{
   text-align:center;padding:clamp(18px,4vh,38px) clamp(16px,3vw,34px);
-  border:2.5px double rgba(122,94,52,.52);border-radius:8px;max-width:470px;
+  border:2.5px double rgba(91,134,196,.55);border-radius:8px;max-width:470px;
 }
 .ktxs-cover-cat{
-  display:inline-block;font-size:12.5px;font-weight:800;color:#6b4e26;
-  background:rgba(122,94,52,.12);border:1px solid rgba(122,94,52,.36);
+  display:inline-block;font-size:12.5px;font-weight:800;color:#3f639b;
+  background:rgba(91,134,196,.12);border:1px solid rgba(91,134,196,.36);
   border-radius:999px;padding:3px 14px;letter-spacing:2px;
 }
-.ktxs-cover-title{font-size:clamp(24px,4.4vh,36px);font-weight:900;color:#3c2a10;letter-spacing:2px;margin:16px 0 8px;line-height:1.42;font-family:"Songti SC","STSong","SimSun",serif}
-.ktxs-cover-orn{color:#a3825a;letter-spacing:6px;margin:6px 0 10px;font-size:14px}
-.ktxs-cover-intro{font-size:clamp(13.5px,1.9vh,16px);line-height:2;color:#5c4526;text-align:justify;text-indent:2em}
-.ktxs-cover-tip{margin-top:16px;font-size:12.5px;color:#a3825a;letter-spacing:1px}
+.ktxs-cover-title{font-size:clamp(24px,4.4vh,36px);font-weight:900;color:#243042;letter-spacing:2px;margin:16px 0 8px;line-height:1.42;font-family:"Songti SC","STSong","SimSun",serif}
+.ktxs-cover-orn{color:#7aa8dd;letter-spacing:6px;margin:6px 0 10px;font-size:14px}
+.ktxs-cover-intro{font-size:clamp(13.5px,1.9vh,16px);line-height:2;color:#3c4f66;text-align:justify;text-indent:2em}
+.ktxs-cover-tip{margin-top:16px;font-size:12.5px;color:#7aa8dd;letter-spacing:1px}
 
 /* 空书页 */
 .ktxs-pg-center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:20px}
 .ktxs-empty-ico{font-size:52px}
-.ktxs-empty-t{font-size:19px;font-weight:900;color:#4a3618}
-.ktxs-empty-s{font-size:13.5px;color:#8a6a3a;line-height:1.8}
+.ktxs-empty-t{font-size:19px;font-weight:900;color:#243042}
+.ktxs-empty-s{font-size:13.5px;color:#5b86c4;line-height:1.8}
 
 /* 弹窗内诗词/童话详情页（复用 .mao-detail 系列，微调适配书页） */
-.ktxs-page .mao-detail{background:rgba(255,255,255,.72);border-color:rgba(122,94,52,.3);box-shadow:none;margin:2px 0 10px}
-.ktxs-page .mao-sec-b{background:rgba(255,255,255,.66);border-color:rgba(122,94,52,.22);color:#4c3a20}
-.ktxs-page .mao-line{color:#33291a}
-.ktxs-page .mao-sec-h{color:#4a3618;border-left-color:#8a6a3a}
-.ktxs-page .mao-check-btn{background:linear-gradient(135deg,#8a6a3a,#5f4423);box-shadow:0 4px 12px rgba(122,94,52,.35)}
+.ktxs-page .mao-detail{background:rgba(255,255,255,.78);border-color:rgba(91,134,196,.3);box-shadow:none;margin:2px 0 10px}
+.ktxs-page .mao-sec-b{background:rgba(255,255,255,.7);border-color:rgba(91,134,196,.22);color:#33455c}
+.ktxs-page .mao-line{color:#243042}
+.ktxs-page .mao-sec-h{color:#243042;border-left-color:#5b86c4}
+.ktxs-page .mao-check-btn{background:linear-gradient(135deg,#7aa8dd,#5b86c4);box-shadow:0 4px 12px rgba(30,58,138,.22)}
 
 /* 窄屏（手机）兜底：双页收为单页，保证可读 */
 @media (max-width:760px){
   .ktxs-page-r{display:none}
-  .ktxs-spine,.ktxs-book-edge{display:none}
-  .ktxs-page-l{border-radius:16px;box-shadow:none}
+  .ktxs-page-edge{display:none}
+  .ktxs-pg-no-r{display:none}
+  .ktxs-pg-no-l{display:inline}
+  .ktxs-page-l{border-radius:16px}
 }
 
 
@@ -7001,19 +7018,32 @@ body.ktxs-read-open .sidebar{z-index:999999}
 
 
 
-/* R178-2：阅读页蓝底 + 内容卡浅蓝 + 点击变绿=完成 */
-.ktxs-pg-scroll{ background:linear-gradient(160deg,#e3f0ff,#cfe4ff) !important; padding:16px; }
+/* R178-2：阅读页内容卡（R180：2D 平面国风 —— 透明底透出米奶白书页 + 白卡蓝细描边 + 四角云纹内凹弧） */
+.ktxs-pg-scroll{ background:transparent !important; padding:16px; }
 .ktxs-pg-card{
-  position:relative; background:#f4faff; border:1.5px dashed #8fbef7; border-radius:14px;
-  padding:16px 16px 40px; cursor:pointer; transition:background .18s, border-color .18s, box-shadow .18s;
-  box-shadow:0 4px 12px rgba(64,150,255,0.10);
+  position:relative; background:#fff; border:1.5px solid #a9cdf2; border-radius:16px;
+  padding:clamp(18px,3vh,26px) clamp(16px,2.4vw,30px) clamp(24px,3.6vh,32px);
+  cursor:pointer; transition:background .18s, border-color .18s;
 }
-.ktxs-pg-card:hover{ border-color:#4096ff; box-shadow:0 6px 16px rgba(64,150,255,0.18); }
+/* R180-2e：四角云纹内凹弧 —— 以书页米奶白在四角"咬"出弧形缺口，内侧一线浅云弧 */
+.ktxs-pg-card::before{
+  content:'';position:absolute;inset:-1.5px;border-radius:16px;pointer-events:none;
+  background:
+    radial-gradient(circle 15px at 0 0,transparent 0 11.5px,#cfe6fb 11.5px 13px,transparent 13px),
+    radial-gradient(circle 15px at 100% 0,transparent 0 11.5px,#cfe6fb 11.5px 13px,transparent 13px),
+    radial-gradient(circle 15px at 0 100%,transparent 0 11.5px,#cfe6fb 11.5px 13px,transparent 13px),
+    radial-gradient(circle 15px at 100% 100%,transparent 0 11.5px,#cfe6fb 11.5px 13px,transparent 13px),
+    radial-gradient(circle 16px at 0 0,#fbfaf5 0 15px,transparent 15px),
+    radial-gradient(circle 16px at 100% 0,#fbfaf5 0 15px,transparent 15px),
+    radial-gradient(circle 16px at 0 100%,#fbfaf5 0 15px,transparent 15px),
+    radial-gradient(circle 16px at 100% 100%,#fbfaf5 0 15px,transparent 15px);
+}
+.ktxs-pg-card:hover{ border-color:#4096ff; }
 .ktxs-pg-card.is-page-done{
   background:#e9fbf1; border:1.5px solid #5cd6a0; border-style:solid;
   box-shadow:0 6px 16px rgba(40,180,120,0.20);
 }
-.ktxs-pg-card .ktxs-pg-txt{ color:#1f3a5f; line-height:1.9; font-size:16px; white-space:pre-wrap; }
+.ktxs-pg-card .ktxs-pg-txt{ color:#243042; line-height:2.05; font-size:clamp(15px,2vh,17.5px); white-space:pre-wrap; }
 .ktxs-pg-card-foot{ position:absolute; left:0; right:0; bottom:10px; text-align:center; font-size:13px; }
 .ktxs-pg-undo-tag{ color:#5b86c4; }
 .ktxs-pg-done-tag{ display:none; color:#1f8a4c; font-weight:700; }
@@ -7024,7 +7054,7 @@ body.ktxs-read-open .sidebar{z-index:999999}
 .modal-book-cover{ width:min(440px,92vw); }
 .ktxs-cover-body{ display:flex; flex-direction:column; align-items:center; gap:12px; }
 .ktxs-cover-img{
-  width:100%; aspect-ratio:3/4; max-height:52vh; border-radius:14px;
+  height:clamp(300px,52vh,600px); width:auto; max-width:100%; aspect-ratio:130/184; border-radius:14px;
   background:#dbe9ff center/cover no-repeat; display:flex; align-items:center; justify-content:center;
   border:1px solid #bcdcff; overflow:hidden;
 }
@@ -7065,7 +7095,7 @@ body.ktxs-read-open .sidebar{z-index:999999}
 /* R178-5：添加书籍时的封面上传 */
 .ktxs-cover-add{ display:flex; flex-direction:column; gap:6px; margin-top:8px; }
 .ktxs-cover-label{ font-size:13px; color:#5b86c4; }
-.ktxs-cover-preview{ width:100%; aspect-ratio:3/4; max-height:180px; border-radius:10px; background:#dbe9ff center/cover no-repeat; border:1px solid #bcdcff; }
+.ktxs-cover-preview{ width:100%; aspect-ratio:130/184; max-height:210px; border-radius:10px; background:#dbe9ff center/cover no-repeat; border:1px solid #bcdcff; }
 .ktxs-cover-preview.has-img{ background-color:#dbe9ff; }
 
 /* ===================== R179：封面弹窗重构 + 内容页标注页数 + 家长态拖拽 ===================== */
@@ -7078,8 +7108,10 @@ body.ktxs-read-open .sidebar{z-index:999999}
 /* 封面图可点击进入正文（正常书本比例，仅展示图，无书名文字叠层） */
 .ktxs-cover-img-click{ cursor:pointer; }
 .ktxs-cover-img-click:hover{ box-shadow:0 0 0 3px rgba(64,150,255,.55), 0 6px 16px rgba(64,150,255,0.22); }
-/* R179-3：内容页页号徽标 */
-.ktxs-pg-no{ position:absolute; top:8px; right:10px; font-size:12px; font-weight:800; color:#1e3a8a; background:#dbe9ff; border:1px solid #bcdcff; border-radius:999px; padding:2px 10px; }
+/* R179-3：内容页页号徽标；R180：移至右页底部 · 小字浅灰蓝（不随正文滚动） */
+.ktxs-pg-no{ position:absolute; bottom:clamp(8px,1.6vh,14px); font-size:12px; font-weight:700; color:#9fb4cf; letter-spacing:1px; font-family:"Songti SC","STSong","SimSun",serif; pointer-events:none; z-index:7; }
+.ktxs-pg-no-r{ right:clamp(18px,2.4vw,38px); }
+.ktxs-pg-no-l{ left:clamp(18px,2.4vw,38px); display:none; }
 .ktxs-pg-card{ position:relative; }
 /* R179-4：家长态拖拽手柄 */
 .ktxs-drag-handle{ margin-left:auto; cursor:grab; color:#5b86c4; font-size:18px; line-height:1; user-select:none; touch-action:none; padding:0 4px; }
@@ -33173,7 +33205,7 @@ window.WANTONG_COVER = './assets/c6249ea2bfe3.jpg';
     st.bookReadProgress = st.bookReadProgress || {};
     let n = parseFloat(pct); if(isNaN(n)) n = 0;
     n = Math.max(0, Math.min(100, n));
-    const prev = parseFloat(st.bookReadProgress[title]); if(isNaN(prev)) prev = 0;
+    let prev = parseFloat(st.bookReadProgress[title]); if(isNaN(prev)) prev = 0;
     if(n > prev) st.bookReadProgress[title] = n; // 单调递增：只增不减，刷新/reopen 不回退
     save(st);
     return Math.max(0, Math.min(100, n));
@@ -42243,7 +42275,6 @@ I'm good at running.`},
         <div class="ktxs-pg-scroll">
           ${pg.title?`<div class="ktxs-pg-title${pg.cont?' ktxs-pg-cont':''}">${esc(pg.title)}${pg.cont?'（续）':''}</div>`:''}
           <div class="ktxs-pg-card">
-            <span class="ktxs-pg-no">P ${pg.idx}</span>
             <div class="ktxs-pg-txt">${esc(pg.text)}</div>
           </div>
         </div>`;
@@ -42282,11 +42313,12 @@ I'm good at running.`},
     const li = st.spread*2, ri = li + 1;
     stage.innerHTML = `
       <div class="ktxs-book" id="ktxsBook">
-        <div class="ktxs-book-edge"></div>
         <div class="ktxs-page ktxs-page-l">${ktxsReaderPageHTML(st.pages[li], st.book, st.kind)}</div>
         <div class="ktxs-page ktxs-page-r">${ri<total ? ktxsReaderPageHTML(st.pages[ri], st.book, st.kind) : '<div class="ktxs-page-blank">❦</div>'}</div>
-        <div class="ktxs-spine"></div>
-        <div class="ktxs-flip-shade"></div>
+        <div class="ktxs-page-edge"></div>
+        <div class="ktxs-slide-fade"></div>
+        ${ri<total ? '<span class="ktxs-pg-no ktxs-pg-no-r">P ' + (ri+1) + '</span>' : ''}
+        <span class="ktxs-pg-no ktxs-pg-no-l">P ${li+1}</span>
       </div>`;
     _ktxsBookEl = document.getElementById('ktxsBook');
     const prev = document.getElementById('btnKtxsReadPrev'), next = document.getElementById('btnKtxsReadNext');
