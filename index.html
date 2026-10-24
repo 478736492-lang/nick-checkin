@@ -7105,7 +7105,7 @@ body.ktxs-read-open .sidebar{z-index:999999}
 .ktxs-page::-webkit-scrollbar-thumb{background:rgba(91,134,196,.3);border-radius:3px}
 
 /* 正文页 */
-.ktxs-pg-scroll{flex:1;min-height:0;overflow-y:auto;padding-right:4px}
+.ktxs-pg-scroll{flex:1;min-height:0;overflow:hidden;padding-right:4px}
 .ktxs-pg-title{font-size:clamp(18px,2.6vh,23px);font-weight:900;color:#243042;text-align:center;margin:4px 0 14px;letter-spacing:1px;font-family:"Songti SC","STSong","SimSun",serif}
 .ktxs-pg-title.ktxs-pg-cont{color:#5b86c4;font-size:clamp(15px,2.1vh,18px)}
 .ktxs-pg-txt{font-size:clamp(15px,2vh,18.5px);line-height:2.12;color:#243042;white-space:pre-wrap;word-break:break-word}
@@ -7173,6 +7173,15 @@ body.ktxs-read-open .sidebar{z-index:999999}
   .ktxs-pg-no-l{display:inline;left:50%}
   .ktxs-page-l{border-radius:16px}
 }
+/* R183-3：正文阅读页左下/右下角点击翻页区（点击对应区域执行翻页） */
+.ktxs-flip-zone{ position:absolute; bottom:0; height:24%; width:32%; z-index:5; cursor:pointer; -webkit-tap-highlight-color:transparent; pointer-events:auto; }
+.ktxs-flip-l{ left:0; display:flex; align-items:flex-end; justify-content:flex-start; }
+.ktxs-flip-r{ right:0; display:flex; align-items:flex-end; justify-content:flex-end; }
+.ktxs-flip-l::after, .ktxs-flip-r::after{ content:'‹'; font-size:30px; font-weight:900; color:rgba(91,134,196,.28); line-height:1; margin:0 16px 14px; transition:color .15s, transform .15s; }
+.ktxs-flip-r::after{ content:'›'; }
+.ktxs-flip-zone:hover::after{ color:rgba(30,58,138,.6); }
+.ktxs-flip-l:hover::after{ transform:translateX(-4px); }
+.ktxs-flip-r:hover::after{ transform:translateX(4px); }
 
 
 /* ===================== R178：推荐书籍 蓝化 + 完成度 + 封面/书签/目录 ===================== */
@@ -7215,7 +7224,7 @@ body.ktxs-read-open .sidebar{z-index:999999}
     radial-gradient(circle 16px at 100% 100%,#dceafd 0 15px,transparent 15px);
 }
 .ktxs-pg-card:hover{ border-color:#4096ff; }
-.ktxs-pg-card.is-page-done{
+.ktxs-pg-card.is-entry-done{
   background:#e9fbf1; border:1.5px solid #5cd6a0; border-style:solid;
   box-shadow:0 6px 16px rgba(40,180,120,0.20);
 }
@@ -7223,22 +7232,38 @@ body.ktxs-read-open .sidebar{z-index:999999}
 .ktxs-pg-card-foot{ position:absolute; left:0; right:0; bottom:10px; text-align:center; font-size:13px; }
 .ktxs-pg-undo-tag{ color:#5b86c4; }
 .ktxs-pg-done-tag{ display:none; color:#1f8a4c; font-weight:700; }
-.ktxs-pg-card.is-page-done .ktxs-pg-undo-tag{ display:none; }
-.ktxs-pg-card.is-page-done .ktxs-pg-done-tag{ display:inline; }
+.ktxs-pg-card.is-entry-done .ktxs-pg-undo-tag{ display:none; }
+.ktxs-pg-card.is-entry-done .ktxs-pg-done-tag{ display:inline; }
 
-/* R178-4：封面弹窗 */
-.modal-book-cover{ width:min(720px,94vw,calc((88dvh - 150px) * 130 / 184)); }
-.ktxs-cover-body{ display:flex; flex-direction:column; align-items:center; gap:12px; }
+/* R178-4 / R183-2：封面弹窗（两栏：左封面图 + 右信息栏，放大适配屏幕、不滚动） */
+.modal-book-cover{ width:min(960px,96vw); max-height:94vh; }
+.ktxs-cover-body{ display:flex; flex-direction:row; align-items:flex-start; gap:20px; }
 .ktxs-cover-img{
-  width:100%; height:auto; aspect-ratio:130/184; border-radius:14px;
+  width:auto; height:min(74vh,600px); aspect-ratio:130/184; border-radius:14px; flex:0 0 auto;
   background:#dbe9ff center/cover no-repeat; display:flex; align-items:center; justify-content:center;
   border:1px solid #bcdcff; overflow:hidden;
 }
+.ktxs-cover-info{ flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:12px; justify-content:center; padding:6px 4px; }
+.ktxs-cover-info-cat{ align-self:flex-start; font-size:13px; font-weight:800; color:#3f639b; background:rgba(91,134,196,.12); border:1px solid rgba(91,134,196,.36); border-radius:999px; padding:4px 14px; letter-spacing:1px; }
+.ktxs-cover-info-author{ font-size:clamp(18px,2.6vh,24px); font-weight:900; color:#243042; }
+.ktxs-cover-info-intro{ font-size:clamp(14px,2vh,17px); line-height:1.9; color:#3c4f66; text-align:justify; max-height:46vh; overflow:auto; }
+.ktxs-cover-info-tip{ margin-top:auto; font-size:13px; color:#7aa8dd; letter-spacing:1px; }
 .ktxs-cover-img.has-img{ background-color:#dbe9ff; }
 .ktxs-cover-ph{ font-size:20px; font-weight:800; color:#1e3a8a; text-align:center; padding:16px; line-height:1.5; }
 .ktxs-cover-meta{ font-size:13px; color:#5b86c4; text-align:center; }
 .ktxs-cover-actions{ display:flex; gap:10px; width:100%; }
 .ktxs-cover-actions button{ flex:1; }
+/* R183-1：书籍管理操作面板（编辑 / 删除 / 撤销已读） */
+.modal-book-ops{ width:min(460px,94vw); }
+.ktxs-ops-body{ display:flex; flex-direction:column; gap:10px; }
+.ktxs-ops-row{ display:flex; align-items:center; gap:10px; padding:10px 12px; background:#f4faff; border:1.5px solid #d8e8fb; border-radius:12px; }
+.ktxs-ops-name{ flex:1; min-width:0; font-size:15px; font-weight:800; color:#243042; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.ktxs-ops-actions{ display:flex; gap:6px; flex:0 0 auto; }
+.ktxs-ops-btn{ font-size:12.5px; font-weight:700; padding:6px 10px; border-radius:999px; border:1.5px solid var(--tone-line); background:#fff; color:var(--tone-700); cursor:pointer; transition:.14s; }
+.ktxs-ops-btn:hover{ background:var(--tone-100); }
+.ktxs-ops-edit:hover{ border-color:#4096ff; color:#1e3a8a; }
+.ktxs-ops-del:hover{ border-color:#ff8a9a; color:#d6304a; }
+.ktxs-ops-unread.is-disabled{ opacity:.4; cursor:not-allowed; border-color:#d8e8fb; color:#9fb4cf; }
 
 /* R178-7：书签与注释弹窗 */
 .modal-bookmarks{ width:min(480px,94vw); }
@@ -7296,13 +7321,18 @@ body.ktxs-read-open .sidebar{z-index:999999}
 
 /* ===================== R181：书页蓝底 + 双页码居中 + 页内翻页键 + 拖拽跨页 + 封面放大 + 卡高减半 ===================== */
 /* R182-3：页内翻页键已删除 —— 翻页改左页双击上一页 / 右页双击下一页（左右滑动 + 键盘方向键仍保留） */
-/* R182-7：书籍正文页背景贴图（用户提供，cover 适应页面大小平铺）—— 衬于书页内容下方 */
-.ktxs-page{
-  background-color:#dceafd;
+/* R183-7：修复 R182 误将书籍列表背景图贴进书页内 —— 背景图回归书籍列表容器（.ktxs-slot-wrap） */
+.ktxs-slot-wrap{
   background-image:url(./assets/2ba7552e039a.jpg);
   background-size:cover;
   background-position:center;
   background-repeat:no-repeat;
+  border-radius:18px;
+  padding:10px 6px;
+}
+/* 书页内仅保留米奶蓝底，不再贴背景图 */
+.ktxs-page{
+  background-color:#dceafd;
 }
 /* R182-2：每页文章结尾「已读」键（点击该页变绿，数据计入阅读进度统计） */
 .ktxs-pg-card-foot{ position:static;left:auto;right:auto;bottom:auto;margin-top:14px;text-align:center;font-size:13px; }
@@ -7317,8 +7347,8 @@ body.ktxs-read-open .sidebar{z-index:999999}
 }
 .ktxs-pg-done-btn:hover{ border-color:var(--tone-700); box-shadow:0 4px 12px rgba(30,58,138,.18); }
 .ktxs-pg-done-btn:active{ transform:scale(.96); }
-.ktxs-pg-card.is-page-done .ktxs-pg-done-btn,
-.mao-detail.is-page-done .ktxs-pg-done-btn{
+.ktxs-pg-card.is-entry-done .ktxs-pg-done-btn,
+.mao-detail.is-entry-done .ktxs-pg-done-btn{
   background:linear-gradient(135deg,#3fbf7f,#1f8a4c);border-color:#1f8a4c;color:#fff;
 }
 /* R182-4：书籍卡书名下一行作者栏 + 封面页作者行 */
@@ -7329,12 +7359,11 @@ body.ktxs-read-open .sidebar{z-index:999999}
 /* R181-6：拖拽影子（跟手克隆卡）+ 原卡半透明占位 */
 .ktxs-drag-ghost{position:fixed;z-index:99999;pointer-events:none;opacity:.94;animation:none !important;box-shadow:0 14px 34px rgba(30,58,138,.3)}
 .ktxs-drag-src{opacity:.32}
-/* R181-7b：封面弹窗通栏 —— 封面宽与弹窗页面一致（头部保留左右内边距，封面区左右通栏贴边）；
-   弹窗宽度带高度自适应项，保证 32 开（130/184）整张封面可见、弹窗内不出现滚动条 */
-.modal-book-cover.modal-box{padding:18px 0 0}
+/* R181-7b / R183-2：封面弹窗两栏（盒去 padding 由 head/body 自理；封面图圆角不贴边） */
+.modal-book-cover.modal-box{padding:0}
 .modal-book-cover .ktxs-cover-head{padding:0 18px}
-.modal-book-cover .ktxs-cover-body{padding:0;align-items:stretch;gap:0}
-.modal-book-cover .ktxs-cover-img{border-radius:0 0 16px 16px}
+.modal-book-cover .ktxs-cover-body{padding:18px 22px 24px;flex-direction:row;align-items:flex-start;gap:20px}
+.modal-book-cover .ktxs-cover-img{border-radius:14px}
 
 </style>
 </head>
@@ -7783,7 +7812,7 @@ body.ktxs-read-open .sidebar{z-index:999999}
     </div>
   </div>
 
-  <!-- ========== R179-2：书籍封面弹窗（封面可点进正文 · 更换封面仅家长态且位于书名右侧） ========== -->
+  <!-- ========== R179-2 / R183-2：书籍封面弹窗（两栏：左封面图 + 右信息栏，放大不滚动） ========== -->
   <div class="modal-mask" id="modalKtxsCover" hidden>
     <div class="modal-box modal-book-cover">
       <div class="modal-head ktxs-cover-head">
@@ -7792,11 +7821,29 @@ body.ktxs-read-open .sidebar{z-index:999999}
           <button type="button" class="secondary-btn ktxs-cover-change" id="btnKtxsCoverChange">🖼️ 更换封面</button>
           <button class="modal-x" data-close>×</button>
         </div>
-        <div class="ktxs-cover-meta" id="ktxsCoverMeta"></div>
       </div>
       <div class="modal-body ktxs-cover-body">
         <div class="ktxs-cover-img ktxs-cover-img-click" id="ktxsCoverImg"></div>
+        <div class="ktxs-cover-info">
+          <div class="ktxs-cover-info-cat" id="ktxsCoverCat"></div>
+          <div class="ktxs-cover-info-author" id="ktxsCoverAuthor"></div>
+          <div class="ktxs-cover-info-intro" id="ktxsCoverIntro"></div>
+          <div class="ktxs-cover-info-tip">👆 点击封面进入正文阅读</div>
+        </div>
         <input type="file" id="ktxsCoverFile" accept="image/*" hidden />
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== R183-1：书籍管理操作面板（编辑 / 删除 / 撤销已读） ========== -->
+  <div class="modal-mask" id="modalKtxsBookOps" hidden>
+    <div class="modal-box modal-book-ops">
+      <div class="modal-head">
+        <h3>📚 书籍管理</h3>
+        <button class="modal-x" data-close>×</button>
+      </div>
+      <div class="modal-body">
+        <div class="ktxs-ops-body" id="ktxsBookOpsBody"></div>
       </div>
     </div>
   </div>
@@ -33528,6 +33575,68 @@ window.KTXS_TONGNIAN_COVER = './assets/477b8a43cb0b.jpg';
     save(st);
     return st.bookToc[title].slice();
   }
+  // R183-6：按「文章（entry）」已读统计 —— 进度仅计已打卡文章，未打卡不计
+  function getBookEntryDone(title, eIdx){
+    const st = load();
+    return !!(st.bookEntryDone && st.bookEntryDone[title] && st.bookEntryDone[title][String(eIdx)]);
+  }
+  function toggleBookEntryDone(title, eIdx){
+    const st = load();
+    if(!st.bookEntryDone) st.bookEntryDone = {};
+    if(!st.bookEntryDone[title]) st.bookEntryDone[title] = {};
+    const k = String(eIdx);
+    if(st.bookEntryDone[title][k]) delete st.bookEntryDone[title][k];
+    else st.bookEntryDone[title][k] = true;
+    save(st);
+    return !!st.bookEntryDone[title][k];
+  }
+  function countBookEntryDone(title){
+    const st = load();
+    return (st.bookEntryDone && st.bookEntryDone[title]) ? Object.keys(st.bookEntryDone[title]).length : 0;
+  }
+  // R183-1：书籍编辑 / 删除 / 撤销已读 数据层
+  function getKtxsBooks(){
+    const st = load();
+    return (st.nwZone && st.nwZone.ktxs_books) ? st.nwZone.ktxs_books.slice() : [];
+  }
+  function updateKtxsBook(oldTitle, data){
+    const st = load();
+    if(!st.nwZone) st.nwZone = {};
+    if(!st.nwZone.ktxs_books) st.nwZone.ktxs_books = [];
+    const rec = st.nwZone.ktxs_books.find(b=>b && (b.t||'') === oldTitle);
+    if(!rec) return false;
+    const newT = (data.t && data.t.trim()) || oldTitle;
+    rec.t = newT; rec.a = (data.a||'').trim(); rec.c = (data.c||'').trim();
+    // 改名：同步内容命名空间 / 封面 / 顺序 / 各种进度键
+    if(newT !== oldTitle){
+      if(st.nwZone['ktxs_' + oldTitle]){ st.nwZone['ktxs_' + newT] = st.nwZone['ktxs_' + oldTitle]; delete st.nwZone['ktxs_' + oldTitle]; }
+      if(st.bookCovers && st.bookCovers[oldTitle]){ st.bookCovers[newT] = st.bookCovers[oldTitle]; delete st.bookCovers[oldTitle]; }
+      if(st.ktxs_order){ const oi = st.ktxs_order.indexOf(oldTitle); if(oi>=0) st.ktxs_order[oi] = newT; }
+      if(st.bookPageDone && st.bookPageDone[oldTitle]){ st.bookPageDone[newT] = st.bookPageDone[oldTitle]; delete st.bookPageDone[oldTitle]; }
+      if(st.bookEntryDone && st.bookEntryDone[oldTitle]){ st.bookEntryDone[newT] = st.bookEntryDone[oldTitle]; delete st.bookEntryDone[oldTitle]; }
+      if(st.bookReadProgress && st.bookReadProgress[oldTitle]!=null){ st.bookReadProgress[newT] = st.bookReadProgress[oldTitle]; delete st.bookReadProgress[oldTitle]; }
+      if(st.bookReadAward10 && st.bookReadAward10[oldTitle]){ st.bookReadAward10[newT] = true; delete st.bookReadAward10[oldTitle]; }
+      if(st.bookReadAward100 && st.bookReadAward100[oldTitle]){ st.bookReadAward100[newT] = true; delete st.bookReadAward100[oldTitle]; }
+      if(st.readFlags && st.readFlags['suzhi_ktxs::'+oldTitle]){ st.readFlags['suzhi_ktxs::'+newT] = true; delete st.readFlags['suzhi_ktxs::'+oldTitle]; }
+    }
+    save(st);
+    return true;
+  }
+  function deleteKtxsBook(title){
+    const st = load();
+    if(st.nwZone && st.nwZone.ktxs_books){ st.nwZone.ktxs_books = st.nwZone.ktxs_books.filter(b=>b && (b.t||'') !== title); }
+    if(st.nwZone && st.nwZone['ktxs_' + title]) delete st.nwZone['ktxs_' + title];
+    if(st.bookCovers && st.bookCovers[title]) delete st.bookCovers[title];
+    if(st.ktxs_order){ st.ktxs_order = st.ktxs_order.filter(x=>x !== title); }
+    if(st.bookPageDone && st.bookPageDone[title]) delete st.bookPageDone[title];
+    if(st.bookEntryDone && st.bookEntryDone[title]) delete st.bookEntryDone[title];
+    if(st.bookReadProgress && st.bookReadProgress[title]!=null) delete st.bookReadProgress[title];
+    if(st.bookReadAward10 && st.bookReadAward10[title]) delete st.bookReadAward10[title];
+    if(st.bookReadAward100 && st.bookReadAward100[title]) delete st.bookReadAward100[title];
+    if(st.readFlags && st.readFlags['suzhi_ktxs::'+title]) delete st.readFlags['suzhi_ktxs::'+title];
+    save(st);
+    return true;
+  }
 
   // ----- 百科 -----
   function getDailyBaike(){
@@ -37048,7 +37157,7 @@ be 动词：am / is → was；are → were
     getMaoStars, setMaoStars, maoPoemCheckedList, isMaoPoemChecked, checkMaoPoem, uncheckMaoPoem,
     TASK_STAR_DEFS, getTaskStars, setTaskStars,
     getBookReadProgress, setBookReadProgress, isBookAwarded10, markBookAwarded10, isBookAwarded100, markBookAwarded100, getBookReadStars, setBookReadStars,
-    getBookCover, setBookCover, getBookPageDone, toggleBookPageDone, countBookPageDone, getBookBookmarks, addBookBookmark, delBookBookmark, getBookToc, addBookToc, delBookToc,
+    getBookCover, setBookCover, getBookPageDone, toggleBookPageDone, countBookPageDone, getBookEntryDone, toggleBookEntryDone, countBookEntryDone, getKtxsBooks, updateKtxsBook, deleteKtxsBook, getBookBookmarks, addBookBookmark, delBookBookmark, getBookToc, addBookToc, delBookToc,
     getDailyBaike, getDailyCaimi, getBaikeByCat, markBaikeCheckin, unmarkBaikeCheckin, getBaikeCounts, isBaikeChecked,
     addBaikeItem, delBaikeItem,
     archiveBaikeToday, getBaikeLibrary, isBaikeArchivedToday,
@@ -37100,7 +37209,7 @@ be 动词：am / is → was；are → were
     // R122：新世界·英语专区「重点知识」单元图片（含删除后打卡下标重排）
     getEnKeyPoints, addEnKeyPoint, delEnKeyPoint, shiftEnKeyPointReads,
     // R178：书籍封面 / 正文完成 / 书签 / 目录
-    getBookCover, setBookCover, getBookPageDone, toggleBookPageDone, countBookPageDone, getBookBookmarks, addBookBookmark, delBookBookmark, getBookToc, addBookToc, delBookToc,
+    getBookCover, setBookCover, getBookPageDone, toggleBookPageDone, countBookPageDone, getBookEntryDone, toggleBookEntryDone, countBookEntryDone, getKtxsBooks, updateKtxsBook, deleteKtxsBook, getBookBookmarks, addBookBookmark, delBookBookmark, getBookToc, addBookToc, delBookToc,
     // R126：存储写入错误状态（配额超限感知）
     getSaveError,
     // R131-2：设置中心「保存设置」暂存模型
@@ -40207,13 +40316,31 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         openKtxsBookAdd(()=>{ _szCurPage = 0; if(rerender) rerender(); toast('📚 已添加书籍'); });
       });
     }
+    // R183-1：家长态「✏️ 编辑书籍」入口 —— 唤起书籍管理面板（编辑/删除/撤销已读）
+    const editListBtn = slotBody.querySelector('[data-ktxs-edit-list]');
+    if(editListBtn && !editListBtn._ktBound){
+      editListBtn._ktBound = true;
+      editListBtn.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        ktxsOpenBookOps(null);
+      });
+    }
     // R176：点击书籍卡片弹出双页书本阅读弹窗（原页内正文/诗词视图已由阅读器替代）
     slotBody.querySelectorAll('[data-ktxs-book]').forEach(card=>{
       if(card._ktBound) return; card._ktBound = true;
       card.addEventListener('click', (e)=>{
         if(e.target.closest('[data-suzhi-checkin]')) return; // 打卡键独立
         if(e.target.closest('[data-ktxs-drag]')) return;     // 拖拽手柄不触发打开
+        if(e.target.closest('[data-ktxs-edit]')) return;     // R183-1：编辑按键独立
         openKtxsCover(card.getAttribute('data-ktxs-book'));
+      });
+    });
+    // R183-1：每本书卡（家长态）的 ✏️ 编辑按键 —— 直接打开该书管理面板
+    slotBody.querySelectorAll('[data-ktxs-edit]').forEach(btn=>{
+      if(btn._ktBound) return; btn._ktBound = true;
+      btn.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        ktxsOpenBookOps(btn.getAttribute('data-ktxs-edit'));
       });
     });
     // R181-6：家长模式拖拽排序书籍（按住手柄可上下左右/跨页移动；落点插入后其余书籍自动顺延；
@@ -42427,18 +42554,23 @@ I'm good at running.`},
             <span class="sz-daily-badge">${esc(it.cat)}</span>
             <span class="sz-card-state ${stateCls}">${stateTxt}</span>
             ${isParent()? '<span class="ktxs-drag-handle" data-ktxs-drag="1" title="按住拖动调整顺序">⠿</span>' : ''}
+            ${isParent()? '<button type="button" class="ktxs-card-edit" data-ktxs-edit="'+esc(it.title)+'" title="编辑 / 删除本书">✏️</button>' : ''}
           </div>
           <div class="sz-daily-title sz-book-title">《${esc(it.title)}》</div>
           ${it.author?`<div class="sz-book-author">${esc(it.author)} 著</div>`:''}
         </div>`;
     }).join('') || '<div class="nw-zone-empty">书目整理中～</div>';
     // R71-5：新增「➕ 添加书籍」按键；已删除原书目下方的「添加内容卡片」
+    // R183-1：头部加「✏️ 编辑书籍」入口（唤起书籍管理面板）；R183-7：整体包 .ktxs-slot-wrap 承载书籍列表背景图
     return `
-      <div class="yw-comp-head">${esc(label||'推荐书籍')} · 共 ${items.length} 本
-        <button type="button" class="ktxs-head-btn" data-ktxs-add-book="1" title="添加一本新书">➕ 添加书籍</button>
-      </div>
-      <div class="sz-card-grid ktxs-book-grid">${cards}</div>
-      ${szPager(page, totalPages)}`;
+      <div class="ktxs-slot-wrap">
+        <div class="yw-comp-head">${esc(label||'推荐书籍')} · 共 ${items.length} 本
+          <button type="button" class="ktxs-head-btn" data-ktxs-add-book="1" title="添加一本新书">➕ 添加书籍</button>
+          ${isParent()? '<button type="button" class="ktxs-head-btn" data-ktxs-edit-list="1" title="编辑 / 删除书籍">✏️ 编辑书籍</button>' : ''}
+        </div>
+        <div class="sz-card-grid ktxs-book-grid">${cards}</div>
+        ${szPager(page, totalPages)}
+      </div>`;
   }
 
   // R73-5 / R75-3：诗词正文按「书本标准」排版 —— 每一小句单独一行（按 。？！；，、 断句），原段落之间留空行
@@ -42482,8 +42614,8 @@ I'm good at running.`},
   function ktxsBookTextPageTotal(book){ return ktxsTitleTextPageTotal(book.title); }
   function ktxsReaderPages(book){
     const kind = (book.poemKey === 'mao' && window.MAO_POEMS && Array.isArray(window.MAO_POEMS)) ? 'mao'
-               : (book.poemKey === 'wtb' && window.WANTONG_STORIES && Array.isArray(window.WANTONG_STORIES)) ? 'wtb'
-               : (book.poemKey === 'tjxc' && window.TONGNIAN_STORIES && Array.isArray(window.TONGNIAN_STORIES)) ? 'tjxc' : 'txt';
+                 : (book.poemKey === 'wtb' && window.WANTONG_STORIES && Array.isArray(window.WANTONG_STORIES)) ? 'wtb'
+                 : (book.poemKey === 'tjxc' && window.TONGNIAN_STORIES && Array.isArray(window.TONGNIAN_STORIES)) ? 'tjxc' : 'txt';
     const entries = []; const body = [];
     if(kind === 'txt' || kind === 'tjxc'){
       // R182-6：《童年琐记》正文读内置常量（按篇切分，新篇新页），其余普通/自建书读用户录入
@@ -42494,23 +42626,35 @@ I'm good at running.`},
         const title = String(it.t||'').trim();
         const text = String(it.c||'').trim() || title;
         const chunks = ktxsSplitText(text);
-        entries.push({ no: ci+1, label: title || ('正文 ' + (ci+1)), page: body.length + 2 });
-        chunks.forEach((ch, ki)=> body.push({ type:'text', title: title, text: ch, cont: ki>0, idx: body.length + 2 }));
+        entries.push({ no: ci+1, label: title || ('正文 ' + (ci+1)), eIdx: ci, done: !!(S.getBookEntryDone && S.getBookEntryDone(book.title, ci)) });
+        chunks.forEach((ch, ki)=> body.push({ type:'text', eIdx: ci, title: title, text: ch, cont: ki>0, idx: 0 }));
       });
       if(!contents.length) body.push({ type:'empty' });
     } else {
       const arr = (kind === 'mao') ? window.MAO_POEMS : window.WANTONG_STORIES;
-      arr.forEach((po, i)=>{
-        entries.push({ no: i+1, label: po.t || ('第 ' + (i+1) + ' 篇'), page: i + 2, done: !!(S.isMaoPoemChecked && S.isMaoPoemChecked(i)) });
-        body.push({ type:'poem', po: po, idx: i });
+      (arr||[]).forEach((po, i)=>{
+        const hasBg = !!(po.b && String(po.b).trim());
+        const hasAp = !!(po.a && String(po.a).trim());
+        entries.push({ no: i+1, label: po.t || ('第 ' + (i+1) + ' 篇'), eIdx: i, done: !!(S.getBookEntryDone && S.getBookEntryDone(book.title, i)) });
+        // R183-4：诗词/童话拆为「诗（或故事）/ 创作背景 / 赏析」三段分页，避免单页内容过长溢出
+        body.push({ type:'poem-sec', sec:'poem', eIdx: i, po: po, idx: 0, srcText: String(po.c||'') });
+        if(hasBg) body.push({ type:'poem-sec', sec:'bg', eIdx: i, po: po, idx: 0, srcText: String(po.b||'') });
+        if(hasAp) body.push({ type:'poem-sec', sec:'ap', eIdx: i, po: po, idx: 0, srcText: String(po.a||'') });
       });
     }
     const pages = [{ type:'cover', book: book }, { type:'toc', book: book, entries: entries, kind: kind }];
     body.forEach(pg=>{ pg.kind = kind; pages.push(pg); });
     if(pages.length % 2) pages.push({ type:'blank' });
-    return pages;
+    return { pages: pages, entries: entries };
   }
-  function ktxsReaderPageHTML(pg, book, kind){
+  // R183-6：判定某页是否为所属文章（entry）的末页 —— 末页显示「标记已读」键
+  function ktxsIsLastOfEntry(st, idx){
+    const pg = st.pages[idx]; if(!pg || pg.eIdx == null) return false;
+    const nx = st.pages[idx+1];
+    if(!nx || nx.eIdx == null) return true;
+    return nx.eIdx !== pg.eIdx;
+  }
+  function ktxsReaderPageHTML(pg, book, kind, isLast){
     if(!pg || pg.type === 'blank') return '<div class="ktxs-page-blank">❦</div>';
     if(pg.type === 'cover'){
       const coverUrl = ktxsBuiltinCover(book);
@@ -42527,12 +42671,12 @@ I'm good at running.`},
     }
     if(pg.type === 'toc'){
       const items = (pg.entries||[]).length ? pg.entries.map(e=>`
-        <button type="button" class="ktxs-toc-item${e.done?' is-done':''}" data-ktxs-toc="${e.page}">
+        <button type="button" class="ktxs-toc-item${e.done?' is-done':''}" data-ktxs-toc-entry="${e.eIdx}">
           <span class="ktxs-toc-no">${e.no}</span>
           <span class="ktxs-toc-t">${esc(e.label)}</span>
           <span class="ktxs-toc-dots"></span>
           ${e.done?'<span class="ktxs-toc-done" title="已打卡">✅</span>':''}
-          <span class="ktxs-toc-pg">P ${e.page}</span>
+          <span class="ktxs-toc-pg">第 ${e.no} 篇</span>
         </button>`).join('') : '<div class="ktxs-toc-empty">本书目录整理中～</div>';
       const tocList = (S.getBookToc ? S.getBookToc(book.title) : []);
       const tocItems = tocList.length ? tocList.map((e,i)=>`
@@ -42559,42 +42703,46 @@ I'm good at running.`},
         </div>`;
     }
     if(pg.type === 'text'){
-      // R182-2：每页文章结尾「已读」按键 —— 点击后该页变绿，数据入阅读进度统计
-      const pdone = !!(S.getBookPageDone && S.getBookPageDone(book.title)[String(pg.idx)]);
+      // R183-6：仅文章末页（eLast）显示「标记已读」键，点击计入该文章已读进度
+      const edone = !!(S.getBookEntryDone && S.getBookEntryDone(book.title, pg.eIdx));
+      const btn = isLast ? `<button type="button" class="ktxs-pg-done-btn" data-ktxs-entry-done="${pg.eIdx}">${edone?'✓ 已读（点击取消）':'✓ 标记已读'}</button>` : '';
       return `
         <div class="ktxs-pg-scroll">
           ${pg.title?`<div class="ktxs-pg-title${pg.cont?' ktxs-pg-cont':''}">${esc(pg.title)}${pg.cont?'（续）':''}</div>`:''}
-          <div class="ktxs-pg-card${pdone?' is-page-done':''}">
+          <div class="ktxs-pg-card${edone&&isLast?' is-entry-done':''}">
             <div class="ktxs-pg-txt">${esc(pg.text)}</div>
-            <div class="ktxs-pg-card-foot">
-              <button type="button" class="ktxs-pg-done-btn" data-ktxs-page-done="${pg.idx}" title="标记本页已读（计入阅读进度）">${pdone?'✓ 已读（点击取消）':'✓ 已读'}</button>
-            </div>
+            <div class="ktxs-pg-card-foot">${btn}</div>
           </div>
         </div>`;
     }
-    if(pg.type === 'poem'){
+    if(pg.type === 'poem-sec'){
       const po = pg.po || {};
-      const isPoem = (kind === 'mao');
-      const pdone = !!(S.getBookPageDone && S.getBookPageDone(book.title)[String(pg.idx)]);
+      const edone = !!(S.getBookEntryDone && S.getBookEntryDone(book.title, pg.eIdx));
+      const btn = isLast ? `<button type="button" class="ktxs-pg-done-btn" data-ktxs-entry-done="${pg.eIdx}">${edone?'✓ 已读（点击取消）':'✓ 标记已读'}</button>` : '';
+      if(pg.sec === 'poem'){
+        const isPoem = (kind === 'mao');
+        const txt = pg.cont ? fmtMaoPoem(pg.srcText) : fmtMaoPoem(po.c);
+        return `
+          <div class="ktxs-pg-scroll">
+            <div class="mao-detail${edone&&isLast?' is-entry-done':''}">
+              ${pg.cont?'':`<div class="mao-detail-title">${esc(po.t||'')}</div>`}
+              ${pg.cont?'':(isPoem?`<div class="mao-detail-author">现代 ${esc(book.author||'毛泽东')}</div>`:'')}
+              ${pg.cont?'':(po.d?`<div class="mao-detail-date">${esc(po.d)}</div>`:'')}
+              <div class="mao-poem-content">${txt}</div>
+            </div>
+            <div class="ktxs-pg-done-row">${btn}</div>
+          </div>`;
+      }
+      const secTitle = pg.sec === 'bg' ? '📜 创作背景' : '🔍 专业赏析';
       return `
         <div class="ktxs-pg-scroll">
-          <div class="mao-detail${pdone?' is-page-done':''}">
-            <div class="mao-detail-title">${esc(po.t||'')}</div>
-            ${isPoem?`<div class="mao-detail-author">现代 ${esc(book.author||'毛泽东')}</div>`:''}
-            ${po.d?`<div class="mao-detail-date">${esc(po.d)}</div>`:''}
-            <div class="mao-poem-content">${fmtMaoPoem(po.c)}</div>
-            ${isPoem?`<div class="mao-sec">
-              <div class="mao-sec-h">📜 创作背景</div>
-              <div class="mao-sec-b">${esc(po.b || '')}</div>
-            </div>
+          <div class="mao-detail${edone&&isLast?' is-entry-done':''}">
             <div class="mao-sec">
-              <div class="mao-sec-h">🔍 专业赏析</div>
-              <div class="mao-sec-b">${esc(po.a || '')}</div>
-            </div>`:''}
+              <div class="mao-sec-h">${secTitle}</div>
+              <div class="mao-sec-b">${esc(pg.srcText||'')}</div>
+            </div>
           </div>
-          <div class="ktxs-pg-done-row">
-            <button type="button" class="ktxs-pg-done-btn" data-ktxs-page-done="${pg.idx}" title="标记本页已读（计入阅读进度）">${pdone?'✓ 已读（点击取消）':'✓ 已读'}</button>
-          </div>
+          <div class="ktxs-pg-done-row">${btn}</div>
         </div>`;
     }
     return '';
@@ -42608,14 +42756,18 @@ I'm good at running.`},
     if(st.spread > maxSpread) st.spread = maxSpread;
     if(st.spread < 0) st.spread = 0;
     const li = st.spread*2, ri = li + 1;
+    const isLastL = ktxsIsLastOfEntry(st, li);
+    const isLastR = ktxsIsLastOfEntry(st, ri);
     stage.innerHTML = `
       <div class="ktxs-book" id="ktxsBook">
-        <div class="ktxs-page ktxs-page-l">${ktxsReaderPageHTML(st.pages[li], st.book, st.kind)}</div>
-        <div class="ktxs-page ktxs-page-r">${ri<total ? ktxsReaderPageHTML(st.pages[ri], st.book, st.kind) : '<div class="ktxs-page-blank">❦</div>'}</div>
+        <div class="ktxs-page ktxs-page-l">${ktxsReaderPageHTML(st.pages[li], st.book, st.kind, isLastL)}</div>
+        <div class="ktxs-page ktxs-page-r">${ri<total ? ktxsReaderPageHTML(st.pages[ri], st.book, st.kind, isLastR) : '<div class="ktxs-page-blank">❦</div>'}</div>
         <div class="ktxs-page-edge"></div>
         <div class="ktxs-slide-fade"></div>
         ${ri<total ? '<span class="ktxs-pg-no ktxs-pg-no-r">P ' + (ri+1) + '</span>' : ''}
         <span class="ktxs-pg-no ktxs-pg-no-l">P ${li+1}</span>
+        <div class="ktxs-flip-zone ktxs-flip-l" data-ktxs-flip="-1" title="上一页"></div>
+        <div class="ktxs-flip-zone ktxs-flip-r" data-ktxs-flip="1" title="下一页"></div>
       </div>`;
     _ktxsBookEl = document.getElementById('ktxsBook');
     ktxsBindReaderInner(stage);
@@ -42638,32 +42790,52 @@ I'm good at running.`},
         ktxsFlip(1);
       });
     });
-    // R182-2：每页「已读」按键 —— 点击后该页变绿，并计入阅读进度统计（局部更新，避免整本重渲染冲掉文本选中）
-    root.querySelectorAll('[data-ktxs-page-done]').forEach(b=>{
+    // R183-6：文章末页「标记已读」键 —— 点击切换该文章已读，局部变绿并计入阅读进度（按文章计，非按页）
+    root.querySelectorAll('[data-ktxs-entry-done]').forEach(b=>{
       if(b._ktDone) return; b._ktDone = true;
       b.addEventListener('click', (e)=>{
         e.stopPropagation();
         const st = _ktxsReader; if(!st) return;
-        const idx = parseInt(b.getAttribute('data-ktxs-page-done'), 10);
-        if(isNaN(idx)) return;
-        if(S.toggleBookPageDone) S.toggleBookPageDone(st.book.title, idx);
-        const on = !!(S.getBookPageDone && S.getBookPageDone(st.book.title)[String(idx)]);
+        const eIdx = parseInt(b.getAttribute('data-ktxs-entry-done'), 10);
+        if(isNaN(eIdx)) return;
+        if(S.toggleBookEntryDone) S.toggleBookEntryDone(st.book.title, eIdx);
+        const on = !!(S.getBookEntryDone && S.getBookEntryDone(st.book.title, eIdx));
         const card = (b.closest && (b.closest('.ktxs-pg-card') || b.closest('.mao-detail'))) || null;
-        if(card) card.classList.toggle('is-page-done', on);
-        b.textContent = on ? '✓ 已读（点击取消）' : '✓ 已读';
+        if(card) card.classList.toggle('is-entry-done', on);
+        b.textContent = on ? '✓ 已读（点击取消）' : '✓ 标记已读';
+        // 同步目录对应条目（已读标识）
+        const tocItem = root.querySelector('[data-ktxs-toc-entry="'+eIdx+'"]');
+        if(tocItem){
+          tocItem.classList.toggle('is-done', on);
+          let d = tocItem.querySelector('.ktxs-toc-done');
+          if(on && !d){ const sp = document.createElement('span'); sp.className='ktxs-toc-done'; sp.title='已打卡'; sp.textContent='✅'; tocItem.appendChild(sp); }
+          else if(!on && d){ d.remove(); }
+        }
         const ms = Math.max(0, Math.ceil(st.pages.length/2) - 1);
         ktxsRecordProgress(st.book.title, st.spread, ms);
-        toast(on ? '✓ 本页已读' : '已取消本页已读');
+        toast(on ? '✓ 本章已读' : '已取消本章已读');
       });
     });
-    root.querySelectorAll('[data-ktxs-toc]').forEach(b=>{
+    // R183-3：左下/右下角点击区域翻页
+    root.querySelectorAll('[data-ktxs-flip]').forEach(z=>{
+      if(z._ktFlip) return; z._ktFlip = true;
+      z.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        const dir = parseInt(z.getAttribute('data-ktxs-flip'), 10);
+        if(!isNaN(dir)) ktxsFlip(dir);
+      });
+    });
+    root.querySelectorAll('[data-ktxs-toc-entry]').forEach(b=>{
       if(b._ktToc) return; b._ktToc = true;
       b.addEventListener('click', (e)=>{
         e.stopPropagation();
-        const pg = parseInt(b.getAttribute('data-ktxs-toc'), 10);
-        if(isNaN(pg)) return;
+        const eIdx = parseInt(b.getAttribute('data-ktxs-toc-entry'), 10);
+        if(isNaN(eIdx)) return;
         const st = _ktxsReader; if(!st) return;
-        st.spread = Math.max(0, Math.min(Math.ceil(st.pages.length/2)-1, Math.floor(pg/2)));
+        let target = -1;
+        st.pages.forEach((p, i)=>{ if(p.eIdx === eIdx && target < 0) target = i; });
+        if(target < 0) return;
+        st.spread = Math.max(0, Math.min(Math.ceil(st.pages.length/2)-1, Math.floor(target/2)));
         ktxsReaderRender();
       });
     });
@@ -42697,12 +42869,11 @@ I'm good at running.`},
   // R177-3：阅读进度记录（百分比单调递增）+ 10%→20⭐ / 100%→按书设置⭐ 一次性奖励
   function ktxsRecordProgress(title, spread, maxSpread){
     if(!title || !S) return;
-    let pct = maxSpread > 0 ? Math.round(spread / maxSpread * 100) : (spread > 0 ? 100 : 0);
-    // R182-2：「已读」页数据入阅读进度统计（与翻页进度取较大值；store 侧进度只增不减）
-    const stPD = _ktxsReader;
-    const pgN = (stPD && stPD.book.title === title) ? stPD.pages.filter(p=>p.type === 'text' || p.type === 'poem').length : 0;
-    const doneN = (S.countBookPageDone ? S.countBookPageDone(title) : 0);
-    if(pgN > 0 && doneN > 0){ const dp = Math.round(Math.min(100, doneN / pgN * 100)); if(dp > pct) pct = dp; }
+    const st = _ktxsReader;
+    const total = (st && st.entries) ? st.entries.length : 0;
+    const done = (S.countBookEntryDone ? S.countBookEntryDone(title) : 0);
+    // R183-6：阅读进度 = 已打卡文章数 / 总文章数（未打卡不计）
+    let pct = total > 0 ? Math.round(done / total * 100) : 0;
     if(S.setBookReadProgress) S.setBookReadProgress(title, pct);
     const prog = (S.getBookReadProgress ? S.getBookReadProgress(title) : pct);
     if(prog >= 10 && S.isBookAwarded10 && !S.isBookAwarded10(title)){
@@ -42769,39 +42940,48 @@ I'm good at running.`},
         const el = (k === 0) ? stage.querySelector('.ktxs-page-l') : stage.querySelector('.ktxs-page-r');
         if(!el) continue;
         const pg = st.pages[li + k];
-        if(!pg || pg.type !== 'text') continue;
+        if(!pg) continue;
+        let innerSel = null, srcText = null, isPoem = false;
+        if(pg.type === 'text'){ innerSel = '.ktxs-pg-txt'; srcText = String(pg.text || ''); }
+        else if(pg.type === 'poem-sec'){
+          if(pg.sec === 'poem'){ innerSel = '.mao-poem-content'; srcText = pg.cont ? String(pg.srcText||'') : String((pg.po && pg.po.c) || ''); isPoem = true; }
+          else { innerSel = '.mao-sec-b'; srcText = String(pg.srcText||''); }
+        } else continue;
         const scroll = el.querySelector('.ktxs-pg-scroll'); if(!scroll) continue;
-        const txtEl = scroll.querySelector('.ktxs-pg-txt'); if(!txtEl) continue;
-        const txt = String(pg.text || '');
-        if(!txt || scroll.scrollHeight <= scroll.clientHeight + 6) continue;
-        // 二分找出当前可见高度可容纳的最大字符数
-        let lo = 8, hi = txt.length, fit = 8;
+        const txtEl = scroll.querySelector(innerSel); if(!txtEl) continue;
+        if(!srcText || scroll.scrollHeight <= scroll.clientHeight + 6) continue;
+        // 二分找出当前可见高度可容纳的最大字符数（诗词按句法格式化后测量）
+        let lo = 8, hi = srcText.length, fit = 8;
         while(lo <= hi){
           const mid = (lo + hi) >> 1;
-          txtEl.textContent = txt.slice(0, mid);
+          if(isPoem) txtEl.innerHTML = fmtMaoPoem(srcText.slice(0, mid));
+          else txtEl.textContent = srcText.slice(0, mid);
           if(scroll.scrollHeight <= scroll.clientHeight + 2){ fit = mid; lo = mid + 1; } else { hi = mid - 1; }
         }
-        txtEl.textContent = txt; // 恢复完整文本（拆页后整本重渲染，此处仅探测）
+        if(isPoem) txtEl.innerHTML = fmtMaoPoem(srcText); else txtEl.textContent = srcText; // 恢复完整内容（拆页后整本重渲染）
         if(fit < 24) continue; // 单页可见高度过小：不拆，保留滚动兜底
         // 截点回退到最近句末标点，避免半句拆页
         let cut = fit;
-        const pm = txt.slice(0, fit).match(/[\s\S]*[。？！；.!?;]/);
+        const pm = srcText.slice(0, fit).match(/[\s\S]*[。？！；.!?;，、]/);
         if(pm && pm[0].length >= 8) cut = pm[0].length;
-        if(cut >= txt.length - 4) continue; // 基本放得下，不拆
-        st.pages.splice(li + k + 1, 0, { type:'text', title: pg.title, text: txt.slice(cut), cont: true, kind: st.kind, idx: 0 });
+        if(cut >= srcText.length - 4) continue; // 基本放得下，不拆
+        const rest = srcText.slice(cut);
+        if(pg.type === 'text'){
+          st.pages.splice(li + k + 1, 0, { type:'text', eIdx: pg.eIdx, title: pg.title, text: rest, cont: true, kind: st.kind, idx: 0 });
+        } else {
+          st.pages.splice(li + k + 1, 0, { type:'poem-sec', sec: pg.sec, eIdx: pg.eIdx, po: pg.po, kind: st.kind, idx: 0, cont: true, srcText: rest });
+        }
         inserted++;
         break; // 拆一页即重渲染，避免后续页序号错位
       }
       if(!inserted) break;
-      // 重排正文页序号（已读键按 idx 定位）+ 刷新目录页码 + 补齐偶数尾页
+      // 重排正文页序号（续页用）+ 刷新目录首页码（按 eIdx）+ 补齐偶数尾页
       let n = 0;
-      st.pages.forEach(p=>{ if(p.type === 'text' || p.type === 'poem'){ n++; p.idx = n + 1; } });
+      st.pages.forEach(p=>{ if(p.type === 'text' || p.type === 'poem-sec'){ n++; p.idx = n + 1; } });
+      const firstAt = {};
+      st.pages.forEach((p, i)=>{ if((p.type==='text'||p.type==='poem-sec') && p.eIdx!=null && !(p.eIdx in firstAt)) firstAt[p.eIdx] = i; });
       const tocPg = st.pages.find(p=>p.type === 'toc');
-      if(tocPg && tocPg.entries){
-        const firstAt = {};
-        st.pages.forEach((p, i)=>{ if((p.type === 'text' || p.type === 'poem') && p.title && !(p.title in firstAt)) firstAt[p.title] = i; });
-        tocPg.entries.forEach(e=>{ if(e.label in firstAt) e.page = firstAt[e.label]; });
-      }
+      if(tocPg && tocPg.entries){ tocPg.entries.forEach(e=>{ if(e.eIdx in firstAt) e.page = firstAt[e.eIdx]; }); }
       if(st.pages.length % 2) st.pages.push({ type:'blank' });
       ktxsReaderRender(true);
     }
@@ -42898,20 +43078,23 @@ I'm good at running.`},
       const url = ktxsCoverUrlFor(book);
       if(url){
         imgEl.style.backgroundImage = "url('" + url + "')"; imgEl.classList.add('has-img'); imgEl.innerHTML = '';
-        // R182-2：按封面图真实比例适配图片比例与弹窗宽度，避免裁切/拉伸，显示贴近现实
+        // R182-2 / R183-2：按封面图真实比例放大弹窗，完整展示不滚动
         const _cim = new Image();
         _cim.onload = ()=>{
           const w = _cim.naturalWidth || _cim.width, h = _cim.naturalHeight || _cim.height;
-          if(w && h){ imgEl.style.aspectRatio = w + '/' + h; if(coverBox) coverBox.style.width = 'min(720px,94vw,calc((88dvh - 150px) * ' + (w/h) + '))'; }
+          if(w && h){ imgEl.style.aspectRatio = w + '/' + h; imgEl.style.maxHeight = '80dvh'; if(coverBox) coverBox.style.width = 'min(960px,96vw)'; }
         };
         _cim.src = url;
       } else {
         imgEl.style.backgroundImage = ''; imgEl.classList.remove('has-img'); imgEl.innerHTML = '';
-        imgEl.style.aspectRatio = ''; if(coverBox) coverBox.style.width = '';
+        imgEl.style.aspectRatio = ''; imgEl.style.maxHeight=''; if(coverBox) coverBox.style.width = '';
       }
     }
-    const metaEl = document.getElementById('ktxsCoverMeta');
-    if(metaEl) metaEl.textContent = (book.author ? book.author + ' 著 · ' : '') + (book.cat||'推荐书籍') + ' · ' + (book.body||'');
+    // R183-2：放大弹窗右侧信息栏（作者 / 分类 / 简介）完整展示，避免滚动
+    const setIf = (id, val)=>{ const el = document.getElementById(id); if(el) el.textContent = val || ''; };
+    setIf('ktxsCoverCat', book.cat || '推荐书籍');
+    setIf('ktxsCoverAuthor', book.author ? (book.author + ' 著') : '');
+    setIf('ktxsCoverIntro', book.body || '');
     // R179-2：更换封面仅家长态可见（置于书名右侧，由 index.html 渲染 + 此处控制显隐）
     const chBtn = document.getElementById('btnKtxsCoverChange');
     if(chBtn) chBtn.style.display = (typeof isParent === 'function' && isParent()) ? '' : 'none';
@@ -42988,7 +43171,8 @@ I'm good at running.`},
     const kind = (book.poemKey === 'mao' && window.MAO_POEMS && Array.isArray(window.MAO_POEMS)) ? 'mao'
                : (book.poemKey === 'wtb' && window.WANTONG_STORIES && Array.isArray(window.WANTONG_STORIES)) ? 'wtb'
                : (book.poemKey === 'tjxc' && window.TONGNIAN_STORIES && Array.isArray(window.TONGNIAN_STORIES)) ? 'tjxc' : 'txt';
-    _ktxsReader = { book: book, pages: ktxsReaderPages(book), spread: 0, kind: kind };
+    const _rp = ktxsReaderPages(book);
+    _ktxsReader = { book: book, pages: _rp.pages, entries: _rp.entries, spread: 0, kind: kind };
     _ktxsOpenBook = title; _ktxsBookPage = 0; _ktxsOpenPoem = -1; _ktxsMaoPageIndex = 0;
     const titleEl = document.getElementById('ktxsReadTitle');
     if(titleEl) titleEl.textContent = '《' + title + '》';
@@ -43000,7 +43184,8 @@ I'm good at running.`},
         addBtn.addEventListener('click', ()=>{
           const st = _ktxsReader; if(!st) return;
           openNwAdd('ktxs_' + st.book.title, '《' + st.book.title + '》正文', '输入本书正文内容…', ()=>{
-            st.pages = ktxsReaderPages(st.book);
+            const rp = ktxsReaderPages(st.book);
+            st.pages = rp.pages; st.entries = rp.entries;
             ktxsReaderRender();
             toast('📝 已添加正文');
           });
@@ -43033,22 +43218,29 @@ I'm good at running.`},
     _ktxsReader = null; _ktxsBookEl = null;
   }
 
-  // R71-5：「➕ 添加书籍」—— 书名 + 一句话简介（复用美文弹窗容器，双字段）
-  function openKtxsBookAdd(onDone){
+  // R71-5：「➕ 添加书籍 / ✏️ 编辑书籍」—— 书名 + 作者 + 一句话简介（复用美文弹窗容器）
+  // R183-1：editTitle 非空时为「编辑」模式（预填并走 updateKtxsBook）；R183-5：添加时同名去重
+  function openKtxsBookAdd(onDone, editTitle){
     const mask = document.getElementById('modalMeiwenAdd');
     const fields = document.getElementById('mwAddFields');
     const confirm = document.getElementById('mwAddConfirm');
     const titleEl = document.getElementById('mwAddTitle');
     const hintEl = document.getElementById('mwAddHint');
     if(!mask || !fields || !confirm) return;
-    if(titleEl) titleEl.textContent = '添加：推荐书籍';
-    if(hintEl) hintEl.textContent = '填写书名、作者与一句话简介，添加后出现在推荐书籍列表末尾';
+    const isEdit = !!editTitle;
+    const bk = isEdit ? (ktxsBooksAll().find(b=>b.title === editTitle) || null) : null;
+    if(titleEl) titleEl.textContent = isEdit ? '编辑：推荐书籍' : '添加：推荐书籍';
+    if(hintEl) hintEl.textContent = isEdit ? '修改书名、作者或简介，保存后同步更新本书全部内容' : '填写书名、作者与一句话简介，添加后出现在推荐书籍列表末尾';
     _ktxsPendingCover = '';
     const _coverPrev = document.getElementById('mwAddCoverPreview'); if(_coverPrev){ _coverPrev.style.backgroundImage=''; _coverPrev.classList.remove('has-img'); }
+    if(isEdit){
+      const ec = (S.getBookCover ? S.getBookCover(editTitle) : '') || ktxsBuiltinCover(bk||{});
+      if(ec && _coverPrev){ _coverPrev.style.backgroundImage = "url('"+ec+"')"; _coverPrev.classList.add('has-img'); }
+    }
     fields.innerHTML = `
-      <input class="nw-add-input" id="mwAddSource" type="text" placeholder="书名（如：小王子）" maxlength="60" />
-      <input class="nw-add-input" id="mwAddAuthor" type="text" placeholder="作者（可选，如：圣埃克苏佩里）" maxlength="30" />
-      <textarea class="nw-add-area" id="mwAddContent" placeholder="一句话简介" maxlength="200"></textarea>
+      <input class="nw-add-input" id="mwAddSource" type="text" placeholder="书名（如：小王子）" maxlength="60" value="${isEdit?esc(editTitle):''}" />
+      <input class="nw-add-input" id="mwAddAuthor" type="text" placeholder="作者（可选，如：圣埃克苏佩里）" maxlength="30" value="${isEdit?(bk&&bk.author?esc(bk.author):''):''}" />
+      <textarea class="nw-add-area" id="mwAddContent" placeholder="一句话简介" maxlength="200">${isEdit?(bk&&bk.body?esc(bk.body):''):''}</textarea>
       <div class="ktxs-cover-add">
         <label class="ktxs-cover-label">🖼️ 书籍封面（可选，支持上传图片）</label>
         <input type="file" id="mwAddCover" accept="image/*" />
@@ -43073,14 +43265,80 @@ I'm good at running.`},
       const a = (auEl && auEl.value || '').trim();
       const c = (cntEl && cntEl.value || '').trim();
       if(!t){ if(srcEl) srcEl.style.borderColor = '#ff5b6e'; return; }
-      if(window.Store && window.Store.addNwZone) window.Store.addNwZone('ktxs_books', { t:t, c:c, a:a });
-      if(_ktxsPendingCover && window.Store && window.Store.setBookCover) window.Store.setBookCover(t, _ktxsPendingCover);
+      // R183-5：同名书籍去重（编辑自身除外）
+      if(!isEdit && ktxsBooksAll().some(b=>b.title === t)){ toast('📚 已存在同名书籍《'+t+'》'); if(srcEl) srcEl.style.borderColor = '#ff5b6e'; return; }
+      if(isEdit){
+        if(S.updateKtxsBook) S.updateKtxsBook(editTitle, { t:t, a:a, c:c });
+        if(_ktxsPendingCover && S.setBookCover) S.setBookCover(t, _ktxsPendingCover);
+        toast('📚 已更新书籍《'+t+'》');
+      } else {
+        if(window.Store && window.Store.addNwZone) window.Store.addNwZone('ktxs_books', { t:t, c:c, a:a });
+        if(_ktxsPendingCover && window.Store && window.Store.setBookCover) window.Store.setBookCover(t, _ktxsPendingCover);
+        toast('📚 已添加书籍《'+t+'》');
+      }
       _ktxsPendingCover = '';
       hideModal('#modalMeiwenAdd');
       if(onDone) onDone();
     };
     confirm.onclick = doAdd;
     if(cntEl) cntEl.onkeydown = (e)=>{ if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); doAdd(); } };
+  }
+  // R183-1：书籍管理操作面板（编辑 / 删除 / 撤销已读）
+  function ktxsOpenBookOps(title){
+    const modal = document.getElementById('modalKtxsBookOps');
+    const body = document.getElementById('ktxsBookOpsBody');
+    if(!modal || !body) return;
+    const books = ktxsBooksAll();
+    if(title){
+      body.innerHTML = ktxsBookOpsRowHtml(title);
+    } else {
+      body.innerHTML = books.length ? books.map(b=>ktxsBookOpsRowHtml(b.title)).join('') : '<div class="nw-zone-empty">还没有书籍</div>';
+    }
+    ktxsBindBookOps(body);
+    showModal('#modalKtxsBookOps');
+  }
+  function ktxsBookOpsRowHtml(title){
+    const readDone = (S.isReadingRead ? S.isReadingRead('suzhi_ktxs', title) : false);
+    return `
+      <div class="ktxs-ops-row" data-ktxs-ops-title="${esc(title)}">
+        <div class="ktxs-ops-name">《${esc(title)}》</div>
+        <div class="ktxs-ops-actions">
+          <button type="button" class="ktxs-ops-btn ktxs-ops-edit" data-ktxs-ops-act="edit" title="编辑书名/作者/简介">✏️ 编辑</button>
+          <button type="button" class="ktxs-ops-btn ktxs-ops-del" data-ktxs-ops-act="del" title="删除本书">🗑 删除</button>
+          <button type="button" class="ktxs-ops-btn ktxs-ops-unread${readDone?'':' is-disabled'}" data-ktxs-ops-act="unread" title="撤销「已读完」标识">↩ 撤销已读</button>
+        </div>
+      </div>`;
+  }
+  function ktxsBindBookOps(body){
+    body.querySelectorAll('.ktxs-ops-row').forEach(row=>{
+      if(row._opsBound) return; row._opsBound = true;
+      const title = row.getAttribute('data-ktxs-ops-title');
+      row.querySelectorAll('[data-ktxs-ops-act]').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          const act = btn.getAttribute('data-ktxs-ops-act');
+          if(act === 'edit'){
+            hideModal('#modalKtxsBookOps');
+            openKtxsBookAdd(()=>{ renderSuzhiPage(); toast('📚 已更新'); }, title);
+          } else if(act === 'del'){
+            const ok = (typeof window.confirm === 'function') ? window.confirm('确定删除《'+title+'》？本书阅读进度将一并清除。') : true;
+            if(!ok) return;
+            if(S.deleteKtxsBook) S.deleteKtxsBook(title);
+            toast('🗑 已删除《'+title+'》');
+            const rr = body.querySelector('.ktxs-ops-row[data-ktxs-ops-title="'+((window.CSS&&CSS.escape)?CSS.escape(title):title)+'"]');
+            if(rr) rr.remove();
+            renderSuzhiPage();
+            ktxsRefreshCardProgress(title);
+          } else if(act === 'unread'){
+            if(S.unmarkReadingRead) S.unmarkReadingRead('suzhi_ktxs', title);
+            if(typeof addStars === 'function') addStars(-(S.getTaskStars ? S.getTaskStars('ktxs') : 1));
+            toast('↩ 已撤销《'+title+'》的已读标识');
+            btn.classList.add('is-disabled');
+            renderSuzhiPage();
+            ktxsRefreshCardProgress(title);
+          }
+        });
+      });
+    });
   }
   // 美文摘选：来源 + 内容 双字段记录（存 store.nwZone['meiwen']）
   function meiwenSlot(){
