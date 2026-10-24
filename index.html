@@ -7200,6 +7200,30 @@ body.ktxs-read-open .sidebar{z-index:999999}
 .ktxs-blue-card .sz-daily-badge{ background:#4096ff; color:#fff; }
 .ktxs-blue-card.is-checked{ border-color:#5cd6a0 !important; box-shadow:0 6px 16px rgba(40,180,120,0.22) !important; }
 .ktxs-blue-card.is-checked .sz-card-state{ background:#1f8a4c; color:#e7f8ee; }
+/* R184-③：全部文章已读 → 整张卡变绿 */
+.ktxs-blue-card.is-all-read{ background:linear-gradient(135deg,#e9fbf1 0%,#d3f3e2 100%) !important; border-color:#5cd6a0 !important; box-shadow:0 6px 16px rgba(40,180,120,0.26) !important; }
+.ktxs-blue-card.is-all-read .sz-book-title{ color:#1f8a4c; }
+.ktxs-blue-card.is-all-read .sz-daily-badge{ background:#1f8a4c; color:#e7f8ee; }
+.ktxs-blue-card.is-all-read .sz-card-state{ background:#1f8a4c; color:#e7f8ee; }
+.ktxs-blue-card.is-all-read .sz-book-no{ background:#1f8a4c; color:#e7f8ee; }
+/* R184-①：编辑态「编辑」键高亮 */
+.ktxs-head-btn.is-active{ background:linear-gradient(135deg,var(--tone-700),var(--tone-900)); color:#fff; border-color:var(--tone-900); }
+/* R184-①/②：编辑态每卡右上角编辑键（绝对定位） */
+.ktxs-card-edit{ position:absolute; top:4px; right:4px; z-index:3; width:24px; height:24px; border-radius:50%; border:none; background:rgba(255,255,255,.92); color:var(--tone-700); font-size:12px; line-height:24px; cursor:pointer; box-shadow:0 1px 4px rgba(31,58,138,.25); }
+.ktxs-card-edit:hover{ background:var(--tone-700); color:#fff; }
+.ktxs-mini-card{ position:relative; }
+/* R184-②：拖动中禁止文本选择干扰 */
+body.ktxs-dragging-doc{ user-select:none !important; -webkit-user-select:none !important; }
+.ktxs-drag-ghost{ position:fixed; z-index:9999; pointer-events:none; opacity:.9; transform:rotate(-1.5deg); box-shadow:0 12px 28px rgba(31,58,138,.35); }
+.ktxs-drag-src{ opacity:.35; }
+/* R184-⑤：已存书签橙色高亮 + 阅读态选中变橙 */
+.ktxs-hl{ background:#ffb35b; color:#5a2e00; border-radius:3px; padding:0 1px; cursor:pointer; box-shadow:0 0 0 1px rgba(255,140,66,.5); }
+.ktxs-hl:hover{ background:#ff8c42; }
+.modal-book-read ::selection{ background:#ffb35b; color:#5a2e00; }
+/* R184-⑤/⑦：书签详情弹窗内容 */
+.ktxs-bm-detail-text{ background:#fff7ec; border:1px solid #ffd591; border-radius:10px; padding:10px 12px; font-size:13px; line-height:1.7; color:#7a4a16; white-space:pre-wrap; }
+.ktxs-bm-detail-label{ margin:12px 0 4px; font-size:12px; color:#b9770a; font-weight:600; }
+.ktxs-bm-detail-note{ background:#fff7ec; border:1px solid #ffd591; border-radius:10px; padding:10px 12px; font-size:13px; line-height:1.7; color:#7a4a16; min-height:36px; white-space:pre-wrap; }
 
 
 
@@ -7866,6 +7890,21 @@ body.ktxs-read-open .sidebar{z-index:999999}
     </div>
   </div>
 
+
+  <!-- R184-⑤/⑦：书签详情弹窗（点击正文内高亮书签 → 展示已标记内容 + 注释） -->
+  <div class="modal-mask" id="modalKtxsBmDetail" hidden>
+    <div class="modal-box modal-bookmarks">
+      <div class="modal-head">
+        <h3 id="ktxsBmDetailTitle">📑 书签详情</h3>
+        <button class="modal-x" data-close>×</button>
+      </div>
+      <div class="modal-body">
+        <div class="ktxs-bm-detail-text" id="ktxsBmDetailText"></div>
+        <div class="ktxs-bm-detail-label">📝 注释</div>
+        <div class="ktxs-bm-detail-note" id="ktxsBmDetailNote"></div>
+      </div>
+    </div>
+  </div>
 
   <!-- R150-3：月度统计弹窗（查看 / 对比本月各维度完成数据） -->
   <div class="modal-mask" id="modalMonthStats" hidden data-page-node-id="R150modalMonthStats">
@@ -40322,13 +40361,14 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       editListBtn._ktBound = true;
       editListBtn.addEventListener('click', (e)=>{
         e.stopPropagation();
-        ktxsOpenBookOps(null);
+        _ktxsListEdit = !_ktxsListEdit; if(typeof rerender === 'function') rerender();
       });
     }
     // R176：点击书籍卡片弹出双页书本阅读弹窗（原页内正文/诗词视图已由阅读器替代）
     slotBody.querySelectorAll('[data-ktxs-book]').forEach(card=>{
       if(card._ktBound) return; card._ktBound = true;
       card.addEventListener('click', (e)=>{
+        if(_ktxsListEdit) return;                            // R184-①：编辑态下不打开封面，便于长按拖动排序
         if(e.target.closest('[data-suzhi-checkin]')) return; // 打卡键独立
         if(e.target.closest('[data-ktxs-drag]')) return;     // 拖拽手柄不触发打开
         if(e.target.closest('[data-ktxs-edit]')) return;     // R183-1：编辑按键独立
@@ -40346,94 +40386,111 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     // R181-6：家长模式拖拽排序书籍（按住手柄可上下左右/跨页移动；落点插入后其余书籍自动顺延；
     // 全量顺序持久化到 nwZone['ktxs_order']，靠近网格上/下边缘停留即自动翻页继续排序）
     if(typeof isParent === 'function' && isParent()){
+      const grid = slotBody.querySelector('.ktxs-book-grid');
+      const allTitles = ktxsBooksAll().map(b=>b.title);
+      const perPage = 16; // 与 ktxsSlot 保持一致（一行 4 本 · 一页 4 行）
+      const totalPages = Math.max(1, Math.ceil(allTitles.length / perPage));
+      // R181-6 / R184-②：编辑态下通过「长按整卡」或「拖动手柄」排序；落点插入后全量顺序持久化到 nwZone['ktxs_order']
+      const startDrag = (title, e)=>{
+        const from = allTitles.indexOf(title);
+        if(from < 0) return;
+        const card = Array.from(slotBody.querySelectorAll('[data-ktxs-book]')).filter(c=>c.getAttribute('data-ktxs-book')===title)[0];
+        if(!card) return;
+        const r0 = card.getBoundingClientRect();
+        const ghost = card.cloneNode(true);
+        ghost.classList.add('ktxs-drag-ghost');
+        ghost.removeAttribute('data-ktxs-book');
+        ghost.style.width = r0.width + 'px';
+        ghost.style.height = r0.height + 'px';
+        ghost.style.left = r0.left + 'px';
+        ghost.style.top = r0.top + 'px';
+        document.body.appendChild(ghost);
+        card.classList.add('ktxs-drag-src');
+        const findSrc = ()=> Array.from(slotBody.querySelectorAll('[data-ktxs-book]')).filter(c=>c.getAttribute('data-ktxs-book')===title)[0] || null;
+        let moved = false, hot = 0, hotAt = 0;
+        const sx = e.clientX, sy = e.clientY;
+        const onMove = (ev)=>{
+          const dx = ev.clientX - sx, dy = ev.clientY - sy;
+          if(!moved && Math.abs(dx) + Math.abs(dy) > 6) moved = true;
+          if(!moved) return;
+          ghost.style.transform = 'translate(' + dx + 'px,' + dy + 'px)';
+          // 跨页热区：靠近网格上/下边缘停留即自动翻页（拖拽中换页继续排）
+          const g = grid ? grid.getBoundingClientRect() : null;
+          const now = Date.now ? Date.now() : 0;
+          let h = 0;
+          if(g){
+            if(ev.clientY < g.top + 42 && _szCurPage > 0) h = -1;
+            else if(ev.clientY > g.bottom - 42 && _szCurPage < totalPages - 1) h = 1;
+          }
+          if(h !== hot){ hot = h; hotAt = now; }
+          if(hot !== 0 && now - hotAt > 520){
+            hotAt = now;
+            const np = Math.min(Math.max(_szCurPage + hot, 0), totalPages - 1);
+            if(np !== _szCurPage){
+              _szCurPage = np;
+              if(typeof rerender === 'function') rerender();
+              const ns = findSrc(); if(ns) ns.classList.add('ktxs-drag-src');
+            }
+          }
+        };
+        const onUp = (ev)=>{
+          document.removeEventListener('pointermove', onMove);
+          document.removeEventListener('pointerup', onUp);
+          document.removeEventListener('pointercancel', onUp);
+          if(ghost.parentNode) ghost.parentNode.removeChild(ghost);
+          const src = findSrc();
+          if(src){ src.classList.remove('ktxs-drag-src'); src.style.transform = ''; }
+          document.body.classList.remove('ktxs-dragging-doc');
+          if(!moved) return;
+          // 落点定位：以影子中心找目标页内插入位，再换算为全量下标
+          const g = grid ? grid.getBoundingClientRect() : null;
+          const cards = Array.from(slotBody.querySelectorAll('[data-ktxs-book]'));
+          const gx = ev.clientX, gy = ev.clientY;
+          let pageIdx;
+          if(g && gy < g.top - 8) pageIdx = 0;
+          else if(g && gy > g.bottom + 8) pageIdx = cards.length;
+          else {
+            let best = -1, bestD = Infinity, after = false;
+            for(let i=0;i<cards.length;i++){
+              const r = cards[i].getBoundingClientRect();
+              const cx = r.left + r.width/2, cy = r.top + r.height/2;
+              const d = (gx-cx)*(gx-cx) + (gy-cy)*(gy-cy);
+              if(d < bestD){ bestD = d; best = i; after = gy > cy; }
+            }
+            pageIdx = best < 0 ? cards.length : (after ? best + 1 : best);
+          }
+          let target = _szCurPage * perPage + pageIdx;
+          if(target > allTitles.length) target = allTitles.length;
+          if(target === from) return;
+          const arr = allTitles.slice();
+          arr.splice(from, 1);
+          const ins = target > from ? target - 1 : target;
+          arr.splice(ins, 0, title);
+          if(window.Store && window.Store.setNwZone) window.Store.setNwZone('ktxs_order', arr);
+          if(typeof rerender === 'function') rerender();
+        };
+        document.addEventListener('pointermove', onMove);
+        document.addEventListener('pointerup', onUp);
+        document.addEventListener('pointercancel', onUp);
+      };
       slotBody.querySelectorAll('[data-ktxs-book]').forEach(card=>{
+        const title = card.getAttribute('data-ktxs-book');
         const handle = card.querySelector('[data-ktxs-drag]');
-        if(!handle || handle._ktDragBound) return; handle._ktDragBound = true;
-        handle.addEventListener('pointerdown', (e)=>{
-          e.preventDefault(); e.stopPropagation();
-          const title = card.getAttribute('data-ktxs-book');
-          const allTitles = ktxsBooksAll().map(b=>b.title);
-          const from = allTitles.indexOf(title);
-          if(from < 0) return;
-          const perPage = 16; // 与 ktxsSlot 保持一致（一行 4 本 · 一页 4 行）
-          const totalPages = Math.max(1, Math.ceil(allTitles.length / perPage));
-          const grid = slotBody.querySelector('.ktxs-book-grid');
-          const r0 = card.getBoundingClientRect();
-          const ghost = card.cloneNode(true);
-          ghost.classList.add('ktxs-drag-ghost');
-          ghost.removeAttribute('data-ktxs-book');
-          ghost.style.width = r0.width + 'px';
-          ghost.style.height = r0.height + 'px';
-          ghost.style.left = r0.left + 'px';
-          ghost.style.top = r0.top + 'px';
-          document.body.appendChild(ghost);
-          card.classList.add('ktxs-drag-src');
-          const findSrc = ()=> Array.from(slotBody.querySelectorAll('[data-ktxs-book]')).filter(c=>c.getAttribute('data-ktxs-book')===title)[0] || null;
-          let moved = false, hot = 0, hotAt = 0;
-          const sx = e.clientX, sy = e.clientY;
-          const onMove = (ev)=>{
-            const dx = ev.clientX - sx, dy = ev.clientY - sy;
-            if(!moved && Math.abs(dx) + Math.abs(dy) > 6) moved = true;
-            if(!moved) return;
-            ghost.style.transform = 'translate(' + dx + 'px,' + dy + 'px)';
-            // 跨页热区：靠近网格上/下边缘停留即自动翻页（拖拽中换页继续排）
-            const g = grid ? grid.getBoundingClientRect() : null;
-            const now = Date.now ? Date.now() : 0;
-            let h = 0;
-            if(g){
-              if(ev.clientY < g.top + 42 && _szCurPage > 0) h = -1;
-              else if(ev.clientY > g.bottom - 42 && _szCurPage < totalPages - 1) h = 1;
-            }
-            if(h !== hot){ hot = h; hotAt = now; }
-            if(hot !== 0 && now - hotAt > 520){
-              hotAt = now;
-              const np = Math.min(Math.max(_szCurPage + hot, 0), totalPages - 1);
-              if(np !== _szCurPage){
-                _szCurPage = np;
-                rerender();
-                const ns = findSrc(); if(ns) ns.classList.add('ktxs-drag-src');
-              }
-            }
-          };
-          const onUp = (ev)=>{
-            document.removeEventListener('pointermove', onMove);
-            document.removeEventListener('pointerup', onUp);
-            document.removeEventListener('pointercancel', onUp);
-            if(ghost.parentNode) ghost.parentNode.removeChild(ghost);
-            const src = findSrc();
-            if(src){ src.classList.remove('ktxs-drag-src'); src.style.transform = ''; }
-            if(!moved) return;
-            // 落点定位：以影子中心找目标页内插入位，再换算为全量下标
-            const g = grid ? grid.getBoundingClientRect() : null;
-            const cards = Array.from(slotBody.querySelectorAll('[data-ktxs-book]'));
-            const gx = ev.clientX, gy = ev.clientY;
-            let pageIdx;
-            if(g && gy < g.top - 8) pageIdx = 0;
-            else if(g && gy > g.bottom + 8) pageIdx = cards.length;
-            else {
-              let best = -1, bestD = Infinity, after = false;
-              for(let i=0;i<cards.length;i++){
-                const r = cards[i].getBoundingClientRect();
-                const cx = r.left + r.width/2, cy = r.top + r.height/2;
-                const d = (gx-cx)*(gx-cx) + (gy-cy)*(gy-cy);
-                if(d < bestD){ bestD = d; best = i; after = gy > cy; }
-              }
-              pageIdx = best < 0 ? cards.length : (after ? best + 1 : best);
-            }
-            let target = _szCurPage * perPage + pageIdx;
-            if(target > allTitles.length) target = allTitles.length;
-            if(target === from) return;
-            const arr = allTitles.slice();
-            arr.splice(from, 1);
-            const ins = target > from ? target - 1 : target;
-            arr.splice(ins, 0, title);
-            if(window.Store && window.Store.setNwZone) window.Store.setNwZone('ktxs_order', arr);
-            if(typeof rerender === 'function') rerender();
-          };
-          document.addEventListener('pointermove', onMove);
-          document.addEventListener('pointerup', onUp);
-          document.addEventListener('pointercancel', onUp);
-        });
+        if(handle && !handle._ktDragBound){ handle._ktDragBound = true; handle.addEventListener('pointerdown', (e)=>{ if(!_ktxsListEdit) return; e.preventDefault(); e.stopPropagation(); startDrag(title, e); }); }
+        // R184-②：编辑态下长按整卡进入拖动（非编辑态不触发，避免与打开封面冲突）
+        if(!card._ktLongBound){ card._ktLongBound = true; card.addEventListener('pointerdown', (e)=>{
+          if(!_ktxsListEdit) return;
+          if(e.target.closest && e.target.closest('[data-ktxs-edit]')) return;
+          if(e.target.closest && e.target.closest('[data-ktxs-drag]')) return;
+          const sx = e.clientX, sy = e.clientY; let fired = false;
+          const clear = ()=>{ clearTimeout(tm); document.removeEventListener('pointermove', mv); document.removeEventListener('pointerup', up); document.removeEventListener('pointercancel', up); };
+          const mv = (ev)=>{ if(Math.abs(ev.clientX-sx)+Math.abs(ev.clientY-sy) > 10){ clear(); } };
+          const up = ()=>{ clear(); };
+          const tm = setTimeout(()=>{ fired = true; clear(); document.body.classList.add('ktxs-dragging-doc'); startDrag(title, e); }, 380);
+          document.addEventListener('pointermove', mv);
+          document.addEventListener('pointerup', up);
+          document.addEventListener('pointercancel', up);
+        }); }
       });
     }
 
@@ -42548,13 +42605,13 @@ I'm good at running.`},
       const stateCls = done ? 'is-read' : (prog>0 ? 'has-prog' : '');
       const stateTxt = done ? '✓ 已读完' : '未读'; // R181-5：删除页数统计
       return `
-        <div class="sz-daily-card sz-grid-card sz-book-card ktxs-blue-card ${done?'is-checked':''} ${it.poemKey?'sz-book-flag':''} ${coverUrl?'sz-book-cover':''} ktxs-mini-card"${coverUrl?` style="background-image:url('${coverUrl}')"`:''} data-ktxs-book="${esc(it.title)}" title="点击查看《${esc(it.title)}》封面">
+        <div class="sz-daily-card sz-grid-card sz-book-card ktxs-blue-card ${done?'is-checked is-all-read':''} ${it.poemKey?'sz-book-flag':''} ${coverUrl?'sz-book-cover':''} ktxs-mini-card"${coverUrl?` style="background-image:url('${coverUrl}')"`:''} data-ktxs-book="${esc(it.title)}" title="点击查看《${esc(it.title)}》封面">
           <div class="sz-card-top">
             <span class="sz-book-no">${no}</span>
             <span class="sz-daily-badge">${esc(it.cat)}</span>
             <span class="sz-card-state ${stateCls}">${stateTxt}</span>
-            ${isParent()? '<span class="ktxs-drag-handle" data-ktxs-drag="1" title="按住拖动调整顺序">⠿</span>' : ''}
-            ${isParent()? '<button type="button" class="ktxs-card-edit" data-ktxs-edit="'+esc(it.title)+'" title="编辑 / 删除本书">✏️</button>' : ''}
+            ${isParent()&&_ktxsListEdit? '<span class="ktxs-drag-handle" data-ktxs-drag="1" title="按住拖动调整顺序">⠿</span>' : ''}
+            ${isParent()&&_ktxsListEdit? '<button type="button" class="ktxs-card-edit" data-ktxs-edit="'+esc(it.title)+'" title="编辑 / 删除本书">✏️</button>' : ''}
           </div>
           <div class="sz-daily-title sz-book-title">《${esc(it.title)}》</div>
           ${it.author?`<div class="sz-book-author">${esc(it.author)} 著</div>`:''}
@@ -42566,7 +42623,7 @@ I'm good at running.`},
       <div class="ktxs-slot-wrap">
         <div class="yw-comp-head">${esc(label||'推荐书籍')} · 共 ${items.length} 本
           <button type="button" class="ktxs-head-btn" data-ktxs-add-book="1" title="添加一本新书">➕ 添加书籍</button>
-          ${isParent()? '<button type="button" class="ktxs-head-btn" data-ktxs-edit-list="1" title="编辑 / 删除书籍">✏️ 编辑书籍</button>' : ''}
+          ${isParent()? '<button type="button" class="ktxs-head-btn' + (_ktxsListEdit?' is-active':'') + '" data-ktxs-edit-list="1" title="点击进入 / 退出编辑（编辑态下可拖动排序、每卡显示编辑键）">✏️ 编辑</button>' : ''}
         </div>
         <div class="sz-card-grid ktxs-book-grid">${cards}</div>
         ${szPager(page, totalPages)}
@@ -42589,6 +42646,7 @@ I'm good at running.`},
   // ---------- R176：推荐书籍 · 双页书本阅读弹窗（书籍介绍/目录/正文还原实体书本，支持左右滑动翻页） ----------
   // 页型：cover 封面/介绍 | toc 目录 | text 正文 | poem 诗词/童话详情 | empty 空书 | blank 尾页
   let _ktxsReader = null;       // { book, pages:[], spread:0, kind:'mao'|'wtb'|'txt' }
+  let _ktxsListEdit = false;    // R184-1: edit mode flag (toggle via head button; shows per-card edit key + enables long-press drag)
   let _ktxsBookEl = null;       // 当前书本 DOM（滑动跟随时引用）
   let _ktxsSwipe = null;        // 滑动跟踪 { sx, sy, dx, axis, on }
   let _ktxsSwipeBound = false;  // window 级滑动/键盘/导航监听只绑一次
@@ -42636,14 +42694,23 @@ I'm good at running.`},
         const hasBg = !!(po.b && String(po.b).trim());
         const hasAp = !!(po.a && String(po.a).trim());
         entries.push({ no: i+1, label: po.t || ('第 ' + (i+1) + ' 篇'), eIdx: i, done: !!(S.getBookEntryDone && S.getBookEntryDone(book.title, i)) });
-        // R183-4：诗词/童话拆为「诗（或故事）/ 创作背景 / 赏析」三段分页，避免单页内容过长溢出
-        body.push({ type:'poem-sec', sec:'poem', eIdx: i, po: po, idx: 0, srcText: String(po.c||'') });
-        if(hasBg) body.push({ type:'poem-sec', sec:'bg', eIdx: i, po: po, idx: 0, srcText: String(po.b||'') });
-        if(hasAp) body.push({ type:'poem-sec', sec:'ap', eIdx: i, po: po, idx: 0, srcText: String(po.a||'') });
+        if(kind === 'mao'){
+          // R184-⑦：毛泽东诗词集 —— 诗词正文 + 创作背景 + 专业赏析 整篇合一页连续展示（不拆分分页）
+          body.push({ type:'mao-whole', eIdx: i, po: po, idx: 0, hasBg: hasBg, hasAp: hasAp });
+        } else {
+          // R183-4：万通童话拆为「故事 / 创作背景 / 赏析」三段分页
+          body.push({ type:'poem-sec', sec:'poem', eIdx: i, po: po, idx: 0, srcText: String(po.c||'') });
+          if(hasBg) body.push({ type:'poem-sec', sec:'bg', eIdx: i, po: po, idx: 0, srcText: String(po.b||'') });
+          if(hasAp) body.push({ type:'poem-sec', sec:'ap', eIdx: i, po: po, idx: 0, srcText: String(po.a||'') });
+        }
       });
     }
     const pages = [{ type:'cover', book: book }, { type:'toc', book: book, entries: entries, kind: kind }];
     body.forEach(pg=>{ pg.kind = kind; pages.push(pg); });
+    // R184-4: TOC chapters show page number (cover=1, toc=2, body starts +3; recalibrated by ktxsAutoFlow)
+    const _firstIdx = {};
+    body.forEach((p, i)=>{ if((p.type==='text'||p.type==='poem-sec'||p.type==='mao-whole') && p.eIdx!=null && !(p.eIdx in _firstIdx)) _firstIdx[p.eIdx] = i; });
+    entries.forEach(e=>{ if(e.eIdx in _firstIdx) e.page = _firstIdx[e.eIdx] + 3; });
     if(pages.length % 2) pages.push({ type:'blank' });
     return { pages: pages, entries: entries };
   }
@@ -42676,7 +42743,7 @@ I'm good at running.`},
           <span class="ktxs-toc-t">${esc(e.label)}</span>
           <span class="ktxs-toc-dots"></span>
           ${e.done?'<span class="ktxs-toc-done" title="已打卡">✅</span>':''}
-          <span class="ktxs-toc-pg">第 ${e.no} 篇</span>
+          <span class="ktxs-toc-pg">第 ${e.page||e.no} 页</span>
         </button>`).join('') : '<div class="ktxs-toc-empty">本书目录整理中～</div>';
       const tocList = (S.getBookToc ? S.getBookToc(book.title) : []);
       const tocItems = tocList.length ? tocList.map((e,i)=>`
@@ -42692,6 +42759,22 @@ I'm good at running.`},
           ${tocItems?`<div class="ktxs-toc-user-h">📑 我的目录（内容所属页面）</div><div class="ktxs-toc-user-list">${tocItems}</div>`:''}
           ${isParent()? '<button type="button" class="ktxs-toc-add-btn" data-ktxs-toc-add="1">➕ 增加目录（指定所属页面）</button>' : ''}
           <div class="ktxs-toc-foot">点击条目可快速跳转 ▸</div>
+        </div>`;
+    }
+    if(pg.type === 'mao-whole'){
+      // R184-7: Mao poetry collection - poem + background + analysis as one continuous page (no split)
+      const po = pg.po || {};
+      const edone = !!(S.getBookEntryDone && S.getBookEntryDone(book.title, pg.eIdx));
+      const btn = isLast ? `<button type="button" class="ktxs-pg-done-btn" data-ktxs-entry-done="${pg.eIdx}">${edone?'✓ 已读（点击取消）':'✓ 标记已读'}</button>` : '';
+      return `
+        <div class="ktxs-pg-scroll">
+          <div class="mao-detail${edone&&isLast?' is-entry-done':''}">
+            ${po.t?`<div class="mao-detail-title">${esc(po.t||'')}</div>`:''}
+            <div class="mao-poem-content">${fmtMaoPoem(po.c)}</div>
+            ${pg.hasBg?`<div class="mao-sec"><div class="mao-sec-h">📜 创作背景</div><div class="mao-sec-b">${esc(po.b||'')}</div></div>`:''}
+            ${pg.hasAp?`<div class="mao-sec"><div class="mao-sec-h">🔍 专业赏析</div><div class="mao-sec-b">${esc(po.a||'')}</div></div>`:''}
+          </div>
+          <div class="ktxs-pg-done-row">${btn}</div>
         </div>`;
     }
     if(pg.type === 'empty'){
@@ -42747,6 +42830,51 @@ I'm good at running.`},
     }
     return '';
   }
+  // R184-⑤：在容器内精确查找文本串并包裹 <mark class="ktxs-hl">（支持跨文本节点），用于已存书签高亮
+  function ktxsFindAndWrap(root, text, idx){
+    if(!text || !text.trim()) return false;
+    const tw = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+    const nodes = []; let all = ''; let n;
+    while((n = tw.nextNode())){
+      if(!n.nodeValue) continue;
+      if(n.parentNode && n.parentNode.closest && n.parentNode.closest('mark,script,style')) continue;
+      nodes.push(n); all += n.nodeValue;
+    }
+    const gi = all.indexOf(text);
+    if(gi < 0) return false;
+    let pos = 0, startNode = null, startOff = 0, endNode = null, endOff = 0;
+    for(let i=0;i<nodes.length;i++){
+      const len = nodes[i].nodeValue.length;
+      if(gi >= pos && gi < pos + len) { startNode = nodes[i]; startOff = gi - pos; }
+      if(gi + text.length > pos && gi + text.length <= pos + len) { endNode = nodes[i]; endOff = gi + text.length - pos; }
+      pos += len;
+    }
+    if(!startNode || !endNode) return false;
+    const range = document.createRange();
+    try { range.setStart(startNode, startOff); range.setEnd(endNode, endOff); } catch(e){ return false; }
+    const mark = document.createElement('mark');
+    mark.className = 'ktxs-hl';
+    mark.setAttribute('data-bm', String(idx));
+    mark.setAttribute('title', '点击查看书签注释');
+    try { range.surroundContents(mark); }
+    catch(e){ const frag = range.extractContents(); mark.appendChild(frag); range.insertNode(mark); }
+    return true;
+  }
+  // R184-⑤：渲染后重新套用已存书签高亮（重渲前先还原旧 mark，保证幂等、不嵌套）
+  function ktxsApplyHighlights(){
+    const st = _ktxsReader; if(!st) return;
+    const stage = document.getElementById('ktxsReadStage'); if(!stage) return;
+    stage.querySelectorAll('mark.ktxs-hl').forEach(m=>{ const p = m.parentNode; if(!p) return; while(m.firstChild) p.insertBefore(m.firstChild, m); p.removeChild(m); });
+    if(stage.normalize) stage.normalize();
+    const bms = (S.getBookBookmarks ? S.getBookBookmarks(st.book.title) : []) || [];
+    if(!bms.length) return;
+    [0,1].forEach(k=>{
+      const pg = st.pages[st.spread*2 + k]; if(!pg || pg.eIdx == null) return;
+      const el = (k===0 ? stage.querySelector('.ktxs-page-l') : stage.querySelector('.ktxs-page-r'));
+      if(!el) return;
+      bms.forEach((b,i)=>{ if(b && b.eIdx === pg.eIdx && (b.text||'').trim()) ktxsFindAndWrap(el, b.text, i); });
+    });
+  }
   function ktxsReaderRender(skipFlow){
     const st = _ktxsReader; if(!st) return;
     const stage = document.getElementById('ktxsReadStage');
@@ -42773,6 +42901,7 @@ I'm good at running.`},
     ktxsBindReaderInner(stage);
     ktxsBindSwipe(_ktxsBookEl); // R181-3d：render 每次整体换新书本元素，滑动监听须随 render 重绑（否则首次翻页后滑动失效）
     if(!skipFlow) ktxsAutoFlow(); // R182-5：正文自动流页（当前两页放不下的部分自动分流到新页）
+    ktxsApplyHighlights();        // R184-5: re-apply saved bookmark orange highlights after render
   }
   function ktxsBindReaderInner(root){
     // R182-3：翻页改双击 —— 左页双击进入上一页 / 右页双击进入下一页（左右滑动 + 键盘方向键仍保留）
@@ -42823,6 +42952,15 @@ I'm good at running.`},
         e.stopPropagation();
         const dir = parseInt(z.getAttribute('data-ktxs-flip'), 10);
         if(!isNaN(dir)) ktxsFlip(dir);
+      });
+    });
+    // R184-⑤ / ⑦：点击正文内高亮书签 → 展示已标记书签的详细内容（所选文字 + 注释）
+    root.querySelectorAll('mark.ktxs-hl').forEach(m=>{
+      if(m._ktHl) return; m._ktHl = true;
+      m.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        const idx = parseInt(m.getAttribute('data-bm'), 10);
+        openKtxsBmDetail(idx);
       });
     });
     root.querySelectorAll('[data-ktxs-toc-entry]').forEach(b=>{
@@ -42900,6 +43038,7 @@ I'm good at running.`},
     const span = card.querySelector('.sz-card-state');
     if(span){ span.textContent = done ? '✓ 已读完' : ('已读 '+prog+'%'); span.classList.toggle('is-read', !!done); span.classList.toggle('has-prog', prog>0 && !done); }
     card.classList.toggle('is-checked', !!done);
+    card.classList.toggle('is-all-read', !!done); // R184-3: fully read -> whole card turns green
   }
   // 翻页（带位移动画 + 翻页阴影）：dir=1 下一页 / -1 上一页
   function ktxsFlip(dir){
@@ -42946,7 +43085,8 @@ I'm good at running.`},
         else if(pg.type === 'poem-sec'){
           if(pg.sec === 'poem'){ innerSel = '.mao-poem-content'; srcText = pg.cont ? String(pg.srcText||'') : String((pg.po && pg.po.c) || ''); isPoem = true; }
           else { innerSel = '.mao-sec-b'; srcText = String(pg.srcText||''); }
-        } else continue;
+        } else if(pg.type === 'mao-whole'){ continue; } // R184-⑦：整篇不拆页，保持连续滚动
+        else continue;
         const scroll = el.querySelector('.ktxs-pg-scroll'); if(!scroll) continue;
         const txtEl = scroll.querySelector(innerSel); if(!txtEl) continue;
         if(!srcText || scroll.scrollHeight <= scroll.clientHeight + 6) continue;
@@ -42981,7 +43121,7 @@ I'm good at running.`},
       const firstAt = {};
       st.pages.forEach((p, i)=>{ if((p.type==='text'||p.type==='poem-sec') && p.eIdx!=null && !(p.eIdx in firstAt)) firstAt[p.eIdx] = i; });
       const tocPg = st.pages.find(p=>p.type === 'toc');
-      if(tocPg && tocPg.entries){ tocPg.entries.forEach(e=>{ if(e.eIdx in firstAt) e.page = firstAt[e.eIdx]; }); }
+      if(tocPg && tocPg.entries){ tocPg.entries.forEach(e=>{ if(e.eIdx in firstAt) e.page = firstAt[e.eIdx] + 1; }); }
       if(st.pages.length % 2) st.pages.push({ type:'blank' });
       ktxsReaderRender(true);
     }
@@ -43145,6 +43285,20 @@ I'm good at running.`},
     _ktxsBmSelText = (sel && sel.toString && sel.toString().trim()) || '';
     if(selEl) selEl.textContent = _ktxsBmSelText ? ('已选中：' + _ktxsBmSelText.slice(0,40) + (_ktxsBmSelText.length>40?'…':'')) : '先在阅读页选中一段文字，再点下方「保存书签」';
     showModal('#modalKtxsBookmarks');
+  }
+  // R184-5/7: click inline highlighted bookmark -> modal shows marked text + note
+  function openKtxsBmDetail(idx){
+    const title = (_ktxsReader && _ktxsReader.book) ? _ktxsReader.book.title : '';
+    const bms = (S.getBookBookmarks ? S.getBookBookmarks(title) : []) || [];
+    const b = (idx != null && bms[idx]) ? bms[idx] : null;
+    if(!b) return;
+    const tEl = document.getElementById('ktxsBmDetailTitle');
+    const textEl = document.getElementById('ktxsBmDetailText');
+    const noteEl = document.getElementById('ktxsBmDetailNote');
+    if(tEl) tEl.textContent = '📑 书签 · P' + (b.page||'?');
+    if(textEl) textEl.textContent = (b.text||'');
+    if(noteEl) noteEl.textContent = (b.note || '（无注释）');
+    showModal('#modalKtxsBmDetail');
   }
   function ktxsRenderBookmarkList(title){
     const listEl = document.getElementById('ktxsBmList');
