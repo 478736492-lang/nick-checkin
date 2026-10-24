@@ -42794,7 +42794,7 @@ I'm good at running.`},
       const po = pg.po || {};
       const edone = !!(S.getBookEntryDone && S.getBookEntryDone(book.title, pg.eIdx));
       const btn = isLast ? `<button type="button" class="ktxs-pg-done-btn" data-ktxs-entry-done="${pg.eIdx}">${edone?'✓ 已读（点击取消）':'✓ 标记已读'}</button>` : '';
-      const segs = pg.cont ? (pg.rest || []) : maoComboSegs(po);
+      const segs = pg.shown ? pg.shown : (pg.cont ? (pg.rest || []) : maoComboSegs(po));
       const showTitle = !pg.cont;
       return `
         <div class="ktxs-pg-scroll">
@@ -43127,13 +43127,15 @@ I'm good at running.`},
             if(scroll.scrollHeight <= scroll.clientHeight + 2){ fit = mid; lo = mid + 1; }
             else hi = mid - 1;
           }
-          detail.innerHTML = maoComboMarkup(segs, pg.po || {}, !pg.cont); // 恢复完整内容（拆页后整本重渲染）
-          if(fit < 24) continue;
+          if(fit < 24) continue; // 单页可见高度过小：不拆，保留滚动兜底
           let cut = fit;
           const pm = combined.slice(0, fit).match(/[\s\S]*[。？！；.!?;，、\n]/);
           if(pm && pm[0].length >= 8) cut = pm[0].length;
-          if(cut >= combined.length - 4) continue;
-          const { rest } = maoComboSlice(segs, cut);
+          if(cut >= combined.length - 4) continue; // 基本放得下，不拆
+          // 关键修复：本页只回写“可容纳部分”到 pg.shown，重渲染后不再整页溢出
+          // —— 否则原页始终溢出会在每次重渲染时重复插入相同续页（多处重复），且原页底部被裁切（展示不完整）
+          const { shown, rest } = maoComboSlice(segs, cut);
+          pg.shown = shown;
           st.pages.splice(li + k + 1, 0, { type:'mao-combo', cont:true, eIdx: pg.eIdx, po: pg.po, kind: st.kind, idx: 0, rest: rest });
           inserted++; break;
         } else continue;
@@ -43148,7 +43150,6 @@ I'm good at running.`},
           else txtEl.textContent = srcText.slice(0, mid);
           if(scroll.scrollHeight <= scroll.clientHeight + 2){ fit = mid; lo = mid + 1; } else { hi = mid - 1; }
         }
-        if(isPoem) txtEl.innerHTML = fmtMaoPoem(srcText); else txtEl.textContent = srcText; // 恢复完整内容（拆页后整本重渲染）
         if(fit < 24) continue; // 单页可见高度过小：不拆，保留滚动兜底
         // 截点回退到最近句末标点，避免半句拆页
         let cut = fit;
@@ -43156,9 +43157,13 @@ I'm good at running.`},
         if(pm && pm[0].length >= 8) cut = pm[0].length;
         if(cut >= srcText.length - 4) continue; // 基本放得下，不拆
         const rest = srcText.slice(cut);
+        // 关键修复：本页只回写“可容纳部分”到页数据，重渲染后不再整页溢出
+        // —— 否则原页始终溢出会在每次重渲染时重复插入相同续页（多处重复），且原页底部被裁切（展示不完整）
         if(pg.type === 'text'){
+          pg.text = srcText.slice(0, cut);
           st.pages.splice(li + k + 1, 0, { type:'text', eIdx: pg.eIdx, title: pg.title, text: rest, cont: true, kind: st.kind, idx: 0 });
         } else {
+          pg.srcText = srcText.slice(0, cut);
           st.pages.splice(li + k + 1, 0, { type:'poem-sec', sec: pg.sec, eIdx: pg.eIdx, po: pg.po, kind: st.kind, idx: 0, cont: true, srcText: rest });
         }
         inserted++;
