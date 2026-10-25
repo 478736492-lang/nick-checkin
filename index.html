@@ -5256,7 +5256,7 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .mao-detail-author{text-align:center;font-size:14px;font-weight:700;color:#5b7292;margin-top:4px;font-family:"Songti SC","STSong","SimSun",serif}
 .mao-detail-date{text-align:center;color:#7a8aa0;font-size:13px;font-weight:600;margin-top:2px;margin-bottom:8px}
 .mao-poem-content{text-align:center;padding:10px 4px 6px;font-family:"Songti SC","STSong","SimSun",serif}
-.mao-line{font-size:17px;line-height:2.2;color:#23344a;letter-spacing:2px}
+.mao-line{font-size:17px;line-height:1.85;color:#23344a;letter-spacing:2px}
 .mao-stanza{height:14px}
 /* R77-3：诗词打卡键（详情页诗词下方）+ 目录已打卡角标 */
 .mao-check-wrap{text-align:center;margin:10px 0 4px}
@@ -5270,7 +5270,7 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .mao-grid-check{position:absolute;top:4px;right:5px;font-size:10px}
 .mao-sec{margin-top:12px}
 .mao-sec-h{font-weight:800;color:var(--tone-900);border-left:4px solid var(--tone-600);padding-left:9px;margin:6px 0 5px;font-size:14.5px}
-.mao-sec-b{color:#37506e;line-height:1.95;font-size:14px;background:#f3f9ff;border:1px solid #e0edfb;border-radius:10px;padding:9px 13px;word-break:break-word}
+.mao-sec-b{color:#37506e;line-height:1.75;font-size:14px;background:#f3f9ff;border:1px solid #e0edfb;border-radius:10px;padding:9px 13px;word-break:break-word}
 /* R74-2：毛泽东诗词集书籍卡片 —— 旭日东升剪影背景贴图（用户提供的替换图） */
 .sz-book-flag{position:relative;overflow:hidden;background-color:#8a2b12;background-image:url("./assets/1502a7a7fe0e.jpg");background-size:cover;background-position:center}
 .sz-book-flag::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,.58)}
@@ -7095,7 +7095,7 @@ body.ktxs-read-open .sidebar{z-index:999999}
   flex:1 1 0;min-width:0;display:flex;flex-direction:column;
   padding:clamp(16px,3vh,32px) clamp(18px,2.4vw,38px);
   overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;
-  background:#dceafd;
+  background:#4096ff;
   font-family:"KaiTi","STKaiti","Kaiti SC","Songti SC","STSong",serif;
 }
 .ktxs-page-l{border-radius:16px 0 0 16px}
@@ -7159,7 +7159,7 @@ body.ktxs-read-open .sidebar{z-index:999999}
 .ktxs-empty-s{font-size:13.5px;color:#5b86c4;line-height:1.8}
 
 /* 弹窗内诗词/童话详情页（复用 .mao-detail 系列，微调适配书页） */
-.ktxs-page .mao-detail{background:rgba(255,255,255,.78);border-color:rgba(91,134,196,.3);box-shadow:none;margin:2px 0 10px}
+.ktxs-page .mao-detail{background:rgba(255,255,255,.78);border-color:rgba(91,134,196,.3);box-shadow:none;margin:2px 0 2px}
 .ktxs-page .mao-sec-b{background:rgba(255,255,255,.7);border-color:rgba(91,134,196,.22);color:#33455c}
 .ktxs-page .mao-line{color:#243042}
 .ktxs-page .mao-sec-h{color:#243042;border-left-color:#5b86c4}
@@ -7234,7 +7234,7 @@ body.ktxs-dragging-doc{ user-select:none !important; -webkit-user-select:none !i
   padding:clamp(18px,3vh,26px) clamp(16px,2.4vw,30px) clamp(24px,3.6vh,32px);
   cursor:pointer; transition:background .18s, border-color .18s;
 }
-/* R180-2e：四角云纹内凹弧 —— 以书页米奶白在四角"咬"出弧形缺口，内侧一线浅云弧 */
+/* R180-2e/R187：四角云纹内凹弧 —— 以书页底色在四角"咬"出弧形缺口，内侧一线浅云弧（缺口色须与书页底色一致） */
 .ktxs-pg-card::before{
   content:'';position:absolute;inset:-1.5px;border-radius:16px;pointer-events:none;
   background:
@@ -7242,10 +7242,10 @@ body.ktxs-dragging-doc{ user-select:none !important; -webkit-user-select:none !i
     radial-gradient(circle 15px at 100% 0,transparent 0 11.5px,#cfe6fb 11.5px 13px,transparent 13px),
     radial-gradient(circle 15px at 0 100%,transparent 0 11.5px,#cfe6fb 11.5px 13px,transparent 13px),
     radial-gradient(circle 15px at 100% 100%,transparent 0 11.5px,#cfe6fb 11.5px 13px,transparent 13px),
-    radial-gradient(circle 16px at 0 0,#dceafd 0 15px,transparent 15px),
-    radial-gradient(circle 16px at 100% 0,#dceafd 0 15px,transparent 15px),
-    radial-gradient(circle 16px at 0 100%,#dceafd 0 15px,transparent 15px),
-    radial-gradient(circle 16px at 100% 100%,#dceafd 0 15px,transparent 15px);
+    radial-gradient(circle 16px at 0 0,#4096ff 0 15px,transparent 15px),
+    radial-gradient(circle 16px at 100% 0,#4096ff 0 15px,transparent 15px),
+    radial-gradient(circle 16px at 0 100%,#4096ff 0 15px,transparent 15px),
+    radial-gradient(circle 16px at 100% 100%,#4096ff 0 15px,transparent 15px);
 }
 .ktxs-pg-card:hover{ border-color:#4096ff; }
 .ktxs-pg-card.is-entry-done{
@@ -7354,9 +7354,9 @@ body.ktxs-dragging-doc{ user-select:none !important; -webkit-user-select:none !i
   border-radius:18px;
   padding:10px 6px;
 }
-/* 书页内仅保留米奶蓝底，不再贴背景图 */
+/* R187：书页底色改为强调蓝（与正文卡四角缺口色同步；注释内不写受管控色值） */
 .ktxs-page{
-  background-color:#dceafd;
+  background-color:#4096ff;
 }
 /* R182-2：每页文章结尾「已读」键（点击该页变绿，数据计入阅读进度统计） */
 .ktxs-pg-card-foot{ position:static;left:auto;right:auto;bottom:auto;margin-top:14px;text-align:center;font-size:13px; }
