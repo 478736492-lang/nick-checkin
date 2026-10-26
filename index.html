@@ -42863,7 +42863,7 @@ I'm good at running.`},
       return `
         <div class="ktxs-pg-scroll">
           <div class="ktxs-pg-card${edone&&isLast?' is-entry-done':''}">
-            ${pg.title?`<div class="ktxs-pg-title${pg.cont?' ktxs-pg-cont':''}">${esc(pg.title)}</div>`:''}
+            ${pg.title && !pg.cont?`<div class="ktxs-pg-title">${esc(pg.title)}</div>`:''}
             <div class="ktxs-pg-txt">${txtHtml}</div>
             <div class="ktxs-pg-card-foot">${btn}</div>
           </div>
