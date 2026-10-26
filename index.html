@@ -7352,6 +7352,7 @@ body.ktxs-dragging-doc{ user-select:none !important; -webkit-user-select:none !i
 .ktxs-pg-no.is-done{ background:#1f8a4c; color:#e7f8ee; border-color:#1f8a4c; }
 .ktxs-pg-no-r{ right:8px; left:auto; }
 .ktxs-pg-no-l{ left:8px; right:auto; }
+.ktxs-pg-num{ position:absolute; bottom:8px; left:50%; transform:translateX(-50%); z-index:7; font-size:13px; font-weight:800; color:#3f639b; letter-spacing:.5px; pointer-events:none; }
 .ktxs-pg-card{ position:relative; }
 /* R179-4：家长态拖拽手柄 */
 .ktxs-drag-handle{ margin-left:auto; cursor:grab; color:#5b86c4; font-size:18px; line-height:1; user-select:none; touch-action:none; padding:0 4px; }
@@ -31508,6 +31509,8 @@ window.KTXS_TONGNIAN_COVER = './assets/477b8a43cb0b.jpg';
     if(!st.bookReadAward10) st.bookReadAward10 = {};
     if(!st.bookReadAward100) st.bookReadAward100 = {};
     if(!st.bookReadStars) st.bookReadStars = {};
+    // R192-1：一次性清零全部书籍的历史阅读进度 —— 此后所有进度改由「已读打卡」数据（bookPageDone）实时派生
+    if(!st.__bookProgressCleared){ st.bookReadProgress = {}; st.__bookProgressCleared = true; save(st); }
     // R178：书籍封面（独立顶层字段存 dataURL；nwZone 截断 800 字符装不下图片）
     if(!st.bookCovers) st.bookCovers = {};
     // R178：每页正文完成标记 { 书名: { 页索引: true } }，点击内容卡变绿=完成
@@ -33549,7 +33552,8 @@ window.KTXS_TONGNIAN_COVER = './assets/477b8a43cb0b.jpg';
     let n = parseFloat(pct); if(isNaN(n)) n = 0;
     n = Math.max(0, Math.min(100, n));
     let prev = parseFloat(st.bookReadProgress[title]); if(isNaN(prev)) prev = 0;
-    if(n > prev) st.bookReadProgress[title] = n; // 单调递增：只增不减，刷新/reopen 不回退
+    // R192-1：取消「单调递增」——直接写入按已读打卡数据算出的当前值，取消已读时进度同步回退
+    st.bookReadProgress[title] = n;
     save(st);
     return Math.max(0, Math.min(100, n));
   }
@@ -42758,9 +42762,10 @@ I'm good at running.`},
       contents.forEach((it, ci)=>{
         const title = String(it.t||'').trim();
         const text = String(it.c||'').trim() || title;
-        const chunks = ktxsSplitText(text);
         entries.push({ no: ci+1, label: title || ('正文 ' + (ci+1)), eIdx: ci, done: !!(S.getBookEntryDone && S.getBookEntryDone(book.title, ci)) });
-        chunks.forEach((ch, ki)=> body.push({ type:'text', eIdx: ci, title: title, text: ch, cont: ki>0, idx: 0 }));
+        // R192-2：取消按 ≤300 字的固定预切分页 —— 同一篇文章作为一个连续流页整体入页，
+        // 由 ktxsAutoFlow 按真实可见高度把每一页排满、放不下自动续页（消除文末大片空白）
+        body.push({ type:'text', eIdx: ci, title: title, text: text, cont: false, idx: 0 });
       });
       if(!contents.length) body.push({ type:'empty' });
     } else {
@@ -42793,7 +42798,9 @@ I'm good at running.`},
     if(!pg || pg.type === 'blank') return '<div class="ktxs-page-blank">❦</div>';
     // R191-2: page-number badge (doubles as 'mark page read' button) - rendered at content-card bottom-left/right
     const pageDone = !!(S.getBookPageDone && S.getBookPageDone(book.title)[String(pIdx)]);
-    const pageBadge = '<span class="ktxs-pg-no ' + 'ktxs-pg-no-' + (side||'l') + (pageDone?' is-done':'') + '" data-ktxs-page-done="' + pIdx + '">P ' + pgNo + '</span>';
+    // R192-3：页码居中显示（独立展示元素）+「已读」键留在左下/右下角原处、自成按键，交互不变
+    const pageNum = '<span class="ktxs-pg-num">P ' + pgNo + '</span>';
+    const pageBadge = '<span class="ktxs-pg-no ' + 'ktxs-pg-no-' + (side||'l') + (pageDone?' is-done':'') + '" data-ktxs-page-done="' + pIdx + '" title="' + (pageDone?'取消本页已读':'标记本页已读') + '">' + (pageDone?'✓ 已读':'标已读') + '</span>';
     if(pg.type === 'cover'){
       const coverUrl = ktxsBuiltinCover(book);
       return `
@@ -42843,6 +42850,7 @@ I'm good at running.`},
             ${maoComboMarkup(segs, po, showTitle)}
           </div>
           ${pageBadge}
+          ${pageNum}
         </div>`;
     }
     if(pg.type === 'empty'){
@@ -42863,6 +42871,7 @@ I'm good at running.`},
             <div class="ktxs-pg-txt">${txtHtml}</div>
           </div>
           ${pageBadge}
+          ${pageNum}
         </div>`;
     }
     if(pg.type === 'poem-sec'){
@@ -42879,6 +42888,7 @@ I'm good at running.`},
               <div class="mao-poem-content">${txt}</div>
             </div>
             ${pageBadge}
+            ${pageNum}
           </div>`;
       }
       const secTitle = pg.sec === 'bg' ? '📜 创作背景' : '🔍 专业赏析';
@@ -42893,6 +42903,7 @@ I'm good at running.`},
             </div>
           </div>
           ${pageBadge}
+          ${pageNum}
         </div>`;
     }
     return '';
@@ -43196,7 +43207,8 @@ I'm good at running.`},
     const st = _ktxsReader; if(!st) return;
     const stage = document.getElementById('ktxsReadStage'); if(!stage) return;
     let guard = 0;
-    while(guard++ < 8){
+    // R192-2：整篇作为一个连续流页时需要更多次续切才能排满，放宽上限（原 8 次不足以排完整篇长文）
+    while(guard++ < 32){
       const li = st.spread * 2;
       let inserted = 0;
       for(let k = 0; k < 2; k++){
