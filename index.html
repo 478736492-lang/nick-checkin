@@ -7097,7 +7097,8 @@ body.ktxs-read-open .sidebar{z-index:999999}
   position:relative;
   flex:1 1 0;min-width:0;display:flex;flex-direction:column;
   padding:clamp(8px,1.5vh,16px) clamp(9px,1.2vw,19px);
-  overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;
+  /* R193-1：取消书页内垂直滚动 —— 改由 ktxsAutoFlow 按可视区域整本预分页，内容恒好排满一页 */
+  overflow:hidden;overscroll-behavior:contain;touch-action:pan-y;
   background:#dceafd;
   font-family:"KaiTi","STKaiti","Kaiti SC","Songti SC","STSong",serif;
 }
@@ -7164,7 +7165,7 @@ body.ktxs-read-open .sidebar{z-index:999999}
 .ktxs-empty-s{font-size:13.5px;color:#5b86c4;line-height:1.8}
 
 /* 弹窗内诗词/童话详情页（复用 .mao-detail 系列，微调适配书页） */
-.ktxs-page .mao-detail{background:#fff;border:1.5px solid #a9cdf2;border-radius:16px;box-shadow:none;margin:0;min-height:0;box-sizing:border-box;flex:1 1 auto;overflow-y:auto;padding:clamp(16px,2.4vh,26px) clamp(16px,2.4vw,30px)}
+.ktxs-page .mao-detail{background:#fff;border:1.5px solid #a9cdf2;border-radius:16px;box-shadow:none;margin:0;min-height:0;box-sizing:border-box;flex:1 1 auto;overflow:hidden;padding:clamp(16px,2.4vh,26px) clamp(16px,2.4vw,30px)}
 .ktxs-page .mao-sec-b{background:rgba(255,255,255,.7);border-color:rgba(91,134,196,.22);color:#33455c}
 .ktxs-page .mao-line{color:#243042}
 .ktxs-page .mao-sec-h{color:#243042;border-left-color:#5b86c4}
@@ -7233,11 +7234,12 @@ body.ktxs-dragging-doc{ user-select:none !important; -webkit-user-select:none !i
 
 
 /* R178-2：阅读页内容卡（R180：2D 平面国风 —— 透明底透出米奶白书页 + 白卡蓝细描边 + 四角云纹内凹弧） */
-.ktxs-pg-scroll{ background:transparent !important; padding:8px; display:flex; flex-direction:column; position:relative; }
+.ktxs-pg-scroll{ background:transparent !important; padding:8px 8px 34px; display:flex; flex-direction:column; position:relative; }
 .ktxs-pg-card{
   position:relative; margin:0; box-sizing:border-box; background:#fff; border:1.5px solid #a9cdf2; border-radius:16px;
   padding:clamp(8px,1.2vh,13px) clamp(8px,1.2vw,15px);
-  flex:1 1 auto; min-height:0; overflow-y:auto;
+  /* R193-1：内容卡不再自行消化溢出 —— 否则卡片高度被锁、自动分页永远测不到溢出，只能退化为单页长文滚动 */
+  flex:1 1 auto; min-height:0; overflow:hidden;
   cursor:pointer; transition:background .18s, border-color .18s;
 }
 /* R180-2e/R187：四角云纹内凹弧 —— 以书页底色在四角"咬"出弧形缺口，内侧一线浅云弧（缺口色须与书页底色一致） */
@@ -7254,6 +7256,18 @@ body.ktxs-dragging-doc{ user-select:none !important; -webkit-user-select:none !i
     radial-gradient(circle 16px at 100% 100%,#dceafd 0 15px,transparent 15px);
 }
 .ktxs-pg-card:hover{ border-color:var(--tone-600); }
+
+/* R193-1：高保真测量页（不可见、不参与交互，仅用于按真实可视区域/边距/行高测算每页容量）
+   —— 结构与真实书页一致（同宽同高的 .ktxs-page + .ktxs-pg-scroll + 内容卡），因此测得的行数与最终渲染完全一致 */
+.ktxs-pg-rig{ position:absolute; left:0; top:0; width:100%; height:100%; display:flex; visibility:hidden; pointer-events:none; z-index:0; }
+.ktxs-pg-rig .ktxs-rig-pg{ min-width:0; }
+.ktxs-pg-rig .ktxs-pg-card,
+.ktxs-pg-rig .mao-detail{ flex:0 0 auto; height:auto; overflow:visible; }
+/* R193-1：分页未生效时的降级兜底（如极窄视口/布局未就绪）——仅在此时才允许页内滚动，保证文字不被裁切 */
+#ktxsReadStage.ktxs-flow-fallback .ktxs-pg-card,
+#ktxsReadStage.ktxs-flow-fallback .ktxs-page .mao-detail{ overflow-y:auto; }
+/* R193-2：新的篇幅/章节强制另起一页 —— 章首页标题下方加一道虚线纹，便于与续页区分 */
+.ktxs-pg-card.ktxs-pg-newentry .ktxs-pg-title{ padding-bottom:8px; border-bottom:1px dashed rgba(91,134,196,.35); margin-bottom:16px; }
 .ktxs-page.is-page-done{ background:#e9fbf1; }
 .ktxs-page.is-page-done .ktxs-pg-card{ background:#dcf6e8; border-color:#5cd6a0; box-shadow:0 6px 16px rgba(40,180,120,0.20); }
 .ktxs-page.is-page-done .mao-detail{ background:#dcf6e8; border-color:#5cd6a0; }
@@ -42697,7 +42711,8 @@ I'm good at running.`},
   let _ktxsListEdit = false;    // R184-1: edit mode flag (toggle via head button; shows per-card edit key + enables long-press drag)
   let _ktxsBookEl = null;       // 当前书本 DOM（滑动跟随时引用）
   let _ktxsSwipe = null;        // 滑动跟踪 { sx, sy, dx, axis, on }
-  let _ktxsSwipeBound = false;  // window 级滑动/键盘/导航监听只绑一次
+  let _ktxsSwipeBound = false;
+  let _ktxsResizeBound = false;  // window 级滑动/键盘/导航监听只绑一次
   // 正文长文按句末标点切分为书页（每页约 300 字，适配双页固定开度）
   function ktxsSplitText(t){
     const s = String(t||'').trim();
@@ -42862,13 +42877,12 @@ I'm good at running.`},
         </div>`;
     }
     if(pg.type === 'text'){
-      const txtParas = String(pg.text||'').split('\n').map(s=>s.replace(/^\s+|\s+$/g,'')).filter(s=>s.length);
-      const txtHtml = txtParas.length ? txtParas.map(p=>`<p>${esc(p)}</p>`).join('') : `<p>${esc(pg.text||'')}</p>`;
+      // R193-1：优先渲染预分页切好的 paras（与测量阶段同源），无分页结果时才按换行整体回退
+      const paras = (pg.paras && pg.paras.length) ? pg.paras : ktxsTextParas(String(pg.text||''));
       return `
         <div class="ktxs-pg-scroll">
-          <div class="ktxs-pg-card">
-            ${pg.title && !pg.cont?`<div class="ktxs-pg-title">${esc(pg.title)}</div>`:''}
-            <div class="ktxs-pg-txt">${txtHtml}</div>
+          <div class="ktxs-pg-card${pg.newEntry?' ktxs-pg-newentry':''}">
+            ${ktxsParasMarkup(pg.title, paras, !!pg.cont)}
           </div>
           ${pageBadge}
           ${pageNum}
@@ -43033,7 +43047,16 @@ I'm good at running.`},
     _ktxsBookEl = document.getElementById('ktxsBook');
     ktxsBindReaderInner(stage);
     ktxsBindSwipe(_ktxsBookEl); // R181-3d：render 每次整体换新书本元素，滑动监听须随 render 重绑（否则首次翻页后滑动失效）
-    if(!skipFlow) ktxsAutoFlow(); // R182-5：正文自动流页（当前两页放不下的部分自动分流到新页）
+    // R193-1：首次渲染后按可视区域完成整本预分页 -> 本次半成型渲染作废，整本重排一次（skipFlow 防递归）
+    if(!skipFlow && ktxsAutoFlow()){
+      ktxsReaderRender(true);
+      // 分页后总页数变大：用新的总页数重算一次阅读进度，避免进度条被高估
+      const ms = Math.max(0, Math.ceil(st.pages.length/2) - 1);
+      ktxsRecordProgress(st.book.title, Math.min(st.spread, ms), ms);
+      return;
+    }
+    // 分页未生效（布局未就绪/极窄视口）时才放开页内滚动，避免文字被裁切；一旦分页成功即无任何滚动容器
+    try{ stage.classList.toggle('ktxs-flow-fallback', st.paginated !== true); }catch(e){}
     ktxsApplyHighlights();        // R184-5: re-apply saved bookmark orange highlights after render
     ktxsApplyTags();              // R188: re-apply inline tag markers (🏷) after render
   }
@@ -43201,93 +43224,156 @@ I'm good at running.`},
       }
     }, 170);
   }
-  // R182-5：正文自动流页 —— 当前 spread 两页中超出可见高度的文本自动分流到后续新页
-  // （新章节/文章仍各自起新页，由 ktxsReaderPages 按篇切分保证；此处只处理「一页放不下」的续流）
-  function ktxsAutoFlow(){
-    const st = _ktxsReader; if(!st) return;
-    const stage = document.getElementById('ktxsReadStage'); if(!stage) return;
+  // R182-5 / R193：正文自动流页
+  // R193 重写为「实体纸质书式 · 整本预分页」：
+  //   ① 取消单页内滚动 —— 书页/内容卡一律 overflow:hidden，超出一屏的文字只能顺延到下一页
+  //   ② 建立与原书页几何完全一致（同宽同高、同 padding/字体/行高）的隐藏测量页，
+  //      按「整段贪心填充 → 溢出则二分探测 → 回退到句末标点」逐篇切分，每页恰好排满
+  //   ③ 新的篇幅/章节（entry）强制另起一页：续页只在本篇内部顺延，绝不跨篇连排
+  //   ④ 开书后一次性整本分页（st.paginated 幂等），页码/目录页码因此稳定；仅视口尺寸变化才重排
+  function ktxsTextParas(text){
+    const ps = String(text||'').split(/\n+/).map(function(s){ return s.replace(/^\s+|\s+$/g,''); }).filter(function(s){ return s.length; });
+    return ps.length ? ps : (String(text||'').trim() ? [String(text||'').trim()] : []);
+  }
+  // 回退到最近句末标点，避免把半句话劈成两页（不足 8 字则不退，直接用二分结果）
+  function ktxsSnapCut(head){
+    const m = String(head||'').match(/[\s\S]*[。？！；.!?;，、]/);
+    return (m && m[0].length >= 8) ? m[0].length : 0;
+  }
+  // 正文页内文标记 —— 测量阶段与最终渲染必须完全同源，否则测得页数与实际排版不一致（R192 的量测失真正是出在这里）
+  function ktxsParasMarkup(title, paras, cont){
+    // 文章标题只在本篇首页渲染，续页仅承载正文（沿用 R190 约定）
+    const t = (title && !cont) ? '<div class="ktxs-pg-title">' + esc(title) + '</div>' : '';
+    return t + '<div class="ktxs-pg-txt">' + (paras||[]).map(function(p){ return '<p>' + esc(p) + '</p>'; }).join('') + '</div>';
+  }
+  // 把一篇文章的段落数组按测量页容量切成若干「物理页」
+  function ktxsFlowParas(paras, opts){
+    const scroll = opts.scroll, card = opts.card;
+    const paint = function(ps, cont){ card.innerHTML = ktxsParasMarkup(opts.title, ps, cont); };
+    const overflow = function(){ return scroll.scrollHeight > scroll.clientHeight + 1; };
+    const out = [], queue = paras.slice();
     let guard = 0;
-    // R192-2：整篇作为一个连续流页时需要更多次续切才能排满，放宽上限（原 8 次不足以排完整篇长文）
-    while(guard++ < 32){
-      const li = st.spread * 2;
-      let inserted = 0;
-      for(let k = 0; k < 2; k++){
-        const el = (k === 0) ? stage.querySelector('.ktxs-page-l') : stage.querySelector('.ktxs-page-r');
-        if(!el) continue;
-        const pg = st.pages[li + k];
-        if(!pg) continue;
-        let innerSel = null, srcText = null, isPoem = false;
-        if(pg.type === 'text'){ innerSel = '.ktxs-pg-txt'; srcText = String(pg.text || ''); }
-        else if(pg.type === 'poem-sec'){
-          if(pg.sec === 'poem'){ innerSel = '.mao-poem-content'; srcText = pg.cont ? String(pg.srcText||'') : String((pg.po && pg.po.c) || ''); isPoem = true; }
-          else { innerSel = '.mao-sec-b'; srcText = String(pg.srcText||''); }
-        } else if(pg.type === 'mao-combo'){
-          // R185：毛泽东诗词集「原文+背景+赏析」组合页，放不下时按合并文本续切分页（每首新诗词已在 ktxsReaderPages 起新页）
-          const segs = pg.cont ? (pg.rest || []) : maoComboSegs(pg.po || {});
-          const combined = segs.map(s=>s.text).join('');
-          const scroll = el.querySelector('.ktxs-pg-scroll'); if(!scroll) continue;
-          const detail = scroll.querySelector('.mao-detail'); if(!detail) continue;
-          if(!combined || scroll.scrollHeight <= scroll.clientHeight + 6) continue;
-          let lo = 8, hi = combined.length, fit = 8;
-          while(lo <= hi){
-            const mid = (lo + hi) >> 1;
-            const { shown } = maoComboSlice(segs, mid);
-            detail.innerHTML = maoComboMarkup(shown, pg.po || {}, !pg.cont);
-            if(scroll.scrollHeight <= scroll.clientHeight + 2){ fit = mid; lo = mid + 1; }
-            else hi = mid - 1;
-          }
-          if(fit < 24) continue; // 单页可见高度过小：不拆，保留滚动兜底
-          let cut = fit;
-          const pm = combined.slice(0, fit).match(/[\s\S]*[。？！；.!?;，、\n]/);
-          if(pm && pm[0].length >= 8) cut = pm[0].length;
-          if(cut >= combined.length - 4) continue; // 基本放得下，不拆
-          // 关键修复：本页只回写“可容纳部分”到 pg.shown，重渲染后不再整页溢出
-          // —— 否则原页始终溢出会在每次重渲染时重复插入相同续页（多处重复），且原页底部被裁切（展示不完整）
-          const { shown, rest } = maoComboSlice(segs, cut);
-          pg.shown = shown;
-          st.pages.splice(li + k + 1, 0, { type:'mao-combo', cont:true, eIdx: pg.eIdx, po: pg.po, kind: st.kind, idx: 0, rest: rest });
-          inserted++; break;
-        } else continue;
-        const scroll = el.querySelector('.ktxs-pg-scroll'); if(!scroll) continue;
-        const txtEl = scroll.querySelector(innerSel); if(!txtEl) continue;
-        if(!srcText || scroll.scrollHeight <= scroll.clientHeight + 6) continue;
-        // 二分找出当前可见高度可容纳的最大字符数（诗词按句法格式化后测量）
-        let lo = 8, hi = srcText.length, fit = 8;
+    while(queue.length && guard++ < 600){
+      const fits = []; let carried = null;
+      // ① 整段贪心填充：一段一段往里塞，直到塞不下
+      while(queue.length){
+        const p = queue.shift();
+        fits.push(p); paint(fits, out.length > 0);
+        if(overflow()){ fits.pop(); carried = p; break; }
+      }
+      // ② 溢出的那一段：二分探测本段能容纳的字符数，再回退到句末标点
+      if(carried){
+        let lo = 1, hi = carried.length, take = 0;
         while(lo <= hi){
           const mid = (lo + hi) >> 1;
-          if(isPoem) txtEl.innerHTML = fmtMaoPoem(srcText.slice(0, mid));
-          else txtEl.textContent = srcText.slice(0, mid);
-          if(scroll.scrollHeight <= scroll.clientHeight + 2){ fit = mid; lo = mid + 1; } else { hi = mid - 1; }
+          paint(fits.concat([carried.slice(0, mid)]), out.length > 0);
+          if(!overflow()){ take = mid; lo = mid + 1; } else { hi = mid - 1; }
         }
-        if(fit < 24) continue; // 单页可见高度过小：不拆，保留滚动兜底
-        // 截点回退到最近句末标点，避免半句拆页
-        let cut = fit;
-        const pm = srcText.slice(0, fit).match(/[\s\S]*[。？！；.!?;，、]/);
-        if(pm && pm[0].length >= 8) cut = pm[0].length;
-        if(cut >= srcText.length - 4) continue; // 基本放得下，不拆
-        const rest = srcText.slice(cut);
-        // 关键修复：本页只回写“可容纳部分”到页数据，重渲染后不再整页溢出
-        // —— 否则原页始终溢出会在每次重渲染时重复插入相同续页（多处重复），且原页底部被裁切（展示不完整）
-        if(pg.type === 'text'){
-          pg.text = srcText.slice(0, cut);
-          st.pages.splice(li + k + 1, 0, { type:'text', eIdx: pg.eIdx, title: pg.title, text: rest, cont: true, kind: st.kind, idx: 0 });
-        } else {
-          pg.srcText = srcText.slice(0, cut);
-          st.pages.splice(li + k + 1, 0, { type:'poem-sec', sec: pg.sec, eIdx: pg.eIdx, po: pg.po, kind: st.kind, idx: 0, cont: true, srcText: rest });
-        }
-        inserted++;
-        break; // 拆一页即重渲染，避免后续页序号错位
+        const snap = ktxsSnapCut(carried.slice(0, take));
+        // take===0 表示这段连一行都放不下：本页到此为止，整段顺延到下页（不可硬塞字符，否则反而撑出一行导致溢出）
+        const cut = take > 0 ? (snap || take) : 0;
+        const head = cut > 0 ? carried.slice(0, cut) : '';
+        const tail = carried.slice(cut);
+        if(head) fits.push(head);
+        if(tail) queue.unshift(tail);
       }
-      if(!inserted) break;
-      // 重排正文页序号（续页用）+ 刷新目录首页码（按 eIdx）+ 补齐偶数尾页
-      let n = 0;
-      st.pages.forEach(p=>{ if(p.type === 'text' || p.type === 'poem-sec' || p.type === 'mao-combo'){ n++; p.idx = n + 1; } });
-      const firstAt = {};
-      st.pages.forEach((p, i)=>{ if((p.type==='text'||p.type==='poem-sec'||p.type==='mao-combo') && p.eIdx!=null && !(p.eIdx in firstAt)) firstAt[p.eIdx] = i; });
-      const tocPg = st.pages.find(p=>p.type === 'toc');
-      if(tocPg && tocPg.entries){ tocPg.entries.forEach(e=>{ if(e.eIdx in firstAt) e.page = firstAt[e.eIdx] + 1; }); }
-      if(st.pages.length % 2) st.pages.push({ type:'blank' });
-      ktxsReaderRender(true);
+      // ③ 极端窄页（连一行都放不下）也要至少推进一段，杜绝死循环
+      if(!fits.length && queue.length) fits.push(queue.shift());
+      if(!fits.length) break;
+      out.push(fits);
+      if(out.length > 600) break;
+    }
+    return out.length ? out : [paras.slice(0, 1)];
+  }
+  // 毛泽东诗词集：沿用 R185「原文+创作背景+专业赏析」组合流，放不下即按字数二分续切（每首诗词已在 ktxsReaderPages 起新页）
+  function ktxsFlowMao(segList, opts){
+    const scroll = opts.scroll, detail = opts.detail, po = opts.po;
+    const total = segList.map(function(s){ return s.text; }).join('');
+    if(!total) return [{ shown: segList }];
+    detail.innerHTML = maoComboMarkup(segList, po, true);
+    if(scroll.scrollHeight <= scroll.clientHeight + 1) return [{ shown: segList }];
+    const out = []; let pending = segList; let guard = 0;
+    while(pending && pending.length && guard++ < 200){
+      const left = pending.map(function(s){ return s.text; }).join('');
+      if(!left) break;
+      let lo = 1, hi = left.length, take = 0;
+      while(lo <= hi){
+        const mid = (lo + hi) >> 1;
+        detail.innerHTML = maoComboMarkup(maoComboSlice(pending, mid).shown, po, out.length === 0);
+        if(scroll.scrollHeight <= scroll.clientHeight + 1){ take = mid; lo = mid + 1; } else { hi = mid - 1; }
+      }
+      const snap = ktxsSnapCut(left.slice(0, take));
+      const cut = snap || Math.max(1, take);
+      const sl = maoComboSlice(pending, cut);
+      out.push({ shown: sl.shown });
+      const restStr = (sl.rest || []).map(function(s){ return s.text; }).join('');
+      if(!restStr) break;
+      pending = sl.rest;
+    }
+    return out.length ? out : [{ shown: segList }];
+  }
+  // R182-5d：分页后统一重排页序号 + 刷新目录页码 + 补齐偶数尾页
+  function ktxsReindexPages(st){
+    let n = 0;
+    st.pages.forEach(function(p){ if(p.type === 'text' || p.type === 'poem-sec' || p.type === 'mao-combo'){ n++; p.idx = n + 1; } });
+    const firstAt = {};
+    st.pages.forEach(function(p, i){ if((p.type==='text'||p.type==='poem-sec'||p.type==='mao-combo') && p.eIdx!=null && !(p.eIdx in firstAt)) firstAt[p.eIdx] = i; });
+    const tocPg = st.pages.find(function(p){ return p.type === 'toc'; });
+    if(tocPg && tocPg.entries) tocPg.entries.forEach(function(e){ if(e.eIdx in firstAt) e.page = firstAt[e.eIdx] + 1; });
+    if(st.pages.length % 2) st.pages.push({ type:'blank' });
+  }
+  // 整本预分页：返回 true 表示 pages 已重建（调用方需整本重渲染）
+  function ktxsAutoFlow(){
+    const st = _ktxsReader; if(!st) return false;
+    if(st.paginated) return false;
+    const bookEl = document.getElementById('ktxsBook'); if(!bookEl) return false;
+    // ① 建立与原书页同宽同高、同样式链的高保真测量页
+    const rig = document.createElement('div');
+    rig.className = 'ktxs-pg-rig';
+    rig.innerHTML =
+      '<div class="ktxs-page ktxs-rig-pg"><div class="ktxs-pg-scroll"><div class="ktxs-pg-card"></div></div></div>' +
+      '<div class="ktxs-page ktxs-rig-pg"><div class="ktxs-pg-scroll"><div class="mao-detail"></div></div></div>';
+    bookEl.appendChild(rig);
+    try{
+      const probeA = rig.children[0], probeB = rig.children[1];
+      const scrollA = probeA ? probeA.querySelector('.ktxs-pg-scroll') : null;
+      const scrollB = probeB ? probeB.querySelector('.ktxs-pg-scroll') : null;
+      if(!scrollA) return false;
+      // 用真实左页的实测尺寸锁死测量页几何 —— 无论当前是双栏还是窄屏单栏，都保证与真页逐像素一致
+      const refL = bookEl.querySelector('.ktxs-page-l');
+      const rb = refL ? refL.getBoundingClientRect() : null;
+      if(rb && rb.width && rb.height){
+        [probeA, probeB].forEach(function(el){
+          if(!el) return;
+          el.style.flex = '0 0 auto'; el.style.width = rb.width + 'px'; el.style.height = rb.height + 'px';
+        });
+      }
+      const card = scrollA.querySelector('.ktxs-pg-card');
+      const detail = scrollB ? scrollB.querySelector('.mao-detail') : null;
+      if(!card || !scrollA.clientHeight) return false;   // 布局未就绪（含 jsdom/隐藏态）：保留逻辑页，交给降级滚动
+      const out = [];
+      st.pages.forEach(function(pg){
+        if(pg.type === 'text'){
+          const groups = ktxsFlowParas(ktxsTextParas(pg.text), { scroll: scrollA, card: card, title: pg.title });
+          groups.forEach(function(g, gi){
+            out.push({ type:'text', eIdx: pg.eIdx, title: pg.title, paras: g, text: g.join('\n'), cont: gi > 0, newEntry: gi === 0, kind: pg.kind, idx: 0 });
+          });
+        } else if(pg.type === 'mao-combo' && detail){
+          const flows = ktxsFlowMao(maoComboSegs(pg.po || {}), { scroll: scrollB, detail: detail, po: pg.po });
+          flows.forEach(function(f, fi){
+            out.push({ type:'mao-combo', eIdx: pg.eIdx, po: pg.po, shown: f.shown, cont: fi > 0, newEntry: fi === 0, kind: pg.kind, idx: 0 });
+          });
+        } else {
+          out.push(pg);
+        }
+      });
+      if(!out.length) return false;
+      st.pages = out;
+      ktxsReindexPages(st);
+      st.paginated = true;
+      return true;
+    } finally {
+      if(rig.parentNode) rig.parentNode.removeChild(rig);
     }
   }
   // 左右滑动翻页：pointer 事件（触屏 + 鼠标通用）；纵向滚动让位（.ktxs-page 设 touch-action:pan-y）
@@ -43584,7 +43670,7 @@ I'm good at running.`},
                : (book.poemKey === 'wtb' && window.WANTONG_STORIES && Array.isArray(window.WANTONG_STORIES)) ? 'wtb'
                : (book.poemKey === 'tjxc' && window.TONGNIAN_STORIES && Array.isArray(window.TONGNIAN_STORIES)) ? 'tjxc' : 'txt';
     const _rp = ktxsReaderPages(book);
-    _ktxsReader = { book: book, pages: _rp.pages, entries: _rp.entries, spread: 0, kind: kind };
+    _ktxsReader = { book: book, pages: _rp.pages, entries: _rp.entries, spread: 0, kind: kind, paginated: false };
     _ktxsOpenBook = title; _ktxsBookPage = 0; _ktxsOpenPoem = -1; _ktxsMaoPageIndex = 0;
     const titleEl = document.getElementById('ktxsReadTitle');
     if(titleEl) titleEl.textContent = '《' + title + '》';
@@ -43597,7 +43683,7 @@ I'm good at running.`},
           const st = _ktxsReader; if(!st) return;
           openNwAdd('ktxs_' + st.book.title, '《' + st.book.title + '》正文', '输入本书正文内容…', ()=>{
             const rp = ktxsReaderPages(st.book);
-            st.pages = rp.pages; st.entries = rp.entries;
+            st.pages = rp.pages; st.entries = rp.entries; st.paginated = false;
             ktxsReaderRender();
             toast('📝 已添加正文');
           });
@@ -43616,6 +43702,25 @@ I'm good at running.`},
       window.addEventListener('pointercancel', ktxsSwipeUp);
       document.addEventListener('keydown', _ktxsKeyHandler);
       document.addEventListener('click', _ktxsNavClose, true);
+    }
+    if(!_ktxsResizeBound){
+      _ktxsResizeBound = true;
+      let _rTimer = null;
+      // R193-1：视口尺寸变化后旧分页失效 —— 按新的可视区域整本重排，并尽量保持原有阅读位置
+      window.addEventListener('resize', function(){
+        clearTimeout(_rTimer);
+        _rTimer = setTimeout(function(){
+          const s = _ktxsReader; if(!s) return;
+          const ratio = s.pages.length ? (s.spread * 2) / s.pages.length : 0;
+          const rp = ktxsReaderPages(s.book);
+          s.pages = rp.pages; s.entries = rp.entries; s.paginated = false;
+          ktxsReaderRender();
+          const maxSpread = Math.max(0, Math.ceil(s.pages.length/2) - 1);
+          s.spread = Math.max(0, Math.min(maxSpread, Math.floor(ratio * s.pages.length / 2)));
+          ktxsReaderRender();
+          ktxsRecordProgress(s.book.title, s.spread, maxSpread);
+        }, 260);
+      });
     }
     showModal('#modalKtxsRead');
     document.body.classList.add('ktxs-read-open');
