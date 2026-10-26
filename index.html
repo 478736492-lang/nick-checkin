@@ -5270,7 +5270,9 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .mao-grid-check{position:absolute;top:4px;right:5px;font-size:10px}
 .mao-sec{margin-top:12px}
 .mao-sec-h{font-weight:800;color:var(--tone-900);border-left:4px solid var(--tone-600);padding-left:9px;margin:6px 0 5px;font-size:14.5px}
-.mao-sec-b{color:#37506e;line-height:1.5;font-size:14px;background:#f3f9ff;border:1px solid #e0edfb;border-radius:10px;padding:9px 13px;word-break:break-word}
+.mao-sec-b{color:#37506e;line-height:1.5;font-size:14px;background:#f3f9ff;border:1px solid #e0edfb;border-radius:10px;padding:9px 13px;word-break:break-word;text-indent:2em}
+.mao-sec-b p{margin:0 0 1.5em}
+.mao-sec-b p:last-child{margin-bottom:0}
 /* R74-2：毛泽东诗词集书籍卡片 —— 旭日东升剪影背景贴图（用户提供的替换图） */
 .sz-book-flag{position:relative;overflow:hidden;background-color:#8a2b12;background-image:url("./assets/1502a7a7fe0e.jpg");background-size:cover;background-position:center}
 .sz-book-flag::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,.58)}
@@ -7108,7 +7110,9 @@ body.ktxs-read-open .sidebar{z-index:999999}
 .ktxs-pg-scroll{flex:1;min-height:0;overflow:hidden;padding-right:4px}
 .ktxs-pg-title{font-size:clamp(18px,2.6vh,23px);font-weight:900;color:#243042;text-align:center;margin:4px 0 14px;letter-spacing:1px;font-family:"Songti SC","STSong","SimSun",serif}
 .ktxs-pg-title.ktxs-pg-cont{color:#5b86c4;font-size:clamp(15px,2.1vh,18px)}
-.ktxs-pg-txt{font-size:clamp(15px,2vh,18.5px);line-height:1.5;color:#243042;white-space:pre-wrap;word-break:break-word}
+.ktxs-pg-txt{font-size:clamp(15px,2vh,18.5px);line-height:1.5;color:#243042;white-space:pre-wrap;word-break:break-word;text-indent:2em}
+.ktxs-pg-txt p{margin:0 0 1.5em;text-indent:2em;line-height:1.5}
+.ktxs-pg-txt p:last-child{margin-bottom:0}
 
 /* 目录页 */
 .ktxs-toc{flex:1;display:flex;flex-direction:column;min-height:0;background:#fff;border:1.5px solid #a9cdf2;border-radius:16px;padding:clamp(16px,2.4vh,26px) clamp(16px,2.4vw,30px)}
@@ -7159,7 +7163,7 @@ body.ktxs-read-open .sidebar{z-index:999999}
 .ktxs-empty-s{font-size:13.5px;color:#5b86c4;line-height:1.8}
 
 /* 弹窗内诗词/童话详情页（复用 .mao-detail 系列，微调适配书页） */
-.ktxs-page .mao-detail{background:rgba(255,255,255,.78);border-color:rgba(91,134,196,.3);box-shadow:none;margin:12px;min-height:220px;box-sizing:border-box}
+.ktxs-page .mao-detail{background:#fff;border:1.5px solid #a9cdf2;border-radius:16px;box-shadow:none;margin:0;min-height:0;box-sizing:border-box;flex:1 1 auto;overflow-y:auto;padding:clamp(16px,2.4vh,26px) clamp(16px,2.4vw,30px)}
 .ktxs-page .mao-sec-b{background:rgba(255,255,255,.7);border-color:rgba(91,134,196,.22);color:#33455c}
 .ktxs-page .mao-line{color:#243042}
 .ktxs-page .mao-sec-h{color:#243042;border-left-color:#5b86c4}
@@ -7228,10 +7232,11 @@ body.ktxs-dragging-doc{ user-select:none !important; -webkit-user-select:none !i
 
 
 /* R178-2：阅读页内容卡（R180：2D 平面国风 —— 透明底透出米奶白书页 + 白卡蓝细描边 + 四角云纹内凹弧） */
-.ktxs-pg-scroll{ background:transparent !important; padding:16px; }
+.ktxs-pg-scroll{ background:transparent !important; padding:16px; display:flex; flex-direction:column; }
 .ktxs-pg-card{
-  position:relative; margin:12px; box-sizing:border-box; background:#fff; border:1.5px solid #a9cdf2; border-radius:16px;
-  padding:clamp(18px,3vh,26px) clamp(16px,2.4vw,30px) clamp(24px,3.6vh,32px);
+  position:relative; margin:0; box-sizing:border-box; background:#fff; border:1.5px solid #a9cdf2; border-radius:16px;
+  padding:clamp(16px,2.4vh,26px) clamp(16px,2.4vw,30px);
+  flex:1 1 auto; min-height:0; overflow-y:auto;
   cursor:pointer; transition:background .18s, border-color .18s;
 }
 /* R180-2e/R187：四角云纹内凹弧 —— 以书页底色在四角"咬"出弧形缺口，内侧一线浅云弧（缺口色须与书页底色一致） */
@@ -7335,8 +7340,8 @@ body.ktxs-dragging-doc{ user-select:none !important; -webkit-user-select:none !i
 .ktxs-cover-img-click:hover{ box-shadow:0 0 0 3px rgba(64,150,255,.55), 0 6px 16px rgba(64,150,255,0.22); }
 /* R179-3：内容页页号徽标；R180：移至右页底部 · 小字浅灰蓝（不随正文滚动） */
 .ktxs-pg-no{ position:absolute; bottom:clamp(14px,2.4vh,22px); font-size:12px; font-weight:700; color:#9fb4cf; letter-spacing:1px; font-family:"Songti SC","STSong","SimSun",serif; pointer-events:none; z-index:7; }
-.ktxs-pg-no-r{ left:75%; transform:translateX(-50%); display:inline; }
-.ktxs-pg-no-l{ left:25%; transform:translateX(-50%); display:inline; }
+.ktxs-pg-no-r{ right:14px; left:auto; transform:none; display:inline; }
+.ktxs-pg-no-l{ left:14px; transform:none; display:inline; }
 .ktxs-pg-card{ position:relative; }
 /* R179-4：家长态拖拽手柄 */
 .ktxs-drag-handle{ margin-left:auto; cursor:grab; color:#5b86c4; font-size:18px; line-height:1; user-select:none; touch-action:none; padding:0 4px; }
@@ -42853,11 +42858,13 @@ I'm good at running.`},
       // R183-6：仅文章末页（eLast）显示「标记已读」键，点击计入该文章已读进度
       const edone = !!(S.getBookEntryDone && S.getBookEntryDone(book.title, pg.eIdx));
       const btn = isLast ? `<button type="button" class="ktxs-pg-done-btn" data-ktxs-entry-done="${pg.eIdx}">${edone?'✓ 已读（点击取消）':'✓ 标记已读'}</button>` : '';
+      const txtParas = String(pg.text||'').split('\n').map(s=>s.replace(/^\s+|\s+$/g,'')).filter(s=>s.length);
+      const txtHtml = txtParas.length ? txtParas.map(p=>`<p>${esc(p)}</p>`).join('') : `<p>${esc(pg.text||'')}</p>`;
       return `
         <div class="ktxs-pg-scroll">
           <div class="ktxs-pg-card${edone&&isLast?' is-entry-done':''}">
             ${pg.title?`<div class="ktxs-pg-title${pg.cont?' ktxs-pg-cont':''}">${esc(pg.title)}</div>`:''}
-            <div class="ktxs-pg-txt">${esc(pg.text)}</div>
+            <div class="ktxs-pg-txt">${txtHtml}</div>
             <div class="ktxs-pg-card-foot">${btn}</div>
           </div>
         </div>`;
@@ -42881,12 +42888,14 @@ I'm good at running.`},
           </div>`;
       }
       const secTitle = pg.sec === 'bg' ? '📜 创作背景' : '🔍 专业赏析';
+      const secParas = String(pg.srcText||'').split('\n').map(s=>s.replace(/^\s+|\s+$/g,'')).filter(s=>s.length);
+      const secHtml = secParas.length ? secParas.map(p=>`<p>${esc(p)}</p>`).join('') : `<p>${esc(pg.srcText||'')}</p>`;
       return `
         <div class="ktxs-pg-scroll">
           <div class="mao-detail${edone&&isLast?' is-entry-done':''}">
             <div class="mao-sec">
               <div class="mao-sec-h">${secTitle}</div>
-              <div class="mao-sec-b">${esc(pg.srcText||'')}</div>
+              <div class="mao-sec-b">${secHtml}</div>
             </div>
           </div>
           <div class="ktxs-pg-done-row">${btn}</div>
