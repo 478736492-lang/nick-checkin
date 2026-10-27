@@ -7113,7 +7113,8 @@ body.ktxs-read-open .sidebar{z-index:999999}
 .ktxs-pg-title{font-size:clamp(18px,2.6vh,23px);font-weight:900;color:#243042;text-align:center;margin:4px 0 14px;letter-spacing:1px;font-family:"Songti SC","STSong","SimSun",serif}
 .ktxs-pg-title.ktxs-pg-cont{color:#5b86c4;font-size:clamp(15px,2.1vh,18px)}
 .ktxs-pg-txt{font-size:clamp(15px,2vh,18.5px);line-height:1.5;color:#243042;white-space:pre-wrap;word-break:break-word;text-indent:2em}
-.ktxs-pg-txt p{margin:0 0 1.5em;text-indent:2em;line-height:1.5}
+/* R194-3 取消段落之间空一行，段间距与行距一致（仅保留首行缩进区分段落） */
+.ktxs-pg-txt p{margin:0;text-indent:2em;line-height:1.5}
 .ktxs-pg-txt p:last-child{margin-bottom:0}
 
 /* 目录页 */
@@ -7367,6 +7368,11 @@ body.ktxs-dragging-doc{ user-select:none !important; -webkit-user-select:none !i
 .ktxs-pg-no-r{ right:8px; left:auto; }
 .ktxs-pg-no-l{ left:8px; right:auto; }
 .ktxs-pg-num{ position:absolute; bottom:8px; left:50%; transform:translateX(-50%); z-index:7; font-size:13px; font-weight:800; color:#3f639b; letter-spacing:.5px; pointer-events:none; }
+/* R194-2：「已读」键移入页脚，与页码同排居中（页码在左、已读键在右）；覆盖下方角标绝对定位 */
+.ktxs-pg-foot{ position:absolute; bottom:8px; left:50%; transform:translateX(-50%); z-index:7; display:flex; align-items:center; gap:8px; }
+.ktxs-pg-foot .ktxs-pg-num,
+.ktxs-pg-foot .ktxs-pg-no{ position:static; transform:none; left:auto; right:auto; bottom:auto; margin:0; pointer-events:auto; }
+.ktxs-pg-foot .ktxs-pg-num{ pointer-events:none; }
 .ktxs-pg-card{ position:relative; }
 /* R179-4：家长态拖拽手柄 */
 .ktxs-drag-handle{ margin-left:auto; cursor:grab; color:#5b86c4; font-size:18px; line-height:1; user-select:none; touch-action:none; padding:0 4px; }
@@ -7376,11 +7382,8 @@ body.ktxs-dragging-doc{ user-select:none !important; -webkit-user-select:none !i
 /* ===================== R181：书页蓝底 + 双页码居中 + 页内翻页键 + 拖拽跨页 + 封面放大 + 卡高减半 ===================== */
 /* R182-3：页内翻页键已删除 —— 翻页改左页双击上一页 / 右页双击下一页（左右滑动 + 键盘方向键仍保留） */
 /* R183-7：修复 R182 误将书籍列表背景图贴进书页内 —— 背景图回归书籍列表容器（.ktxs-slot-wrap） */
+/* R194-4：移除 .ktxs-slot-wrap 背景图（用户要求去掉推荐书籍卡下方卡片背景图），仅保留圆角与内边距 */
 .ktxs-slot-wrap{
-  background-image:url(./assets/2ba7552e039a.jpg);
-  background-size:cover;
-  background-position:center;
-  background-repeat:no-repeat;
   border-radius:18px;
   padding:10px 6px;
 }
@@ -42815,7 +42818,9 @@ I'm good at running.`},
     const pageDone = !!(S.getBookPageDone && S.getBookPageDone(book.title)[String(pIdx)]);
     // R192-3：页码居中显示（独立展示元素）+「已读」键留在左下/右下角原处、自成按键，交互不变
     const pageNum = '<span class="ktxs-pg-num">P ' + pgNo + '</span>';
-    const pageBadge = '<span class="ktxs-pg-no ' + 'ktxs-pg-no-' + (side||'l') + (pageDone?' is-done':'') + '" data-ktxs-page-done="' + pIdx + '" title="' + (pageDone?'取消本页已读':'标记本页已读') + '">' + (pageDone?'✓ 已读':'标已读') + '</span>';
+    const pageBadge = '<span class="ktxs-pg-no ' + 'ktxs-pg-no-' + (side||'l') + (pageDone?' is-done':'') + '" data-ktxs-page-done="' + pIdx + '" title="' + (pageDone?'取消本页已读':'标记本页已读') + '">' + (pageDone?'✓ 已读':'已读') + '</span>';
+    // R194-2：「已读」键移入页脚，与页码同排居中展示（页码在左、已读键在右）
+    const pageFoot = '<div class="ktxs-pg-foot">' + pageNum + pageBadge + '</div>';
     if(pg.type === 'cover'){
       const coverUrl = ktxsBuiltinCover(book);
       return `
@@ -42864,8 +42869,7 @@ I'm good at running.`},
           <div class="mao-detail">
             ${maoComboMarkup(segs, po, showTitle)}
           </div>
-          ${pageBadge}
-          ${pageNum}
+          ${pageFoot}
         </div>`;
     }
     if(pg.type === 'empty'){
@@ -42884,8 +42888,7 @@ I'm good at running.`},
           <div class="ktxs-pg-card${pg.newEntry?' ktxs-pg-newentry':''}">
             ${ktxsParasMarkup(pg.title, paras, !!pg.cont)}
           </div>
-          ${pageBadge}
-          ${pageNum}
+          ${pageFoot}
         </div>`;
     }
     if(pg.type === 'poem-sec'){
@@ -43345,6 +43348,9 @@ I'm good at running.`},
       if(rb && rb.width && rb.height){
         [probeA, probeB].forEach(function(el){
           if(!el) return;
+          // R194-1：rig 页面 inline 尺寸必须按 border-box 解释，否则会被当 content-box（全局 box-sizing 规则对动态创建的 rig 不生效），
+          // 导致 rig 比真实页高 24px/宽 30px、测量高估容量，真实页 overflow:hidden 裁掉末行 → 页底半行被遮挡。
+          el.style.boxSizing = 'border-box';
           el.style.flex = '0 0 auto'; el.style.width = rb.width + 'px'; el.style.height = rb.height + 'px';
         });
       }
