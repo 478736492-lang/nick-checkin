@@ -1997,7 +1997,11 @@ body.child-mode .parent-edit-fab{display:none}
 @media (max-width: 540px){ .nw-home{grid-template-columns:1fr} }
 
 /* ========== 新世界二级子页面 ========== */
-.page-nw-sub{position:relative;min-height:calc(100vh - 40px);min-height:calc(100dvh - 40px);padding:0}
+/* R200-1：语文/数学/英语/拓展素养四专区页面底改为平台蓝阶 --tone-300（仅二级专区子页，新世界首页仍走统一页面底） */
+.page-nw-sub{
+  position:relative;min-height:calc(100vh - 40px);min-height:calc(100dvh - 40px);padding:0;
+  background:var(--tone-300);background-image:none;
+}
 .nw-back{
   position:sticky;top:10px;z-index:20;
   display:inline-flex;align-items:center;gap:6px;
@@ -2089,10 +2093,11 @@ body.child-mode .parent-edit-fab{display:none}
 }
 
 /* 下方通栏插槽（固定位置/大小，仅内层内容切换） */
+/* R200-1：新世界四专区通栏底板改为平台蓝阶 --tone-300（语文/数学/英语/拓展素养共用，去白底/去投影/边框同色） */
 .yw-slot{
   position:relative;min-height:340px;width:100%;box-sizing:border-box;
-  background:var(--page-bg);border-radius:24px;
-  box-shadow:none;border:1px solid var(--page-bg);
+  background:var(--tone-300);border-radius:24px;
+  box-shadow:none;border:1px solid var(--tone-300);
   padding:24px 26px;display:flex;flex-direction:column;overflow:hidden;
 }
 .yw-slot-hint{
@@ -4022,9 +4027,9 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   box-shadow:var(--card-shadow); display:flex; flex-direction:column; gap:12px;
   border:1px solid rgba(126,200,255,.35); transition:background .3s, box-shadow .3s, border-color .3s;
 }
-/* R199-1：英语专区内容底板并入统一页面底（--page-bg 令牌；完成态 is-done 的绿色渐变优先级更高，不受影响） */
+/* R200-1：英语专区内容底板与四专区通栏底板同色（平台蓝阶 --tone-300；完成态 is-done 的绿色渐变优先级更高，不受影响） */
 [data-zone="newworld"] .en-unit-page:not(.is-done){
-  background:var(--page-bg); box-shadow:none; border-color:var(--page-bg);
+  background:var(--tone-300); box-shadow:none; border-color:var(--tone-300);
 }
 .en-unit-page.is-done{
   background:linear-gradient(160deg,var(--z-xs-pale) 0%, var(--z-xs-pale) 100%);
