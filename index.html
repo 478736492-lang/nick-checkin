@@ -7206,6 +7206,31 @@ body.ktxs-read-open .sidebar{z-index:999999}
 /* R195-2：推荐书籍所有书籍卡统一白底 rgba(255,255,255,.92)；仅清掉 .is-checked 的绿色渐变，
    保留书封的内联 background-image（inline 优先级高于本规则，封面卡不受影响） */
 .ktxs-book-grid .sz-book-card.ktxs-blue-card.is-checked{ background-image:none; }
+/* R195-2c：带书封的书卡同样统一白底 —— 书封收缩为卡片右下角小书影（不再铺满整卡），
+   与其余书籍卡视觉一致；文字回到白色卡面上，可读性更好 */
+.ktxs-book-grid .sz-book-card.ktxs-blue-card.sz-book-cover{
+  background-color: rgba(255,255,255,.92) !important;
+  background-repeat: no-repeat !important;
+  background-position: right 12px bottom 8px !important;
+  background-size: 26px 34px !important;
+}
+.ktxs-book-grid .sz-book-card.ktxs-blue-card.sz-book-cover::before{ background:none; }
+/* R195-2d：诗词类书籍卡（.sz-book-flag 贴图，R74-2 旭日剪影）同样统一白底 ——
+   贴图收缩为右下角小书影，不再铺满整卡，使推荐书籍全部书卡视觉一致 */
+.ktxs-book-grid .sz-book-card.ktxs-blue-card.sz-book-flag{
+  background-color: rgba(255,255,255,.92) !important;
+  background-repeat: no-repeat !important;
+  background-position: right 12px bottom 8px !important;
+  background-size: 26px 34px !important;
+}
+/* R195-2d：诗词类书籍卡（.sz-book-flag 贴图，R74-2 旭日剪影）同样统一白底 ——
+   贴图收缩为右下角小书影，不再铺满整卡，使推荐书籍全部书卡视觉一致 */
+.ktxs-book-grid .sz-book-card.ktxs-blue-card.sz-book-flag{
+  background-color: rgba(255,255,255,.92) !important;
+  background-repeat: no-repeat !important;
+  background-position: right 12px bottom 8px !important;
+  background-size: 26px 34px !important;
+}
 .ktxs-blue-card .sz-book-title{ color:#1340a3; }
 .ktxs-blue-card .sz-daily-badge{ background:var(--tone-600); color:#fff; }
 .ktxs-blue-card.is-checked{ border-color:#5cd6a0 !important; box-shadow:0 6px 16px rgba(40,180,120,0.22) !important; }
