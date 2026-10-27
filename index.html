@@ -2091,8 +2091,8 @@ body.child-mode .parent-edit-fab{display:none}
 /* 下方通栏插槽（固定位置/大小，仅内层内容切换） */
 .yw-slot{
   position:relative;min-height:340px;width:100%;box-sizing:border-box;
-  background:#FFFFFF;border-radius:24px;
-  box-shadow:0 4px 18px rgba(64,150,255,.14);border:1px solid #d4e8ff;
+  background:var(--page-bg);border-radius:24px;
+  box-shadow:none;border:1px solid var(--page-bg);
   padding:24px 26px;display:flex;flex-direction:column;overflow:hidden;
 }
 .yw-slot-hint{
@@ -4021,6 +4021,10 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   background:var(--card-bg); border-radius:18px; padding:14px; margin:0 4px;
   box-shadow:var(--card-shadow); display:flex; flex-direction:column; gap:12px;
   border:1px solid rgba(126,200,255,.35); transition:background .3s, box-shadow .3s, border-color .3s;
+}
+/* R199-1：英语专区内容底板并入统一页面底（--page-bg 令牌；完成态 is-done 的绿色渐变优先级更高，不受影响） */
+[data-zone="newworld"] .en-unit-page:not(.is-done){
+  background:var(--page-bg); box-shadow:none; border-color:var(--page-bg);
 }
 .en-unit-page.is-done{
   background:linear-gradient(160deg,var(--z-xs-pale) 0%, var(--z-xs-pale) 100%);
