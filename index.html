@@ -43689,12 +43689,20 @@ I'm good at running.`},
     document.addEventListener('mouseup', ktxsAnnotOnSelect, true);
     document.addEventListener('touchend', ktxsAnnotOnSelect, true);
   }
-  function ktxsAnnotOnSelect(){
+  function ktxsAnnotOnSelect(ev){
     if(!window._ktxsAnnotOn) return;
+    // R198-1：落在便签条内部（注释框 / 按钮）的点击不重算选区，避免编辑条自己关掉
+    if(ktxsInQuickBar(ev && ev.target)) return;
     const sel = window.getSelection ? window.getSelection() : null;
-    if(!sel || !sel.rangeCount){ ktxsHideAnnotBar(); return; }
+    if(!sel || !sel.rangeCount){
+      if(ktxsInQuickBar(document.activeElement)) return;
+      ktxsHideAnnotBar(); return;
+    }
     const text = sel.toString().trim();
-    if(!text){ ktxsHideAnnotBar(); return; }
+    if(!text){
+      if(ktxsInQuickBar(document.activeElement)) return;
+      ktxsHideAnnotBar(); return;
+    }
     const range = sel.getRangeAt(0);
     let pageEl = null;
     try {
@@ -43747,6 +43755,10 @@ I'm good at running.`},
     if(window.getSelection) window.getSelection().removeAllRanges();
     toast('🏷 已保存便签');
   }
+  // R198-1：判断节点是否落在浮动编辑页（书签条 / 便签条）内部
+  function ktxsInQuickBar(el){
+    try { return !!(el && el.closest && el.closest('#ktxsBmBar, #ktxsAnnotBar')); } catch(e){ return false; }
+  }
   // R196-4：选中正文 → 浮出「书签」条（可编辑选中文字 + 注释），保存后所选文字变红底、本页已读右侧出现书签键
   function ktxsShowBmBar(range, text){
     let bar = document.getElementById('ktxsBmBar');
@@ -43754,8 +43766,8 @@ I'm good at running.`},
       bar = document.createElement('div');
       bar.id = 'ktxsBmBar'; bar.className = 'ktxs-bm-quick-bar';
       bar.innerHTML = '<div class="ktxs-bm-quick-h">为选中的内容添加书签：</div>'
-        + '<textarea id="ktxsBmBarText" class="ktxs-bm-quick-text" placeholder="选中文字（可编辑）"></textarea>'
-        + '<textarea id="ktxsBmBarNote" class="ktxs-bm-quick-note" placeholder="写点注释（可选）…"></textarea>'
+        + '<textarea id="ktxsBmBarText" class="ktxs-bm-quick-text" autocomplete="off" placeholder="选中文字（可编辑）"></textarea>'
+        + '<textarea id="ktxsBmBarNote" class="ktxs-bm-quick-note" autocomplete="off" placeholder="写点注释（可选）…"></textarea>'
         + '<div class="ktxs-bm-quick-btns">'
         + '<button type="button" id="ktxsBmBarCancel">取消</button>'
         + '<button type="button" class="primary" id="ktxsBmBarSave">💾 保存书签</button>'
@@ -43766,9 +43778,14 @@ I'm good at running.`},
     }
     bar._ktxsPageEl = window._ktxsBmPageEl || null;
     const rect = range.getBoundingClientRect();
-    bar.style.left = Math.max(8, Math.min(rect.left, window.innerWidth - 284)) + 'px';
-    bar.style.top = Math.max(8, rect.bottom + 8) + 'px';
-    bar.style.display = 'block';
+    bar.style.display = 'block';   // R198-1：先显形才能量到真实高度，用于防出屏
+    const bw = bar.offsetWidth || 268;
+    const bh = bar.offsetHeight || 176;
+    let bLeft = Math.max(8, Math.min(rect.left, window.innerWidth - bw - 8));
+    let bTop = rect.bottom + 8;
+    if(bTop + bh > window.innerHeight - 8){ bTop = Math.max(8, rect.top - bh - 8); } // 下方放不下就翻到选区上方
+    bar.style.left = bLeft + 'px';
+    bar.style.top  = bTop  + 'px';
     const ta = bar.querySelector('#ktxsBmBarText'); if(ta){ ta.value = text; setTimeout(function(){ try{ ta.focus(); ta.select(); }catch(e){} }, 30); }
     const na = bar.querySelector('#ktxsBmBarNote'); if(na) na.value = '';
   }
@@ -43793,14 +43810,24 @@ I'm good at running.`},
   // R196-4：正文内选中即浮出书签条（标注模式下让位给便签条）
   function ktxsBindBmSelection(){
     if(window._ktxsBmSelBound) return; window._ktxsBmSelBound = true;
-    const onSel = function(){
+    const inBar = ktxsInQuickBar;
+    const onSel = function(ev){
       if(window._ktxsAnnotOn) return;
+      // R198-1：点在浮动编辑页（注释框 / 保存按钮）上时，正文选区必然塌陷，
+      //         不能再按「无选中文字」把编辑页关掉——否则注释写不进去、也点不到保存按钮。
+      if(inBar(ev && ev.target)) return;
       if(!window._ktxsBmMode){ ktxsHideBmBar(); return; } // R197-1：仅书签选择模式下选中正文才浮出编辑页
       if(!_ktxsReader) return;
       const sel = window.getSelection ? window.getSelection() : null;
-      if(!sel || !sel.rangeCount){ ktxsHideBmBar(); return; }
+      if(!sel || !sel.rangeCount){
+        if(inBar(document.activeElement)) return;   // 焦点仍在编辑页内 → 保留编辑页
+        ktxsHideBmBar(); return;
+      }
       const text = sel.toString().trim();
-      if(!text){ ktxsHideBmBar(); return; }
+      if(!text){
+        if(inBar(document.activeElement)) return;   // 注释框内打字/拖选不算「取消选区」
+        ktxsHideBmBar(); return;
+      }
       const range = sel.getRangeAt(0);
       let pageEl = null;
       try {
