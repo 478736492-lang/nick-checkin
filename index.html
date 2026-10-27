@@ -7255,6 +7255,9 @@ body.ktxs-dragging-doc{ user-select:none !important; -webkit-user-select:none !i
 .ktxs-hl{ background:#ffd6d2; color:#7a1f1a; border-radius:3px; padding:0 1px; cursor:pointer; box-shadow:0 0 0 1px rgba(220,60,50,.45); }
 .ktxs-hl:hover{ background:#ffb3ac; }
 .modal-book-read ::selection{ background:#ffd6d2; color:#7a1f1a; }
+/* R197-1：书签选择模式 —— 正文中光标变为文本选择，提示可划选添加书签 */
+body.ktxs-bm-mode .ktxs-page-l,
+body.ktxs-bm-mode .ktxs-page-r{ cursor:text; }
 /* R184-⑤/⑦：书签详情弹窗内容 */
 .ktxs-bm-detail-text{ background:#fff7ec; border:1px solid #ffd591; border-radius:10px; padding:10px 12px; font-size:13px; line-height:1.7; color:#7a4a16; white-space:pre-wrap; }
 .ktxs-bm-detail-label{ margin:12px 0 4px; font-size:12px; color:#b9770a; font-weight:600; }
@@ -43582,8 +43585,20 @@ I'm good at running.`},
     const bmBtn = document.getElementById('btnKtxsBm');
     if(bmBtn && !bmBtn._ktAnnotBound){
       bmBtn._ktAnnotBound = true;
-      // R196-4：🔖 书签键 → 打开书签管理弹窗（列出本书全部书签 + 从当前选中文字保存）
-      bmBtn.addEventListener('click', ()=>{ openKtxsBookmarks(_ktxsReader ? _ktxsReader.book.title : ''); });
+      // R197-1：🔖 书签键 → 切换「书签选择模式」：开启后可在正文中选中文字，松开即浮出编辑页；
+      //         不再直接弹出编辑页阻断选段（符合「先点书签 → 再选正文 → 后出编辑页」的预期）。
+      bmBtn.addEventListener('click', ()=>{
+        if(!_ktxsReader) return;
+        window._ktxsBmMode = !window._ktxsBmMode;
+        bmBtn.classList.toggle('is-active', !!window._ktxsBmMode);
+        document.body.classList.toggle('ktxs-bm-mode', !!window._ktxsBmMode);
+        if(window._ktxsBmMode){
+          toast('📑 书签模式：在正文中选中一段文字即可添加书签（再次点击右上角书签键退出）');
+        } else {
+          ktxsHideBmBar();
+          if(window.getSelection) window.getSelection().removeAllRanges();
+        }
+      });
     }
     const bmSave = document.getElementById('btnKtxsBmSave');
     if(bmSave) bmSave.addEventListener('click', ()=>{
@@ -43780,6 +43795,7 @@ I'm good at running.`},
     if(window._ktxsBmSelBound) return; window._ktxsBmSelBound = true;
     const onSel = function(){
       if(window._ktxsAnnotOn) return;
+      if(!window._ktxsBmMode){ ktxsHideBmBar(); return; } // R197-1：仅书签选择模式下选中正文才浮出编辑页
       if(!_ktxsReader) return;
       const sel = window.getSelection ? window.getSelection() : null;
       if(!sel || !sel.rangeCount){ ktxsHideBmBar(); return; }
@@ -43864,6 +43880,11 @@ I'm good at running.`},
     const _rp = ktxsReaderPages(book);
     _ktxsReader = { book: book, pages: _rp.pages, entries: _rp.entries, spread: 0, kind: kind, paginated: false };
     _ktxsOpenBook = title; _ktxsBookPage = 0; _ktxsOpenPoem = -1; _ktxsMaoPageIndex = 0;
+    // R197-1：进入书本时复位书签选择模式（关掉残留的高亮态 / 按钮激活态）
+    window._ktxsBmMode = false;
+    const _bmBtnR = document.getElementById('btnKtxsBm');
+    if(_bmBtnR) _bmBtnR.classList.remove('is-active');
+    document.body.classList.remove('ktxs-bm-mode');
     const titleEl = document.getElementById('ktxsReadTitle');
     if(titleEl) titleEl.textContent = '《' + title + '》';
     const addBtn = document.getElementById('btnKtxsReadAdd');
