@@ -7112,7 +7112,7 @@ body.ktxs-read-open .sidebar{z-index:999999}
 .ktxs-pg-scroll{flex:1;min-height:0;overflow:hidden;padding-right:4px;position:relative}
 .ktxs-pg-title{font-size:clamp(18px,2.6vh,23px);font-weight:900;color:#243042;text-align:center;margin:4px 0 14px;letter-spacing:1px;font-family:"Songti SC","STSong","SimSun",serif}
 .ktxs-pg-title.ktxs-pg-cont{color:#5b86c4;font-size:clamp(15px,2.1vh,18px)}
-.ktxs-pg-txt{font-size:clamp(15px,2vh,18.5px);line-height:1.5;color:#243042;white-space:pre-wrap;word-break:break-word;text-indent:2em}
+.ktxs-pg-txt{font-size:clamp(15px,2vh,18.5px);line-height:1.5;color:#243042;white-space:normal;word-break:break-word;text-indent:2em}
 /* R194-3 取消段落之间空一行，段间距与行距一致（仅保留首行缩进区分段落） */
 .ktxs-pg-txt p{margin:0;text-indent:2em;line-height:1.5}
 .ktxs-pg-txt p:last-child{margin-bottom:0}
@@ -7199,16 +7199,19 @@ body.ktxs-read-open .sidebar{z-index:999999}
 
 /* R178-1：推荐书籍卡片蓝色化 */
 .ktxs-blue-card{
-  background: linear-gradient(135deg, #eaf4ff 0%, #d4e9ff 100%) !important;
+  background-color: rgba(255,255,255,.92) !important;
   border: 1px solid #aed3ff !important;
   box-shadow: 0 6px 16px rgba(64,150,255,0.18) !important;
 }
+/* R195-2：推荐书籍所有书籍卡统一白底 rgba(255,255,255,.92)；仅清掉 .is-checked 的绿色渐变，
+   保留书封的内联 background-image（inline 优先级高于本规则，封面卡不受影响） */
+.ktxs-book-grid .sz-book-card.ktxs-blue-card.is-checked{ background-image:none; }
 .ktxs-blue-card .sz-book-title{ color:#1340a3; }
 .ktxs-blue-card .sz-daily-badge{ background:var(--tone-600); color:#fff; }
 .ktxs-blue-card.is-checked{ border-color:#5cd6a0 !important; box-shadow:0 6px 16px rgba(40,180,120,0.22) !important; }
 .ktxs-blue-card.is-checked .sz-card-state{ background:#1f8a4c; color:#e7f8ee; }
 /* R184-③：全部文章已读 → 整张卡变绿 */
-.ktxs-blue-card.is-all-read{ background:linear-gradient(135deg,#e9fbf1 0%,#d3f3e2 100%) !important; border-color:#5cd6a0 !important; box-shadow:0 6px 16px rgba(40,180,120,0.26) !important; }
+.ktxs-blue-card.is-all-read{ background-color:rgba(255,255,255,.92) !important; border-color:#5cd6a0 !important; box-shadow:0 6px 16px rgba(40,180,120,0.26) !important; }
 .ktxs-blue-card.is-all-read .sz-book-title{ color:#1f8a4c; }
 .ktxs-blue-card.is-all-read .sz-daily-badge{ background:#1f8a4c; color:#e7f8ee; }
 .ktxs-blue-card.is-all-read .sz-card-state{ background:#1f8a4c; color:#e7f8ee; }
@@ -7284,7 +7287,7 @@ body.ktxs-dragging-doc{ user-select:none !important; -webkit-user-select:none !i
     radial-gradient(circle 16px at 0 100%,#e9fbf1 0 15px,transparent 15px),
     radial-gradient(circle 16px at 100% 100%,#e9fbf1 0 15px,transparent 15px);
 }
-.ktxs-pg-card .ktxs-pg-txt{ color:#243042; line-height:1.5; font-size:clamp(15px,2vh,17.5px); white-space:pre-wrap; }
+.ktxs-pg-card .ktxs-pg-txt{ color:#243042; line-height:1.5; font-size:clamp(15px,2vh,17.5px); white-space:normal; }
 .ktxs-pg-card-foot{ position:absolute; left:0; right:0; bottom:10px; text-align:center; font-size:13px; }
 
 /* R178-4 / R183-2：封面弹窗（两栏：左封面图 + 右信息栏，放大适配屏幕、不滚动） */
@@ -43235,12 +43238,34 @@ I'm good at running.`},
   //   ③ 新的篇幅/章节（entry）强制另起一页：续页只在本篇内部顺延，绝不跨篇连排
   //   ④ 开书后一次性整本分页（st.paginated 幂等），页码/目录页码因此稳定；仅视口尺寸变化才重排
   function ktxsTextParas(text){
-    const ps = String(text||'').split(/\n+/).map(function(s){ return s.replace(/^\s+|\s+$/g,''); }).filter(function(s){ return s.length; });
-    return ps.length ? ps : (String(text||'').trim() ? [String(text||'').trim()] : []);
+    // R195-1：正文归一化 —— 清除 Word 硬换行 / 软回车（Shift+Enter 常见 \v、U+2028/2029、<br>）、
+    // 零宽字符与行首尾空白；同段内的单个换行（软回车）直接并入同一段，绝不把一句话强行断成两行。
+    let s = String(text == null ? '' : text);
+    s = s.replace(/\r\n?/g, '\n').replace(/[\v\f\u2028\u2029]/g, '\n').replace(/<br\s*\/?>/gi, '\n');
+    s = s.replace(/[\u200b\u200c\u200d\ufeff]/g, '');
+    s = s.split('\n').map(function(line){ return line.replace(/^[\s\u00a0\u3000]+|[\s\u00a0\u3000]+$/g, ''); }).join('\n');
+    s = s.replace(/\n{3,}/g, '\n\n').replace(/([^\n])\n(?!\n)/g, '$1').replace(/^\n+|\n+$/g, '');
+    const raw = s ? s.split(/\n+/) : [];
+    // R195-1：段落语义连贯 —— 以逗号/顿号/分号/冒号收尾（明显没写完）的段落并入下一段，消除零散碎行
+    const ps = [];
+    for (let i = 0; i < raw.length; i++){
+      let p = String(raw[i] || '').trim();
+      if (!p) continue;
+      while (i + 1 < raw.length && /[，、；：,;:]$/.test(p)){
+        i++;
+        const nx = String(raw[i] || '').trim();
+        if (nx) p += nx;
+      }
+      ps.push(p);
+    }
+    if (ps.length) return ps;
+    return s.trim() ? [s.trim()] : [];
   }
   // 回退到最近句末标点，避免把半句话劈成两页（不足 8 字则不退，直接用二分结果）
   function ktxsSnapCut(head){
-    const m = String(head||'').match(/[\s\S]*[。？！；.!?;，、]/);
+    // R195-1：断页只回退到真正的「句末」标点（。！？…!? 及紧随的收尾引号/括号）；
+    // 逗号、顿号、分号都是句中停顿，一律不作为断页点，避免一句话没写完就被切到下一页。
+    const m = String(head||'').match(/[\s\S]*[。！？…!?](?:["”’』」）)])?/);
     return (m && m[0].length >= 8) ? m[0].length : 0;
   }
   // 正文页内文标记 —— 测量阶段与最终渲染必须完全同源，否则测得页数与实际排版不一致（R192 的量测失真正是出在这里）
@@ -43273,8 +43298,13 @@ I'm good at running.`},
           if(!overflow()){ take = mid; lo = mid + 1; } else { hi = mid - 1; }
         }
         const snap = ktxsSnapCut(carried.slice(0, take));
-        // take===0 表示这段连一行都放不下：本页到此为止，整段顺延到下页（不可硬塞字符，否则反而撑出一行导致溢出）
-        const cut = take > 0 ? (snap || take) : 0;
+        // R195-1：优先在句末切页；本页已有内容且整句放不下时，整段顺延下一页（不在逗号/半句处硬切）；
+        // 仅当「新页仍放不下整句（超长单句）」时才按容量硬切，保证分页必定推进。
+        let cut = 0;
+        if(take > 0){
+          if(snap) cut = snap;
+          else if(!fits.length) cut = take;
+        }
         const head = cut > 0 ? carried.slice(0, cut) : '';
         const tail = carried.slice(cut);
         if(head) fits.push(head);
