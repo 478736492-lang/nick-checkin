@@ -7552,6 +7552,57 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 .reading-item .ri-poem-ana{background:var(--tone-025);border-left:3px solid var(--orange)}
 
 
+/* ================= R206：英语作文已学键 / 大阅读排版 / 设置中心内容卡 ================= */
+
+/* ===== R206-2：英文作文每篇「已学」键（打卡得⭐，数量在设置中心「⭐奖励设置」可改） ===== */
+.en-essay-done-btn{
+  margin-left:auto;flex:0 0 auto;
+  border:2px solid var(--tiffany);background:#fff;color:var(--tiffany-deep);
+  border-radius:22px;padding:6px 16px;font-size:13px;font-weight:800;cursor:pointer;
+  letter-spacing:.5px;box-shadow:0 2px 6px rgba(30,58,138,.15);
+  transition:background .18s, color .18s, border-color .18s, box-shadow .18s;
+}
+.en-essay-done-btn:hover{ background:var(--tiffany-light); }
+.en-essay-done-btn.is-done{
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
+  color:#fff;border-color:var(--green-dark);box-shadow:0 2px 8px rgba(63,165,80,.35);
+}
+.en-essay-card.is-done{ background:linear-gradient(135deg,#f4fdf8,#eafaf1); border-color:var(--green); }
+
+/* ===== R206-3：大阅读 —— 打卡键移到内容卡标题行右端 ===== */
+.reading-item{ padding:12px; }
+.reading-item .ri-head-row{ display:flex; align-items:center; gap:10px; min-width:0; }
+.reading-item .ri-head-row .ri-title{ flex:1 1 auto; min-width:0; margin:0; }
+.reading-item .ri-head-row .ri-checkin-btn{ flex:0 0 auto; position:static; margin:0; }
+.reading-item .ri-head-row .ri-checkin-btn.checked{ width:40px; height:40px; min-width:0; }
+
+/* ===== R206-3：大阅读 —— 全部主题内容字号统一为 13px ===== */
+.ri-body,
+.ri-analysis,
+.reading-translation,
+.reading-item .ri-poem-sec-h,
+.reading-item .ri-poem-sec-b,
+.dialogue-bubble,
+.dialogue-en,
+.dialogue-zh,
+.bs-item-body,
+.bs-item-zh,
+.bs-item-analysis,
+.bs-theme-body .ri-body{ font-size:13px; }
+
+/* ===== R206-3：语文三卡布局 —— 好词好句收窄、古诗词鉴赏加宽；各卡按内容定高，排版饱满 ===== */
+.page-reading .reading-cn .reading-cols{ grid-template-columns:0.88fr 1.24fr 1fr; align-items:start; }
+.page-reading .reading-cn .reading-col-list{ display:flex; flex-direction:column; gap:10px; }
+.page-reading .reading-cn .reading-item{ flex:1 1 auto; }
+.page-reading .reading-cn .reading-col.rc-poem .ri-poem-body{ padding:10px 10px 12px; }
+
+/* ===== R206-4：设置中心 —— 各设置项内容统一包一层浅蓝卡片容器 ===== */
+.settings-card-body{
+  margin-top:8px; padding:9px 12px; border-radius:12px;
+  background:var(--tone-100); border:1px solid var(--tone-150);
+}
+.settings-card-body .settings-card-desc{ white-space:normal; overflow:visible; text-overflow:clip; }
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -7808,6 +7859,7 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
         <div class="settings-card-icon" data-page-node-id="R118cardModeIco">👥</div>
         <div class="settings-card-main" data-page-node-id="R118cardModeMain">
           <div class="settings-card-title" data-page-node-id="R118cardModeTitle">使用模式</div>
+          <div class="settings-card-body">
           <!-- R121-2：模式按键移至「使用模式」说明文字右侧并靠右摆放（说明文字在左，按键贴行尾） -->
           <div class="settings-card-row settings-card-row-mode" data-page-node-id="R121cardModeRow">
           <div class="settings-card-desc" data-page-node-id="R118cardModeDesc">学生模式 / 家长模式切换</div>
@@ -7823,6 +7875,7 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
             <span class="mode-slider" id="modeSliderSettings" data-page-node-id="R85modeSlider"></span>
           </div>
           </div>
+          </div>
         </div>
         <span class="settings-card-arrow" data-page-node-id="R118cardModeArrow">›</span>
       </div>
@@ -7832,7 +7885,9 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
         <div class="settings-card-icon" data-page-node-id="R85cardTaskIco">📝</div>
         <div class="settings-card-main" data-page-node-id="R85cardTaskMain">
           <div class="settings-card-title" data-page-node-id="R85cardTaskTitle">打卡任务</div>
+          <div class="settings-card-body">
           <div class="settings-card-desc" data-page-node-id="R85cardTaskDesc">必做/选做/错题/运动/家务/围棋/诗词</div>
+          </div>
         </div>
         <span class="settings-card-arrow" data-page-node-id="R85cardTaskArrow">›</span>
       </div>
@@ -7842,7 +7897,9 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
         <div class="settings-card-icon" data-page-node-id="R85cardGameIco">🎮</div>
         <div class="settings-card-main" data-page-node-id="R85cardGameMain">
           <div class="settings-card-title" data-page-node-id="R85cardGameTitle">游戏设置</div>
+          <div class="settings-card-body">
           <div class="settings-card-desc" data-page-node-id="R85cardGameDesc">种植园、知识秘境</div>
+          </div>
         </div>
         <span class="settings-card-arrow" data-page-node-id="R85cardGameArrow">›</span>
       </div>
@@ -7852,7 +7909,9 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
         <div class="settings-card-icon" data-page-node-id="R85cardMusicIco">🎵</div>
         <div class="settings-card-main" data-page-node-id="R85cardMusicMain">
           <div class="settings-card-title" data-page-node-id="R85cardMusicTitle">音乐设置</div>
+          <div class="settings-card-body">
           <div class="settings-card-desc" data-page-node-id="R85cardMusicDesc">种植园/知识秘境背景音乐、点击音效</div>
+          </div>
         </div>
         <span class="settings-card-arrow" data-page-node-id="R85cardMusicArrow">›</span>
       </div>
@@ -7862,7 +7921,9 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
         <div class="settings-card-icon" data-page-node-id="R85cardBgIco">🎨</div>
         <div class="settings-card-main" data-page-node-id="R85cardBgMain">
           <div class="settings-card-title" data-page-node-id="R85cardBgTitle">背景设置</div>
+          <div class="settings-card-body">
           <div class="settings-card-desc" data-page-node-id="R85cardBgDesc">平台全部背景与背景贴图</div>
+          </div>
         </div>
         <span class="settings-card-arrow" data-page-node-id="R85cardBgArrow">›</span>
       </div>
@@ -7872,7 +7933,9 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
         <div class="settings-card-icon" data-page-node-id="R85cardSyncIco">☁️</div>
         <div class="settings-card-main" data-page-node-id="R85cardSyncMain">
           <div class="settings-card-title" data-page-node-id="R85cardSyncTitle">数据同步</div>
+          <div class="settings-card-body">
           <div class="settings-card-desc" data-page-node-id="R85cardSyncDesc">导出/导入/CloudBase 云同步</div>
+          </div>
         </div>
         <span class="settings-card-arrow" data-page-node-id="R85cardSyncArrow">›</span>
       </div>
@@ -7882,7 +7945,9 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
         <div class="settings-card-icon" data-page-node-id="R85cardVerIco">🔄</div>
         <div class="settings-card-main" data-page-node-id="R85cardVerMain">
           <div class="settings-card-title" data-page-node-id="R85cardVerTitle">版本与更新</div>
+          <div class="settings-card-body">
           <div class="settings-card-desc" data-page-node-id="R85cardVerDesc">构建版本与手动检查更新</div>
+          </div>
         </div>
         <span class="settings-card-arrow" data-page-node-id="R85cardVerArrow">›</span>
       </div>
@@ -7892,7 +7957,9 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
         <div class="settings-card-icon" data-page-node-id="R85cardExportIco">📤</div>
         <div class="settings-card-main" data-page-node-id="R85cardExportMain">
           <div class="settings-card-title" data-page-node-id="R85cardExportTitle">分类导出文件</div>
+          <div class="settings-card-body">
           <div class="settings-card-desc" data-page-node-id="R85cardExportDesc">按板块/分版块导出 JSON/CSV/MD</div>
+          </div>
         </div>
         <span class="settings-card-arrow" data-page-node-id="R85cardExportArrow">›</span>
       </div>
@@ -12525,6 +12592,7 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
     {id:'think',      label:'思维拓展打卡',           def:1},
     {id:'ktxs',       label:'大阅读·推荐书籍打卡',       def:5},
     {id:'fest',       label:'百科讲堂·节日已学习打卡',   def:1},
+    {id:'enessay',    label:'英语·英文作文已学打卡',       def:2},
   ];
   function getTaskStars(id){
     const st = load();
@@ -17171,7 +17239,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       mods:[
         {t:'课文同步', icon:'📖', items:['课文朗读','字词读写','必背知识']},
         {t:'作文专项', icon:'✏️', items:['看图写话','作文素材']},
-        {t:'古诗文',   icon:'📜', items:['古诗词','文言文']}
+        {t:'小学古诗文', icon:'📜', items:['古诗词','文言文']}
       ] },
     { page:'newworld-math',     tag:'数学专区', corner:'数学', icon:'➗', color:'blue',
       mods:[
@@ -17182,7 +17250,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     { page:'newworld-english',  tag:'英语专区', corner:'英语', icon:'🔤', color:'orange',
       mods:[
         {t:'同步课时练习', icon:'📁', items:['书本课文','重点知识']},
-        {t:'拓展练习',     icon:'💬', items:['句型练习','听力训练']},
+        {t:'拓展练习',     icon:'💬', items:['英文作文','英语小知识']},
         {t:'错题本',       icon:'📓', items:['错题本']}
       ] },
     { page:'newworld-suzhi',    tag:'拓展素养', corner:'素养', icon:'🎧', color:'green', wide:true,
@@ -17999,7 +18067,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       { key:'kantu',    icon:'🎨', label:'看图写话' },
       { key:'sucai',    icon:'💡', label:'作文素材' }
     ] },
-    { title:'古诗文',   icon:'📜', items:[
+    { title:'小学古诗文', icon:'📜', items:[
       { key:'gushi',    icon:'🌿', label:'古诗词' },
       { key:'wenyan',   icon:'📜', label:'文言文' }
     ] }
@@ -19649,34 +19717,30 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     });
     // R122：原「书本词汇」的整页打卡逻辑已随板块改名下线（函数与按钮属性均删除），
     //      改为「重点知识」每张图片单独打卡（见下方 [data-kp-card] 绑定，规则同书本课文）。
-    // R37-3：句型练习 — 点击「标记本单元已熟记」按钮，整页变绿，再次点击取消
-    const enSentenceToggle = (btn)=>{
-      const id = btn.getAttribute('data-en-sentence-done');
-      const pageEl = btn.closest('.en-unit-page') || btn;
-      if(S.isReadingRead('enSentence', id)){
-        S.unmarkReadingRead('enSentence', id);
-        pageEl.classList.remove('is-done');
-        btn.classList.remove('is-done');
-        btn.innerHTML = '□未学';
-      } else {
-        S.markReadingRead('enSentence', id);
-        pageEl.classList.add('is-done');
-        btn.classList.add('is-done');
-        btn.innerHTML = '✅已学';
-        playCheckinSound();
-      }
-    };
-    slotBody.querySelectorAll('[data-en-sentence-done]').forEach(btn=>{
-      if(btn._enSentenceBound) return; btn._enSentenceBound = true;
-      btn.addEventListener('click', (e)=>{ e.stopPropagation(); enSentenceToggle(btn); });
-      const pageEl = btn.closest('.en-unit-page');
-      if(pageEl && !pageEl._enSentenceCardBound){
-        pageEl._enSentenceCardBound = true;
-        pageEl.addEventListener('click', (e)=>{
-          if(e.target.closest('[data-en-page-step]')) return;
-          enSentenceToggle(btn);
-        });
-      }
+    // R206-2：英文作文 —— 每篇右下「已学」键（打卡得⭐，数量在设置中心「⭐奖励设置」可改）
+    slotBody.querySelectorAll('[data-en-essay-done]').forEach(btn=>{
+      if(btn._enEssayBound) return; btn._enEssayBound = true;
+      btn.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        const id = btn.getAttribute('data-en-essay-done');
+        if(!id) return;
+        const n = S.getTaskStars('enessay');
+        if(S.isReadingRead('enEssayRead', id)){
+          S.unmarkReadingRead('enEssayRead', id);
+          addStars(-n);
+          btn.classList.remove('is-done');
+          btn.innerHTML = '□未学';
+        } else {
+          S.markReadingRead('enEssayRead', id);
+          addStars(n);
+          btn.classList.add('is-done');
+          btn.innerHTML = '✅已学';
+          playCheckinSound();
+          if(n > 0) toast('🎉 英文作文已学 +' + n + '⭐');
+        }
+        const card = btn.closest('.en-essay-card');
+        if(card) card.classList.toggle('is-done', S.isReadingRead('enEssayRead', id));
+      });
     });
     // V116：英语专区两板块分页按钮（阻止冒泡，避免触发整卡变绿）
     slotBody.querySelectorAll('[data-en-page-step]').forEach(btn=>{
@@ -21182,34 +21246,38 @@ I'm good at running.`},
     ] }
   ];
   window.EN_OXFORD_SENTENCE_3A = EN_OXFORD_SENTENCE_3A; // R37-3：暴露给冒烟测试断言
-  // R37-3：渲染句型练习：按单元分页，每页 1 个单元（点击「标记已熟记」按钮整页变绿）
-  function renderOxfordSentence(page){
-    page = page || 0;
-    const totalPages = EN_OXFORD_SENTENCE_3A.length; // R37-3：10 个单元，每单元一页
-    const doneCount = EN_OXFORD_SENTENCE_3A.filter(u=>S.isReadingRead('enSentence', u.id)).length;
-    const u = EN_OXFORD_SENTENCE_3A[page] || EN_OXFORD_SENTENCE_3A[0];
-    const done = S.isReadingRead('enSentence', u.id);
-    const itemsHtml = (u.items||[]).map(it=>`
-      <div class="en-sent${it.must?' en-must':''}"><span class="en-sent-en en-tap-speak" data-en-speak="${esc(it.en)}">${it.must?'✅ ':''}${esc(it.en)}</span><span class="en-sent-cn">${esc(it.cn)}</span></div>`).join('');
-    return `
-      <div class="yw-comp-head">沪教牛津英语 三年级上册 · 句型练习（每单元一页）</div>
-      <div class="en-oxford-tip">每单元一页，滑到页底点「标记本单元已熟记」即可整页变绿；点击任意英文句子可自动朗读。</div>
-      <div class="en-book-cap">
-        <div class="en-cap-unit">${esc(u.unit)}</div>
-        <div class="en-cap-title">${esc(u.title)}</div>
-      </div>
-      <div class="en-unit-page${done?' is-done':''}">
-        <div class="en-sec en-cat-vocab" style="--en-cat:#1e3a8a;--en-cat-bg:#eaf0fb">
-          <div class="en-sec-head"><span class="en-sec-title">重点句型</span><span class="en-cat-chip" style="--en-cat:#1e3a8a;--en-cat-bg:#eaf0fb">📘 基础积累</span></div>
-          <div class="en-sent-list">${itemsHtml}</div>
-        </div>
-        <div class="en-done-row">
-          <button class="en-done-btn${done?' is-done':''}" data-en-sentence-done="${esc(u.id)}">${done?'✅已学':'□未学'}</button>
-        </div>
-      </div>
-      ${enPager('sentence', page, totalPages)}
-      <div class="en-oxford-foot">共 ${totalPages} 页（Unit 1–10）· 已完成 ${doneCount} 页（当前第 ${page+1}/${totalPages} 页）</div>`;
-  }
+// R206-2：句型练习的「重点句型」同步导入书本课文各单元的重点句型板块（按英文原文自动去重）
+// 导入完成后「句型练习」卡片与其独立页面整体下线（见 EN_TOP_CARDS / enSlot）。
+function enSentenceKey(t){ return String(t||'').replace(/\s+/g,' ').trim().toLowerCase(); }
+function enMergeSentenceIntoBook(){
+  let added = 0, dup = 0;
+  EN_OXFORD_SENTENCE_3A.forEach(function(su, i){
+    const u = EN_OXFORD_3A[i];
+    if(!u || !su) return;
+    u.sections = u.sections || [];
+    let sec = null;
+    u.sections.forEach(function(x){ if(!sec && x.type === 'sentence') sec = x; });
+    if(!sec){
+      sec = { sec:'三、重点句型（背诵）', type:'sentence', items:[] };
+      const at = u.sections.findIndex(function(x){ return x.type === 'phrase'; });
+      if(at >= 0) u.sections.splice(at + 1, 0, sec); else u.sections.push(sec);
+    }
+    sec.items = sec.items || [];
+    const seen = {};
+    sec.items.forEach(function(it){ seen[enSentenceKey(it && it.en)] = 1; });
+    (su.items || []).forEach(function(it){
+      const k = enSentenceKey(it && it.en);
+      if(!k) return;
+      if(seen[k]){ dup++; return; }
+      seen[k] = 1;
+      sec.items.push({ en: it.en, cn: it.cn, must: !!it.must });
+      added++;
+    });
+  });
+  return { added: added, dup: dup };
+}
+const EN_SENTENCE_MERGE = enMergeSentenceIntoBook();
+window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增条数 / 去重条数）
   // R204：英文作文 —— 上海市优秀小学英语作文 100 篇，每页 2 篇，中英对照
   const EN_ESSAY_PER_PAGE = 2;
   function renderEnEssay(page){
@@ -21224,12 +21292,15 @@ I'm good at running.`},
     const items = all.slice(start, start + per);
     const cards = items.map((it, i)=>{
       const no = start + i + 1;
+      // R206-2：每篇独立「已学」状态（打卡键，⭐数由设置中心配置）
+      const essayDone = S.isReadingRead('enEssayRead', it.id || it.title);
       return `
-      <div class="en-essay-card">
+      <div class="en-essay-card${essayDone?' is-done':''}">
         <div class="en-essay-head">
           <span class="en-essay-no">${('0'+no).slice(-2)}</span>
           <span class="en-essay-title en-tap-speak" data-en-speak="${esc(it.title + '. ' + it.en)}">${esc(it.title)}</span>
           <span class="en-essay-zh-title">${esc(it.titleZh || '')}</span>
+          <button class="en-essay-done-btn${essayDone?' is-done':''}" data-en-essay-done="${esc(it.id||it.title)}" title="${essayDone?'已学（点击取消）':'点击标记已学'}">${essayDone?'✅已学':'□未学'}</button>
         </div>
         <div class="en-essay-body en-tap-speak" data-en-speak="${esc(it.en)}">${esc(it.en)}</div>
         <div class="en-essay-zh"><b>译文：</b>${esc(it.zh)}</div>
@@ -21240,7 +21311,7 @@ I'm good at running.`},
       <div class="en-oxford-tip">每篇中英对照，先读英文再看译文；点击英文可自动朗读。</div>
       <div class="en-essay-list">${cards}</div>
       ${enPager('essay', p, totalPages)}
-      <div class="en-oxford-foot">本页第 ${all.length?start+1:0}–${start+items.length} 篇 · 每页 ${per} 篇 · 共 ${totalPages} 页（共 ${all.length} 篇）</div>`;
+      <div class="en-oxford-foot">本页第 ${all.length?start+1:0}–${start+items.length} 篇 · 每页 ${per} 篇 · 共 ${totalPages} 页（共 ${all.length} 篇 · 已学 ${all.filter(x=>S.isReadingRead('enEssayRead', x.id||x.title)).length} 篇）</div>`;
   }
   // 拼接单元朗读文本（供 TTS 整段朗读：核心词汇 + 重点短语 + 常用表达）
   function vocabTts(u){
@@ -21349,9 +21420,8 @@ I'm good at running.`},
     { title:'同步课时练习', items:[
       { key:'dd',  icon:'📕', label:'书本课文' },
       // R122：「书本词汇」改名为「重点知识」，内容改为以导入图片为主
-      { key:'gd',  icon:'📌', label:'重点知识' },
-      // R204：句型练习按键与内容整体移到「重点知识」之后
-      { key:'jx',  icon:'💬', label:'句型练习' }
+      { key:'gd',  icon:'📌', label:'重点知识' }
+      // R206-2：句型练习卡片已下线，其重点句型已并入书本课文各单元
     ] },
     // R24-5：「听力训练」改为「英语小知识」（整个英语语法体系）
     // R204：句型练习移出后，原位置新建「英文作文」（上海市优秀小学英语作文 100 篇，分页展示）
@@ -21502,7 +21572,6 @@ I'm good at running.`},
     // R122：书本课文 / 重点知识 改为单元卡片切换，不再用 _enCurPage 分页
     if(key === 'dd') return renderOxfordBook(_enBookUnit);
     if(key === 'gd') return renderEnKeyPoints(_enKpUnit);
-    if(key === 'jx') return renderOxfordSentence(_enCurPage); // R37-3：句型练习（分页）
     if(key === 'zw') return renderEnEssay(_enEssayPage);      // R204：英文作文（每页 4 篇）
     if(key === 'yyxzs') return enGrammar();               // R24-5：英语小知识（语法体系）
     const map = {
@@ -27203,15 +27272,18 @@ I'm good at running.`},
       // 需求⑤：英语短文删除独立朗读键，改为点击卡片本体自动朗读 / 暂停 / 继续（状态机见 bindPassagePause）
       const passageAttr = (kind==='enPassage' && (it.en||it.body))
         ? ` data-ri-passage="${esc(it.title)}" data-ri-passage-txt="${esc(mainText)}" data-state="idle"` : '';
+      // R206-3：打卡键移到本卡标题行右端（原为卡片右下角独立容器）
       return `<div class="reading-item ${enCls} ${isChecked?'is-checked':''}"${passageAttr}>
-        <div class="ri-title">${esc(it.title)} ${userTag}</div>
+        <div class="ri-head-row">
+          <div class="ri-title">${esc(it.title)} ${userTag}</div>
+          ${checkinBtn}
+        </div>
         ${it.meta?`<div class="ri-meta">${esc(it.meta)}</div>`:''}${catTagHtml}
         ${bodyHtml}
         ${translationHtml}
         ${poemMeaningHtml}
         ${poemBgHtml}
         ${analysisHtml}
-        <div class="bk-checkin-row">${checkinBtn}</div>
       </div>`;
     }).join('');
   }
@@ -31101,7 +31173,7 @@ I'm good at running.`},
     const t = e.target; if(!t || !t.closest) return;
     // 打卡类：各自 handler 已调用 playCheckinSound（已路由到 playClickSfx('checkin')），此处跳过避免重复
     // R155-1：补齐「新世界」各子页内部打卡键选择器，杜绝「内部按键音效重复触发（双音效）」
-    if(t.closest('[data-checkin], .ri-checkin-btn, [data-ri-checkin], .kw-checkin, .checkin-btn, [data-kw-checkin], .math-btn-mastery, .math-btn-need, [data-sfx-checkin], [data-bs-checkin-sec], [data-kw-learn-toggle], [data-sh-learn], [data-suzhi-checkin], [data-en-oxford-theme], [data-en-sentence-done], [data-kp-card], .sc-card, .sh-poem-card, .sz-grid-card[data-sz-card]')) return;
+    if(t.closest('[data-checkin], .ri-checkin-btn, [data-ri-checkin], .kw-checkin, .checkin-btn, [data-kw-checkin], .math-btn-mastery, .math-btn-need, [data-sfx-checkin], [data-bs-checkin-sec], [data-kw-learn-toggle], [data-sh-learn], [data-suzhi-checkin], [data-en-oxford-theme], [data-en-essay-done], [data-kp-card], .sc-card, .sh-poem-card, .sz-grid-card[data-sz-card]')) return;
     if(t.closest('.nav-btn[data-page], [data-go]')){ playClickSfx('nav'); return; }
     if(t.closest('.kw-lesson-card, .kb-utab, .kb-card, .sub-card, .sub-tab, [data-sfx="sub"]')){ playClickSfx('sub'); return; }
     if(t.closest('.yw-round-btn, .nw-card, .wp-card, .card, .mn-note-card, [data-sfx="theme"], .kw-acc-head')){ playClickSfx('theme'); return; }
