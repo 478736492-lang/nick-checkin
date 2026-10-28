@@ -46,7 +46,7 @@
   /* ① 平台蓝阶 —— 全站唯一结构色相（底 / 边 / 字 / 阴影） */
   --tone-900:#1e3a8a; --tone-950:#16306b; --tone-800:#1c5fb8; --tone-700:#2f6fc7;
   --tone-600:#4096ff; --tone-500:#4a90e2; --tone-400:#8fc1f7;
-  --tone-350:#7ec8ff; --tone-300:#a4d0ff; --tone-250:#d0e8ff; --tone-200:#cfe0f5; --tone-150:#e3eefb;
+  --tone-350:#7ec8ff; --tone-300:#a4d0ff; --tone-275:#bcd9f5; --tone-250:#d0e8ff; --tone-200:#cfe0f5; --tone-150:#e3eefb;
   --tone-100:#eaf3ff; --tone-050:#f4f9ff;
   --tone-line:#bfe0ff;
   /* ①b 面板底 / 柔描边档位 —— 收敛全站几十处「近白蓝」长尾色值，统一明度 */
@@ -696,7 +696,8 @@ button[hidden]{display:none!important}
 .xs-add-words.hidden,.xs-add-grammar.hidden,.xs-add-story.hidden{display:none}
 
 /* ========== 大阅读 ========== */
-.reading-area{background:var(--card-bg);border-radius:14px;padding:14px;box-shadow:var(--card-shadow);margin-bottom:12px}
+/* R201-1：语文 / 英文阅读大区底色由半透明白改为平台蓝阶 --tone-300（与大阅读白色页容器形成层次，其内栏目再取浅一档） */
+.reading-area{background:var(--tone-300);border-radius:14px;padding:14px;box-shadow:var(--card-shadow);margin-bottom:12px}
 .reading-area-head{font-size:16px;color:var(--orange-dark);font-weight:700;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
 .reading-subtabs{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
 .sub-tab{background:#fff;border:1.5px solid var(--tone-200);color:var(--muted);padding:6px 14px;border-radius:18px;cursor:pointer;font-size:13px;font-weight:600;transition:.15s}
@@ -914,7 +915,8 @@ button[hidden]{display:none!important}
 /* v8：英语短文附中文翻译 */
 .reading-translation{margin-top:6px;padding:6px 10px;background:#f0f8ff;border-left:3px solid #2980b9;border-radius:0 8px 8px 0;font-size:12px;line-height:1.6;color:#3a4d66;white-space:pre-wrap}
 .reading-translation::before{content:'译 · ';font-weight:700;color:#2980b9}
-.rc-tag-zh{font-size:11px;color:var(--sky-blue);margin-left:4px;font-weight:500}
+/* R201-4：原中天空蓝（--sky-blue）在变浅后的栏目底 --tone-275 上对比仅 2.25，改为深蓝 --tone-800 保清晰 */
+.rc-tag-zh{font-size:11px;color:var(--tone-800);margin-left:4px;font-weight:600}
 
 /* ========== 百科 v5：6 主题内容内联方框 + 角色照排；v8：正文 ≈ 小标题字号 ========== */
 .baike-guide{font-size:13px;color:var(--sky-blue);background:rgba(64,150,255,.1);padding:6px 12px;border-radius:10px}
@@ -2108,7 +2110,7 @@ body.child-mode .parent-edit-fab{display:none}
 .yw-fade{animation:ywFade .28s ease}
 @keyframes ywFade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 /* ========== V70：各板块「添加内容」交互 ========== */
-.nw-zone{margin-top:18px;background:#e9f3fd;border:1px solid #bcd9f5;border-radius:14px;padding:14px 16px}
+.nw-zone{margin-top:18px;background:#e9f3fd;border:1px solid var(--tone-275);border-radius:14px;padding:14px 16px}
 .nw-zone-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
 .nw-zone-count{font-size:14px;color:#5a7ba0;font-weight:700}
 .nw-zone-add{background:linear-gradient(135deg,var(--tone-900),var(--tone-300));color:#fff;border:none;border-radius:10px;padding:7px 14px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(64,150,255,.3);transition:.15s}
@@ -2182,7 +2184,7 @@ body.child-mode .parent-edit-fab{display:none}
 .sz-grid-card{display:flex;flex-direction:column;padding:14px 16px 40px;min-height:190px}
 .sz-grid-card .sz-daily-title{font-size:16px;line-height:1.35}
 .sz-grid-card .sz-daily-body{font-size:13.5px;line-height:1.7;max-height:126px;overflow-y:auto;padding-right:4px}
-.sz-pager{display:flex;align-items:center;justify-content:center;gap:16px;margin:16px 0 4px;background:#e9f3fd;border:1px solid #bcd9f5;border-radius:14px;padding:10px 16px}
+.sz-pager{display:flex;align-items:center;justify-content:center;gap:16px;margin:16px 0 4px;background:#e9f3fd;border:1px solid var(--tone-275);border-radius:14px;padding:10px 16px}
 .sz-page-btn{background:var(--tone-100);color:var(--sky-blue);border:1px solid var(--tone-200);border-radius:999px;padding:7px 16px;font-size:13px;font-weight:800;cursor:pointer;transition:background .15s,color .15s}
 .sz-page-btn:hover:not(:disabled){background:var(--tone-600);color:#fff;border-color:var(--tone-600)}
 .sz-page-btn:disabled{opacity:.4;cursor:not-allowed}
@@ -3092,6 +3094,11 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 /* 知识秘境：内容区 .page-content 由 renderKnowledge 注入，包裹 .km-levels */
 /* R100：路线图整块只留一张背景卡 —— 取消外层白色容器卡（白底/边框/阴影/内边距全清），
    由 .km-map 渐变地图板作为该板块唯一一张背景卡片 */
+/* R201-2/3：百科讲堂 / 设置中心的内容底板（页容器）改为平台蓝阶 --tone-300，与其内部卡片构成层次（大阅读页容器保持白底，仅大区上色） */
+.page-baike .page-content,
+.page-settings .page-content{background:var(--tone-300);border-color:rgba(30,58,138,.18)}
+/* R201-4：提示条原为半透明蓝（rgba(64,150,255,.1)），叠在蓝底页容器上几乎不可辨，改为白色半透明 + 深蓝字 */
+.page-baike .page-content .baike-guide{color:var(--tone-950);background:rgba(255,255,255,.66);font-weight:600}
 .page-knowledge .page-content{padding:0;margin:0;background:transparent;border:none;box-shadow:none}
 /* V105：所有主题卡（主板版块标题卡）内文字统一改为深蓝色，配白色柔光保证在背景图上的可读性 */
 .page-math > .page-title h2,
@@ -3146,15 +3153,18 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 /* 3) 一级功能区块卡片底色：var(--tone-300) 中度浅蓝 */
 .page-math .math-type-group,
 .page-xueersi .xs-pane,
-.page-reading .reading-col,
-.page-baike .bk-box,
 .page-today .today-col,
 .page-today .today-go{background:var(--tone-300);border-color:rgba(30,58,138,.18);box-shadow:0 4px 14px rgba(126,200,255,.4)}
+/* R201-1：大阅读五栏（语文好词/古诗/作文 + 英语日常交流/短文）与百科 9 宫格主题盒改取中间档 --tone-275，
+   与其外层大区 / 页容器的 --tone-300 构成「外深内浅」层次（其余板块一级区块维持 --tone-300 不变） */
+.page-reading .reading-col,
+.page-baike .bk-box{background:var(--tone-275);border-color:rgba(30,58,138,.18);box-shadow:0 4px 14px rgba(126,200,255,.4)}
 
 /* 3.1) 一级区块标题：白色、卡通字体（区块内的小标题，如分类头、栏目头） */
 .page-math .math-group-name,
-.page-xueersi .xs-summary-head,
-.page-reading .reading-col-head{color:#fff;font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;font-weight:800;letter-spacing:.5px;text-shadow:0 1px 2px rgba(30,58,138,.25)}
+.page-xueersi .xs-summary-head{color:#fff;font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;font-weight:800;letter-spacing:.5px;text-shadow:0 1px 2px rgba(30,58,138,.25)}
+/* R201-4：五栏底色由 --tone-300 变浅为 --tone-275 后，栏目头白字对比不足（约 1.4），改为深蓝 + 白色柔影保清晰（其它板块区块仍 --tone-300 底，维持白字） */
+.page-reading .reading-col-head{color:var(--tone-950);font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;font-weight:800;letter-spacing:.5px;text-shadow:0 1px 2px rgba(255,255,255,.65)}
 /* V56-Req7：百科讲堂 9 大主题「次标题」字体颜色改为中天蓝 var(--tone-500) */
 .page-baike .bk-box-head .bc-name{color:var(--tone-500);font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;font-weight:800;letter-spacing:.5px;text-shadow:0 1px 2px rgba(255,255,255,.6)}
 
@@ -6926,7 +6936,8 @@ html,body{margin:0;padding:0}
 .page-archive .badge,
 .page-archive .cert,
 .page-archive .report-line{background:var(--tone-100);border-color:var(--tone-200)}
-.page-settings{--set-card-bg:var(--tone-300);--set-card-border:rgba(255,255,255,.55);--set-card-shadow:0 6px 18px rgba(160,200,240,.3)}
+/* R201-3：设置中心任务栏由 --tone-300 改取中间档 --tone-275，与页容器 --tone-300 构成外深内浅 */
+.page-settings{--set-card-bg:var(--tone-275);--set-card-border:rgba(255,255,255,.55);--set-card-shadow:0 6px 18px rgba(160,200,240,.3)}
 .page-settings .settings-card:hover{border-color:#fff}
 .page-settings .settings-card-desc{color:#33507e}
 .page-settings .settings-card-arrow{color:var(--tone-700)}
