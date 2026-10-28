@@ -7502,6 +7502,50 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 .ktxs-bm-detail-foot button{ padding:6px 14px; border-radius:8px; border:1px solid var(--tone-300); background:#fff; color:var(--tone-900); cursor:pointer; font:inherit; }
 .ktxs-bm-detail-foot button.danger{ background:#ffe3e6; color:#c0392b; border-color:#f3b6bd; }
 
+
+/* ========== R204：英语专区 · 英文作文（每页 4 篇，两列中英对照） ========== */
+.en-essay-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:12px}
+.en-essay-card{background:#fff;border:1px solid var(--tone-200);border-radius:16px;padding:14px 16px;box-shadow:0 4px 14px rgba(30,58,138,.10);display:flex;flex-direction:column;gap:8px}
+.en-essay-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.en-essay-no{flex:0 0 auto;width:26px;height:26px;border-radius:9px;background:var(--tone-600);color:#fff;font-size:12.5px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.en-essay-title{font-size:15.5px;font-weight:800;color:var(--tone-950);cursor:pointer}
+.en-essay-zh-title{font-size:12px;font-weight:700;color:var(--tone-800);background:var(--tone-100);border-radius:8px;padding:1px 8px}
+.en-essay-body{font-size:14px;line-height:1.9;color:#22304a;letter-spacing:.2px;cursor:pointer}
+.en-essay-zh{font-size:13px;line-height:1.75;color:#41506b;background:var(--tone-050);border-left:3px solid var(--tone-300);border-radius:0 10px 10px 0;padding:8px 10px}
+@media (max-width:1023px){ .en-essay-list{grid-template-columns:1fr} }
+
+
+/* ===== R204：华夏五千年正文扩写至 100-120 字，放宽卡片正文高度 ===== */
+/* 原 132px 在 1024 宽三列布局下约 5.5 行，扩写后可能触发内部滚动；提到 168px 让整段完整可见 */
+.sz-grid-card .sz-daily-body{ max-height:168px; }
+
+/* ===== R204：古诗词鉴赏排版 —— 正文逐句楷体居中 + 「大意 / 背景 / 赏析」三段 ===== */
+/* 1) 诗词正文：深蓝楷体、逐句成行、居中排布，浅底细框与下方解读区分开 */
+.reading-item .ri-poem-body{
+  display:flex;flex-direction:column;align-items:center;
+  gap:1px;padding:8px 8px 9px;margin-top:2px;
+  background:var(--tone-025);border:1px solid var(--tone-100);border-radius:10px;
+  font-family:"Kaiti SC","STKaiti","KaiTi","Songti SC",serif;
+  font-size:16px;line-height:1.92;letter-spacing:.08em;
+  color:var(--tone-950);text-align:center;
+}
+.reading-item .ri-poem-line{display:block;max-width:100%;overflow-wrap:anywhere;word-break:break-word}
+/* 2) 三个解读区块：统一左竖条 + 分色底，标题小字加粗 */
+.reading-item .ri-poem-sec{
+  margin-top:6px;padding:7px 9px;border-radius:0 8px 8px 0;
+}
+.reading-item .ri-poem-sec-h{
+  font-size:12px;font-weight:800;line-height:1.5;color:var(--tone-950);margin-bottom:2px;
+}
+.reading-item .ri-poem-sec-b{
+  font-size:12px;line-height:1.78;color:var(--tone-900);
+  white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word;
+}
+.reading-item .ri-poem-meaning{background:var(--tone-050);border-left:3px solid var(--tone-400)}
+.reading-item .ri-poem-bg{background:var(--tone-075);border-left:3px solid var(--z-read-main)}
+.reading-item .ri-poem-ana{background:var(--tone-025);border-left:3px solid var(--orange)}
+
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -9777,6 +9821,7 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 <script src="./assets/seed_baike_seed.js"></script>
 <!-- 大阅读·日常交流种子数据（先于 store.js 加载，getEnSpeakingTopics 读取 window.EN_SPEAKING_SEED） -->
 <script src="./assets/seed_en_speaking_seed.js"></script>
+<script src="./assets/seed_en_essay_seed.js"></script>
 <!-- 新世界·语文专区「作文素材」种子数据（先于 app.js 加载，ywSucai 读取 window.ZUOWEN_SC_SEED） -->
 <script src="./assets/seed_zuowen_sc_seed.js"></script>
 <!-- V73-Req4：上海(统编版) 1-5 年级课内古诗文（先于 app.js 加载，ywGushi/ywWenyan 读取 window.YW_SH_GUSHICI） -->
@@ -19634,10 +19679,13 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         e.stopPropagation();
         const step = parseInt(btn.getAttribute('data-en-page-step'),10) || 0;
         const total = parseInt(btn.getAttribute('data-en-page-total'),10) || 1;
-        let np = _enCurPage + step;
+        const pk = btn.getAttribute('data-en-page-key') || '';
+        // R204：英文作文与句型练习各走各的页码
+        let cur = (pk === 'essay') ? _enEssayPage : _enCurPage;
+        let np = cur + step;
         if(np < 0) np = 0;
         if(np > total-1) np = total-1;
-        _enCurPage = np;
+        if(pk === 'essay'){ _enEssayPage = np; } else { _enCurPage = np; }
         rerender();
       });
     });
@@ -19856,6 +19904,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         if(key === 'gd'){ _enKpUnit = 0; _enKpDelMode = false; }
         _szCurPage = 0; // R24-4：切换拓展素养板块时重置卡片分页
         if(key === 'yyxzs') _egCurSec = 0; // R24-5：进入英语小知识回到第一章
+        if(key === 'zw') _enEssayPage = 0;   // R204：进入英文作文回到第一页
         if(slotBody){
           let rerender = ()=>{
             slotBody.innerHTML = `<div class="yw-fade">${slotFn(key,label)}</div>`;
@@ -20649,6 +20698,7 @@ I'm good at running.`},
   }
   // V116：英语专区两板块分页状态（模块级，跨 rerender 保留）
   let _enCurPage = 0;
+  let _enEssayPage = 0;   // R204：英文作文分页（每页 4 篇）
   let _enCurKey  = 'dd';
   // R122：书本课文 / 重点知识 的「当前单元」索引（替代原分页，点单元卡切换）
   let _enBookUnit  = 0;   // 书本课文：0–10（Unit 1–10 + 汇总）
@@ -20657,11 +20707,12 @@ I'm good at running.`},
   let _enKpDelMode = false;   // R123：重点知识「🗑 删除」模式开关
   // V116：分页条（上一页/下一页/第 X/Y 页）
   function enPager(key, page, total){
+    // R204：带上 key，让句型练习与英文作文各自维护页码
     return `
       <div class="en-pager">
-        <button class="en-page-btn" data-en-page-step="-1" data-en-page-total="${total}" ${page<=0?'disabled':''}>‹ 上一页</button>
+        <button class="en-page-btn" data-en-page-step="-1" data-en-page-total="${total}" data-en-page-key="${key||''}" ${page<=0?'disabled':''}>‹ 上一页</button>
         <span class="en-page-info">第 ${page+1} / ${total} 页</span>
-        <button class="en-page-btn" data-en-page-step="1" data-en-page-total="${total}" ${page>=total-1?'disabled':''}>下一页 ›</button>
+        <button class="en-page-btn" data-en-page-step="1" data-en-page-total="${total}" data-en-page-key="${key||''}" ${page>=total-1?'disabled':''}>下一页 ›</button>
       </div>`;
   }
   // R21：板块分类（与平台冷色系协调：深蓝/蓝/青/绿/靛/紫，均已在平台出现）
@@ -21153,6 +21204,38 @@ I'm good at running.`},
       ${enPager('sentence', page, totalPages)}
       <div class="en-oxford-foot">共 ${totalPages} 页（Unit 1–10）· 已完成 ${doneCount} 页（当前第 ${page+1}/${totalPages} 页）</div>`;
   }
+  // R204：英文作文 —— 上海市优秀小学英语作文 100 篇，每页 4 篇，中英对照
+  const EN_ESSAY_PER_PAGE = 4;
+  function renderEnEssay(page){
+    const all = (window.EN_ESSAY_SEED || []);
+    const per = EN_ESSAY_PER_PAGE;
+    const totalPages = Math.max(1, Math.ceil(all.length / per));
+    let p = page || 0;
+    if(p < 0) p = 0;
+    if(p > totalPages-1) p = totalPages-1;
+    _enEssayPage = p;
+    const start = p * per;
+    const items = all.slice(start, start + per);
+    const cards = items.map((it, i)=>{
+      const no = start + i + 1;
+      return `
+      <div class="en-essay-card">
+        <div class="en-essay-head">
+          <span class="en-essay-no">${('0'+no).slice(-2)}</span>
+          <span class="en-essay-title en-tap-speak" data-en-speak="${esc(it.title + '. ' + it.en)}">${esc(it.title)}</span>
+          <span class="en-essay-zh-title">${esc(it.titleZh || '')}</span>
+        </div>
+        <div class="en-essay-body en-tap-speak" data-en-speak="${esc(it.en)}">${esc(it.en)}</div>
+        <div class="en-essay-zh"><b>译文：</b>${esc(it.zh)}</div>
+      </div>`;
+    }).join('');
+    return `
+      <div class="yw-comp-head">英文作文 <span class="yw-sub">上海市优秀小学英语作文 · 共 ${all.length} 篇</span></div>
+      <div class="en-oxford-tip">每篇中英对照，先读英文再看译文；点击英文可自动朗读。</div>
+      <div class="en-essay-list">${cards}</div>
+      ${enPager('essay', p, totalPages)}
+      <div class="en-oxford-foot">本页第 ${all.length?start+1:0}–${start+items.length} 篇 · 每页 ${per} 篇 · 共 ${totalPages} 页（共 ${all.length} 篇）</div>`;
+  }
   // 拼接单元朗读文本（供 TTS 整段朗读：核心词汇 + 重点短语 + 常用表达）
   function vocabTts(u){
     const parts = [u.unit + ' ' + u.title];
@@ -21260,11 +21343,14 @@ I'm good at running.`},
     { title:'同步课时练习', items:[
       { key:'dd',  icon:'📕', label:'书本课文' },
       // R122：「书本词汇」改名为「重点知识」，内容改为以导入图片为主
-      { key:'gd',  icon:'📌', label:'重点知识' }
+      { key:'gd',  icon:'📌', label:'重点知识' },
+      // R204：句型练习按键与内容整体移到「重点知识」之后
+      { key:'jx',  icon:'💬', label:'句型练习' }
     ] },
     // R24-5：「听力训练」改为「英语小知识」（整个英语语法体系）
+    // R204：句型练习移出后，原位置新建「英文作文」（上海市优秀小学英语作文 100 篇，分页展示）
     { title:'拓展练习', items:[
-      { key:'jx',  icon:'💬', label:'句型练习' },
+      { key:'zw',  icon:'✍️', label:'英文作文' },
       { key:'yyxzs', icon:'📖', label:'英语小知识' }
     ] },
     { title:'错题本', items:[
@@ -21411,6 +21497,7 @@ I'm good at running.`},
     if(key === 'dd') return renderOxfordBook(_enBookUnit);
     if(key === 'gd') return renderEnKeyPoints(_enKpUnit);
     if(key === 'jx') return renderOxfordSentence(_enCurPage); // R37-3：句型练习（分页）
+    if(key === 'zw') return renderEnEssay(_enEssayPage);      // R204：英文作文（每页 4 篇）
     if(key === 'yyxzs') return enGrammar();               // R24-5：英语小知识（语法体系）
     const map = {
       // R122：与上方 EN_TOP_CARDS 保持一致的板块名
@@ -27071,16 +27158,34 @@ I'm good at running.`},
       });
     });
   }
+  // R204：古诗词正文分行 —— 按句末标点切分，每句成一行，供楷体居中排版
+  function poemLines(text){
+    const t = String(text||'').replace(/\s+/g,' ').trim();
+    if(!t) return [];
+    const parts = t.match(/[^。！？；!?;]+[。！？；!?;]?/g) || [];
+    const out = parts.map(s=>s.trim()).filter(Boolean);
+    return out.length ? out : [t];
+  }
   function renderColItems(items, kind, scope){
     if(!items.length) return '<div class="col-empty">今日暂无，点击"＋新增"添加～</div>';
     return items.map(it => {
       const enCls = scope==='en'?'ri-en':'';
       const userTag = it.source==='user'?'<span class="ri-meta" style="background:#ffd24d;color:#14335f">👤 我的</span>':'';
-      // v6：古诗词鉴赏加简单分析
-      const analysisHtml = (kind==='cnPoem' && it.analysis)
-        ? `<div class="ri-analysis">💡 <b>赏析：</b>${esc(it.analysis)}</div>` : '';
+      // R204：古诗词鉴赏 —— 正文按句分行，并补「诗词大意 / 创作背景 / 赏析」三段
+      const isPoem = kind === 'cnPoem';
+      const analysisHtml = isPoem
+        ? ((it.analysis) ? `<div class="ri-poem-sec ri-poem-ana"><div class="ri-poem-sec-h">💡 赏析</div><div class="ri-poem-sec-b">${esc(it.analysis)}</div></div>` : '')
+        : ((it.analysis) ? `<div class="ri-analysis">💡 <b>赏析：</b>${esc(it.analysis)}</div>` : '');
+      const poemMeaningHtml = (isPoem && it.meaning)
+        ? `<div class="ri-poem-sec ri-poem-meaning"><div class="ri-poem-sec-h">📖 诗词大意</div><div class="ri-poem-sec-b">${esc(it.meaning)}</div></div>` : '';
+      const poemBgHtml = (isPoem && it.background)
+        ? `<div class="ri-poem-sec ri-poem-bg"><div class="ri-poem-sec-h">🏮 创作背景</div><div class="ri-poem-sec-b">${esc(it.background)}</div></div>` : '';
       // V12.4：英语短文（enPassage）— 优先用 it.en 字段，zh 字段为中文翻译；其它用 it.body
       const mainText = (kind==='enPassage' && (it.en || it.body)) || it.body || it.en || '';
+      // R204：古诗词正文逐句成行（楷体居中），其它类型仍用 .ri-body 整段
+      const bodyHtml = isPoem
+        ? `<div class="ri-poem-body">${poemLines(mainText).map(l=>`<span class="ri-poem-line">${esc(l)}</span>`).join('')}</div>`
+        : `<div class="ri-body">${esc(mainText)}</div>`;
       const translationHtml = (kind==='enPassage' && it.zh)
         ? `<div class="reading-translation">${esc(it.zh)}</div>` : '';
       // 文库排版优化：英语短文标题下补充「难度 + 主题分类」标签（复用蓝系配色）
@@ -27095,8 +27200,10 @@ I'm good at running.`},
       return `<div class="reading-item ${enCls} ${isChecked?'is-checked':''}"${passageAttr}>
         <div class="ri-title">${esc(it.title)} ${userTag}</div>
         ${it.meta?`<div class="ri-meta">${esc(it.meta)}</div>`:''}${catTagHtml}
-        <div class="ri-body">${esc(mainText)}</div>
+        ${bodyHtml}
         ${translationHtml}
+        ${poemMeaningHtml}
+        ${poemBgHtml}
         ${analysisHtml}
         <div class="bk-checkin-row">${checkinBtn}</div>
       </div>`;
