@@ -7514,6 +7514,12 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 .en-essay-zh{font-size:13px;line-height:1.75;color:#41506b;background:var(--tone-050);border-left:3px solid var(--tone-300);border-radius:0 10px 10px 0;padding:8px 10px}
 @media (max-width:1023px){ .en-essay-list{grid-template-columns:1fr} }
 
+/* ===== R205-2：英语朗读「开始 / 暂停 / 继续」视觉反馈 ===== */
+[data-en-speak], [data-xs-speak]{ cursor:pointer; border-radius:8px; transition:background-color .18s ease, box-shadow .18s ease; }
+[data-en-speak]:hover, [data-xs-speak]:hover{ background:rgba(64,150,255,.08); }
+.en-speak-playing{ background:rgba(92,214,160,.20)!important; box-shadow:0 0 0 2px #5cd6a0 inset; }
+.en-speak-paused{ background:rgba(255,179,91,.22)!important; box-shadow:0 0 0 2px #ffb35b inset; }
+
 
 /* ===== R204：华夏五千年正文扩写至 100-120 字，放宽卡片正文高度 ===== */
 /* 原 132px 在 1024 宽三列布局下约 5.5 行，扩写后可能触发内部滚动；提到 168px 让整段完整可见 */
@@ -7526,7 +7532,7 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
   gap:1px;padding:8px 8px 9px;margin-top:2px;
   background:var(--tone-025);border:1px solid var(--tone-100);border-radius:10px;
   font-family:"Kaiti SC","STKaiti","KaiTi","Songti SC",serif;
-  font-size:16px;line-height:1.92;letter-spacing:.08em;
+  font-size:13px;line-height:1.78;letter-spacing:.06em;
   color:var(--tone-950);text-align:center;
 }
 .reading-item .ri-poem-line{display:block;max-width:100%;overflow-wrap:anywhere;word-break:break-word}
@@ -21204,8 +21210,8 @@ I'm good at running.`},
       ${enPager('sentence', page, totalPages)}
       <div class="en-oxford-foot">共 ${totalPages} 页（Unit 1–10）· 已完成 ${doneCount} 页（当前第 ${page+1}/${totalPages} 页）</div>`;
   }
-  // R204：英文作文 —— 上海市优秀小学英语作文 100 篇，每页 4 篇，中英对照
-  const EN_ESSAY_PER_PAGE = 4;
+  // R204：英文作文 —— 上海市优秀小学英语作文 100 篇，每页 2 篇，中英对照
+  const EN_ESSAY_PER_PAGE = 2;
   function renderEnEssay(page){
     const all = (window.EN_ESSAY_SEED || []);
     const per = EN_ESSAY_PER_PAGE;
@@ -31398,11 +31404,49 @@ I'm good at running.`},
         e.preventDefault();
         const en = (el.dataset.enSpeak || '').trim();
         if(!en) return;
-        speakEn(en); // R37-1：内部已做 CJK 清洗，中文混入不会乱读
+        _onEnSpeakClick(el, en); // R205-2：统一「开始 / 暂停 / 继续」交互（内部 enSpeakRich 已做 CJK 清洗）
       });
     });
   }
   window.bindEnTapSpeak = bindEnTapSpeak;
+
+  // R205-2：统一英语朗读交互（开始 → 暂停 → 继续）
+  //   覆盖 [data-en-speak]（新世界英语 / 英文作文 / 重点知识等）与 [data-xs-speak]（学而思英语）。
+  //   全局同时仅一段朗读；点击同一元素循环：playing → 暂停(paused) → 继续(playing) → 朗读结束回到 idle。
+  //   与另一英语朗读源（大阅读短文 [data-ri-passage]）共用视觉清理，避免两套高亮并存。
+  let _enSpeakEl = null;
+  let _enSpeakState = 'idle'; // idle | playing | paused
+  function _clearAllSpeakVisuals(){
+    document.querySelectorAll('.en-speak-playing,.en-speak-paused').forEach(e=>{ e.classList.remove('en-speak-playing','en-speak-paused'); if('speakState' in e.dataset) e.dataset.speakState = 'idle'; });
+    document.querySelectorAll('.passage-playing,.passage-paused').forEach(e=>{ e.classList.remove('passage-playing','passage-paused'); if('state' in e.dataset) e.dataset.state = 'idle'; });
+  }
+  function _enSpeakSetVisual(el, state){
+    if(!el) return;
+    el.classList.remove('en-speak-playing','en-speak-paused');
+    if(state === 'playing') el.classList.add('en-speak-playing');
+    else if(state === 'paused') el.classList.add('en-speak-paused');
+    el.dataset.speakState = state;
+  }
+  function _onEnSpeakClick(el, text){
+    text = (text||'').trim();
+    if(!text) return;
+    // 点击的正是「当前朗读中的元素」→ 在 暂停 / 继续 之间切换
+    if(el === _enSpeakEl){
+      if(_enSpeakState === 'playing'){
+        try { window.speechSynthesis.pause(); } catch(_){}
+        _enSpeakState = 'paused'; _enSpeakSetVisual(el, 'paused'); return;
+      }
+      if(_enSpeakState === 'paused'){
+        try { window.speechSynthesis.resume(); } catch(_){}
+        _enSpeakState = 'playing'; _enSpeakSetVisual(el, 'playing'); return;
+      }
+    }
+    // 其它情况：停掉当前所有朗读，从头朗读该元素
+    try { window.speechSynthesis.cancel(); } catch(_){}
+    _clearAllSpeakVisuals();
+    _enSpeakEl = el; _enSpeakState = 'playing'; _enSpeakSetVisual(el, 'playing');
+    enSpeakRich(text, ()=>{ if(_enSpeakEl === el){ _enSpeakEl = null; _enSpeakState = 'idle'; _enSpeakSetVisual(el, 'idle'); } });
+  }
 
   // ============ 需求⑤：大阅读英语短文「点击卡片」自动朗读 / 暂停 / 继续（无独立按钮） ============
   // 状态：idle 未朗读 → 点击卡片 playing 朗读中 → 再点 paused 暂停 → 再点 playing 从头继续
@@ -31429,17 +31473,10 @@ I'm good at running.`},
         const txt = card.dataset.riPassageTxt || '';
         if(!title) return;
         if(_passagePausedTitle === title){
-          // 暂停状态 → 继续朗读（从头开始）
-          try { window.speechSynthesis.cancel(); } catch(_){}
+          // 暂停状态 → 继续朗读（从暂停处继续，而非从头）
+          try { window.speechSynthesis.resume(); } catch(_){}
           _passagePausedTitle = null;
           _passagePlayingTitle = title;
-          speakEnWithEnd(txt, ()=>{
-            if(_passagePlayingTitle === title){
-              _passagePlayingTitle = null;
-              _passagePausedTitle = null;
-              _refreshPassageCards();
-            }
-          });
           _refreshPassageCards();
         } else if(_passagePlayingTitle === title){
           // 正在朗读 → 暂停
@@ -31448,8 +31485,9 @@ I'm good at running.`},
           _passagePausedTitle = title;
           _refreshPassageCards();
         } else {
-          // 其他状态（包括 idle、其他篇正在播放）→ 切到该篇开始朗读
+          // 其他状态（包括 idle、其他篇正在播放）→ 切到该篇开始朗读（先清掉其它朗读高亮）
           try { window.speechSynthesis.cancel(); } catch(_){}
+          _clearAllSpeakVisuals();
           _passagePausedTitle = null;
           _passagePlayingTitle = title;
           speakEnWithEnd(txt, ()=>{
