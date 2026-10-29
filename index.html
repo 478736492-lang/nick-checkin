@@ -7603,6 +7603,80 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 }
 .settings-card-body .settings-card-desc{ white-space:normal; overflow:visible; text-overflow:clip; }
 
+/* ================= R207：成语学习卡 / 句型旧版排版 / 设置卡放大 / 百科底纹与打卡键 / 新世界卡片底 ================= */
+
+/* ===== R207-2：书本课文「重点句型」恢复旧版句型练习的双列排版（沿用具名 vexpr 卡样式） ===== */
+[data-zone="newworld"] .en-vexpr.en-must{ background:linear-gradient(135deg,#fff7e0,#ffefbf); border-color:#ffe08a; }
+[data-zone="newworld"] .en-vexpr.en-must .en-vexpr-en{ color:var(--tone-900); }
+.en-vexpr .en-vexpr-en,
+.en-vexpr .en-vexpr-cn{ min-width:0; overflow-wrap:anywhere; }
+
+/* ===== R207-1：好词好句栏目内「成语学习」卡片 ===== */
+.cy-learn{ margin-top:2px; }
+.cy-learn-card{
+  display:flex; flex-direction:column; gap:7px;
+  background:linear-gradient(180deg,var(--tone-050),var(--tone-100));
+  border:1.5px solid var(--tone-150); border-radius:12px; padding:10px 11px;
+}
+.cy-learn-head{ display:flex; align-items:center; gap:6px; font-size:12.5px; font-weight:800; color:var(--tone-900); }
+.cy-learn-idx{
+  margin-left:auto; font-size:11px; font-weight:700; color:var(--tone-700);
+  background:rgba(255,255,255,.85); border:1px solid var(--tone-150); border-radius:999px; padding:1px 8px;
+}
+.cy-learn-word{
+  font-size:20px; font-weight:900; letter-spacing:.14em; color:var(--tone-950);
+  text-align:center; padding:5px 0 3px;
+  font-family:"Kaiti SC","STKaiti","KaiTi",serif;
+}
+.cy-learn-sec{ border-left:3px solid var(--tone-400); background:#fff; border-radius:0 8px 8px 0; padding:5px 8px; }
+.cy-learn-meaning{ border-left-color:var(--z-read-main); }
+.cy-learn-eg{ border-left-color:var(--orange); }
+.cy-learn-sec-h{ font-size:11.5px; font-weight:800; color:var(--tone-900); margin-bottom:2px; }
+.cy-learn-sec-b{ font-size:12.5px; line-height:1.72; color:var(--tone-900); overflow-wrap:anywhere; }
+.cy-learn-pager{ display:flex; gap:6px; }
+.cy-pg-btn{
+  flex:1 1 auto; border:1.5px solid var(--tone-200); background:#fff; border-radius:9px;
+  padding:4px 0; font-size:11.5px; font-weight:800; color:var(--tone-800); cursor:pointer; transition:.15s;
+}
+.cy-pg-btn:hover{ background:var(--tone-100); border-color:var(--tone-400); }
+.cy-pg-btn:active{ transform:translateY(1px); }
+.cy-pg-today{ flex:0 0 auto; padding:4px 10px; }
+/* 好词好句列表让位给成语卡：列表内部滚动，整栏高度与另两栏协调 */
+.page-reading .reading-cn .reading-col.rc-words .reading-col-list{ max-height:250px; }
+
+/* ===== R207-3：设置中心 —— 浅蓝内容卡放大，主题名称 + 图标一并纳入容器 ===== */
+.settings-card{ padding:10px 12px 38px; align-items:stretch; gap:10px; }
+.settings-card .settings-card-main{ display:flex; flex:1 1 auto; min-width:0; }
+.settings-card .settings-card-body{
+  width:100%; min-height:104px; margin-top:0; padding:15px 17px;
+  border-radius:16px; background:var(--tone-100); border:1px solid var(--tone-150);
+  display:flex; flex-direction:column; justify-content:center; gap:6px;
+}
+.settings-card .settings-card-head{ display:flex; align-items:center; gap:10px; margin-bottom:2px; }
+.settings-card .settings-card-head .settings-card-icon{ flex:0 0 auto; font-size:30px; line-height:1; text-align:left; }
+.settings-card .settings-card-head .settings-card-title{ margin:0; font-size:17px; font-weight:800; color:var(--tone-900); }
+.settings-card .settings-card-arrow{ align-self:center; }
+
+/* ===== R207-4①：各主题卡片底部统计条底色与上方内容区统一 ===== */
+.bk-count{
+  display:flex; align-items:center; gap:8px; text-align:left;
+  background:var(--z-baike-pale); border-top:1px solid var(--z-baike-main);
+}
+.bk-count-txt{ margin-right:auto; }
+/* ===== R207-4⑤：打卡键迁到统计条右侧，尺寸收敛适配卡片容器 ===== */
+.bk-count .bk-checkin-btn{ flex:0 0 auto; width:30px; height:30px; border-width:2px; }
+.bk-count .bk-checkin-btn.done::after{ font-size:17px; }
+.bk-count .bk-checkin-btn.txt{ min-width:0; height:26px; padding:0 9px; font-size:11px; border-radius:13px; }
+.bk-count-brain{ flex-wrap:wrap; row-gap:5px; }
+.bk-count-btns{ display:flex; align-items:center; gap:6px; flex:0 0 auto; }
+.bk-mini{ padding-right:10px; }
+
+/* ===== R207-5：新世界首页各专区卡片底部底板改浅蓝 ===== */
+.nw-card .nw-mod{
+  background:linear-gradient(180deg,rgba(234,243,255,.94),rgba(214,234,255,.92));
+  border-color:rgba(180,214,248,.95);
+}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -7856,10 +7930,12 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
     <div class="settings-grid" id="settingsGrid" data-page-node-id="R85settingsGrid">
       <!-- 0) 使用模式（R118-3：模式选择卡片化，与打卡任务等卡片同款；ID 全部保留） -->
       <div class="settings-card settings-card-mode" id="cardModeSettings" data-page-node-id="R118cardMode">
-        <div class="settings-card-icon" data-page-node-id="R118cardModeIco">👥</div>
         <div class="settings-card-main" data-page-node-id="R118cardModeMain">
-          <div class="settings-card-title" data-page-node-id="R118cardModeTitle">使用模式</div>
           <div class="settings-card-body">
+          <div class="settings-card-head">
+            <span class="settings-card-icon" data-page-node-id="R118cardModeIco">👥</span>
+            <span class="settings-card-title" data-page-node-id="R118cardModeTitle">使用模式</span>
+          </div>
           <!-- R121-2：模式按键移至「使用模式」说明文字右侧并靠右摆放（说明文字在左，按键贴行尾） -->
           <div class="settings-card-row settings-card-row-mode" data-page-node-id="R121cardModeRow">
           <div class="settings-card-desc" data-page-node-id="R118cardModeDesc">学生模式 / 家长模式切换</div>
@@ -7882,10 +7958,12 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 
       <!-- 1) 打卡任务 -->
       <div class="settings-card" id="cardTaskSettings" data-page-node-id="R85cardTask">
-        <div class="settings-card-icon" data-page-node-id="R85cardTaskIco">📝</div>
         <div class="settings-card-main" data-page-node-id="R85cardTaskMain">
-          <div class="settings-card-title" data-page-node-id="R85cardTaskTitle">打卡任务</div>
           <div class="settings-card-body">
+          <div class="settings-card-head">
+            <span class="settings-card-icon" data-page-node-id="R85cardTaskIco">📝</span>
+            <span class="settings-card-title" data-page-node-id="R85cardTaskTitle">打卡任务</span>
+          </div>
           <div class="settings-card-desc" data-page-node-id="R85cardTaskDesc">必做/选做/错题/运动/家务/围棋/诗词</div>
           </div>
         </div>
@@ -7894,10 +7972,12 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 
       <!-- 2) 游戏设置 -->
       <div class="settings-card" id="cardGameSettings" data-page-node-id="R85cardGame">
-        <div class="settings-card-icon" data-page-node-id="R85cardGameIco">🎮</div>
         <div class="settings-card-main" data-page-node-id="R85cardGameMain">
-          <div class="settings-card-title" data-page-node-id="R85cardGameTitle">游戏设置</div>
           <div class="settings-card-body">
+          <div class="settings-card-head">
+            <span class="settings-card-icon" data-page-node-id="R85cardGameIco">🎮</span>
+            <span class="settings-card-title" data-page-node-id="R85cardGameTitle">游戏设置</span>
+          </div>
           <div class="settings-card-desc" data-page-node-id="R85cardGameDesc">种植园、知识秘境</div>
           </div>
         </div>
@@ -7906,10 +7986,12 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 
       <!-- 3) 音乐设置 -->
       <div class="settings-card" id="cardMusicSettings" data-page-node-id="R85cardMusic">
-        <div class="settings-card-icon" data-page-node-id="R85cardMusicIco">🎵</div>
         <div class="settings-card-main" data-page-node-id="R85cardMusicMain">
-          <div class="settings-card-title" data-page-node-id="R85cardMusicTitle">音乐设置</div>
           <div class="settings-card-body">
+          <div class="settings-card-head">
+            <span class="settings-card-icon" data-page-node-id="R85cardMusicIco">🎵</span>
+            <span class="settings-card-title" data-page-node-id="R85cardMusicTitle">音乐设置</span>
+          </div>
           <div class="settings-card-desc" data-page-node-id="R85cardMusicDesc">种植园/知识秘境背景音乐、点击音效</div>
           </div>
         </div>
@@ -7918,10 +8000,12 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 
       <!-- 4) 背景设置 -->
       <div class="settings-card" id="cardBgSettings" data-page-node-id="R85cardBg">
-        <div class="settings-card-icon" data-page-node-id="R85cardBgIco">🎨</div>
         <div class="settings-card-main" data-page-node-id="R85cardBgMain">
-          <div class="settings-card-title" data-page-node-id="R85cardBgTitle">背景设置</div>
           <div class="settings-card-body">
+          <div class="settings-card-head">
+            <span class="settings-card-icon" data-page-node-id="R85cardBgIco">🎨</span>
+            <span class="settings-card-title" data-page-node-id="R85cardBgTitle">背景设置</span>
+          </div>
           <div class="settings-card-desc" data-page-node-id="R85cardBgDesc">平台全部背景与背景贴图</div>
           </div>
         </div>
@@ -7930,10 +8014,12 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 
       <!-- 5) 数据同步 -->
       <div class="settings-card" id="cardSyncSettings" data-page-node-id="R85cardSync">
-        <div class="settings-card-icon" data-page-node-id="R85cardSyncIco">☁️</div>
         <div class="settings-card-main" data-page-node-id="R85cardSyncMain">
-          <div class="settings-card-title" data-page-node-id="R85cardSyncTitle">数据同步</div>
           <div class="settings-card-body">
+          <div class="settings-card-head">
+            <span class="settings-card-icon" data-page-node-id="R85cardSyncIco">☁️</span>
+            <span class="settings-card-title" data-page-node-id="R85cardSyncTitle">数据同步</span>
+          </div>
           <div class="settings-card-desc" data-page-node-id="R85cardSyncDesc">导出/导入/CloudBase 云同步</div>
           </div>
         </div>
@@ -7942,10 +8028,12 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 
       <!-- 6) 版本与更新 -->
       <div class="settings-card" id="cardVersionSettings" data-page-node-id="R85cardVer">
-        <div class="settings-card-icon" data-page-node-id="R85cardVerIco">🔄</div>
         <div class="settings-card-main" data-page-node-id="R85cardVerMain">
-          <div class="settings-card-title" data-page-node-id="R85cardVerTitle">版本与更新</div>
           <div class="settings-card-body">
+          <div class="settings-card-head">
+            <span class="settings-card-icon" data-page-node-id="R85cardVerIco">🔄</span>
+            <span class="settings-card-title" data-page-node-id="R85cardVerTitle">版本与更新</span>
+          </div>
           <div class="settings-card-desc" data-page-node-id="R85cardVerDesc">构建版本与手动检查更新</div>
           </div>
         </div>
@@ -7954,10 +8042,12 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 
       <!-- 7) 分类导出文件 -->
       <div class="settings-card" id="cardExportSettings" data-page-node-id="R85cardExport">
-        <div class="settings-card-icon" data-page-node-id="R85cardExportIco">📤</div>
         <div class="settings-card-main" data-page-node-id="R85cardExportMain">
-          <div class="settings-card-title" data-page-node-id="R85cardExportTitle">分类导出文件</div>
           <div class="settings-card-body">
+          <div class="settings-card-head">
+            <span class="settings-card-icon" data-page-node-id="R85cardExportIco">📤</span>
+            <span class="settings-card-title" data-page-node-id="R85cardExportTitle">分类导出文件</span>
+          </div>
           <div class="settings-card-desc" data-page-node-id="R85cardExportDesc">按板块/分版块导出 JSON/CSV/MD</div>
           </div>
         </div>
@@ -8337,6 +8427,8 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
         <div class="reading-col rc-words" data-page-node-id="YnDSWSGjXRzN9iG8bA0pna">
           <div class="reading-col-head" data-page-node-id="deui0OHJjcasEiMoprh5UZ">✨ 好词好句</div>
           <div class="reading-col-list" id="cnColWords" data-page-node-id="Ac2SVKddwA2KW6jU2VEmcE"></div>
+          <!-- R207-1：好词好句栏目内新增「成语学习」卡片（成语 / 典故 / 释义 / 例句） -->
+          <div class="cy-learn" id="cyLearnMount" data-page-node-id="r207CyLearnMount"></div>
         </div>
         <div class="reading-col rc-poem">
           <div class="reading-col-head">📜 古诗词鉴赏</div>
@@ -20814,8 +20906,9 @@ I'm good at running.`},
       case 'phrase':
         body = `<div class="en-vocab-list">` + (s.items||[]).map(it=>`<div class="en-vrow"><span class="en-vw en-tap-speak" data-en-speak="${esc(it.en)}">${esc(it.en)}</span><span class="en-vc">${esc(it.cn)}</span></div>`).join('') + `</div>`;
         break;
+      // R207-2：重点句型恢复旧版句型练习的展示样式与排版（左右双列 vexpr 卡，英文/中文各占一半）
       case 'sentence':
-        body = `<div class="en-sent-list">` + (s.items||[]).map(it=>`<div class="en-sent${it.must?' en-must':''}"><span class="en-sent-en en-tap-speak" data-en-speak="${esc(it.en)}">${it.must?'✅ ':''}${esc(it.en)}</span><span class="en-sent-cn">${esc(it.cn)}</span></div>`).join('') + `</div>`;
+        body = `<div class="en-vexpr-list">` + (s.items||[]).map(it=>`<div class="en-vexpr${it.must?' en-must':''}"><span class="en-vexpr-en en-tap-speak" data-en-speak="${esc(it.en)}">${it.must?'✅ ':''}${esc(it.en)}</span><span class="en-vexpr-cn">${esc(it.cn)}</span></div>`).join('') + `</div>`;
         break;
       case 'dialog':
         body = `<div class="en-pair-list">` + (s.items||[]).map(it=>`<div class="en-pair"><div class="en-pair-en en-tap-speak" data-en-speak="${esc(it.en)}">${esc(it.en)}</div><div class="en-pair-cn">${esc(it.cn)}</div></div>`).join('') + `</div>`;
@@ -27074,6 +27167,9 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     // 需求⑤：每次渲染后重新为英语短文卡绑定点击朗读（卡片为新元素，_ppBound 去重）
     const _enPC = document.getElementById('enColPassage');
     if(_enPC){ bindPassagePause(_enPC); _refreshPassageCards(); }
+    // R207-1：好词好句栏目内渲染「成语学习」卡片（每日轮换 + 可翻页浏览）
+    renderChengyuCard();
+    bindChengyuCard();
     // V56-Req8：渲染整合后的「收录书屋」收藏夹（语文 3 类 + 英语 2 类）
     renderBookstoreAll();
   }
@@ -27241,6 +27337,58 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     const out = parts.map(s=>s.trim()).filter(Boolean);
     return out.length ? out : [t];
   }
+  // ============ R207-1：大阅读 · 好词好句栏目内「成语学习」卡片 ============
+  // 素材：window.CHENGYU_SEED（300 条，字段 word 成语 / codex 典故 / meaning 释义 / example 例句）
+  // 默认展示「今日成语」（按日期轮换），可用翻页键浏览全部 300 条。
+  let _cyIdx = null;
+  function cyList(){ return (window.CHENGYU_SEED || []).filter(x=>x && x.word); }
+  function cyTodayIdx(n){
+    if(!n) return 0;
+    const d = new Date();
+    const day = Math.floor((Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) - Date.UTC(d.getFullYear(),0,0)) / 86400000);
+    return day % n;
+  }
+  function renderChengyuCard(){
+    const mount = document.getElementById('cyLearnMount');
+    if(!mount) return;
+    const list = cyList();
+    if(!list.length){ mount.innerHTML = ''; return; }
+    if(_cyIdx == null || _cyIdx < 0 || _cyIdx >= list.length) _cyIdx = cyTodayIdx(list.length);
+    const it = list[_cyIdx];
+    mount.innerHTML = `<div class="cy-learn-card">
+      <div class="cy-learn-head"><span class="cy-learn-title">📖 成语学习</span><span class="cy-learn-idx">${_cyIdx+1} / ${list.length}</span></div>
+      <div class="cy-learn-word">${esc(it.word)}</div>
+      <div class="cy-learn-sec cy-learn-codex"><div class="cy-learn-sec-h">🏮 典故</div><div class="cy-learn-sec-b">${esc(it.codex||'')}</div></div>
+      <div class="cy-learn-sec cy-learn-meaning"><div class="cy-learn-sec-h">📖 释义</div><div class="cy-learn-sec-b">${esc(it.meaning||'')}</div></div>
+      <div class="cy-learn-sec cy-learn-eg"><div class="cy-learn-sec-h">✏️ 例句</div><div class="cy-learn-sec-b">${esc(it.example||'')}</div></div>
+      <div class="cy-learn-pager">
+        <button type="button" class="cy-pg-btn" data-cy-step="-1" title="上一个成语">‹ 上一个</button>
+        <button type="button" class="cy-pg-btn cy-pg-today" data-cy-today="1" title="回到今日成语">今日</button>
+        <button type="button" class="cy-pg-btn" data-cy-step="1" title="下一个成语">下一个 ›</button>
+      </div>
+    </div>`;
+  }
+  // 事件委托只绑一次（卡片每次翻页会整体重渲染）
+  function bindChengyuCard(){
+    const mount = document.getElementById('cyLearnMount');
+    if(!mount || mount._cyBound) return;
+    mount._cyBound = true;
+    mount.addEventListener('click', (e)=>{
+      const stepBtn = e.target.closest('[data-cy-step]');
+      const todayBtn = e.target.closest('[data-cy-today]');
+      if(!stepBtn && !todayBtn) return;
+      e.stopPropagation();
+      const n = cyList().length;
+      if(!n) return;
+      if(todayBtn){
+        _cyIdx = cyTodayIdx(n);
+      } else {
+        const step = parseInt(stepBtn.getAttribute('data-cy-step'),10) || 0;
+        _cyIdx = ((_cyIdx == null ? cyTodayIdx(n) : _cyIdx) + step + n) % n;
+      }
+      renderChengyuCard();
+    });
+  }
   function renderColItems(items, kind, scope){
     if(!items.length) return '<div class="col-empty">今日暂无，点击"＋新增"添加～</div>';
     return items.map(it => {
@@ -27384,47 +27532,48 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         const cntB = counts['动动脑筋吧']||0;
         const cntR = counts['猜谜']||0;
         const btCard = bt
-          ? `<div class="bk-mini brain-card ${btDone?'checked':''}">
+          ? `<div class="bk-mini brain-card ${btDone?'checked':''}" data-bk-cat="动动脑筋吧">
                <div class="bk-mini-label">🤔 脑筋急转弯</div>
                <div class="bk-mini-q">${esc(btQA.q || bt.title)}</div>
                <div class="bk-answer" ${btDone?'':'hidden'}>💡 ${esc(btQA.a)}</div>
-               <div class="bk-checkin-row">
-                 <button class="bk-checkin-btn txt ${btDone?'done':''}" data-baike-checkin="动动脑筋吧" title="${btDone?'已打卡·再点取消':'打卡看答案'}">${btDone?'✓ 已打卡':'打卡看答案'}</button>
-               </div>
              </div>`
           : `<div class="bk-mini"><div class="bk-mini-body" style="color:var(--muted)">暂无脑筋急转弯</div></div>`;
         const cmCard = cm
-          ? `<div class="bk-mini riddle-card ${cmDone?'checked':''}">
+          ? `<div class="bk-mini riddle-card ${cmDone?'checked':''}" data-bk-cat="猜谜">
                <div class="bk-mini-label">🀄 猜谜（字谜 / 灯谜）</div>
                <div class="bk-mini-q">${esc(cm.title)}</div>
                <div class="bk-answer" ${cmDone?'':'hidden'}>💡 ${esc(cm.body)}</div>
-               <div class="bk-checkin-row">
-                 <button class="bk-checkin-btn txt ${cmDone?'done':''}" data-baike-checkin="猜谜" title="${cmDone?'已打卡·再点取消':'打卡看答案'}">${cmDone?'✓ 已打卡':'打卡看答案'}</button>
-               </div>
              </div>`
           : `<div class="bk-mini"><div class="bk-mini-body" style="color:var(--muted)">暂无猜谜</div></div>`;
+        const btBtn = bt
+          ? `<button class="bk-checkin-btn txt ${btDone?'done':''}" data-baike-checkin="动动脑筋吧" title="${btDone?'已打卡·再点取消':'打卡看答案'}">${btDone?'✓ 已打卡':'🤔 看答案'}</button>`
+          : '';
+        const cmBtn = cm
+          ? `<button class="bk-checkin-btn txt ${cmDone?'done':''}" data-baike-checkin="猜谜" title="${cmDone?'已打卡·再点取消':'打卡看答案'}">${cmDone?'✓ 已打卡':'🀄 看答案'}</button>`
+          : '';
         return `<div class="bk-box bk-box-brain">
           <div class="bk-box-head"><span class="bc-ico">${c.ico}</span> <span class="bc-name">${c.key}</span> <span class="bc-quote">${c.quote}</span></div>
           <div class="bk-box-body">${btCard}${cmCard}</div>
-          <div class="bk-count">🦥 脑筋 ${cntB} 次 · 猜谜 ${cntR} 次</div>
+          <div class="bk-count bk-count-brain"><span class="bk-count-txt">🦥 脑筋 ${cntB} 次 · 猜谜 ${cntR} 次</span><span class="bk-count-btns">${btBtn}${cmBtn}</span></div>
         </div>`;
       }
       const b = byCat[c.key];
       const done = !!b && S.isBaikeChecked(c.key);
       const body = b
-        ? `<div class="bk-mini ${done?'checked':''}">
+        ? `<div class="bk-mini ${done?'checked':''}" data-bk-cat="${esc(c.key)}">
              <div class="bk-mini-title">${esc(b.title)}</div>
              <div class="bk-mini-body">${esc(b.body)}</div>
-             <div class="bk-checkin-row">
-               <button class="bk-checkin-btn ${done?'done':''}" data-baike-checkin="${esc(c.key)}" title="${done?'已打卡':'点击打卡'}"></button>
-             </div>
            </div>`
         : `<div class="bk-mini"><div class="bk-mini-body" style="color:var(--muted)">暂无</div></div>`;
       const cnt = counts[c.key]||0;
+      // R207-4⑤：打卡键迁到下方打卡统计区右侧，尺寸按统计条高度收敛，避免溢出
+      const ckBtn = b
+        ? `<button class="bk-checkin-btn ${done?'done':''}" data-baike-checkin="${esc(c.key)}" title="${done?'已打卡':'点击打卡'}"></button>`
+        : '';
       return `<div class="bk-box">
         <div class="bk-box-head"><span class="bc-ico">${c.ico}</span> <span class="bc-name">${c.key}</span> <span class="bc-quote">${c.quote}</span></div>
         <div class="bk-box-body">${body}</div>
-        <div class="bk-count">🦥 已打卡 ${cnt} 次</div>
+        <div class="bk-count"><span class="bk-count-txt">🦥 已打卡 ${cnt} 次</span>${ckBtn}</div>
       </div>`;
     }).join('');
     if(box) box.classList.toggle('all-done', allChecked);
@@ -34153,7 +34302,11 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
           // R27-2-4：整卡点击打卡（非打卡圆钮区域）
           const card = e.target.closest('.bk-mini');
           if(card){
-            const bb = card.querySelector('[data-baike-checkin]');
+            // R207-4⑤：打卡键已迁到下方统计条，整卡点击改为按 data-bk-cat 回查同卡按钮
+            const cat0 = card.getAttribute('data-bk-cat');
+            const scope0 = card.closest('.bk-box') || baikeBoxes;
+            const bb = card.querySelector('[data-baike-checkin]')
+              || (cat0 ? scope0.querySelector('[data-baike-checkin="'+cat0+'"]') : null);
             if(bb){ e.preventDefault(); e.stopPropagation(); bb.click(); return; }
           }
           return;
