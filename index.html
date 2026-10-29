@@ -7613,10 +7613,10 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 
 
 /* ===== R207-3：设置中心 —— 浅蓝内容卡放大，主题名称 + 图标一并纳入容器 ===== */
-.settings-card{ padding:8px 10px 28px; align-items:stretch; gap:8px; }
+.settings-card{ padding:6px 8px 21px; align-items:stretch; gap:6px; }
 .settings-card .settings-card-main{ display:flex; flex:1 1 auto; min-width:0; }
 .settings-card .settings-card-body{
-  width:100%; min-height:84px; margin-top:0; padding:12px 14px;
+  width:100%; min-height:63px; margin-top:0; padding:9px 11px;
   border-radius:16px; background:var(--tone-100); border:1px solid var(--tone-150);
   display:flex; flex-direction:column; justify-content:center; gap:6px;
 }
@@ -7628,15 +7628,15 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 /* ===== R207-4①：各主题卡片底部统计条底色与上方内容区统一 ===== */
 .bk-count{
   display:flex; align-items:center; gap:8px; text-align:left;
-  background:var(--z-baike-pale2); border-top:1px solid var(--z-baike-main);
+  background:var(--tone-150); border-top:1px solid var(--z-baike-main);
 }
 .bk-count-txt{ margin-right:auto; }
 /* ===== R207-4⑤：打卡键迁到统计条右侧，尺寸收敛适配卡片容器 ===== */
 .bk-count .bk-checkin-btn{ flex:0 0 auto; width:30px; height:30px; border-width:2px; }
 .bk-count .bk-checkin-btn.done::after{ font-size:17px; }
-.bk-count .bk-checkin-btn.txt{ min-width:0; height:26px; padding:0 9px; font-size:11px; border-radius:13px; white-space:nowrap; }
+.bk-count .bk-checkin-btn.txt{ width:auto; min-width:0; height:26px; padding:0 10px; font-size:11px; border-radius:13px; white-space:nowrap; }
 .bk-count-brain{ flex-wrap:wrap; row-gap:5px; }
-.bk-count-btns{ display:flex; align-items:center; gap:6px; flex:0 0 auto; flex-wrap:nowrap; }
+.bk-count-btns{ display:flex; align-items:center; gap:8px; flex:0 0 auto; flex-wrap:nowrap; }
 .bk-mini{ padding-right:10px; }
 
 /* ===== R207-5：新世界首页各专区卡片底部底板改浅蓝 ===== */
@@ -27107,6 +27107,33 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     const sys = all.filter(x=>x.source!=='user');
     return [...user, ...dailyRotate(sys, win, offset, everyN)];
   }
+  // R209-2：好词好句栏每日展示 1 个成语打卡卡（每日轮换，布局复用 .reading-item，与好词好句其它主题卡一致）
+  function dailyChengyuItem(){
+    const seed = (window.CHENGYU_SEED || []).filter(x => x && x.word);
+    if(!seed.length) return null;
+    const n = Math.floor(Date.now()/86400000) % seed.length;
+    return seed[n] || seed[0];
+  }
+  function injectDailyChengyuCard(){
+    const col = document.getElementById('cnColWords');
+    if(!col) return;
+    const x = dailyChengyuItem();
+    if(!x) return;
+    const isChecked = S.isReadingRead('cnWords', x.word);
+    const parts = [];
+    if(x.meaning) parts.push('【释义】'+x.meaning);
+    if(x.codex)   parts.push('【典故】'+x.codex);
+    if(x.example) parts.push('【例句】'+x.example);
+    const body = parts.map(p=>esc(p)).join('<br>');
+    const card = '<div class="reading-item is-cydaily '+(isChecked?'is-checked':'')+'">'+
+      '<div class="ri-head-row">'+
+        '<div class="ri-title">🀄 '+esc(x.word)+' <span class="ri-meta" style="background:#dbeafe;color:#1e3a8a;margin-left:4px">每日成语</span></div>'+
+        '<button class="ri-checkin-btn '+(isChecked?'checked':'')+'" data-ri-checkin="cnWords::'+esc(x.word)+'" title="'+(isChecked?'已打卡（点击取消）':'点击打卡')+'"></button>'+
+      '</div>'+
+      '<div class="ri-body">'+body+'</div>'+
+    '</div>';
+    col.insertAdjacentHTML('afterbegin', card);
+  }
   function renderReading(){
     // R9-REQ2：重置英语短文朗读状态机（每篇独立 idle/playing/paused）
     _passagePlayingTitle = null;
@@ -27128,6 +27155,8 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     fillCol('#enColSpeak',   colContent('enSpeaking',1, 4), 'enSpeaking','en', true);
     fillCol('#enColPassage', colContent('enPassage', 1, 3, 2), 'enPassage', 'en');
     fillCol('#cnColWords',   cnWordsItems, 'cnWords', 'cn');
+    // R209-2：好词好句栏顶部每日展示 1 个成语打卡卡（排版与好词好句其它主题卡一致）
+    injectDailyChengyuCard();
     // R57-2：古诗词鉴赏每日只显示一首（每日轮换，offset=5 与其它栏错开）
     fillCol('#cnColPoem',    colContent('cnPoem', 1, 5, 2), 'cnPoem', 'cn');
     fillCol('#cnColEssay',   colContent('cnEssay',   1, 2, 2), 'cnEssay',   'cn');
