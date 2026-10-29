@@ -7591,7 +7591,7 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 .bs-theme-body .ri-body{ font-size:13px; }
 
 /* ===== R206-3：语文三卡布局 —— 好词好句收窄、古诗词鉴赏加宽；各卡按内容定高，排版饱满 ===== */
-.page-reading .reading-cn .reading-cols{ grid-template-columns:0.88fr 1.24fr 1fr; align-items:start; }
+.page-reading .reading-cn .reading-cols{ grid-template-columns:repeat(3,1fr); align-items:start; }
 .page-reading .reading-cn .reading-col-list{ display:flex; flex-direction:column; gap:10px; }
 .page-reading .reading-cn .reading-item{ flex:1 1 auto; }
 .page-reading .reading-cn .reading-col.rc-poem .ri-poem-body{ padding:10px 10px 12px; }
@@ -7611,44 +7611,12 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 .en-vexpr .en-vexpr-en,
 .en-vexpr .en-vexpr-cn{ min-width:0; overflow-wrap:anywhere; }
 
-/* ===== R207-1：好词好句栏目内「成语学习」卡片 ===== */
-.cy-learn{ margin-top:2px; }
-.cy-learn-card{
-  display:flex; flex-direction:column; gap:7px;
-  background:linear-gradient(180deg,var(--tone-050),var(--tone-100));
-  border:1.5px solid var(--tone-150); border-radius:12px; padding:10px 11px;
-}
-.cy-learn-head{ display:flex; align-items:center; gap:6px; font-size:12.5px; font-weight:800; color:var(--tone-900); }
-.cy-learn-idx{
-  margin-left:auto; font-size:11px; font-weight:700; color:var(--tone-700);
-  background:rgba(255,255,255,.85); border:1px solid var(--tone-150); border-radius:999px; padding:1px 8px;
-}
-.cy-learn-word{
-  font-size:20px; font-weight:900; letter-spacing:.14em; color:var(--tone-950);
-  text-align:center; padding:5px 0 3px;
-  font-family:"Kaiti SC","STKaiti","KaiTi",serif;
-}
-.cy-learn-sec{ border-left:3px solid var(--tone-400); background:#fff; border-radius:0 8px 8px 0; padding:5px 8px; }
-.cy-learn-meaning{ border-left-color:var(--z-read-main); }
-.cy-learn-eg{ border-left-color:var(--orange); }
-.cy-learn-sec-h{ font-size:11.5px; font-weight:800; color:var(--tone-900); margin-bottom:2px; }
-.cy-learn-sec-b{ font-size:12.5px; line-height:1.72; color:var(--tone-900); overflow-wrap:anywhere; }
-.cy-learn-pager{ display:flex; gap:6px; }
-.cy-pg-btn{
-  flex:1 1 auto; border:1.5px solid var(--tone-200); background:#fff; border-radius:9px;
-  padding:4px 0; font-size:11.5px; font-weight:800; color:var(--tone-800); cursor:pointer; transition:.15s;
-}
-.cy-pg-btn:hover{ background:var(--tone-100); border-color:var(--tone-400); }
-.cy-pg-btn:active{ transform:translateY(1px); }
-.cy-pg-today{ flex:0 0 auto; padding:4px 10px; }
-/* 好词好句列表让位给成语卡：列表内部滚动，整栏高度与另两栏协调 */
-.page-reading .reading-cn .reading-col.rc-words .reading-col-list{ max-height:250px; }
 
 /* ===== R207-3：设置中心 —— 浅蓝内容卡放大，主题名称 + 图标一并纳入容器 ===== */
-.settings-card{ padding:10px 12px 38px; align-items:stretch; gap:10px; }
+.settings-card{ padding:8px 10px 28px; align-items:stretch; gap:8px; }
 .settings-card .settings-card-main{ display:flex; flex:1 1 auto; min-width:0; }
 .settings-card .settings-card-body{
-  width:100%; min-height:104px; margin-top:0; padding:15px 17px;
+  width:100%; min-height:84px; margin-top:0; padding:12px 14px;
   border-radius:16px; background:var(--tone-100); border:1px solid var(--tone-150);
   display:flex; flex-direction:column; justify-content:center; gap:6px;
 }
@@ -7660,15 +7628,15 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 /* ===== R207-4①：各主题卡片底部统计条底色与上方内容区统一 ===== */
 .bk-count{
   display:flex; align-items:center; gap:8px; text-align:left;
-  background:var(--z-baike-pale); border-top:1px solid var(--z-baike-main);
+  background:var(--z-baike-pale2); border-top:1px solid var(--z-baike-main);
 }
 .bk-count-txt{ margin-right:auto; }
 /* ===== R207-4⑤：打卡键迁到统计条右侧，尺寸收敛适配卡片容器 ===== */
 .bk-count .bk-checkin-btn{ flex:0 0 auto; width:30px; height:30px; border-width:2px; }
 .bk-count .bk-checkin-btn.done::after{ font-size:17px; }
-.bk-count .bk-checkin-btn.txt{ min-width:0; height:26px; padding:0 9px; font-size:11px; border-radius:13px; }
+.bk-count .bk-checkin-btn.txt{ min-width:0; height:26px; padding:0 9px; font-size:11px; border-radius:13px; white-space:nowrap; }
 .bk-count-brain{ flex-wrap:wrap; row-gap:5px; }
-.bk-count-btns{ display:flex; align-items:center; gap:6px; flex:0 0 auto; }
+.bk-count-btns{ display:flex; align-items:center; gap:6px; flex:0 0 auto; flex-wrap:nowrap; }
 .bk-mini{ padding-right:10px; }
 
 /* ===== R207-5：新世界首页各专区卡片底部底板改浅蓝 ===== */
@@ -8427,8 +8395,6 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
         <div class="reading-col rc-words" data-page-node-id="YnDSWSGjXRzN9iG8bA0pna">
           <div class="reading-col-head" data-page-node-id="deui0OHJjcasEiMoprh5UZ">✨ 好词好句</div>
           <div class="reading-col-list" id="cnColWords" data-page-node-id="Ac2SVKddwA2KW6jU2VEmcE"></div>
-          <!-- R207-1：好词好句栏目内新增「成语学习」卡片（成语 / 典故 / 释义 / 例句） -->
-          <div class="cy-learn" id="cyLearnMount" data-page-node-id="r207CyLearnMount"></div>
         </div>
         <div class="reading-col rc-poem">
           <div class="reading-col-head">📜 古诗词鉴赏</div>
@@ -8463,7 +8429,7 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
         <!-- R59-5：「📥 收录今日」按键已移除 —— 收录统一由每日 23:30 定时自动归档完成 -->
         <!-- R61-3：归档状态标记文字已按需求删除 -->
       </div>
-      <div class="bs-page-intro" data-page-node-id="CXfmIhyvSrGBLLreL5IfAK">好词好句 · 古诗词鉴赏 · 优秀作文 · 日常交流 · 英语短文 —— 全部内容按主题分类，点主题栏切换，分页浏览（每日 23:30 自动收录当日打卡内容）</div>
+      <div class="bs-page-intro" data-page-node-id="CXfmIhyvSrGBLLreL5IfAK">好词好句 · 古诗词鉴赏 · 优秀作文 · 成语学习 · 日常交流 · 英语短文 —— 全部内容按主题分类，点主题栏切换，分页浏览（每日 23:30 自动收录当日打卡内容）</div>
       <!-- R57-2：主题栏 —— 按主题分类切换（好词好句 / 古诗词鉴赏 / 优秀作文 / 日常交流 / 英语短文） -->
       <div class="bs-tabs" id="bsTabs" data-page-node-id="bsR57tabs0001"></div>
       <!-- R57-2：主题内容区 —— 单主题展示 + 分页（各主题独立页码，每页 8 条） -->
@@ -8473,6 +8439,7 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
         <div class="bs-theme-body" id="bsColEssay" hidden data-page-node-id="bsR57body0003"></div>
         <div class="bs-theme-body" id="bsColSpeak" hidden data-page-node-id="bsR57body0004"></div>
         <div class="bs-theme-body" id="bsColPassage" hidden data-page-node-id="bsR57body0005"></div>
+        <div class="bs-theme-body" id="bsColChengyu" hidden data-page-node-id="bsR57body0006"></div>
       </div>
     </div>
   </div></section>
@@ -27167,9 +27134,6 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     // 需求⑤：每次渲染后重新为英语短文卡绑定点击朗读（卡片为新元素，_ppBound 去重）
     const _enPC = document.getElementById('enColPassage');
     if(_enPC){ bindPassagePause(_enPC); _refreshPassageCards(); }
-    // R207-1：好词好句栏目内渲染「成语学习」卡片（每日轮换 + 可翻页浏览）
-    renderChengyuCard();
-    bindChengyuCard();
     // V56-Req8：渲染整合后的「收录书屋」收藏夹（语文 3 类 + 英语 2 类）
     renderBookstoreAll();
   }
@@ -27179,7 +27143,8 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     {key:'cnPoem',label:'📜 古诗词鉴赏'},
     {key:'cnEssay',label:'📝 优秀作文'},
     {key:'enSpeaking',label:'💬 日常交流'},
-    {key:'enPassage',label:'📖 英语短文'}
+    {key:'enPassage',label:'📖 英语短文'},
+    {key:'cnChengyu',label:'🀄 成语学习'}
   ];
   // R56-6：回退 R53-6 —— 收录书屋不再是主视图，改回「点按钮切换显示」的独立页面；
   //        主视图恢复「语文三栏 + 英语两栏」并列（reading-cn / reading-en）。
@@ -27189,11 +27154,23 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     {key:'cnPoem',     sel:'#bsColPoem'},
     {key:'cnEssay',    sel:'#bsColEssay'},
     {key:'enSpeaking', sel:'#bsColSpeak'},
-    {key:'enPassage',  sel:'#bsColPassage'}
+    {key:'enPassage',  sel:'#bsColPassage'},
+    {key:'cnChengyu', sel:'#bsColChengyu'}
   ];
   // R57-2：收录书屋显示「所有大阅读各主题的内容」—— 不再只筛 user/archived，改为该主题全量内容
   //        （用户自建 / 23:30 自动归档 / 系统内置 全部纳入，按主题栏分类 + 分页浏览）
   function bsItemsOf(kind){
+    if(kind === 'cnChengyu'){
+      const list = (window.CHENGYU_SEED || []).filter(x => x && x.word);
+      return list.map(x => ({
+        title: x.word,
+        body: [
+          x.meaning ? '【释义】' + x.meaning : '',
+          x.codex ? '【典故】' + x.codex : '',
+          x.example ? '【例句】' + x.example : ''
+        ].filter(Boolean).join('\n')
+      }));
+    }
     return (S.getReading(kind)||[]);
   }
   // R58-3：收录书屋条目 —— 完整展示最终内容
@@ -27228,7 +27205,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   }
   // R57-2：收录书屋各主题独立页码
   // R59-5：每页条数按主题配置 —— 好词好句 6 / 古诗词鉴赏 4 / 优秀作文 2 / 日常交流 2 / 英语短文 2
-  const BS_PER_PAGE = { cnWords:6, cnPoem:4, cnEssay:2, enSpeaking:2, enPassage:2 };
+  const BS_PER_PAGE = { cnWords:6, cnPoem:4, cnEssay:2, enSpeaking:2, enPassage:2, cnChengyu:4 };
   let _bsTab = 'cnWords';
   let _bsPage = {};
   function renderBookstoreAll(){
@@ -27337,59 +27314,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     const out = parts.map(s=>s.trim()).filter(Boolean);
     return out.length ? out : [t];
   }
-  // ============ R207-1：大阅读 · 好词好句栏目内「成语学习」卡片 ============
-  // 素材：window.CHENGYU_SEED（300 条，字段 word 成语 / codex 典故 / meaning 释义 / example 例句）
-  // 默认展示「今日成语」（按日期轮换），可用翻页键浏览全部 300 条。
-  let _cyIdx = null;
-  function cyList(){ return (window.CHENGYU_SEED || []).filter(x=>x && x.word); }
-  function cyTodayIdx(n){
-    if(!n) return 0;
-    const d = new Date();
-    const day = Math.floor((Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) - Date.UTC(d.getFullYear(),0,0)) / 86400000);
-    return day % n;
-  }
-  function renderChengyuCard(){
-    const mount = document.getElementById('cyLearnMount');
-    if(!mount) return;
-    const list = cyList();
-    if(!list.length){ mount.innerHTML = ''; return; }
-    if(_cyIdx == null || _cyIdx < 0 || _cyIdx >= list.length) _cyIdx = cyTodayIdx(list.length);
-    const it = list[_cyIdx];
-    mount.innerHTML = `<div class="cy-learn-card">
-      <div class="cy-learn-head"><span class="cy-learn-title">📖 成语学习</span><span class="cy-learn-idx">${_cyIdx+1} / ${list.length}</span></div>
-      <div class="cy-learn-word">${esc(it.word)}</div>
-      <div class="cy-learn-sec cy-learn-codex"><div class="cy-learn-sec-h">🏮 典故</div><div class="cy-learn-sec-b">${esc(it.codex||'')}</div></div>
-      <div class="cy-learn-sec cy-learn-meaning"><div class="cy-learn-sec-h">📖 释义</div><div class="cy-learn-sec-b">${esc(it.meaning||'')}</div></div>
-      <div class="cy-learn-sec cy-learn-eg"><div class="cy-learn-sec-h">✏️ 例句</div><div class="cy-learn-sec-b">${esc(it.example||'')}</div></div>
-      <div class="cy-learn-pager">
-        <button type="button" class="cy-pg-btn" data-cy-step="-1" title="上一个成语">‹ 上一个</button>
-        <button type="button" class="cy-pg-btn cy-pg-today" data-cy-today="1" title="回到今日成语">今日</button>
-        <button type="button" class="cy-pg-btn" data-cy-step="1" title="下一个成语">下一个 ›</button>
-      </div>
-    </div>`;
-  }
-  // 事件委托只绑一次（卡片每次翻页会整体重渲染）
-  function bindChengyuCard(){
-    const mount = document.getElementById('cyLearnMount');
-    if(!mount || mount._cyBound) return;
-    mount._cyBound = true;
-    mount.addEventListener('click', (e)=>{
-      const stepBtn = e.target.closest('[data-cy-step]');
-      const todayBtn = e.target.closest('[data-cy-today]');
-      if(!stepBtn && !todayBtn) return;
-      e.stopPropagation();
-      const n = cyList().length;
-      if(!n) return;
-      if(todayBtn){
-        _cyIdx = cyTodayIdx(n);
-      } else {
-        const step = parseInt(stepBtn.getAttribute('data-cy-step'),10) || 0;
-        _cyIdx = ((_cyIdx == null ? cyTodayIdx(n) : _cyIdx) + step + n) % n;
-      }
-      renderChengyuCard();
-    });
-  }
-  function renderColItems(items, kind, scope){
+    function renderColItems(items, kind, scope){
     if(!items.length) return '<div class="col-empty">今日暂无，点击"＋新增"添加～</div>';
     return items.map(it => {
       const enCls = scope==='en'?'ri-en':'';
