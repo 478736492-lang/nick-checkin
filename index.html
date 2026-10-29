@@ -776,7 +776,7 @@ button[hidden]{display:none!important}
 @keyframes passagePulse{0%,100%{box-shadow:0 0 0 2px rgba(30,158,110,.35)}50%{box-shadow:0 0 0 4px rgba(30,158,110,.18)}}
 .reading-item.read{opacity:.92;background:linear-gradient(135deg,#fdf6ff,#fff5f7);border-color:#ffb35e}
 /* V12.4：已读卡片右上角显示朱迪 🐰 头像 */
-.reading-item.read::after{content:'🐰';position:absolute;top:8px;right:10px;font-size:22px;filter:drop-shadow(0 1px 2px rgba(0,0,0,.18));animation:judyPeek 3.2s ease-in-out infinite}
+.reading-item.read::after{content:'';position:absolute;top:8px;right:10px;font-size:22px;filter:drop-shadow(0 1px 2px rgba(0,0,0,.18));animation:judyPeek 3.2s ease-in-out infinite}
 @keyframes judyPeek{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-3px) rotate(2deg)}}
 /* V55-Req6：收录书屋收藏夹 */
 .bookstore{background:linear-gradient(135deg,#fff7e6,#fdeccb);border:1px solid #f0c66e;border-radius:14px;padding:12px 14px;margin-top:12px;box-shadow:var(--card-shadow)}
@@ -7616,7 +7616,7 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 .settings-card{ padding:6px 8px 21px; align-items:stretch; gap:6px; }
 .settings-card .settings-card-main{ display:flex; flex:1 1 auto; min-width:0; }
 .settings-card .settings-card-body{
-  width:100%; min-height:63px; margin-top:0; padding:9px 11px;
+  width:100%; min-height:63px; margin-top:0; padding:12px 11px;
   border-radius:16px; background:var(--tone-100); border:1px solid var(--tone-150);
   display:flex; flex-direction:column; justify-content:center; gap:6px;
 }
@@ -34183,11 +34183,13 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       if(sep<0) return;
       const kind = raw.slice(0, sep);
       const title = raw.slice(sep+2);
+      const KIND_LABEL = {cnWords:'好词好句',cnPoem:'古诗词鉴赏',cnEssay:'优秀作文',enPassage:'英语短文',enSpeaking:'英语日常交流',cnChengyu:'成语学习'};
+      const kindLabel = KIND_LABEL[kind] || kind;
       if(S.isReadingRead(kind, title)){
         const r = S.unmarkReadingRead(kind, title);
         if(r && r.ok){
           const m = r.refund>0 ? `（已扣回 ${r.refund}⭐）` : '';
-          toast('已取消打卡·' + kind + m);
+          toast('已取消打卡·' + kindLabel + m);
         }
         renderReading();
       } else {
@@ -34195,7 +34197,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         if(r && r.ok){
           const m = r.rewardLabel ? `·${r.rewardLabel}` : '';
           try{ playCheckinSound(); }catch(_){ }
-          toast('✓ 已打卡·' + kind + m);
+          toast('✓ 已打卡·' + kindLabel + m);
         }
         renderReading();
       }
