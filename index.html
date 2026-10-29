@@ -21994,7 +21994,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
             <span class="sz-card-state ${stateCls}">${stateTxt}</span>
             ${isParent()&&_ktxsListEdit? '<span class="ktxs-drag-handle" data-ktxs-drag="1" title="按住拖动调整顺序">⠿</span>' : ''}
             ${isParent()&&_ktxsListEdit? '<button type="button" class="ktxs-card-edit" data-ktxs-edit="'+esc(it.title)+'" title="编辑 / 删除本书">✏️</button>' : ''}
-            <button type="button" class="ktxs-card-memo" data-ktxs-memo="'+esc(it.title)+'" title="书籍备忘">📝</button>
+            <button type="button" class="ktxs-card-memo" data-ktxs-memo="${esc(it.title)}" title="书籍备忘">📝</button>
           </div>
           <div class="sz-daily-title sz-book-title">《${esc(it.title)}》</div>
           ${it.author?`<div class="sz-book-author">${esc(it.author)} 著</div>`:''}
