@@ -7266,11 +7266,9 @@ body.ktxs-read-open .sidebar{z-index:999999}
 /* R184-①/②：编辑态每卡右上角编辑键（绝对定位） */
 .ktxs-card-edit{ position:absolute; top:4px; right:4px; z-index:3; width:24px; height:24px; border-radius:50%; border:none; background:rgba(255,255,255,.92); color:var(--tone-700); font-size:12px; line-height:24px; cursor:pointer; box-shadow:0 1px 4px rgba(31,58,138,.25); }
 .ktxs-card-edit:hover{ background:var(--tone-700); color:#fff; }
-/* R212-3：推荐书籍卡「书籍备忘」按键（右上角，左邻编辑键） */
-.ktxs-card-memo{ position:absolute; top:4px; right:4px; z-index:3; width:24px; height:24px; border-radius:50%; border:none; background:rgba(255,255,255,.92); color:var(--tone-700); font-size:13px; line-height:1; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; }
-.ktxs-card-memo:hover{ background:var(--tone-700); color:#fff; }
-.sz-book-card .ktxs-card-edit{ right:32px; }
 .ktxs-mini-card{ position:relative; }
+/* R213-2：书籍备忘改为标题行单一入口（.ktxs-head-btn），书籍卡右上角不再出配备忘键 */
+.ktxs-head-btn[data-ktxs-memo-head]{ background:var(--tone-050); }
 /* R184-②：拖动中禁止文本选择干扰 */
 body.ktxs-dragging-doc{ user-select:none !important; -webkit-user-select:none !important; }
 .ktxs-drag-ghost{ position:fixed; z-index:9999; pointer-events:none; opacity:.9; transform:rotate(-1.5deg); box-shadow:0 12px 28px rgba(31,58,138,.35); }
@@ -7631,7 +7629,8 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 
 /* ===== R207-3：设置中心 —— 浅蓝内容卡放大，主题名称 + 图标一并纳入容器 ===== */
 /* R212-2：白色外层卡片加大留白，使浅蓝内容卡（.settings-card-body）在白卡内居中显示 */
-.settings-card{ padding:16px 20px 34px; align-items:stretch; gap:10px; }
+/* R213-1：适当收紧白卡留白，使其更贴合各主题卡尺寸（仍保留浅蓝内容卡内嵌居中的观感） */
+.settings-card{ padding:12px 16px 20px; align-items:stretch; gap:8px; }
 .settings-card .settings-card-main{ display:flex; flex:1 1 auto; min-width:0; }
 .settings-card .settings-card-body{
   width:100%; min-height:63px; margin-top:0; padding:12px 11px;
@@ -19618,7 +19617,6 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         if(e.target.closest('[data-suzhi-checkin]')) return; // 打卡键独立
         if(e.target.closest('[data-ktxs-drag]')) return;     // 拖拽手柄不触发打开
         if(e.target.closest('[data-ktxs-edit]')) return;     // R183-1：编辑按键独立
-        if(e.target.closest('[data-ktxs-memo]')) return;     // R212-3：备忘按键独立（打开备忘详情）
         openKtxsCover(card.getAttribute('data-ktxs-book'));
       });
     });
@@ -19630,14 +19628,15 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         ktxsOpenBookOps(btn.getAttribute('data-ktxs-edit'));
       });
     });
-    // R212-3：每本书卡的 📝 备忘按键 —— 打开该书备忘详情弹窗（增加 / 编辑 / 删除）
-    slotBody.querySelectorAll('[data-ktxs-memo]').forEach(btn=>{
-      if(btn._ktBound) return; btn._ktBound = true;
-      btn.addEventListener('click', (e)=>{
+    // R213-2：书籍备忘统一收到标题行（✏️ 编辑 与 ➕ 添加书籍 之间），全板块仅此一个入口
+    const memoHeadBtn = slotBody.querySelector('[data-ktxs-memo-head]');
+    if(memoHeadBtn && !memoHeadBtn._ktBound){
+      memoHeadBtn._ktBound = true;
+      memoHeadBtn.addEventListener('click', (e)=>{
         e.stopPropagation();
-        openBookMemo(btn.getAttribute('data-ktxs-memo'));
+        openBookMemo(memoHeadBtn.getAttribute('data-ktxs-memo-head'));
       });
-    });
+    }
     // R181-6：家长模式拖拽排序书籍（按住手柄可上下左右/跨页移动；落点插入后其余书籍自动顺延；
     // 全量顺序持久化到 nwZone['ktxs_order']，靠近网格上/下边缘停留即自动翻页继续排序）
     if(typeof isParent === 'function' && isParent()){
@@ -21994,7 +21993,6 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
             <span class="sz-card-state ${stateCls}">${stateTxt}</span>
             ${isParent()&&_ktxsListEdit? '<span class="ktxs-drag-handle" data-ktxs-drag="1" title="按住拖动调整顺序">⠿</span>' : ''}
             ${isParent()&&_ktxsListEdit? '<button type="button" class="ktxs-card-edit" data-ktxs-edit="'+esc(it.title)+'" title="编辑 / 删除本书">✏️</button>' : ''}
-            <button type="button" class="ktxs-card-memo" data-ktxs-memo="${esc(it.title)}" title="书籍备忘">📝</button>
           </div>
           <div class="sz-daily-title sz-book-title">《${esc(it.title)}》</div>
           ${it.author?`<div class="sz-book-author">${esc(it.author)} 著</div>`:''}
@@ -22005,8 +22003,9 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     return `
       <div class="ktxs-slot-wrap">
         <div class="yw-comp-head">${esc(label||'推荐书籍')} · 共 ${items.length} 本
-          <button type="button" class="ktxs-head-btn" data-ktxs-add-book="1" title="添加一本新书">➕ 添加书籍</button>
           ${isParent()? '<button type="button" class="ktxs-head-btn' + (_ktxsListEdit?' is-active':'') + '" data-ktxs-edit-list="1" title="点击进入 / 退出编辑（编辑态下可拖动排序、每卡显示编辑键）">✏️ 编辑</button>' : ''}
+          <button type="button" class="ktxs-head-btn" data-ktxs-memo-head="${esc(label||'推荐书籍')}" title="书籍备忘（整份推荐书目的阅读备忘，可增 / 改 / 删）">📝 备忘</button>
+          <button type="button" class="ktxs-head-btn" data-ktxs-add-book="1" title="添加一本新书">➕ 添加书籍</button>
         </div>
         <div class="sz-card-grid ktxs-book-grid">${cards}</div>
         ${szPager(page, totalPages)}
