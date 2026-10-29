@@ -7662,6 +7662,86 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
   border-color:rgba(180,214,248,.95);
 }
 
+
+/* ==================================================================================
+   R215：导航栏日期万年历 / iPad 导航栏按键增高 / 知识秘境开放时段控件
+   ================================================================================== */
+
+/* ---- R215-1：知识秘境「自定义开放日」时段输入提示（对齐种植园 R124 版式） ---- */
+.km-open-add-tip{ font-size:13px; color:#6a7a95; flex-basis:100%; margin-bottom:2px; }
+.km-open-add .peg-input[type="time"]{ min-height:36px; }
+
+/* ---- R215-2：侧栏时钟可点击态（点击弹万年历）---- */
+.sidebar-clock{ cursor:pointer; transition:filter .15s; }
+.sidebar-clock:hover{ filter:brightness(1.06); }
+.sidebar-clock:active{ filter:brightness(.97); }
+
+/* ---- R215-3：万年历弹窗 ---- */
+.navcal-box{ width:min(430px,92vw); }
+.navcal-bar{
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  margin-bottom:12px; flex-wrap:nowrap;
+}
+.navcal-title{
+  flex:1 1 auto; min-width:0; text-align:center;
+  font-size:19px; font-weight:900; color:var(--tone-900); letter-spacing:1px;
+}
+.navcal-nav{
+  flex:0 0 auto; width:40px; height:40px; border-radius:11px;
+  border:1.5px solid var(--tone-150); background:var(--tone-025);
+  color:var(--tone-800); font-size:19px; font-weight:900; line-height:1;
+  cursor:pointer; transition:.15s;
+}
+.navcal-nav:hover{ background:var(--tone-100); border-color:var(--tone-400); transform:translateY(-1px); }
+.navcal-nav:active{ transform:scale(.94); }
+.navcal-grid{
+  display:grid; grid-template-columns:repeat(7,1fr); gap:4px;
+  padding:8px; border-radius:12px; background:var(--tone-025); border:1px solid var(--tone-100);
+}
+.navcal-wd{ text-align:center; font-size:12px; font-weight:800; color:#6f8fb5; padding:3px 0; }
+.navcal-cell{
+  position:relative; display:flex; align-items:center; justify-content:center;
+  min-height:44px; border-radius:9px; border:1.5px solid var(--tone-100);
+  background:#fff; font-size:15px; font-weight:700; color:var(--tone-900);
+}
+.navcal-blank{ background:transparent; border-color:transparent; }
+.navcal-weekend{ color:#c0392b; }
+.navcal-holiday{ background:var(--tone-050); }
+.navcal-today{
+  background:linear-gradient(135deg,var(--tone-400),var(--tone-600));
+  border-color:var(--tone-700); color:#fff; font-weight:900;
+  box-shadow:0 2px 8px rgba(30,58,138,.28);
+}
+.navcal-tag{
+  position:absolute; top:1px; right:2px; font-size:9px; line-height:1;
+  font-weight:800; color:#e2453a;
+}
+.navcal-today .navcal-tag{ color:#fff; }
+.navcal-legend{
+  display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:6px;
+  margin-top:12px; font-size:12px; color:#6a7a95;
+}
+.navcal-legend-swatch{ display:inline-block; width:12px; height:12px; border-radius:3px; vertical-align:middle; }
+.navcal-swatch-today{ background:var(--tone-500); }
+.navcal-swatch-hol{ background:var(--tone-050); border:1px solid #e2453a; }
+
+/* ---- R215-4：iPad 触屏 —— 导航栏按键适当增高，触控更舒适 ---- */
+@media (pointer:coarse) and (min-width:768px){
+  .nav-btn{ min-height:58px; padding:7px 3px; font-size:13px; }
+  .nav-btn .ico{ font-size:21px; }
+  .nav-btn .lbl{ font-size:12px; }
+  .sidebar-nav{ gap:5px; }
+}
+/* iPad 横屏：进一步增高、加圆角，整体留白更舒展（侧栏仍可纵向滚动） */
+@media (min-width:1024px) and (orientation:landscape) and (pointer:coarse){
+  .nav-btn{ min-height:62px; border-radius:12px; padding:8px 4px; }
+  .nav-btn .ico{ font-size:23px; }
+  .nav-btn .lbl{ font-size:13px; }
+  .sidebar-clock .rt-date{ font-size:15px; }
+  .sidebar-clock .rt-week{ font-size:17px; }
+  .sidebar-clock .rt-time{ font-size:18px; }
+}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -8843,6 +8923,21 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
   </div>
 </div>
 
+<!-- ========== R215：导航栏日期 → 万年历窗口（纯查看，可翻年/月，今日高亮，标注法定节假日） ========== -->
+<div class="modal-mask" id="modalNavCal" hidden data-page-node-id="R215modalNavCal">
+  <div class="modal-box navcal-box" data-page-node-id="R215navCalBox">
+    <div class="modal-head" data-page-node-id="R215navCalHead">
+      <h3 data-page-node-id="R215navCalTitle">📅 万年历</h3>
+      <button class="modal-x" data-close data-page-node-id="R215navCalX">×</button>
+    </div>
+    <div class="modal-body" id="navCalBody" data-page-node-id="R215navCalBody"></div>
+    <div class="modal-foot" data-page-node-id="R215navCalFoot">
+      <button class="primary-btn" id="btnNavCalToday" type="button" data-page-node-id="R215btnNavCalToday">回到本月</button>
+      <button class="pbtn" data-close data-page-node-id="R215btnNavCalClose">关闭</button>
+    </div>
+  </div>
+</div>
+
 <!-- ========== 弹窗：日期选择-年月（R175-2：点击年月按键后弹窗上下滑动分别选择年、月） ========== -->
 <div class="modal-mask" id="modalWbYmPick" hidden data-page-node-id="R175modalWbYmPick">
   <div class="modal-box wb-ympick-box" data-page-node-id="R175wbYmPickBox">
@@ -9348,7 +9443,11 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
           <input type="checkbox" id="kmOpenHoliday" style="width:auto" data-page-node-id="R121kmOpenHoliday"> 默认法定节假日开放（按国家放假安排）
         </label>
         <div class="km-open-add" data-page-node-id="R121kmOpenAdd">
+          <span class="km-open-add-tip" data-page-node-id="R215kmOpenTip">自定义开放日（可选时段，留空=全天）：</span>
           <input type="date" id="kmOpenDateInput" class="peg-input" data-page-node-id="R121kmOpenDateInput">
+          <input type="time" id="kmOpenTimeStart" class="peg-input" style="width:auto;min-height:30px" title="开始时间，留空=全天" data-page-node-id="R215kmOpenStart">
+          <span data-page-node-id="R215kmOpenTilde">~</span>
+          <input type="time" id="kmOpenTimeEnd" class="peg-input" style="width:auto;min-height:30px" title="结束时间，留空=全天" data-page-node-id="R215kmOpenEnd">
           <button type="button" class="pbtn small" id="btnKMOpenAdd" data-page-node-id="R121kmOpenAddBtn">＋ 添加开放日</button>
         </div>
         <div class="km-open-list" id="kmOpenDateList" data-page-node-id="R121kmOpenList"></div>
@@ -9999,6 +10098,8 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 <script src="./assets/seed_yw_sh_gushi.js"></script>
 <!-- 知识秘境（原疯狂大闯关）题库种子（先于 store.js 加载，getKMQuestions 回落 window.KM_QUESTIONS_SEED） -->
 <script src="./assets/seed_km_questions_seed.js"></script>
+<!-- R-T1：学而思巩固打卡语法题库种子（先于 store.js 加载，xsGrammarPool 回落 window.XS_TRANSLATE_SEED，100 道中译英） -->
+<script src="./assets/seed_xs_translate_seed.js"></script>
 <!-- R28：新世界·数学专区「课本同步」8 单元结构化讲义（sxKeben 读取 window.MATH_KEBEN_3S） -->
 <script src="./assets/seed_math_keben_3s_data.js"></script>
 <script src="./assets/seed_history_today.js"></script>
@@ -13100,7 +13201,8 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
   function kmDefaultSettings(){
     return {
       // R121-1：游戏开放日期（默认规则 = 周末 + 法定节假日；dates 为家长自定义追加的开放日）
-      open: { weekend: true, holiday: true, dates: [] },
+      // R215：dateTimes 为「自定义开放日 → 时段」映射（{ 'YYYY-MM-DD': {start,end} }）；dates 仍为字符串数组（向后兼容旧存档与既有断言）
+      open: { weekend: true, holiday: true, dates: [], dateTimes: {} },
       retries: 2,            // 答错可重试次数 1-3
       fogMs: 2500,           // 答错后迷雾遮挡时长(ms)
       hintsOn: true,         // 普通模式提示开关
@@ -13146,6 +13248,8 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
     s.open.dates = Array.isArray(s.open.dates)
       ? s.open.dates.filter(x => typeof x === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(x))
       : [];
+    // R215：自定义开放日时段映射规范化（键=日期字符串，值={start,end}）；dates 结构保持不变
+    s.open.dateTimes = (s.open.dateTimes && typeof s.open.dateTimes === 'object' && !Array.isArray(s.open.dateTimes)) ? s.open.dateTimes : {};
     s.themeColors = Object.assign({}, d.themeColors, s.themeColors||{});
     s.text = Object.assign({}, d.text, s.text||{});
     s.starReward = Object.assign({}, d.starReward, s.starReward||{});
@@ -13205,20 +13309,32 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
   // ---------- R121-1：知识秘境「游戏开放日期」判定 ----------
   // 规则：家长自定义开放日（dates）> 法定节假日（holiday 开关）> 周末（weekend 开关）> 其余锁定。
   // 传入 dateStr（YYYY-MM-DD）便于测试与预览，缺省用今天。
-  function getKMOpenInfo(dateStr){
+  function getKMOpenInfo(dateStr, timeStr){
     const st = load(); const km = kmEnsure(st);
     const d = dateStr || todayStr();
+    const t = timeStr || farmNowHM();
     const o = km.settings.open || {};
     const custom = (Array.isArray(o.dates) ? o.dates : []).indexOf(d) >= 0;
     const holiday = kmIsHoliday(d);
     const weekend = kmIsWeekend(d);
+    // R215：自定义开放日可选时段（留空=全天）；优先级最高，命中后按时段判定
+    const dtMap = (o.dateTimes && typeof o.dateTimes === 'object' && !Array.isArray(o.dateTimes)) ? o.dateTimes : {};
+    const dt = custom ? (dtMap[d] || null) : null;
+    const nowMin = farmHmToMin(t);
     let open = false, reason = '非开放日';
-    if(custom){ open = true; reason = '自定义开放日'; }
+    if(custom){
+      const sMin = dt ? farmHmToMin(dt.start) : null;
+      const eMin = dt ? farmHmToMin(dt.end) : null;
+      const allDay = (sMin === null && eMin === null);
+      if(allDay){ open = true; reason = '自定义开放日（全天）'; }
+      else if(sMin !== null && eMin !== null && nowMin !== null && nowMin >= sMin && nowMin <= eMin){ open = true; reason = '自定义开放日 ' + dt.start + '-' + dt.end; }
+      else { reason = '自定义开放日未到时段'; }
+    }
     else if(holiday && o.holiday !== false){ open = true; reason = '法定节假日'; }
     else if(weekend && o.weekend !== false){ open = true; reason = '周末'; }
-    return { date: d, open: open, reason: reason, custom: custom, holiday: holiday, weekend: weekend, weekendOn: o.weekend !== false, holidayOn: o.holiday !== false, dates: (Array.isArray(o.dates) ? o.dates.slice() : []) };
+    return { date: d, time: t, open: open, reason: reason, custom: custom, holiday: holiday, weekend: weekend, weekendOn: o.weekend !== false, holidayOn: o.holiday !== false, dates: (Array.isArray(o.dates) ? o.dates.slice() : []), dateTimes: JSON.parse(JSON.stringify(dtMap)) };
   }
-  function isKMOpen(dateStr){ return getKMOpenInfo(dateStr).open; }
+  function isKMOpen(dateStr, timeStr){ return getKMOpenInfo(dateStr, timeStr).open; }
   // ---------- R124：种植园「游戏开放时间」判定（家长自定义开放日/时段 + 默认规则）----------
   // 默认规则：周一~周五 21:00-24:00；周末（周六/周日）全天；法定节假日全天；自定义开放日（可指定时段，缺省全天）。
   // 优先级：自定义开放日（家长精确补充/覆盖）> 法定节假日 > 周末 > 工作日时段窗。
@@ -15446,9 +15562,25 @@ be 动词：am / is → was；are → were
     flush();
     return out;
   }
-  // R71-1：语法题库 —— 语法板块全部例句自动汇总为题库（实时派生，新增/修改语法卡即刻同步）
-  // 条目结构：{ id 题库唯一键, grammarId 所属语法卡, title 语法卡标题, en 英文例句, zh 中文翻译 }
+  // R-T1：巩固打卡语法题库 —— 由「学而思板块题目.txt」批量导入的 100 道中译英题库驱动
+  // 清空原语法卡片派生题库；统一走「看中文例句、默写英文」中译英，每日随机抽 2 题。
+  // 条目结构（来自 window.XS_TRANSLATE_SEED）：{ id, zh 中文, en 英文, hint 语法点 }
   function xsGrammarPool(){
+    const raw = (typeof XS_TRANSLATE_SEED !== 'undefined' && XS_TRANSLATE_SEED)
+             || (typeof window !== 'undefined' && window.XS_TRANSLATE_SEED)
+             || [];
+    if(raw.length){
+      return raw.map(it=>({
+        id: 't_' + it.id,
+        grammarId: 't_' + it.id,
+        title: it.hint || '',
+        en: it.en,
+        zh: it.zh,
+        kind: 'translate',
+        fromSeed: true
+      }));
+    }
+    // 兜底：种子缺失时退回原语法卡片派生（保持健壮，不报错）
     const st = load();
     const cards = (st.xueersiContent && st.xueersiContent.grammar) || [];
     const pool = [];
@@ -15487,7 +15619,7 @@ be 动词：am / is → was；are → were
     // R76-1：出题精简 —— 只保留完整中文例句（去掉「【语法】标题：」这类语法说明前缀），
     //        语法卡标题/题型另存 gramTitle / gramKind，供家长侧管理题卡使用，不进入孩子看到的题干
     const mk = (it)=>({ wordId:'gq_'+it.id, grammarId:it.grammarId, en:it.en,
-      zh: it.zh, gramTitle: it.title || '', gramKind: it.kind || 'sentence', date:today, grammar:true });
+      zh: it.zh, gramTitle: it.title || '', gramKind: it.kind || 'sentence', date:today, grammar:true, fromSeed: !!it.fromSeed });
     const out = [];
     // 优先来自不同语法卡，覆盖面更广
     for(let i=0; i<idxs.length && out.length<n; i++){
@@ -15510,7 +15642,8 @@ be 动词：am / is → was；are → were
     st.xueersiGrammarRoll = ((st.xueersiGrammarRoll||0) + 1) % max;
     save(st);
   }
-  function xsBuildDailyWords(){
+  // 生成一批全新的「当日打卡」：10 单词 + 错题重做 + 2 语法默写（中译英）
+  function xsBuildFreshDaily(){
     const st = load();
     const all = st.xueersiContent.words || [];
     if(!all.length) return [];
@@ -15536,9 +15669,44 @@ be 动词：am / is → was；are → were
       used.add(w.id);
       out.push({wordId:w.id, en:w.en, zh:w.zh, example:w.example, date:today, redo:true});
     }
-    // R59-3：第 11、12 题 —— 语法默写题（题源：语法板块卡片，随机 2 张各取 1 例句）
+    // R59-3 / R-T1：第 11、12 题 —— 语法默写题（题源：中译英题库，随机 2 道，看中文默英文）
     out.push(...xsBuildDailyGrammar());
     return out;
+  }
+  // R-T1：巩固打卡顺延 —— 当日 10 词 + 2 语法未全部完成（未 +2⭐）时，整组任务自动顺延到次日；
+  //        已完成的不必重做（完成态跨日保留），仅继续做未完成的；直到整组做完才生成新一批。
+  function xsBuildDailyWords(){
+    const st = load();
+    const today = todayStr();
+    // 今日已有激活批次 → 直接复用
+    if(st.xueersiActiveBatch && st.xueersiActiveBatch.date === today && Array.isArray(st.xueersiActiveBatch.items)){
+      return st.xueersiActiveBatch.items;
+    }
+    // 跨日：上一激活批次存在但未完成 → 顺延（保留题目与已完成态）
+    if(st.xueersiActiveBatch && st.xueersiActiveBatch.date && st.xueersiActiveBatch.date !== today){
+      const prevDate = st.xueersiActiveBatch.date;
+      const prevRes = (st.xueersiDailyResults && st.xueersiDailyResults[prevDate]) || {};
+      if(!prevRes.rewarded){
+        const items = Array.isArray(st.xueersiActiveBatch.items) ? st.xueersiActiveBatch.items : xsBuildFreshDaily();
+        st.xueersiActiveBatch = { date: today, items: items };
+        // 把上一日已作答/已答对结果顺延进今日，已完成的不必重做
+        st.xueersiDailyResults = st.xueersiDailyResults || {};
+        st.xueersiDailyResults[today] = {
+          correct: prevRes.correct || 0,
+          total: 0,
+          rewarded: false,
+          correctIds: prevRes.correctIds ? prevRes.correctIds.slice() : [],
+          answered: prevRes.answered ? Object.assign({}, prevRes.answered) : {}
+        };
+        save(st);
+        return items;
+      }
+    }
+    // 上一日已做完 / 无历史 → 生成新一批
+    const items = xsBuildFreshDaily();
+    st.xueersiActiveBatch = { date: today, items: items };
+    save(st);
+    return items;
   }
   // V11.2：每日词汇打卡结果（答对列表） — 用于判断是否全部做完 +2⭐
   function xsGetTodayResult(){
@@ -30005,7 +30173,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
           <div class="xs-adv-mascot" title="豹警官 · 单词守卫"><span class="xs-adv-mascot-leo">🐆</span><span class="xs-adv-mascot-badge" aria-hidden="true">👮</span></div>
           <div class="xs-adv-head-text">
             <div class="xs-adv-title">🎯 今日巩固打卡 · 单词闯关乐园</div>
-            <div class="xs-adv-sub">🕐 ${today} ${hh}:${mm} · 看中文默写英文 · 完成 ${total} 题（含 2 道语法默写，每题答对 +1⭐）<b>+2⭐</b> · 错题追加在 10 题后重做</div>
+            <div class="xs-adv-sub">🕐 ${today} ${hh}:${mm} · 看中文默写英文 · 完成 ${total} 题（含 2 道语法默写，每题答对 +1⭐）<b>+2⭐</b> · 当日未做完则整组顺延到次日</div>
           </div>
         </div>
         <div class="xs-adv-head-side">
@@ -30034,12 +30202,12 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       <div class="xs-adv-no">
         <span class="xs-adv-no-idx">第 ${i+1} 题${it.grammar?' 📐语法':''}</span>
         <span class="xs-adv-status ${locked?'ok':(answered?(ok?'ok':'bad'):'todo')}">${statusTxt}</span>
-        ${it.grammar && !isChild()?`<span class="xs-adv-gram-ops"><button type="button" class="xs-adv-gram-op" data-xs-gram-edit="${esc(it.grammarId)}" title="修改此题">✎</button><button type="button" class="xs-adv-gram-op" data-xs-gram-del="${esc(it.grammarId)}" title="删除此题">✕</button></span>`:''}
+        ${it.grammar && !isChild() && !it.fromSeed?`<span class="xs-adv-gram-ops"><button type="button" class="xs-adv-gram-op" data-xs-gram-edit="${esc(it.grammarId)}" title="修改此题">✎</button><button type="button" class="xs-adv-gram-op" data-xs-gram-del="${esc(it.grammarId)}" title="删除此题">✕</button></span>`:''}
       </div>
         <div class="xs-adv-zh" title="${esc(it.zh)}"><span class="xs-adv-zh-txt">${esc(it.zh)}</span>${(answered||locked)?`<span class="xs-adv-ans">正确答案：${esc(it.en)}</span>`:''}</div>
         <div class="xs-adv-input">
           ${editable ? `
-            <input class="xs-adv-input-box" type="text" data-xs-cidate="${esc(wid)}" placeholder="写英文～" autocomplete="off" maxlength="60" />
+            <input class="xs-adv-input-box" type="text" data-xs-cidate="${esc(wid)}" placeholder="写英文～" autocomplete="off" maxlength="120" />
           ` : `
             <div class="xs-card-en">${esc(it.en)}</div>
           `}
@@ -30106,7 +30274,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
           <span class="xs-gram-bank-caret">${bankOpen?'▴':'▾'}</span>
         </div>
         <div class="xs-gram-bank-body"${bankOpen?'':' hidden'}>
-          <div class="xs-gram-bank-tip">语法板块全部例句自动同步至题库，后续新增的语法例句也会自动加入；每日从中随机抽 2 题，看中文默写英文句子。</div>
+          <div class="xs-gram-bank-tip">语法题库：100 道中译英（看中文默英文），由「学而思板块题目」批量导入；每日从中随机抽 2 题默写。</div>
           <div class="xs-gram-bank-list">${bankList}</div>
           ${bankPages>1?`<div class="xs-gram-bank-pager">
             <button type="button" class="xs-bank-page-btn" data-xs-bank-page="${window.xsBankPage-1}" ${window.xsBankPage<=0?'disabled':''}>‹ 上一页</button>
@@ -30135,8 +30303,13 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         const wid = b.dataset.xsCidateSubmit;
         const input = target.querySelector(`[data-xs-cidate="${wid}"]`);
         if(!input) return;
-        const ans = (input.value||'').trim().toLowerCase().replace(/[.。,，!！?？]/g,'').replace(/\s+/g,' ');
-        const expected = (daily.find(x=>x.wordId===wid)||{}).en.toLowerCase().replace(/[.。,，!！?？]/g,'').replace(/\s+/g,' ').trim();
+        // R-T1：中译英判分归一化 —— 忽略大小写/标点/空白，并把 iPad 智能引号（U+2018/2019）与直撇号统一，
+        //        避免 don't / don’t 因设备自动转换被误判为答错。
+        const normXs = s => String(s||'').toLowerCase()
+          .replace(/[\u2018\u2019\u02bc]/g, "'")
+          .replace(/[.。,，!！?？]/g,'').replace(/\s+/g,' ').trim();
+        const ans = normXs(input.value);
+        const expected = normXs((daily.find(x=>x.wordId===wid)||{}).en);
         if(!ans){ toast('请先输入答案哦'); return; }
         const ok = !!ans && !!expected && ans === expected;
         const r = S.xsRecordAnswer(wid, ok);
@@ -33496,8 +33669,8 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   }
   function renderKMOpenDates(){
     const box = document.getElementById('kmOpenDateList'); if(!box) return;
-    let ds = [];
-    try { ds = (S.getKMOpenInfo().dates || []).slice().sort(); } catch(e){}
+    let ds = [], dtMap = {};
+    try { const info = S.getKMOpenInfo(); ds = (info.dates || []).slice().sort(); dtMap = info.dateTimes || {}; } catch(e){}
     if(!ds.length){
       box.innerHTML = '<div class="km-open-empty" data-page-node-id="R121kmOpenEmpty">暂无自定义开放日（默认按「周末 + 法定节假日」开放）</div>';
       return;
@@ -33506,7 +33679,9 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     box.innerHTML = ds.map(d => {
       let wd = '';
       try { wd = wdNames[new Date(d + 'T00:00:00').getDay()]; } catch(e){}
-      return '<span class="km-open-chip" data-page-node-id="R121kmOpenChip">' + esc(d) + ' ' + esc(wd) +
+      const dt = dtMap[d] || null;
+      const span = (dt && dt.start && dt.end) ? (' ' + dt.start + '-' + dt.end) : (dt && dt.start ? (' 自' + dt.start) : (dt && dt.end ? (' 至' + dt.end) : ' 全天'));
+      return '<span class="km-open-chip" data-page-node-id="R121kmOpenChip">' + esc(d) + ' ' + esc(wd) + esc(span) +
         '<button type="button" class="km-open-del" data-km-open-del="' + esc(d) + '" title="移除该开放日">×</button></span>';
     }).join('');
   }
@@ -33515,9 +33690,10 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     let info = null;
     try { info = S.getKMOpenInfo(); } catch(e){}
     if(!info){ el.textContent = '--'; return; }
+    const tm = info.time ? (' ' + esc(info.time)) : '';
     el.innerHTML = info.open
-      ? '今日（' + esc(info.date) + '）<b class="km-open-on">开放</b> · 依据：' + esc(info.reason)
-      : '今日（' + esc(info.date) + '）<b class="km-open-off">锁定</b> · 非开放日无法进入知识秘境';
+      ? '今日（' + esc(info.date) + tm + '）<b class="km-open-on">开放</b> · 依据：' + esc(info.reason)
+      : '今日（' + esc(info.date) + tm + '）<b class="km-open-off">锁定</b> · 未到开放时间，无法进入知识秘境';
   }
   function setKMOpenPatch(patch){
     const cur = S.getKMSettings();
@@ -33539,11 +33715,21 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         const inp = document.getElementById('kmOpenDateInput');
         const v = inp ? (inp.value || '').trim() : '';
         if(!/^\d{4}-\d{2}-\d{2}$/.test(v)){ toast('请先选择要开放的日期'); return; }
-        const dates = S.getKMOpenInfo().dates || [];
-        if(dates.indexOf(v) >= 0){ toast('该日期已在开放列表中'); return; }
-        setKMOpenPatch({ dates: dates.concat([v]) });
+        const ts = document.getElementById('kmOpenTimeStart');
+        const te = document.getElementById('kmOpenTimeEnd');
+        const s = ts ? (ts.value || '').trim() : '';
+        const e = te ? (te.value || '').trim() : '';
+        if((s && !/^\d{1,2}:\d{2}$/.test(s)) || (e && !/^\d{1,2}:\d{2}$/.test(e))){ toast('时间格式应为 HH:MM'); return; }
+        const info = S.getKMOpenInfo();
+        const dates = info.dates || [];
+        const dateTimes = Object.assign({}, info.dateTimes || {});
+        if(s || e) dateTimes[v] = { start: s || undefined, end: e || undefined };
+        else delete dateTimes[v];
+        const next = dates.indexOf(v) >= 0 ? dates : dates.concat([v]);
+        setKMOpenPatch({ dates: next, dateTimes: dateTimes });
         if(inp) inp.value = '';
-        toast('✓ 已添加开放日 ' + v);
+        if(ts) ts.value = ''; if(te) te.value = '';
+        toast('✓ 已设置开放日 ' + v + (s || e ? (' ' + (s || '00:00') + '-' + (e || '24:00')) : ' 全天'));
       };
     }
     const list = document.getElementById('kmOpenDateList');
@@ -33554,8 +33740,11 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         // R169-3：移除知识秘境开放日前弹统一确认窗
         const d = b.getAttribute('data-km-open-del');
         confirmDelete('开放日 ' + d, ()=>{
-          const dates = S.getKMOpenInfo().dates || [];
-          setKMOpenPatch({ dates: dates.filter(x => x !== d) });
+          const info = S.getKMOpenInfo();
+          const dates = info.dates || [];
+          const dateTimes = Object.assign({}, info.dateTimes || {});
+          delete dateTimes[d];
+          setKMOpenPatch({ dates: dates.filter(x => x !== d), dateTimes: dateTimes });
           toast('已移除开放日 ' + d);
         }, '移除后该日期将按默认规则（周末 / 法定节假日）判定是否开放。');
       });
@@ -33586,6 +33775,62 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   function kmEntryAllowed(page){
     if((page === 'knowledge' || page === 'kmgame') && kmLockedToday()){ kmLockToast(); return false; }
     return true;
+  }
+
+  /* ============ R215：导航栏日期 → 万年历窗口（纯查看，可翻年/月，今日高亮，标注法定节假日） ============ */
+  // 交互边界：仅点击侧栏时钟(.sidebar-clock)唤出；公历月历，‹ › 翻月 / ⟪ ⟫ 翻年 / 回到本月；点日期不跳转。
+  let _navCalY = 0, _navCalM = 0;   // 当前展示 年 / 月(1-12)
+  function navCalRender(){
+    const grid = document.getElementById('navCalGrid');
+    const titleEl = document.getElementById('navCalTitle');
+    if(!grid) return;
+    if(titleEl) titleEl.textContent = _navCalY + ' 年 ' + _navCalM + ' 月';
+    const firstDow = new Date(_navCalY, _navCalM-1, 1).getDay();
+    const off = (firstDow + 6) % 7;               // 周一开头
+    const days = new Date(_navCalY, _navCalM, 0).getDate();
+    const p2 = n => (n<10?'0':'')+n;
+    const now = new Date();
+    const tY = now.getFullYear(), tM = now.getMonth()+1, tD = now.getDate();
+    const wd = ['一','二','三','四','五','六','日'];
+    let html = '';
+    wd.forEach(w=>{ html += '<div class="navcal-wd">'+w+'</div>'; });
+    for(let i=0;i<off;i++) html += '<div class="navcal-cell navcal-blank"></div>';
+    for(let d=1; d<=days; d++){
+      const iso = _navCalY+'-'+p2(_navCalM)+'-'+p2(d);
+      const dow = new Date(_navCalY,_navCalM-1,d).getDay();
+      const cls = ['navcal-cell'];
+      if(dow===0||dow===6) cls.push('navcal-weekend');
+      if(_navCalY===tY && _navCalM===tM && d===tD) cls.push('navcal-today');
+      let hol = false; try{ hol = !!(window.Store && window.Store.kmIsHoliday && window.Store.kmIsHoliday(iso)); }catch(e){}
+      if(hol) cls.push('navcal-holiday');
+      const tag = hol ? '<span class="navcal-tag">休</span>' : '';
+      html += '<div class="'+cls.join(' ')+'"><span class="navcal-d">'+d+'</span>'+tag+'</div>';
+    }
+    grid.innerHTML = html;
+  }
+  function navCalGoToday(){
+    const t = new Date(); _navCalY = t.getFullYear(); _navCalM = t.getMonth()+1; navCalRender();
+  }
+  function openNavCal(){
+    const body = document.getElementById('navCalBody');
+    if(body && !body._navCalBuilt){
+      body._navCalBuilt = true;
+      body.innerHTML = '<div class="navcal-bar">'
+        + '<button type="button" class="navcal-nav" id="navCalPrevYear" title="上一年">⟪</button>'
+        + '<button type="button" class="navcal-nav" id="navCalPrevMon" title="上个月">‹</button>'
+        + '<span class="navcal-title" id="navCalTitle"></span>'
+        + '<button type="button" class="navcal-nav" id="navCalNextMon" title="下个月">›</button>'
+        + '<button type="button" class="navcal-nav" id="navCalNextYear" title="下一年">⟫</button>'
+        + '</div><div class="navcal-grid" id="navCalGrid"></div>'
+        + '<div class="navcal-legend"><span class="navcal-legend-swatch navcal-swatch-today"></span> 今天　<span class="navcal-legend-swatch navcal-swatch-hol"></span> 法定节假日　·　‹ › 翻月 · ⟪ ⟫ 翻年</div>';
+      const on=(id,fn)=>{ const el=document.getElementById(id); if(el) el.onclick=fn; };
+      on('navCalPrevYear', ()=>{ _navCalY--; navCalRender(); });
+      on('navCalPrevMon', ()=>{ _navCalM--; if(_navCalM<1){_navCalM=12;_navCalY--;} navCalRender(); });
+      on('navCalNextMon', ()=>{ _navCalM++; if(_navCalM>12){_navCalM=1;_navCalY++;} navCalRender(); });
+      on('navCalNextYear', ()=>{ _navCalY++; navCalRender(); });
+    }
+    navCalGoToday();
+    showModal('#modalNavCal');
   }
 
   function openKMSetting(){
@@ -33754,6 +33999,11 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     // R121-1：知识秘境在非开放日锁定 —— 点击不进入，仅提示（其余板块不受影响）
     $$('.nav-btn[data-page]').forEach(b=>b.onclick=()=>{ if(!kmEntryAllowed(b.dataset.page)) return; if(!farmEntryAllowed(b.dataset.page)) return; goPage(b.dataset.page); });
     $$('[data-go]').forEach(b=>b.onclick=()=>{ if(!kmEntryAllowed(b.dataset.go)) return; if(!farmEntryAllowed(b.dataset.go)) return; goPage(b.dataset.go); });
+    // R215：点击导航栏日期(侧栏时钟) → 弹出万年历窗口（纯查看）；回到本月按钮
+    const navClock = document.getElementById('sidebarClock');
+    if(navClock && !navClock._bound){ navClock._bound = true; navClock.onclick = ()=>openNavCal(); }
+    const navCalTodayBtn = document.getElementById('btnNavCalToday');
+    if(navCalTodayBtn && !navCalTodayBtn._bound){ navCalTodayBtn._bound = true; navCalTodayBtn.onclick = ()=>navCalGoToday(); }
     // R51-2：全局点击音效分发（导航栏/主题卡/次级主题卡/打卡）→ 注册一次
     if(!window.__sfxClickBound){ document.addEventListener('click', onGlobalSfxClick); window.__sfxClickBound = true; }
     // R143：清除所有按键声音并重新分级配置 —— 版本化一次性重置（覆盖旧版任何自定义按键音；不破坏用户此后在「设置」中手动改设）
