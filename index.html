@@ -7266,6 +7266,10 @@ body.ktxs-read-open .sidebar{z-index:999999}
 /* R184-①/②：编辑态每卡右上角编辑键（绝对定位） */
 .ktxs-card-edit{ position:absolute; top:4px; right:4px; z-index:3; width:24px; height:24px; border-radius:50%; border:none; background:rgba(255,255,255,.92); color:var(--tone-700); font-size:12px; line-height:24px; cursor:pointer; box-shadow:0 1px 4px rgba(31,58,138,.25); }
 .ktxs-card-edit:hover{ background:var(--tone-700); color:#fff; }
+/* R212-3：推荐书籍卡「书籍备忘」按键（右上角，左邻编辑键） */
+.ktxs-card-memo{ position:absolute; top:4px; right:4px; z-index:3; width:24px; height:24px; border-radius:50%; border:none; background:rgba(255,255,255,.92); color:var(--tone-700); font-size:13px; line-height:1; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; }
+.ktxs-card-memo:hover{ background:var(--tone-700); color:#fff; }
+.sz-book-card .ktxs-card-edit{ right:32px; }
 .ktxs-mini-card{ position:relative; }
 /* R184-②：拖动中禁止文本选择干扰 */
 body.ktxs-dragging-doc{ user-select:none !important; -webkit-user-select:none !important; }
@@ -7378,6 +7382,19 @@ body.ktxs-bm-mode .ktxs-page-r{ cursor:text; }
 .ktxs-bm-meta{ font-size:12px; color:var(--tone-600); font-weight:700; margin-bottom:2px; }
 .ktxs-bm-note{ font-size:14px; color:#1f3a5f; white-space:pre-wrap; word-break:break-word; }
 .ktxs-bm-item .nw-zone-del{ position:absolute; top:6px; right:6px; }
+
+/* R212-3：书籍备忘弹窗（每本书独立备忘录，支持 增加 / 编辑 / 删除） */
+.modal-book-memo{ width:min(460px,94vw); }
+.ktxs-bm-add-btn{ margin-top:12px; width:100%; }
+.ktxs-bm-editor{ display:flex; flex-direction:column; gap:8px; margin-top:10px; padding-top:10px; border-top:1px dashed #cfe0f5; }
+.ktxs-bm-editor[style*="display:none"]{ display:none !important; }
+.ktxs-bm-input{ width:100%; min-height:64px; border:1px solid #cfe0f5; border-radius:10px; padding:8px 10px; font-size:14px; resize:vertical; font-family:inherit; box-sizing:border-box; }
+.ktxs-bm-err{ font-size:12px; color:#e2453a; min-height:14px; }
+.ktxs-bm-editor-actions{ display:flex; gap:8px; justify-content:flex-end; }
+.ktxs-bm-item .ktxs-bm-foot{ display:flex; gap:8px; margin-top:8px; }
+.ktxs-bm-edit,.ktxs-bm-del{ font-size:12px; padding:3px 10px; border-radius:8px; border:1px solid #cfe0f5; background:#fff; color:var(--tone-700); cursor:pointer; }
+.ktxs-bm-edit:hover,.ktxs-bm-del:hover{ background:var(--tone-700); color:#fff; }
+.ktxs-bm-empty{ color:#7c93b5; font-size:13px; text-align:center; padding:18px 0; }
 
 /* 书签按键（R182-2：移入阅读弹窗头部行靠右） */
 .ktxs-bm-btn{
@@ -7613,7 +7630,8 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 
 
 /* ===== R207-3：设置中心 —— 浅蓝内容卡放大，主题名称 + 图标一并纳入容器 ===== */
-.settings-card{ padding:6px 8px 21px; align-items:stretch; gap:6px; }
+/* R212-2：白色外层卡片加大留白，使浅蓝内容卡（.settings-card-body）在白卡内居中显示 */
+.settings-card{ padding:16px 20px 34px; align-items:stretch; gap:10px; }
 .settings-card .settings-card-main{ display:flex; flex:1 1 auto; min-width:0; }
 .settings-card .settings-card-body{
   width:100%; min-height:63px; margin-top:0; padding:12px 11px;
@@ -8207,6 +8225,28 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
       </div>
       <div class="modal-body">
         <div class="ktxs-bm-list" id="ktxsPageBmList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- R212-3：书籍备忘详情弹窗（每本书独立备忘录，支持 增加 / 编辑 / 删除） -->
+  <div class="modal-mask" id="modalBookMemo" hidden>
+    <div class="modal-box modal-book-memo">
+      <div class="modal-head">
+        <h3 id="bookMemoTitle">📝 书籍备忘</h3>
+        <button class="modal-x" data-close>×</button>
+      </div>
+      <div class="modal-body">
+        <div class="ktxs-bm-list" id="bookMemoList"></div>
+        <div id="bookMemoEditor" class="ktxs-bm-editor" style="display:none">
+          <textarea id="bookMemoInput" class="ktxs-bm-input" placeholder="写下这本书的备忘，例如阅读重点、好词好句、待想问题…"></textarea>
+          <div id="bookMemoErr" class="ktxs-bm-err"></div>
+          <div class="ktxs-bm-editor-actions">
+            <button type="button" class="ghost-btn" id="btnBookMemoCancel">取消</button>
+            <button type="button" class="primary-btn" id="btnBookMemoSave">💾 保存</button>
+          </div>
+        </div>
+        <button type="button" class="primary-btn ktxs-bm-add-btn" id="btnBookMemoAdd">➕ 添加备忘</button>
       </div>
     </div>
   </div>
@@ -11161,6 +11201,7 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
   }
   // R117：首页备忘录（朱迪小提示）。事项结构：{ id, text }（text 上限 120 字）
   const MEMO_MAX = 120;
+  const BOOK_MEMO_MAX = 300;
   function _genMemoId(){
     return 'm' + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
   }
@@ -11241,6 +11282,24 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
       .filter(x=>x.id || x.item.trim() || x.note.trim() || x.date.trim() || x.time.trim() || x.noteHtml);
     save(st);
     return st.nickMemos.slice();
+  }
+  // R212：书籍备忘（每本书独立备忘录，支持 增加 / 编辑 / 删除）。存储于 nwZone['bookmemo_'+书名]，与书本阅读进度隔离。
+  function bookMemoKey(t){ return 'bookmemo_' + String(t||''); }
+  function getBookMemos(title){
+    const arr = getNwZone(bookMemoKey(title));
+    return arr.map(m=>({
+      id: (m && m.id) ? String(m.id) : _genMemoId(),
+      text: String((m && m.text) || '').slice(0, BOOK_MEMO_MAX),
+      ts: (m && m.ts) ? String(m.ts) : ''
+    }));
+  }
+  function saveBookMemos(title, list){
+    const arr = Array.isArray(list) ? list : [];
+    const norm = arr
+      .map(x=>({ id: (x && x.id) ? String(x.id) : _genMemoId(), text: String((x && x.text) || '').slice(0, BOOK_MEMO_MAX), ts: (x && x.ts) ? String(x.ts) : '' }))
+      .filter(x=>x.text.trim());
+    setNwZone(bookMemoKey(title), norm);
+    return norm;
   }
   // R140：Nick 的日看板（按日期存储日程任务）。任务结构：
   // { id, title, type:'all'|'range'|'point', start:'HH:MM', end:'HH:MM', color:'blue'|'green'|'yellow'|'red'|'gray', done:0|1 }
@@ -16444,6 +16503,8 @@ be 动词：am / is → was；are → were
     getMemos, saveMemos,
     // R118：Nick 的备忘录（独立页）+ 节日已学习打卡
     getNickMemos, saveNickMemos, getFestLearned, setFestLearned,
+    // R212：书籍备忘（每本书独立备忘录，支持 增加 / 编辑 / 删除）
+    getBookMemos, saveBookMemos,
     // R140：Nick 的日看板（按日期存取日程任务）
     getNickDayBoard, saveNickDayBoard,
     // R141→R146：Nick 的周看板（今天/周/月三版块共用数据层，按日期 ISO 存取）+ R149-4 自定义区域
@@ -19557,6 +19618,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         if(e.target.closest('[data-suzhi-checkin]')) return; // 打卡键独立
         if(e.target.closest('[data-ktxs-drag]')) return;     // 拖拽手柄不触发打开
         if(e.target.closest('[data-ktxs-edit]')) return;     // R183-1：编辑按键独立
+        if(e.target.closest('[data-ktxs-memo]')) return;     // R212-3：备忘按键独立（打开备忘详情）
         openKtxsCover(card.getAttribute('data-ktxs-book'));
       });
     });
@@ -19566,6 +19628,14 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       btn.addEventListener('click', (e)=>{
         e.stopPropagation();
         ktxsOpenBookOps(btn.getAttribute('data-ktxs-edit'));
+      });
+    });
+    // R212-3：每本书卡的 📝 备忘按键 —— 打开该书备忘详情弹窗（增加 / 编辑 / 删除）
+    slotBody.querySelectorAll('[data-ktxs-memo]').forEach(btn=>{
+      if(btn._ktBound) return; btn._ktBound = true;
+      btn.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        openBookMemo(btn.getAttribute('data-ktxs-memo'));
       });
     });
     // R181-6：家长模式拖拽排序书籍（按住手柄可上下左右/跨页移动；落点插入后其余书籍自动顺延；
@@ -21813,6 +21883,90 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     if(book.poemKey === 'tjxc'){ const u = window.KTXS_TONGNIAN_COVER || ''; return (u.indexOf('data:') === 0) ? u : ''; }
     return '';
   }
+  // R212-3：书籍备忘详情弹窗（每本书独立备忘录，支持 增加 / 编辑 / 删除）
+  // 状态保存在 modal 元素上（_bmTitle / _bmEditId），避免「一次绑定」导致的闭包过时问题
+  function openBookMemo(title){
+    const modal = document.getElementById('modalBookMemo');
+    if(!modal) return;
+    modal._bmTitle = title;
+    const titleEl = modal.querySelector('#bookMemoTitle');
+    if(titleEl) titleEl.textContent = '《' + title + '》书籍备忘';
+    const listEl = modal.querySelector('#bookMemoList');
+    const editor = modal.querySelector('#bookMemoEditor');
+    const input = modal.querySelector('#bookMemoInput');
+    const errEl = modal.querySelector('#bookMemoErr');
+
+    function render(){
+      if(!listEl) return;
+      const memos = S.getBookMemos(modal._bmTitle);
+      if(!memos.length){
+        listEl.innerHTML = '<div class="ktxs-bm-empty">暂无备忘，点击下方「添加备忘」写一条～</div>';
+        return;
+      }
+      listEl.innerHTML = memos.map(m=>(
+        '<div class="ktxs-bm-item" data-bm-id="'+esc(m.id)+'">'
+        + '<div class="ktxs-bm-text">'+esc(m.text)+'</div>'
+        + '<div class="ktxs-bm-foot">'
+          + '<button type="button" class="ktxs-bm-edit" data-bm-edit="'+esc(m.id)+'">✏️ 编辑</button>'
+          + '<button type="button" class="ktxs-bm-del" data-bm-del="'+esc(m.id)+'">🗑 删除</button>'
+        + '</div>'
+        + '</div>'
+      )).join('');
+    }
+    function showEditor(id, text){
+      modal._bmEditId = id || null;
+      if(input) input.value = text || '';
+      if(editor) editor.style.display = '';
+      if(errEl) errEl.textContent = '';
+      if(input) input.focus();
+    }
+    function hideEditor(){
+      modal._bmEditId = null;
+      if(editor) editor.style.display = 'none';
+      if(input) input.value = '';
+    }
+    if(!modal._bmBound){
+      modal._bmBound = true;
+      listEl.addEventListener('click', (e)=>{
+        const ed = e.target.closest('[data-bm-edit]');
+        const dl = e.target.closest('[data-bm-del]');
+        if(ed){
+          const id = ed.getAttribute('data-bm-edit');
+          const m = S.getBookMemos(modal._bmTitle).find(x=>x.id===id);
+          showEditor(id, m ? m.text : '');
+        } else if(dl){
+          const id = dl.getAttribute('data-bm-del');
+          S.saveBookMemos(modal._bmTitle, S.getBookMemos(modal._bmTitle).filter(x=>x.id!==id));
+          hideEditor();
+          render();
+        }
+      });
+      const addBtn = modal.querySelector('#btnBookMemoAdd');
+      if(addBtn) addBtn.addEventListener('click', ()=>{ showEditor(null, ''); });
+      const saveBtn = modal.querySelector('#btnBookMemoSave');
+      if(saveBtn) saveBtn.addEventListener('click', ()=>{
+        const txt = (input.value||'').trim();
+        if(!txt){ if(errEl) errEl.textContent = '备忘内容不能为空'; return; }
+        const cur = S.getBookMemos(modal._bmTitle);
+        if(modal._bmEditId){
+          const m = cur.find(x=>x.id===modal._bmEditId);
+          if(m) m.text = txt;
+          S.saveBookMemos(modal._bmTitle, cur);
+        } else {
+          cur.push({ id:'bm'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), text:txt, ts:String(Date.now()) });
+          S.saveBookMemos(modal._bmTitle, cur);
+        }
+        hideEditor();
+        render();
+      });
+      const cancelBtn = modal.querySelector('#btnBookMemoCancel');
+      if(cancelBtn) cancelBtn.addEventListener('click', hideEditor);
+    }
+    hideEditor();
+    render();
+    showModal('#modalBookMemo');
+  }
+
   function ktxsSlot(label){
     const items = ktxsBooksAll();
     const rk = 'suzhi_ktxs';
@@ -21840,6 +21994,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
             <span class="sz-card-state ${stateCls}">${stateTxt}</span>
             ${isParent()&&_ktxsListEdit? '<span class="ktxs-drag-handle" data-ktxs-drag="1" title="按住拖动调整顺序">⠿</span>' : ''}
             ${isParent()&&_ktxsListEdit? '<button type="button" class="ktxs-card-edit" data-ktxs-edit="'+esc(it.title)+'" title="编辑 / 删除本书">✏️</button>' : ''}
+            <button type="button" class="ktxs-card-memo" data-ktxs-memo="'+esc(it.title)+'" title="书籍备忘">📝</button>
           </div>
           <div class="sz-daily-title sz-book-title">《${esc(it.title)}》</div>
           ${it.author?`<div class="sz-book-author">${esc(it.author)} 著</div>`:''}
