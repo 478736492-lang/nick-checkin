@@ -34195,9 +34195,10 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       } else {
         const r = S.markReadingRead(kind, title);
         if(r && r.ok){
-          const m = r.rewardLabel ? `·${r.rewardLabel}` : '';
+          // R211：打卡成功弹窗仅显示「✅已打卡＋⭐️数量」，去掉分类名与奖励文案冗余
+          const starTxt = (r.reward && r.reward>0) ? ('＋⭐️' + r.reward) : '';
           try{ playCheckinSound(); }catch(_){ }
-          toast('✓ 已打卡·' + kindLabel + m);
+          toast('✅已打卡' + starTxt);
         }
         renderReading();
       }
