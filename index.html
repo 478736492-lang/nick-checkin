@@ -147,7 +147,7 @@ body{width:100%;height:100vh;height:100dvh;display:flex;flex-direction:row}
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
   background:rgba(255,255,255,.85);border:1.5px solid rgba(255,255,255,.6);
   padding:4px 2px;border-radius:8px;cursor:pointer;font-size:12px;color:var(--tiffany-deep);
-  transition:.15s;flex:0 0 auto;white-space:nowrap;height:54px;
+  transition:.15s;flex:0 0 auto;white-space:nowrap;height:55px;
   box-shadow:0 1px 3px rgba(0,0,0,.12);
 }
 .nav-btn .ico{font-size:18px;line-height:1;filter:drop-shadow(0 1px 1px rgba(0,0,0,.15))}
@@ -3938,21 +3938,36 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   color:var(--tone-800); background:var(--tone-100); border:1px solid var(--tone-200);
   border-radius:12px; padding:10px 12px; margin:4px 4px 8px; font-weight:600;
 }
-/* R219-1：学年 / lesson 同行选择栏（参考乐读数学 .math-sub-tag 风格，可新增 / 删除） */
-.xs-note-sel-row{ display:flex; align-items:center; gap:10px; margin:8px 4px 0; flex-wrap:wrap; }
-.xs-note-sel-label{ font-size:13px; font-weight:800; color:var(--tone-800); min-width:46px; flex:0 0 auto; }
-.xs-note-seltags{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
-.xs-note-seltag{
-  display:inline-flex; align-items:center; gap:6px; padding:6px 12px; border:1.5px solid var(--tone-200);
-  background:#fff; border-radius:20px; cursor:pointer; font-size:13px; font-weight:600; color:var(--tone-900);
-  transition:.15s; -webkit-appearance:none; appearance:none; font-family:inherit;
+/* R220-2：单元 / 学年 / lesson 下拉面板选择器（交互与乐读数学 .math-filter-menu 一致，点击按键唤起、面板内滑动选择） */
+.xs-note-pick-bar{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin:6px 0 10px; }
+.xs-note-pick-group{ position:relative; display:flex; align-items:center; gap:6px; }
+.xs-note-pick-btn{
+  display:inline-flex; align-items:center; gap:6px; padding:7px 12px; border:1.5px solid var(--tone-200);
+  background:#fff; border-radius:10px; cursor:pointer; font-size:13px; font-weight:700; color:var(--tone-900);
+  font-family:inherit; transition:.15s; -webkit-appearance:none; appearance:none;
 }
-.xs-note-seltag:hover{ background:var(--tone-100); border-color:var(--tone-400); }
-.xs-note-seltag.active{ background:linear-gradient(135deg,var(--tone-300),var(--tone-400)); border-color:var(--tone-600); color:#fff; box-shadow:0 2px 8px rgba(64,150,255,.28); }
-.xs-note-sel-x{ font-size:14px; line-height:1; color:var(--tone-600); font-weight:800; padding:0 1px; border-radius:50%; }
-.xs-note-seltag.active .xs-note-sel-x{ color:rgba(255,255,255,.9); }
-.xs-note-sel-add{ border-style:dashed; color:var(--tone-600); background:transparent; }
-.xs-note-sel-add:hover{ background:var(--tone-100); border-color:var(--tone-500); }
+.xs-note-pick-btn:hover{ background:var(--tone-100); border-color:var(--tone-400); }
+.xs-note-pick-val{ color:var(--tone-700); font-weight:800; }
+.xs-note-caret{ font-size:11px; color:var(--tone-600); }
+.xs-note-pick-menu{
+  position:absolute; z-index:60; top:calc(100% + 6px); left:0; min-width:200px; max-height:min(60vh,340px);
+  overflow-y:auto; background:#fff; border:1.5px solid var(--tone-200); border-radius:14px;
+  box-shadow:0 12px 28px rgba(30,58,138,.20); padding:6px; display:flex; flex-direction:column; gap:4px;
+}
+.xs-note-pick-item{
+  text-align:left; padding:8px 10px; border-radius:8px; border:1px solid var(--tone-200); background:#fff;
+  cursor:pointer; font-size:13px; color:var(--tone-900); font-family:inherit; transition:.12s;
+}
+.xs-note-pick-item:hover{ background:var(--tone-100); }
+.xs-note-pick-item.active{ background:linear-gradient(135deg,var(--tone-300),var(--tone-400)); border-color:var(--tone-600); color:#fff; font-weight:700; }
+.xs-note-pick-empty{ padding:10px; color:var(--muted); font-size:12px; text-align:center; }
+.xs-note-pick-foot{ display:flex; gap:6px; padding-top:6px; margin-top:2px; border-top:1px dashed var(--tone-200); }
+.xs-note-pick-add{ flex:1; padding:7px; border:none; border-radius:8px; cursor:pointer; font-size:13px; font-weight:700; background:var(--tone-300); color:var(--tone-900); font-family:inherit; }
+.xs-note-pick-add:hover{ background:var(--tone-400); }
+.xs-note-pick-del{ flex:1; padding:7px; border:none; border-radius:8px; cursor:pointer; font-size:13px; font-weight:700; background:#ffe9e9; color:#c0392b; font-family:inherit; }
+.xs-note-pick-del:hover{ background:#ffd6d6; }
+.xs-note-pick-del[disabled]{ opacity:.5; cursor:not-allowed; }
+.xs-note-pick-stars{ display:inline-flex; align-items:center; gap:6px; margin-left:2px; font-size:13px; color:var(--tone-800); white-space:nowrap; }
 .en-oxford-book{ padding:2px; }
 .en-module{ margin-bottom:16px; }
 .en-module-title{
@@ -4944,7 +4959,7 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   .main-wrap{font-size:15px;-webkit-text-size-adjust:100%}
 
   /* R35：触屏适配随栏宽 ×1.5 回复（R36 min-height 60 保留触控底线，字号/图标同步放大） */
-  .nav-btn{height:54px;min-height:54px;padding:5px 3px;font-size:13px} /* R218-2：导航按钮高度固定 50px */
+  .nav-btn{height:55px;min-height:55px;padding:5px 3px;font-size:13px} /* R218-2：导航按钮高度固定 50px */
   .nav-btn .ico{font-size:19px}
 
   /* R35：触屏时钟字号随栏宽 ×1.5（11→15 / 10→13 / 13→18） */
@@ -6716,7 +6731,7 @@ html,body{margin:0;padding:0}
     flex:1 1 auto;flex-direction:row;gap:4px;
     padding:5px 6px;overflow-x:auto;overflow-y:hidden;background:transparent
   }
-  .nav-btn{flex:0 0 auto;min-width:58px;height:54px;min-height:54px;padding:5px 7px}
+  .nav-btn{flex:0 0 auto;min-width:58px;height:55px;min-height:55px;padding:5px 7px}
   .nav-btn .ico{font-size:18px}
   .nav-btn .lbl{font-size:10px}
   .main-wrap{flex:1 1 auto;min-height:0;padding:10px 10px 20px}
@@ -7809,14 +7824,14 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 
 /* ---- R215-4：iPad 触屏 —— 导航栏按键适当增高，触控更舒适 ---- */
 @media (pointer:coarse) and (min-width:768px){
-  .nav-btn{ height:54px; min-height:54px; padding:5px 3px; font-size:13px; }
+  .nav-btn{ height:55px; min-height:55px; padding:5px 3px; font-size:13px; }
   .nav-btn .ico{ font-size:21px; }
   .nav-btn .lbl{ font-size:12px; }
   .sidebar-nav{ gap:5px; }
 }
 /* iPad 横屏：进一步增高、加圆角，整体留白更舒展（侧栏仍可纵向滚动） */
 @media (min-width:1024px) and (orientation:landscape) and (pointer:coarse){
-  .nav-btn{ height:54px; min-height:54px; border-radius:12px; padding:5px 4px; }
+  .nav-btn{ height:55px; min-height:55px; border-radius:12px; padding:5px 4px; }
   .nav-btn .ico{ font-size:23px; }
   .nav-btn .lbl{ font-size:13px; }
   .sidebar-clock .rt-date{ font-size:15px; }
@@ -8763,11 +8778,11 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
             <button class="sub-tab" data-report="monthly" data-page-node-id="4OnGDETIvAAjiw5EGmOvqy">🗓️ 月度学习报告</button>
           </div>
         </div>
+        <div class="weekly-report" id="weeklyReport" data-page-node-id="xCNdyyGS9yjmH2FSHQNjC3"></div>
         <div class="hidden-in-child report-export-row" data-page-node-id="hFWxzxTNKkTWSMZygVw4Lh">
           <button class="pbtn report-export-btn" id="btnExportPng" data-page-node-id="G3d7iMA7qb6YYoXBdsR9Ht">📷 导出图片</button>
           <button class="pbtn report-export-btn" id="btnExportCsv" data-page-node-id="P2oLPiZDF2ULjcaVmFDhwI">📊 导出表格</button>
         </div>
-        <div class="weekly-report" id="weeklyReport" data-page-node-id="xCNdyyGS9yjmH2FSHQNjC3"></div>
       </div>
       <div class="card badge-card" data-page-node-id="5brWBZhjTQuJKPvvfxOLFH">
         <div class="card-head" data-page-node-id="1br7s9Tt9ByjZoyHndSTNv"><h3 data-page-node-id="wDgGrJcYCARYEzr4mQ3I16">🏅 徽章墙</h3></div>
@@ -9499,7 +9514,8 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
       <button class="modal-x" data-close data-page-node-id="R85modalKMX">×</button>
     </div>
     <div class="modal-body" style="overflow-y:auto" id="settingsKMBody" data-page-node-id="R85modalKMBody">
-      <div class="parent-edit-hint" data-page-node-id="R85modalKMHint">📌 调整知识秘境闯关难度、操作手感、奖励星星与主题文案。</div>
+      <div class="parent-edit-hint" data-page-node-id="R85modalKMHint">📌 调整知识秘境闯关难度、奖励星星、题库与开放日期。</div>
+      <div id="kmaWrap" class="kma-embed" data-page-node-id="R217kmMergedWrap"></div>
       <!-- R121-1：游戏开放日期（默认周末 + 法定节假日；支持自定义开放日；非开放日知识秘境板块锁定） -->
       <div class="parent-edit-group" data-page-node-id="R121kmOpenGrp">
         <div class="peg-title" data-page-node-id="R121kmOpenTitle">📅 游戏开放日期</div>
@@ -9520,13 +9536,7 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
         </div>
         <div class="km-open-list" id="kmOpenDateList" data-page-node-id="R121kmOpenList"></div>
       </div>
-      <div class="parent-edit-group" data-page-node-id="R85kmModeGrp">
-        <div class="peg-title" data-page-node-id="R85kmModeTitle">🎮 默认模式</div>
-        <label style="flex-direction:row;align-items:center;gap:8px" data-page-node-id="R85kmModeLbl">
-          <input type="checkbox" id="kmModeTrial" style="width:auto" data-page-node-id="R85kmModeTrial"> 默认开启试炼模式（错题更多、奖励更高）
-        </label>
-      </div>
-      <div class="parent-edit-group" data-page-node-id="R85kmDiffGrp">
+            <div class="parent-edit-group" data-page-node-id="R85kmDiffGrp">
         <div class="peg-title" data-page-node-id="R85kmDiffTitle">⚔️ 难度与提示</div>
         <div class="peg-farm-row peg-input-grid" data-page-node-id="R85kmDiffRow">
           <label data-page-node-id="R85kmRetriesLbl">答错重试
@@ -9545,36 +9555,7 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
           </label>
         </div>
       </div>
-      <div class="parent-edit-group" data-page-node-id="R85kmFeelGrp">
-        <div class="peg-title" data-page-node-id="R85kmFeelTitle">🏃 操作手感</div>
-        <div class="peg-farm-row peg-input-grid" data-page-node-id="R85kmFeelRow">
-          <label data-page-node-id="R85kmSpeedLbl">速度
-            <select id="kmSpeed" class="peg-input" data-page-node-id="R85kmSpeed">
-              <option value="0.7">0.7×（慢）</option>
-              <option value="0.8">0.8×</option>
-              <option value="0.9">0.9×</option>
-              <option value="1">1.0×（标准）</option>
-              <option value="1.1">1.1×</option>
-              <option value="1.2">1.2×</option>
-              <option value="1.3">1.3×</option>
-              <option value="1.4">1.4×</option>
-              <option value="1.5">1.5×（快）</option>
-            </select>
-          </label>
-          <label data-page-node-id="R85kmJumpLbl">跳跃
-            <select id="kmJump" class="peg-input" data-page-node-id="R85kmJump">
-              <option value="0.8">0.8×（低）</option>
-              <option value="0.9">0.9×</option>
-              <option value="1">1.0×（标准）</option>
-              <option value="1.1">1.1×</option>
-              <option value="1.2">1.2×</option>
-              <option value="1.3">1.3×</option>
-              <option value="1.4">1.4×（高）</option>
-            </select>
-          </label>
-        </div>
-      </div>
-      <div class="parent-edit-group" data-page-node-id="R85kmRewardGrp">
+            <div class="parent-edit-group" data-page-node-id="R85kmRewardGrp">
         <div class="peg-title" data-page-node-id="R85kmRewardTitle">⭐ 奖励设置</div>
         <div class="peg-farm-row peg-input-grid" data-page-node-id="R85kmRewardRow">
           <label data-page-node-id="R85kmPerLevelLbl">每关题数 <input type="number" id="kmPerLevel" class="peg-input" min="10" max="200" step="10" data-page-node-id="R85kmPerLevel"> 题</label>
@@ -9582,14 +9563,7 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
           <label data-page-node-id="R85kmClearLbl">通关奖励 <input type="number" id="kmRewardClear" class="peg-input" min="0" max="50" step="1" data-page-node-id="R85kmClear"> ⭐</label>
         </div>
       </div>
-      <div class="parent-edit-group" data-page-node-id="R85kmTextGrp">
-        <div class="peg-title" data-page-node-id="R85kmTextTitle">💬 文案与主题色</div>
-        <label data-page-node-id="R85kmWelcomeLbl">欢迎语 <input type="text" id="kmTextWelcome" maxlength="80" data-page-node-id="R85kmWelcome"></label>
-        <label data-page-node-id="R85kmClearedLbl">通关语 <input type="text" id="kmTextCleared" maxlength="80" data-page-node-id="R85kmCleared"></label>
-        <label data-page-node-id="R85kmCertLbl">证书语 <input type="text" id="kmTextCert" maxlength="80" data-page-node-id="R85kmCert"></label>
-      </div>
-      <!-- R217-2：原「后台修改中心」全部设置项并入本页（主题色 / 关卡音乐 / 数据管理）；R218-4②：题库管理改为独立弹窗 -->
-      <div id="kmaWrap" class="kma-embed" data-page-node-id="R217kmMergedWrap"></div>
+      
     </div>
     <div class="modal-foot" data-page-node-id="R85modalKMFoot">
       <button class="primary-btn" id="btnKMSettingSave" data-commit-settings data-page-node-id="R85btnKMSave">💾 保存设置</button>
@@ -29245,17 +29219,8 @@ function renderKMAdmin(){
       <div class="kma-tip">📌 以下内容修改后，统一由弹窗底部【💾 保存设置】生效。</div>
       <div class="kma-sec kma-qbank-card">
         <div class="kma-sec-title">📚 题库管理</div>
-        <div class="kma-tip">当前共 <b>${stats.totalQuestions}</b> 题 · 新增 / 改题 / 重置题库已迁移到独立弹窗页面。</div>
-        <div class="kma-row"><button class="kma-btn kma-qbank-open" data-kma="qbank">📚 打开题库管理</button></div>
-      </div>
-      <div class="kma-sec">
-        <div class="kma-sec-title">🎨 主题色（各关卡配色）</div>
-        <div class="kma-grid">
-          <label>语文·文字森林色：<input type="color" value="${set.themeColors.chinese}" data-f="themeColors.chinese"></label>
-          <label>数学·逻辑峡谷色：<input type="color" value="${set.themeColors.math}" data-f="themeColors.math"></label>
-          <label>英语·语言海湾色：<input type="color" value="${set.themeColors.english}" data-f="themeColors.english"></label>
-          <label>UI 主色：<input type="color" value="${set.themeColors.ui}" data-f="themeColors.ui"></label>
-        </div>
+        <div class="kma-row"><button class="kma-btn kma-qbank-open" data-kma="qbank">📚 题库管理</button></div>
+<div class="kma-tip">当前共 <b>${stats.totalQuestions}</b> 题 · 新增 / 改题 / 重置题库已迁移到独立弹窗页面。</div>
       </div>
       <div class="kma-sec">
         <div class="kma-sec-title">🎵 各关卡背景音乐（家长模式设置 · 闯关时按关卡特点播放）</div>
@@ -30163,7 +30128,9 @@ function renderKMAdmin(){
   const XS_NOTE_READ = 'xsNote';       // 打卡 kind（readFlags 命名空间）
   const XS_NOTE_NS = 'xsnote::';       // 图片存储键前缀
   let _xsNoteYear = '';                // R219-1：当前选中学年（空 = 不过滤，沿用旧键）
-  let _xsNoteLesson = '';              // R219-1：当前选中 lesson（空 = 不过滤，沿用旧键）
+  let _xsNoteLesson = '';
+  let _xsNotePickOpen = '';
+  let _xsNoteOutsideBound = false;              // R219-1：当前选中 lesson（空 = 不过滤，沿用旧键）
   function xsNoteKey(unitId){
     // R219-1：学年 / lesson 作为可选维度并入键（默认空时退化为旧键 xsnote::<unitId>，兼容历史数据）
     return XS_NOTE_NS + String(unitId || '')
@@ -30222,22 +30189,20 @@ function renderKMAdmin(){
     target.classList.remove('xs-list-grammar','xs-list-raz');
     target.classList.add('notes-mode');
     target.innerHTML = `
-      <div class="yw-comp-head">课堂笔记（导入图片 · 每张单独打卡）</div>
-      <div class="en-oxford-tip" id="xsNoteTip">📝 课堂笔记 · 共 ${total} 张（第 ${idx+1}/${list.length} 单元）</div>
-      <div class="xs-note-sel-row">
-        <span class="xs-note-sel-label">学年</span>
-        <div class="xs-note-seltags" id="xsNoteYearTags"></div>
-      </div>
-      <div class="xs-note-sel-row">
-        <span class="xs-note-sel-label">lesson</span>
-        <div class="xs-note-seltags" id="xsNoteLessonTags"></div>
-      </div>
-      <div class="en-book-head-row">
-        ${xsNoteUnitCards(idx)}
-        <div class="en-book-cap">
-          <div class="en-cap-unit">${esc(u.unit)}</div>
-          <div class="en-cap-title">${esc(u.title)}</div>
-          <div class="en-unit-stars"><span class="en-unit-star-icons">${starStr}</span><span class="en-unit-star-num">${done}/${total} 张 · ${starN}/5 ⭐</span></div>
+      <div class="yw-comp-head">课堂笔记</div>
+      <div class="xs-note-pick-bar">
+        <div class="xs-note-pick-group">
+          <button class="xs-note-pick-btn" data-xs-pick="unit" type="button">📚 单元 <span class="xs-note-pick-val">${esc((u.unit||'')+' '+(u.title||''))}</span> <span class="xs-note-caret">▾</span></button>
+          <div class="xs-note-pick-menu" data-xs-pick-menu="unit" hidden></div>
+        </div>
+        <div class="xs-note-pick-group">
+          <button class="xs-note-pick-btn" data-xs-pick="year" type="button">📅 学年 <span class="xs-note-pick-val">${esc(_xsNoteYear || '全部')}</span> <span class="xs-note-caret">▾</span></button>
+          <div class="xs-note-pick-menu" data-xs-pick-menu="year" hidden></div>
+        </div>
+        <div class="xs-note-pick-group">
+          <button class="xs-note-pick-btn" data-xs-pick="lesson" type="button">📝 lesson <span class="xs-note-pick-val">${esc(_xsNoteLesson || '全部')}</span> <span class="xs-note-caret">▾</span></button>
+          <div class="xs-note-pick-menu" data-xs-pick-menu="lesson" hidden></div>
+          <span class="xs-note-pick-stars"><span class="en-unit-star-icons">${starStr}</span><span class="en-unit-star-num">${done}/${total} · ${starN}/5⭐</span></span>
         </div>
       </div>
       <div class="kp-add-row">
@@ -30253,7 +30218,8 @@ function renderKMAdmin(){
     if(hintEl) hintEl.textContent = '';
     // R219-1：学年 / lesson 选择栏渲染（含新增 / 删除管理）
     xsNoteEnsureSeed();
-    renderXsNoteSel();
+    xsNoteRenderMenus(target);
+    xsNoteBindPickers(target);
     const addBtn = $('#btnXsContentAdd');
     if(addBtn){ addBtn.classList.add('hidden'); addBtn.style.display = 'none'; }
     const filterBtn = $('#btnXsGramFilter');
@@ -30506,6 +30472,94 @@ function renderKMAdmin(){
       });
     }
   }
+  function xsNoteRenderMenus(scope){
+    if(!scope) return;
+    const st = window.Store;
+    const uMenu = scope.querySelector('[data-xs-pick-menu="unit"]');
+    if(uMenu){
+      uMenu.innerHTML = (EN_OXFORD_VOCAB_3A||[]).map((u2,i)=>`<button class="xs-note-pick-item${i===_xsNoteUnit?' active':''}" data-xs-pick-unit="${i}">${esc(u2.unit)} · ${esc(u2.title)}</button>`).join('');
+    }
+    const yMenu = scope.querySelector('[data-xs-pick-menu="year"]');
+    if(yMenu){
+      const years = (st && st.getXsNoteYears) ? st.getXsNoteYears() : [];
+      yMenu.innerHTML = (years.length ? years.map(y=>`<button class="xs-note-pick-item${_xsNoteYear===y?' active':''}" data-xs-pick-year="${esc(y)}">${esc(y)}</button>`).join('') : '<div class="xs-note-pick-empty">暂无学年，点下方＋新增</div>')
+        + `<div class="xs-note-pick-foot"><button class="xs-note-pick-add" data-xs-pick-year-add="1">＋ 新增学年</button><button class="xs-note-pick-del" data-xs-pick-year-del="1"${_xsNoteYear?'':' disabled'}>🗑 删除</button></div>`;
+    }
+    const lMenu = scope.querySelector('[data-xs-pick-menu="lesson"]');
+    if(lMenu){
+      const lessons = (st && st.getXsNoteLessons) ? st.getXsNoteLessons() : [];
+      lMenu.innerHTML = (lessons.length ? lessons.map(l=>`<button class="xs-note-pick-item${_xsNoteLesson===l?' active':''}" data-xs-pick-lesson="${esc(l)}">${esc(l)}</button>`).join('') : '<div class="xs-note-pick-empty">暂无 lesson，点下方＋新增</div>')
+        + `<div class="xs-note-pick-foot"><button class="xs-note-pick-add" data-xs-pick-lesson-add="1">＋ 新增 lesson</button></div>`;
+    }
+  }
+  function xsNoteBindPickers(scope){
+    if(!scope) return;
+    scope.querySelectorAll('[data-xs-pick]').forEach(btn=>{
+      btn.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        const which = btn.getAttribute('data-xs-pick');
+        const menu = scope.querySelector('[data-xs-pick-menu="'+which+'"]');
+        if(!menu) return;
+        const willOpen = menu.hidden;
+        xsNoteClosePickers();
+        if(willOpen){ menu.hidden = false; _xsNotePickOpen = which; }
+      });
+    });
+    scope.querySelectorAll('[data-xs-pick-unit]').forEach(b=>{
+      b.addEventListener('click', (e)=>{ e.stopPropagation(); const i=parseInt(b.getAttribute('data-xs-pick-unit'),10); if(isNaN(i))return; _xsNoteUnit=i; _xsNoteDelMode=false; renderXsNotes(); });
+    });
+    scope.querySelectorAll('[data-xs-pick-year]').forEach(b=>{
+      b.addEventListener('click', (e)=>{ e.stopPropagation(); _xsNoteYear=b.getAttribute('data-xs-pick-year')||''; renderXsNotes(); });
+    });
+    scope.querySelectorAll('[data-xs-pick-lesson]').forEach(b=>{
+      b.addEventListener('click', (e)=>{ e.stopPropagation(); _xsNoteLesson=b.getAttribute('data-xs-pick-lesson')||''; renderXsNotes(); });
+    });
+    scope.querySelectorAll('[data-xs-pick-year-add]').forEach(b=>{
+      b.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        const raw = (window.prompt ? window.prompt('新增学年名称（如：三年级上册）') : '') || '';
+        const name = raw.trim(); if(!name) return;
+        const st = window.Store; if(!st) return;
+        const arr = st.getXsNoteYears();
+        if(arr.indexOf(name) >= 0){ toast('该学年已存在'); return; }
+        st.setXsNoteYears(arr.concat([name])); _xsNoteYear = name; renderXsNotes();
+      });
+    });
+    scope.querySelectorAll('[data-xs-pick-year-del]').forEach(b=>{
+      b.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        if(!_xsNoteYear) return;
+        const name = _xsNoteYear;
+        openCustomModal('删除学年选项', `确定删除学年「<b>${esc(name)}</b>」这个选项吗？<div style="margin-top:8px;color:#5b6b85;font-size:13px">仅移除选项入口，该学年下已导入的笔记图片会一并隐藏（数据仍保留在存储中）。</div>`, ()=>{
+          const st = window.Store; if(!st) return true;
+          st.setXsNoteYears(st.getXsNoteYears().filter(v => v !== name)); _xsNoteYear = ''; renderXsNotes(); return true;
+        });
+      });
+    });
+    scope.querySelectorAll('[data-xs-pick-lesson-add]').forEach(b=>{
+      b.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        const raw = (window.prompt ? window.prompt('新增 lesson 名称（如：Lesson 6）') : '') || '';
+        const name = raw.trim(); if(!name) return;
+        const st = window.Store; if(!st) return;
+        const arr = st.getXsNoteLessons();
+        if(arr.indexOf(name) >= 0){ toast('该 lesson 已存在'); return; }
+        st.setXsNoteLessons(arr.concat([name])); _xsNoteLesson = name; renderXsNotes();
+      });
+    });
+    if(!_xsNoteOutsideBound){
+      _xsNoteOutsideBound = true;
+      document.addEventListener('click', (e)=>{
+        if(e.target.closest && e.target.closest('.xs-note-pick-group')) return;
+        xsNoteClosePickers();
+      });
+    }
+  }
+  function xsNoteClosePickers(){
+    document.querySelectorAll('.xs-note-pick-menu').forEach(m=>{ m.hidden = true; });
+    _xsNotePickOpen = '';
+  }
+
   function renderXueersiSummary(){
     if(xsCat === 'stories') xsCat = 'words'; // V12.3：仅过滤绘本；恢复语法
     $$('.xs-summary-pane .xs-sub-tabs [data-xs-cat]').forEach(b=>b.classList.toggle('active', b.dataset.xsCat===xsCat));
@@ -34498,19 +34552,13 @@ function renderKMAdmin(){
     const s = S.getKMSettings();
     const setVal = (id, v)=>{ const el = document.getElementById(id); if(el) el.value = v; };
     const setChk = (id, v)=>{ const el = document.getElementById(id); if(el) el.checked = !!v; };
-    setChk('kmModeTrial', !!s.trial);
     // R90-4：难度/手感/奖励 改为「填空 + 下拉」控件，无需再联动数值 span
     setVal('kmRetries', s.retries);
     setVal('kmFogMs', s.fogMs);
     setVal('kmHintsOn', s.hintsOn ? '1' : '0'); // R90-4：普通模式提示由复选框改为「显示/不显示」下拉
-    setVal('kmSpeed', s.speed);
-    setVal('kmJump', s.jump);
     setVal('kmPerLevel', s.perLevel);
     setVal('kmRewardCorrect', (s.starReward && s.starReward.correct != null) ? s.starReward.correct : 2);
     setVal('kmRewardClear', (s.starReward && s.starReward.clear != null) ? s.starReward.clear : 10);
-    setVal('kmTextWelcome', (s.text && s.text.welcome) || '');
-    setVal('kmTextCleared', (s.text && s.text.cleared) || '');
-    setVal('kmTextCert', (s.text && s.text.cert) || '');
     // R121-1：游戏开放日期（周末 / 法定节假日开关 + 自定义开放日列表）
     initKMOpenSetting();
     const saveBtn = document.getElementById('btnKMSettingSave');
@@ -34518,14 +34566,11 @@ function renderKMAdmin(){
       saveBtn._bound = true;
       saveBtn.onclick = ()=>{
         const num = (id)=>{ const el = document.getElementById(id); return el ? parseFloat(el.value) : undefined; };
-        const txt = (id)=>{ const el = document.getElementById(id); return el ? el.value : ''; };
         const patch = {
-          trial: !!document.getElementById('kmModeTrial').checked,
           retries: num('kmRetries'), fogMs: num('kmFogMs'), hintsOn: (document.getElementById('kmHintsOn') || {}).value === '1',
-          speed: num('kmSpeed'), jump: num('kmJump'), perLevel: num('kmPerLevel'),
+          perLevel: num('kmPerLevel'),
           starReward: { correct: num('kmRewardCorrect'), clear: num('kmRewardClear') },
-          text: { welcome: txt('kmTextWelcome'), cleared: txt('kmTextCleared'), cert: txt('kmTextCert') },
-          // R121-1：两个开放规则开关（自定义开放日列表在增删时已即时落库，此处仅同步开关状态）
+          // R121-1：两个开放规则开关（自定义开放日列表在增删时已即时落库，此处仅同步开关状态）；已删卡片（默认模式/操作手感/文案主题色）沿用已存值
           open: { weekend: !!(document.getElementById('kmOpenWeekend') || {}).checked, holiday: !!(document.getElementById('kmOpenHoliday') || {}).checked }
         };
         S.saveKMSettings(patch);
