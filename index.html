@@ -7839,6 +7839,33 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
   .sidebar-clock .rt-time{ font-size:18px; }
 }
 
+
+/* R221：筛选面板（板块/题型）底部管理按键脚注 */
+.math-filter-foot{ display:flex; flex-wrap:wrap; gap:8px; padding-top:10px; margin-top:8px; border-top:1px dashed var(--tone-200); }
+.math-filter-foot .pbtn{ flex:1 1 auto; justify-content:center; }
+
+/* R221-1：课堂笔记学年 / lesson 按键视觉对齐乐读数学筛选按键（渐变底 + 展开高亮 + 面板滑动选择） */
+.xs-note-pick-btn{
+  padding:9px 12px; font-size:14px; border-radius:12px;
+  background:linear-gradient(135deg,var(--tone-050),#e8f3ff);
+  box-shadow:0 2px 8px rgba(30,58,138,.08);
+}
+.xs-note-pick-btn:hover{
+  background:linear-gradient(135deg,var(--tone-100),#e8f3ff);
+  border-color:var(--tone-400); box-shadow:0 4px 12px rgba(30,58,138,.16);
+}
+.xs-note-pick-group.is-open .xs-note-pick-btn{
+  border-color:var(--tone-600);
+  background:linear-gradient(135deg,var(--tone-300),var(--tone-400));
+  box-shadow:0 4px 14px rgba(64,150,255,.32);
+}
+.xs-note-pick-group.is-open .xs-note-pick-val{ color:#fff; }
+.xs-note-pick-group.is-open .xs-note-caret{ transform:rotate(180deg); color:#fff; }
+.xs-note-pick-menu{
+  -webkit-overflow-scrolling:touch; min-width:220px;
+  scrollbar-width:thin;
+}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -8497,7 +8524,7 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
          点筛选按键1 选板块 → 筛选按键2 内呈现该板块的全部题型；点题型 → 下方实时展示对应题目内容。
          R102 的横向标签行已收进两个筛选按键的下拉面板内（#mathSubTags / #mathTypeTags）。
          R104：层级文案统一 —— 两个筛选按键分别标注为「板块」与「题型」，页面内不再使用旧层级称呼；
-         【＋ 新增题型】【－ 删除题型】【＋ 新增板块】三个管理按键统一排在题型筛选按键后方（#mathFilterOps）。
+         【＋ 新增题型】【－ 删除题型】已移入「题型」筛选面板底部（#mathTypeTags）；【＋ 新增板块】已移入「板块」筛选面板底部（#mathSubTags）。
          题目固定全量展示(R93)。权限：仅【＋ 新增题型】全局常驻；其余新增/删除按键统一加 hidden-in-child（仅家长模式可见）。 -->
     <div class="math-sub-region" data-page-node-id="R91mathSubRegion">
       <div class="math-filter-bar" data-page-node-id="R103mathFilterBar">
@@ -8521,11 +8548,9 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
           <!-- 下拉面板：当前板块下的题型列表（点选后下方实时展示题目） -->
           <div class="math-type-tags math-filter-menu" id="mathTypeTags" role="listbox" hidden data-page-node-id="R102mathTypeTags"></div>
         </div>
-        <!-- R104：管理按键区 —— 统一排在题型筛选按键后方（＋ 新增题型 / － 删除题型 / ＋ 新增板块 及其就地输入行） -->
+        <!-- R221：管理按键（＋ 新增题型 / － 删除题型 / ＋ 新增板块）已分别移入「题型」「板块」筛选面板的下拉底部；
+             此处仅保留就地输入行（点击面板底部管理按键后展开） -->
         <div class="math-filter-ops" id="mathFilterOps" data-page-node-id="R104mathFilterOps">
-          <button class="pbtn small math-add-card-btn" id="btnMathAddType" data-page-node-id="R94btnMathAddType" title="在当前板块下新增一个题型">＋ 新增题型</button>
-          <button class="pbtn small math-del-card-btn hidden-in-child" id="btnMathDelType" data-page-node-id="R94btnMathDelType" title="删除当前板块下的某个题型">－ 删除题型</button>
-          <button class="pbtn small math-add-card-btn hidden-in-child" id="btnMathAddSubCard" data-page-node-id="R91btnAddSubCard" title="新增一个板块（学期/班型）">＋ 新增板块</button>
           <span class="math-inline-add hidden" id="mathSubAddInline" data-page-node-id="R91mathSubAddInline">
             <input type="text" class="math-add-input" id="mathSubNewName" maxlength="24" placeholder="输入板块名称（如 2027 春三 S）" data-page-node-id="R91mathSubNewName">
             <button class="pbtn small" id="btnMathSubNewOk" data-page-node-id="R91btnSubNewOk">确定</button>
@@ -10871,6 +10896,56 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
     let _migrated = false;
     (st.mathProblems||[]).forEach(m=>{ if(m.mastery === 'toMaster'){ m.mastery='notMastered'; _migrated=true; } });
     if(_migrated) save(st);
+    // R221-1：课堂笔记从「单元键」迁移到「学年 + lesson 键」（幂等：只处理不含 '|' 的旧键）
+    // 旧键：xsnote::<unitId>[@<学年>[@<lesson>]]；新键：xsnote::<学年>|<lesson>（空串 = 未分类）
+    // 旧打卡记录：readFlags['xsNote::<unitId>::<idx>']（可能还带一层 xsnote:: 前缀）→ 重排到新桶下标
+    (function migrateXsNoteKeys(){
+      const NS = 'xsnote::';
+      if(!st.enKeyPoints || typeof st.enKeyPoints !== 'object') return;
+      const allKeys = Object.keys(st.enKeyPoints);
+      const oldKeys = allKeys.filter(k => k.indexOf(NS) === 0 && k.indexOf('|') < 0);
+      if(!oldKeys.length) return;
+      const nextPts = {};
+      allKeys.forEach(k => { if(oldKeys.indexOf(k) < 0) nextPts[k] = st.enKeyPoints[k]; });
+      const offsets = {};   // 旧键主体（unitId[@year[@lesson]]）→ 迁移后在目标桶中的下标数组
+      oldKeys.forEach(oldKey => {
+        const rest = oldKey.slice(NS.length);
+        const parts = rest.split('@');
+        const bucket = NS + (parts[1] || '') + '|' + (parts[2] || '');
+        if(!Array.isArray(nextPts[bucket])) nextPts[bucket] = [];
+        const arr = Array.isArray(st.enKeyPoints[oldKey]) ? st.enKeyPoints[oldKey] : [];
+        const base = nextPts[bucket].length;
+        offsets[rest] = arr.map((it, i) => base + i);
+        nextPts[bucket] = nextPts[bucket].concat(arr);
+      });
+      st.enKeyPoints = nextPts;
+      if(st.readFlags && typeof st.readFlags === 'object'){
+        const KIND = 'xsNote::';
+        const nr = {};
+        Object.keys(st.readFlags).forEach(rk => {
+          if(rk.indexOf(KIND) !== 0){ nr[rk] = st.readFlags[rk]; return; }
+          const m = rk.slice(KIND.length).match(/^(.*?)::(\d+)$/);
+          if(!m){ nr[rk] = st.readFlags[rk]; return; }
+          let base = m[1];
+          if(base.indexOf('|') >= 0){ nr[rk] = st.readFlags[rk]; return; }   // 已是新键
+          if(base.indexOf(NS) === 0) base = base.slice(NS.length);
+          let map = offsets[base];
+          if(!map){
+            // 旧 UI 打卡时用的是裸 unitId，而图片键可能带学年 → 退化为唯一前缀匹配
+            const cands = Object.keys(offsets).filter(k => k.indexOf(base + '@') === 0);
+            if(cands.length === 1){ base = cands[0]; map = offsets[base]; }
+          }
+          if(!map) return;                                                 // 孤儿记录，丢弃
+          const ni = map[parseInt(m[2], 10)];
+          if(typeof ni !== 'number') return;
+          const parts = base.split('@');
+          const bucket = NS + (parts[1] || '') + '|' + (parts[2] || '');
+          nr[KIND + bucket + '::' + ni] = st.readFlags[rk];
+        });
+        st.readFlags = nr;
+      }
+      save(st);
+    })();
     // R154-3：清除种子「会议」演示任务；R156-3a①⑤：周看板种子模板整体清空
     // （不再植入「学习/运动/阅读」演示卡）—— 老存档里所有 wbSeed_* 自动种子一并清掉，
     // 仅清自动种子（id 以 wbSeed_ 开头），用户自建备忘不受影响。
@@ -27095,6 +27170,11 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         <span class="msc-count">${g.types.length} 题型</span>
       </button>`).join('')
       : '<div class="math-filter-empty">暂无板块</div>';
+        // R221：管理按键（＋ 新增板块）移入「板块」下拉面板底部
+        el.innerHTML += `
+          <div class="math-filter-foot">
+            <button class="pbtn small math-add-card-btn hidden-in-child" data-math-add-sub-btn="1" title="新增一个板块（学期/班型）">＋ 新增板块</button>
+          </div>`;
     updateMathFilterLabels();
   }
   // R103：两个筛选按键的开合（下拉面板 = #mathSubTags / #mathTypeTags，默认收起）
@@ -27108,6 +27188,19 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     if(btn) btn.setAttribute('aria-expanded', open ? 'true' : 'false');
   }
   function closeMathFilters(){ setMathFilterOpen('sub', false); setMathFilterOpen('type', false); }
+  // R221：就地输入行显隐辅助（供筛选面板内管理按键事件委托复用，模块级可见）
+  function mathShowAddRow(rowId, btnId, inputId){
+    const row = document.getElementById(rowId); if(!row) return;
+    const btn = document.getElementById(btnId);
+    const inp = document.getElementById(inputId);
+    row.classList.remove('hidden');
+    if(btn) btn.classList.add('hidden');
+    if(inp){ inp.value = ''; try{ inp.focus(); }catch(e){} }
+  }
+  function mathHideAddRow(rowId, btnId){
+    const row = document.getElementById(rowId); if(row) row.classList.add('hidden');
+    const btn = document.getElementById(btnId); if(btn) btn.classList.remove('hidden');
+  }
   // R103：筛选按键上的当前选中文案（按键1 = 板块名；按键2 = 题型名）
   function updateMathFilterLabels(){
     const gs = (S.getMathGroups ? S.getMathGroups() : []);
@@ -27266,6 +27359,12 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
           ${mathNumsHtml(items)}
         </button>`).join('')
         : '<div class="math-filter-empty">该板块暂无题型</div>';
+          // R221：管理按键（＋ 新增题型 / － 删除题型）移入「题型」下拉面板底部
+          listEl.innerHTML += `
+            <div class="math-filter-foot">
+              <button class="pbtn small math-add-card-btn" data-math-add-type-btn="1" title="在当前板块下新增一个题型">＋ 新增题型</button>
+              <button class="pbtn small math-del-card-btn hidden-in-child" data-math-del-type-btn="1" title="删除当前板块下的某个题型">－ 删除题型</button>
+            </div>`;
     }
     updateMathFilterLabels();
     renderMathContent();
@@ -29223,28 +29322,6 @@ function renderKMAdmin(){
 <div class="kma-tip">当前共 <b>${stats.totalQuestions}</b> 题 · 新增 / 改题 / 重置题库已迁移到独立弹窗页面。</div>
       </div>
       <div class="kma-sec">
-        <div class="kma-sec-title">🎵 各关卡背景音乐（家长模式设置 · 闯关时按关卡特点播放）</div>
-        <div class="kma-tip">每个关卡可独立开/关、上传不同的背景音乐（≤2MB mp3/wav）。未上传则用各关卡的内置特色音。</div>
-        ${['chinese','math','english','mixed'].map(k=>{
-          const lvl = (set.bgmByLevel && set.bgmByLevel[k]) || {};
-          const lname = k==='chinese'?'语文·文字森林':(k==='math'?'数学·逻辑峡谷':(k==='english'?'英语·语言海湾':'综合神殿'));
-          const licon = k==='chinese'?'🌳':(k==='math'?'🧮':(k==='english'?'🌊':'🏛️'));
-          const on = lvl.on!==undefined ? lvl.on : (set.bgm && set.bgm.on);
-          const vol = lvl.volume!==undefined ? lvl.volume : ((set.bgm && set.bgm.volume!=null)?set.bgm.volume:60);
-          const has = !!lvl.src;
-          return `<div class="kma-row kma-bgm-level" data-km-l="${k}" style="border:1px dashed #cfe0f5;border-radius:12px;padding:8px 12px;margin:6px 0;background:#f7faff">
-            <div style="font-weight:800;color:#1e3a8a;margin-bottom:6px">${licon} ${lname}</div>
-            <div class="kma-grid">
-              <label>开启：<input type="checkbox" id="kmaLvOn_${k}" ${on?'checked':''}></label>
-              <label>音量：<input type="range" min="0" max="100" id="kmaLvVol_${k}" value="${vol}"></label>
-              <label class="kma-block" style="flex:1 1 240px">上传本关音乐：<input type="file" id="kmaLvFile_${k}" accept="audio/*"></label>
-            </div>
-            <div class="kma-tip" style="margin-top:4px">${has?'<span style="color:#1e3a8a;font-weight:800">✓ 已设置本关音乐（家长上传）</span>':'<span style="color:#5a6b85">未上传 → 播放内置特色音</span>'}</div>
-          </div>`;
-        }).join('')}
-        ${set.bgm&&set.bgm.src?'<div class="kma-tip" style="margin-top:6px"><span>📌 全局默认音乐仍有效（未单独设置的关卡会播放）</span></div>':''}
-      </div>
-      <div class="kma-sec">
         <div class="kma-sec-title">🗂 数据管理</div>
         <div class="kma-stats" id="kmaStats">
           <span>⭐ 总星星：<b>${stats.stars}</b></span>
@@ -29293,47 +29370,6 @@ function renderKMAdmin(){
       if(el.hasAttribute('data-id')) kmAdminQField(el, e.type);
     };
     bindKMQBankOnce();
-
-    // R40-2d：每个关卡独立 BGM 设置（家长模式）
-    ['chinese','math','english','mixed'].forEach(k=>{
-      const lvWrap = wrap.querySelector(`[data-km-l="${k}"]`);
-      if(!lvWrap) return;
-      const onEl = lvWrap.querySelector(`#kmaLvOn_${k}`);
-      const volEl = lvWrap.querySelector(`#kmaLvVol_${k}`);
-      const fileEl = lvWrap.querySelector(`#kmaLvFile_${k}`);
-      const cur = (S.getKMSettings().bgmByLevel && S.getKMSettings().bgmByLevel[k]) || {};
-      function saveLv(){
-        const all = S.getKMSettings();
-        const next = Object.assign({}, all.bgmByLevel || {});
-        next[k] = Object.assign({}, next[k]||{});
-        next[k].on = onEl?!!onEl.checked:false;
-        next[k].volume = volEl?(parseInt(volEl.value,10)||60):60;
-        S.saveKMSettings({ bgmByLevel: next });
-        kmAdminToast('✓ ' + (k==='chinese'?'语文':k==='math'?'数学':k==='english'?'英语':'综合') + '关音乐设置已保存');
-      }
-      if(onEl && !onEl._bound){ onEl._bound=true; onEl.addEventListener('change', saveLv); }
-      if(volEl && !volEl._bound){ volEl._bound=true; volEl.addEventListener('input', saveLv); }
-      if(fileEl && !fileEl._bound){
-        fileEl._bound=true;
-        fileEl.addEventListener('change', (e)=>{
-          const f = e.target.files && e.target.files[0]; if(!f) return;
-          if(f.size > 2*1024*1024){ kmAdminToast('文件过大，请 ≤ 2MB'); return; }
-          const r = new FileReader();
-          r.onload = (ev)=>{
-            const all = S.getKMSettings();
-            const next = Object.assign({}, all.bgmByLevel || {});
-            next[k] = Object.assign({}, next[k]||{});
-            next[k].src = ev.target.result;
-            S.saveKMSettings({ bgmByLevel: next });
-            kmAdminToast('✓ ' + (k==='chinese'?'语文':k==='math'?'数学':k==='english'?'英语':'综合') + '关音乐已上传');
-            // R40-2d：上传后局部刷新此关卡那一行
-            const tip = lvWrap.querySelector('.kma-tip span');
-            if(tip) tip.outerHTML = '<span style="color:#1e3a8a;font-weight:800">✓ 已设置本关音乐（家长上传）</span>';
-          };
-          r.readAsDataURL(f);
-        });
-      }
-    });
 
     function kmAdminRenderQs(){
       const box=qbody ? qbody.querySelector('#kmaQs') : null; if(!box) return;
@@ -30122,60 +30158,53 @@ function renderKMAdmin(){
   //       ⑥ 本单元全部打卡完成得 5⭐（沿用 oxfordunit 任务⭐档位，家长可调）。
   // 数据层：复用 Store 的 enKeyPoints 存储，但键加 'xsnote::' 命名空间，
   //        与重点知识的图片、打卡状态完全隔离，互不覆盖。
-  let _xsNoteUnit = 0;          // 当前单元下标
   let _xsNoteDelMode = false;   // 删除模式
-  let _xsNoteAddUnit = '';      // 待导入的目标单元（Store 键）
   const XS_NOTE_READ = 'xsNote';       // 打卡 kind（readFlags 命名空间）
   const XS_NOTE_NS = 'xsnote::';       // 图片存储键前缀
-  let _xsNoteYear = '';                // R219-1：当前选中学年（空 = 不过滤，沿用旧键）
-  let _xsNoteLesson = '';
+  // R221-1：课堂笔记删除「单元」维度，改为「学年 + lesson」归档；null = 尚未选择（首屏自动落到第一项）
+  let _xsNoteYear = null;
+  let _xsNoteLesson = null;
   let _xsNotePickOpen = '';
-  let _xsNoteOutsideBound = false;              // R219-1：当前选中 lesson（空 = 不过滤，沿用旧键）
-  function xsNoteKey(unitId){
-    // R219-1：学年 / lesson 作为可选维度并入键（默认空时退化为旧键 xsnote::<unitId>，兼容历史数据）
-    return XS_NOTE_NS + String(unitId || '')
-      + (_xsNoteYear ? ('@' + _xsNoteYear) : '')
-      + (_xsNoteLesson ? ('@' + _xsNoteLesson) : '');
+  let _xsNoteOutsideBound = false;
+  function xsNoteKey(){
+    return XS_NOTE_NS + (_xsNoteYear || '') + '|' + (_xsNoteLesson || '');
   }
-  function xsNoteItems(unitId){
-    return (window.Store && window.Store.getEnKeyPoints) ? window.Store.getEnKeyPoints(xsNoteKey(unitId)) : [];
+  function xsNoteItems(){
+    return (window.Store && window.Store.getEnKeyPoints) ? window.Store.getEnKeyPoints(xsNoteKey()) : [];
   }
-  function xsNoteDoneCount(unitId, items){
-    return (items||[]).filter((it,k)=> S.isReadingRead(XS_NOTE_READ, unitId+'::'+k)).length;
+  function xsNoteDoneCount(items){
+    const nk = xsNoteKey();
+    return (items||[]).filter((it,k)=> S.isReadingRead(XS_NOTE_READ, nk+'::'+k)).length;
   }
-  function xsNoteUnitCards(curIdx){
-    const cards = EN_OXFORD_VOCAB_3A.map((u,i)=>{
-      const items = xsNoteItems(u.id);
-      const total = items.length;
-      const done = xsNoteDoneCount(u.id, items);
-      const starN = total ? Math.round(done/total*5) : 0;
-      return {
-        no:    u.unit || ('Unit '+(i+1)),
-        label: u.title || '',
-        sub:   total ? (done + '/' + total + ' 张') : '待导入',
-        done:  total > 0 && done === total,
-        stars: '⭐'.repeat(starN) + '☆'.repeat(5-starN)
-      };
-    });
-    return enUnitCards(cards, curIdx, 'xs-note-unit');
+  // R221-1：首个可用学年 / lesson 作为默认选项；已选选项被删除时自动回落
+  function xsNoteEnsureSelection(){
+    const st = window.Store;
+    const years = (st && st.getXsNoteYears) ? st.getXsNoteYears() : [];
+    const lessons = (st && st.getXsNoteLessons) ? st.getXsNoteLessons() : [];
+    if(_xsNoteYear === null || (_xsNoteYear && years.indexOf(_xsNoteYear) < 0)) _xsNoteYear = years.length ? years[0] : '';
+    if(_xsNoteLesson === null || (_xsNoteLesson && lessons.indexOf(_xsNoteLesson) < 0)) _xsNoteLesson = lessons.length ? lessons[0] : '';
+  }
+  // R221-1：「未分类」桶（历史数据迁移遗留：旧数据未带学年 / lesson）有内容时在面板中补一项
+  function xsNoteHasBucket(year, lesson){
+    const st = window.Store;
+    if(!st || !st.getEnKeyPoints) return false;
+    return st.getEnKeyPoints(XS_NOTE_NS + (year || '') + '|' + (lesson || '')).length > 0;
   }
   // 渲染（写入 #xsSummaryList，与词汇/语法共用同一内容区，切走时由词汇/语法分支覆盖）
   function renderXsNotes(){
     const target = $('#xsSummaryList');
     if(!target) return;
-    const list = EN_OXFORD_VOCAB_3A;
-    let idx = parseInt(_xsNoteUnit, 10);
-    if(isNaN(idx) || idx < 0 || idx >= list.length) idx = 0;
-    _xsNoteUnit = idx;
-    const u = list[idx] || list[0];
-    const items = xsNoteItems(u.id);
+    xsNoteEnsureSeed();
+    xsNoteEnsureSelection();
+    const items = xsNoteItems();
     const total = items.length;
-    const done = xsNoteDoneCount(u.id, items);
+    const done = xsNoteDoneCount(items);
     const complete = total > 0 && done === total;
     const starN = total ? Math.round(done/total*5) : 0;
     const starStr = '⭐'.repeat(starN) + '☆'.repeat(5-starN);
+    const nk = xsNoteKey();
     const cardsHtml = total ? items.map((it,k)=>{
-      const d = S.isReadingRead(XS_NOTE_READ, u.id+'::'+k);
+      const d = S.isReadingRead(XS_NOTE_READ, nk+'::'+k);
       return `
         <div class="kp-img-card${d?' is-checked':''}" data-xs-note-card="${k}" title="${_xsNoteDelMode?'点击删除这张图片':'点击图片放大查看内容'}">
           <img class="kp-img" src="${esc(it.img)}" alt="${esc(it.t||'课堂笔记')}" loading="lazy" decoding="async" />
@@ -30185,39 +30214,34 @@ function renderKMAdmin(){
             <button class="kp-check-btn${d?' is-done':''}" data-xs-note-check="${k}">${d?'✅ 取消打卡':'□ 打卡'}</button>
           </div>
         </div>`;
-    }).join('') : '<div class="kp-empty">还没有课堂笔记图片，点上面「➕ 增加」导入课堂笔记照片吧～</div>';
+    }).join('') : '<div class="kp-empty">这个学年 · lesson 还没有课堂笔记图片，点上面「➕ 增加」导入课堂笔记照片吧～</div>';
     target.classList.remove('xs-list-grammar','xs-list-raz');
     target.classList.add('notes-mode');
     target.innerHTML = `
       <div class="yw-comp-head">课堂笔记</div>
       <div class="xs-note-pick-bar">
         <div class="xs-note-pick-group">
-          <button class="xs-note-pick-btn" data-xs-pick="unit" type="button">📚 单元 <span class="xs-note-pick-val">${esc((u.unit||'')+' '+(u.title||''))}</span> <span class="xs-note-caret">▾</span></button>
-          <div class="xs-note-pick-menu" data-xs-pick-menu="unit" hidden></div>
-        </div>
-        <div class="xs-note-pick-group">
-          <button class="xs-note-pick-btn" data-xs-pick="year" type="button">📅 学年 <span class="xs-note-pick-val">${esc(_xsNoteYear || '全部')}</span> <span class="xs-note-caret">▾</span></button>
+          <button class="xs-note-pick-btn" data-xs-pick="year" type="button">📅 学年 <span class="xs-note-pick-val">${esc(_xsNoteYear || '未分类')}</span> <span class="xs-note-caret">▾</span></button>
           <div class="xs-note-pick-menu" data-xs-pick-menu="year" hidden></div>
         </div>
         <div class="xs-note-pick-group">
-          <button class="xs-note-pick-btn" data-xs-pick="lesson" type="button">📝 lesson <span class="xs-note-pick-val">${esc(_xsNoteLesson || '全部')}</span> <span class="xs-note-caret">▾</span></button>
+          <button class="xs-note-pick-btn" data-xs-pick="lesson" type="button">📝 lesson <span class="xs-note-pick-val">${esc(_xsNoteLesson || '未分类')}</span> <span class="xs-note-caret">▾</span></button>
           <div class="xs-note-pick-menu" data-xs-pick-menu="lesson" hidden></div>
-          <span class="xs-note-pick-stars"><span class="en-unit-star-icons">${starStr}</span><span class="en-unit-star-num">${done}/${total} · ${starN}/5⭐</span></span>
         </div>
+        <span class="xs-note-pick-stars"><span class="en-unit-star-icons">${starStr}</span><span class="en-unit-star-num">${done}/${total} · ${starN}/5⭐</span></span>
       </div>
       <div class="kp-add-row">
-        <button class="kp-add-btn" data-xs-note-add="${esc(u.id)}">➕ 增加</button>
+        <button class="kp-add-btn" data-xs-note-add="1">➕ 增加</button>
         <button class="kp-del-mode-btn${_xsNoteDelMode?' is-on':''}" data-xs-note-del-mode="1">${_xsNoteDelMode?'🗑 退出删除':'🗑 删除'}</button>
         <span class="kp-add-hint">支持从相册 / 文件夹选择图片，导入后自动压缩并自适应屏幕宽度</span>
       </div>
       ${_xsNoteDelMode ? `<div class="en-kp-del-hint">🗑 删除模式已开启：点击任意图片即可删除（每张都会再次确认）</div>` : ''}
       <div class="kp-img-grid${_xsNoteDelMode?' is-del-mode':''}">${cardsHtml}</div>
-      <div class="en-oxford-foot">本单元共 ${total} 张 · 已完成 ${done} 张${complete?' · 🎉 本单元已全部完成':''}</div>`;
+      <div class="en-oxford-foot">${esc(_xsNoteYear || '未分类')} · ${esc(_xsNoteLesson || '未分类')} 共 ${total} 张 · 已完成 ${done} 张${complete?' · 🎉 本 lesson 已全部完成':''}</div>`;
     // R219-1：说明卡文字已迁入 en-oxford-tip（id=xsNoteTip）；清空外部 #xsSummaryHint，避免重复展示
     const hintEl = $('#xsSummaryHint');
     if(hintEl) hintEl.textContent = '';
-    // R219-1：学年 / lesson 选择栏渲染（含新增 / 删除管理）
-    xsNoteEnsureSeed();
+    // R219-1 / R221-1：学年 / lesson 下拉面板（面板内新增 / 删除管理）
     xsNoteRenderMenus(target);
     xsNoteBindPickers(target);
     const addBtn = $('#btnXsContentAdd');
@@ -30231,26 +30255,13 @@ function renderKMAdmin(){
   // 事件绑定（每次重渲染后重新绑定，与重点知识页同一套交互）
   function xsNoteBind(scope){
     if(!scope) return;
-    // 单元卡切换
-    scope.querySelectorAll('[data-xs-note-unit]').forEach(btn=>{
-      btn.addEventListener('click', (e)=>{
-        e.stopPropagation();
-        const i = parseInt(btn.getAttribute('data-xs-note-unit'), 10);
-        if(isNaN(i)) return;
-        _xsNoteUnit = i;
-        _xsNoteDelMode = false;   // 切换单元即退出删除模式
-        renderXsNotes();
-      });
-    });
     // 图片：删除模式 → 删除；普通模式 → 放大查看
     scope.querySelectorAll('[data-xs-note-card]').forEach(card=>{
       card.addEventListener('click', (e)=>{
         e.stopPropagation();
-        const unit = (EN_OXFORD_VOCAB_3A[_xsNoteUnit] || {}).id;
-        if(!unit) return;
         const i = parseInt(card.getAttribute('data-xs-note-card'), 10);
         if(isNaN(i)) return;
-        if(_xsNoteDelMode){ xsNoteDeleteImage(unit, i); return; }
+        if(_xsNoteDelMode){ xsNoteDeleteImage(i); return; }
         const img = card.querySelector('.kp-img');
         if(!img || !img.getAttribute('src')) return;
         const cap = card.querySelector('.kp-img-cap');
@@ -30266,11 +30277,9 @@ function renderKMAdmin(){
       btn.addEventListener('click', (e)=>{
         e.stopPropagation();
         if(_xsNoteDelMode) return;
-        const unit = (EN_OXFORD_VOCAB_3A[_xsNoteUnit] || {}).id;
-        if(!unit) return;
         const i = parseInt(btn.getAttribute('data-xs-note-check'), 10);
         if(isNaN(i)) return;
-        xsNoteToggle(unit, i);
+        xsNoteToggle(i);
       });
     });
     // 删除模式开关
@@ -30281,11 +30290,10 @@ function renderKMAdmin(){
         renderXsNotes();
       });
     });
-    // ➕ 增加 → 唤起隐藏 file input
+    // ➕ 增加 → 唤起隐藏 file input（写入当前「学年 + lesson」桶）
     scope.querySelectorAll('[data-xs-note-add]').forEach(btn=>{
       btn.addEventListener('click', (e)=>{
         e.stopPropagation();
-        _xsNoteAddUnit = btn.getAttribute('data-xs-note-add') || '';
         const inp = document.getElementById('xsNoteImgInput');
         if(!inp){ toast('当前环境不支持图片导入'); return; }
         inp.value = '';
@@ -30293,13 +30301,14 @@ function renderKMAdmin(){
       });
     });
   }
-  // 单张打卡（规则与重点知识一致：本单元全部完成 → oxfordunit ⭐，取消则扣回）
-  function xsNoteToggle(unitId, idx){
-    const items = xsNoteItems(unitId);
+  // 单张打卡（规则与重点知识一致：当前学年 + lesson 全部完成 → oxfordunit ⭐，取消则扣回）
+  function xsNoteToggle(idx){
+    const items = xsNoteItems();
     if(!items.length) return;
-    const allDone = ()=> items.every((it,k)=> S.isReadingRead(XS_NOTE_READ, unitId+'::'+k));
+    const nk = xsNoteKey();
+    const allDone = ()=> items.every((it,k)=> S.isReadingRead(XS_NOTE_READ, nk+'::'+k));
     const was = allDone();
-    const key = unitId + '::' + idx;
+    const key = nk + '::' + idx;
     if(S.isReadingRead(XS_NOTE_READ, key)){
       S.unmarkReadingRead(XS_NOTE_READ, key);
     } else {
@@ -30312,14 +30321,14 @@ function renderKMAdmin(){
     renderXsNotes();
   }
   // 删除图片（确认 → 重排打卡下标 → 删除，避免「已学」错位）
-  function xsNoteDeleteImage(unitId, idx){
-    const list = xsNoteItems(unitId);
+  function xsNoteDeleteImage(idx){
+    const list = xsNoteItems();
     const it = list[idx];
     const name = (it && it.t) ? it.t : ('第 ' + (idx+1) + ' 张');
     openCustomModal('删除课堂笔记图片',
       `确定删除「<b>${esc(name)}</b>」这张课堂笔记图片吗？<div style="margin-top:8px;color:#5b6b85;font-size:13px">删除后不可恢复，该图片的打卡记录也会一并清除。</div>`,
       ()=>{
-        const nk = xsNoteKey(unitId);
+        const nk = xsNoteKey();
         if(window.Store && window.Store.shiftEnKeyPointReads) window.Store.shiftEnKeyPointReads(nk, idx, XS_NOTE_READ);
         if(window.Store && window.Store.delEnKeyPoint) window.Store.delEnKeyPoint(nk, idx);
         toast('🗑 已删除该图片');
@@ -30335,9 +30344,7 @@ function renderKMAdmin(){
     inp.addEventListener('change', ()=>{
       const files = Array.prototype.slice.call(inp.files || []).filter(f=> /^image\//.test(f.type || ''));
       if(!files.length){ inp.value = ''; return; }
-      const unitId = _xsNoteAddUnit || ((EN_OXFORD_VOCAB_3A[_xsNoteUnit]||{}).id) || '';
-      if(!unitId){ inp.value = ''; toast('请先选择一个单元'); return; }
-      const nk = xsNoteKey(unitId);
+      const nk = xsNoteKey();
       let pending = files.length, added = 0;
       const done = ()=>{
         pending--;
@@ -30370,126 +30377,31 @@ function renderKMAdmin(){
     if(!st.getXsNoteYears().length) st.setXsNoteYears(['三年级上册','三年级下册']);
     if(!st.getXsNoteLessons().length) st.setXsNoteLessons(['Lesson 1','Lesson 2','Lesson 3','Lesson 4','Lesson 5']);
   }
-  // R219-1：单个 chip（含删除 ×）
-  function xsNoteSelChip(name, active, kind){
-    return `<button class="xs-note-seltag${active?' active':''}" data-xs-note-${kind}="${esc(name)}">${esc(name)}<span class="xs-note-sel-x" data-xs-note-${kind}-del="${esc(name)}" title="删除该选项">×</span></button>`;
-  }
-  // R219-1：渲染学年 / lesson 选择栏（chip 行 + 新增键，每项可删除）
-  function renderXsNoteSel(){
-    const st = window.Store;
-    const yEl = document.getElementById('xsNoteYearTags');
-    const lEl = document.getElementById('xsNoteLessonTags');
-    const years = (st && st.getXsNoteYears) ? st.getXsNoteYears() : [];
-    const lessons = (st && st.getXsNoteLessons) ? st.getXsNoteLessons() : [];
-    if(yEl){
-      yEl.innerHTML = years.map(y => xsNoteSelChip(y, _xsNoteYear === y, 'year')).join('')
-        + `<button class="xs-note-seltag xs-note-sel-add" data-xs-note-year-add="1">＋ 新增学年</button>`;
-    }
-    if(lEl){
-      lEl.innerHTML = lessons.map(l => xsNoteSelChip(l, _xsNoteLesson === l, 'lesson')).join('')
-        + `<button class="xs-note-seltag xs-note-sel-add" data-xs-note-lesson-add="1">＋ 新增 lesson</button>`;
-    }
-    xsNoteBindSel();
-  }
-  // R219-1：学年 / lesson 选择栏交互（选中 / 新增 / 删除，交互参考乐读数学 .math-sub-tag 同行选择栏）
-  function xsNoteBindSel(){
-    const yEl = document.getElementById('xsNoteYearTags');
-    const lEl = document.getElementById('xsNoteLessonTags');
-    if(yEl){
-      yEl.querySelectorAll('[data-xs-note-year]').forEach(btn=>{
-        btn.addEventListener('click', (e)=>{
-          if(e.target && e.target.hasAttribute && e.target.hasAttribute('data-xs-note-year-del')) return; // 删除键单独处理
-          e.stopPropagation();
-          _xsNoteYear = btn.getAttribute('data-xs-note-year') || '';
-          renderXsNotes();
-        });
-      });
-      yEl.querySelectorAll('[data-xs-note-year-del]').forEach(x=>{
-        x.addEventListener('click', (e)=>{
-          e.stopPropagation();
-          const name = x.getAttribute('data-xs-note-year-del') || '';
-          if(!name) return;
-          openCustomModal('删除学年选项', `确定删除学年「<b>${esc(name)}</b>」这个选项吗？<div style="margin-top:8px;color:#5b6b85;font-size:13px">仅移除选项入口，该学年下已导入的笔记图片会一并隐藏（数据仍保留在存储中）。</div>`, ()=>{
-            const st = window.Store; if(!st) return true;
-            st.setXsNoteYears(st.getXsNoteYears().filter(v => v !== name));
-            if(_xsNoteYear === name) _xsNoteYear = '';
-            renderXsNotes();
-            return true;
-          });
-        });
-      });
-      yEl.querySelectorAll('[data-xs-note-year-add]').forEach(btn=>{
-        btn.addEventListener('click', (e)=>{
-          e.stopPropagation();
-          const raw = (window.prompt ? window.prompt('新增学年名称（如：三年级上册）') : '') || '';
-          const name = raw.trim();
-          if(!name) return;
-          const st = window.Store; if(!st) return;
-          const arr = st.getXsNoteYears();
-          if(arr.indexOf(name) >= 0){ toast('该学年已存在'); return; }
-          st.setXsNoteYears(arr.concat([name]));
-          _xsNoteYear = name;
-          renderXsNotes();
-        });
-      });
-    }
-    if(lEl){
-      lEl.querySelectorAll('[data-xs-note-lesson]').forEach(btn=>{
-        btn.addEventListener('click', (e)=>{
-          if(e.target && e.target.hasAttribute && e.target.hasAttribute('data-xs-note-lesson-del')) return;
-          e.stopPropagation();
-          _xsNoteLesson = btn.getAttribute('data-xs-note-lesson') || '';
-          renderXsNotes();
-        });
-      });
-      lEl.querySelectorAll('[data-xs-note-lesson-del]').forEach(x=>{
-        x.addEventListener('click', (e)=>{
-          e.stopPropagation();
-          const name = x.getAttribute('data-xs-note-lesson-del') || '';
-          if(!name) return;
-          openCustomModal('删除 lesson 选项', `确定删除 lesson「<b>${esc(name)}</b>」这个选项吗？<div style="margin-top:8px;color:#5b6b85;font-size:13px">仅移除选项入口，该 lesson 下已导入的笔记图片会一并隐藏（数据仍保留在存储中）。</div>`, ()=>{
-            const st = window.Store; if(!st) return true;
-            st.setXsNoteLessons(st.getXsNoteLessons().filter(v => v !== name));
-            if(_xsNoteLesson === name) _xsNoteLesson = '';
-            renderXsNotes();
-            return true;
-          });
-        });
-      });
-      lEl.querySelectorAll('[data-xs-note-lesson-add]').forEach(btn=>{
-        btn.addEventListener('click', (e)=>{
-          e.stopPropagation();
-          const raw = (window.prompt ? window.prompt('新增 lesson 名称（如：Lesson 6）') : '') || '';
-          const name = raw.trim();
-          if(!name) return;
-          const st = window.Store; if(!st) return;
-          const arr = st.getXsNoteLessons();
-          if(arr.indexOf(name) >= 0){ toast('该 lesson 已存在'); return; }
-          st.setXsNoteLessons(arr.concat([name]));
-          _xsNoteLesson = name;
-          renderXsNotes();
-        });
-      });
-    }
-  }
+  // R221-1：旧的学年 / lesson 平铺 chip 选择栏已整体下线，
+  // 统一改为筛选按键 + 下拉面板（参考乐读数学板块按键）。
   function xsNoteRenderMenus(scope){
     if(!scope) return;
     const st = window.Store;
-    const uMenu = scope.querySelector('[data-xs-pick-menu="unit"]');
-    if(uMenu){
-      uMenu.innerHTML = (EN_OXFORD_VOCAB_3A||[]).map((u2,i)=>`<button class="xs-note-pick-item${i===_xsNoteUnit?' active':''}" data-xs-pick-unit="${i}">${esc(u2.unit)} · ${esc(u2.title)}</button>`).join('');
-    }
     const yMenu = scope.querySelector('[data-xs-pick-menu="year"]');
     if(yMenu){
       const years = (st && st.getXsNoteYears) ? st.getXsNoteYears() : [];
-      yMenu.innerHTML = (years.length ? years.map(y=>`<button class="xs-note-pick-item${_xsNoteYear===y?' active':''}" data-xs-pick-year="${esc(y)}">${esc(y)}</button>`).join('') : '<div class="xs-note-pick-empty">暂无学年，点下方＋新增</div>')
+      let html = years.length
+        ? years.map(y=>`<button class="xs-note-pick-item${_xsNoteYear===y?' active':''}" data-xs-pick-year="${esc(y)}">${esc(y)}</button>`).join('')
+        : '<div class="xs-note-pick-empty">暂无学年，点下方＋新增</div>';
+      // 历史数据里没有学年的笔记 → 归入「未分类」桶，有内容时才出现该选项
+      if(xsNoteHasBucket('', _xsNoteLesson)) html += `<button class="xs-note-pick-item${_xsNoteYear===''?' active':''}" data-xs-pick-year="">未分类</button>`;
+      yMenu.innerHTML = html
         + `<div class="xs-note-pick-foot"><button class="xs-note-pick-add" data-xs-pick-year-add="1">＋ 新增学年</button><button class="xs-note-pick-del" data-xs-pick-year-del="1"${_xsNoteYear?'':' disabled'}>🗑 删除</button></div>`;
     }
     const lMenu = scope.querySelector('[data-xs-pick-menu="lesson"]');
     if(lMenu){
       const lessons = (st && st.getXsNoteLessons) ? st.getXsNoteLessons() : [];
-      lMenu.innerHTML = (lessons.length ? lessons.map(l=>`<button class="xs-note-pick-item${_xsNoteLesson===l?' active':''}" data-xs-pick-lesson="${esc(l)}">${esc(l)}</button>`).join('') : '<div class="xs-note-pick-empty">暂无 lesson，点下方＋新增</div>')
-        + `<div class="xs-note-pick-foot"><button class="xs-note-pick-add" data-xs-pick-lesson-add="1">＋ 新增 lesson</button></div>`;
+      let html = lessons.length
+        ? lessons.map(l=>`<button class="xs-note-pick-item${_xsNoteLesson===l?' active':''}" data-xs-pick-lesson="${esc(l)}">${esc(l)}</button>`).join('')
+        : '<div class="xs-note-pick-empty">暂无 lesson，点下方＋新增</div>';
+      if(xsNoteHasBucket(_xsNoteYear, '')) html += `<button class="xs-note-pick-item${_xsNoteLesson===''?' active':''}" data-xs-pick-lesson="">未分类</button>`;
+      lMenu.innerHTML = html
+        + `<div class="xs-note-pick-foot"><button class="xs-note-pick-add" data-xs-pick-lesson-add="1">＋ 新增 lesson</button><button class="xs-note-pick-del" data-xs-pick-lesson-del="1"${_xsNoteLesson?'':' disabled'}>🗑 删除</button></div>`;
     }
   }
   function xsNoteBindPickers(scope){
@@ -30498,15 +30410,13 @@ function renderKMAdmin(){
       btn.addEventListener('click', (e)=>{
         e.stopPropagation();
         const which = btn.getAttribute('data-xs-pick');
+        const group = btn.closest('.xs-note-pick-group');
         const menu = scope.querySelector('[data-xs-pick-menu="'+which+'"]');
         if(!menu) return;
         const willOpen = menu.hidden;
         xsNoteClosePickers();
-        if(willOpen){ menu.hidden = false; _xsNotePickOpen = which; }
+        if(willOpen){ menu.hidden = false; _xsNotePickOpen = which; if(group) group.classList.add('is-open'); }
       });
-    });
-    scope.querySelectorAll('[data-xs-pick-unit]').forEach(b=>{
-      b.addEventListener('click', (e)=>{ e.stopPropagation(); const i=parseInt(b.getAttribute('data-xs-pick-unit'),10); if(isNaN(i))return; _xsNoteUnit=i; _xsNoteDelMode=false; renderXsNotes(); });
     });
     scope.querySelectorAll('[data-xs-pick-year]').forEach(b=>{
       b.addEventListener('click', (e)=>{ e.stopPropagation(); _xsNoteYear=b.getAttribute('data-xs-pick-year')||''; renderXsNotes(); });
@@ -30547,6 +30457,17 @@ function renderKMAdmin(){
         st.setXsNoteLessons(arr.concat([name])); _xsNoteLesson = name; renderXsNotes();
       });
     });
+    scope.querySelectorAll('[data-xs-pick-lesson-del]').forEach(b=>{
+      b.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        if(!_xsNoteLesson) return;
+        const name = _xsNoteLesson;
+        openCustomModal('删除 lesson 选项', `确定删除 lesson「<b>${esc(name)}</b>」这个选项吗？<div style="margin-top:8px;color:#5b6b85;font-size:13px">仅移除选项入口，该 lesson 下已导入的笔记图片会一并隐藏（数据仍保留在存储中）。</div>`, ()=>{
+          const st = window.Store; if(!st) return true;
+          st.setXsNoteLessons(st.getXsNoteLessons().filter(v => v !== name)); _xsNoteLesson = ''; renderXsNotes(); return true;
+        });
+      });
+    });
     if(!_xsNoteOutsideBound){
       _xsNoteOutsideBound = true;
       document.addEventListener('click', (e)=>{
@@ -30557,6 +30478,7 @@ function renderKMAdmin(){
   }
   function xsNoteClosePickers(){
     document.querySelectorAll('.xs-note-pick-menu').forEach(m=>{ m.hidden = true; });
+    document.querySelectorAll('.xs-note-pick-group.is-open').forEach(g=>{ g.classList.remove('is-open'); });
     _xsNotePickOpen = '';
   }
 
@@ -35118,6 +35040,9 @@ function renderKMAdmin(){
     if(mathSubTagsEl && !mathSubTagsEl._bound){
       mathSubTagsEl._bound = true;
       mathSubTagsEl.addEventListener('click', e => {
+        // R221：面板底部「＋ 新增板块」管理按键改用事件委托
+        const addS = e.target.closest('[data-math-add-sub-btn]');
+        if(addS){ e.stopPropagation(); closeMathFilters(); mathShowAddRow('mathSubAddInline','btnMathAddSubCard','mathSubNewName'); return; }
         const tag = e.target.closest('[data-math-group]');
         if(!tag) return;
         // 面板会立即重渲染（被点节点脱离 DOM），必须阻断冒泡，否则 document 上的「点外部关闭」会误判为外部点击
@@ -35130,18 +35055,19 @@ function renderKMAdmin(){
       });
     }
     // 就地输入行：点按钮展开输入框，Enter/确定提交，Esc/取消收起
+    // R221：触发按钮可能已被移入筛选面板（弹窗内联重渲染），故 btn 缺失时仍须绑定行内 OK/Cancel/Enter
     function bindMathInlineAdd(btnId, rowId, inputId, okId, cancelId, onSubmit){
-      const btn = document.getElementById(btnId);
       const row = document.getElementById(rowId);
-      const inp = document.getElementById(inputId);
-      if(!btn || !row) return;
-      const show = ()=>{ row.classList.remove('hidden'); btn.classList.add('hidden'); if(inp){ inp.value = ''; try{ inp.focus(); }catch(e){} } };
-      const hide = ()=>{ row.classList.add('hidden'); btn.classList.remove('hidden'); if(inp) inp.value = ''; };
-      if(!btn._bound){ btn._bound = true; btn.onclick = show; }
+      if(!row) return;
+      const show = ()=> mathShowAddRow(rowId, btnId, inputId);
+      const hide = ()=> mathHideAddRow(rowId, btnId);
+      const btn = document.getElementById(btnId);
+      if(btn && !btn._bound){ btn._bound = true; btn.onclick = show; }
       const ok = document.getElementById(okId);
       const cancel = document.getElementById(cancelId);
-      if(ok && !ok._bound){ ok._bound = true; ok.onclick = ()=>{ if(onSubmit(inp ? inp.value : '')) hide(); }; }
+      if(ok && !ok._bound){ ok._bound = true; ok.onclick = ()=>{ if(onSubmit(document.getElementById(inputId) ? document.getElementById(inputId).value : '')) hide(); }; }
       if(cancel && !cancel._bound){ cancel._bound = true; cancel.onclick = hide; }
+      const inp = document.getElementById(inputId);
       if(inp && !inp._bound){
         inp._bound = true;
         inp.addEventListener('keydown', ev => {
@@ -35175,6 +35101,11 @@ function renderKMAdmin(){
     if(mathTypeListEl && !mathTypeListEl._bound){
       mathTypeListEl._bound = true;
       mathTypeListEl.addEventListener('click', e => {
+        // R221：面板底部管理按键（新增/删除题型）改用事件委托
+        const addT = e.target.closest('[data-math-add-type-btn]');
+        if(addT){ e.stopPropagation(); closeMathFilters(); mathShowAddRow('mathTypeAddInline','btnMathAddType','mathTypeNewName'); return; }
+        const delT = e.target.closest('[data-math-del-type-btn]');
+        if(delT){ e.stopPropagation(); openMathDelTypeMgr(); return; }
         const b = e.target.closest('[data-math-type]');
         if(!b) return;
         // 同上：面板重渲染后节点脱离 DOM，需阻断冒泡避免被「点外部关闭」误伤
