@@ -147,7 +147,7 @@ body{width:100%;height:100vh;height:100dvh;display:flex;flex-direction:row}
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
   background:rgba(255,255,255,.85);border:1.5px solid rgba(255,255,255,.6);
   padding:4px 2px;border-radius:8px;cursor:pointer;font-size:12px;color:var(--tiffany-deep);
-  transition:.15s;flex:0 0 auto;white-space:nowrap;height:50px;
+  transition:.15s;flex:0 0 auto;white-space:nowrap;height:54px;
   box-shadow:0 1px 3px rgba(0,0,0,.12);
 }
 .nav-btn .ico{font-size:18px;line-height:1;filter:drop-shadow(0 1px 1px rgba(0,0,0,.15))}
@@ -1304,7 +1304,7 @@ button[hidden]{display:none!important}
 .report-card-head h3{margin:0}
 .report-tabs .sub-tab{font-size:12px;padding:0 12px;height:34px;min-height:34px;display:inline-flex;align-items:center;justify-content:center;line-height:1}
 /* R217-7②：导出图片 / 导出表格 按钮视觉与「周度学习报告」标签按键保持一致（白底圆角描边胶囊） */
-.report-export-row{margin-top:8px;display:flex;gap:8px;flex-wrap:wrap}
+.report-export-row{margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
 /* R218-5：导出图片 / 导出表格 高度与「周度 / 月度学习报告」按键完全一致（34px） */
 .report-export-row .report-export-btn{background:#fff;border:1.5px solid var(--tone-200);color:var(--muted);border-radius:18px;font-size:12px;font-weight:600;cursor:pointer;box-shadow:none;padding:0 14px;height:34px;min-height:34px;display:inline-flex;align-items:center;justify-content:center;line-height:1}
 .report-export-btn:hover{background:var(--tone-100);color:var(--muted)}
@@ -3933,6 +3933,26 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 
 /* ============ V114：牛津英语 三年级上册 课本点读 ============ */
 .en-oxford-tip{ font-size:13px; color:var(--muted); margin:4px 4px 10px; line-height:1.5; }
+/* R219-1：课堂笔记页说明卡（迁入外部说明文字，呈现为浅蓝卡片） */
+.notes-mode .en-oxford-tip{
+  color:var(--tone-800); background:var(--tone-100); border:1px solid var(--tone-200);
+  border-radius:12px; padding:10px 12px; margin:4px 4px 8px; font-weight:600;
+}
+/* R219-1：学年 / lesson 同行选择栏（参考乐读数学 .math-sub-tag 风格，可新增 / 删除） */
+.xs-note-sel-row{ display:flex; align-items:center; gap:10px; margin:8px 4px 0; flex-wrap:wrap; }
+.xs-note-sel-label{ font-size:13px; font-weight:800; color:var(--tone-800); min-width:46px; flex:0 0 auto; }
+.xs-note-seltags{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+.xs-note-seltag{
+  display:inline-flex; align-items:center; gap:6px; padding:6px 12px; border:1.5px solid var(--tone-200);
+  background:#fff; border-radius:20px; cursor:pointer; font-size:13px; font-weight:600; color:var(--tone-900);
+  transition:.15s; -webkit-appearance:none; appearance:none; font-family:inherit;
+}
+.xs-note-seltag:hover{ background:var(--tone-100); border-color:var(--tone-400); }
+.xs-note-seltag.active{ background:linear-gradient(135deg,var(--tone-300),var(--tone-400)); border-color:var(--tone-600); color:#fff; box-shadow:0 2px 8px rgba(64,150,255,.28); }
+.xs-note-sel-x{ font-size:14px; line-height:1; color:var(--tone-600); font-weight:800; padding:0 1px; border-radius:50%; }
+.xs-note-seltag.active .xs-note-sel-x{ color:rgba(255,255,255,.9); }
+.xs-note-sel-add{ border-style:dashed; color:var(--tone-600); background:transparent; }
+.xs-note-sel-add:hover{ background:var(--tone-100); border-color:var(--tone-500); }
 .en-oxford-book{ padding:2px; }
 .en-module{ margin-bottom:16px; }
 .en-module-title{
@@ -4924,7 +4944,7 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   .main-wrap{font-size:15px;-webkit-text-size-adjust:100%}
 
   /* R35：触屏适配随栏宽 ×1.5 回复（R36 min-height 60 保留触控底线，字号/图标同步放大） */
-  .nav-btn{height:50px;min-height:50px;padding:5px 3px;font-size:13px} /* R218-2：导航按钮高度固定 50px */
+  .nav-btn{height:54px;min-height:54px;padding:5px 3px;font-size:13px} /* R218-2：导航按钮高度固定 50px */
   .nav-btn .ico{font-size:19px}
 
   /* R35：触屏时钟字号随栏宽 ×1.5（11→15 / 10→13 / 13→18） */
@@ -6696,7 +6716,7 @@ html,body{margin:0;padding:0}
     flex:1 1 auto;flex-direction:row;gap:4px;
     padding:5px 6px;overflow-x:auto;overflow-y:hidden;background:transparent
   }
-  .nav-btn{flex:0 0 auto;min-width:58px;height:50px;min-height:50px;padding:5px 7px}
+  .nav-btn{flex:0 0 auto;min-width:58px;height:54px;min-height:54px;padding:5px 7px}
   .nav-btn .ico{font-size:18px}
   .nav-btn .lbl{font-size:10px}
   .main-wrap{flex:1 1 auto;min-height:0;padding:10px 10px 20px}
@@ -7713,9 +7733,9 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 .sidebar-clock:active{ filter:brightness(.97); }
 
 /* ---- R215-3：万年历弹窗 ---- */
-.navcal-box{ width:min(430px,92vw); }
+.navcal-box{ width:min(430px,92vw); background:rgba(255,255,255,.55); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); border:1px solid rgba(255,255,255,.65); box-shadow:0 12px 40px rgba(30,58,138,.28); }
 /* R218-3②：年月滑选弹窗（复用 wb-ym 双滚轮） */
-.navcal-pick-box{ width:min(400px,92vw); }
+.navcal-pick-box{ width:min(400px,92vw); background:rgba(255,255,255,.55); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); border:1px solid rgba(255,255,255,.65); box-shadow:0 12px 40px rgba(30,58,138,.28); }
 .navcal-pick-hint{ text-align:center; font-size:12px; color:var(--muted); padding:6px 0 2px; }
 .navcal-pick-box .modal-head{ margin:-18px -18px 12px; padding:12px 18px; border-radius:14px 14px 0 0; background:linear-gradient(135deg,var(--tone-300),var(--tone-500)); color:#fff; }
 .navcal-pick-box .modal-head h3{ color:#fff; }
@@ -7789,14 +7809,14 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 
 /* ---- R215-4：iPad 触屏 —— 导航栏按键适当增高，触控更舒适 ---- */
 @media (pointer:coarse) and (min-width:768px){
-  .nav-btn{ height:50px; min-height:50px; padding:5px 3px; font-size:13px; }
+  .nav-btn{ height:54px; min-height:54px; padding:5px 3px; font-size:13px; }
   .nav-btn .ico{ font-size:21px; }
   .nav-btn .lbl{ font-size:12px; }
   .sidebar-nav{ gap:5px; }
 }
 /* iPad 横屏：进一步增高、加圆角，整体留白更舒展（侧栏仍可纵向滚动） */
 @media (min-width:1024px) and (orientation:landscape) and (pointer:coarse){
-  .nav-btn{ height:50px; min-height:50px; border-radius:12px; padding:5px 4px; }
+  .nav-btn{ height:54px; min-height:54px; border-radius:12px; padding:5px 4px; }
   .nav-btn .ico{ font-size:23px; }
   .nav-btn .lbl{ font-size:13px; }
   .sidebar-clock .rt-date{ font-size:15px; }
@@ -11335,6 +11355,30 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
     });
     st.readFlags = next;
     save(st);
+  }
+
+  // R219-1：学而思英语·课堂笔记「学年 / lesson」选项（可新增 / 删除，持久化）
+  function getXsNoteYears(){
+    const st = load();
+    if(!st.xsNoteYears) st.xsNoteYears = [];
+    return st.xsNoteYears.slice();
+  }
+  function setXsNoteYears(arr){
+    const st = load();
+    st.xsNoteYears = (arr || []).slice();
+    save(st);
+    return st.xsNoteYears.slice();
+  }
+  function getXsNoteLessons(){
+    const st = load();
+    if(!st.xsNoteLessons) st.xsNoteLessons = [];
+    return st.xsNoteLessons.slice();
+  }
+  function setXsNoteLessons(arr){
+    const st = load();
+    st.xsNoteLessons = (arr || []).slice();
+    save(st);
+    return st.xsNoteLessons.slice();
   }
 
   // ----- R52：结构化自定义内容（看图写话 kantu / 作文素材 sucai / 古诗词与文言文 gushi） -----
@@ -16722,6 +16766,8 @@ be 动词：am / is → was；are → were
     getNwZone, addNwZone, delNwZone, setNwZone, // R181-6c：补导出（R179 漏导出致拖拽排序静默不落库）
     // R122：新世界·英语专区「重点知识」单元图片（含删除后打卡下标重排）
     getEnKeyPoints, addEnKeyPoint, delEnKeyPoint, shiftEnKeyPointReads,
+    // R219-1：学而思英语·课堂笔记「学年 / lesson」选项（可新增 / 删除）
+    getXsNoteYears, setXsNoteYears, getXsNoteLessons, setXsNoteLessons,
     // R178：书籍封面 / 正文完成 / 书签 / 目录
     getBookCover, setBookCover, getBookPageDone, toggleBookPageDone, countBookPageDone, getBookEntryDone, toggleBookEntryDone, countBookEntryDone, getKtxsBooks, updateKtxsBook, deleteKtxsBook, getBookBookmarks, addBookBookmark, delBookBookmark, setBookBookmarkFlag, getBookToc, addBookToc, delBookToc,
     // R126：存储写入错误状态（配额超限感知）
@@ -30116,7 +30162,14 @@ function renderKMAdmin(){
   let _xsNoteAddUnit = '';      // 待导入的目标单元（Store 键）
   const XS_NOTE_READ = 'xsNote';       // 打卡 kind（readFlags 命名空间）
   const XS_NOTE_NS = 'xsnote::';       // 图片存储键前缀
-  function xsNoteKey(unitId){ return XS_NOTE_NS + String(unitId || ''); }
+  let _xsNoteYear = '';                // R219-1：当前选中学年（空 = 不过滤，沿用旧键）
+  let _xsNoteLesson = '';              // R219-1：当前选中 lesson（空 = 不过滤，沿用旧键）
+  function xsNoteKey(unitId){
+    // R219-1：学年 / lesson 作为可选维度并入键（默认空时退化为旧键 xsnote::<unitId>，兼容历史数据）
+    return XS_NOTE_NS + String(unitId || '')
+      + (_xsNoteYear ? ('@' + _xsNoteYear) : '')
+      + (_xsNoteLesson ? ('@' + _xsNoteLesson) : '');
+  }
   function xsNoteItems(unitId){
     return (window.Store && window.Store.getEnKeyPoints) ? window.Store.getEnKeyPoints(xsNoteKey(unitId)) : [];
   }
@@ -30169,8 +30222,16 @@ function renderKMAdmin(){
     target.classList.remove('xs-list-grammar','xs-list-raz');
     target.classList.add('notes-mode');
     target.innerHTML = `
-      <div class="yw-comp-head">沪教牛津英语 三年级上册 · 课堂笔记（导入图片 · 每张单独打卡）</div>
-      <div class="en-oxford-tip">点单元卡片切换；进入单元后点「➕ 增加」导入图片（自动压缩并自适应屏幕）。点图片可放大查看内容，点图片下方「打卡」键标记已学 / 取消；本单元全部打卡完成即可获得 5⭐️。</div>
+      <div class="yw-comp-head">课堂笔记（导入图片 · 每张单独打卡）</div>
+      <div class="en-oxford-tip" id="xsNoteTip">📝 课堂笔记 · 共 ${total} 张（第 ${idx+1}/${list.length} 单元）</div>
+      <div class="xs-note-sel-row">
+        <span class="xs-note-sel-label">学年</span>
+        <div class="xs-note-seltags" id="xsNoteYearTags"></div>
+      </div>
+      <div class="xs-note-sel-row">
+        <span class="xs-note-sel-label">lesson</span>
+        <div class="xs-note-seltags" id="xsNoteLessonTags"></div>
+      </div>
       <div class="en-book-head-row">
         ${xsNoteUnitCards(idx)}
         <div class="en-book-cap">
@@ -30187,9 +30248,12 @@ function renderKMAdmin(){
       ${_xsNoteDelMode ? `<div class="en-kp-del-hint">🗑 删除模式已开启：点击任意图片即可删除（每张都会再次确认）</div>` : ''}
       <div class="kp-img-grid${_xsNoteDelMode?' is-del-mode':''}">${cardsHtml}</div>
       <div class="en-oxford-foot">本单元共 ${total} 张 · 已完成 ${done} 张${complete?' · 🎉 本单元已全部完成':''}</div>`;
-    // 顶部说明 / 按键：隐藏「＋ 新增」「🔍 筛选」，换成课堂笔记统计文案
+    // R219-1：说明卡文字已迁入 en-oxford-tip（id=xsNoteTip）；清空外部 #xsSummaryHint，避免重复展示
     const hintEl = $('#xsSummaryHint');
-    if(hintEl) hintEl.textContent = `📝 课堂笔记 · 沪教牛津英语 三年级上册 · 共 ${total} 张（第 ${idx+1}/${list.length} 单元）`;
+    if(hintEl) hintEl.textContent = '';
+    // R219-1：学年 / lesson 选择栏渲染（含新增 / 删除管理）
+    xsNoteEnsureSeed();
+    renderXsNoteSel();
     const addBtn = $('#btnXsContentAdd');
     if(addBtn){ addBtn.classList.add('hidden'); addBtn.style.display = 'none'; }
     const filterBtn = $('#btnXsGramFilter');
@@ -30332,6 +30396,115 @@ function renderKMAdmin(){
         });
       });
     });
+  }
+  // R219-1：学年 / lesson 选项首次访问时填充默认集合（仅当为空，避免覆盖家长自定义）
+  function xsNoteEnsureSeed(){
+    const st = window.Store;
+    if(!st || !st.getXsNoteYears || !st.getXsNoteLessons) return;
+    if(!st.getXsNoteYears().length) st.setXsNoteYears(['三年级上册','三年级下册']);
+    if(!st.getXsNoteLessons().length) st.setXsNoteLessons(['Lesson 1','Lesson 2','Lesson 3','Lesson 4','Lesson 5']);
+  }
+  // R219-1：单个 chip（含删除 ×）
+  function xsNoteSelChip(name, active, kind){
+    return `<button class="xs-note-seltag${active?' active':''}" data-xs-note-${kind}="${esc(name)}">${esc(name)}<span class="xs-note-sel-x" data-xs-note-${kind}-del="${esc(name)}" title="删除该选项">×</span></button>`;
+  }
+  // R219-1：渲染学年 / lesson 选择栏（chip 行 + 新增键，每项可删除）
+  function renderXsNoteSel(){
+    const st = window.Store;
+    const yEl = document.getElementById('xsNoteYearTags');
+    const lEl = document.getElementById('xsNoteLessonTags');
+    const years = (st && st.getXsNoteYears) ? st.getXsNoteYears() : [];
+    const lessons = (st && st.getXsNoteLessons) ? st.getXsNoteLessons() : [];
+    if(yEl){
+      yEl.innerHTML = years.map(y => xsNoteSelChip(y, _xsNoteYear === y, 'year')).join('')
+        + `<button class="xs-note-seltag xs-note-sel-add" data-xs-note-year-add="1">＋ 新增学年</button>`;
+    }
+    if(lEl){
+      lEl.innerHTML = lessons.map(l => xsNoteSelChip(l, _xsNoteLesson === l, 'lesson')).join('')
+        + `<button class="xs-note-seltag xs-note-sel-add" data-xs-note-lesson-add="1">＋ 新增 lesson</button>`;
+    }
+    xsNoteBindSel();
+  }
+  // R219-1：学年 / lesson 选择栏交互（选中 / 新增 / 删除，交互参考乐读数学 .math-sub-tag 同行选择栏）
+  function xsNoteBindSel(){
+    const yEl = document.getElementById('xsNoteYearTags');
+    const lEl = document.getElementById('xsNoteLessonTags');
+    if(yEl){
+      yEl.querySelectorAll('[data-xs-note-year]').forEach(btn=>{
+        btn.addEventListener('click', (e)=>{
+          if(e.target && e.target.hasAttribute && e.target.hasAttribute('data-xs-note-year-del')) return; // 删除键单独处理
+          e.stopPropagation();
+          _xsNoteYear = btn.getAttribute('data-xs-note-year') || '';
+          renderXsNotes();
+        });
+      });
+      yEl.querySelectorAll('[data-xs-note-year-del]').forEach(x=>{
+        x.addEventListener('click', (e)=>{
+          e.stopPropagation();
+          const name = x.getAttribute('data-xs-note-year-del') || '';
+          if(!name) return;
+          openCustomModal('删除学年选项', `确定删除学年「<b>${esc(name)}</b>」这个选项吗？<div style="margin-top:8px;color:#5b6b85;font-size:13px">仅移除选项入口，该学年下已导入的笔记图片会一并隐藏（数据仍保留在存储中）。</div>`, ()=>{
+            const st = window.Store; if(!st) return true;
+            st.setXsNoteYears(st.getXsNoteYears().filter(v => v !== name));
+            if(_xsNoteYear === name) _xsNoteYear = '';
+            renderXsNotes();
+            return true;
+          });
+        });
+      });
+      yEl.querySelectorAll('[data-xs-note-year-add]').forEach(btn=>{
+        btn.addEventListener('click', (e)=>{
+          e.stopPropagation();
+          const raw = (window.prompt ? window.prompt('新增学年名称（如：三年级上册）') : '') || '';
+          const name = raw.trim();
+          if(!name) return;
+          const st = window.Store; if(!st) return;
+          const arr = st.getXsNoteYears();
+          if(arr.indexOf(name) >= 0){ toast('该学年已存在'); return; }
+          st.setXsNoteYears(arr.concat([name]));
+          _xsNoteYear = name;
+          renderXsNotes();
+        });
+      });
+    }
+    if(lEl){
+      lEl.querySelectorAll('[data-xs-note-lesson]').forEach(btn=>{
+        btn.addEventListener('click', (e)=>{
+          if(e.target && e.target.hasAttribute && e.target.hasAttribute('data-xs-note-lesson-del')) return;
+          e.stopPropagation();
+          _xsNoteLesson = btn.getAttribute('data-xs-note-lesson') || '';
+          renderXsNotes();
+        });
+      });
+      lEl.querySelectorAll('[data-xs-note-lesson-del]').forEach(x=>{
+        x.addEventListener('click', (e)=>{
+          e.stopPropagation();
+          const name = x.getAttribute('data-xs-note-lesson-del') || '';
+          if(!name) return;
+          openCustomModal('删除 lesson 选项', `确定删除 lesson「<b>${esc(name)}</b>」这个选项吗？<div style="margin-top:8px;color:#5b6b85;font-size:13px">仅移除选项入口，该 lesson 下已导入的笔记图片会一并隐藏（数据仍保留在存储中）。</div>`, ()=>{
+            const st = window.Store; if(!st) return true;
+            st.setXsNoteLessons(st.getXsNoteLessons().filter(v => v !== name));
+            if(_xsNoteLesson === name) _xsNoteLesson = '';
+            renderXsNotes();
+            return true;
+          });
+        });
+      });
+      lEl.querySelectorAll('[data-xs-note-lesson-add]').forEach(btn=>{
+        btn.addEventListener('click', (e)=>{
+          e.stopPropagation();
+          const raw = (window.prompt ? window.prompt('新增 lesson 名称（如：Lesson 6）') : '') || '';
+          const name = raw.trim();
+          if(!name) return;
+          const st = window.Store; if(!st) return;
+          const arr = st.getXsNoteLessons();
+          if(arr.indexOf(name) >= 0){ toast('该 lesson 已存在'); return; }
+          st.setXsNoteLessons(arr.concat([name]));
+          _xsNoteLesson = name;
+          renderXsNotes();
+        });
+      });
+    }
   }
   function renderXueersiSummary(){
     if(xsCat === 'stories') xsCat = 'words'; // V12.3：仅过滤绘本；恢复语法
