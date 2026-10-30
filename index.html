@@ -69,6 +69,8 @@
   --z-xs-pale:#e7f9e8;    --z-xs-pale2:#cef1d2;    --z-xs-mid:#8fd99a;    --z-xs-main:#52bb67;    --z-xs-deep:#277539;    --z-xs-rgb:82,187,103;
   --z-read-pale:#defaf9;  --z-read-pale2:#bdf3f0;  --z-read-mid:#57dcd7;  --z-read-main:#00beba;  --z-read-deep:#007775;  --z-read-rgb:0,190,186;
   --z-baike-pale:#e4f6ff; --z-baike-pale2:#caeaff; --z-baike-mid:#86cbff; --z-baike-main:#44a7fd; --z-baike-deep:#1c67a4; --z-baike-rgb:68,167,253;
+  /* R218-6：百科讲堂主题盒底色（需求指定色值，集中为令牌便于统一调整） */
+  --baike-box-bg:#f0f8ff;
   /* 补充两档（同一 L/C 阶梯，仅色相不同）：围棋=青绿 / 家务=玫红 */
   --z-go-pale:#eff7e2;    --z-go-pale2:#deedc6;    --z-go-mid:#b3d17d;    --z-go-main:#8cb135;    --z-go-deep:#546e0d;    --z-go-rgb:140,177,53;
   --z-chore-pale:#ffecf8; --z-chore-pale2:#ffd8ef; --z-chore-mid:#faa6d5; --z-chore-main:#e476b7; --z-chore-deep:#914373; --z-chore-rgb:228,118,183;
@@ -145,7 +147,7 @@ body{width:100%;height:100vh;height:100dvh;display:flex;flex-direction:row}
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
   background:rgba(255,255,255,.85);border:1.5px solid rgba(255,255,255,.6);
   padding:4px 2px;border-radius:8px;cursor:pointer;font-size:12px;color:var(--tiffany-deep);
-  transition:.15s;flex:0 0 auto;white-space:nowrap;height:56px;
+  transition:.15s;flex:0 0 auto;white-space:nowrap;height:50px;
   box-shadow:0 1px 3px rgba(0,0,0,.12);
 }
 .nav-btn .ico{font-size:18px;line-height:1;filter:drop-shadow(0 1px 1px rgba(0,0,0,.15))}
@@ -657,6 +659,8 @@ button[hidden]{display:none!important}
 
 /* 语法卡片重排版（V16-2：4 个一行；R168-1：每页一行、每行 3 个条目） */
 .xs-list-grammar{grid-template-columns:repeat(3,1fr);gap:10px}
+/* R218-1：学而思「课堂笔记」子页沿用重点知识纵向布局（单元卡 + 图片墙），不参与卡片网格 */
+.xs-list.notes-mode{display:block;padding:0;background:transparent}
 .xs-card.gram{padding:10px;display:flex;flex-direction:column;gap:8px}
 .xs-card.gram .gram-title{font-size:15px;font-weight:800;color:var(--tone-800);margin-bottom:2px;line-height:1.3}
 .gram-section{margin-top:4px;background:#f7f5ff;border:1px solid #ece8ff;border-radius:10px;padding:7px 9px}
@@ -938,6 +942,7 @@ button[hidden]{display:none!important}
 /* R13-Req1：全打卡后内容卡片内所有白色区域一并变黄（打卡键白底圆 + 统计条紫底） */
 .baike-boxes.all-done .bk-checkin-btn{background:linear-gradient(135deg,#fff8e5,#ffe89a);border-color:#ffd24d}
 .baike-boxes.all-done .bk-count{background:rgba(255,210,77,.28);border-top-color:#ffd24d;color:#8a6d00}
+.baike-boxes.all-done .bk-mini-foot{background:rgba(255,210,77,.28);border-top-color:#ffd24d;color:#8a6d00}
 .bk-mini-title{font-size:14px;font-weight:700;color:var(--theme-title);margin-bottom:4px} /* R28-6：统一为深蓝主题色 */
 .bk-mini-body{font-size:14px;color:#3a3a44;line-height:1.7;font-weight:500} /* v8：与小标题同号 14px */
 /* v10：百科每段内容后打卡标记（点击显示🦥）+ 每主题已打卡次数 */
@@ -1297,10 +1302,11 @@ button[hidden]{display:none!important}
 /* R217-7①：学习报告标题与周/月度报告按钮同行（按钮在标题右侧） */
 .report-card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
 .report-card-head h3{margin:0}
-.report-tabs .sub-tab{font-size:12px;padding:6px 12px}
+.report-tabs .sub-tab{font-size:12px;padding:0 12px;height:34px;min-height:34px;display:inline-flex;align-items:center;justify-content:center;line-height:1}
 /* R217-7②：导出图片 / 导出表格 按钮视觉与「周度学习报告」标签按键保持一致（白底圆角描边胶囊） */
 .report-export-row{margin-top:8px;display:flex;gap:8px;flex-wrap:wrap}
-.report-export-btn{background:#fff;border:1.5px solid var(--tone-200);color:var(--muted);border-radius:18px;font-size:12px;font-weight:600;cursor:pointer;box-shadow:none;padding:6px 14px}
+/* R218-5：导出图片 / 导出表格 高度与「周度 / 月度学习报告」按键完全一致（34px） */
+.report-export-row .report-export-btn{background:#fff;border:1.5px solid var(--tone-200);color:var(--muted);border-radius:18px;font-size:12px;font-weight:600;cursor:pointer;box-shadow:none;padding:0 14px;height:34px;min-height:34px;display:inline-flex;align-items:center;justify-content:center;line-height:1}
 .report-export-btn:hover{background:var(--tone-100);color:var(--muted)}
 .report-header{font-size:13px;font-weight:700;color:var(--tiffany-deep);background:linear-gradient(135deg,#e8f5f3,#d2ebe8);padding:8px 12px;border-radius:10px;margin-bottom:6px;border:1px solid var(--tiffany-light)}
 .report-header b{color:var(--tiffany-dark);font-size:16px}
@@ -3169,7 +3175,7 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 /* R201-1：大阅读五栏（语文好词/古诗/作文 + 英语日常交流/短文）与百科 9 宫格主题盒改取中间档 --tone-275，
    与其外层大区 / 页容器的 --tone-300 构成「外深内浅」层次（其余板块一级区块维持 --tone-300 不变） */
 .page-reading .reading-col,
-.page-baike .bk-box{background:var(--tone-275);border-color:rgba(30,58,138,.18);box-shadow:0 4px 14px rgba(126,200,255,.4)}
+.page-baike .bk-box{background:var(--baike-box-bg);border-color:rgba(30,58,138,.18);box-shadow:0 4px 14px rgba(126,200,255,.4)}
 
 /* 3.1) 一级区块标题：白色、卡通字体（区块内的小标题，如分类头、栏目头） */
 .page-math .math-group-name,
@@ -4872,6 +4878,7 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 [data-zone="baike"] .baike-boxes.all-done .bk-mini{ background:var(--z-baike-pale2); border-color:var(--z-baike-main); }
 [data-zone="baike"] .baike-boxes.all-done .bk-checkin-btn{ background:linear-gradient(135deg,var(--z-baike-pale),var(--z-baike-pale2)); border-color:var(--z-baike-main); }
 [data-zone="baike"] .baike-boxes.all-done .bk-count{ background:rgba(var(--z-baike-rgb),.18); border-top-color:var(--z-baike-main); color:var(--z-baike-deep); }
+.baike-boxes.all-done .bk-mini-foot{ background:rgba(var(--z-baike-rgb),.18); border-top-color:var(--z-baike-main); color:var(--z-baike-deep); }
 
 
 /* ============================================================
@@ -4917,7 +4924,7 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   .main-wrap{font-size:15px;-webkit-text-size-adjust:100%}
 
   /* R35：触屏适配随栏宽 ×1.5 回复（R36 min-height 60 保留触控底线，字号/图标同步放大） */
-  .nav-btn{min-height:50px;padding:5px 3px;font-size:13px}
+  .nav-btn{height:50px;min-height:50px;padding:5px 3px;font-size:13px} /* R218-2：导航按钮高度固定 50px */
   .nav-btn .ico{font-size:19px}
 
   /* R35：触屏时钟字号随栏宽 ×1.5（11→15 / 10→13 / 13→18） */
@@ -6689,7 +6696,7 @@ html,body{margin:0;padding:0}
     flex:1 1 auto;flex-direction:row;gap:4px;
     padding:5px 6px;overflow-x:auto;overflow-y:hidden;background:transparent
   }
-  .nav-btn{flex:0 0 auto;min-width:58px;min-height:52px;padding:5px 7px}
+  .nav-btn{flex:0 0 auto;min-width:58px;height:50px;min-height:50px;padding:5px 7px}
   .nav-btn .ico{font-size:18px}
   .nav-btn .lbl{font-size:10px}
   .main-wrap{flex:1 1 auto;min-height:0;padding:10px 10px 20px}
@@ -7665,6 +7672,18 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
   background:var(--tone-150); border-top:1px solid var(--z-baike-main);
 }
 .bk-count-txt{ margin-right:auto; }
+/* R218-6：打卡计数 + 打卡键内嵌到白色内容卡底部（替代卡片外独立计数条） */
+.bk-mini-foot{
+  display:flex; align-items:center; gap:8px; margin-top:8px; padding-top:6px;
+  border-top:1px dashed rgba(30,58,138,.18);
+}
+.bk-mini-count{ margin-right:auto; font-size:12px; font-weight:700; color:var(--z-baike-deep); white-space:nowrap; }
+.bk-mini-foot .bk-checkin-btn{ flex:0 0 auto; width:30px; height:30px; border-width:2px; }
+.bk-mini-foot .bk-checkin-btn.done::after{ font-size:17px; }
+.bk-mini-foot .bk-checkin-btn.txt{ width:auto; min-width:0; height:26px; padding:0 10px; font-size:11px; border-radius:13px; white-space:nowrap; }
+/* 内容卡内新增了打卡行，去掉为旧外置圆钮预留的右内边距 */
+.page-baike .bk-mini{ padding-right:10px; }
+
 /* ===== R207-4⑤：打卡键迁到统计条右侧，尺寸收敛适配卡片容器 ===== */
 .bk-count .bk-checkin-btn{ flex:0 0 auto; width:30px; height:30px; border-width:2px; }
 .bk-count .bk-checkin-btn.done::after{ font-size:17px; }
@@ -7695,6 +7714,12 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 
 /* ---- R215-3：万年历弹窗 ---- */
 .navcal-box{ width:min(430px,92vw); }
+/* R218-3②：年月滑选弹窗（复用 wb-ym 双滚轮） */
+.navcal-pick-box{ width:min(400px,92vw); }
+.navcal-pick-hint{ text-align:center; font-size:12px; color:var(--muted); padding:6px 0 2px; }
+.navcal-pick-box .modal-head{ margin:-18px -18px 12px; padding:12px 18px; border-radius:14px 14px 0 0; background:linear-gradient(135deg,var(--tone-300),var(--tone-500)); color:#fff; }
+.navcal-pick-box .modal-head h3{ color:#fff; }
+.navcal-pick-box .modal-x{ color:#fff; }
 .navcal-bar{
   display:flex; align-items:center; justify-content:center; gap:8px;
   margin-bottom:12px; flex-wrap:nowrap;
@@ -7702,7 +7727,10 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 .navcal-title{
   flex:1 1 auto; min-width:0; text-align:center;
   font-size:19px; font-weight:900; color:var(--tone-900); letter-spacing:1px;
+  border:none; background:transparent; padding:4px 8px; border-radius:10px; cursor:pointer; transition:.12s;
 }
+.navcal-title:hover{ background:var(--tone-100); }
+.navcal-title:active{ transform:scale(.98); }
 .navcal-nav{
   flex:0 0 auto; width:40px; height:40px; border-radius:11px;
   border:1.5px solid var(--tone-150); background:var(--tone-025);
@@ -7722,10 +7750,19 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 }
 .navcal-wd{ text-align:center; font-size:12px; font-weight:800; color:#6f8fb5; padding:3px 0; }
 .navcal-cell{
-  position:relative; display:flex; align-items:center; justify-content:center;
-  min-height:44px; border-radius:9px; border:1.5px solid var(--tone-100);
-  background:#fff; font-size:15px; font-weight:700; color:var(--tone-900);
+  position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:1px; min-height:46px; padding:2px 1px 3px; border-radius:9px; border:1.5px solid var(--tone-100);
+  background:#fff; font-size:15px; font-weight:700; color:var(--tone-900); line-height:1.1;
 }
+/* R218-3①：日期下方的农历 / 节气 / 节日小字 */
+.navcal-d{ font-size:15px; font-weight:800; line-height:1.05; }
+.navcal-l{ font-size:9px; line-height:1.1; color:#7d8ba1; font-weight:600; white-space:nowrap; transform:scale(.95); }
+.navcal-l-empty{ visibility:hidden; }
+.navcal-l.is-term{ color:var(--tone-700); font-weight:800; }
+.navcal-l.is-fest{ color:#e2453a; font-weight:800; }
+.navcal-today .navcal-l,
+.navcal-today .navcal-l.is-term,
+.navcal-today .navcal-l.is-fest{ color:rgba(255,255,255,.92); }
 .navcal-blank{ background:transparent; border-color:transparent; }
 .navcal-weekend{ color:#c0392b; }
 .navcal-holiday{ background:var(--tone-050); }
@@ -7746,17 +7783,20 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 .navcal-legend-swatch{ display:inline-block; width:12px; height:12px; border-radius:3px; vertical-align:middle; }
 .navcal-swatch-today{ background:var(--tone-500); }
 .navcal-swatch-hol{ background:var(--tone-050); border:1px solid #e2453a; }
+/* R218-3①：图例新增「节日 / 节气」色标 */
+.navcal-swatch-fest{ background:#fff; border:1px solid #e2453a; }
+.navcal-swatch-term{ background:#fff; border:1px solid var(--tone-600); }
 
 /* ---- R215-4：iPad 触屏 —— 导航栏按键适当增高，触控更舒适 ---- */
 @media (pointer:coarse) and (min-width:768px){
-  .nav-btn{ min-height:58px; padding:7px 3px; font-size:13px; }
+  .nav-btn{ height:50px; min-height:50px; padding:5px 3px; font-size:13px; }
   .nav-btn .ico{ font-size:21px; }
   .nav-btn .lbl{ font-size:12px; }
   .sidebar-nav{ gap:5px; }
 }
 /* iPad 横屏：进一步增高、加圆角，整体留白更舒展（侧栏仍可纵向滚动） */
 @media (min-width:1024px) and (orientation:landscape) and (pointer:coarse){
-  .nav-btn{ min-height:62px; border-radius:12px; padding:8px 4px; }
+  .nav-btn{ height:50px; min-height:50px; border-radius:12px; padding:5px 4px; }
   .nav-btn .ico{ font-size:23px; }
   .nav-btn .lbl{ font-size:13px; }
   .sidebar-clock .rt-date{ font-size:15px; }
@@ -8099,21 +8139,7 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
         <span class="settings-card-arrow" data-page-node-id="R85cardSyncArrow">›</span>
       </div>
 
-      <!-- 6) 版本与更新 -->
-      <div class="settings-card" id="cardVersionSettings" data-page-node-id="R85cardVer">
-        <div class="settings-card-main" data-page-node-id="R85cardVerMain">
-          <div class="settings-card-body">
-          <div class="settings-card-head">
-            <span class="settings-card-icon" data-page-node-id="R85cardVerIco">🔄</span>
-            <span class="settings-card-title" data-page-node-id="R85cardVerTitle">版本与更新</span>
-          </div>
-          <div class="settings-card-desc" data-page-node-id="R85cardVerDesc">构建版本与手动检查更新</div>
-          </div>
-        </div>
-        <span class="settings-card-arrow" data-page-node-id="R85cardVerArrow">›</span>
-      </div>
-
-      <!-- 7) 分类导出文件 -->
+      <!-- 6) 分类导出文件（R218-4①：与「版本与更新」互换位置，导出在前） -->
       <div class="settings-card" id="cardExportSettings" data-page-node-id="R85cardExport">
         <div class="settings-card-main" data-page-node-id="R85cardExportMain">
           <div class="settings-card-body">
@@ -8125,6 +8151,20 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
           </div>
         </div>
         <span class="settings-card-arrow" data-page-node-id="R85cardExportArrow">›</span>
+      </div>
+
+      <!-- 7) 版本与更新（R218-4①：移到「分类导出文件」之后） -->
+      <div class="settings-card" id="cardVersionSettings" data-page-node-id="R85cardVer">
+        <div class="settings-card-main" data-page-node-id="R85cardVerMain">
+          <div class="settings-card-body">
+          <div class="settings-card-head">
+            <span class="settings-card-icon" data-page-node-id="R85cardVerIco">🔄</span>
+            <span class="settings-card-title" data-page-node-id="R85cardVerTitle">版本与更新</span>
+          </div>
+          <div class="settings-card-desc" data-page-node-id="R85cardVerDesc">构建版本与手动检查更新</div>
+          </div>
+        </div>
+        <span class="settings-card-arrow" data-page-node-id="R85cardVerArrow">›</span>
       </div>
     </div>
 
@@ -8483,6 +8523,8 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
     <!-- 学习汇总（词汇 + 语法） -->
     <div class="xs-pane xs-summary-pane" data-xs-pane="summary" data-page-node-id="V56WGpErSzMODzu1rxPD3h">
       <div class="xs-sub-tabs" data-page-node-id="GFq8A3j6UOj9r9lMpZmpGJ">
+        <!-- R218-1：词汇左侧新增「课堂笔记」（内部功能与「新世界·英语专区·重点知识」完全一致） -->
+        <button class="sub-tab" data-xs-cat="notes" data-page-node-id="R218xsNoteTab">📝 课堂笔记</button>
         <button class="sub-tab active" data-xs-cat="words" data-page-node-id="bIdFhDZ9zmRt3QscgXNna5">🔤 词汇</button>
         <button class="sub-tab" data-xs-cat="grammar" data-page-node-id="pk7ufwpxLS7x5Xj5vu8FRB">📐 语法</button>
         <!-- V21-1：语法子板块后新增「巩固打卡」子板块（每日 10 题词汇默写 +2⭐，错题次日重现） -->
@@ -8936,6 +8978,20 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
     <div class="modal-foot" data-page-node-id="R215navCalFoot">
       <button class="primary-btn" id="btnNavCalToday" type="button" data-page-node-id="R215btnNavCalToday">回到本月</button>
       <button class="pbtn" data-close data-page-node-id="R215btnNavCalClose">关闭</button>
+    </div>
+  </div>
+  <!-- R218-3②：点「年月」唤起年月滑选弹窗（上下滑动选择年 / 月），确认后回到月历 -->
+  <div class="modal-mask navcal-pick-mask" id="modalNavCalPick" hidden data-page-node-id="R218navCalPickMask">
+    <div class="modal-box navcal-pick-box" data-page-node-id="R218navCalPickBox">
+      <div class="modal-head" data-page-node-id="R218navCalPickHead">
+        <h3 data-page-node-id="R218navCalPickTitle">📅 选择年月（上下滑动切换）</h3>
+        <button class="modal-x" data-close data-page-node-id="R218navCalPickX">×</button>
+      </div>
+      <div class="modal-body" data-page-node-id="R218navCalPickBody" id="navCalPickBody"></div>
+      <div class="modal-foot" data-page-node-id="R218navCalPickFoot">
+        <button class="primary-btn" id="btnNavCalPickOk" type="button" data-page-node-id="R218navCalPickOk">确定</button>
+        <button class="pbtn" id="btnNavCalPickCancel" type="button" data-page-node-id="R218navCalPickCancel">取消</button>
+      </div>
     </div>
   </div>
 </div>
@@ -9512,12 +9568,26 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
         <label data-page-node-id="R85kmClearedLbl">通关语 <input type="text" id="kmTextCleared" maxlength="80" data-page-node-id="R85kmCleared"></label>
         <label data-page-node-id="R85kmCertLbl">证书语 <input type="text" id="kmTextCert" maxlength="80" data-page-node-id="R85kmCert"></label>
       </div>
-      <!-- R217-2：原「后台修改中心」全部设置项并入本页（题库管理 / 主题色 / 关卡音乐 / 数据管理），重复项已剔除 -->
+      <!-- R217-2：原「后台修改中心」全部设置项并入本页（主题色 / 关卡音乐 / 数据管理）；R218-4②：题库管理改为独立弹窗 -->
       <div id="kmaWrap" class="kma-embed" data-page-node-id="R217kmMergedWrap"></div>
     </div>
     <div class="modal-foot" data-page-node-id="R85modalKMFoot">
       <button class="primary-btn" id="btnKMSettingSave" data-commit-settings data-page-node-id="R85btnKMSave">💾 保存设置</button>
       <button class="pbtn" data-close data-page-node-id="R85modalKMClose">← 返回</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== R218-4②：知识秘境设置 → 题库管理（独立弹窗页，从设置页「题库管理」卡片进入） ========== -->
+<div class="modal-mask" id="modalKMQBank" hidden data-page-node-id="R218kmQBankMask">
+  <div class="modal-box" style="width:min(760px,95vw);max-width:95vw;max-height:86vh;display:flex;flex-direction:column" data-page-node-id="R218kmQBankBox">
+    <div class="modal-head" data-page-node-id="R218kmQBankHead">
+      <h3 data-page-node-id="R218kmQBankTitle">📚 题库管理</h3>
+      <button class="modal-x" data-close data-page-node-id="R218kmQBankX">×</button>
+    </div>
+    <div class="modal-body" style="overflow-y:auto" id="kmaQBankBody" data-page-node-id="R218kmQBankBody"></div>
+    <div class="modal-foot" data-page-node-id="R218kmQBankFoot">
+      <button class="pbtn" data-close data-page-node-id="R218kmQBankClose">← 返回设置</button>
     </div>
   </div>
 </div>
@@ -27800,11 +27870,19 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         const cmDone = S.isBaikeChecked('猜谜');
         const cntB = counts['动动脑筋吧']||0;
         const cntR = counts['猜谜']||0;
+        // R218-6：打卡键与打卡计数并入白色内容卡底部（原卡片外「打卡计数条」已移除）
+        const btBtn = bt
+          ? `<button class="bk-checkin-btn txt ${btDone?'done':''}" data-baike-checkin="动动脑筋吧" title="${btDone?'已打卡·再点取消':'打卡看答案'}">${btDone?'✓ 已打卡':'🤔 看答案'}</button>`
+          : '';
+        const cmBtn = cm
+          ? `<button class="bk-checkin-btn txt ${cmDone?'done':''}" data-baike-checkin="猜谜" title="${cmDone?'已打卡·再点取消':'打卡看答案'}">${cmDone?'✓ 已打卡':'🀄 看答案'}</button>`
+          : '';
         const btCard = bt
           ? `<div class="bk-mini brain-card ${btDone?'checked':''}" data-bk-cat="动动脑筋吧">
                <div class="bk-mini-label">🤔 脑筋急转弯</div>
                <div class="bk-mini-q">${esc(btQA.q || bt.title)}</div>
                <div class="bk-answer" ${btDone?'':'hidden'}>💡 ${esc(btQA.a)}</div>
+               <div class="bk-mini-foot"><span class="bk-mini-count">🦥 脑筋 ${cntB} 次</span>${btBtn}</div>
              </div>`
           : `<div class="bk-mini"><div class="bk-mini-body" style="color:var(--muted)">暂无脑筋急转弯</div></div>`;
         const cmCard = cm
@@ -27812,37 +27890,31 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
                <div class="bk-mini-label">🀄 猜谜（字谜 / 灯谜）</div>
                <div class="bk-mini-q">${esc(cm.title)}</div>
                <div class="bk-answer" ${cmDone?'':'hidden'}>💡 ${esc(cm.body)}</div>
+               <div class="bk-mini-foot"><span class="bk-mini-count">🦥 猜谜 ${cntR} 次</span>${cmBtn}</div>
              </div>`
           : `<div class="bk-mini"><div class="bk-mini-body" style="color:var(--muted)">暂无猜谜</div></div>`;
-        const btBtn = bt
-          ? `<button class="bk-checkin-btn txt ${btDone?'done':''}" data-baike-checkin="动动脑筋吧" title="${btDone?'已打卡·再点取消':'打卡看答案'}">${btDone?'✓ 已打卡':'🤔 看答案'}</button>`
-          : '';
-        const cmBtn = cm
-          ? `<button class="bk-checkin-btn txt ${cmDone?'done':''}" data-baike-checkin="猜谜" title="${cmDone?'已打卡·再点取消':'打卡看答案'}">${cmDone?'✓ 已打卡':'🀄 看答案'}</button>`
-          : '';
         return `<div class="bk-box bk-box-brain">
           <div class="bk-box-head"><span class="bc-ico">${c.ico}</span> <span class="bc-name">${c.key}</span> <span class="bc-quote">${c.quote}</span></div>
           <div class="bk-box-body">${btCard}${cmCard}</div>
-          <div class="bk-count bk-count-brain"><span class="bk-count-txt">🦥 脑筋 ${cntB} 次 · 猜谜 ${cntR} 次</span><span class="bk-count-btns">${btBtn}${cmBtn}</span></div>
         </div>`;
       }
       const b = byCat[c.key];
       const done = !!b && S.isBaikeChecked(c.key);
+      const cnt = counts[c.key]||0;
+      // R218-6：打卡键 + 打卡计数迁入白色内容卡底部，卡片外不再有独立计数条
+      const ckBtn = b
+        ? `<button class="bk-checkin-btn ${done?'done':''}" data-baike-checkin="${esc(c.key)}" title="${done?'已打卡':'点击打卡'}"></button>`
+        : '';
       const body = b
         ? `<div class="bk-mini ${done?'checked':''}" data-bk-cat="${esc(c.key)}">
              <div class="bk-mini-title">${esc(b.title)}</div>
              <div class="bk-mini-body">${esc(b.body)}</div>
+             <div class="bk-mini-foot"><span class="bk-mini-count">🦥 已打卡 ${cnt} 次</span>${ckBtn}</div>
            </div>`
         : `<div class="bk-mini"><div class="bk-mini-body" style="color:var(--muted)">暂无</div></div>`;
-      const cnt = counts[c.key]||0;
-      // R207-4⑤：打卡键迁到下方打卡统计区右侧，尺寸按统计条高度收敛，避免溢出
-      const ckBtn = b
-        ? `<button class="bk-checkin-btn ${done?'done':''}" data-baike-checkin="${esc(c.key)}" title="${done?'已打卡':'点击打卡'}"></button>`
-        : '';
       return `<div class="bk-box">
         <div class="bk-box-head"><span class="bc-ico">${c.ico}</span> <span class="bc-name">${c.key}</span> <span class="bc-quote">${c.quote}</span></div>
         <div class="bk-box-body">${body}</div>
-        <div class="bk-count"><span class="bk-count-txt">🦥 已打卡 ${cnt} 次</span>${ckBtn}</div>
       </div>`;
     }).join('');
     if(box) box.classList.toggle('all-done', allChecked);
@@ -29085,14 +29157,34 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   // ---------- 后台修改中心 ----------
   let kmaState={ filter:'all', qs:[] };
   let kmMode = (S.getKMSettings().trial) ? 'trial' : 'normal';
-  function renderKMAdmin(){
+    // R218-4②：题库管理迁入独立弹窗 —— 渲染 / 事件通过指针转发到 renderKMAdmin 内部闭包，
+  // 弹窗 body 的委托只绑一次（避免每次打开设置重复叠加监听）。
+  let _kmQBankRender = null, _kmQBankAction = null, _kmQBankInput = null;
+  function openKMQBank(){
+    if(typeof _kmQBankRender === 'function') _kmQBankRender();
+    showModal('#modalKMQBank');
+  }
+  function bindKMQBankOnce(){
+    const body = document.getElementById('kmaQBankBody');
+    if(!body || body._kmQBound) return;
+    body._kmQBound = true;
+    body.addEventListener('click', (e)=>{
+      const t = e.target.closest('[data-kma]');
+      if(!t || typeof _kmQBankAction !== 'function') return;
+      _kmQBankAction(t.getAttribute('data-kma'), t);
+    });
+    body.addEventListener('input', (e)=>{ if(typeof _kmQBankInput === 'function') _kmQBankInput(e); });
+    body.addEventListener('change', (e)=>{ if(typeof _kmQBankInput === 'function') _kmQBankInput(e); });
+  }
+function renderKMAdmin(){
     const wrap=document.getElementById('kmaWrap'); if(!wrap) return;
     if(!wrap._bound){
       wrap._bound=true;
       wrap.addEventListener('click',(e)=>{
         const t=e.target.closest('[data-kma]'); if(!t) return;
         const act=t.getAttribute('data-kma');
-        if(act==='addQ') kmAdminAdd();
+        if(act==='qbank') openKMQBank();
+        else if(act==='addQ') kmAdminAdd();
         else if(act==='delQ') kmAdminDel(parseInt(t.getAttribute('data-id'),10));
         else if(act==='resetQ'){ if(confirm('重置题库为内置样例？当前自定义题目将丢失。')){ S.resetKMQuestions(); kmaState.qs=S.getKMQuestions(); kmAdminRenderQs(); kmAdminToast('已重置为内置样例'); } }
         else if(act==='clearWrong'){ if(confirm('清空全部错题？')){ S.clearKMWrong(); kmAdminStats(); kmAdminToast('已清空错题'); } }
@@ -29105,16 +29197,10 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     const set=S.getKMSettings(), stats=S.getKMStats();
     wrap.innerHTML=`
       <div class="kma-tip">📌 以下内容修改后，统一由弹窗底部【💾 保存设置】生效。</div>
-      <div class="kma-sec">
-        <div class="kma-sec-title">📚 题库管理（可在平台内直接改题）</div>
-        <div class="kma-row kma-toolbar">
-          <label>筛选科目：<select data-f="filter">
-            <option value="all">全部</option><option value="chinese">语文</option><option value="math">数学</option><option value="english">英语</option>
-          </select></label>
-          <button class="kma-btn" data-kma="addQ">＋ 新增题目</button>
-          <button class="kma-btn kma-warn" data-kma="resetQ">↺ 重置为内置样例</button>
-        </div>
-        <div class="kma-qlist" id="kmaQs"></div>
+      <div class="kma-sec kma-qbank-card">
+        <div class="kma-sec-title">📚 题库管理</div>
+        <div class="kma-tip">当前共 <b>${stats.totalQuestions}</b> 题 · 新增 / 改题 / 重置题库已迁移到独立弹窗页面。</div>
+        <div class="kma-row"><button class="kma-btn kma-qbank-open" data-kma="qbank">📚 打开题库管理</button></div>
       </div>
       <div class="kma-sec">
         <div class="kma-sec-title">🎨 主题色（各关卡配色）</div>
@@ -29161,9 +29247,41 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         </div>
       </div>
       <div class="kma-toast" id="kmaToast" hidden></div>`;
-    const sel=wrap.querySelector('select[data-f="filter"]'); sel.value=kmaState.filter;
-    sel.onchange=()=>{ kmaState.filter=sel.value; kmAdminRenderQs(); };
-    kmAdminRenderQs();
+    // R218-4②：题库区整体渲染进独立弹窗 #kmaQBankBody（内容与原 kmaWrap 题库区完全一致）
+    const qbody = document.getElementById('kmaQBankBody');
+    _kmQBankRender = function(){
+      if(!qbody) return;
+      qbody.innerHTML = `
+        <div class="kma-tip">📌 以下改题即时保存（无需再点保存设置）· 当前共 <b>${kmaState.qs.length}</b> 题</div>
+        <div class="kma-sec">
+          <div class="kma-row kma-toolbar">
+            <label>筛选科目：<select data-f="filter">
+              <option value="all">全部</option><option value="chinese">语文</option><option value="math">数学</option><option value="english">英语</option>
+            </select></label>
+            <button class="kma-btn" data-kma="addQ">＋ 新增题目</button>
+            <button class="kma-btn kma-warn" data-kma="resetQ">↺ 重置为内置样例</button>
+          </div>
+          <div class="kma-qlist" id="kmaQs"></div>
+        </div>`;
+      const sel = qbody.querySelector('select[data-f="filter"]');
+      if(sel){ sel.value = kmaState.filter; sel.onchange = ()=>{ kmaState.filter = sel.value; kmAdminRenderQs(); }; }
+      kmAdminRenderQs();
+    };
+    _kmQBankAction = function(act, el){
+      if(act==='addQ') kmAdminAdd();
+      else if(act==='delQ') kmAdminDel(parseInt(el.getAttribute('data-id'),10));
+      else if(act==='resetQ'){
+        if(confirm('重置题库为内置样例？当前自定义题目将丢失。')){
+          S.resetKMQuestions(); kmaState.qs=S.getKMQuestions(); kmAdminRenderQs(); kmAdminToast('已重置为内置样例');
+        }
+      }
+    };
+    _kmQBankInput = function(e){
+      const el = e.target;
+      if(el.hasAttribute('data-f')){ if(el.getAttribute('data-f')==='filter'){ kmaState.filter = el.value; kmAdminRenderQs(); } return; }
+      if(el.hasAttribute('data-id')) kmAdminQField(el, e.type);
+    };
+    bindKMQBankOnce();
 
     // R40-2d：每个关卡独立 BGM 设置（家长模式）
     ['chinese','math','english','mixed'].forEach(k=>{
@@ -29207,7 +29325,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     });
 
     function kmAdminRenderQs(){
-      const box=wrap.querySelector('#kmaQs'); if(!box) return;
+      const box=qbody ? qbody.querySelector('#kmaQs') : null; if(!box) return;
       const list=kmaState.qs.filter(q=> kmaState.filter==='all'||q.subject===kmaState.filter);
       box.innerHTML=list.map(q=>{
         const subjName={chinese:'语文',math:'数学',english:'英语'}[q.subject]||q.subject;
@@ -29985,9 +30103,241 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   // R168-1：语法排版改「每页一行、每行 3 个条目」，分页大小同步 4 → 3
   const XS_PAGE_SIZE = {words:12, grammar:3};
   const xsPage = {words:1, grammar:1};
+  // ============ R218-1：学而思英语 · 课堂笔记 ============
+  // 需求：标题栏【词汇】左侧新增【课堂笔记】，内部页面功能 / 交互逻辑与
+  //       「新世界 → 英语专区 → 重点知识」完全一致：
+  //       ① 顶部 Unit 1–10 单元卡切换；② 「➕ 增加」导入图片（canvas 等比压缩）；
+  //       ③ 「🗑 删除」模式点图删除（二次确认）；④ 点图放大查看；⑤ 每张单独打卡；
+  //       ⑥ 本单元全部打卡完成得 5⭐（沿用 oxfordunit 任务⭐档位，家长可调）。
+  // 数据层：复用 Store 的 enKeyPoints 存储，但键加 'xsnote::' 命名空间，
+  //        与重点知识的图片、打卡状态完全隔离，互不覆盖。
+  let _xsNoteUnit = 0;          // 当前单元下标
+  let _xsNoteDelMode = false;   // 删除模式
+  let _xsNoteAddUnit = '';      // 待导入的目标单元（Store 键）
+  const XS_NOTE_READ = 'xsNote';       // 打卡 kind（readFlags 命名空间）
+  const XS_NOTE_NS = 'xsnote::';       // 图片存储键前缀
+  function xsNoteKey(unitId){ return XS_NOTE_NS + String(unitId || ''); }
+  function xsNoteItems(unitId){
+    return (window.Store && window.Store.getEnKeyPoints) ? window.Store.getEnKeyPoints(xsNoteKey(unitId)) : [];
+  }
+  function xsNoteDoneCount(unitId, items){
+    return (items||[]).filter((it,k)=> S.isReadingRead(XS_NOTE_READ, unitId+'::'+k)).length;
+  }
+  function xsNoteUnitCards(curIdx){
+    const cards = EN_OXFORD_VOCAB_3A.map((u,i)=>{
+      const items = xsNoteItems(u.id);
+      const total = items.length;
+      const done = xsNoteDoneCount(u.id, items);
+      const starN = total ? Math.round(done/total*5) : 0;
+      return {
+        no:    u.unit || ('Unit '+(i+1)),
+        label: u.title || '',
+        sub:   total ? (done + '/' + total + ' 张') : '待导入',
+        done:  total > 0 && done === total,
+        stars: '⭐'.repeat(starN) + '☆'.repeat(5-starN)
+      };
+    });
+    return enUnitCards(cards, curIdx, 'xs-note-unit');
+  }
+  // 渲染（写入 #xsSummaryList，与词汇/语法共用同一内容区，切走时由词汇/语法分支覆盖）
+  function renderXsNotes(){
+    const target = $('#xsSummaryList');
+    if(!target) return;
+    const list = EN_OXFORD_VOCAB_3A;
+    let idx = parseInt(_xsNoteUnit, 10);
+    if(isNaN(idx) || idx < 0 || idx >= list.length) idx = 0;
+    _xsNoteUnit = idx;
+    const u = list[idx] || list[0];
+    const items = xsNoteItems(u.id);
+    const total = items.length;
+    const done = xsNoteDoneCount(u.id, items);
+    const complete = total > 0 && done === total;
+    const starN = total ? Math.round(done/total*5) : 0;
+    const starStr = '⭐'.repeat(starN) + '☆'.repeat(5-starN);
+    const cardsHtml = total ? items.map((it,k)=>{
+      const d = S.isReadingRead(XS_NOTE_READ, u.id+'::'+k);
+      return `
+        <div class="kp-img-card${d?' is-checked':''}" data-xs-note-card="${k}" title="${_xsNoteDelMode?'点击删除这张图片':'点击图片放大查看内容'}">
+          <img class="kp-img" src="${esc(it.img)}" alt="${esc(it.t||'课堂笔记')}" loading="lazy" decoding="async" />
+          ${it.t ? `<div class="kp-img-cap">${esc(it.t)}</div>` : ''}
+          <div class="kp-img-foot">
+            <span class="kp-img-state">${d?'✅已学':'□未学'}</span>
+            <button class="kp-check-btn${d?' is-done':''}" data-xs-note-check="${k}">${d?'✅ 取消打卡':'□ 打卡'}</button>
+          </div>
+        </div>`;
+    }).join('') : '<div class="kp-empty">还没有课堂笔记图片，点上面「➕ 增加」导入课堂笔记照片吧～</div>';
+    target.classList.remove('xs-list-grammar','xs-list-raz');
+    target.classList.add('notes-mode');
+    target.innerHTML = `
+      <div class="yw-comp-head">沪教牛津英语 三年级上册 · 课堂笔记（导入图片 · 每张单独打卡）</div>
+      <div class="en-oxford-tip">点单元卡片切换；进入单元后点「➕ 增加」导入图片（自动压缩并自适应屏幕）。点图片可放大查看内容，点图片下方「打卡」键标记已学 / 取消；本单元全部打卡完成即可获得 5⭐️。</div>
+      <div class="en-book-head-row">
+        ${xsNoteUnitCards(idx)}
+        <div class="en-book-cap">
+          <div class="en-cap-unit">${esc(u.unit)}</div>
+          <div class="en-cap-title">${esc(u.title)}</div>
+          <div class="en-unit-stars"><span class="en-unit-star-icons">${starStr}</span><span class="en-unit-star-num">${done}/${total} 张 · ${starN}/5 ⭐</span></div>
+        </div>
+      </div>
+      <div class="kp-add-row">
+        <button class="kp-add-btn" data-xs-note-add="${esc(u.id)}">➕ 增加</button>
+        <button class="kp-del-mode-btn${_xsNoteDelMode?' is-on':''}" data-xs-note-del-mode="1">${_xsNoteDelMode?'🗑 退出删除':'🗑 删除'}</button>
+        <span class="kp-add-hint">支持从相册 / 文件夹选择图片，导入后自动压缩并自适应屏幕宽度</span>
+      </div>
+      ${_xsNoteDelMode ? `<div class="en-kp-del-hint">🗑 删除模式已开启：点击任意图片即可删除（每张都会再次确认）</div>` : ''}
+      <div class="kp-img-grid${_xsNoteDelMode?' is-del-mode':''}">${cardsHtml}</div>
+      <div class="en-oxford-foot">本单元共 ${total} 张 · 已完成 ${done} 张${complete?' · 🎉 本单元已全部完成':''}</div>`;
+    // 顶部说明 / 按键：隐藏「＋ 新增」「🔍 筛选」，换成课堂笔记统计文案
+    const hintEl = $('#xsSummaryHint');
+    if(hintEl) hintEl.textContent = `📝 课堂笔记 · 沪教牛津英语 三年级上册 · 共 ${total} 张（第 ${idx+1}/${list.length} 单元）`;
+    const addBtn = $('#btnXsContentAdd');
+    if(addBtn){ addBtn.classList.add('hidden'); addBtn.style.display = 'none'; }
+    const filterBtn = $('#btnXsGramFilter');
+    if(filterBtn) filterBtn.hidden = true;
+    const pager = $('#xsPager');
+    if(pager) pager.innerHTML = '';
+    xsNoteBind(target);
+  }
+  // 事件绑定（每次重渲染后重新绑定，与重点知识页同一套交互）
+  function xsNoteBind(scope){
+    if(!scope) return;
+    // 单元卡切换
+    scope.querySelectorAll('[data-xs-note-unit]').forEach(btn=>{
+      btn.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        const i = parseInt(btn.getAttribute('data-xs-note-unit'), 10);
+        if(isNaN(i)) return;
+        _xsNoteUnit = i;
+        _xsNoteDelMode = false;   // 切换单元即退出删除模式
+        renderXsNotes();
+      });
+    });
+    // 图片：删除模式 → 删除；普通模式 → 放大查看
+    scope.querySelectorAll('[data-xs-note-card]').forEach(card=>{
+      card.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        const unit = (EN_OXFORD_VOCAB_3A[_xsNoteUnit] || {}).id;
+        if(!unit) return;
+        const i = parseInt(card.getAttribute('data-xs-note-card'), 10);
+        if(isNaN(i)) return;
+        if(_xsNoteDelMode){ xsNoteDeleteImage(unit, i); return; }
+        const img = card.querySelector('.kp-img');
+        if(!img || !img.getAttribute('src')) return;
+        const cap = card.querySelector('.kp-img-cap');
+        const vImg = document.getElementById('kpViewerImg');
+        const vCap = document.getElementById('kpViewerCap');
+        if(vImg) vImg.src = img.getAttribute('src');
+        if(vCap) vCap.textContent = (cap && cap.textContent) ? cap.textContent : '课堂笔记图片';
+        showModal('#modalKpViewer');
+      });
+    });
+    // 图片下方打卡键
+    scope.querySelectorAll('[data-xs-note-check]').forEach(btn=>{
+      btn.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        if(_xsNoteDelMode) return;
+        const unit = (EN_OXFORD_VOCAB_3A[_xsNoteUnit] || {}).id;
+        if(!unit) return;
+        const i = parseInt(btn.getAttribute('data-xs-note-check'), 10);
+        if(isNaN(i)) return;
+        xsNoteToggle(unit, i);
+      });
+    });
+    // 删除模式开关
+    scope.querySelectorAll('[data-xs-note-del-mode]').forEach(btn=>{
+      btn.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        _xsNoteDelMode = !_xsNoteDelMode;
+        renderXsNotes();
+      });
+    });
+    // ➕ 增加 → 唤起隐藏 file input
+    scope.querySelectorAll('[data-xs-note-add]').forEach(btn=>{
+      btn.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        _xsNoteAddUnit = btn.getAttribute('data-xs-note-add') || '';
+        const inp = document.getElementById('xsNoteImgInput');
+        if(!inp){ toast('当前环境不支持图片导入'); return; }
+        inp.value = '';
+        inp.click();
+      });
+    });
+  }
+  // 单张打卡（规则与重点知识一致：本单元全部完成 → oxfordunit ⭐，取消则扣回）
+  function xsNoteToggle(unitId, idx){
+    const items = xsNoteItems(unitId);
+    if(!items.length) return;
+    const allDone = ()=> items.every((it,k)=> S.isReadingRead(XS_NOTE_READ, unitId+'::'+k));
+    const was = allDone();
+    const key = unitId + '::' + idx;
+    if(S.isReadingRead(XS_NOTE_READ, key)){
+      S.unmarkReadingRead(XS_NOTE_READ, key);
+    } else {
+      S.markReadingRead(XS_NOTE_READ, key);
+      playCheckinSound();
+    }
+    const now = allDone();
+    if(!was && now){ addStars(S.getTaskStars('oxfordunit')); }
+    else if(was && !now){ addStars(-S.getTaskStars('oxfordunit')); }
+    renderXsNotes();
+  }
+  // 删除图片（确认 → 重排打卡下标 → 删除，避免「已学」错位）
+  function xsNoteDeleteImage(unitId, idx){
+    const list = xsNoteItems(unitId);
+    const it = list[idx];
+    const name = (it && it.t) ? it.t : ('第 ' + (idx+1) + ' 张');
+    openCustomModal('删除课堂笔记图片',
+      `确定删除「<b>${esc(name)}</b>」这张课堂笔记图片吗？<div style="margin-top:8px;color:#5b6b85;font-size:13px">删除后不可恢复，该图片的打卡记录也会一并清除。</div>`,
+      ()=>{
+        const nk = xsNoteKey(unitId);
+        if(window.Store && window.Store.shiftEnKeyPointReads) window.Store.shiftEnKeyPointReads(nk, idx, XS_NOTE_READ);
+        if(window.Store && window.Store.delEnKeyPoint) window.Store.delEnKeyPoint(nk, idx);
+        toast('🗑 已删除该图片');
+        renderXsNotes();
+        return true;
+      });
+  }
+  // 图片导入（隐藏 input 全局只绑一次；选图 → 压缩 → 写入命名空间 → 重渲染）
+  function initXsNoteImport(){
+    const inp = document.getElementById('xsNoteImgInput');
+    if(!inp || inp._xsNoteBound) return;
+    inp._xsNoteBound = true;
+    inp.addEventListener('change', ()=>{
+      const files = Array.prototype.slice.call(inp.files || []).filter(f=> /^image\//.test(f.type || ''));
+      if(!files.length){ inp.value = ''; return; }
+      const unitId = _xsNoteAddUnit || ((EN_OXFORD_VOCAB_3A[_xsNoteUnit]||{}).id) || '';
+      if(!unitId){ inp.value = ''; toast('请先选择一个单元'); return; }
+      const nk = xsNoteKey(unitId);
+      let pending = files.length, added = 0;
+      const done = ()=>{
+        pending--;
+        if(pending > 0) return;
+        inp.value = '';
+        toast(added ? ('✅ 已导入 ' + added + ' 张课堂笔记图片') : '⚠️ 图片导入失败，请重试');
+        if(added) renderXsNotes();
+      };
+      files.forEach(f=>{
+        enKpCompressImage(f, (dataUrl)=>{
+          if(dataUrl){
+            try{
+              const r = (window.Store && window.Store.addEnKeyPoint) ? window.Store.addEnKeyPoint(nk, { img:dataUrl, t:'' }) : null;
+              if(r === null){
+                toast('⚠️ 存储空间已满，这张图片导入失败，请先删除部分旧图片再试');
+              }else{
+                added++;
+              }
+            }catch(e){ toast('⚠️ 存储空间不足，请先删除部分图片'); }
+          }
+          done();
+        });
+      });
+    });
+  }
   function renderXueersiSummary(){
     if(xsCat === 'stories') xsCat = 'words'; // V12.3：仅过滤绘本；恢复语法
     $$('.xs-summary-pane .xs-sub-tabs [data-xs-cat]').forEach(b=>b.classList.toggle('active', b.dataset.xsCat===xsCat));
+    // R218-1：课堂笔记子板块（与「新世界·英语专区·重点知识」功能/交互完全一致）
+    if(xsCat === 'notes'){ renderXsNotes(); return; }
     // V21-1：巩固打卡子板块 — 每日 10 题词汇默写（独立渲染，不占用词汇/语法分页）
     if(xsCat === 'checkin'){ renderXsCheckin(); return; }
     // R42-4：「已默写」子板块（词汇/语法/巩固打卡后的第 4 个按键）—— 已答对词汇移至本主题卡内展示
@@ -30018,6 +30368,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     const target = $('#xsSummaryList');
     target.classList.toggle('xs-list-grammar', xsCat === 'grammar');
     target.classList.remove('xs-list-raz');
+    target.classList.remove('notes-mode');   // R218-1：离开课堂笔记时还原网格布局
     if(!all.length){
       const emptyMsg = xsCat === 'grammar' ? '暂无语法内容，可在词汇页面新增' : '暂无词汇，点击右下方"＋ 新增"添加';
       target.innerHTML = `<div style="color:var(--muted);padding:30px 12px;text-align:center">${emptyMsg}</div>`;
@@ -33740,14 +34091,119 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     return true;
   }
 
-  /* ============ R215：导航栏日期 → 万年历窗口（纯查看，可翻年/月，今日高亮，标注法定节假日） ============ */
-  // 交互边界：仅点击侧栏时钟(.sidebar-clock)唤出；公历月历，‹ › 翻月 / ⟪ ⟫ 翻年 / 回到本月；点日期不跳转。
+  /* ============ R215：导航栏日期 → 万年历窗口（纯查看，今日高亮，标注法定节假日） ============ */
+  // R218-3：① 每格补充「农历 / 节气 / 节日」信息；② 年月选择改为「点年月 → 年月滑选弹窗」（移除月份标签条与 ⟪⟫ 翻年）。
+  // 交互边界：仅点击侧栏时钟(.sidebar-clock)唤出；点日期不跳转。
   let _navCalY = 0, _navCalM = 0;   // 当前展示 年 / 月(1-12)
+
+  /* ---- R218-3①：农历 / 二十四节气 / 节日 —— 内置算法（覆盖 1900–2049），不依赖任何外部库 ---- */
+  const NAVCAL_LUNAR_INFO = [
+    0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+    0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+    0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+    0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+    0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+    0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+    0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+    0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b6a0,0x195a6,
+    0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+    0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x055c0,0x0ab60,0x096d5,0x092e0,
+    0x0c960,0x0d954,0x0d4a0,0x0da50,0x07552,0x056a0,0x0abb7,0x025d0,0x092d0,0x0cab5,
+    0x0a950,0x0b4a0,0x0baa4,0x0ad50,0x055d9,0x04ba0,0x0a5b0,0x15176,0x052b0,0x0a930,
+    0x07954,0x06aa0,0x0ad50,0x05b52,0x04b60,0x0a6e6,0x0a4e0,0x0d260,0x0ea65,0x0d530,
+    0x05aa0,0x076a3,0x096d0,0x04afb,0x04ad0,0x0a4d0,0x1d0b6,0x0d250,0x0d520,0x0dd45,
+    0x0b5a0,0x056d0,0x055b2,0x049b0,0x0a577,0x0a4b0,0x0aa50,0x1b255,0x06d20,0x0ada0
+  ];
+  const NAVCAL_LDAY  = ['初一','初二','初三','初四','初五','初六','初七','初八','初九','初十',
+                        '十一','十二','十三','十四','十五','十六','十七','十八','十九','二十',
+                        '廿一','廿二','廿三','廿四','廿五','廿六','廿七','廿八','廿九','三十'];
+  const NAVCAL_LMON  = ['正','二','三','四','五','六','七','八','九','十','冬','腊'];
+  const NAVCAL_TERMS = ['小寒','大寒','立春','雨水','惊蛰','春分','清明','谷雨','立夏','小满','芒种','夏至',
+                        '小暑','大暑','立秋','处暑','白露','秋分','寒露','霜降','立冬','小雪','大雪','冬至'];
+  const NAVCAL_TERM_INFO = [0,21208,42467,63836,85337,107014,128867,150921,173149,195551,218072,240693,
+                            263343,285989,308563,331033,353350,375494,397447,419210,440795,462224,483532,504758];
+  // 公历固定节日（月-日）
+  const NAVCAL_SOLAR_FEST = {
+    '1-1':'元旦','2-14':'情人节','3-8':'妇女节','3-12':'植树节','4-1':'愚人节','5-1':'劳动节',
+    '5-4':'青年节','6-1':'儿童节','7-1':'建党节','8-1':'建军节','9-10':'教师节','10-1':'国庆节',
+    '12-24':'平安夜','12-25':'圣诞节'
+  };
+  // 农历固定节日（月-日，闰月不计）
+  const NAVCAL_LUNAR_FEST = {
+    '1-1':'春节','1-15':'元宵','2-2':'龙抬头','5-5':'端午','7-7':'七夕','7-15':'中元',
+    '8-15':'中秋','9-9':'重阳','12-8':'腊八','12-23':'小年'
+  };
+  function navCalLeapMonth(y){ return NAVCAL_LUNAR_INFO[y-1900] & 0xf; }
+  function navCalLeapDays(y){ if(!navCalLeapMonth(y)) return 0; return (NAVCAL_LUNAR_INFO[y-1900] & 0x10000) ? 30 : 29; }
+  function navCalMonthDays(y,m){ return (NAVCAL_LUNAR_INFO[y-1900] & (0x10000 >> m)) ? 30 : 29; }
+  function navCalYearDays(y){
+    let sum = 348;
+    for(let i=0x8000; i>0x8; i>>=1){ if(NAVCAL_LUNAR_INFO[y-1900] & i) sum++; }
+    return sum + navCalLeapDays(y);
+  }
+  // 公历 → 农历（返回 {month, day, isLeap, md}；md = 该农历月天数，用于判定除夕）
+  function navCalLunarOf(y, m, d){
+    if(y < 1900 || y > 2049) return null;
+    let offset = Math.round((Date.UTC(y, m-1, d) - Date.UTC(1900, 0, 31)) / 86400000);
+    let i, temp = 0;
+    for(i=1900; i<2050 && offset>0; i++){ temp = navCalYearDays(i); offset -= temp; }
+    if(offset < 0){ offset += temp; i--; }
+    const ly = i, leap = navCalLeapMonth(ly);
+    let isLeap = false;
+    for(i=1; i<13 && offset>0; i++){
+      if(leap>0 && i===leap+1 && !isLeap){ --i; isLeap = true; temp = navCalLeapDays(ly); }
+      else { temp = navCalMonthDays(ly, i); }
+      if(isLeap && i===leap+1) isLeap = false;
+      offset -= temp;
+    }
+    if(offset===0 && leap>0 && i===leap+1){ if(isLeap){ isLeap = false; } else { isLeap = true; --i; } }
+    if(offset < 0){ offset += temp; --i; }
+    const lm = i, ld = offset + 1;
+    return { month: lm, day: ld, isLeap: isLeap, md: isLeap ? navCalLeapDays(ly) : navCalMonthDays(ly, lm) };
+  }
+  function navCalTermDay(y, n){
+    try{
+      const ms = 31556925974.7 * (y - 1900) + NAVCAL_TERM_INFO[n] * 60000 + Date.UTC(1900, 0, 6, 2, 5);
+      return new Date(ms).getUTCDate();
+    }catch(e){ return -1; }
+  }
+  function navCalTermName(y, m, d){
+    const a = (m-1)*2, b = a+1;
+    if(navCalTermDay(y, a) === d) return NAVCAL_TERMS[a];
+    if(navCalTermDay(y, b) === d) return NAVCAL_TERMS[b];
+    return '';
+  }
+  function navCalFestival(m, d, lu){
+    const s = NAVCAL_SOLAR_FEST[m + '-' + d];
+    if(s) return s;
+    if(!lu || lu.isLeap) return '';
+    const l = NAVCAL_LUNAR_FEST[lu.month + '-' + lu.day];
+    if(l) return l;
+    if(lu.month === 12 && lu.day === lu.md) return '除夕';
+    return '';
+  }
+  function navCalLunarText(lu){
+    if(!lu) return '';
+    const pre = lu.isLeap ? '闰' : '';
+    if(lu.day === 1) return pre + NAVCAL_LMON[lu.month-1] + '月';
+    return pre + (NAVCAL_LDAY[lu.day-1] || '');
+  }
+  // 单格副标题：优先级 节日 > 节气 > 农历日
+  function navCalCellSub(y, m, d){
+    const lu = navCalLunarOf(y, m, d);
+    const fest = navCalFestival(m, d, lu);
+    if(fest) return { text: fest, cls: 'navcal-l is-fest' };
+    const term = navCalTermName(y, m, d);
+    if(term) return { text: term, cls: 'navcal-l is-term' };
+    const t = navCalLunarText(lu);
+    return t ? { text: t, cls: 'navcal-l' } : { text: '', cls: 'navcal-l' };
+  }
+
   function navCalRender(){
     const grid = document.getElementById('navCalGrid');
     const titleEl = document.getElementById('navCalTitle');
     if(!grid) return;
-    if(titleEl) titleEl.textContent = _navCalY + ' 年 ' + _navCalM + ' 月';
+    if(titleEl) titleEl.textContent = _navCalY + ' 年 ' + _navCalM + ' 月 ▾';
     const firstDow = new Date(_navCalY, _navCalM-1, 1).getDay();
     const off = (firstDow + 6) % 7;               // 周一开头
     const days = new Date(_navCalY, _navCalM, 0).getDate();
@@ -33767,57 +34223,99 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       let hol = false; try{ hol = !!(window.Store && window.Store.kmIsHoliday && window.Store.kmIsHoliday(iso)); }catch(e){}
       if(hol) cls.push('navcal-holiday');
       const tag = hol ? '<span class="navcal-tag">休</span>' : '';
-      html += '<div class="'+cls.join(' ')+'"><span class="navcal-d">'+d+'</span>'+tag+'</div>';
+      const sub = navCalCellSub(_navCalY, _navCalM, d);
+      const subHtml = sub.text ? '<span class="'+sub.cls+'">'+sub.text+'</span>' : '<span class="navcal-l navcal-l-empty"></span>';
+      html += '<div class="'+cls.join(' ')+'"><span class="navcal-d">'+d+'</span>'+subHtml+tag+'</div>';
     }
     grid.innerHTML = html;
-    const mbox = document.getElementById('navCalMonths');
-    if(mbox){ mbox.querySelectorAll('.navcal-month').forEach(b=> b.classList.toggle('active', parseInt(b.getAttribute('data-month'),10)===_navCalM)); }
   }
   function navCalGoToday(){
     const t = new Date(); _navCalY = t.getFullYear(); _navCalM = t.getMonth()+1; navCalRender();
   }
+
+  /* ---- R218-3②：年月滑选弹窗（年 / 月两个纵向滚轮，scroll-snap 吸附 + 点行直选 + 停止滑动 140ms 取居中行）---- */
+  let _navCalPickY = 0, _navCalPickM = 0;
+  function navCalPickScrollTo(list, attr, val){
+    const row = list.querySelector('.wb-ym-row['+attr+'="'+val+'"]');
+    if(!row) return;
+    try{ list.scrollTop = Math.max(0, row.offsetTop - (list.clientHeight - row.offsetHeight)/2); }catch(e){}
+  }
+  function navCalPickRender(){
+    const body = document.getElementById('navCalPickBody');
+    if(!body) return;
+    let yrows = '', mrows = '';
+    for(let yy=1900; yy<=2049; yy++){
+      yrows += '<button type="button" class="wb-ym-row'+(yy===_navCalPickY?' on':'')+'" data-ncy="'+yy+'">'+yy+' 年</button>';
+    }
+    for(let mm=1; mm<=12; mm++){
+      mrows += '<button type="button" class="wb-ym-row'+(mm===_navCalPickM?' on':'')+'" data-ncm="'+mm+'">'+mm+' 月</button>';
+    }
+    body.innerHTML = '<div class="wb-ym-wheels">'
+      + '<div class="wb-ym-col"><div class="wb-ym-cap">年</div><div class="wb-ym-list" id="navCalPickYList">'+yrows+'</div></div>'
+      + '<div class="wb-ym-col"><div class="wb-ym-cap">月</div><div class="wb-ym-list" id="navCalPickMList">'+mrows+'</div></div>'
+      + '</div>'
+      + '<div class="navcal-pick-hint">上下滑动滚轮选择年份 / 月份，松手即切换</div>';
+    [['navCalPickYList','data-ncy','_navCalPickY'],['navCalPickMList','data-ncm','_navCalPickM']].forEach(pair=>{
+      const list = document.getElementById(pair[0]);
+      if(!list) return;
+      const attr = pair[1];
+      const apply = (val, scrollIt)=>{
+        if(!val) return;
+        if(attr === 'data-ncy') _navCalPickY = val; else _navCalPickM = val;
+        list.querySelectorAll('.wb-ym-row').forEach(r=> r.classList.toggle('on', +r.getAttribute(attr) === val));
+        if(scrollIt) navCalPickScrollTo(list, attr, val);
+      };
+      list.addEventListener('scroll', ()=>{
+        clearTimeout(list._ncT);
+        list._ncT = setTimeout(()=>{
+          const mid = list.scrollTop + list.clientHeight/2;
+          let best = null, bestD = Infinity;
+          list.querySelectorAll('.wb-ym-row').forEach(r=>{
+            const c = r.offsetTop + r.offsetHeight/2;
+            const dd = Math.abs(c - mid);
+            if(dd < bestD){ bestD = dd; best = r; }
+          });
+          if(best && bestD < best.offsetHeight) apply(+best.getAttribute(attr), false);
+        }, 140);
+      }, {passive:true});
+      list.addEventListener('click', (e)=>{
+        const row = e.target.closest('.wb-ym-row');
+        if(!row) return;
+        apply(+row.getAttribute(attr), true);
+      });
+      navCalPickScrollTo(list, attr, attr === 'data-ncy' ? _navCalPickY : _navCalPickM);
+    });
+  }
+  function navCalOpenPick(){
+    _navCalPickY = _navCalY;
+    _navCalPickM = _navCalM;
+    // 先 showModal 再 render —— 弹窗仍 hidden 时 clientHeight/offsetTop 均为 0，滚轮初始定位会静默失败
+    showModal('#modalNavCalPick');
+    navCalPickRender();
+    const ok = document.getElementById('btnNavCalPickOk');
+    if(ok) ok.onclick = ()=>{
+      _navCalY = _navCalPickY; _navCalM = _navCalPickM;
+      navCalRender();
+      hideModal('#modalNavCalPick');
+    };
+    const cancel = document.getElementById('btnNavCalPickCancel');
+    if(cancel) cancel.onclick = ()=> hideModal('#modalNavCalPick');
+  }
+
   function openNavCal(){
     const body = document.getElementById('navCalBody');
     if(body && !body._navCalBuilt){
       body._navCalBuilt = true;
       body.innerHTML = '<div class="navcal-bar">'
-        + '<button type="button" class="navcal-nav" id="navCalPrevYear" title="上一年">⟪</button>'
-        + '<span class="navcal-title" id="navCalTitle"></span>'
-        + '<button type="button" class="navcal-nav" id="navCalNextYear" title="下一年">⟫</button>'
+        + '<button type="button" class="navcal-title" id="navCalTitle" title="点击选择年份 / 月份"></button>'
         + '</div>'
-        + '<div class="navcal-months" id="navCalMonths"></div>'
         + '<div class="navcal-grid" id="navCalGrid"></div>'
-        + '<div class="navcal-legend"><span class="navcal-legend-swatch navcal-swatch-today"></span> 今天　<span class="navcal-legend-swatch navcal-swatch-hol"></span> 法定节假日　·　点击月份标签 / 上下滑动翻月 · ⟪ ⟫ 翻年</div>';
-      // R217-1：月份标签（点击切换）+ 上下滑动翻月
-      const navCalMonths = document.getElementById('navCalMonths');
-      if(navCalMonths){
-        const MN = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
-        navCalMonths.innerHTML = MN.map((n,i)=>'<button type="button" class="navcal-month" data-month="'+(i+1)+'">'+n+'</button>').join('');
-        navCalMonths.addEventListener('click', (e)=>{
-          const b = e.target.closest('.navcal-month'); if(!b) return;
-          _navCalM = parseInt(b.getAttribute('data-month'),10); navCalRender();
-        });
-        // 上下滑动翻月（触摸 + 鼠标拖拽，绑定到整块内容区）
-        let _sy=null, _sx=null;
-        const _swStart=(x,y)=>{ _sx=x; _sy=y; };
-        const _swEnd=(x,y)=>{
-          if(_sy===null) return;
-          const dy=y-_sy, dx=x-_sx;
-          if(Math.abs(dy)>30 && Math.abs(dy)>Math.abs(dx)){
-            if(dy<0){ _navCalM++; if(_navCalM>12){_navCalM=1;_navCalY++;} }
-            else { _navCalM--; if(_navCalM<1){_navCalM=12;_navCalY--;} }
-            navCalRender();
-          }
-          _sx=_sy=null;
-        };
-        body.addEventListener('touchstart', e=>{ if(e.touches&&e.touches[0]) _swStart(e.touches[0].clientX,e.touches[0].clientY); }, {passive:true});
-        body.addEventListener('touchend', e=>{ if(e.changedTouches&&e.changedTouches[0]) _swEnd(e.changedTouches[0].clientX,e.changedTouches[0].clientY); }, {passive:true});
-        body.addEventListener('mousedown', e=>{ _swStart(e.clientX,e.clientY); });
-        body.addEventListener('mouseup', e=>{ _swEnd(e.clientX,e.clientY); });
-      }
-      const on=(id,fn)=>{ const el=document.getElementById(id); if(el) el.onclick=fn; };
-      on('navCalPrevYear', ()=>{ _navCalY--; navCalRender(); });
-      on('navCalNextYear', ()=>{ _navCalY++; navCalRender(); });
+        + '<div class="navcal-legend"><span class="navcal-legend-swatch navcal-swatch-today"></span> 今天　'
+        + '<span class="navcal-legend-swatch navcal-swatch-hol"></span> 法定节假日　'
+        + '<span class="navcal-legend-swatch navcal-swatch-fest"></span> 节日　'
+        + '<span class="navcal-legend-swatch navcal-swatch-term"></span> 节气　·　点「年 月」可上下滑动选择 · 日期下方显示农历</div>';
+      const titleBtn = document.getElementById('navCalTitle');
+      if(titleBtn) titleBtn.onclick = ()=> navCalOpenPick();
     }
     navCalGoToday();
     showModal('#modalNavCal');
@@ -34753,6 +35251,7 @@ if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
     initFarmMusicState();
     initKMBgmState();   // R76-3：知识秘境背景音乐设置初始化（读回开关/曲目 + 绑定控件）
     initEnKeyPointImport(); // R122：英语专区「重点知识」图片导入（隐藏 file input 的 change 绑定，全局只绑一次）
+    initXsNoteImport();    // R218-1：学而思「课堂笔记」图片导入（独立隐藏 input，全局只绑一次）
     renderHome();
     if(typeof autoWelcomeJudy==='function') autoWelcomeJudy();
     resetIdle();
@@ -35050,6 +35549,9 @@ if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
 
 <!-- R122：新世界·英语专区「重点知识」图片导入（隐藏 file input，由单元详情页「➕ 增加」触发） -->
 <input type="file" id="enKpImgInput" accept="image/*" multiple style="display:none" data-page-node-id="R122kpImgInput" />
+
+<!-- R218-1：学而思英语「课堂笔记」图片导入（与重点知识同款流程，独立 input） -->
+<input type="file" id="xsNoteImgInput" accept="image/*" multiple style="display:none" data-page-node-id="R218xsNoteImgInput" />
 
 </body>
 </html>
