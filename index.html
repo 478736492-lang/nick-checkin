@@ -3939,35 +3939,9 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   border-radius:12px; padding:10px 12px; margin:4px 4px 8px; font-weight:600;
 }
 /* R220-2：单元 / 学年 / lesson 下拉面板选择器（交互与乐读数学 .math-filter-menu 一致，点击按键唤起、面板内滑动选择） */
-.xs-note-pick-bar{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin:6px 0 10px; }
-.xs-note-pick-group{ position:relative; display:flex; align-items:center; gap:6px; }
-.xs-note-pick-btn{
-  display:inline-flex; align-items:center; gap:6px; padding:7px 12px; border:1.5px solid var(--tone-200);
-  background:#fff; border-radius:10px; cursor:pointer; font-size:13px; font-weight:700; color:var(--tone-900);
-  font-family:inherit; transition:.15s; -webkit-appearance:none; appearance:none;
-}
-.xs-note-pick-btn:hover{ background:var(--tone-100); border-color:var(--tone-400); }
-.xs-note-pick-val{ color:var(--tone-700); font-weight:800; }
+
 .xs-note-caret{ font-size:11px; color:var(--tone-600); }
-.xs-note-pick-menu{
-  position:absolute; z-index:60; top:calc(100% + 6px); left:0; min-width:200px; max-height:min(60vh,340px);
-  overflow-y:auto; background:#fff; border:1.5px solid var(--tone-200); border-radius:14px;
-  box-shadow:0 12px 28px rgba(30,58,138,.20); padding:6px; display:flex; flex-direction:column; gap:4px;
-}
-.xs-note-pick-item{
-  text-align:left; padding:8px 10px; border-radius:8px; border:1px solid var(--tone-200); background:#fff;
-  cursor:pointer; font-size:13px; color:var(--tone-900); font-family:inherit; transition:.12s;
-}
-.xs-note-pick-item:hover{ background:var(--tone-100); }
-.xs-note-pick-item.active{ background:linear-gradient(135deg,var(--tone-300),var(--tone-400)); border-color:var(--tone-600); color:#fff; font-weight:700; }
-.xs-note-pick-empty{ padding:10px; color:var(--muted); font-size:12px; text-align:center; }
-.xs-note-pick-foot{ display:flex; gap:6px; padding-top:6px; margin-top:2px; border-top:1px dashed var(--tone-200); }
-.xs-note-pick-add{ flex:1; padding:7px; border:none; border-radius:8px; cursor:pointer; font-size:13px; font-weight:700; background:var(--tone-300); color:var(--tone-900); font-family:inherit; }
-.xs-note-pick-add:hover{ background:var(--tone-400); }
-.xs-note-pick-del{ flex:1; padding:7px; border:none; border-radius:8px; cursor:pointer; font-size:13px; font-weight:700; background:#ffe9e9; color:#c0392b; font-family:inherit; }
-.xs-note-pick-del:hover{ background:#ffd6d6; }
-.xs-note-pick-del[disabled]{ opacity:.5; cursor:not-allowed; }
-.xs-note-pick-stars{ display:inline-flex; align-items:center; gap:6px; margin-left:2px; font-size:13px; color:var(--tone-800); white-space:nowrap; }
+.xs-note-pick-stars{ display:inline-flex; align-items:center; gap:6px; margin-left:auto; font-size:13px; color:var(--tone-800); white-space:nowrap; }
 .en-oxford-book{ padding:2px; }
 .en-module{ margin-bottom:16px; }
 .en-module-title{
@@ -7844,27 +7818,11 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 .math-filter-foot{ display:flex; flex-wrap:wrap; gap:8px; padding-top:10px; margin-top:8px; border-top:1px dashed var(--tone-200); }
 .math-filter-foot .pbtn{ flex:1 1 auto; justify-content:center; }
 
-/* R221-1：课堂笔记学年 / lesson 按键视觉对齐乐读数学筛选按键（渐变底 + 展开高亮 + 面板滑动选择） */
-.xs-note-pick-btn{
-  padding:9px 12px; font-size:14px; border-radius:12px;
-  background:linear-gradient(135deg,var(--tone-050),#e8f3ff);
-  box-shadow:0 2px 8px rgba(30,58,138,.08);
-}
-.xs-note-pick-btn:hover{
-  background:linear-gradient(135deg,var(--tone-100),#e8f3ff);
-  border-color:var(--tone-400); box-shadow:0 4px 12px rgba(30,58,138,.16);
-}
-.xs-note-pick-group.is-open .xs-note-pick-btn{
-  border-color:var(--tone-600);
-  background:linear-gradient(135deg,var(--tone-300),var(--tone-400));
-  box-shadow:0 4px 14px rgba(64,150,255,.32);
-}
-.xs-note-pick-group.is-open .xs-note-pick-val{ color:#fff; }
-.xs-note-pick-group.is-open .xs-note-caret{ transform:rotate(180deg); color:#fff; }
-.xs-note-pick-menu{
-  -webkit-overflow-scrolling:touch; min-width:220px;
-  scrollbar-width:thin;
-}
+/* R222-1：课堂笔记学年 / lesson 按键完全复用乐读数学「板块 / 题型」筛选按键（结构 · 视觉 · 交互同源） */
+.xs-note-filter-bar{ align-items:center; margin:6px 0 10px; }
+.xs-note-filter-bar .math-filter{ flex:0 1 260px; min-width:200px; max-width:300px; }
+.xs-note-filter-bar .math-filter-menu{ max-height:min(52vh,300px); }
+.math-filter-foot .pbtn[disabled]{ opacity:.5; cursor:not-allowed; }
 
 </style>
 </head>
@@ -30165,6 +30123,7 @@ function renderKMAdmin(){
   let _xsNoteYear = null;
   let _xsNoteLesson = null;
   let _xsNotePickOpen = '';
+  let _xsNoteAutoOpen = '';      // R222-1：重渲染后需要自动展开的面板（year / lesson）
   let _xsNoteOutsideBound = false;
   function xsNoteKey(){
     return XS_NOTE_NS + (_xsNoteYear || '') + '|' + (_xsNoteLesson || '');
@@ -30219,14 +30178,22 @@ function renderKMAdmin(){
     target.classList.add('notes-mode');
     target.innerHTML = `
       <div class="yw-comp-head">课堂笔记</div>
-      <div class="xs-note-pick-bar">
-        <div class="xs-note-pick-group">
-          <button class="xs-note-pick-btn" data-xs-pick="year" type="button">📅 学年 <span class="xs-note-pick-val">${esc(_xsNoteYear || '未分类')}</span> <span class="xs-note-caret">▾</span></button>
-          <div class="xs-note-pick-menu" data-xs-pick-menu="year" hidden></div>
+      <div class="math-filter-bar xs-note-filter-bar">
+        <div class="math-filter" data-xs-pick-group="year">
+          <button type="button" class="math-filter-btn" data-xs-pick="year" aria-haspopup="listbox" aria-expanded="false" title="点击选择学年">
+            <span class="mf-label">学年</span>
+            <span class="mf-value">${esc(_xsNoteYear || '未分类')}</span>
+            <span class="mf-caret" aria-hidden="true">▾</span>
+          </button>
+          <div class="math-sub-tags math-filter-menu" data-xs-pick-menu="year" role="listbox" hidden></div>
         </div>
-        <div class="xs-note-pick-group">
-          <button class="xs-note-pick-btn" data-xs-pick="lesson" type="button">📝 lesson <span class="xs-note-pick-val">${esc(_xsNoteLesson || '未分类')}</span> <span class="xs-note-caret">▾</span></button>
-          <div class="xs-note-pick-menu" data-xs-pick-menu="lesson" hidden></div>
+        <div class="math-filter" data-xs-pick-group="lesson">
+          <button type="button" class="math-filter-btn" data-xs-pick="lesson" aria-haspopup="listbox" aria-expanded="false" title="点击选择 lesson">
+            <span class="mf-label">lesson</span>
+            <span class="mf-value">${esc(_xsNoteLesson || '未分类')}</span>
+            <span class="mf-caret" aria-hidden="true">▾</span>
+          </button>
+          <div class="math-sub-tags math-filter-menu" data-xs-pick-menu="lesson" role="listbox" hidden></div>
         </div>
         <span class="xs-note-pick-stars"><span class="en-unit-star-icons">${starStr}</span><span class="en-unit-star-num">${done}/${total} · ${starN}/5⭐</span></span>
       </div>
@@ -30251,6 +30218,8 @@ function renderKMAdmin(){
     const pager = $('#xsPager');
     if(pager) pager.innerHTML = '';
     xsNoteBind(target);
+    // R222-1：与乐读数学一致 —— 选完学年后自动展开 lesson 面板
+    if(_xsNoteAutoOpen){ const _w = _xsNoteAutoOpen; _xsNoteAutoOpen = ''; xsNotePickerOpen(target, _w); }
   }
   // 事件绑定（每次重渲染后重新绑定，与重点知识页同一套交互）
   function xsNoteBind(scope){
@@ -30386,43 +30355,66 @@ function renderKMAdmin(){
     if(yMenu){
       const years = (st && st.getXsNoteYears) ? st.getXsNoteYears() : [];
       let html = years.length
-        ? years.map(y=>`<button class="xs-note-pick-item${_xsNoteYear===y?' active':''}" data-xs-pick-year="${esc(y)}">${esc(y)}</button>`).join('')
-        : '<div class="xs-note-pick-empty">暂无学年，点下方＋新增</div>';
+        ? years.map(y=>`<button type="button" class="math-type-item${_xsNoteYear===y?' active':''}" data-xs-pick-year="${esc(y)}"><span class="mti-name">${esc(y)}</span></button>`).join('')
+        : '<div class="math-filter-empty">暂无学年</div>';
       // 历史数据里没有学年的笔记 → 归入「未分类」桶，有内容时才出现该选项
-      if(xsNoteHasBucket('', _xsNoteLesson)) html += `<button class="xs-note-pick-item${_xsNoteYear===''?' active':''}" data-xs-pick-year="">未分类</button>`;
+      if(xsNoteHasBucket('', _xsNoteLesson)) html += `<button type="button" class="math-type-item${_xsNoteYear===''?' active':''}" data-xs-pick-year=""><span class="mti-name">未分类</span></button>`;
       yMenu.innerHTML = html
-        + `<div class="xs-note-pick-foot"><button class="xs-note-pick-add" data-xs-pick-year-add="1">＋ 新增学年</button><button class="xs-note-pick-del" data-xs-pick-year-del="1"${_xsNoteYear?'':' disabled'}>🗑 删除</button></div>`;
+        + `<div class="math-filter-foot">
+             <button type="button" class="pbtn small math-add-card-btn" data-xs-pick-year-add="1" title="在当前列表新增一个学年">＋ 新增学年</button>
+             <button type="button" class="pbtn small math-del-card-btn" data-xs-pick-year-del="1" title="删除当前学年选项"${_xsNoteYear?'':' disabled'}>－ 删除学年</button>
+           </div>`;
     }
     const lMenu = scope.querySelector('[data-xs-pick-menu="lesson"]');
     if(lMenu){
       const lessons = (st && st.getXsNoteLessons) ? st.getXsNoteLessons() : [];
       let html = lessons.length
-        ? lessons.map(l=>`<button class="xs-note-pick-item${_xsNoteLesson===l?' active':''}" data-xs-pick-lesson="${esc(l)}">${esc(l)}</button>`).join('')
-        : '<div class="xs-note-pick-empty">暂无 lesson，点下方＋新增</div>';
-      if(xsNoteHasBucket(_xsNoteYear, '')) html += `<button class="xs-note-pick-item${_xsNoteLesson===''?' active':''}" data-xs-pick-lesson="">未分类</button>`;
+        ? lessons.map(l=>`<button type="button" class="math-type-item${_xsNoteLesson===l?' active':''}" data-xs-pick-lesson="${esc(l)}"><span class="mti-name">${esc(l)}</span></button>`).join('')
+        : '<div class="math-filter-empty">暂无 lesson</div>';
+      if(xsNoteHasBucket(_xsNoteYear, '')) html += `<button type="button" class="math-type-item${_xsNoteLesson===''?' active':''}" data-xs-pick-lesson=""><span class="mti-name">未分类</span></button>`;
       lMenu.innerHTML = html
-        + `<div class="xs-note-pick-foot"><button class="xs-note-pick-add" data-xs-pick-lesson-add="1">＋ 新增 lesson</button><button class="xs-note-pick-del" data-xs-pick-lesson-del="1"${_xsNoteLesson?'':' disabled'}>🗑 删除</button></div>`;
+        + `<div class="math-filter-foot">
+             <button type="button" class="pbtn small math-add-card-btn" data-xs-pick-lesson-add="1" title="在当前列表新增一个 lesson">＋ 新增 lesson</button>
+             <button type="button" class="pbtn small math-del-card-btn" data-xs-pick-lesson-del="1" title="删除当前 lesson 选项"${_xsNoteLesson?'':' disabled'}>－ 删除 lesson</button>
+           </div>`;
     }
+  }
+  // R222-1：学年 / lesson 下拉面板的开合（结构与交互 1:1 对齐乐读数学「板块 / 题型」筛选按键）
+  function xsNotePickerOpen(scope, which){
+    if(!scope) return;
+    const grp  = scope.querySelector('[data-xs-pick-group="'+which+'"]');
+    const menu = scope.querySelector('[data-xs-pick-menu="'+which+'"]');
+    if(!grp || !menu) return;
+    grp.classList.add('open');
+    menu.removeAttribute('hidden');
+    const btn = grp.querySelector('[data-xs-pick]');
+    if(btn) btn.setAttribute('aria-expanded', 'true');
+    _xsNotePickOpen = which;
   }
   function xsNoteBindPickers(scope){
     if(!scope) return;
+    // 按键开合：再点同一按键收起；两个面板互斥，同一时刻只开一个
     scope.querySelectorAll('[data-xs-pick]').forEach(btn=>{
       btn.addEventListener('click', (e)=>{
         e.stopPropagation();
         const which = btn.getAttribute('data-xs-pick');
-        const group = btn.closest('.xs-note-pick-group');
-        const menu = scope.querySelector('[data-xs-pick-menu="'+which+'"]');
-        if(!menu) return;
-        const willOpen = menu.hidden;
+        const grp = btn.closest('[data-xs-pick-group]');
+        const willOpen = !!grp && !grp.classList.contains('open');
         xsNoteClosePickers();
-        if(willOpen){ menu.hidden = false; _xsNotePickOpen = which; if(group) group.classList.add('is-open'); }
+        if(willOpen) xsNotePickerOpen(scope, which);
       });
     });
+    // 选中学年 → 收起本面板，并自动展开 lesson 面板（与乐读数学「选板块→自动展开题型」一致）
     scope.querySelectorAll('[data-xs-pick-year]').forEach(b=>{
-      b.addEventListener('click', (e)=>{ e.stopPropagation(); _xsNoteYear=b.getAttribute('data-xs-pick-year')||''; renderXsNotes(); });
+      b.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        _xsNoteYear = b.getAttribute('data-xs-pick-year') || '';
+        _xsNoteAutoOpen = 'lesson';
+        renderXsNotes();
+      });
     });
     scope.querySelectorAll('[data-xs-pick-lesson]').forEach(b=>{
-      b.addEventListener('click', (e)=>{ e.stopPropagation(); _xsNoteLesson=b.getAttribute('data-xs-pick-lesson')||''; renderXsNotes(); });
+      b.addEventListener('click', (e)=>{ e.stopPropagation(); _xsNoteAutoOpen=''; _xsNoteLesson = b.getAttribute('data-xs-pick-lesson') || ''; renderXsNotes(); });
     });
     scope.querySelectorAll('[data-xs-pick-year-add]').forEach(b=>{
       b.addEventListener('click', (e)=>{
@@ -30432,7 +30424,7 @@ function renderKMAdmin(){
         const st = window.Store; if(!st) return;
         const arr = st.getXsNoteYears();
         if(arr.indexOf(name) >= 0){ toast('该学年已存在'); return; }
-        st.setXsNoteYears(arr.concat([name])); _xsNoteYear = name; renderXsNotes();
+        st.setXsNoteYears(arr.concat([name])); _xsNoteYear = name; _xsNoteAutoOpen = 'year'; renderXsNotes();
       });
     });
     scope.querySelectorAll('[data-xs-pick-year-del]').forEach(b=>{
@@ -30442,7 +30434,7 @@ function renderKMAdmin(){
         const name = _xsNoteYear;
         openCustomModal('删除学年选项', `确定删除学年「<b>${esc(name)}</b>」这个选项吗？<div style="margin-top:8px;color:#5b6b85;font-size:13px">仅移除选项入口，该学年下已导入的笔记图片会一并隐藏（数据仍保留在存储中）。</div>`, ()=>{
           const st = window.Store; if(!st) return true;
-          st.setXsNoteYears(st.getXsNoteYears().filter(v => v !== name)); _xsNoteYear = ''; renderXsNotes(); return true;
+          st.setXsNoteYears(st.getXsNoteYears().filter(v => v !== name)); _xsNoteYear = ''; _xsNoteAutoOpen = 'year'; renderXsNotes(); return true;
         });
       });
     });
@@ -30454,7 +30446,7 @@ function renderKMAdmin(){
         const st = window.Store; if(!st) return;
         const arr = st.getXsNoteLessons();
         if(arr.indexOf(name) >= 0){ toast('该 lesson 已存在'); return; }
-        st.setXsNoteLessons(arr.concat([name])); _xsNoteLesson = name; renderXsNotes();
+        st.setXsNoteLessons(arr.concat([name])); _xsNoteLesson = name; _xsNoteAutoOpen = 'lesson'; renderXsNotes();
       });
     });
     scope.querySelectorAll('[data-xs-pick-lesson-del]').forEach(b=>{
@@ -30464,24 +30456,29 @@ function renderKMAdmin(){
         const name = _xsNoteLesson;
         openCustomModal('删除 lesson 选项', `确定删除 lesson「<b>${esc(name)}</b>」这个选项吗？<div style="margin-top:8px;color:#5b6b85;font-size:13px">仅移除选项入口，该 lesson 下已导入的笔记图片会一并隐藏（数据仍保留在存储中）。</div>`, ()=>{
           const st = window.Store; if(!st) return true;
-          st.setXsNoteLessons(st.getXsNoteLessons().filter(v => v !== name)); _xsNoteLesson = ''; renderXsNotes(); return true;
+          st.setXsNoteLessons(st.getXsNoteLessons().filter(v => v !== name)); _xsNoteLesson = ''; _xsNoteAutoOpen = 'lesson'; renderXsNotes(); return true;
         });
       });
     });
+    // 点面板之外的任意处 / 按 Esc → 全部收起（与乐读数学同一套习惯）
     if(!_xsNoteOutsideBound){
       _xsNoteOutsideBound = true;
       document.addEventListener('click', (e)=>{
-        if(e.target.closest && e.target.closest('.xs-note-pick-group')) return;
+        if(e.target.closest && e.target.closest('.xs-note-filter-bar')) return;
         xsNoteClosePickers();
       });
+      document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') xsNoteClosePickers(); });
     }
   }
   function xsNoteClosePickers(){
-    document.querySelectorAll('.xs-note-pick-menu').forEach(m=>{ m.hidden = true; });
-    document.querySelectorAll('.xs-note-pick-group.is-open').forEach(g=>{ g.classList.remove('is-open'); });
+    document.querySelectorAll('[data-xs-pick-group]').forEach(g=>{
+      g.classList.remove('open');
+      const b = g.querySelector('[data-xs-pick]');
+      if(b) b.setAttribute('aria-expanded', 'false');
+    });
+    document.querySelectorAll('[data-xs-pick-menu]').forEach(m=>{ m.setAttribute('hidden', ''); });
     _xsNotePickOpen = '';
   }
-
   function renderXueersiSummary(){
     if(xsCat === 'stories') xsCat = 'words'; // V12.3：仅过滤绘本；恢复语法
     $$('.xs-summary-pane .xs-sub-tabs [data-xs-cat]').forEach(b=>b.classList.toggle('active', b.dataset.xsCat===xsCat));
