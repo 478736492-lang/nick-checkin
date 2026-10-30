@@ -145,7 +145,7 @@ body{width:100%;height:100vh;height:100dvh;display:flex;flex-direction:row}
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
   background:rgba(255,255,255,.85);border:1.5px solid rgba(255,255,255,.6);
   padding:4px 2px;border-radius:8px;cursor:pointer;font-size:12px;color:var(--tiffany-deep);
-  transition:.15s;flex:0 0 auto;white-space:nowrap;min-height:50px;
+  transition:.15s;flex:0 0 auto;white-space:nowrap;height:56px;
   box-shadow:0 1px 3px rgba(0,0,0,.12);
 }
 .nav-btn .ico{font-size:18px;line-height:1;filter:drop-shadow(0 1px 1px rgba(0,0,0,.15))}
@@ -1293,8 +1293,15 @@ button[hidden]{display:none!important}
 .report-line{display:flex;justify-content:space-between;padding:8px 10px;background:#fff;border-radius:8px;font-size:13px;border:1px solid var(--tone-150)}
 .report-line .v{color:var(--tiffany-deep);font-weight:700}
 /* V12.7：周度/月度报告 tab + 分类统计 */
-.report-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.report-tabs{display:flex;gap:6px;flex-wrap:wrap}
+/* R217-7①：学习报告标题与周/月度报告按钮同行（按钮在标题右侧） */
+.report-card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.report-card-head h3{margin:0}
 .report-tabs .sub-tab{font-size:12px;padding:6px 12px}
+/* R217-7②：导出图片 / 导出表格 按钮视觉与「周度学习报告」标签按键保持一致（白底圆角描边胶囊） */
+.report-export-row{margin-top:8px;display:flex;gap:8px;flex-wrap:wrap}
+.report-export-btn{background:#fff;border:1.5px solid var(--tone-200);color:var(--muted);border-radius:18px;font-size:12px;font-weight:600;cursor:pointer;box-shadow:none;padding:6px 14px}
+.report-export-btn:hover{background:var(--tone-100);color:var(--muted)}
 .report-header{font-size:13px;font-weight:700;color:var(--tiffany-deep);background:linear-gradient(135deg,#e8f5f3,#d2ebe8);padding:8px 12px;border-radius:10px;margin-bottom:6px;border:1px solid var(--tiffany-light)}
 .report-header b{color:var(--tiffany-dark);font-size:16px}
 .report-cats{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-bottom:8px}
@@ -1396,6 +1403,10 @@ body.child-mode .hidden-in-child{display:none!important}
 .km-music-upload:hover{transform:scale(1.08);background:var(--orange);color:#fff}
 .km-music-upload.has-file{border-color:var(--z-xs-main);color:var(--z-xs-main)}
 .km-music-upload.has-file::after{content:'✓';position:absolute;top:-2px;right:-2px;background:var(--z-xs-main);color:#fff;font-size:10px;width:14px;height:14px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+/* R217-4：音乐设置上传按钮改为「横向文字 + 自适应文字宽度」的胶囊样式（覆盖上方面积固定的圆形键），文字不再被裁切 */
+.settings-music-upload{display:inline-flex;align-items:center;justify-content:center;gap:6px;width:auto;height:auto;min-width:0;padding:8px 14px;border-radius:10px;font-size:13px;font-weight:700;white-space:nowrap;line-height:1.2}
+.settings-music-upload input{display:none}
+.settings-music-upload:hover{background:var(--orange);color:#fff}
 
 /* ========== 滚动条美化 ========== */
 .main-wrap::-webkit-scrollbar,.modal-body::-webkit-scrollbar{width:6px}
@@ -5328,7 +5339,8 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .settings-save-btn:hover{filter:brightness(1.07)}
 .settings-save-btn--global{position:static;font-size:15px;padding:10px 26px;border-radius:12px}
 /* R133-4：设置子页面（弹窗）底部的【保存设置】按钮（内联，区别于角标 pill） */
-.settings-save-modal-btn{font-size:14px;padding:9px 22px;border-radius:12px;margin-right:auto}
+/* R217-2⑤：设置中心所有【保存设置】按钮统一靠右，与【返回/关闭】成组排列（原 margin-right:auto 会把保存键顶到最左） */
+.settings-save-modal-btn{font-size:14px;padding:9px 22px;border-radius:12px;margin-right:0}
 .settings-card:active{transform:translateY(0)}
 @media(max-width:680px){ .settings-grid{grid-template-columns:1fr} }
 
@@ -6531,6 +6543,11 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 
 /* ---- R118-3：知识秘境设置弹窗内的「后台修改中心」入口卡 ---- */
 .kma-entry-card{margin:0 0 12px;border-left:3px solid var(--tone-600)}
+/* R217-2：知识秘境设置弹窗内嵌「题库管理 / 主题色 / 关卡音乐 / 数据管理」区块 */
+.kma-embed{margin-top:2px}
+.kma-embed .kma-sec{background:var(--tone-025);box-shadow:none;margin-bottom:12px}
+.kma-embed .kma-sec:last-of-type{margin-bottom:0}
+.kma-embed .kma-tip{margin-bottom:12px}
 
 /* ---- R118-3：成长档案 / 设置中心 全部层级卡片色系统一（收敛灰/紫色杂色至蓝系令牌） ---- */
 .page-archive .badge{border-color:var(--tone-150)}
@@ -7694,6 +7711,11 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 }
 .navcal-nav:hover{ background:var(--tone-100); border-color:var(--tone-400); transform:translateY(-1px); }
 .navcal-nav:active{ transform:scale(.94); }
+/* R217-1：万年历月份标签（点击切换月份）+ 上下滑动翻月 */
+.navcal-months{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin-bottom:10px}
+.navcal-month{flex:0 0 auto;min-width:30px;padding:5px 9px;border-radius:9px;border:1.5px solid var(--tone-150);background:#fff;color:var(--tone-800);font-size:12px;font-weight:700;cursor:pointer;transition:.12s}
+.navcal-month:hover{background:var(--tone-100);border-color:var(--tone-400)}
+.navcal-month.active{background:var(--tone-600);border-color:var(--tone-900);color:#fff}
 .navcal-grid{
   display:grid; grid-template-columns:repeat(7,1fr); gap:4px;
   padding:8px; border-radius:12px; background:var(--tone-025); border:1px solid var(--tone-100);
@@ -8063,21 +8085,7 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
         <span class="settings-card-arrow" data-page-node-id="R85cardMusicArrow">›</span>
       </div>
 
-      <!-- 4) 背景设置 -->
-      <div class="settings-card" id="cardBgSettings" data-page-node-id="R85cardBg">
-        <div class="settings-card-main" data-page-node-id="R85cardBgMain">
-          <div class="settings-card-body">
-          <div class="settings-card-head">
-            <span class="settings-card-icon" data-page-node-id="R85cardBgIco">🎨</span>
-            <span class="settings-card-title" data-page-node-id="R85cardBgTitle">背景设置</span>
-          </div>
-          <div class="settings-card-desc" data-page-node-id="R85cardBgDesc">平台全部背景与背景贴图</div>
-          </div>
-        </div>
-        <span class="settings-card-arrow" data-page-node-id="R85cardBgArrow">›</span>
-      </div>
-
-      <!-- 5) 数据同步 -->
+      <!-- 4) 数据同步 -->
       <div class="settings-card" id="cardSyncSettings" data-page-node-id="R85cardSync">
         <div class="settings-card-main" data-page-node-id="R85cardSyncMain">
           <div class="settings-card-body">
@@ -8590,11 +8598,6 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
     <div id="kmGame" class="km-game" hidden data-page-node-id="ArZ0TUQnaInir1CfPO1zh1"></div>
   </section>
 
-  <!-- ================= 后台修改中心（可视化改题 / 改规则 / 改配色 / 数据管理） ================= -->
-  <section class="page page-kmadmin" data-page="kmadmin" hidden data-page-node-id="JWFOLCXVB4AKGz8HudmnRZ">
-    <div id="kmaWrap" data-page-node-id="I42lIwcXqxzDnaX1noVgHc"></div>
-  </section>
-
   <!-- ================= 种植园（v10.2：2D Q 版清新田园 UI · 1280×960 iPad 4:3） ================= -->
   <section class="page page-farm" data-page="farm" hidden data-page-node-id="KBzw9h5nsTXcaruZBZRwwe">
     <!-- 装饰背景：天空 + 草地 -->
@@ -8690,18 +8693,17 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
     <div class="page-title" data-page-node-id="StvTzAbICc7ediOsOymivd"><h2 data-page-node-id="Yc4CDTyvfk73PrB7HXB9Ij"></h2></div><div class="page-content">
     <div class="archive-grid" data-page-node-id="ibzJFBBAtBWH9sce7K9Yiv">
       <div class="card report-card" data-page-node-id="Xo8UhvCwNILGTKNo1SieeQ">
-        <div class="card-head" data-page-node-id="od5mA6Pv9ortRsiRCgUHA4">
-          <!-- R60-6：删除「— 按所有打卡分类生成」说明文字 -->
+        <div class="card-head report-card-head" data-page-node-id="od5mA6Pv9ortRsiRCgUHA4">
+          <!-- R217-7①：周/月度报告按钮移到「学习报告」标题右侧 -->
           <h3 data-page-node-id="FGHyqG6MeNif2AhF6MGm4H">📋 学习报告</h3>
+          <div class="report-tabs" data-page-node-id="GU1u2ha1sSBkiP3yvE7FY2">
+            <button class="sub-tab active" data-report="weekly" data-page-node-id="WCFIqfxNR8gKZXEDCJspBc">📅 周度学习报告</button>
+            <button class="sub-tab" data-report="monthly" data-page-node-id="4OnGDETIvAAjiw5EGmOvqy">🗓️ 月度学习报告</button>
+          </div>
         </div>
-        <!-- R60-6：周/月度报告按钮移到「学习报告」标题下方 -->
-        <div class="report-tabs report-tabs-under" data-page-node-id="GU1u2ha1sSBkiP3yvE7FY2">
-          <button class="sub-tab active" data-report="weekly" data-page-node-id="WCFIqfxNR8gKZXEDCJspBc">📅 周度学习报告</button>
-          <button class="sub-tab" data-report="monthly" data-page-node-id="4OnGDETIvAAjiw5EGmOvqy">🗓️ 月度学习报告</button>
-        </div>
-        <div class="hidden-in-child" style="margin-top:6px" data-page-node-id="hFWxzxTNKkTWSMZygVw4Lh">
-          <button class="pbtn" id="btnExportPng" data-page-node-id="G3d7iMA7qb6YYoXBdsR9Ht">📷 导出图片</button>
-          <button class="pbtn" id="btnExportCsv" data-page-node-id="P2oLPiZDF2ULjcaVmFDhwI">📊 导出表格</button>
+        <div class="hidden-in-child report-export-row" data-page-node-id="hFWxzxTNKkTWSMZygVw4Lh">
+          <button class="pbtn report-export-btn" id="btnExportPng" data-page-node-id="G3d7iMA7qb6YYoXBdsR9Ht">📷 导出图片</button>
+          <button class="pbtn report-export-btn" id="btnExportCsv" data-page-node-id="P2oLPiZDF2ULjcaVmFDhwI">📊 导出表格</button>
         </div>
         <div class="weekly-report" id="weeklyReport" data-page-node-id="xCNdyyGS9yjmH2FSHQNjC3"></div>
       </div>
@@ -9230,12 +9232,12 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 
 <!-- ========== 弹窗：R83 种植园设置（从背景设置迁移：种植园排版 + 农场市集 + 云上小卖部） ========== -->
 <div class="modal-mask" id="modalFarmSetting" hidden data-page-node-id="R83modalFarmSet">
-  <div class="modal-box" style="min-width:640px;max-width:95vw" data-page-node-id="R83farmBox">
+  <div class="modal-box" style="min-width:640px;max-width:95vw;max-height:86vh;display:flex;flex-direction:column" data-page-node-id="R83farmBox">
     <div class="modal-head" data-page-node-id="R83farmHead">
       <h3 data-page-node-id="R83farmTitle">🌱 种植园设置</h3>
       <button class="modal-x" data-close data-page-node-id="R83farmX">×</button>
     </div>
-    <div class="modal-body" data-page-node-id="R83farmBody">
+    <div class="modal-body" style="overflow-y:auto" data-page-node-id="R83farmBody">
       <div class="parent-edit-hint" data-page-node-id="R83farmHint">📌 在此调整种植园排版、管理农场市集（种子/水/阳光）与云上小卖部（礼物）；所有修改只对家长模式可见、可编辑。</div>
       <div class="parent-edit-group" data-page-node-id="R83farmLayoutGrp">
         <div class="peg-title" data-page-node-id="EFlGg4U3ymB2Nkg7uAjuPQ">🌱 种植园排版</div>
@@ -9408,7 +9410,6 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
       </div>
     </div>
       <div class="modal-foot" data-page-node-id="R85modalGameFoot">
-        <button class="primary-btn settings-save-modal-btn" data-commit-settings data-page-node-id="R133saveGame">💾 保存设置</button>
         <button class="pbtn" data-close data-page-node-id="R85modalGameClose">关闭</button>
       </div>
   </div>
@@ -9423,15 +9424,6 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
     </div>
     <div class="modal-body" style="overflow-y:auto" id="settingsKMBody" data-page-node-id="R85modalKMBody">
       <div class="parent-edit-hint" data-page-node-id="R85modalKMHint">📌 调整知识秘境闯关难度、操作手感、奖励星星与主题文案。</div>
-      <!-- R118-3：后台修改中心迁移入口（设置中心 → 游戏设置 → 知识秘境 子项内，仅家长模式） -->
-      <div class="settings-game-card kma-entry-card hidden-in-child" id="btnSettingsKMAdmin" data-page-node-id="R118kmaEntry">
-        <div class="settings-game-icon" data-page-node-id="R118kmaEntryIco">🛠️</div>
-        <div class="settings-game-main" data-page-node-id="R118kmaEntryMain">
-          <div class="settings-game-title" data-page-node-id="R118kmaEntryTitle">后台修改中心</div>
-          <div class="settings-game-desc" data-page-node-id="R118kmaEntryDesc">题库管理、游戏规则、界面美化、关卡音乐</div>
-        </div>
-        <span class="settings-card-arrow" data-page-node-id="R118kmaEntryArrow">›</span>
-      </div>
       <!-- R121-1：游戏开放日期（默认周末 + 法定节假日；支持自定义开放日；非开放日知识秘境板块锁定） -->
       <div class="parent-edit-group" data-page-node-id="R121kmOpenGrp">
         <div class="peg-title" data-page-node-id="R121kmOpenTitle">📅 游戏开放日期</div>
@@ -9509,7 +9501,7 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
       <div class="parent-edit-group" data-page-node-id="R85kmRewardGrp">
         <div class="peg-title" data-page-node-id="R85kmRewardTitle">⭐ 奖励设置</div>
         <div class="peg-farm-row peg-input-grid" data-page-node-id="R85kmRewardRow">
-          <label data-page-node-id="R85kmPerLevelLbl">每关题数 <input type="number" id="kmPerLevel" class="peg-input" min="10" max="100" step="5" data-page-node-id="R85kmPerLevel"> 题</label>
+          <label data-page-node-id="R85kmPerLevelLbl">每关题数 <input type="number" id="kmPerLevel" class="peg-input" min="10" max="200" step="10" data-page-node-id="R85kmPerLevel"> 题</label>
           <label data-page-node-id="R85kmCorrectLbl">答对奖励 <input type="number" id="kmRewardCorrect" class="peg-input" min="0" max="20" step="1" data-page-node-id="R85kmCorrect"> ⭐</label>
           <label data-page-node-id="R85kmClearLbl">通关奖励 <input type="number" id="kmRewardClear" class="peg-input" min="0" max="50" step="1" data-page-node-id="R85kmClear"> ⭐</label>
         </div>
@@ -9520,6 +9512,8 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
         <label data-page-node-id="R85kmClearedLbl">通关语 <input type="text" id="kmTextCleared" maxlength="80" data-page-node-id="R85kmCleared"></label>
         <label data-page-node-id="R85kmCertLbl">证书语 <input type="text" id="kmTextCert" maxlength="80" data-page-node-id="R85kmCert"></label>
       </div>
+      <!-- R217-2：原「后台修改中心」全部设置项并入本页（题库管理 / 主题色 / 关卡音乐 / 数据管理），重复项已剔除 -->
+      <div id="kmaWrap" class="kma-embed" data-page-node-id="R217kmMergedWrap"></div>
     </div>
     <div class="modal-foot" data-page-node-id="R85modalKMFoot">
       <button class="primary-btn" id="btnKMSettingSave" data-commit-settings data-page-node-id="R85btnKMSave">💾 保存设置</button>
@@ -17500,7 +17494,6 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     if(page==='baike') renderBaike();
     if(page==='chuangguan') renderChuangguan();
     if(page==='knowledge') renderKnowledge();
-    if(page==='kmadmin') renderKMAdmin();
     // R118-2：Nick 的备忘录独立页面
     if(page==='memonick') renderNickMemo();
     if(page==='farm') renderFarm();
@@ -28210,7 +28203,6 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         else if(act==='mode'){ kmMode = (kmMode==='normal')?'trial':'normal'; renderKnowledge(); }
         else if(act==='review'){ kmRenderReview(); }
         else if(act==='stats'){ kmRenderStats(); }
-        else if(act==='admin'){ goPage('kmadmin'); }
         else if(act==='home'){ goPage('home'); }
       });
     }
@@ -29105,7 +29097,6 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         else if(act==='resetQ'){ if(confirm('重置题库为内置样例？当前自定义题目将丢失。')){ S.resetKMQuestions(); kmaState.qs=S.getKMQuestions(); kmAdminRenderQs(); kmAdminToast('已重置为内置样例'); } }
         else if(act==='clearWrong'){ if(confirm('清空全部错题？')){ S.clearKMWrong(); kmAdminStats(); kmAdminToast('已清空错题'); } }
         else if(act==='resetProg'){ if(confirm('重置全部闯关进度（星星/通关/错题）？')){ S.resetKMProgress(); kmAdminStats(); kmAdminToast('已重置进度'); } }
-        else if(act==='back'){ goPage('settings'); }
       });
       wrap.addEventListener('input',onKmaInput);
       wrap.addEventListener('change',onKmaInput);
@@ -29113,51 +29104,29 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     kmaState.qs=S.getKMQuestions();
     const set=S.getKMSettings(), stats=S.getKMStats();
     wrap.innerHTML=`
-      <div class="kma-topbar">
-        <button class="kma-back" data-kma="back">← 返回设置中心</button>
-        <div class="kma-head">🛠️ 后台修改中心</div>
-      </div>
-      <div class="kma-tip">所有修改实时生效、自动保存本地，无需改代码。</div>
+      <div class="kma-tip">📌 以下内容修改后，统一由弹窗底部【💾 保存设置】生效。</div>
       <div class="kma-sec">
-        <div class="kma-sec-title">① 题库管理（可在平台内直接改题）</div>
+        <div class="kma-sec-title">📚 题库管理（可在平台内直接改题）</div>
         <div class="kma-row kma-toolbar">
           <label>筛选科目：<select data-f="filter">
             <option value="all">全部</option><option value="chinese">语文</option><option value="math">数学</option><option value="english">英语</option>
           </select></label>
-          <label>每关出题数量：<input type="number" min="1" max="200" value="${set.perLevel}" data-f="perLevel" data-type="int"></label>
           <button class="kma-btn" data-kma="addQ">＋ 新增题目</button>
           <button class="kma-btn kma-warn" data-kma="resetQ">↺ 重置为内置样例</button>
         </div>
         <div class="kma-qlist" id="kmaQs"></div>
       </div>
       <div class="kma-sec">
-        <div class="kma-sec-title">② 游戏规则</div>
-        <div class="kma-grid">
-          <label>答错重试次数(1-3)：<input type="number" min="1" max="3" value="${set.retries}" data-f="retries" data-type="int"></label>
-          <label>迷雾遮挡时长(ms)：<input type="number" min="500" max="8000" step="500" value="${set.fogMs}" data-f="fogMs" data-type="int"></label>
-          <label>答题提示开关：<input type="checkbox" ${set.hintsOn?'checked':''} data-f="hintsOn" data-type="bool"></label>
-          <label>闯关速度：<input type="range" min="0.7" max="1.5" step="0.1" value="${set.speed}" data-f="speed" data-type="float"></label>
-          <label>跳跃手感：<input type="range" min="0.8" max="1.4" step="0.1" value="${set.jump}" data-f="jump" data-type="float"></label>
-        </div>
-      </div>
-      <div class="kma-sec">
-        <div class="kma-sec-title">③ 界面美化（主题色 / 文字）</div>
+        <div class="kma-sec-title">🎨 主题色（各关卡配色）</div>
         <div class="kma-grid">
           <label>语文·文字森林色：<input type="color" value="${set.themeColors.chinese}" data-f="themeColors.chinese"></label>
           <label>数学·逻辑峡谷色：<input type="color" value="${set.themeColors.math}" data-f="themeColors.math"></label>
           <label>英语·语言海湾色：<input type="color" value="${set.themeColors.english}" data-f="themeColors.english"></label>
           <label>UI 主色：<input type="color" value="${set.themeColors.ui}" data-f="themeColors.ui"></label>
         </div>
-        <label class="kma-block">首页欢迎文字：<textarea data-f="text.welcome">${esc(set.text.welcome)}</textarea></label>
-        <label class="kma-block">通关提示文字：<textarea data-f="text.cleared">${esc(set.text.cleared)}</textarea></label>
-        <label class="kma-block">终极证书文字：<textarea data-f="text.cert">${esc(set.text.cert)}</textarea></label>
-        <div class="kma-grid">
-          <label>答对奖励星星：<input type="number" min="0" max="20" value="${set.starReward.correct}" data-f="starReward.correct" data-type="int"></label>
-          <label>通关奖励星星：<input type="number" min="0" max="50" value="${set.starReward.clear}" data-f="starReward.clear" data-type="int"></label>
-        </div>
       </div>
       <div class="kma-sec">
-        <div class="kma-sec-title">⑤ 各关卡背景音乐（家长模式设置 · 闯关时按关卡特点播放）</div>
+        <div class="kma-sec-title">🎵 各关卡背景音乐（家长模式设置 · 闯关时按关卡特点播放）</div>
         <div class="kma-tip">每个关卡可独立开/关、上传不同的背景音乐（≤2MB mp3/wav）。未上传则用各关卡的内置特色音。</div>
         ${['chinese','math','english','mixed'].map(k=>{
           const lvl = (set.bgmByLevel && set.bgmByLevel[k]) || {};
@@ -29179,7 +29148,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         ${set.bgm&&set.bgm.src?'<div class="kma-tip" style="margin-top:6px"><span>📌 全局默认音乐仍有效（未单独设置的关卡会播放）</span></div>':''}
       </div>
       <div class="kma-sec">
-        <div class="kma-sec-title">④ 数据管理</div>
+        <div class="kma-sec-title">🗂 数据管理</div>
         <div class="kma-stats" id="kmaStats">
           <span>⭐ 总星星：<b>${stats.stars}</b></span>
           <span>🏆 已通关：<b>${stats.clearedCount}/4</b></span>
@@ -31588,7 +31557,9 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   // 播放某槽位音效
   function isSoundOn(){ try{ const st=(window.Store&&window.Store.load)?window.Store.load():null; return !!(st && st.soundOn); }catch(e){ return false; } }
   // R150-5：系统默认不播放任何按键音效；仅当用户在设置中心主动开启 soundOn 后才发声
-  function playClickSfx(slot){ if(!isSoundOn()) return; try{ const id=getClickSfx(slot); const p=SFX_PRESETS[id]; if(p&&p.play) p.play(); }catch(e){} }
+  // R217-5：按槽位去抖——同一槽位 80ms 内只真正播放一次，彻底杜绝「单次点击重复播放 / 多次触发」音效
+  let _sfxLastPlay = {};
+  function playClickSfx(slot){ if(!isSoundOn()) return; const _n=Date.now(); if(_sfxLastPlay[slot] && _n-_sfxLastPlay[slot]<80) return; _sfxLastPlay[slot]=_n; try{ const id=getClickSfx(slot); const p=SFX_PRESETS[id]; if(p&&p.play) p.play(); }catch(e){} }
   // 在「任务设置」里保存某槽位音效选择
   function setClickSfxConfig(slot, id){
     const st = (window.Store&&window.Store.load)?window.Store.load():null; if(!st) return;
@@ -33799,6 +33770,8 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       html += '<div class="'+cls.join(' ')+'"><span class="navcal-d">'+d+'</span>'+tag+'</div>';
     }
     grid.innerHTML = html;
+    const mbox = document.getElementById('navCalMonths');
+    if(mbox){ mbox.querySelectorAll('.navcal-month').forEach(b=> b.classList.toggle('active', parseInt(b.getAttribute('data-month'),10)===_navCalM)); }
   }
   function navCalGoToday(){
     const t = new Date(); _navCalY = t.getFullYear(); _navCalM = t.getMonth()+1; navCalRender();
@@ -33809,16 +33782,41 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       body._navCalBuilt = true;
       body.innerHTML = '<div class="navcal-bar">'
         + '<button type="button" class="navcal-nav" id="navCalPrevYear" title="上一年">⟪</button>'
-        + '<button type="button" class="navcal-nav" id="navCalPrevMon" title="上个月">‹</button>'
         + '<span class="navcal-title" id="navCalTitle"></span>'
-        + '<button type="button" class="navcal-nav" id="navCalNextMon" title="下个月">›</button>'
         + '<button type="button" class="navcal-nav" id="navCalNextYear" title="下一年">⟫</button>'
-        + '</div><div class="navcal-grid" id="navCalGrid"></div>'
-        + '<div class="navcal-legend"><span class="navcal-legend-swatch navcal-swatch-today"></span> 今天　<span class="navcal-legend-swatch navcal-swatch-hol"></span> 法定节假日　·　‹ › 翻月 · ⟪ ⟫ 翻年</div>';
+        + '</div>'
+        + '<div class="navcal-months" id="navCalMonths"></div>'
+        + '<div class="navcal-grid" id="navCalGrid"></div>'
+        + '<div class="navcal-legend"><span class="navcal-legend-swatch navcal-swatch-today"></span> 今天　<span class="navcal-legend-swatch navcal-swatch-hol"></span> 法定节假日　·　点击月份标签 / 上下滑动翻月 · ⟪ ⟫ 翻年</div>';
+      // R217-1：月份标签（点击切换）+ 上下滑动翻月
+      const navCalMonths = document.getElementById('navCalMonths');
+      if(navCalMonths){
+        const MN = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+        navCalMonths.innerHTML = MN.map((n,i)=>'<button type="button" class="navcal-month" data-month="'+(i+1)+'">'+n+'</button>').join('');
+        navCalMonths.addEventListener('click', (e)=>{
+          const b = e.target.closest('.navcal-month'); if(!b) return;
+          _navCalM = parseInt(b.getAttribute('data-month'),10); navCalRender();
+        });
+        // 上下滑动翻月（触摸 + 鼠标拖拽，绑定到整块内容区）
+        let _sy=null, _sx=null;
+        const _swStart=(x,y)=>{ _sx=x; _sy=y; };
+        const _swEnd=(x,y)=>{
+          if(_sy===null) return;
+          const dy=y-_sy, dx=x-_sx;
+          if(Math.abs(dy)>30 && Math.abs(dy)>Math.abs(dx)){
+            if(dy<0){ _navCalM++; if(_navCalM>12){_navCalM=1;_navCalY++;} }
+            else { _navCalM--; if(_navCalM<1){_navCalM=12;_navCalY--;} }
+            navCalRender();
+          }
+          _sx=_sy=null;
+        };
+        body.addEventListener('touchstart', e=>{ if(e.touches&&e.touches[0]) _swStart(e.touches[0].clientX,e.touches[0].clientY); }, {passive:true});
+        body.addEventListener('touchend', e=>{ if(e.changedTouches&&e.changedTouches[0]) _swEnd(e.changedTouches[0].clientX,e.changedTouches[0].clientY); }, {passive:true});
+        body.addEventListener('mousedown', e=>{ _swStart(e.clientX,e.clientY); });
+        body.addEventListener('mouseup', e=>{ _swEnd(e.clientX,e.clientY); });
+      }
       const on=(id,fn)=>{ const el=document.getElementById(id); if(el) el.onclick=fn; };
       on('navCalPrevYear', ()=>{ _navCalY--; navCalRender(); });
-      on('navCalPrevMon', ()=>{ _navCalM--; if(_navCalM<1){_navCalM=12;_navCalY--;} navCalRender(); });
-      on('navCalNextMon', ()=>{ _navCalM++; if(_navCalM>12){_navCalM=1;_navCalY++;} navCalRender(); });
       on('navCalNextYear', ()=>{ _navCalY++; navCalRender(); });
     }
     navCalGoToday();
@@ -33865,6 +33863,8 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         showModal('#modalGameSettings');
       };
     }
+    // R217-2：题库管理 / 主题色 / 各关卡音乐 / 数据管理 已合并进本弹窗，打开时即时渲染
+    try { renderKMAdmin(); } catch(e){}
     showModal('#modalKMSetting');
   }
 
@@ -34061,15 +34061,12 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     bindCard('cardTaskSettings', parentOnly(openSettingsTask));
     bindCard('cardGameSettings', parentOnly(()=>showModal('#modalGameSettings')));
     bindCard('cardMusicSettings', parentOnly(openMusicSettings));
-    bindCard('cardBgSettings', parentOnly(openParentEdit));
     bindCard('cardSyncSettings', parentOnly(openSyncSettings));
     bindCard('cardVersionSettings', parentOnly(openVersionSettings));
     bindCard('cardExportSettings', parentOnly(openExportSettings));
     // 游戏设置弹窗内：种植园 / 知识秘境
     bindCard('btnSettingsFarmSet', parentOnly(openFarmSetting));
     bindCard('btnSettingsKMSet', parentOnly(openKMSetting));
-    // R118-3：知识秘境设置弹窗内「后台修改中心」子项 → 打开后台页
-    bindCard('btnSettingsKMAdmin', parentOnly(()=>{ try{ hideModal('#modalKMSetting'); }catch(e){} goPage('kmadmin'); }));
     // R131-2：注入设置中心【保存设置】按钮（每张卡片 + 全局）
     ensureSettingsSaveButtons();
     // R118-1：节日【已学习】打卡键（弹窗内静态元素，绑定一次）
