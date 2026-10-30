@@ -33639,19 +33639,11 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     showModal('#modalSyncSettings');
   }
   function openVersionSettings(){
-    const stamp = document.getElementById('appBuildStamp');
-    if(stamp) stamp.textContent = 'R85 · ' + new Date().toISOString().slice(0,10);
-    const btn = document.getElementById('btnCheckUpdate');
-    if(btn && !btn._bound){
-      btn._bound = true;
-      btn.onclick = ()=>{
-        const hint = document.getElementById('updateHint');
-        if(hint) hint.textContent = '正在拉取最新版本…';
-        try{ if(navigator.serviceWorker && navigator.serviceWorker.controller) navigator.serviceWorker.controller.postMessage({type:'skipWaiting'}); }catch(e){}
-        setTimeout(()=>{ if(hint) hint.textContent = '已刷新；若内容未变，请强制刷新（Cmd/Ctrl+Shift+R）'; }, 400);
-        location.reload(true);
-      };
-    }
+    // R216：检查更新按键统一由 index.html 底部脚本 bindUpdateBtn() 处理（离线判断 → reg.update
+    // → 给 waiting 的新 SW 发大写 SKIP_WAITING → 清缓存 → reload）。此处不再重复绑定 btn.onclick，
+    // 否则 onclick 里的同步 reload 会打断底部脚本的异步清缓存链，且小写消息 SW 不识别。
+    // 版本号/更新时间/构建指纹也由底部脚本 readSwBuild() 渲染，此处不再写死覆盖，改在打开时刷新一次。
+    try{ if(window.__readSwBuild) window.__readSwBuild(); }catch(e){}
     showModal('#modalVersionSettings');
   }
   function openExportSettings(){
@@ -34872,10 +34864,17 @@ if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
       render(ver, time, hash);
     }).catch(function(){ /* 离线时保持上次读数 */ });
   }
+  // R216：暴露给设置弹窗打开时主动刷新一次，确保家长看到的是最新真实版本号
+  window.__readSwBuild = readSwBuild;
 
   function bindUpdateBtn(){
     var btn = el('btnCheckUpdate'), hint = el('updateHint');
     if(!btn) return;
+    if(btn._updBound) return;   // R216：幂等守卫，避免重复 load 叠加多个监听器
+    btn._updBound = true;
+    // R216：检查更新的唯一权威处理器（app.js 不再重复绑定 onclick）。
+    // 顺序：离线判断 → 清自动重载节流标记 → 各注册 reg.update() → 给 waiting 的新 SW 发大写
+    // SKIP_WAITING 立即接管 → 清空所有 Cache Storage（让外置种子/图片重新走网络）→ location.reload。
     btn.addEventListener('click', function(){
       if(navigator.onLine === false){
         if(hint) hint.textContent = '当前处于离线状态，无法检查更新';
