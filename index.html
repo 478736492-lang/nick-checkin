@@ -10904,6 +10904,66 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
       }
       save(st);
     })();
+    // R224-3：课堂笔记「学年 / lesson」选项更名迁移（幂等，一次性，开关 st.xsNoteOptsV2）：
+    // 旧默认 ['三年级上册','三年级下册'] / ['Lesson 1'..'Lesson 5'] → 新「3S 三学期」学年 + Lesson1-8 主题课；
+    // 同步改写 enKeyPoints 桶键（xsnote::<学年>|<lesson>）与 readFlags 打卡键，老笔记与打卡记录不丢；
+    // 无法识别的家长自定义名保留并追加在列表尾部。
+    (function migrateXsNoteOptionNames(){
+      if(st.xsNoteOptsV2) return;
+      const YEAR_MAP = { '三年级上册':'三年级秋季 3S', '三年级下册':'三年级春季 3S' };
+      const NEW_YEARS = ['三年级秋季 3S','三年级寒假 3S','三年级春季 3S'];
+      const NEW_LESSONS = ['Lesson1：It might be a spaceship','Lesson2：Life on Mars','Lesson3：How can I help the environment','Lesson4：You were both brilliant','Lesson5：Do you like jogging','Lesson6：The biggest prize','Lesson7：We loved the beach',"Lesson8：Charlie's naughty neighbour"];
+      const lessonMap = {};
+      NEW_LESSONS.forEach((t,i)=>{ lessonMap['Lesson ' + (i+1)] = t; lessonMap['Lesson' + (i+1)] = t; });
+      const mapYear = y => (y in YEAR_MAP) ? YEAR_MAP[y] : y;
+      const mapLesson = l => (l in lessonMap) ? lessonMap[l] : l;
+      const ys = Array.isArray(st.xsNoteYears) ? st.xsNoteYears.slice() : [];
+      const ls = Array.isArray(st.xsNoteLessons) ? st.xsNoteLessons.slice() : [];
+      const nextYears = NEW_YEARS.slice();
+      ys.forEach(y => { const my = mapYear(y); if(nextYears.indexOf(my) < 0) nextYears.push(y); });
+      const nextLessons = NEW_LESSONS.slice();
+      ls.forEach(l => { const ml = mapLesson(l); if(nextLessons.indexOf(ml) < 0) nextLessons.push(l); });
+      st.xsNoteYears = nextYears;
+      st.xsNoteLessons = nextLessons;
+      const NS = 'xsnote::';
+      if(st.enKeyPoints && typeof st.enKeyPoints === 'object'){
+        let changed = false; const next = {};
+        Object.keys(st.enKeyPoints).forEach(k => {
+          let nk = k;
+          if(k.indexOf(NS) === 0 && k.indexOf('|') >= 0){
+            const parts = k.slice(NS.length).split('|');
+            nk = NS + mapYear(parts[0]) + '|' + mapLesson(parts.slice(1).join('|'));
+          }
+          if(nk !== k) changed = true;
+          if(next[nk] === undefined) next[nk] = st.enKeyPoints[k];
+          else if(Array.isArray(next[nk]) && Array.isArray(st.enKeyPoints[k])) next[nk] = next[nk].concat(st.enKeyPoints[k]);
+          else next[nk] = st.enKeyPoints[k];
+        });
+        if(changed) st.enKeyPoints = next;
+      }
+      if(st.readFlags && typeof st.readFlags === 'object'){
+        const KIND = 'xsNote::';
+        let changed = false; const nr = {};
+        Object.keys(st.readFlags).forEach(rk => {
+          let nk = rk;
+          if(rk.indexOf(KIND) === 0){
+            const rest = rk.slice(KIND.length);
+            if(rest.indexOf(NS) === 0){
+              const m = rest.slice(NS.length).match(/^(.*?)::(\d+)$/);
+              if(m && m[1].indexOf('|') >= 0){
+                const parts = m[1].split('|');
+                nk = KIND + NS + mapYear(parts[0]) + '|' + mapLesson(parts.slice(1).join('|')) + '::' + m[2];
+              }
+            }
+          }
+          if(nk !== rk) changed = true;
+          nr[nk] = st.readFlags[rk];
+        });
+        if(changed) st.readFlags = nr;
+      }
+      st.xsNoteOptsV2 = true;
+      save(st);
+    })();
     // R154-3：清除种子「会议」演示任务；R156-3a①⑤：周看板种子模板整体清空
     // （不再植入「学习/运动/阅读」演示卡）—— 老存档里所有 wbSeed_* 自动种子一并清掉，
     // 仅清自动种子（id 以 wbSeed_ 开头），用户自建备忘不受影响。
@@ -11386,6 +11446,17 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
     st.xsNoteLessons = (arr || []).slice();
     save(st);
     return st.xsNoteLessons.slice();
+  }
+  // R224-2：内置课堂笔记图片一次性播种完成标志（防止用户删除后重新播种）
+  function getXsNoteSeedImgsDone(){
+    const st = load();
+    return !!st.xsNoteSeedImgsDone;
+  }
+  function setXsNoteSeedImgsDone(v){
+    const st = load();
+    st.xsNoteSeedImgsDone = !!v;
+    save(st);
+    return true;
   }
 
   // ----- R52：结构化自定义内容（看图写话 kantu / 作文素材 sucai / 古诗词与文言文 gushi） -----
@@ -16775,6 +16846,8 @@ be 动词：am / is → was；are → were
     getEnKeyPoints, addEnKeyPoint, delEnKeyPoint, shiftEnKeyPointReads,
     // R219-1：学而思英语·课堂笔记「学年 / lesson」选项（可新增 / 删除）
     getXsNoteYears, setXsNoteYears, getXsNoteLessons, setXsNoteLessons,
+    // R224-2：内置课堂笔记图片播种完成标志
+    getXsNoteSeedImgsDone, setXsNoteSeedImgsDone,
     // R178：书籍封面 / 正文完成 / 书签 / 目录
     getBookCover, setBookCover, getBookPageDone, toggleBookPageDone, countBookPageDone, getBookEntryDone, toggleBookEntryDone, countBookEntryDone, getKtxsBooks, updateKtxsBook, deleteKtxsBook, getBookBookmarks, addBookBookmark, delBookBookmark, setBookBookmarkFlag, getBookToc, addBookToc, delBookToc,
     // R126：存储写入错误状态（配额超限感知）
@@ -16811,6 +16884,7 @@ be 动词：am / is → was；are → were
 })();
 </script>
 <script>
+window.__XS_NOTE_IMGS__={"l1_1":"./assets/0c14412a61db.jpg","l1_2":"./assets/07f7bf523213.jpg","l1_3":"./assets/3172d3f11c60.jpg","l2_1":"./assets/e25d5fbe1a49.jpg","l2_2":"./assets/e54b3cae657d.jpg","l2_3":"./assets/d628ebbd3da3.jpg","l3_1":"./assets/391fa9439b3e.jpg","l3_2":"./assets/efecf0c5df61.jpg","l3_3":"./assets/f351ddedfe29.jpg","l4_1":"./assets/e7d8441bb251.jpg","l4_2":"./assets/80e3a3ea120e.jpg","l4_3":"./assets/df15c2548b0a.jpg","l4_4":"./assets/4d5b30423c72.jpg","l4_5":"./assets/2b9cbe59feda.jpg","l4_6":"./assets/5ecbf4627856.jpg","l6_1":"./assets/3c3813634825.jpg","l6_2":"./assets/79d063a7c976.jpg","l6_3":"./assets/476518e9d795.jpg"};
 window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH":"./assets/c49c39dd5fe5.jpg","KM_ENGLISH":"./assets/52cdcdc90cbf.jpg","KM_MIXED":"./assets/ab4558d30ebf.jpg"};
 /* ============================================================
    疯狂动物城 · 三年级学习乐园
@@ -30154,6 +30228,7 @@ function renderKMAdmin(){
     const target = $('#xsSummaryList');
     if(!target) return;
     xsNoteEnsureSeed();
+    xsNoteEnsureSeedImages();
     xsNoteEnsureSelection();
     const items = xsNoteItems();
     const total = items.length;
@@ -30173,7 +30248,7 @@ function renderKMAdmin(){
             <button class="kp-check-btn${d?' is-done':''}" data-xs-note-check="${k}">${d?'✅ 取消打卡':'□ 打卡'}</button>
           </div>
         </div>`;
-    }).join('') : '<div class="kp-empty">这个学年 · lesson 还没有课堂笔记图片，点上面「➕ 增加」导入课堂笔记照片吧～</div>';
+    }).join('') : '<div class="kp-empty">这个学年 · Lesson 还没有课堂笔记图片，点上面「➕ 增加」导入课堂笔记照片吧～</div>';
     target.classList.remove('xs-list-grammar','xs-list-raz');
     target.classList.add('notes-mode');
     target.innerHTML = `
@@ -30188,8 +30263,8 @@ function renderKMAdmin(){
           <div class="math-sub-tags math-filter-menu" data-xs-pick-menu="year" role="listbox" hidden></div>
         </div>
         <div class="math-filter" data-xs-pick-group="lesson">
-          <button type="button" class="math-filter-btn" data-xs-pick="lesson" aria-haspopup="listbox" aria-expanded="false" title="点击选择 lesson">
-            <span class="mf-label">lesson</span>
+          <button type="button" class="math-filter-btn" data-xs-pick="lesson" aria-haspopup="listbox" aria-expanded="false" title="点击选择 Lesson">
+            <span class="mf-label">Lesson</span>
             <span class="mf-value">${esc(_xsNoteLesson || '未分类')}</span>
             <span class="mf-caret" aria-hidden="true">▾</span>
           </button>
@@ -30204,7 +30279,7 @@ function renderKMAdmin(){
       </div>
       ${_xsNoteDelMode ? `<div class="en-kp-del-hint">🗑 删除模式已开启：点击任意图片即可删除（每张都会再次确认）</div>` : ''}
       <div class="kp-img-grid${_xsNoteDelMode?' is-del-mode':''}">${cardsHtml}</div>
-      <div class="en-oxford-foot">${esc(_xsNoteYear || '未分类')} · ${esc(_xsNoteLesson || '未分类')} 共 ${total} 张 · 已完成 ${done} 张${complete?' · 🎉 本 lesson 已全部完成':''}</div>`;
+      <div class="en-oxford-foot">${esc(_xsNoteYear || '未分类')} · ${esc(_xsNoteLesson || '未分类')} 共 ${total} 张 · 已完成 ${done} 张${complete?' · 🎉 本 Lesson 已全部完成':''}</div>`;
     // R219-1：说明卡文字已迁入 en-oxford-tip（id=xsNoteTip）；清空外部 #xsSummaryHint，避免重复展示
     const hintEl = $('#xsSummaryHint');
     if(hintEl) hintEl.textContent = '';
@@ -30340,11 +30415,33 @@ function renderKMAdmin(){
     });
   }
   // R219-1：学年 / lesson 选项首次访问时填充默认集合（仅当为空，避免覆盖家长自定义）
+  // R224-1：学年 / lesson 选项更新（三年级 3S 三学期 + Lesson1-8 主题课；老存档由 store.js migrateXsNoteOptionNames 迁移）
   function xsNoteEnsureSeed(){
     const st = window.Store;
     if(!st || !st.getXsNoteYears || !st.getXsNoteLessons) return;
-    if(!st.getXsNoteYears().length) st.setXsNoteYears(['三年级上册','三年级下册']);
-    if(!st.getXsNoteLessons().length) st.setXsNoteLessons(['Lesson 1','Lesson 2','Lesson 3','Lesson 4','Lesson 5']);
+    if(!st.getXsNoteYears().length) st.setXsNoteYears(['三年级秋季 3S','三年级寒假 3S','三年级春季 3S']);
+    if(!st.getXsNoteLessons().length) st.setXsNoteLessons(['Lesson1：It might be a spaceship','Lesson2：Life on Mars','Lesson3：How can I help the environment','Lesson4：You were both brilliant','Lesson5：Do you like jogging','Lesson6：The biggest prize','Lesson7：We loved the beach',"Lesson8：Charlie's naughty neighbour"]);
+  }
+  // R224-2：内置课堂笔记图片一次性播种——把 18 张课程笔记照片按「第 N 讲 → LessonN」写入「三年级秋季 3S|LessonN」桶。
+  // 幂等：getXsNoteSeedImgsDone 为 true 后不再重复；开发环境无 __XS_NOTE_IMGS__ 时静默跳过。
+  function xsNoteEnsureSeedImages(){
+    const st = window.Store;
+    if(!st || !st.getEnKeyPoints || !st.addEnKeyPoint || !st.getXsNoteSeedImgsDone || !st.setXsNoteSeedImgsDone) return;
+    if(st.getXsNoteSeedImgsDone()) return;
+    const IMGS = (typeof window.__XS_NOTE_IMGS__ === 'object' && window.__XS_NOTE_IMGS__) ? window.__XS_NOTE_IMGS__ : {};
+    if(!Object.keys(IMGS).length) return;
+    const YEAR = '三年级秋季 3S';
+    const lessons = st.getXsNoteLessons();
+    const CN = ['一','二','三','四','五','六','七','八'];
+    Object.keys(IMGS).sort().forEach(k=>{
+      const m = /^l(\d+)_(\d+)$/.exec(k);
+      if(!m) return;
+      const li = parseInt(m[1], 10);
+      const lesson = lessons[li-1];
+      if(!lesson) return;
+      st.addEnKeyPoint(XS_NOTE_NS + YEAR + '|' + lesson, { img: IMGS[k], t: '第' + CN[li-1] + '讲 课堂笔记 ' + m[2] });
+    });
+    st.setXsNoteSeedImgsDone(true);
   }
   // R221-1：旧的学年 / lesson 平铺 chip 选择栏已整体下线，
   // 统一改为筛选按键 + 下拉面板（参考乐读数学板块按键）。
@@ -30370,12 +30467,12 @@ function renderKMAdmin(){
       const lessons = (st && st.getXsNoteLessons) ? st.getXsNoteLessons() : [];
       let html = lessons.length
         ? lessons.map(l=>`<button type="button" class="math-type-item${_xsNoteLesson===l?' active':''}" data-xs-pick-lesson="${esc(l)}"><span class="mti-name">${esc(l)}</span></button>`).join('')
-        : '<div class="math-filter-empty">暂无 lesson</div>';
+        : '<div class="math-filter-empty">暂无 Lesson</div>';
       if(xsNoteHasBucket(_xsNoteYear, '')) html += `<button type="button" class="math-type-item${_xsNoteLesson===''?' active':''}" data-xs-pick-lesson=""><span class="mti-name">未分类</span></button>`;
       lMenu.innerHTML = html
         + `<div class="math-filter-foot">
-             <button type="button" class="pbtn small math-add-card-btn" data-xs-pick-lesson-add="1" title="在当前列表新增一个 lesson">＋ 新增 lesson</button>
-             <button type="button" class="pbtn small math-del-card-btn" data-xs-pick-lesson-del="1" title="删除当前 lesson 选项"${_xsNoteLesson?'':' disabled'}>－ 删除 lesson</button>
+             <button type="button" class="pbtn small math-add-card-btn" data-xs-pick-lesson-add="1" title="在当前列表新增一个 Lesson">＋ 新增 Lesson</button>
+             <button type="button" class="pbtn small math-del-card-btn" data-xs-pick-lesson-del="1" title="删除当前 Lesson 选项"${_xsNoteLesson?'':' disabled'}>－ 删除 Lesson</button>
            </div>`;
     }
   }
@@ -30441,11 +30538,11 @@ function renderKMAdmin(){
     scope.querySelectorAll('[data-xs-pick-lesson-add]').forEach(b=>{
       b.addEventListener('click', (e)=>{
         e.stopPropagation();
-        const raw = (window.prompt ? window.prompt('新增 lesson 名称（如：Lesson 6）') : '') || '';
+        const raw = (window.prompt ? window.prompt('新增 Lesson 名称（如：Lesson9）') : '') || '';
         const name = raw.trim(); if(!name) return;
         const st = window.Store; if(!st) return;
         const arr = st.getXsNoteLessons();
-        if(arr.indexOf(name) >= 0){ toast('该 lesson 已存在'); return; }
+        if(arr.indexOf(name) >= 0){ toast('该 Lesson 已存在'); return; }
         st.setXsNoteLessons(arr.concat([name])); _xsNoteLesson = name; _xsNoteAutoOpen = 'lesson'; renderXsNotes();
       });
     });
@@ -30454,7 +30551,7 @@ function renderKMAdmin(){
         e.stopPropagation();
         if(!_xsNoteLesson) return;
         const name = _xsNoteLesson;
-        openCustomModal('删除 lesson 选项', `确定删除 lesson「<b>${esc(name)}</b>」这个选项吗？<div style="margin-top:8px;color:#5b6b85;font-size:13px">仅移除选项入口，该 lesson 下已导入的笔记图片会一并隐藏（数据仍保留在存储中）。</div>`, ()=>{
+        openCustomModal('删除 Lesson 选项', `确定删除 Lesson「<b>${esc(name)}</b>」这个选项吗？<div style="margin-top:8px;color:#5b6b85;font-size:13px">仅移除选项入口，该 Lesson 下已导入的笔记图片会一并隐藏（数据仍保留在存储中）。</div>`, ()=>{
           const st = window.Store; if(!st) return true;
           st.setXsNoteLessons(st.getXsNoteLessons().filter(v => v !== name)); _xsNoteLesson = ''; _xsNoteAutoOpen = 'lesson'; renderXsNotes(); return true;
         });
