@@ -17087,7 +17087,10 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     { id:'harvestWaltz',label:'🌻 丰收圆舞曲', wave:'triangle', beat:0.34, gain:0.19, noteGain:0.075, bass:true,
       notes:['C5','D5','E5','F5','G5','A5','G5','E5','F5','E5','D5','C5','G4','C5','E5','G5','C5','R','E5','F5','G5','A5','B5','C6','B5','A5','G5','E5','C5','R','F5','G5','A5','G5','F5','E5','D5','E5','F5','E5','D5','C5','R','E5','D5','C5','D5','E5','G5','C5','E5','C5','R'] },
     { id:'starLullaby', label:'✨ 星空摇篮曲', wave:'sine', beat:0.62, gain:0.20, noteGain:0.085, bass:true, amb:'night',
-      notes:['E5','C5','G4','C5','F4','A4','C5','A4','D5','C5','A4','F4','G4','C5','E5','C5','R','E5','G5','E5','C5','A4','C5','F5','E5','D5','C5','A4','F4','G4','C5','R','C5','E5','G5','E5','F5','D5','B4','G4','C5','E5','C5','R'] }
+      notes:['E5','C5','G4','C5','F4','A4','C5','A4','D5','C5','A4','F4','G4','C5','E5','C5','R','E5','G5','E5','C5','A4','C5','F5','E5','D5','C5','A4','F4','G4','C5','R','C5','E5','G5','E5','F5','D5','B4','G4','C5','E5','C5','R'] },
+    // R225：导入真实音频曲目（菊次郎的夏天 / 夜萤火虫和你），零重编码逐字节还原原曲
+    { id:'farmKikujiroSummer', label:'🎹 菊次郎的夏天（久石让）', src:'assets_audio/farm_kikujiro_summer.mp3' },
+    { id:'farmNightFirefly', label:'🌙 夜、萤火虫和你', src:'assets_audio/farm_night_firefly.mp3' }
   ];
   // 知识秘境背景音乐 10 首（探险 / 神秘；其中 5 首为中国风）
   const KM_BGM_TRACKS = [
@@ -17110,11 +17113,36 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     { id:'kmForest',   label:'🌳 魔法森林', wave:'sine', beat:0.42, gain:0.19, noteGain:0.08, bass:false,
       notes:['E5','G5','B5','A5','G5','E5','D5','E5','A4','C5','E5','G5','F5','E5','D5','E5','R','G5','B5','D6','C6','B5','A5','G5','E5','G5','A5','G5','E5','D5','E5','R','A4','C5','E5','A5','G5','E5','D5','C5','E5','R'] },
     { id:'kmVictory',  label:'🎺 胜利号角', wave:'triangle', beat:0.34, gain:0.19, noteGain:0.08, bass:true,
-      notes:['C5','E5','G5','C6','G5','C6','E6','C6','G5','E5','C5','E5','G5','C6','E6','G6','C6','G5','R','D5','F5','A5','D6','A5','F5','D5','A4','D5','F5','A5','F5','D5','R','E5','G5','C6','E6','D6','C6','G5','E5','G5','C6','C6','R'] }
+      notes:['C5','E5','G5','C6','G5','C6','E6','C6','G5','E5','C5','E5','G5','C6','E6','G6','C6','G5','R','D5','F5','A5','D6','A5','F5','D5','A4','D5','F5','A5','F5','D5','R','E5','G5','C6','E6','D6','C6','G5','E5','G5','C6','C6','R'] },
+    // R225：导入真实闯关音频（7 首），零重编码逐字节还原原曲
+    { id:'kmCuriousExplorer',    label:'🧭 The Curious Explorer', src:'assets_audio/km_curious_explorer.mp3' },
+    { id:'kmLevelCompletePizza', label:'🍕 Level Complete (Pizza Tower)', src:'assets_audio/km_level_complete_pizza.mp3' },
+    { id:'kmWinningMoment',      label:'🏆 Winning Moment', src:'assets_audio/km_winning_moment.mp3' },
+    { id:'kmGrandTriumph',       label:'🎉 Grand Triumph', src:'assets_audio/km_grand_triumph.mp3' },
+    { id:'kmBeyondSundial',      label:'⏳ Beyond the Sundial', src:'assets_audio/km_beyond_sundial.mp3' },
+    { id:'kmHappyWin',           label:'😄 Happy Win', src:'assets_audio/km_happy_win.mp3' },
+    { id:'kmLevelComplete',      label:'✅ Level Complete', src:'assets_audio/km_level_complete.mp3' }
   ];
   function bgmTrackById(list, id){
     for(let i=0;i<list.length;i++){ if(list[i].id === id) return list[i]; }
     return null;
+  }
+
+  // R225：播放导入的真实音频文件（<audio> 循环），用于带 src 的曲目（种植园 / 知识秘境）
+  function playFarmAudioSrc(src){
+    try{
+      if(!src) return;
+      let a = document.getElementById('farmBgAudio');
+      if(!a){ a = document.createElement('audio'); a.id='farmBgAudio'; a.loop=true; a.preload='auto'; document.body.appendChild(a); }
+      a.src = src; a.volume = 0.6;
+      const pr = a.play(); if(pr && pr.catch) pr.catch(()=>{});
+      _farmAmbient = {
+        stop(){
+          try { a.pause(); } catch(e){}
+          _farmAmbient = null;
+        }
+      };
+    }catch(e){ startFarmAmbientSummer(); }
   }
 
   // 背景自然声：优先播放用户上传的自定义音乐，否则合成乐
@@ -17159,6 +17187,11 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     }
     // R76-3：新增 7 首内置曲目走通用合成播放器
     const tk = bgmTrackById(FARM_BGM_TRACKS, _style);
+    // R225：若曲目带 src（导入的真实音频），走 <audio> 循环播放，逐字节还原原曲
+    if(tk && tk.src){
+      playFarmAudioSrc(tk.src);
+      return;
+    }
     if(tk && !tk.legacy){
       try{
         const ctx = getAudio(); if(!ctx) return;
@@ -17511,6 +17544,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
   }
   function stopFarmAmbient(){
     if(_farmAmbient){ try { _farmAmbient.stop(); } catch(e){} _farmAmbient = null; }
+    try { const fa = document.getElementById('farmBgAudio'); if(fa) fa.pause(); } catch(e){}
   }
 
   // V15-T3：种植园音乐支持自定义上传（mp3/wav/ogg），存于 IndexedDB
@@ -28387,6 +28421,15 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       // R76-3：设置卡里选定的内置曲目优先（10 首，含 5 首中国风）
       const _tkId = window.__kmBgmStyle || 'auto';
       const _tk = (_tkId && _tkId !== 'auto') ? bgmTrackById(KM_BGM_TRACKS, _tkId) : null;
+      // R225：若曲目带 src（导入的真实音频），走 <audio> 循环播放，逐字节还原原曲
+      if(_tk && _tk.src){
+        let a = document.getElementById('kmBgmAudio');
+        if(!a){ a = document.createElement('audio'); a.id='kmBgmAudio'; a.loop=true; a.preload='auto'; document.body.appendChild(a); }
+        a.src = _tk.src; a.volume = Math.max(0.25, (set.volume||60)/100);
+        const pr = a.play(); if(pr && pr.catch) pr.catch(()=>{});
+        _kmTrackHandle = { stop(){ try{ a.pause(); }catch(e){} } };
+        return;
+      }
       if(_tk){
         _kmTrackHandle = bgmPlayTrack(kmBgmCtx, _tk, { volMul: Math.max(0.25, (set.volume||60)/100) });
         return;
@@ -31525,6 +31568,17 @@ function renderKMAdmin(){
         if(tk) toast('当前为各关卡内置音，先为你试听默认曲目：秘境序曲');
       }
       if(!tk) return false;
+      if(tk.src){
+        // R225：试听导入的真实音频（8 秒自动停）
+        let a = document.getElementById('kmPreviewAudio');
+        if(!a){ a = document.createElement('audio'); a.id='kmPreviewAudio'; a.loop=false; a.preload='auto'; document.body.appendChild(a); }
+        a.src = tk.src; a.volume = 0.75;
+        const pr = a.play(); if(pr && pr.catch) pr.catch(()=>{});
+        _kmPreviewHandle = { stop(){ try{ a.pause(); }catch(e){} } };
+        started = true;
+        _kmPreviewT = setTimeout(kmPreviewStop, 8000);
+        return started;
+      }
       const AC = window.AudioContext || window.webkitAudioContext; if(!AC) return false;
       const ctx = new AC();
       if(ctx.state === 'suspended' && ctx.resume) ctx.resume();
