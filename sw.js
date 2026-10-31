@@ -47,10 +47,10 @@ var PRECACHE_TIMEOUT = 25000; // R119.1：预缓存最多占用这么久，超�
  * （install → 重新预缓存新 index.html → installed → 页面自动重载到新版）。 */
 var BUILD = 'd64b3f7e476f';
 /* R93：版本号与版本更新时间。部署脚本会把 R225 替换为当期轮次号（如 R93）、
- * 2026-10-31 22:36 替换为本次部署时间（北京时间，格式 YYYY-MM-DD HH:mm）。
+ * 2026-10-31 23:00 替换为本次部署时间（北京时间，格式 YYYY-MM-DD HH:mm）。
  * 用途：「设置中心 → 版本与更新」显示「当前版本 + 更新时间」，点「检查更新」后即为最新读数。 */
 var APP_VERSION = 'R225';
-var BUILD_TIME = '2026-10-31 22:36';
+var BUILD_TIME = '2026-10-31 23:00';
 
 self.addEventListener('install', function (e) {
   self.skipWaiting();
