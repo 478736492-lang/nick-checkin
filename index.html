@@ -7861,6 +7861,27 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 .leidu-tab.active{background:var(--tone-500);color:#fff;border-color:var(--tone-500)}
 .leidu-pane[hidden]{display:none}
 
+/* ============ R228：计算基本功「题库」按键 + 题库弹窗（编辑 / 添加 / 删除） ============ */
+.calc-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.calc-head-title{display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap}
+.calc-bank-btn{background:var(--tone-100);border:1.5px solid var(--tone-300);color:var(--tone-800);border-radius:12px;padding:7px 16px;font-size:14px;font-weight:800;cursor:pointer;transition:.15s;font-family:inherit;white-space:nowrap}
+.calc-bank-btn:hover{background:var(--tone-150);border-color:var(--tone-400);transform:translateY(-1px)}
+.calc-bank-hint{font-size:13px;color:#5b7ba3;background:var(--tone-050);border:1px solid var(--tone-line-soft);border-radius:10px;padding:8px 12px;margin-bottom:12px;line-height:1.5}
+.calc-bank-hint b{color:var(--sky-blue)}
+.calc-bank-list{max-height:min(52vh,420px);overflow:auto;display:flex;flex-direction:column;gap:8px;padding-right:4px}
+.calc-bank-row{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--tone-line-soft);border-radius:10px;padding:7px 10px}
+.calc-bank-no{width:26px;flex:0 0 auto;font-weight:800;color:var(--sky-blue);font-size:13px}
+.calc-bank-input{width:72px;box-sizing:border-box;padding:6px 8px;border:1.5px solid var(--tone-200);border-radius:8px;font-size:15px;font-weight:700;color:#0F2447;text-align:center;outline:none;font-family:inherit}
+.calc-bank-input:focus{border-color:var(--tone-600);box-shadow:0 0 0 3px rgba(64,150,255,.15)}
+.calc-bank-op{width:56px;padding:6px 4px;border:1.5px solid var(--tone-200);border-radius:8px;font-size:15px;font-weight:800;color:#0F2447;background:#fff;font-family:inherit;text-align:center;cursor:pointer}
+.calc-bank-eq{font-weight:800;color:#7a93b0}
+.calc-bank-ans{min-width:48px;font-size:16px;font-weight:800;color:var(--z-xs-main);text-align:center}
+.calc-bank-del{width:28px;height:28px;flex:0 0 auto;border:none;border-radius:8px;background:#ffe9ec;color:#e04b5d;font-size:18px;font-weight:800;cursor:pointer;line-height:1;font-family:inherit}
+.calc-bank-del:hover{background:#ffd6dc}
+.calc-bank-empty{padding:18px;text-align:center;color:#7a93b0;font-size:14px;background:var(--tone-050);border:1px dashed var(--tone-line);border-radius:10px}
+.calc-bank-add{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px dashed var(--tone-line-soft)}
+.calc-bank-add-label{font-size:14px;font-weight:800;color:var(--sky-blue)}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -8269,6 +8290,32 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
       <div class="modal-foot" data-page-node-id="NyllgM4sIr4tHQFwsmCnoI">
         <button class="primary-btn" id="btnSchedAddRow" data-page-node-id="VfuYRd8cbcMz8jXGQxBu1X">＋ 添加课程行</button>
         <button class="pbtn" data-close data-page-node-id="bkUUoCes2fzz1RqPBG9Jkr">完成</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 弹窗：R228 计算基本功 · 题库（编辑 / 添加 / 删除；每日从题库按日期抽题） ========== -->
+  <div class="modal-mask" id="modalCalcBank" hidden>
+    <div class="modal-box" style="min-width:520px;max-width:92vw">
+      <div class="modal-head">
+        <h3>📚 计算基本功 · 题库</h3>
+        <button class="modal-x" data-close>×</button>
+      </div>
+      <div class="modal-body">
+        <div class="calc-bank-hint">共 <b id="calcBankCount">0</b> 题 · 每天从题库按日期随机抽 10 题练习；修改后立即生效，直接改数字或运算符即可编辑。</div>
+        <div class="calc-bank-list" id="calcBankList"></div>
+        <div class="calc-bank-add">
+          <span class="calc-bank-add-label">＋ 添加题目</span>
+          <input type="number" id="calcBankNewA" class="calc-bank-input" inputmode="numeric" min="0" max="999" placeholder="数 1" />
+          <select id="calcBankNewOp" class="calc-bank-op">
+            <option value="+">+</option><option value="-">−</option><option value="×">×</option><option value="÷">÷</option>
+          </select>
+          <input type="number" id="calcBankNewB" class="calc-bank-input" inputmode="numeric" min="0" max="999" placeholder="数 2" />
+          <button type="button" class="primary-btn" id="btnCalcBankAdd">添加</button>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="pbtn" data-close>完成</button>
       </div>
     </div>
   </div>
@@ -12829,6 +12876,8 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
     else if(kind==='cnPoem'){ reward=2; rewardLabel='古诗词鉴赏 +2⭐'; }
     // R59-1：人文拓展 / 综合素养 每篇 +1⭐
     else if(SUZHI_UNLOCK_KINDS.indexOf(kind) >= 0){ reward=1; rewardLabel='拓展素养 +1⭐'; }
+    // R228：计算基本功每日全对并完成打卡 +2⭐
+    else if(kind==='calcDaily'){ reward=2; rewardLabel='计算基本功全对 +2⭐'; }
     if(reward>0){
       st.archive.totalStars = (st.archive.totalStars||0) + reward;
       st.archive.exp = (st.archive.exp||0) + reward;
@@ -12906,7 +12955,9 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
   // 注意：此为生效版本（后者覆盖前者同名声明）；R59-1 拓展素养取消打卡需同步回退按天解锁进度
   function unmarkReadingRead(kind, title){
     const st = load();
-    delete st.readFlags[`${kind}::${title}`];
+    const _rrKey = `${kind}::${title}`;
+    const _rrExisted = !!st.readFlags[_rrKey];
+    delete st.readFlags[_rrKey];
     if(SUZHI_UNLOCK_KINDS.indexOf(kind) >= 0){
       // R59-1：取消拓展素养打卡 → 扣回 +1⭐ 并回退按天解锁进度
       st.archive.totalStars = Math.max(0, (st.archive.totalStars||0) - 1);
@@ -12918,6 +12969,12 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
         rec.date = '';
         rec.title = '';
       }
+    }
+    // R228：取消计算基本功打卡 → 扣回 2⭐（仅当原本确实打过卡）
+    if(kind === 'calcDaily' && _rrExisted){
+      st.archive = st.archive || {};
+      st.archive.totalStars = Math.max(0, (st.archive.totalStars||0) - 2);
+      st.archive.exp = Math.max(0, (st.archive.exp||0) - 2);
     }
     save(st);
   }
@@ -16817,6 +16874,91 @@ be 动词：am / is → was；are → were
     return {ok:true};
   }
 
+  // ================= R228：计算基本功题库（可编辑 / 添加 / 删除） =================
+  const CALC_BANK_OPS = ['+','-','×','÷'];
+  const CALC_BANK_SEED_N = 60;
+  function calcBankAns(a, op, b){
+    if(op==='+') return a + b;
+    if(op==='-') return a - b;
+    if(op==='×') return a * b;
+    if(op==='÷') return (b!==0 && a%b===0) ? a/b : NaN;
+    return NaN;
+  }
+  // 固定种子生成 60 道（四则均衡），作为首次使用的默认题库
+  function calcBankSeed(){
+    let s = 20261102 >>> 0;
+    const rnd = ()=>{ s = (Math.imul(s,1664525)+1013904223)>>>0; return s/4294967296; };
+    const ri = (a,b)=> a + Math.floor(rnd()*(b-a+1));
+    const out = [];
+    for(let i=0;i<CALC_BANK_SEED_N;i++){
+      const t = i % 4; let a,b,op;
+      if(t===0){ a=ri(11,99); b=ri(11,99); op='+'; }
+      else if(t===1){ a=ri(20,99); b=ri(10,a-1); op='-'; }
+      else if(t===2){ a=ri(2,9); b=ri(2,9); op='×'; }
+      else { b=ri(2,9); const q=ri(2,9); a=b*q; op='÷'; }
+      out.push({a,b,op});
+    }
+    return out;
+  }
+  function calcBankNormalize(a, op, b){
+    if(CALC_BANK_OPS.indexOf(op) < 0) return {ok:false, msg:'运算符只能是 + − × ÷'};
+    a = parseInt(a,10); b = parseInt(b,10);
+    if(!isFinite(a) || !isFinite(b)) return {ok:false, msg:'请输入数字'};
+    if(a < 0 || b < 0) return {ok:false, msg:'请输入非负整数'};
+    if(a > 999 || b > 999) return {ok:false, msg:'数字不要超过 999'};
+    // 减法保证结果非负（自动交换两数）
+    if(op==='-' && a < b){ const t = a; a = b; b = t; }
+    if(op==='÷'){
+      if(b === 0) return {ok:false, msg:'除数不能为 0'};
+      if(a % b !== 0) return {ok:false, msg:'被除数要能被除数整除'};
+    }
+    if((op==='+' || op==='×') && a===0 && b===0) return {ok:false, msg:'别都是 0 哦'};
+    return {ok:true, a, b, op, ans:calcBankAns(a,op,b)};
+  }
+  function getCalcBank(){
+    const st = load();
+    if(!Array.isArray(st.calcBank)) st.calcBank = [];
+    // 首次使用懒播种；calcBankSeeded 防重播（用户清空后不再自动补）
+    if(!st.calcBank.length && !st.calcBankSeeded){
+      st.calcBank = calcBankSeed();
+      st.calcBankSeeded = true;
+      save(st);
+    }
+    return st.calcBank.map(x=>({a:x.a, b:x.b, op:x.op, ans:calcBankAns(x.a, x.op, x.b)}));
+  }
+  function addCalcProblem(p){
+    const r = calcBankNormalize(p && p.a, p && p.op, p && p.b);
+    if(!r.ok) return r;
+    const st = load();
+    if(!Array.isArray(st.calcBank)) st.calcBank = [];
+    st.calcBank.push({a:r.a, b:r.b, op:r.op});
+    st.calcBankSeeded = true;
+    save(st);
+    return {ok:true, item:{a:r.a,b:r.b,op:r.op,ans:r.ans}, total:st.calcBank.length};
+  }
+  function updateCalcProblem(idx, p){
+    const st = load();
+    if(!Array.isArray(st.calcBank)) st.calcBank = [];
+    idx = parseInt(idx,10);
+    if(isNaN(idx) || idx<0 || idx>=st.calcBank.length) return {ok:false, msg:'题号不存在'};
+    const r = calcBankNormalize(p && p.a, p && p.op, p && p.b);
+    if(!r.ok) return r;
+    st.calcBank[idx] = {a:r.a, b:r.b, op:r.op};
+    st.calcBankSeeded = true;
+    save(st);
+    return {ok:true, item:{a:r.a,b:r.b,op:r.op,ans:r.ans}, idx, total:st.calcBank.length};
+  }
+  function delCalcProblem(idx){
+    const st = load();
+    if(!Array.isArray(st.calcBank)) return {ok:false, msg:'题库为空'};
+    idx = parseInt(idx,10);
+    if(isNaN(idx) || idx<0 || idx>=st.calcBank.length) return {ok:false, msg:'题号不存在'};
+    st.calcBank.splice(idx,1);
+    st.calcBankSeeded = true;
+    save(st);
+    return {ok:true, total:st.calcBank.length};
+  }
+
   // ----- 状态/接口暴露 -----
 
   window.Store = {
@@ -16835,6 +16977,8 @@ be 动词：am / is → was；are → were
     setMathMastery, getMathByMastery, markMathMastered, toggleMathMastery, unmarkMathMastered, migrateMathMastery, mathTypes, addMathType, removeMathType, listMathTypes,
     getMathGroups, addMathGroup, addMathTypeToGroup, assignMathTypeToGroup, groupIdOfMathType,
     getReading, getDailySpeaking, addUserReading, markReadingRead, unmarkReadingRead, isReadingRead, logCheckin, unlogCheckin, markSpeakingComplete, unmarkSpeakingComplete, unmarkXueersiDailyReward, refundReadingStars,
+    // R228：计算基本功题库（编辑 / 添加 / 删除）
+    getCalcBank, addCalcProblem, updateCalcProblem, delCalcProblem,
     getSuzhiProgress, setSuzhiProgressIfEmpty,
     addGoRecord, deleteGoRecord, getWeekGoCount, clearWeekGoRecords, getGoStars, setGoStars,
     getMaoStars, setMaoStars, maoPoemCheckedList, isMaoPoemChecked, checkMaoPoem, uncheckMaoPoem,
@@ -20790,9 +20934,9 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     for(let i=0;i<str.length;i++){ h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
     return h >>> 0;
   }
-  // 按当天日期种子生成稳定题目（当天多次渲染结果一致，避免 re-render 换题）
-  function genCalcProblems(count){
-    let s = _calcSeed(_calcToday()) >>> 0;
+  // 原生成器（题库不足时补齐用）：按日期种子生成稳定题目
+  function _calcLegacyGen(count, seedShift){
+    let s = (_calcSeed(_calcToday()) + (seedShift||0)) >>> 0;
     const rnd = ()=>{ s = (Math.imul(s, 1664525) + 1013904223) >>> 0; return s / 4294967296; };
     const ri = (a,b)=> a + Math.floor(rnd()*(b-a+1));
     const out = [];
@@ -20806,6 +20950,31 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       out.push({a,b,op,ans});
     }
     return out;
+  }
+  // R228：每日题优先从「题库」按日期种子洗牌抽取（当天多次渲染结果一致）；题库不足时用生成器补齐
+  function genCalcProblems(count){
+    count = count || _CALC_N;
+    const bank = (window.Store && window.Store.getCalcBank) ? window.Store.getCalcBank() : [];
+    if(!bank.length) return _calcLegacyGen(count);
+    let s = _calcSeed(_calcToday()) >>> 0;
+    const rnd = ()=>{ s = (Math.imul(s, 1664525) + 1013904223) >>> 0; return s / 4294967296; };
+    const arr = bank.slice();
+    for(let i=arr.length-1;i>0;i--){ const j = Math.floor(rnd()*(i+1)); const t = arr[i]; arr[i] = arr[j]; arr[j] = t; }
+    const out = arr.slice(0, count).map(x=>({a:x.a, b:x.b, op:x.op, ans:x.ans}));
+    if(out.length < count){
+      const seen = {};
+      out.forEach(p=>{ seen[p.a+'|'+p.op+'|'+p.b] = 1; });
+      let shift = 0, guard = 0;
+      while(out.length < count && guard < count*20){
+        const cand = _calcLegacyGen(count, ++shift);
+        for(let i=0;i<cand.length && out.length<count;i++){
+          const p = cand[i], k = p.a+'|'+p.op+'|'+p.b;
+          if(!seen[k]){ seen[k]=1; out.push(p); }
+        }
+        guard++;
+      }
+    }
+    return out.slice(0, count);
   }
   function calcStreak(){
     const st = window.Store.load();
@@ -20857,7 +21026,10 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     }
     return `
       <div class="calc-board" data-calc-board>
-        <div class="yw-comp-head">🧮 计算基本功 <span class="yw-sub">每日一练 · ${dateLabel}</span></div>
+        <div class="yw-comp-head calc-head">
+          <span class="calc-head-title">🧮 计算基本功 <span class="yw-sub">每日一练 · ${dateLabel}</span></span>
+          <button type="button" class="calc-bank-btn" data-calc-bank title="题库：编辑 · 添加 · 删除计算题">📚 题库</button>
+        </div>
         ${done ? '' : streakLine}
         ${body}
       </div>`;
@@ -20868,6 +21040,9 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     const today = _calcToday();
     const checkBtn = board.querySelector('[data-calc-check]');
     const okBtn = board.querySelector('[data-calc-checkin]');
+    // R228：「题库」按键 → 打开题库弹窗（编辑 / 添加 / 删除）
+    const bankBtn = board.querySelector('[data-calc-bank]');
+    if(bankBtn){ bankBtn.addEventListener('click', ()=> openCalcBank()); }
     if(checkBtn){
       checkBtn.addEventListener('click', ()=>{
         const probs = genCalcProblems(_CALC_N);
@@ -20903,6 +21078,37 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         rerender();
       });
     }
+  }
+  // ---------- R228：计算基本功「题库」弹窗（编辑 / 添加 / 删除） ----------
+  function calcBankRowHTML(p, i){
+    const ops = ['+','-','×','÷'];
+    const ansTxt = (p && isFinite(p.ans)) ? p.ans : '—';
+    return `<span class="calc-bank-no">${i+1}</span>
+      <input type="number" class="calc-bank-input" inputmode="numeric" min="0" max="999" value="${p.a}" data-calc-bank-field="a" data-calc-bank-idx="${i}" aria-label="第 ${i+1} 题第一个数">
+      <select class="calc-bank-op" data-calc-bank-field="op" data-calc-bank-idx="${i}" aria-label="第 ${i+1} 题运算符">
+        ${ops.map(o=>`<option value="${o}"${o===p.op?' selected':''}>${o}</option>`).join('')}
+      </select>
+      <input type="number" class="calc-bank-input" inputmode="numeric" min="0" max="999" value="${p.b}" data-calc-bank-field="b" data-calc-bank-idx="${i}" aria-label="第 ${i+1} 题第二个数">
+      <span class="calc-bank-eq">=</span>
+      <span class="calc-bank-ans" data-calc-bank-ans="${i}">${ansTxt}</span>
+      <button type="button" class="calc-bank-del" data-calc-bank-del="${i}" title="删除这道题">×</button>`;
+  }
+  function renderCalcBankModal(){
+    const list = document.getElementById('calcBankList');
+    if(!list) return;
+    const bank = (window.Store && window.Store.getCalcBank) ? window.Store.getCalcBank() : [];
+    const cnt = document.getElementById('calcBankCount');
+    if(cnt) cnt.textContent = '共 ' + bank.length + ' 题';
+    list.innerHTML = bank.length
+      ? bank.map((p,i)=>`<div class="calc-bank-row" data-calc-bank-row="${i}">${calcBankRowHTML(p,i)}</div>`).join('')
+      : `<div class="calc-bank-empty">题库还没有题目，在下面「＋ 添加题目」加一道吧～</div>`;
+  }
+  function openCalcBank(){
+    renderCalcBankModal();
+    showModal('#modalCalcBank');
+  }
+  function refreshCalcAfterBankChange(){
+    try{ renderMath(); }catch(e){}
   }
   function renderMathPage(){ renderSlotPage('sxTopCards','sxSlotBody','sxSlotHint', SX_TOP_CARDS, sxSlot, 'kbtb'); }
 
@@ -35481,6 +35687,55 @@ function renderKMAdmin(){
         const note = document.getElementById('leiduNotePane');
         if(calc) calc.hidden = (which !== 'calc');
         if(note) note.hidden = (which !== 'note');
+      });
+    }
+    // R228：计算基本功「题库」弹窗 —— 行内编辑 / 删除（事件委托，仅绑一次）
+    const calcBankList = document.getElementById('calcBankList');
+    if(calcBankList && !calcBankList._calcBankBound){
+      calcBankList._calcBankBound = true;
+      const commitBankRow = (row)=>{
+        const i = parseInt(row.getAttribute('data-calc-bank-row'),10);
+        const aEl = row.querySelector('[data-calc-bank-field="a"]');
+        const opEl = row.querySelector('[data-calc-bank-field="op"]');
+        const bEl = row.querySelector('[data-calc-bank-field="b"]');
+        const r = window.Store.updateCalcProblem(i, { a: aEl ? aEl.value : '', op: opEl ? opEl.value : '', b: bEl ? bEl.value : '' });
+        if(!r || !r.ok){
+          toast((r && r.msg) || '题目不合法');
+          const bank = window.Store.getCalcBank();
+          if(bank[i]) row.innerHTML = calcBankRowHTML(bank[i], i);
+          return;
+        }
+        row.innerHTML = calcBankRowHTML(r.item, i);
+        refreshCalcAfterBankChange();
+      };
+      calcBankList.addEventListener('change', e=>{
+        const f = e.target.closest('[data-calc-bank-field]');
+        if(!f) return;
+        const row = f.closest('[data-calc-bank-row]');
+        if(row) commitBankRow(row);
+      });
+      calcBankList.addEventListener('click', e=>{
+        const del = e.target.closest('[data-calc-bank-del]');
+        if(!del) return;
+        const i = parseInt(del.getAttribute('data-calc-bank-del'),10);
+        const r = window.Store.delCalcProblem(i);
+        if(r && r.ok){ toast('已删除'); renderCalcBankModal(); refreshCalcAfterBankChange(); }
+        else toast((r && r.msg) || '删除失败');
+      });
+    }
+    const calcBankAdd = document.getElementById('btnCalcBankAdd');
+    if(calcBankAdd && !calcBankAdd._calcBankAddBound){
+      calcBankAdd._calcBankAddBound = true;
+      calcBankAdd.addEventListener('click', ()=>{
+        const aEl = document.getElementById('calcBankNewA');
+        const opEl = document.getElementById('calcBankNewOp');
+        const bEl = document.getElementById('calcBankNewB');
+        const r = window.Store.addCalcProblem({ a: aEl ? aEl.value : '', op: opEl ? opEl.value : '', b: bEl ? bEl.value : '' });
+        if(!r || !r.ok){ toast((r && r.msg) || '题目不合法'); return; }
+        if(aEl) aEl.value = ''; if(bEl) bEl.value = '';
+        toast('已添加题目');
+        renderCalcBankModal();
+        refreshCalcAfterBankChange();
       });
     }
     // R104：乐读数学层级标签化（板块标签 → 题型标签 → 内联内容区），无独立页/无弹窗，故无返回键
