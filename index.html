@@ -7824,7 +7824,7 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 .xs-note-filter-bar .math-filter-menu{ max-height:min(52vh,300px); }
 .math-filter-foot .pbtn[disabled]{ opacity:.5; cursor:not-allowed; }
 
-/* R226：数学专区·错题本卡内「计算基本功」每日计算题打卡 */
+/* R226：数学专区·错题本卡内「计算小超市」每日计算题打卡 */
 .calc-board{margin-top:18px;background:#e9f3fd;border:1px solid var(--tone-275);border-radius:14px;padding:14px 16px}
 .calc-board .yw-comp-head{margin-bottom:12px}
 .calc-streak{font-size:14px;font-weight:800;color:var(--z-nw-deep);background:var(--z-nw-pale);border:1px solid var(--z-nw-mid);border-radius:999px;padding:4px 14px;display:inline-block;margin-bottom:12px}
@@ -7854,14 +7854,14 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 .calc-done-txt{font-size:18px;font-weight:800;color:var(--z-nw-deep);margin:6px 0 12px}
 .calc-answers{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:10px}
 .calc-ans-chip{background:var(--tone-050);border:1px solid #d9ecff;border-radius:8px;padding:5px 10px;font-size:15px;font-weight:700;color:#234}
-/* ============ R227：乐读数学页「乐读计算基本功 / 乐读数学笔记」切换 ============ */
+/* ============ R227：乐读数学页「计算小超市 / 乐读数学笔记」切换 ============ */
 .leidu-switch{display:flex;gap:10px;margin:10px 0 6px;flex-wrap:wrap}
 .leidu-tab{background:#fff;border:1.5px solid var(--tone-200);color:var(--muted);padding:8px 18px;border-radius:18px;cursor:pointer;font-size:14px;font-weight:700;transition:.15s}
 .leidu-tab:hover{background:var(--tone-100)}
 .leidu-tab.active{background:var(--tone-500);color:#fff;border-color:var(--tone-500)}
 .leidu-pane[hidden]{display:none}
 
-/* ============ R228：计算基本功「题库」按键 + 题库弹窗（编辑 / 添加 / 删除） ============ */
+/* ============ R228：计算小超市「题库」按键 + 题库弹窗（编辑 / 添加 / 删除） ============ */
 .calc-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .calc-head-title{display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap}
 .calc-bank-btn{background:var(--tone-100);border:1.5px solid var(--tone-300);color:var(--tone-800);border-radius:12px;padding:7px 16px;font-size:14px;font-weight:800;cursor:pointer;transition:.15s;font-family:inherit;white-space:nowrap}
@@ -7881,6 +7881,18 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 .calc-bank-empty{padding:18px;text-align:center;color:#7a93b0;font-size:14px;background:var(--tone-050);border:1px dashed var(--tone-line);border-radius:10px}
 .calc-bank-add{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px dashed var(--tone-line-soft)}
 .calc-bank-add-label{font-size:14px;font-weight:800;color:var(--sky-blue)}
+/* R229：三数混合题 —— 第二个运算符 + 第三个数 */
+.calc-bank-op2{width:62px;color:var(--tone-700)}
+.calc-bank-op2:has(option[value=""]:checked){color:#93a9c2}
+.calc-bank-c{width:64px}
+.calc-bank-c:disabled{background:var(--tone-050);border-style:dashed;color:#a9bdd4;cursor:not-allowed}
+.calc-bank-add-tip{margin-top:8px;font-size:12.5px;color:#7a93b0;line-height:1.5}
+.calc-bank-add-tip b{color:var(--sky-blue)}
+@media (max-width:720px){
+  .calc-bank-row{flex-wrap:wrap;row-gap:6px}
+  .calc-bank-input,.calc-bank-c{width:60px}
+  .calc-bank-op,.calc-bank-op2{width:52px}
+}
 
 </style>
 </head>
@@ -8294,11 +8306,11 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
     </div>
   </div>
 
-  <!-- ========== 弹窗：R228 计算基本功 · 题库（编辑 / 添加 / 删除；每日从题库按日期抽题） ========== -->
+  <!-- ========== 弹窗：R228 计算小超市 · 题库（编辑 / 添加 / 删除；R229 支持三数混合运算） ========== -->
   <div class="modal-mask" id="modalCalcBank" hidden>
-    <div class="modal-box" style="min-width:520px;max-width:92vw">
+    <div class="modal-box" style="min-width:660px;max-width:94vw">
       <div class="modal-head">
-        <h3>📚 计算基本功 · 题库</h3>
+        <h3>📚 计算小超市 · 题库</h3>
         <button class="modal-x" data-close>×</button>
       </div>
       <div class="modal-body">
@@ -8307,12 +8319,17 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
         <div class="calc-bank-add">
           <span class="calc-bank-add-label">＋ 添加题目</span>
           <input type="number" id="calcBankNewA" class="calc-bank-input" inputmode="numeric" min="0" max="999" placeholder="数 1" />
-          <select id="calcBankNewOp" class="calc-bank-op">
+          <select id="calcBankNewOp" class="calc-bank-op" aria-label="第一个运算符">
             <option value="+">+</option><option value="-">−</option><option value="×">×</option><option value="÷">÷</option>
           </select>
           <input type="number" id="calcBankNewB" class="calc-bank-input" inputmode="numeric" min="0" max="999" placeholder="数 2" />
+          <select id="calcBankNewOp2" class="calc-bank-op calc-bank-op2" aria-label="第二个运算符（选择后可填第三个数）">
+            <option value="">两数</option><option value="+">+</option><option value="-">−</option><option value="×">×</option><option value="÷">÷</option>
+          </select>
+          <input type="number" id="calcBankNewC" class="calc-bank-input calc-bank-c" inputmode="numeric" min="0" max="999" placeholder="数 3" disabled />
           <button type="button" class="primary-btn" id="btnCalcBankAdd">添加</button>
         </div>
+        <div class="calc-bank-add-tip">想加三数混合题？把第二个运算符从「两数」改成 + − × ÷，再填第三个数即可（先乘除、后加减）。</div>
       </div>
       <div class="modal-foot">
         <button class="pbtn" data-close>完成</button>
@@ -8568,12 +8585,12 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
          R104：层级文案统一 —— 两个筛选按键分别标注为「板块」与「题型」，页面内不再使用旧层级称呼；
          【＋ 新增题型】【－ 删除题型】已移入「题型」筛选面板底部（#mathTypeTags）；【＋ 新增板块】已移入「板块」筛选面板底部（#mathSubTags）。
          题目固定全量展示(R93)。权限：仅【＋ 新增题型】全局常驻；其余新增/删除按键统一加 hidden-in-child（仅家长模式可见）。 -->
-    <!-- R227：乐读数学页「乐读计算基本功 / 乐读数学笔记」切换按键（位于板块和题型卡片上端） -->
+    <!-- R227：乐读数学页「计算小超市 / 乐读数学笔记」切换按键（位于板块和题型卡片上端） -->
     <div class="leidu-switch" data-leidu-switch>
-      <button type="button" class="leidu-tab" data-leidu-tab="calc" aria-pressed="false">🧮 乐读计算基本功</button>
+      <button type="button" class="leidu-tab" data-leidu-tab="calc" aria-pressed="false">🧮 计算小超市</button>
       <button type="button" class="leidu-tab active" data-leidu-tab="note" aria-pressed="true">📒 乐读数学笔记</button>
     </div>
-    <!-- 乐读计算基本功 内容卡（R227：从新世界·数学专区·错题本整体移入） -->
+    <!-- 计算小超市 内容卡（R227：从新世界·数学专区·错题本整体移入） -->
     <div class="leidu-pane" data-leidu-pane="calc" id="leiduCalcPane" hidden></div>
     <!-- 乐读数学笔记 内容卡（= 原 板块和题型 卡片） -->
     <div class="leidu-pane" data-leidu-pane="note" id="leiduNotePane">
@@ -12876,8 +12893,8 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
     else if(kind==='cnPoem'){ reward=2; rewardLabel='古诗词鉴赏 +2⭐'; }
     // R59-1：人文拓展 / 综合素养 每篇 +1⭐
     else if(SUZHI_UNLOCK_KINDS.indexOf(kind) >= 0){ reward=1; rewardLabel='拓展素养 +1⭐'; }
-    // R228：计算基本功每日全对并完成打卡 +2⭐
-    else if(kind==='calcDaily'){ reward=2; rewardLabel='计算基本功全对 +2⭐'; }
+    // R228：计算小超市每日全对并完成打卡 +2⭐
+    else if(kind==='calcDaily'){ reward=2; rewardLabel='计算小超市全对 +2⭐'; }
     if(reward>0){
       st.archive.totalStars = (st.archive.totalStars||0) + reward;
       st.archive.exp = (st.archive.exp||0) + reward;
@@ -12970,7 +12987,7 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
         rec.title = '';
       }
     }
-    // R228：取消计算基本功打卡 → 扣回 2⭐（仅当原本确实打过卡）
+    // R228：取消计算小超市打卡 → 扣回 2⭐（仅当原本确实打过卡）
     if(kind === 'calcDaily' && _rrExisted){
       st.archive = st.archive || {};
       st.archive.totalStars = Math.max(0, (st.archive.totalStars||0) - 2);
@@ -16874,7 +16891,7 @@ be 动词：am / is → was；are → were
     return {ok:true};
   }
 
-  // ================= R228：计算基本功题库（可编辑 / 添加 / 删除） =================
+  // ================= R228：计算小超市题库（可编辑 / 添加 / 删除） =================
   const CALC_BANK_OPS = ['+','-','×','÷'];
   const CALC_BANK_SEED_N = 60;
   function calcBankAns(a, op, b){
@@ -16883,6 +16900,33 @@ be 动词：am / is → was；are → were
     if(op==='×') return a * b;
     if(op==='÷') return (b!==0 && a%b===0) ? a/b : NaN;
     return NaN;
+  }
+  // R229：三数混合运算求值（先乘除、后加减；每一步都保证整除非负，适合三年级口算）
+  function calcChainEval(nums, ops){
+    const step = (x, op, y)=>{
+      if(op==='+') return {ok:true, v:x+y};
+      if(op==='-') return (x-y>=0) ? {ok:true, v:x-y} : {ok:false, msg:'减法结果不能为负，请调整数字顺序'};
+      if(op==='×') return {ok:true, v:x*y};
+      if(op==='÷'){
+        if(y===0) return {ok:false, msg:'除数不能为 0'};
+        return (x%y===0) ? {ok:true, v:x/y} : {ok:false, msg:'除法要能整除（被除数 ÷ 除数）'};
+      }
+      return {ok:false, msg:'运算符只能是 + − × ÷'};
+    };
+    if(!ops.length || nums.length !== ops.length + 1) return {ok:false, msg:'题目结构不正确'};
+    if(ops.length===1) return step(nums[0], ops[0], nums[1]);
+    if(ops.length===2){
+      const hi = o => (o==='×' || o==='÷');
+      if(hi(ops[1]) && !hi(ops[0])){
+        const r2 = step(nums[1], ops[1], nums[2]);
+        if(!r2.ok) return r2;
+        return step(nums[0], ops[0], r2.v);
+      }
+      const r1 = step(nums[0], ops[0], nums[1]);
+      if(!r1.ok) return r1;
+      return step(r1.v, ops[1], nums[2]);
+    }
+    return {ok:false, msg:'最多支持三个数'};
   }
   // 固定种子生成 60 道（四则均衡），作为首次使用的默认题库
   function calcBankSeed(){
@@ -16900,13 +16944,25 @@ be 动词：am / is → was；are → were
     }
     return out;
   }
-  function calcBankNormalize(a, op, b){
+  // R229：规范化题目；op2 + c 同时给出即为「三数混合」题
+  function calcBankNormalize(a, op, b, op2, c){
     if(CALC_BANK_OPS.indexOf(op) < 0) return {ok:false, msg:'运算符只能是 + − × ÷'};
     a = parseInt(a,10); b = parseInt(b,10);
     if(!isFinite(a) || !isFinite(b)) return {ok:false, msg:'请输入数字'};
     if(a < 0 || b < 0) return {ok:false, msg:'请输入非负整数'};
     if(a > 999 || b > 999) return {ok:false, msg:'数字不要超过 999'};
-    // 减法保证结果非负（自动交换两数）
+    const three = !!(op2 && CALC_BANK_OPS.indexOf(op2) >= 0);
+    if(three){
+      c = parseInt(c,10);
+      if(!isFinite(c)) return {ok:false, msg:'三数混合题请填写第三个数'};
+      if(c < 0) return {ok:false, msg:'请输入非负整数'};
+      if(c > 999) return {ok:false, msg:'数字不要超过 999'};
+      if(a===0 && b===0 && c===0) return {ok:false, msg:'别都是 0 哦'};
+      const r = calcChainEval([a,b,c], [op,op2]);
+      if(!r.ok) return {ok:false, msg:r.msg};
+      return {ok:true, a, b, op, c, op2, ans:r.v};
+    }
+    // 两数（沿用原有规则）
     if(op==='-' && a < b){ const t = a; a = b; b = t; }
     if(op==='÷'){
       if(b === 0) return {ok:false, msg:'除数不能为 0'};
@@ -16914,6 +16970,18 @@ be 动词：am / is → was；are → were
     }
     if((op==='+' || op==='×') && a===0 && b===0) return {ok:false, msg:'别都是 0 哦'};
     return {ok:true, a, b, op, ans:calcBankAns(a,op,b)};
+  }
+  // 题库条目 → 展示/判题用结构（含三数题的 c/op2 与正确答案）
+  function calcBankItem(x){
+    const it = {a:x.a, b:x.b, op:x.op};
+    if(x.op2 && CALC_BANK_OPS.indexOf(x.op2) >= 0 && isFinite(x.c)){
+      it.c = x.c; it.op2 = x.op2;
+      const r = calcChainEval([x.a, x.b, x.c], [x.op, x.op2]);
+      it.ans = r.ok ? r.v : NaN;
+    } else {
+      it.ans = calcBankAns(x.a, x.op, x.b);
+    }
+    return it;
   }
   function getCalcBank(){
     const st = load();
@@ -16924,29 +16992,35 @@ be 动词：am / is → was；are → were
       st.calcBankSeeded = true;
       save(st);
     }
-    return st.calcBank.map(x=>({a:x.a, b:x.b, op:x.op, ans:calcBankAns(x.a, x.op, x.b)}));
+    return st.calcBank.map(calcBankItem);
   }
   function addCalcProblem(p){
-    const r = calcBankNormalize(p && p.a, p && p.op, p && p.b);
+    p = p || {};
+    const r = calcBankNormalize(p.a, p.op, p.b, p.op2, p.c);
     if(!r.ok) return r;
     const st = load();
     if(!Array.isArray(st.calcBank)) st.calcBank = [];
-    st.calcBank.push({a:r.a, b:r.b, op:r.op});
+    const rec = {a:r.a, b:r.b, op:r.op};
+    if(r.op2){ rec.c = r.c; rec.op2 = r.op2; }
+    st.calcBank.push(rec);
     st.calcBankSeeded = true;
     save(st);
-    return {ok:true, item:{a:r.a,b:r.b,op:r.op,ans:r.ans}, total:st.calcBank.length};
+    return {ok:true, item:calcBankItem(rec), total:st.calcBank.length};
   }
   function updateCalcProblem(idx, p){
     const st = load();
     if(!Array.isArray(st.calcBank)) st.calcBank = [];
     idx = parseInt(idx,10);
     if(isNaN(idx) || idx<0 || idx>=st.calcBank.length) return {ok:false, msg:'题号不存在'};
-    const r = calcBankNormalize(p && p.a, p && p.op, p && p.b);
+    p = p || {};
+    const r = calcBankNormalize(p.a, p.op, p.b, p.op2, p.c);
     if(!r.ok) return r;
-    st.calcBank[idx] = {a:r.a, b:r.b, op:r.op};
+    const rec = {a:r.a, b:r.b, op:r.op};
+    if(r.op2){ rec.c = r.c; rec.op2 = r.op2; }
+    st.calcBank[idx] = rec;
     st.calcBankSeeded = true;
     save(st);
-    return {ok:true, item:{a:r.a,b:r.b,op:r.op,ans:r.ans}, idx, total:st.calcBank.length};
+    return {ok:true, item:calcBankItem(rec), idx, total:st.calcBank.length};
   }
   function delCalcProblem(idx){
     const st = load();
@@ -16977,7 +17051,7 @@ be 动词：am / is → was；are → were
     setMathMastery, getMathByMastery, markMathMastered, toggleMathMastery, unmarkMathMastered, migrateMathMastery, mathTypes, addMathType, removeMathType, listMathTypes,
     getMathGroups, addMathGroup, addMathTypeToGroup, assignMathTypeToGroup, groupIdOfMathType,
     getReading, getDailySpeaking, addUserReading, markReadingRead, unmarkReadingRead, isReadingRead, logCheckin, unlogCheckin, markSpeakingComplete, unmarkSpeakingComplete, unmarkXueersiDailyReward, refundReadingStars,
-    // R228：计算基本功题库（编辑 / 添加 / 删除）
+    // R228：计算小超市题库（编辑 / 添加 / 删除）
     getCalcBank, addCalcProblem, updateCalcProblem, delCalcProblem,
     getSuzhiProgress, setSuzhiProgressIfEmpty,
     addGoRecord, deleteGoRecord, getWeekGoCount, clearWeekGoRecords, getGoStars, setGoStars,
@@ -20918,13 +20992,19 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     if(key === 'kbtb') return sxKeben();
     // R61-8：思维拓展题每题打卡（校内思维题 / 奥数思维题）
     if(key === 'xnmt' || key === 'asmst') return sxThink(key, label);
-    // R226：错题本卡内新增「计算基本功」每日计算题打卡（不新增顶部卡/按钮，仅插槽内 board）
+    // R226：错题本卡内新增「计算小超市」每日计算题打卡（不新增顶部卡/按钮，仅插槽内 board）
     if(key === 'ctb') return sxWrongBook();
     const m = map[key] || [label,'📘',''];
     return nwSlotGeneric(m[0], m[1], m[2], m[3]);
   }
-  // ---------- R226：错题本卡内「计算基本功」每日计算题打卡 ----------
+  // ---------- R226：错题本卡内「计算小超市」每日计算题打卡 ----------
   const _CALC_N = 10; // 每日计算题数量
+  // R229：题目文本（两数 / 三数混合统一输出）
+  function _calcQText(p){
+    if(!p) return '';
+    return p.op2 ? `${p.a} ${p.op} ${p.b} ${p.op2} ${p.c}` : `${p.a} ${p.op} ${p.b}`;
+  }
+  function _calcKey(p){ return [p.a, p.op, p.b, p.op2||'', p.op2 ? p.c : ''].join('|'); }
   function _calcToday(){
     const d = new Date(); const p = n => String(n).padStart(2,'0');
     return d.getFullYear() + '-' + p(d.getMonth()+1) + '-' + p(d.getDate());
@@ -20960,15 +21040,19 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     const rnd = ()=>{ s = (Math.imul(s, 1664525) + 1013904223) >>> 0; return s / 4294967296; };
     const arr = bank.slice();
     for(let i=arr.length-1;i>0;i--){ const j = Math.floor(rnd()*(i+1)); const t = arr[i]; arr[i] = arr[j]; arr[j] = t; }
-    const out = arr.slice(0, count).map(x=>({a:x.a, b:x.b, op:x.op, ans:x.ans}));
+    const out = arr.slice(0, count).map(x=>{
+      const it = {a:x.a, b:x.b, op:x.op, ans:x.ans};
+      if(x.op2){ it.c = x.c; it.op2 = x.op2; }
+      return it;
+    });
     if(out.length < count){
       const seen = {};
-      out.forEach(p=>{ seen[p.a+'|'+p.op+'|'+p.b] = 1; });
+      out.forEach(p=>{ seen[_calcKey(p)] = 1; });
       let shift = 0, guard = 0;
       while(out.length < count && guard < count*20){
         const cand = _calcLegacyGen(count, ++shift);
         for(let i=0;i<cand.length && out.length<count;i++){
-          const p = cand[i], k = p.a+'|'+p.op+'|'+p.b;
+          const p = cand[i], k = _calcKey(p);
           if(!seen[k]){ seen[k]=1; out.push(p); }
         }
         guard++;
@@ -20999,19 +21083,19 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     const streakLine = streak>0 ? `<div class="calc-streak">🔥 连续打卡 <b>${streak}</b> 天</div>` : '';
     let body;
     if(done){
-      const answers = probs.map((p,i)=>`<span class="calc-ans-chip">${i+1}. ${p.a} ${p.op} ${p.b} = ${p.ans}</span>`).join('');
+      const answers = probs.map((p,i)=>`<span class="calc-ans-chip">${i+1}. ${_calcQText(p)} = ${p.ans}</span>`).join('');
       body = `<div class="calc-done" data-calc-done>
         <div class="calc-done-ico">✅</div>
         <div class="calc-done-txt">今日计算题已打卡完成！</div>
         ${streakLine}
         <div class="calc-answers">${answers}</div>
-        <div class="calc-tip">明天的题会换一批，记得每天来练计算基本功哦～</div>
+        <div class="calc-tip">明天的题会换一批，记得每天来练计算小超市哦～</div>
       </div>`;
     } else {
       const rows = probs.map((p,i)=>`
         <div class="calc-row">
           <span class="calc-no">${i+1}</span>
-          <span class="calc-q">${p.a} ${p.op} ${p.b} =</span>
+          <span class="calc-q">${_calcQText(p)} =</span>
           <input class="calc-ans" type="number" inputmode="numeric" pattern="[0-9\\-]*" data-calc-idx="${i}" />
           <span class="calc-fb" data-calc-fb="${i}"></span>
         </div>`).join('');
@@ -21027,7 +21111,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     return `
       <div class="calc-board" data-calc-board>
         <div class="yw-comp-head calc-head">
-          <span class="calc-head-title">🧮 计算基本功 <span class="yw-sub">每日一练 · ${dateLabel}</span></span>
+          <span class="calc-head-title">🧮 计算小超市 <span class="yw-sub">每日一练 · ${dateLabel}</span></span>
           <button type="button" class="calc-bank-btn" data-calc-bank title="题库：编辑 · 添加 · 删除计算题">📚 题库</button>
         </div>
         ${done ? '' : streakLine}
@@ -21074,21 +21158,29 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         window.Store.logCheckin('calcBasic', _CALC_N);
         window.Store.markReadingRead('calcDaily', today);
         playCheckinSound();
-        toast('🎉 计算基本功今日打卡完成！');
+        toast('🎉 计算小超市今日打卡完成！');
         rerender();
       });
     }
   }
-  // ---------- R228：计算基本功「题库」弹窗（编辑 / 添加 / 删除） ----------
+  // ---------- R228：计算小超市「题库」弹窗（编辑 / 添加 / 删除） ----------
+  const _CALC_OPLAB = {'+':'+','-':'−','×':'×','÷':'÷'};
   function calcBankRowHTML(p, i){
     const ops = ['+','-','×','÷'];
     const ansTxt = (p && isFinite(p.ans)) ? p.ans : '—';
+    const has3 = !!(p && p.op2);
+    const lab = o => _CALC_OPLAB[o] || o;
     return `<span class="calc-bank-no">${i+1}</span>
       <input type="number" class="calc-bank-input" inputmode="numeric" min="0" max="999" value="${p.a}" data-calc-bank-field="a" data-calc-bank-idx="${i}" aria-label="第 ${i+1} 题第一个数">
-      <select class="calc-bank-op" data-calc-bank-field="op" data-calc-bank-idx="${i}" aria-label="第 ${i+1} 题运算符">
-        ${ops.map(o=>`<option value="${o}"${o===p.op?' selected':''}>${o}</option>`).join('')}
+      <select class="calc-bank-op" data-calc-bank-field="op" data-calc-bank-idx="${i}" aria-label="第 ${i+1} 题第一个运算符">
+        ${ops.map(o=>`<option value="${o}"${o===p.op?' selected':''}>${lab(o)}</option>`).join('')}
       </select>
       <input type="number" class="calc-bank-input" inputmode="numeric" min="0" max="999" value="${p.b}" data-calc-bank-field="b" data-calc-bank-idx="${i}" aria-label="第 ${i+1} 题第二个数">
+      <select class="calc-bank-op calc-bank-op2" data-calc-bank-field="op2" data-calc-bank-idx="${i}" aria-label="第 ${i+1} 题第二个运算符（留空为两数题）">
+        <option value=""${has3?'':' selected'}>—</option>
+        ${ops.map(o=>`<option value="${o}"${has3&&o===p.op2?' selected':''}>${lab(o)}</option>`).join('')}
+      </select>
+      <input type="number" class="calc-bank-input calc-bank-c" inputmode="numeric" min="0" max="999" value="${has3?p.c:''}" placeholder="数3" data-calc-bank-field="c" data-calc-bank-idx="${i}" aria-label="第 ${i+1} 题第三个数（三数题才填）">
       <span class="calc-bank-eq">=</span>
       <span class="calc-bank-ans" data-calc-bank-ans="${i}">${ansTxt}</span>
       <button type="button" class="calc-bank-del" data-calc-bank-del="${i}" title="删除这道题">×</button>`;
@@ -27785,7 +27877,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     const active = activeMathGroup(groupsDef);
     renderMathSubCards(groupsDef, active ? active.id : '');
     renderMathTypes();
-    // R227：渲染乐读计算基本功卡片（从新世界·数学专区·错题本整体移入乐读数学页）
+    // R227：渲染计算小超市卡片（从新世界·数学专区·错题本整体移入乐读数学页）
     const calcPane = document.getElementById('leiduCalcPane');
     if(calcPane){ calcPane.innerHTML = renderCalcBasicBoard(); bindCalcBasic(calcPane, renderMath); }
   }
@@ -35670,7 +35762,7 @@ function renderKMAdmin(){
         });
       });
     }
-    // R227：乐读数学页「乐读计算基本功 / 乐读数学笔记」切换（位于板块和题型卡片上端）
+    // R227：乐读数学页「计算小超市 / 乐读数学笔记」切换（位于板块和题型卡片上端）
     const leiduSwitch = document.querySelector('[data-leidu-switch]');
     if(leiduSwitch && !leiduSwitch._leiduBound){
       leiduSwitch._leiduBound = true;
@@ -35689,16 +35781,19 @@ function renderKMAdmin(){
         if(note) note.hidden = (which !== 'note');
       });
     }
-    // R228：计算基本功「题库」弹窗 —— 行内编辑 / 删除（事件委托，仅绑一次）
+    // R228：计算小超市「题库」弹窗 —— 行内编辑 / 删除（事件委托，仅绑一次）
     const calcBankList = document.getElementById('calcBankList');
     if(calcBankList && !calcBankList._calcBankBound){
       calcBankList._calcBankBound = true;
       const commitBankRow = (row)=>{
         const i = parseInt(row.getAttribute('data-calc-bank-row'),10);
-        const aEl = row.querySelector('[data-calc-bank-field="a"]');
-        const opEl = row.querySelector('[data-calc-bank-field="op"]');
-        const bEl = row.querySelector('[data-calc-bank-field="b"]');
-        const r = window.Store.updateCalcProblem(i, { a: aEl ? aEl.value : '', op: opEl ? opEl.value : '', b: bEl ? bEl.value : '' });
+        const g = f => row.querySelector('[data-calc-bank-field="' + f + '"]');
+        const aEl = g('a'), opEl = g('op'), bEl = g('b'), op2El = g('op2'), cEl = g('c');
+        const op2 = op2El ? op2El.value : '';
+        const c = cEl ? (cEl.value || '').trim() : '';
+        // R229：已选第二个运算符但第三个数还没填 —— 先不提交，等填完再校验（避免刚选 × 就回滚）
+        if(op2 && c === '') return;
+        const r = window.Store.updateCalcProblem(i, { a: aEl ? aEl.value : '', op: opEl ? opEl.value : '', b: bEl ? bEl.value : '', op2: op2, c: c });
         if(!r || !r.ok){
           toast((r && r.msg) || '题目不合法');
           const bank = window.Store.getCalcBank();
@@ -35723,6 +35818,21 @@ function renderKMAdmin(){
         else toast((r && r.msg) || '删除失败');
       });
     }
+    // R229：添加区「第二个运算符」决定是否出现第三个数（留空＝两数题，选中＝三数混合题）
+    const calcBankOp2 = document.getElementById('calcBankNewOp2');
+    const calcBankNewC = document.getElementById('calcBankNewC');
+    const syncAddThird = ()=>{
+      const on = !!(calcBankOp2 && calcBankOp2.value);
+      if(calcBankNewC){
+        calcBankNewC.disabled = !on;
+        if(!on) calcBankNewC.value = '';
+      }
+    };
+    if(calcBankOp2 && !calcBankOp2._calcOp2Bound){
+      calcBankOp2._calcOp2Bound = true;
+      calcBankOp2.addEventListener('change', syncAddThird);
+      syncAddThird();
+    }
     const calcBankAdd = document.getElementById('btnCalcBankAdd');
     if(calcBankAdd && !calcBankAdd._calcBankAddBound){
       calcBankAdd._calcBankAddBound = true;
@@ -35730,9 +35840,13 @@ function renderKMAdmin(){
         const aEl = document.getElementById('calcBankNewA');
         const opEl = document.getElementById('calcBankNewOp');
         const bEl = document.getElementById('calcBankNewB');
-        const r = window.Store.addCalcProblem({ a: aEl ? aEl.value : '', op: opEl ? opEl.value : '', b: bEl ? bEl.value : '' });
+        const cEl = document.getElementById('calcBankNewC');
+        const op2 = calcBankOp2 ? calcBankOp2.value : '';
+        const r = window.Store.addCalcProblem({ a: aEl ? aEl.value : '', op: opEl ? opEl.value : '', b: bEl ? bEl.value : '', op2: op2, c: cEl ? cEl.value : '' });
         if(!r || !r.ok){ toast((r && r.msg) || '题目不合法'); return; }
-        if(aEl) aEl.value = ''; if(bEl) bEl.value = '';
+        if(aEl) aEl.value = ''; if(bEl) bEl.value = ''; if(cEl) cEl.value = '';
+        if(calcBankOp2) calcBankOp2.value = '';
+        syncAddThird();
         toast('已添加题目');
         renderCalcBankModal();
         refreshCalcAfterBankChange();
