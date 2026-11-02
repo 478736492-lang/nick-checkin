@@ -10577,8 +10577,14 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 ];
   // R91：乐读数学「次级卡」种子（学期 / 班型）—— 数组顺序即页面展示顺序；
   // 「2026 春二 A+」为默认承载卡：首次建卡时把「当前页面内全部题型」作为三级卡导入该卡
-  const MATH_GROUP_SEED = ['2026 夏三 S','2026 春二 A+','2026 冬二 A+','2026 冬二 A+','2025 夏二 A+','2025 秋二 A+','2025 冬一 A+','2025 春上一 A+','2025 春下一 A+'];
+  const MATH_GROUP_SEED = ['2026 夏三 S','2026 秋三 S','2026 春二 A+','2026 冬二 A+','2026 冬二 A+','2025 夏二 A+','2025 秋二 A+','2025 冬一 A+','2025 春上一 A+','2025 春下一 A+'];
   const MATH_GROUP_DEFAULT = '2026 春二 A+';
+  // R230：乐读数学笔记「2026 秋三 S」板块预置题型（仅题型名，题留待后续录入；normalize 时幂等导入）
+  const MATH_GROUP_EXTRA_TYPES = {
+    '2026 秋三 S': ['标数法','乘法原理','巧求周长','巧求面积','和差倍综合','年龄问题综合','鸡兔同笼综合','归一问题','角的认识与计算','三角形认识','周期问题进阶','日期周期','还原问题进阶','错中求对','逻辑推理进阶','间隔问题进阶','最值问题']
+  };
+  // R230：默认承载卡名（「2026 春二 A+」）对外暴露，供 UI 在「未显式选板块」时回落到该卡
+  function getDefaultMathGroupName(){ return MATH_GROUP_DEFAULT; }
   // R91：次级卡结构自愈 —— ①首次建 9 张；②未归属题型归入「2026 春二 A+」（承载现有全部题型）；
   // ③清理已删除题型。返回是否发生变更（由 load() 决定是否落盘）
   function normalizeMathGroups(st){
@@ -10587,6 +10593,17 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
       const stamp = Date.now().toString(36);
       st.mathGroups = MATH_GROUP_SEED.map((name, i) => ({ id: 'mg' + stamp + '_' + i, name, types: [] }));
       changed = true;
+    } else {
+      // R230：种子里新增的板块也要对已有存档补齐（幂等）
+      const have = {};
+      st.mathGroups.forEach(g => { have[g.name] = true; });
+      MATH_GROUP_SEED.forEach((name, i) => {
+        if(!have[name]){
+          const stamp = Date.now().toString(36);
+          st.mathGroups.push({ id: 'mg' + stamp + '_' + i + '_' + Math.random().toString(36).slice(2,6), name, types: [] });
+          changed = true;
+        }
+      });
     }
     st.mathGroups.forEach(g => { if(!Array.isArray(g.types)){ g.types = []; changed = true; } });
     // 题库中出现过的题型（与 mathTypes() 一致，含默认「提取公因数」）
@@ -10596,6 +10613,10 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
     // 合法题型集合 = 题库题型 + 自定义题型（新建但暂无题目的三级卡不能被清掉）
     const validTypes = allTypes.slice();
     (st.customMathTypes || []).forEach(t => { if(validTypes.indexOf(t) < 0) validTypes.push(t); });
+    // R230：预置题型也算合法题型（否则会被末尾 filter 清掉）
+    const extraAllTypes = [];
+    Object.keys(MATH_GROUP_EXTRA_TYPES).forEach(k => MATH_GROUP_EXTRA_TYPES[k].forEach(t => { if(extraAllTypes.indexOf(t) < 0) extraAllTypes.push(t); }));
+    extraAllTypes.forEach(t => { if(validTypes.indexOf(t) < 0) validTypes.push(t); });
     // 归属表（同一题型只归一张次级卡）
     const owned = {};
     st.mathGroups.forEach(g => g.types.forEach(t => { if(owned[t] === undefined) owned[t] = g.id; }));
@@ -10604,6 +10625,14 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
               || st.mathGroups.find(g => g.name === MATH_GROUP_DEFAULT)
               || st.mathGroups[0];
     allTypes.forEach(t => { if(owned[t] === undefined){ target.types.push(t); owned[t] = target.id; changed = true; } });
+    // R230：把预置题型导入对应板块（幂等）
+    Object.keys(MATH_GROUP_EXTRA_TYPES).forEach(gname => {
+      const g = st.mathGroups.find(x => x.name === gname);
+      if(!g) return;
+      MATH_GROUP_EXTRA_TYPES[gname].forEach(t => {
+        if(g.types.indexOf(t) < 0){ g.types.push(t); owned[t] = g.id; changed = true; }
+      });
+    });
     st.mathGroups.forEach(g => {
       const before = g.types.length;
       g.types = g.types.filter(t => validTypes.indexOf(t) >= 0);
@@ -17049,7 +17078,7 @@ be 动词：am / is → was；are → were
     addMathProblem, updateMathProblem, toggleMathStar, deleteMathProblem,
     getMathNotes, addMathNote, delMathNote,
     setMathMastery, getMathByMastery, markMathMastered, toggleMathMastery, unmarkMathMastered, migrateMathMastery, mathTypes, addMathType, removeMathType, listMathTypes,
-    getMathGroups, addMathGroup, addMathTypeToGroup, assignMathTypeToGroup, groupIdOfMathType,
+    getMathGroups, addMathGroup, addMathTypeToGroup, assignMathTypeToGroup, groupIdOfMathType, getDefaultMathGroupName,
     getReading, getDailySpeaking, addUserReading, markReadingRead, unmarkReadingRead, isReadingRead, logCheckin, unlogCheckin, markSpeakingComplete, unmarkSpeakingComplete, unmarkXueersiDailyReward, refundReadingStars,
     // R228：计算小超市题库（编辑 / 添加 / 删除）
     getCalcBank, addCalcProblem, updateCalcProblem, delCalcProblem,
@@ -27748,12 +27777,17 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     const tv = document.getElementById('mathFilterTypeValue');
     if(tv) tv.textContent = mathTypeSel || '请选择题型';
   }
-  // R91：当前板块（选中项失效/为空时回落到「首个有题型的板块」，保证默认停在承载题型的板块上）
+  // R91：当前板块（选中项失效/为空时回落到「默认承载卡 2026 春二 A+」，其次首个有题型的板块，保证默认停在正确板块上）
   function activeMathGroup(groups){
     const list = groups || (S.getMathGroups ? S.getMathGroups() : []);
     if(!list.length) return null;
     let g = list.find(x => x.id === mathGroupId);
-    if(!g) g = list.find(x => x.types.length > 0) || list[0];
+    if(!g){
+      const defName = (S.getDefaultMathGroupName ? S.getDefaultMathGroupName() : '');
+      g = (defName && list.find(x => x.name === defName))
+        || list.find(x => x.types.length > 0)
+        || list[0];
+    }
     mathGroupId = g.id;
     return g;
   }
