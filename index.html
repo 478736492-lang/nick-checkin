@@ -7872,8 +7872,11 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 .calc-head-title{display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap}
 .calc-bank-btn{background:var(--tone-100);border:1.5px solid var(--tone-300);color:var(--tone-800);border-radius:12px;padding:7px 16px;font-size:14px;font-weight:800;cursor:pointer;transition:.15s;font-family:inherit;white-space:nowrap}
 .calc-bank-btn:hover{background:var(--tone-150);border-color:var(--tone-400);transform:translateY(-1px)}
-/* R235-3：题库入口从顶栏挪到「计算小超市」标题与「每日一练」题目之间 */
-.calc-bank-inline-btn{display:block;width:100%;text-align:center;margin-bottom:12px}
+/* R236：题库入口缩小并挪到「每日一练」题目之后（inline-block，不再占满整行） */
+.calc-bank-inline-btn{display:inline-block;width:auto;padding:4px 14px;font-size:12px;margin-top:12px}
+/* R236：题库弹窗顶部「🖼️ 图库」与「📕 错题本」并排一行 */
+.calc-bank-tools{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.calc-bank-tools .calc-bank-wrong-head{margin:0}
 .calc-bank-hint{font-size:13px;color:#5b7ba3;background:var(--tone-050);border:1px solid var(--tone-line-soft);border-radius:10px;padding:8px 12px;margin-bottom:12px;line-height:1.5}
 .calc-bank-hint b{color:var(--sky-blue)}
 .calc-bank-list{max-height:min(52vh,420px);overflow:auto;display:flex;flex-direction:column;gap:8px;padding-right:4px}
@@ -8498,7 +8501,10 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
           <div class="calc-bank-add-tip">想加三数混合题？把第二个运算符从「两数」改成 + − × ÷，再填第三个数即可（先乘除、后加减）。</div>
         </div>
         <div class="calc-bank-col calc-bank-right">
-          <div class="calc-bank-wrong-head">📕 错题本 <span id="calcWrongCount" class="calc-wrong-count">0</span></div>
+          <div class="calc-bank-tools">
+            <button type="button" class="pbtn small" id="btnCalcGallery" title="打开「课堂讲义」图片库">🖼️ 图库</button>
+            <div class="calc-bank-wrong-head">📕 错题本 <span id="calcWrongCount" class="calc-wrong-count">0</span></div>
+          </div>
           <div class="calc-bank-wrong-list" id="calcWrongList"></div>
           <button type="button" class="pbtn small" id="btnClearWrong">清空错题本</button>
         </div>
@@ -11141,6 +11147,10 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
         lastBaikeDate: '',
         userReading: {cnWords:[],cnPoem:[],cnEssay:[],enPassage:[],enSpeaking:[]},
         readFlags: {},
+        calcStreak: 0,
+        calcStreakLastDate: '',
+        calcStreakRewardWeeks: 0,
+        calcStreakBonusStars: 0,
         goRecords: [],
         // v4 跨平台共享
         cloud: {enabled:false,envId:'',syncAt:0},
@@ -11196,6 +11206,15 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
     if(normalizeMathGroups(st)) save(st);
     // R231-2：一次性迁移导入 1250 题计算小超市题库（清空旧库，幂等）
     if(migrateCalcBank(st)) save(st);
+    // R236：连续打卡（计算小超市）天数清零 + 7 天连打卡奖励初始化（一次性）
+    if(!st.__calcStreakResetR236){
+      st.calcStreak = 0;
+      st.calcStreakLastDate = '';
+      st.calcStreakRewardWeeks = 0;
+      st.calcStreakBonusStars = 0;
+      st.__calcStreakResetR236 = true;
+      save(st);
+    }
     // v10：首页昵称统一为英文 Nick（旧数据中的「小尼克 / 尼克」中文昵称一并迁移）
     if(!st.profile) st.profile = {nickname:'Nick',grade:'三年级',mode:'child', avatar:''};
     if(!st.profile.nickname || /尼克/.test(st.profile.nickname)) st.profile.nickname = 'Nick';
@@ -12370,7 +12389,7 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
     }
     st.archive.consecutiveDays = streak;
     st.archive.maxConsecutive = Math.max(maxStreak, streak, st.archive.maxConsecutive||0);
-    st.archive.totalStars = st.records.filter(r=>r.completed).reduce((s,r)=>s+(r.stars||0),0);
+    st.archive.totalStars = st.records.filter(r=>r.completed).reduce((s,r)=>s+(r.stars||0),0) + (st.calcStreakBonusStars||0);
     st.archive.exp = st.archive.totalStars;
     const readSubj = ['语文','英语'];
     st.archive.readDays = days.filter(d=>st.records.some(r=>r.date===d && r.completed && readSubj.includes(st.tasks.find(t=>t.id===r.taskId)?.subject))).length;
@@ -12460,6 +12479,34 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
       rec[key] = Math.max(0, rec[key] - (n == null ? 1 : n));
       save(st);
     }catch(e){}
+  }
+  // R236：计算小超市「连续打卡」天数维护 + 每连续 7 天额外 +5⭐（幂等，不重复发放）
+  // 连续天数存于 st.calcStreak（不再依赖 checkinLog 派生），可按需清零；
+  // 奖励按「已达成的 7 天里程碑数」发放，已发放的里程碑记在 st.calcStreakRewardWeeks，避免重复。
+  function bumpCalcStreak(){
+    try{
+      const st = load();
+      const d = todayStr();
+      const last = st.calcStreakLastDate || '';
+      if(last !== d){
+        const y = new Date(); y.setDate(y.getDate() - 1);
+        const p = x => String(x).padStart(2,'0');
+        const yStr = y.getFullYear()+'-'+p(y.getMonth()+1)+'-'+p(y.getDate());
+        if(last && last === yStr) st.calcStreak = (st.calcStreak||0) + 1; // 连续：+1
+        else st.calcStreak = 1;                                          // 首次或中断：重新计 1
+        st.calcStreakLastDate = d;
+      }
+      const weeks = Math.floor((st.calcStreak||0) / 7);
+      const rewarded = st.calcStreakRewardWeeks || 0;
+      let bonus = 0;
+      if(weeks > rewarded){
+        bonus = (weeks - rewarded) * 5;
+        st.calcStreakRewardWeeks = weeks;
+        st.calcStreakBonusStars = (st.calcStreakBonusStars||0) + bonus;
+      }
+      save(st);
+      return { streak: st.calcStreak||0, bonus };
+    }catch(e){ return { streak:0, bonus:0 }; }
   }
   // 汇总某段日期内的打卡计数：{ key: 次数 }
   function getCheckinLog(days){
@@ -17535,6 +17582,8 @@ be 动词：am / is → was；are → were
     getReading, getDailySpeaking, addUserReading, markReadingRead, unmarkReadingRead, isReadingRead, logCheckin, unlogCheckin, markSpeakingComplete, unmarkSpeakingComplete, unmarkXueersiDailyReward, refundReadingStars,
     // R232-1：计算小超市打卡（首页必做卡 ⇄ 乐读数学 今日打卡 共用）
     markCalcDaily, unmarkCalcDaily,
+    // R236：连续打卡奖励（每 7 天 +5⭐）
+    bumpCalcStreak,
     // R228：计算小超市题库（编辑 / 添加 / 删除）
     getCalcBank, addCalcProblem, updateCalcProblem, delCalcProblem,
     // R231-4：错题本（批改答错题自动归集）
@@ -21568,6 +21617,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
   }
   function calcStreak(){
     const st = window.Store.load();
+    if(typeof st.calcStreak === 'number') return st.calcStreak;
     let n = 0; const d = new Date();
     while(true){
       const p = x => String(x).padStart(2,'0');
@@ -21620,9 +21670,9 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         <div class="yw-comp-head calc-head">
           <span class="calc-head-title">🧮 计算小超市 <span class="yw-sub">每日一练 · ${dateLabel}</span></span>
         </div>
-        <button type="button" class="calc-bank-btn calc-bank-inline-btn" data-calc-bank title="题库：编辑 · 添加 · 删除计算题">📚 题库（${bankCount} 题）</button>
         ${done ? '' : streakLine}
         ${body}
+        <button type="button" class="calc-bank-btn calc-bank-inline-btn" data-calc-bank title="题库：编辑 · 添加 · 删除计算题">📚 题库（${bankCount} 题）</button>
       </div>`;
   }
   function bindCalcBasic(slotBody, rerender){
@@ -21676,8 +21726,11 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         // R232-1：与首页必做卡共用 calcDaily 打卡（星级统一落在任务记录，只发一次 +2⭐）
         if(window.Store.markCalcDaily) window.Store.markCalcDaily(today);
         else window.Store.markReadingRead('calcDaily', today);
+        // R236：累计连续打卡天数，跨过 7 天里程碑时额外 +5⭐（幂等，不重复发放）
+        let _sr = { streak: 0, bonus: 0 };
+        try { _sr = window.Store.bumpCalcStreak() || _sr; } catch(e){}
         playCheckinSound();
-        toast('🎉 计算小超市今日打卡完成！');
+        toast('🎉 计算小超市今日打卡完成！' + (_sr.bonus > 0 ? ' 连续打卡 ' + _sr.streak + ' 天，额外 +' + _sr.bonus + '⭐' : ''));
         rerender();
       });
     }
@@ -36675,6 +36728,15 @@ function renderKMAdmin(){
           const wc = document.getElementById('calcWrongCount'); if(wc) wc.textContent = '0';
           toast('已清空错题本');
         });
+      });
+    }
+    // R236：题库弹窗「🖼️ 图库」按钮 → 打开「课堂讲义」图片库（乐读数学·题型画廊）
+    const btnCalcGallery = document.getElementById('btnCalcGallery');
+    if(btnCalcGallery && !btnCalcGallery._calcGalleryBound){
+      btnCalcGallery._calcGalleryBound = true;
+      btnCalcGallery.addEventListener('click', ()=>{
+        try{ hideModal('#modalCalcBank'); }catch(e){}
+        try{ goPage('math'); }catch(e){}
       });
     }
     // R229：添加区「第二个运算符」决定是否出现第三个数（留空＝两数题，选中＝三数混合题）
