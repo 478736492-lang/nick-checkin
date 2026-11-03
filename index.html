@@ -5518,11 +5518,13 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 }
 
 /* R104 需求③：题型头右侧功能键位 —— 【＋ 新增题目】+【＋ 新增知识笔记】紧跟统计数据右侧（margin-left:auto）对齐，
-   与题型名、题数统计同排不换行（保持 R93 的 nowrap 约束） */
+   R233-1 起再加入【📎 添加 PDF】，键位多到挤不下时就地换行，避免挤压题型名或横向溢出 */
 .math-group-actions{
-  display:flex;align-items:center;gap:8px;flex-wrap:nowrap;flex:0 0 auto;
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end;flex:0 0 auto;
   margin-left:auto
 }
+/* R233-1：题型头允许换行（键位变多后仍不溢出） */
+.math-type-group-head{flex-wrap:wrap}
 /* R104：题型头右侧多了功能键位后，题型名不再被挤压（超长时省略号，数字与键位始终右对齐） */
 .math-type-group-head > .math-group-name{flex:0 0 auto;max-width:42%;overflow:hidden;text-overflow:ellipsis}
 .pbtn.math-notecard-add-btn{color:#16306b;border-color:var(--tone-200);background:#fff;font-weight:700}
@@ -7949,39 +7951,31 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
   .math-gal-item figcaption{font-size:11px;padding:4px 6px}
 }
 
-/* ===== R232：题型讲义 PDF（缩影图 + 详情弹窗） ===== */
-.math-pdf-bar{
-  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
-  background:#fff;border:1px solid var(--tone-175);border-radius:var(--card-r-md);padding:10px 14px;margin:0 0 12px;
+/* ===== R233-1：讲义 PDF 并入课堂讲义画廊（排在全部图片之后，落在最后一页） ===== */
+.math-gal-pdf{
+  position:relative;cursor:pointer;background:var(--tone-050);
+  display:flex;flex-direction:column;
 }
-.math-pdf-bar-title{font-size:13px;font-weight:700;color:var(--theme-title)}
-.math-pdf-tip{font-size:12px;color:var(--muted)}
-.math-pdf-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px;margin:0 0 14px}
-.math-pdf-card{
-  position:relative;display:flex;align-items:center;gap:10px;
-  background:#fff;border:1px solid var(--tone-175);border-radius:var(--card-r-md);padding:10px;cursor:pointer;
-  transition:transform .16s ease,box-shadow .16s ease;
+.math-gal-pdf-box{
+  position:relative;flex:1 1 auto;min-height:150px;aspect-ratio:16/10;background:#fff;
 }
-.math-pdf-card:hover{transform:translateY(-2px);box-shadow:var(--card-sh-lg)}
-.math-pdf-thumb{
-  position:relative;width:74px;height:96px;flex:0 0 74px;border-radius:var(--card-r-xs);overflow:hidden;
-  background:var(--tone-100);border:1px solid var(--tone-175);display:flex;align-items:center;justify-content:center;
+.math-gal-pdf-box embed{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff}
+.math-gal-pdf figcaption{
+  font-size:12px;color:var(--theme-title);padding:6px 10px;background:var(--tone-100);
+  border-top:1px solid var(--tone-150);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
-.math-pdf-thumb .math-pdf-ico{font-size:26px;color:var(--tone-400)}
-.math-pdf-thumb embed{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff}
-.math-pdf-meta{min-width:0;flex:1}
-.math-pdf-name{font-size:12.5px;color:var(--theme-title);font-weight:600;line-height:1.35;word-break:break-all}
-.math-pdf-size{font-size:11.5px;color:var(--muted);margin-top:4px}
 .math-pdf-del{
   position:absolute;top:6px;right:6px;width:22px;height:22px;min-width:0;padding:0;
-  border-radius:50%;line-height:1;font-size:14px;color:var(--muted);
+  border-radius:50%;line-height:1;font-size:14px;color:var(--muted);z-index:2;
+  background:var(--tone-050);border:1px solid var(--tone-175);
 }
+/* 讲义 PDF 详情弹窗 */
 .math-pdf-box{width:min(940px,94vw);max-width:940px}
 .math-pdf-body{padding:10px 14px}
 .math-pdf-body embed{width:100%;height:66vh;border:0;border-radius:var(--card-r-sm);background:var(--tone-050)}
 @media (max-width:560px){
   .math-pdf-body embed{height:58vh}
-  .math-pdf-list{grid-template-columns:1fr}
+  .math-gal-pdf-box{min-height:110px}
 }
 
 </style>
@@ -10721,7 +10715,9 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
     '巧求周长': ['zhouchang_00.jpg', 'zhouchang_01.jpg', 'zhouchang_02.jpg', 'zhouchang_03.jpg', 'zhouchang_04.jpg', 'zhouchang_05.jpg', 'zhouchang_06.jpg', 'zhouchang_07.jpg', 'zhouchang_08.jpg', 'zhouchang_09.jpg', 'zhouchang_10.jpg', 'zhouchang_11.jpg', 'zhouchang_12.jpg', 'zhouchang_13.jpg', 'zhouchang_14.jpg', 'zhouchang_15.jpg'],
     '巧求面积': ['mianji_00.jpg', 'mianji_01.jpg', 'mianji_02.jpg', 'mianji_03.jpg', 'mianji_04.jpg', 'mianji_05.jpg', 'mianji_06.jpg', 'mianji_07.jpg', 'mianji_08.jpg', 'mianji_09.jpg', 'mianji_10.jpg', 'mianji_11.jpg', 'mianji_12.jpg', 'mianji_13.jpg', 'mianji_14.jpg', 'mianji_15.jpg'],
     '和差倍综合': ['hecha_00.jpg', 'hecha_01.jpg', 'hecha_02.jpg', 'hecha_03.jpg', 'hecha_04.jpg', 'hecha_05.jpg', 'hecha_06.jpg', 'hecha_07.jpg', 'hecha_08.jpg', 'hecha_09.jpg', 'hecha_10.jpg', 'hecha_11.jpg', 'hecha_12.jpg', 'hecha_13.jpg', 'hecha_14.jpg', 'hecha_15.jpg'],
-    '年龄问题综合': ['nianling_00.jpg', 'nianling_01.jpg', 'nianling_02.jpg', 'nianling_03.jpg', 'nianling_04.jpg', 'nianling_05.jpg', 'nianling_06.jpg', 'nianling_07.jpg', 'nianling_08.jpg', 'nianling_09.jpg', 'nianling_10.jpg', 'nianling_11.jpg', 'nianling_12.jpg', 'nianling_13.jpg', 'nianling_14.jpg', 'nianling_15.jpg']
+    '年龄问题综合': ['nianling_00.jpg', 'nianling_01.jpg', 'nianling_02.jpg', 'nianling_03.jpg', 'nianling_04.jpg', 'nianling_05.jpg', 'nianling_06.jpg', 'nianling_07.jpg', 'nianling_08.jpg', 'nianling_09.jpg', 'nianling_10.jpg', 'nianling_11.jpg', 'nianling_12.jpg', 'nianling_13.jpg', 'nianling_14.jpg', 'nianling_15.jpg'],
+    '鸡兔同笼综合': ['jitu_00.jpg', 'jitu_01.jpg', 'jitu_02.jpg', 'jitu_03.jpg', 'jitu_04.jpg', 'jitu_05.jpg', 'jitu_06.jpg', 'jitu_07.jpg', 'jitu_08.jpg', 'jitu_09.jpg', 'jitu_10.jpg', 'jitu_11.jpg', 'jitu_12.jpg', 'jitu_13.jpg', 'jitu_14.jpg', 'jitu_15.jpg', 'jitu_16.jpg', 'jitu_17.jpg'],
+    '归一问题': ['guiyi_00.jpg', 'guiyi_01.jpg', 'guiyi_02.jpg', 'guiyi_03.jpg', 'guiyi_04.jpg', 'guiyi_05.jpg', 'guiyi_06.jpg', 'guiyi_07.jpg', 'guiyi_08.jpg', 'guiyi_09.jpg', 'guiyi_10.jpg', 'guiyi_11.jpg', 'guiyi_12.jpg', 'guiyi_13.jpg', 'guiyi_14.jpg', 'guiyi_15.jpg', 'guiyi_16.jpg', 'guiyi_17.jpg']
   };
   // R230：默认承载卡名（「2026 春二 A+」）对外暴露，供 UI 在「未显式选板块」时回落到该卡
   function getDefaultMathGroupName(){ return MATH_GROUP_DEFAULT; }
@@ -28165,25 +28161,42 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   // R94 需求③：原【＋ 新增题型】改名为【＋ 新增题目】；同排保留【＋ 新增知识笔记】
   // R104 需求③：两个入口从详情板块底部移到题型头内 —— 紧跟统计数据右侧对齐（.math-group-actions 用 margin-left:auto）
   // R232-3：题型课堂讲义图片 —— 每页 2 行 × 每行 2 张，首张固定为「知识笔记」，其余按名称顺序
+  // R233-1：讲义 PDF 不再单独占一张卡片，改为并入同一画廊、排在全部图片之后（即落在最后一页）
   const MATH_GAL_PER_PAGE = 4;
+  function fmtPdfSize(n){
+    const b = Number(n) || 0;
+    if(!b) return 'PDF';
+    if(b < 1024 * 1024) return Math.max(1, Math.round(b / 1024)) + ' KB';
+    return (b / 1024 / 1024).toFixed(1) + ' MB';
+  }
   function mathGalleryHtml(type){
     const imgs = (window.Store && window.Store.getMathTypeImgs) ? window.Store.getMathTypeImgs(type) : [];
-    if(!imgs.length) return '';
+    const pdfs = (window.Store && window.Store.getMathTypePdfs) ? window.Store.getMathTypePdfs(type) : [];
+    if(!imgs.length && !pdfs.length) return '';
+    const imgCells = imgs.map((it, i) => `
+          <figure class="math-gal-item" data-gal-src="${esc(it.src)}" data-gal-cap="${esc(type + ' · ' + it.cap)}" title="点击放大查看">
+            <img src="${esc(it.src)}" alt="${esc(type + ' ' + it.cap)}" loading="${i < MATH_GAL_PER_PAGE ? 'eager' : 'lazy'}" decoding="async">
+            <figcaption>${esc(it.cap)}</figcaption>
+          </figure>`);
+    const pdfCells = pdfs.map(p => `
+          <figure class="math-gal-item math-gal-pdf" data-gal-pdf-view="${esc(p.id)}" title="点击查看 PDF 详情">
+            <div class="math-gal-pdf-box"><embed type="application/pdf" src="${esc(p.data)}#page=1&toolbar=0&navpanes=0&view=FitH" title="${esc(p.name)}"></div>
+            <button type="button" class="pbtn small math-pdf-del hidden-in-child" data-gal-pdf-del="${esc(p.id)}" title="删除这份讲义">×</button>
+            <figcaption>📄 ${esc(p.name)} · ${fmtPdfSize(p.size)}</figcaption>
+          </figure>`);
+    const cells = imgCells.concat(pdfCells);
     const pages = [];
-    for(let i = 0; i < imgs.length; i += MATH_GAL_PER_PAGE) pages.push(imgs.slice(i, i + MATH_GAL_PER_PAGE));
+    for(let i = 0; i < cells.length; i += MATH_GAL_PER_PAGE) pages.push(cells.slice(i, i + MATH_GAL_PER_PAGE));
+    const sum = '共 ' + imgs.length + ' 张' + (pdfs.length ? ' + ' + pdfs.length + ' 份 PDF' : '');
     const pageHtml = pages.map((pg, pi) => `
       <div class="math-gal-page${pi === 0 ? ' active' : ''}" data-gal-page="${pi}">
-        ${pg.map((it) => `
-          <figure class="math-gal-item" data-gal-src="${esc(it.src)}" data-gal-cap="${esc(type + ' · ' + it.cap)}" title="点击放大查看">
-            <img src="${esc(it.src)}" alt="${esc(type + ' ' + it.cap)}" loading="${pi === 0 ? 'eager' : 'lazy'}" decoding="async">
-            <figcaption>${esc(it.cap)}</figcaption>
-          </figure>`).join('')}
+        ${pg.join('')}
       </div>`).join('');
     return `
-      <div class="math-gal" data-gal data-gal-now="0">
+      <div class="math-gal" data-gal data-gal-now="0" data-gal-sum="${esc(sum)}">
         <div class="math-gal-head">
           <span class="math-gal-title">🖼️ 课堂讲义</span>
-          <span class="math-gal-count" data-gal-count>共 ${imgs.length} 张 · 第 1/${pages.length} 页</span>
+          <span class="math-gal-count" data-gal-count>${sum} · 第 1/${pages.length} 页</span>
           <div class="math-gal-nav">
             <button type="button" class="pbtn small" data-gal-prev disabled>‹ 上一页</button>
             <button type="button" class="pbtn small" data-gal-next${pages.length <= 1 ? ' disabled' : ''}>下一页 ›</button>
@@ -28192,45 +28205,15 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         <div class="math-gal-pages">${pageHtml}</div>
       </div>`;
   }
-  // R232-2：题型讲义 PDF（家长可添加；展示缩影图，点击弹窗查看详情）
-  function fmtPdfSize(n){
-    const b = Number(n) || 0;
-    if(!b) return 'PDF';
-    if(b < 1024 * 1024) return Math.max(1, Math.round(b / 1024)) + ' KB';
-    return (b / 1024 / 1024).toFixed(1) + ' MB';
-  }
-  function mathTypePdfsHtml(type){
-    const list = (window.Store && window.Store.getMathTypePdfs) ? window.Store.getMathTypePdfs(type) : [];
-    const cards = list.map(p => `
-      <div class="math-pdf-card" data-gal-pdf-view="${esc(p.id)}" title="点击查看 PDF 详情">
-        <div class="math-pdf-thumb">
-          <span class="math-pdf-ico">📄</span>
-          <embed type="application/pdf" src="${esc(p.data)}#page=1&toolbar=0&navpanes=0&view=FitH" title="${esc(p.name)}">
-        </div>
-        <div class="math-pdf-meta">
-          <div class="math-pdf-name">${esc(p.name)}</div>
-          <div class="math-pdf-size">${fmtPdfSize(p.size)}</div>
-        </div>
-        <button type="button" class="pbtn small math-pdf-del hidden-in-child" data-gal-pdf-del="${esc(p.id)}" title="删除这份讲义">×</button>
-      </div>`).join('');
-    return `
-      <div class="math-pdf-bar">
-        <span class="math-pdf-bar-title">📎 讲义 PDF</span>
-        <button type="button" class="pbtn small math-add-card-btn hidden-in-child" data-gal-pdf-add="${esc(type)}" title="上传一份 PDF 讲义">＋ 添加 PDF</button>
-        ${list.length ? `<span class="math-pdf-tip">共 ${list.length} 份</span>` : ''}
-      </div>
-      ${list.length ? `<div class="math-pdf-list">${cards}</div>` : ''}`;
-  }
   function mathTypeGroupHtml(type, items){
     // R53-1：该题型的知识笔记展示在第一个内容卡片位置（用户自建笔记在前）
     const gNotes = (S.getMathNotes ? S.getMathNotes() : []).filter(n => (n.type||'未分类') === type);
     const noteCards = gNotes.map(mathNoteCardHtml).join('');
-    // R232：题型页顶部先呈现「课堂讲义图片」（分页 2×2）与「讲义 PDF」，其后再是笔记卡与题目卡
+    // R232：题型页顶部先呈现「课堂讲义图片」（分页 2×2，末页收纳讲义 PDF），其后再是笔记卡与题目卡
     const galHtml = mathGalleryHtml(type);
-    const pdfHtml = mathTypePdfsHtml(type);
     // R91：允许「暂无题目」（新建题型后先建卡）；此时给出录入引导
-    const body = (galHtml || pdfHtml || noteCards || items.length)
-      ? `${galHtml}${pdfHtml}${noteCards}${items.map(mathCardHtml).join('')}`
+    const body = (galHtml || noteCards || items.length)
+      ? `${galHtml}${noteCards}${items.map(mathCardHtml).join('')}`
       : `<div class="math-group-empty">「${esc(type)}」暂无题目，点右侧「＋ 新增题目」录入吧～</div>`;
     return `
       <div class="math-type-group" data-type="${esc(type)}">
@@ -28240,6 +28223,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
           <div class="math-group-actions">
             <button class="pbtn small math-add-card-btn hidden-in-child" data-math-add-problem="${esc(type)}" title="为「${esc(type)}」录入一道新题目">＋ 新增题目</button>
             <button class="pbtn small math-notecard-add-btn hidden-in-child" data-math-add-note="${esc(type)}" title="为「${esc(type)}」添加知识笔记">＋ 新增知识笔记</button>
+            <button class="pbtn small math-add-card-btn hidden-in-child" data-gal-pdf-add="${esc(type)}" title="上传一份 PDF 讲义（排在课堂讲义图片之后的最后一页）">📎 添加 PDF</button>
           </div>
         </div>
         <div class="math-group-body">${body}</div>
@@ -28405,9 +28389,40 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         if(next) next.disabled = now >= pages.length - 1;
         const cnt = gal.querySelector('[data-gal-count]');
         if(cnt){
-          const total = gal.querySelectorAll('.math-gal-item').length;
-          cnt.textContent = '共 ' + total + ' 张 · 第 ' + (now + 1) + '/' + pages.length + ' 页';
+          const sum = gal.getAttribute('data-gal-sum') || '';
+          cnt.textContent = (sum ? sum + ' · ' : '') + '第 ' + (now + 1) + '/' + pages.length + ' 页';
         }
+        return;
+      }
+      // R233-1：删除键优先级最高（它嵌在 PDF 图块内部）
+      const del = e.target.closest('[data-gal-pdf-del]');
+      if(del){
+        e.stopPropagation();
+        const id = del.getAttribute('data-gal-pdf-del');
+        const list = (window.Store.getMathTypePdfs ? window.Store.getMathTypePdfs(mathTypeSel) : []);
+        const p = list.find(x => String(x.id) === String(id));
+        if(!p) return;
+        confirmDelete(p.name, ()=>{
+          window.Store.delMathTypePdf(id);
+          toast('已删除讲义 PDF');
+          renderMathContent();
+        });
+        return;
+      }
+      // R233-1：PDF 作为画廊末页的一张「图」，点击查看详情
+      const view = e.target.closest('[data-gal-pdf-view]');
+      if(view){
+        const id = view.getAttribute('data-gal-pdf-view');
+        const list = (window.Store.getMathTypePdfs ? window.Store.getMathTypePdfs(mathTypeSel) : []);
+        const p = list.find(x => String(x.id) === String(id));
+        if(!p) return;
+        const frame = document.getElementById('mathPdfFrame');
+        const nameEl = document.getElementById('mathPdfName');
+        const dl = document.getElementById('mathPdfDownload');
+        if(frame) frame.src = p.data;
+        if(nameEl) nameEl.textContent = p.name + '（' + fmtPdfSize(p.size) + '）';
+        if(dl){ dl.href = p.data; dl.setAttribute('download', p.name || '讲义.pdf'); }
+        showModal('#modalMathPdf');
         return;
       }
       const fig = e.target.closest('.math-gal-item');
@@ -28424,35 +28439,6 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         _mathPdfAddType = addBtn.getAttribute('data-gal-pdf-add') || mathTypeSel;
         const inp = document.getElementById('mathPdfFile');
         if(inp){ inp.value = ''; inp.click(); }
-        return;
-      }
-      const del = e.target.closest('[data-gal-pdf-del]');
-      if(del){
-        e.stopPropagation();
-        const id = del.getAttribute('data-gal-pdf-del');
-        const list = (window.Store.getMathTypePdfs ? window.Store.getMathTypePdfs(mathTypeSel) : []);
-        const p = list.find(x => String(x.id) === String(id));
-        if(!p) return;
-        confirmDelete(p.name, ()=>{
-          window.Store.delMathTypePdf(id);
-          toast('已删除讲义 PDF');
-          renderMathContent();
-        });
-        return;
-      }
-      const view = e.target.closest('[data-gal-pdf-view]');
-      if(view){
-        const id = view.getAttribute('data-gal-pdf-view');
-        const list = (window.Store.getMathTypePdfs ? window.Store.getMathTypePdfs(mathTypeSel) : []);
-        const p = list.find(x => String(x.id) === String(id));
-        if(!p) return;
-        const frame = document.getElementById('mathPdfFrame');
-        const nameEl = document.getElementById('mathPdfName');
-        const dl = document.getElementById('mathPdfDownload');
-        if(frame) frame.src = p.data;
-        if(nameEl) nameEl.textContent = p.name + '（' + fmtPdfSize(p.size) + '）';
-        if(dl){ dl.href = p.data; dl.setAttribute('download', p.name || '讲义.pdf'); }
-        showModal('#modalMathPdf');
         return;
       }
     });
