@@ -427,8 +427,9 @@ button[hidden]{display:none!important}
 .math-mastered-tag{font-size:10px;font-weight:800;color:#fff;background:linear-gradient(135deg,var(--z-xs-mid),var(--z-xs-main));padding:2px 8px;border-radius:8px}
 .math-card.mastered{border-color:var(--tiffany);background:linear-gradient(180deg,var(--tiffany-light),var(--tiffany-pale))}
 /* V11.1：未掌握子板块样式（橙色）+ 双键 (掌握绿/未掌握橙) */
-.math-notmastered-tag{font-size:10px;font-weight:800;color:#fff;background:linear-gradient(135deg,#ffb35b,#ff8c42);padding:2px 8px;border-radius:8px}
-.math-card.status-notMastered{border-color:#ffc486;background:linear-gradient(180deg,#fff7ec,#fff)}
+.math-notmastered-tag{font-size:10px;font-weight:800;color:#fff;background:var(--bad-main);padding:2px 8px;border-radius:8px}
+/* R234-6：需巩固的题目卡统一转红（原乐读橙退役） */
+.math-card.status-notMastered{border-color:var(--bad-main);background:var(--bad-pale)}
 .math-card.status-mastered{border-color:var(--tiffany);background:linear-gradient(180deg,var(--tiffany-light),var(--tiffany-pale));opacity:.98}
 /* R93：原「题库 / 需巩固 / 已掌握」筛选键及其着色规则已随需求移除
    （题型不再作为标签、也不再按掌握状态过滤 → 该子标签样式规则一并删除） */
@@ -442,9 +443,9 @@ button[hidden]{display:none!important}
 .math-check-btn.done{background:linear-gradient(135deg,var(--tiffany),var(--tiffany-dark));color:#fff;border-color:var(--tiffany-dark);box-shadow:0 2px 6px rgba(30,58,138,.32)}
 .math-card.status-mastered .math-check-btn{background:linear-gradient(135deg,var(--z-xs-mid),var(--z-xs-main));color:#fff;border-color:var(--z-xs-main)}
 /* R92：题型栏内的【＋ 新题型】子标签已移入各板块内部（原该子标签的样式规则随之移除） */
-.math-actions .pbtn.notmastery{background:linear-gradient(135deg,#ffd6a8,#ffb35b);color:#fff;border-color:#ff8c42;font-weight:700}
+.math-actions .pbtn.notmastery{background:var(--bad-main);color:#fff;border-color:var(--bad-main);font-weight:700}
 .math-actions .pbtn.notmastery:hover{filter:brightness(1.08)}
-.math-actions .pbtn.notmastery.active{background:linear-gradient(135deg,#ff8c42,#e8742a);box-shadow:0 2px 6px rgba(255,140,66,.4)}
+.math-actions .pbtn.notmastery.active{background:var(--bad-main);box-shadow:0 2px 6px var(--bad-line)}
 .math-card{background:var(--card-bg);border-radius:var(--card-r-md);padding:12px;box-shadow:var(--card-shadow);border:var(--card-line-soft);display:flex;flex-direction:column;gap:4px}
 /* v9：题干头（题型 chip + id）替换旧的 manual/photo 渐变 thumb */
 .math-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
@@ -461,9 +462,9 @@ button[hidden]{display:none!important}
 .math-actions .math-btn-mastery{background:linear-gradient(135deg,var(--z-xs-mid),var(--z-xs-main));color:#fff;border:2px solid var(--z-xs-main);font-weight:700;flex:1}
 .math-actions .math-btn-mastery:hover{filter:brightness(1.08)}
 .math-actions .math-btn-mastery.active{background:linear-gradient(135deg,var(--z-xs-mid),var(--z-xs-main));box-shadow:0 2px 6px rgba(var(--z-xs-rgb),.40)}
-.math-actions .math-btn-need{background:linear-gradient(135deg,#ffd6a8,#ffb35b);color:#fff;border:2px solid #ff8c42;font-weight:700;flex:1}
+.math-actions .math-btn-need{background:#fff;color:var(--bad-main);border:2px solid var(--bad-line);font-weight:700;flex:1}
 .math-actions .math-btn-need:hover{filter:brightness(1.08)}
-.math-actions .math-btn-need.active{background:linear-gradient(135deg,#ff8c42,#e8742a);box-shadow:0 2px 6px rgba(255,140,66,.4)}
+.math-actions .math-btn-need.active{background:var(--bad-main);color:#fff;border-color:var(--bad-main);box-shadow:0 2px 6px var(--bad-line)}
 /* R93：原「已掌握」绿色子标签样式已随三个筛选按键一并移除（题型卡改为同排彩色数字呈现） */
 .math-empty{padding:40px;text-align:center;color:var(--muted);font-size:14px}
 /* v10：答案区 — 思路/答案两段，直接呈现（不再折叠） */
@@ -6831,8 +6832,11 @@ html,body{margin:0;padding:0}
 .en-book-head-row > .en-book-cap{flex:none;width:100%;min-width:0;max-width:none;margin:0 0 10px;
   display:flex;flex-wrap:nowrap;align-items:center;gap:12px;padding:10px 16px}
 /* 单元卡缩小：固定小尺寸、居中、单行排列 */
-.en-book-head-row .en-unit-card{flex:0 0 auto;width:66px;min-width:66px;min-height:46px;
-  justify-content:center;align-items:center;text-align:center;padding:5px 4px}
+/* R234-7：单元卡宽度改为「按文字自适应」（原固定 66px，Unit 10 会比 Unit 1 窄/挤），
+   10 张卡按内容宽度横向排开，Unit 10 也能完整显示 */
+.en-book-head-row .en-unit-card{flex:0 0 auto;width:auto;min-width:0;min-height:46px;
+  justify-content:center;align-items:center;text-align:center;padding:6px 11px}
+.en-book-head-row > .en-unit-cards{justify-content:flex-start}
 .en-book-head-row .en-uc-no{font-size:14px;font-weight:900;letter-spacing:.5px;color:var(--tone-900)}
 .en-book-head-row .en-unit-card.is-active .en-uc-no{color:#fff}
 /* 标题卡内部文字一字排开（同一行）：标签/标题/统计横向平铺，长标题省略 */
@@ -7868,6 +7872,8 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 .calc-head-title{display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap}
 .calc-bank-btn{background:var(--tone-100);border:1.5px solid var(--tone-300);color:var(--tone-800);border-radius:12px;padding:7px 16px;font-size:14px;font-weight:800;cursor:pointer;transition:.15s;font-family:inherit;white-space:nowrap}
 .calc-bank-btn:hover{background:var(--tone-150);border-color:var(--tone-400);transform:translateY(-1px)}
+/* R235-3：题库入口从顶栏挪到「计算小超市」标题与「每日一练」题目之间 */
+.calc-bank-inline-btn{display:block;width:100%;text-align:center;margin-bottom:12px}
 .calc-bank-hint{font-size:13px;color:#5b7ba3;background:var(--tone-050);border:1px solid var(--tone-line-soft);border-radius:10px;padding:8px 12px;margin-bottom:12px;line-height:1.5}
 .calc-bank-hint b{color:var(--sky-blue)}
 .calc-bank-list{max-height:min(52vh,420px);overflow:auto;display:flex;flex-direction:column;gap:8px;padding-right:4px}
@@ -7922,42 +7928,108 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
   .calc-bank-op,.calc-bank-op2{width:52px}
 }
 
-/* ===== R232：乐读数学 · 题型课堂讲义（图片分页画廊，每页 2 行 × 2 张） ===== */
+/* ===== R232：乐读数学 · 题型课堂讲义 =====
+   R234-1：改为「平铺」——画廊直接铺在题型内容卡里（不再套一层白卡），整条内容区全宽，
+           多列瀑布流（CSS columns）按图片自身比例填充，短图下面不再被同行最高图撑出大片空白。
+   R234-2：上一页 / 下一页移到画廊右下角（.math-gal-foot 右对齐）。
+   R234-4：每张图为可打卡卡片，已学绿框、需巩固红框（R234-6）。 */
 .math-gal{
-  background:#fff;border:1px solid var(--tone-175);border-radius:var(--card-r-lg);
-  padding:12px 14px 14px;margin:0 0 14px;box-shadow:var(--card-sh-md);
+  grid-column:1 / -1;            /* ⭐ 关键：跳出 .math-group-body 的 320px 网格列，横向铺满题型内容卡 */
+  width:100%;min-width:0;margin:0 0 14px;padding:0;
+  background:transparent;border:0;box-shadow:none;
 }
-.math-gal-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.math-gal-head{display:flex;align-items:center;gap:10px 12px;flex-wrap:wrap;margin:0 0 10px}
 .math-gal-title{font-size:14px;font-weight:700;color:var(--theme-title)}
-.math-gal-count{font-size:12px;color:var(--muted)}
-.math-gal-nav{margin-left:auto;display:flex;gap:8px}
-.math-gal-nav .pbtn[disabled]{opacity:.45;cursor:default}
-.math-gal-pages{margin-top:12px;display:flex;flex-direction:column;gap:12px}
-.math-gal-page{display:none;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.math-gal-page.active{display:grid}
+.math-gal-progress{font-size:12.5px;font-weight:700;color:var(--muted)}
+.math-gal-progress.is-complete{color:var(--ok-main)}
+.math-gal-count{font-size:12px;color:var(--muted);margin-left:auto}
+/* 瀑布流：按列自上而下铺排，图片按自身比例延伸；每页首行自动对齐 */
+.math-gal-pages{display:block;margin:0}
+.math-gal-page{display:none}
+/* 每页 3 列 × 2 行的平铺网格：图片按名称顺序「从左到右、从上到下」排列（顺序不乱），
+   align-items:start 让每张图按自身比例定高，短图不会被同行最高图撑出空白 */
+.math-gal-page.active{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:start}
 .math-gal-item{
-  margin:0;background:var(--tone-050);border:1px solid var(--tone-175);border-radius:var(--card-r-sm);
-  overflow:hidden;cursor:zoom-in;transition:transform .16s ease,box-shadow .16s ease;
+  display:block;width:100%;min-width:0;
+  margin:0;background:#fff;border:2px solid var(--tone-175);border-radius:var(--card-r-sm);
+  overflow:hidden;cursor:pointer;transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease;
 }
-.math-gal-item:hover{transform:translateY(-2px);box-shadow:var(--card-sh-lg)}
+.math-gal-item:hover{transform:translateY(-2px);box-shadow:var(--card-sh-lg);border-color:var(--tone-400)}
 .math-gal-item img{display:block;width:100%;height:auto;background:#fff}
 .math-gal-item figcaption{
-  font-size:12px;color:var(--muted);padding:6px 10px;background:var(--tone-100);
+  display:flex;align-items:center;gap:6px;
+  font-size:12px;color:var(--muted);padding:5px 8px;background:var(--tone-100);
   border-top:1px solid var(--tone-150);letter-spacing:.02em;
 }
-@media (max-width:560px){
-  .math-gal{padding:10px}
-  .math-gal-page{gap:8px}
-  .math-gal-item figcaption{font-size:11px;padding:4px 6px}
+.math-gal-item .mgc-cap{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mgb{
+  margin-left:auto;flex:0 0 auto;font-size:11px;font-weight:800;
+  color:var(--muted);background:var(--tone-050);border:1px solid var(--tone-175);
+  border-radius:999px;padding:1px 7px;white-space:nowrap;
 }
+.mgb-ok{color:var(--ok-main);border-color:var(--ok-line);background:var(--ok-pale)}
+.mgb-need{color:var(--bad-main);border-color:var(--bad-line);background:var(--bad-pale)}
+.math-gal-item.is-done{border-color:var(--ok-line)}
+.math-gal-item.is-done img{opacity:.97}
+/* R234-6：点了「需巩固」的讲义卡片整张变红 */
+.math-gal-item.is-need{
+  border-color:var(--bad-main);background:var(--bad-pale);
+  box-shadow:0 0 0 2px rgba(226,69,58,.10);
+}
+.math-gal-item.is-need figcaption{background:var(--bad-pale);color:var(--bad-main)}
+/* 翻页：右下角 */
+.math-gal-foot{
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  justify-content:flex-end;margin:2px 0 0;
+}
+.math-gal-tip{font-size:11.5px;color:var(--muted);margin-right:auto}
+.math-gal-nav{display:flex;gap:8px;margin-left:auto}
+.math-gal-nav .pbtn[disabled]{opacity:.45;cursor:default}
+@media (max-width:1100px){
+  .math-gal-page.active{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:680px){
+  .math-gal-page.active{grid-template-columns:1fr}
+  .math-gal-item figcaption{font-size:11px;padding:4px 6px}
+  .math-gal-tip{display:none}
+}
+/* R234-6：题型「需巩固」→ 题型卡整体标红 */
+.math-type-group.is-need{border-color:var(--bad-main);background:var(--bad-pale)}
+.math-type-group.is-need .math-type-group-head{border-bottom-color:var(--bad-line)}
+.math-type-group.is-need .math-group-name{color:var(--bad-main)}
+.math-type-item.is-need .mti-name{color:var(--bad-main);font-weight:800}
+.math-type-item.is-need{background:var(--bad-pale);border-color:var(--bad-line)}
+.math-type-item.is-need.active{background:var(--bad-main);border-color:var(--bad-main)}
+.math-type-item.is-need.active .mti-name{color:#fff}
+.mti-nums .mnum-rest{color:var(--muted)}
+.mti-nums .mnum-need{color:var(--bad-main)}
+/* 讲义图片弹窗（R234-4） */
+.math-lecture-box{width:min(880px,94vw);max-width:880px}
+.math-lecture-body{padding:10px 14px}
+.math-lecture-body img{
+  display:block;width:100%;max-height:62vh;object-fit:contain;
+  background:var(--tone-050);border-radius:var(--card-r-sm);
+}
+.math-lecture-meta{font-size:12.5px;font-weight:700;color:var(--muted);margin-top:8px}
+.math-lecture-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.math-lecture-actions .pbtn{flex:1 1 0;min-width:120px}
+.math-lecture-actions #mathLectureEdit{flex:0 0 auto;min-width:104px}
+.math-lecture-actions #mathLectureMastered{background:#fff;color:var(--ok-main);border:2px solid var(--ok-line);font-weight:700}
+.math-lecture-actions #mathLectureMastered.active{background:var(--ok-main);color:#fff;border-color:var(--ok-main)}
+.math-lecture-actions #mathLectureNeed{background:#fff;color:var(--bad-main);border:2px solid var(--bad-line);font-weight:700}
+.math-lecture-actions #mathLectureNeed.active{background:var(--bad-main);color:#fff;border-color:var(--bad-main)}
+.math-lecture-actions #mathLectureEdit{background:var(--tone-100);color:var(--theme-title);border:2px solid var(--tone-175)}
+.ml-edit-row{display:flex;flex-direction:column;gap:8px}
+.ml-edit-row .math-add-input{width:100%}
+.ml-edit-tip{font-size:12.5px;color:var(--muted)}
 
 /* ===== R233-1：讲义 PDF 并入课堂讲义画廊（排在全部图片之后，落在最后一页） ===== */
 .math-gal-pdf{
   position:relative;cursor:pointer;background:var(--tone-050);
-  display:flex;flex-direction:column;
+  display:block;
 }
 .math-gal-pdf-box{
-  position:relative;flex:1 1 auto;min-height:150px;aspect-ratio:16/10;background:#fff;
+  position:relative;width:100%;aspect-ratio:16/10;background:#fff;
 }
 .math-gal-pdf-box embed{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff}
 .math-gal-pdf figcaption{
@@ -8685,15 +8757,16 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
          R104：层级文案统一 —— 两个筛选按键分别标注为「板块」与「题型」，页面内不再使用旧层级称呼；
          【＋ 新增题型】【－ 删除题型】已移入「题型」筛选面板底部（#mathTypeTags）；【＋ 新增板块】已移入「板块」筛选面板底部（#mathSubTags）。
          题目固定全量展示(R93)。权限：仅【＋ 新增题型】全局常驻；其余新增/删除按键统一加 hidden-in-child（仅家长模式可见）。 -->
-    <!-- R227：乐读数学页「计算小超市 / 乐读数学笔记」切换按键（位于板块和题型卡片上端） -->
+    <!-- R227：乐读数学页「计算小超市 / 乐读数学笔记」切换按键（位于板块和题型卡片上端）
+         R234-3：进入乐读数学默认落在「计算小超市」 -->
     <div class="leidu-switch" data-leidu-switch>
-      <button type="button" class="leidu-tab" data-leidu-tab="calc" aria-pressed="false">🧮 计算小超市</button>
-      <button type="button" class="leidu-tab active" data-leidu-tab="note" aria-pressed="true">📒 乐读数学笔记</button>
+      <button type="button" class="leidu-tab active" data-leidu-tab="calc" aria-pressed="true">🧮 计算小超市</button>
+      <button type="button" class="leidu-tab" data-leidu-tab="note" aria-pressed="false">📒 乐读数学笔记</button>
     </div>
     <!-- 计算小超市 内容卡（R227：从新世界·数学专区·错题本整体移入） -->
-    <div class="leidu-pane" data-leidu-pane="calc" id="leiduCalcPane" hidden></div>
+    <div class="leidu-pane" data-leidu-pane="calc" id="leiduCalcPane"></div>
     <!-- 乐读数学笔记 内容卡（= 原 板块和题型 卡片） -->
-    <div class="leidu-pane" data-leidu-pane="note" id="leiduNotePane">
+    <div class="leidu-pane" data-leidu-pane="note" id="leiduNotePane" hidden>
     <div class="math-sub-region" data-page-node-id="R91mathSubRegion">
       <div class="math-filter-bar" data-page-node-id="R103mathFilterBar">
         <!-- 筛选按键 1：板块 -->
@@ -9401,6 +9474,25 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
     </div>
     <div class="modal-body kp-viewer-body" data-page-node-id="r125kpViewerBodyQ7Xb2m">
       <img id="kpViewerImg" alt="重点知识图片放大查看" loading="lazy" decoding="async" data-page-node-id="r125kpViewerImgQ7Xb2m" />
+    </div>
+  </div>
+</div>
+
+<!-- ========== 弹窗：课堂讲义图片（R234-4：编辑 / 未学·已学 / 需巩固，交互同 2026 春二 A+ 题目卡） ========== -->
+<div class="modal-mask" id="modalMathLecture" hidden>
+  <div class="modal-box math-lecture-box">
+    <div class="modal-head">
+      <h3 id="mathLectureCap">课堂讲义</h3>
+      <button class="pbtn" data-close>✕ 关闭</button>
+    </div>
+    <div class="modal-body math-lecture-body">
+      <img id="mathLectureImg" alt="课堂讲义" loading="lazy" decoding="async" />
+      <div class="math-lecture-meta" id="mathLectureMeta"></div>
+    </div>
+    <div class="modal-foot math-lecture-actions">
+      <button class="pbtn math-btn-edit" id="mathLectureEdit" title="编辑这张讲义图的名称">✏️ 编辑</button>
+      <button class="pbtn math-btn-mastery" id="mathLectureMastered" title="打卡 +1 张（再点取消）">□未学</button>
+      <button class="pbtn math-btn-need" id="mathLectureNeed" title="标记需巩固（卡片会变红）">🔄 需巩固</button>
     </div>
   </div>
 </div>
@@ -10704,7 +10796,9 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
   const MATH_GROUP_PIN = '2026 秋三 S';
   // R230：乐读数学笔记「2026 秋三 S」板块预置题型（仅题型名，题留待后续录入；normalize 时幂等导入）
   const MATH_GROUP_EXTRA_TYPES = {
-    '2026 秋三 S': ['标数法','乘法原理','巧求周长','巧求面积','和差倍综合','年龄问题综合','鸡兔同笼综合','归一问题','角的认识与计算','三角形认识','周期问题进阶','日期周期','还原问题进阶','错中求对','逻辑推理进阶','间隔问题进阶','最值问题']
+    '2026 秋三 S': ['标数法','乘法原理','巧求周长','巧求面积','和差倍综合','年龄问题综合','鸡兔同笼综合','归一问题','角的认识与计算','三角形认识','周期问题进阶','日期周期','还原问题进阶','错中求对','逻辑推理进阶','间隔问题进阶','最值问题'],
+    // R235-4：乐读数学「2026 夏三 S」板块预置题型（仅题型名，题/讲义图留待后续录入；normalize 时幂等导入）
+    '2026 夏三 S': ['图形变化','乘法巧算','大数计算','多笔画','加法原理','巧数图形','点线排布','鸡兔同笼进阶','盈亏问题一','盈亏问题二','加减法竖式谜']
   };
   // R232-3：乐读数学「2026 秋三 S」各题型课堂讲义图片（外置在 assets/math_notes/，首项固定为「知识笔记」）
   // 命名规则：<题型拼音>_NN.jpg，NN=00 为知识笔记，01.. 为练习页（按原图名称序号排列）
@@ -13636,10 +13730,78 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
     st.mathNotes = st.mathNotes.filter(x=>String(x.id)!==String(id));
     save(st);
   }
-  // R232-3：题型「课堂讲义图片」—— 首张固定为知识笔记，其余按名称序号；供 UI 分页展示（每页 2 行 × 2 张）
-  function getMathTypeImgs(type){
-    const list = MATH_TYPE_IMGS[String(type||'')] || [];
-    return list.map((f, i) => ({ src: MATH_NOTE_IMG_DIR + f, cap: i === 0 ? '知识笔记' : ('讲义 ' + i) }));
+  // R232-3：题型「课堂讲义图片」—— 首张固定为知识笔记，其余按名称序号
+  // R234：每张讲义图升级为「可打卡卡片」——状态（未学 / 已学 / 需巩固）+ 可编辑名称；
+  //      st.mathLecture = { status:{ '<题型>||<图路径>': 'mastered'|'notMastered' }, caps:{...} }
+  //      st.mathLectureBonus = { '<题型>': 1 } —— 该题型全部图片「已学」后一次性 +5⭐（跌破 100% 扣回）
+  function _mathLectureKey(type, src){ return String(type||'') + '||' + String(src||''); }
+  function _mathImgsOf(st, type){
+    const key = String(type||'');
+    const list = MATH_TYPE_IMGS[key] || [];
+    const mc = (st && st.mathLecture) || {};
+    const stat = mc.status || {}, caps = mc.caps || {};
+    return list.map((f, i) => {
+      const src = MATH_NOTE_IMG_DIR + f;
+      const k = _mathLectureKey(key, src);
+      return { src, cap: caps[k] || (i === 0 ? '知识笔记' : ('讲义 ' + i)), status: stat[k] || 'bank', idx: i };
+    });
+  }
+  function getMathTypeImgs(type){ return _mathImgsOf(load(), type); }
+  // 题型讲义进度：已学 / 需巩固 / 未学 / 是否 100% / 是否已发过 5⭐
+  function getMathLectureStat(type){
+    const st = load();
+    const list = _mathImgsOf(st, type);
+    const done = list.filter(x => x.status === 'mastered').length;
+    const need = list.filter(x => x.status === 'notMastered').length;
+    return {
+      total: list.length, done, need, rest: Math.max(0, list.length - done - need),
+      complete: list.length > 0 && done === list.length,
+      rewarded: !!((st.mathLectureBonus || {})[type])
+    };
+  }
+  // 单张讲义打卡：传同一个状态 = 再点一次 → 回到「未学」（与 2026 春二 A+ 题目卡交互一致）
+  function setMathLectureStatus(type, src, status){
+    const st = load();
+    if(!st.mathLecture) st.mathLecture = {};
+    if(!st.mathLecture.status) st.mathLecture.status = {};
+    const k = _mathLectureKey(type, src);
+    const prev = st.mathLecture.status[k] || 'bank';
+    const target = (status === 'mastered' || status === 'notMastered') ? status : 'bank';
+    const next = (prev === target) ? 'bank' : target;
+    if(next === 'bank') delete st.mathLecture.status[k];
+    else st.mathLecture.status[k] = next;
+
+    const list = _mathImgsOf(st, type);
+    const complete = list.length > 0 && list.every(x => x.status === 'mastered');
+    if(!st.mathLectureBonus) st.mathLectureBonus = {};
+    let bonus = 0;
+    if(complete && !st.mathLectureBonus[type]){
+      // R234-4：整个题型讲义 100% 打卡 → 一次性 +5⭐（不再逐张 +1⭐）
+      st.mathLectureBonus[type] = 1;
+      st.archive.totalStars = (st.archive.totalStars || 0) + 5;
+      st.archive.exp = (st.archive.exp || 0) + 5;
+      bonus = 5;
+    } else if(!complete && st.mathLectureBonus[type]){
+      delete st.mathLectureBonus[type];
+      st.archive.totalStars = Math.max(0, (st.archive.totalStars || 0) - 5);
+      st.archive.exp = Math.max(0, (st.archive.exp || 0) - 5);
+      bonus = -5;
+    }
+    save(st);
+    const done = list.filter(x => x.status === 'mastered').length;
+    const need = list.filter(x => x.status === 'notMastered').length;
+    return { ok:true, type, status:next, bonus, complete, done, need, total:list.length };
+  }
+  // 讲义名称编辑（家长可改名为「基础巩固 1」这类更有辨识度的名字）
+  function setMathLectureCap(type, src, cap){
+    const st = load();
+    if(!st.mathLecture) st.mathLecture = {};
+    if(!st.mathLecture.caps) st.mathLecture.caps = {};
+    const k = _mathLectureKey(type, src);
+    const c = String(cap || '').trim().slice(0, 24);
+    if(c) st.mathLecture.caps[k] = c; else delete st.mathLecture.caps[k];
+    save(st);
+    return { ok:true, cap:c };
   }
   // R232-2：题型「讲义 PDF」附件（家长上传；本地存档，随题型展示缩影图，点击弹窗查看）
   function getMathTypePdfs(type){
@@ -17369,7 +17531,7 @@ be 动词：am / is → was；are → were
     setMathMastery, getMathByMastery, markMathMastered, toggleMathMastery, unmarkMathMastered, migrateMathMastery, mathTypes, addMathType, removeMathType, listMathTypes,
     getMathGroups, addMathGroup, addMathTypeToGroup, assignMathTypeToGroup, groupIdOfMathType, getDefaultMathGroupName,
     // R232-2/3：题型讲义（外置图片 + 本地 PDF）
-    getMathTypeImgs, getMathTypePdfs, addMathTypePdf, delMathTypePdf,
+    getMathTypeImgs, getMathLectureStat, setMathLectureStatus, setMathLectureCap, getMathTypePdfs, addMathTypePdf, delMathTypePdf,
     getReading, getDailySpeaking, addUserReading, markReadingRead, unmarkReadingRead, isReadingRead, logCheckin, unlogCheckin, markSpeakingComplete, unmarkSpeakingComplete, unmarkXueersiDailyReward, refundReadingStars,
     // R232-1：计算小超市打卡（首页必做卡 ⇄ 乐读数学 今日打卡 共用）
     markCalcDaily, unmarkCalcDaily,
@@ -18275,7 +18437,25 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
   }
 
   // ============ 导航 ============
+  // R234-3：乐读数学「计算小超市 / 乐读数学笔记」页签切换（进入页面默认计算小超市）
+  function setLeiduTab(which){
+    const box = document.querySelector('[data-leidu-switch]');
+    if(box){
+      box.querySelectorAll('[data-leidu-tab]').forEach(b=>{
+        const on = b.getAttribute('data-leidu-tab') === which;
+        b.classList.toggle('active', on);
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+    }
+    const calc = document.getElementById('leiduCalcPane');
+    const note = document.getElementById('leiduNotePane');
+    if(calc) calc.hidden = (which !== 'calc');
+    if(note) note.hidden = (which !== 'note');
+  }
+  let _curPageName = '';
   function goPage(page){
+    const _fromPage = _curPageName;
+    _curPageName = page;
     // R131-2：离开设置中心且处于暂存态 → 丢弃未保存草稿（防止污染其他页面/存储）
     if(S && typeof S.isStaging === 'function' && S.isStaging() && page !== 'settings'){ S.discardSettings(); }
     $$('.page').forEach(p=>p.hidden = (p.dataset.page!==page));
@@ -18307,7 +18487,8 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     if(page==='newworld-suzhi'){ renderNewWorldAll(); }
     if(page==='newworld-science'){ renderNewWorldAll(); }
     if(page==='newworld-schedule'){ renderNewWorldAll(); }
-    if(page==='math') renderMath();
+    // R234-3：从其他页面点进「乐读数学」→ 默认展示计算小超市（原页内切到笔记的停留态不重置）
+    if(page==='math'){ if(_fromPage !== 'math') setLeiduTab('calc'); renderMath(); }
     if(page==='xueersi') renderXueersi();
     // R56-6：每次进入大阅读默认回到「今日阅读三栏」主视图（收录书屋需点按钮切换）
     if(page==='reading'){ _bsOpen = false; renderReading(); }
@@ -21086,6 +21267,8 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         if(key === 'zw') _enEssayPage = 0;   // R204：进入英文作文回到第一页
         if(slotBody){
           let rerender = ()=>{
+            // R234-7：记下当前板块的局部刷新函数 —— 图片导入后原地重渲染，不再退回默认板块/Unit 1
+            window.__slotRerender = rerender;
             slotBody.innerHTML = `<div class="yw-fade">${slotFn(key,label)}</div>`;
             const pb = slotBody.querySelector('#ywPlayBtn');
             if(pb){
@@ -21431,12 +21614,13 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         </div>
         <div class="calc-tip">全部答对就能打卡；答错的题会标 ✗，改对后重新点「批改」。</div>`;
     }
+    const bankCount = (window.Store && window.Store.getCalcBank) ? window.Store.getCalcBank().length : 0;
     return `
       <div class="calc-board" data-calc-board>
         <div class="yw-comp-head calc-head">
           <span class="calc-head-title">🧮 计算小超市 <span class="yw-sub">每日一练 · ${dateLabel}</span></span>
-          <button type="button" class="calc-bank-btn" data-calc-bank title="题库：编辑 · 添加 · 删除计算题">📚 题库</button>
         </div>
+        <button type="button" class="calc-bank-btn calc-bank-inline-btn" data-calc-bank title="题库：编辑 · 添加 · 删除计算题">📚 题库（${bankCount} 题）</button>
         ${done ? '' : streakLine}
         ${body}
       </div>`;
@@ -22954,8 +23138,13 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         pending--;
         if(pending > 0) return;
         inp.value = '';
+        _enKpAddUnit = '';   // 清掉一次性目标，后续导入始终跟随当前单元
         toast(added ? ('✅ 已导入 ' + added + ' 张重点知识图片') : '⚠️ 图片导入失败，请重试');
-        if(added && typeof renderEnglishPage === 'function') renderEnglishPage();
+        if(added){
+          // R234-7：原地刷新当前板块（不整页重渲染），Unit 5 以后导入完也不会跳回「书本课文 / Unit 1」
+          if(typeof window.__slotRerender === 'function') window.__slotRerender();
+          else if(typeof renderEnglishPage === 'function') renderEnglishPage();
+        }
       };
       files.forEach(f=>{
         enKpCompressImage(f, (dataUrl)=>{
@@ -28080,10 +28269,15 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     const need = list.filter(m => m.mastery === 'notMastered').length;
     return { done, need };
   }
-  // R93：题型卡上的数字统计 —— 已掌握(绿) / 未掌握(红)，与题型名同排、不换行
-  function mathNumsHtml(items){
+  // R93：题型卡上的数字统计，与题型名同排、不换行
+  // R234-5：不再把已学题目归入「已掌握」→ 统计只保留「未学 / 需巩固」两个数字
+  function mathNumsHtml(items, type){
     const c = mathCounts(items);
-    return `<span class="mti-nums" title="已掌握 ${c.done} 题 / 未掌握 ${c.need} 题"><b class="mnum-ok">${c.done}</b><i class="mnum-sep">/</i><b class="mnum-need">${c.need}</b></span>`;
+    // R234：讲义图片也算作本题型的「卡片」，未学 = 题目未学 + 讲义未学，需巩固同理
+    const l = (type && window.Store && window.Store.getMathLectureStat) ? window.Store.getMathLectureStat(type) : null;
+    const rest = Math.max(0, (items || []).length - c.done - c.need) + (l ? l.rest : 0);
+    const need = c.need + (l ? l.need : 0);
+    return `<span class="mti-nums" title="未学 ${rest} 项 / 需巩固 ${need} 项"><b class="mnum-rest">${rest}</b><i class="mnum-sep">/</i><b class="mnum-need">${need}</b></span>`;
   }
   // R102：板块 → 横向标签；点标签筛选下方题型（R104：层级统称统一为「板块 / 题型」）
   function renderMathSubCards(groups, activeId){
@@ -28160,23 +28354,36 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   // R93：题型前方不再带算盘图标；题数统计文字换成同排彩色数字「已掌握/未掌握」；移除卡内删除键
   // R94 需求③：原【＋ 新增题型】改名为【＋ 新增题目】；同排保留【＋ 新增知识笔记】
   // R104 需求③：两个入口从详情板块底部移到题型头内 —— 紧跟统计数据右侧对齐（.math-group-actions 用 margin-left:auto）
-  // R232-3：题型课堂讲义图片 —— 每页 2 行 × 每行 2 张，首张固定为「知识笔记」，其余按名称顺序
-  // R233-1：讲义 PDF 不再单独占一张卡片，改为并入同一画廊、排在全部图片之后（即落在最后一页）
-  const MATH_GAL_PER_PAGE = 4;
+  // R232-3：题型课堂讲义图片 —— 首张固定为「知识笔记」，其余按名称顺序
+  // R233-1：讲义 PDF 并入同一画廊、排在全部图片之后（落在最后一页）
+  // R234-1：改为「平铺」——整条内容区全宽、多列瀑布流（masonry）填充，图片按自身比例排列，不再留大片空白
+  // R234-2：上一页 / 下一页移到画廊右下角（.math-gal-foot 右对齐）
+  // R234-4：每张图升级为可打卡卡片（点图弹窗：编辑 / 未学·已学 / 需巩固，与 2026 春二 A+ 题目卡一致）
+  const MATH_GAL_PER_PAGE = 6;
+  // R234：记住每个题型看到的页码 —— 打卡/改名后局部重渲染时不跳回第 1 页
+  const _mathGalPage = {};
   function fmtPdfSize(n){
     const b = Number(n) || 0;
     if(!b) return 'PDF';
     if(b < 1024 * 1024) return Math.max(1, Math.round(b / 1024)) + ' KB';
     return (b / 1024 / 1024).toFixed(1) + ' MB';
   }
+  function mathLectureBadge(st){
+    if(st === 'mastered') return '<span class="mgb mgb-ok">✅已学</span>';
+    if(st === 'notMastered') return '<span class="mgb mgb-need">🔄需巩固</span>';
+    return '<span class="mgb">□未学</span>';
+  }
   function mathGalleryHtml(type){
     const imgs = (window.Store && window.Store.getMathTypeImgs) ? window.Store.getMathTypeImgs(type) : [];
     const pdfs = (window.Store && window.Store.getMathTypePdfs) ? window.Store.getMathTypePdfs(type) : [];
     if(!imgs.length && !pdfs.length) return '';
+    const stat = (window.Store && window.Store.getMathLectureStat)
+      ? window.Store.getMathLectureStat(type)
+      : { total: imgs.length, done: 0, need: 0, complete: false };
     const imgCells = imgs.map((it, i) => `
-          <figure class="math-gal-item" data-gal-src="${esc(it.src)}" data-gal-cap="${esc(type + ' · ' + it.cap)}" title="点击放大查看">
+          <figure class="math-gal-item${it.status === 'mastered' ? ' is-done' : ''}${it.status === 'notMastered' ? ' is-need' : ''}" data-gal-src="${esc(it.src)}" data-gal-cap="${esc(type + ' · ' + it.cap)}" data-gal-idx="${i}" title="点击查看 / 打卡（编辑 · 未学/已学 · 需巩固）">
             <img src="${esc(it.src)}" alt="${esc(type + ' ' + it.cap)}" loading="${i < MATH_GAL_PER_PAGE ? 'eager' : 'lazy'}" decoding="async">
-            <figcaption>${esc(it.cap)}</figcaption>
+            <figcaption><span class="mgc-cap">${esc(it.cap)}</span>${mathLectureBadge(it.status)}</figcaption>
           </figure>`);
     const pdfCells = pdfs.map(p => `
           <figure class="math-gal-item math-gal-pdf" data-gal-pdf-view="${esc(p.id)}" title="点击查看 PDF 详情">
@@ -28187,39 +28394,49 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     const cells = imgCells.concat(pdfCells);
     const pages = [];
     for(let i = 0; i < cells.length; i += MATH_GAL_PER_PAGE) pages.push(cells.slice(i, i + MATH_GAL_PER_PAGE));
+    const start = Math.min(Math.max(0, _mathGalPage[type] || 0), Math.max(0, pages.length - 1));
     const sum = '共 ' + imgs.length + ' 张' + (pdfs.length ? ' + ' + pdfs.length + ' 份 PDF' : '');
+    const pct = stat.total ? Math.round(stat.done / stat.total * 100) : 0;
+    const prog = '已学 ' + stat.done + '/' + stat.total + (stat.total ? ' · ' + pct + '%' : '');
     const pageHtml = pages.map((pg, pi) => `
-      <div class="math-gal-page${pi === 0 ? ' active' : ''}" data-gal-page="${pi}">
+      <div class="math-gal-page${pi === start ? ' active' : ''}" data-gal-page="${pi}">
         ${pg.join('')}
       </div>`).join('');
     return `
-      <div class="math-gal" data-gal data-gal-now="0" data-gal-sum="${esc(sum)}">
+      <div class="math-gal" data-gal data-gal-now="${start}" data-gal-sum="${esc(sum)}">
         <div class="math-gal-head">
           <span class="math-gal-title">🖼️ 课堂讲义</span>
-          <span class="math-gal-count" data-gal-count>${sum} · 第 1/${pages.length} 页</span>
-          <div class="math-gal-nav">
-            <button type="button" class="pbtn small" data-gal-prev disabled>‹ 上一页</button>
-            <button type="button" class="pbtn small" data-gal-next${pages.length <= 1 ? ' disabled' : ''}>下一页 ›</button>
-          </div>
+          <span class="math-gal-progress${stat.complete ? ' is-complete' : ''}" data-gal-progress>${prog}${stat.complete ? ' · 🎉 已满星 +5⭐' : ''}</span>
+          <span class="math-gal-count" data-gal-count>${sum} · 第 ${start + 1}/${pages.length} 页</span>
         </div>
         <div class="math-gal-pages">${pageHtml}</div>
+        <div class="math-gal-foot">
+          <span class="math-gal-tip">点图片可编辑名称 / 打卡 · 全部 100% 已学得 5⭐</span>
+          <div class="math-gal-nav">
+            <button type="button" class="pbtn small" data-gal-prev${start <= 0 ? ' disabled' : ''}>‹ 上一页</button>
+            <button type="button" class="pbtn small" data-gal-next${start >= pages.length - 1 ? ' disabled' : ''}>下一页 ›</button>
+          </div>
+        </div>
       </div>`;
   }
   function mathTypeGroupHtml(type, items){
     // R53-1：该题型的知识笔记展示在第一个内容卡片位置（用户自建笔记在前）
     const gNotes = (S.getMathNotes ? S.getMathNotes() : []).filter(n => (n.type||'未分类') === type);
     const noteCards = gNotes.map(mathNoteCardHtml).join('');
-    // R232：题型页顶部先呈现「课堂讲义图片」（分页 2×2，末页收纳讲义 PDF），其后再是笔记卡与题目卡
+    // R232：题型页顶部先呈现「课堂讲义图片」（末页收纳讲义 PDF），其后再是笔记卡与题目卡
     const galHtml = mathGalleryHtml(type);
+    // R234-6：只要本题型有卡片被标为「需巩固」，题型卡整体转红（讲义图 + 题目卡都算）
+    const _lstat = (window.Store && window.Store.getMathLectureStat) ? window.Store.getMathLectureStat(type) : null;
+    const _needN = ((_lstat && _lstat.need) || 0) + (items || []).filter(m => m.mastery === 'notMastered').length;
     // R91：允许「暂无题目」（新建题型后先建卡）；此时给出录入引导
     const body = (galHtml || noteCards || items.length)
       ? `${galHtml}${noteCards}${items.map(mathCardHtml).join('')}`
       : `<div class="math-group-empty">「${esc(type)}」暂无题目，点右侧「＋ 新增题目」录入吧～</div>`;
     return `
-      <div class="math-type-group" data-type="${esc(type)}">
+      <div class="math-type-group${_needN > 0 ? ' is-need' : ''}" data-type="${esc(type)}" data-need="${_needN > 0 ? '1' : '0'}">
         <div class="math-type-group-head">
           <span class="math-group-name">${esc(type)}</span>
-          ${mathNumsHtml(items)}
+          ${mathNumsHtml(items, type)}
           <div class="math-group-actions">
             <button class="pbtn small math-add-card-btn hidden-in-child" data-math-add-problem="${esc(type)}" title="为「${esc(type)}」录入一道新题目">＋ 新增题目</button>
             <button class="pbtn small math-notecard-add-btn hidden-in-child" data-math-add-note="${esc(type)}" title="为「${esc(type)}」添加知识笔记">＋ 新增知识笔记</button>
@@ -28337,11 +28554,16 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     if(listEl){
       // R103：无题型时给空态提示（面板内不残留上一次的选项）
       listEl.innerHTML = groups.length
-        ? groups.map(([type, items]) => `
-        <button class="math-type-item ${type===mathTypeSel?'active':''}" data-math-type="${esc(type)}" role="option" aria-selected="${type===mathTypeSel?'true':'false'}" title="实时展示「${esc(type)}」的全部题目">
+        ? groups.map(([type, items]) => {
+          // R234-6：本题型只要有卡片「需巩固」（讲义图或题目卡）→ 题型项整体标红
+          const _ln = (window.Store && window.Store.getMathLectureStat) ? window.Store.getMathLectureStat(type).need : 0;
+          const _isNeed = items.some(m => m.mastery === 'notMastered') || _ln > 0;
+          return `
+        <button class="math-type-item ${type===mathTypeSel?'active':''}${_isNeed?' is-need':''}" data-math-type="${esc(type)}" role="option" aria-selected="${type===mathTypeSel?'true':'false'}" title="实时展示「${esc(type)}」的全部题目">
           <span class="mti-name">${esc(type)}</span>
-          ${mathNumsHtml(items)}
-        </button>`).join('')
+          ${mathNumsHtml(items, type)}
+        </button>`;
+        }).join('')
         : '<div class="math-filter-empty">该板块暂无题型</div>';
           // R221：管理按键（＋ 新增题型 / － 删除题型）移入「题型」下拉面板底部
           listEl.innerHTML += `
@@ -28382,6 +28604,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         let now = parseInt(gal.getAttribute('data-gal-now') || '0', 10) || 0;
         now = nav.hasAttribute('data-gal-next') ? Math.min(pages.length - 1, now + 1) : Math.max(0, now - 1);
         gal.setAttribute('data-gal-now', String(now));
+        _mathGalPage[mathTypeSel] = now;
         pages.forEach((p, i)=>p.classList.toggle('active', i === now));
         const prev = gal.querySelector('[data-gal-prev]');
         const next = gal.querySelector('[data-gal-next]');
@@ -28425,13 +28648,10 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         showModal('#modalMathPdf');
         return;
       }
+      // R234-4：点讲义图 → 打开讲义弹窗（编辑 / 未学·已学 / 需巩固），交互与 2026 春二 A+ 题目卡一致
       const fig = e.target.closest('.math-gal-item');
       if(fig && fig.getAttribute('data-gal-src')){
-        const vImg = document.getElementById('kpViewerImg');
-        const vCap = document.getElementById('kpViewerCap');
-        if(vImg) vImg.src = fig.getAttribute('data-gal-src');
-        if(vCap) vCap.textContent = fig.getAttribute('data-gal-cap') || '课堂讲义';
-        showModal('#modalKpViewer');
+        openMathLecture(mathTypeSel, fig.getAttribute('data-gal-src'));
         return;
       }
       const addBtn = e.target.closest('[data-gal-pdf-add]');
@@ -28464,6 +28684,81 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         };
         reader.onerror = ()=>toast('读取 PDF 失败，请重试');
         reader.readAsDataURL(f);
+      });
+    }
+  }
+  // ===== R234-4：课堂讲义图片弹窗（编辑 / 未学·已学 / 需巩固）=====
+  // 与「2026 春二 A+」题目卡一致：再点同一个键 = 取消回到「未学」；奖励规则改为「整个题型 100% 打卡 +5⭐」
+  let _mlType = '', _mlSrc = '';
+  function mathLectureFind(type, src){
+    const list = (window.Store && window.Store.getMathTypeImgs) ? window.Store.getMathTypeImgs(type) : [];
+    return list.find(x => x.src === src) || { src: src, cap: '课堂讲义', status: 'bank' };
+  }
+  function refreshMathLectureModal(){
+    const it = mathLectureFind(_mlType, _mlSrc);
+    const stat = (window.Store && window.Store.getMathLectureStat)
+      ? window.Store.getMathLectureStat(_mlType)
+      : { done: 0, total: 0, complete: false };
+    const capEl = document.getElementById('mathLectureCap');
+    if(capEl) capEl.textContent = it.cap || '课堂讲义';
+    const mb = document.getElementById('mathLectureMastered');
+    if(mb){
+      mb.classList.toggle('active', it.status === 'mastered');
+      mb.textContent = it.status === 'mastered' ? '✅已学' : '□未学';
+    }
+    const nb = document.getElementById('mathLectureNeed');
+    if(nb) nb.classList.toggle('active', it.status === 'notMastered');
+    const meta = document.getElementById('mathLectureMeta');
+    if(meta){
+      const pct = stat.total ? Math.round(stat.done / stat.total * 100) : 0;
+      meta.textContent = '「' + _mlType + '」已学 ' + stat.done + '/' + stat.total + ' · ' + pct + '%'
+        + (stat.complete ? ' · 🎉 本题型讲义全部打卡，已得 5⭐' : ' · 全部 100% 打卡得 5⭐');
+    }
+  }
+  function openMathLecture(type, src){
+    _mlType = type || mathTypeSel;
+    _mlSrc = src || '';
+    const it = mathLectureFind(_mlType, _mlSrc);
+    const img = document.getElementById('mathLectureImg');
+    if(img) img.src = it.src;
+    refreshMathLectureModal();
+    showModal('#modalMathLecture');
+  }
+  function toggleMathLecture(target){
+    const r = (window.Store && window.Store.setMathLectureStatus)
+      ? window.Store.setMathLectureStatus(_mlType, _mlSrc, target) : null;
+    if(!r || !r.ok) return;
+    if(r.bonus === 5) toast('🎉 「' + _mlType + '」讲义全部打卡完成，获得 5⭐');
+    else if(r.bonus === -5) toast('已取消一张，5⭐ 暂时收回（重新全部打卡可再获得）');
+    else if(r.status === 'mastered'){ toast('✅ 已学'); playCheckinSound(); }
+    else if(r.status === 'notMastered') toast('🔄 已标记「需巩固」');
+    else toast('已恢复为「未学」');
+    refreshMathLectureModal();
+    renderMathContent();
+    renderHome();
+  }
+  function bindMathLectureModal(){
+    const mb = document.getElementById('mathLectureMastered');
+    if(mb && !mb._bound){ mb._bound = true; mb.addEventListener('click', ()=>toggleMathLecture('mastered')); }
+    const nb = document.getElementById('mathLectureNeed');
+    if(nb && !nb._bound){ nb._bound = true; nb.addEventListener('click', ()=>toggleMathLecture('notMastered')); }
+    const ed = document.getElementById('mathLectureEdit');
+    if(ed && !ed._bound){
+      ed._bound = true;
+      ed.addEventListener('click', ()=>{
+        const it = mathLectureFind(_mlType, _mlSrc);
+        openCustomModal('编辑讲义名称',
+          '<div class="ml-edit-row"><input type="text" id="mlCapInput" class="math-add-input" maxlength="24" placeholder="例如：基础巩固 1" value="' + esc(it.cap || '') + '">'
+          + '<div class="ml-edit-tip">改名只影响展示，不影响已打卡记录。</div></div>',
+          ()=>{
+            const inp = document.getElementById('mlCapInput');
+            const v = inp ? inp.value : '';
+            window.Store.setMathLectureCap(_mlType, _mlSrc, v);
+            toast('✏️ 讲义名称已更新');
+            refreshMathLectureModal();
+            renderMathContent();
+            return true;
+          });
       });
     }
   }
@@ -36126,6 +36421,8 @@ function renderKMAdmin(){
     // R102：题型详情板块移入内联内容区（#mathContentArea），点击委托随之迁移
     if($('#btnMathManualSave')) $('#btnMathManualSave').onclick = saveMathManual;
     if($('#btnMathNoteSave')) $('#btnMathNoteSave').onclick = saveMathNote;
+    // R234-4：讲义图片弹窗按键（编辑 / 未学·已学 / 需巩固）只绑一次
+    bindMathLectureModal();
     // R56-1：题型下拉选「＋ 新增题型…」时，显示/隐藏新题型输入框
     const mmTypeSel = document.getElementById('mmType');
     if(mmTypeSel && !mmTypeSel._newBound){
@@ -36154,7 +36451,7 @@ function renderKMAdmin(){
         const target = fav.dataset.target;
         const r = S.toggleMathMastery(id, target);
         if(r && r.ok){
-          if(r.status === 'mastered') { toast('🎉 已学 +1⭐，题目已移至「已掌握」板块'); playCheckinSound(); }
+          if(r.status === 'mastered') { toast('🎉 已学 +1⭐'); playCheckinSound(); }
           else if(r.status === 'notMastered') toast('🔄 题目已移至「需巩固」板块，再练一次会更好');
           else toast('已恢复至题库');
           renderMath();
@@ -36219,7 +36516,8 @@ function renderKMAdmin(){
         setMathFilterOpen('sub', false);
         renderMathSubCards((S.getMathGroups ? S.getMathGroups() : []), mathGroupId);
         renderMathTypes();
-        setMathFilterOpen('type', true);
+        // R235-2：取消「题型栏」自动展开 —— 选完板块后只默认展示该板块第一个题型，题型下拉面板保持收起
+        setMathFilterOpen('type', false);
       });
     }
     // 就地输入行：点按钮展开输入框，Enter/确定提交，Esc/取消收起
@@ -36314,16 +36612,7 @@ function renderKMAdmin(){
       leiduSwitch.addEventListener('click', e => {
         const tab = e.target.closest('[data-leidu-tab]');
         if(!tab) return;
-        const which = tab.getAttribute('data-leidu-tab');
-        leiduSwitch.querySelectorAll('[data-leidu-tab]').forEach(b => {
-          const on = (b === tab);
-          b.classList.toggle('active', on);
-          b.setAttribute('aria-pressed', on ? 'true' : 'false');
-        });
-        const calc = document.getElementById('leiduCalcPane');
-        const note = document.getElementById('leiduNotePane');
-        if(calc) calc.hidden = (which !== 'calc');
-        if(note) note.hidden = (which !== 'note');
+        setLeiduTab(tab.getAttribute('data-leidu-tab'));
       });
     }
     // R228：计算小超市「题库」弹窗 —— 行内编辑 / 删除（事件委托，仅绑一次）
