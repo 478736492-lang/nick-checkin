@@ -7868,16 +7868,17 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 .leidu-pane[hidden]{display:none}
 
 /* ============ R228：计算小超市「题库」按键 + 题库弹窗（编辑 / 添加 / 删除） ============ */
-.calc-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+/* R238：整行改为左对齐 —— 按键组与「每日一练」说明紧贴标题左侧展示 */
+.calc-head{display:flex;align-items:center;justify-content:flex-start;gap:10px;flex-wrap:wrap}
 .calc-head-title{display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap}
 .calc-bank-btn{background:var(--tone-100);border:1.5px solid var(--tone-300);color:var(--tone-800);border-radius:12px;padding:7px 16px;font-size:14px;font-weight:800;cursor:pointer;transition:.15s;font-family:inherit;white-space:nowrap}
 .calc-bank-btn:hover{background:var(--tone-150);border-color:var(--tone-400);transform:translateY(-1px)}
-/* R236：题库入口缩小为 inline-block（不再占满整行） */
-/* R237：题库 + 已做本 并排夹在「🧮 计算小超市」标题与「每日一练」说明文字中间 */
-.calc-bank-inline-btn{display:inline-block;width:auto;padding:4px 14px;font-size:12px;margin-top:0}
-.calc-head-tools{display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 10px}
-.calc-head-sub{white-space:nowrap}
-.calc-head .calc-head-tools .calc-bank-btn{padding:4px 12px;font-size:12px;border-radius:10px}
+/* R236：题库入口缩为 inline-block（不占满整行）｜R237：与已做本并排夹在标题与说明之间 */
+/* R238：适当调大（12px→13.5px）便于点按，并与说明文字一起靠左贴近标题 */
+.calc-bank-inline-btn{display:inline-block;width:auto;padding:6px 15px;font-size:13.5px;margin-top:0}
+.calc-head-tools{display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0}
+.calc-head-sub{white-space:nowrap;margin-left:2px}
+.calc-head .calc-head-tools .calc-bank-btn{padding:6px 15px;font-size:13.5px;border-radius:11px}
 .calc-ans-ok{color:var(--ok-main)}
 .calc-ans-no{color:var(--bad-main)}
 /* R237：已做本弹窗 */
@@ -7897,9 +7898,15 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 .calc-wrong-item.is-fixed{background:var(--ok-pale);border-color:var(--ok-line)}
 .calc-wrong-item .calc-wrong-fix{margin-left:auto;padding:2px 10px;font-size:11.5px}
 .calc-wrong-fix.is-fixed{background:var(--ok-pale);color:var(--ok-main);border-color:var(--ok-line)}
-/* R236：题库弹窗顶部「🖼️ 图库」与「📕 错题本」并排一行（R237：强制不换行，错题本紧跟图库右侧） */
+/* R236：题库弹窗顶部「🖼️ 图库」与「📕 错题本」并排一行（R238 已整体移除，图库按键删除） */
 .calc-bank-tools{display:flex;align-items:center;gap:10px;flex-wrap:nowrap;margin-bottom:8px}
 .calc-bank-tools .calc-bank-wrong-head{margin:0}
+/* R238：题库弹窗改单栏（错题本内容已迁到独立弹窗 #modalCalcWrong） */
+.calc-bank-two.calc-bank-solo{display:block}
+.calc-bank-solo .calc-bank-left{width:100%}
+.calc-wrong-hint{font-size:13px;color:#5b7ba3;background:var(--tone-050);border:1px solid var(--tone-line-soft);border-radius:10px;padding:8px 12px;margin-bottom:12px;line-height:1.55}
+.calc-wrong-list-lg{max-height:min(58vh,460px);overflow:auto;padding-right:4px}
+#modalCalcWrong .calc-wrong-count{display:inline-block;margin-left:6px;font-size:12.5px;font-weight:800;color:var(--sky-blue);background:var(--tone-100);border-radius:999px;padding:1px 9px;vertical-align:middle}
 .calc-bank-hint{font-size:13px;color:#5b7ba3;background:var(--tone-050);border:1px solid var(--tone-line-soft);border-radius:10px;padding:8px 12px;margin-bottom:12px;line-height:1.5}
 .calc-bank-hint b{color:var(--sky-blue)}
 .calc-bank-list{max-height:min(52vh,420px);overflow:auto;display:flex;flex-direction:column;gap:8px;padding-right:4px}
@@ -8060,6 +8067,9 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
   position:relative;width:100%;aspect-ratio:16/10;background:#fff;
 }
 .math-gal-pdf-box embed{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff}
+/* R238：PDF 存 IndexedDB，水合前先显示占位（随后自动重渲染成缩略图） */
+.math-pdf-loading{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:13px;font-weight:800;color:var(--tone-700);background:var(--tone-050);text-align:center;padding:8px;line-height:1.5}
+.math-pdf-loading span{font-size:11.5px;font-weight:600;color:var(--muted)}
 .math-gal-pdf figcaption{
   font-size:12px;color:var(--theme-title);padding:6px 10px;background:var(--tone-100);
   border-top:1px solid var(--tone-150);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
@@ -8497,7 +8507,7 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
         <h3>📚 计算小超市 · 题库</h3>
         <button class="modal-x" data-close>×</button>
       </div>
-      <div class="modal-body calc-bank-two">
+      <div class="modal-body calc-bank-two calc-bank-solo">
         <div class="calc-bank-col calc-bank-left">
           <div class="calc-bank-hint">共 <b id="calcBankCount">0</b> 题 · 每日按「口算 4 / 竖式 4 / 巧算 2」抽 10 题；直接改数字或运算符即可编辑。</div>
           <div class="calc-bank-tabs" id="calcBankTabs">
@@ -8525,16 +8535,26 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
           </div>
           <div class="calc-bank-add-tip">想加三数混合题？把第二个运算符从「两数」改成 + − × ÷，再填第三个数即可（先乘除、后加减）。</div>
         </div>
-        <div class="calc-bank-col calc-bank-right">
-          <div class="calc-bank-tools">
-            <button type="button" class="pbtn small" id="btnCalcGallery" title="打开「课堂讲义」图片库">🖼️ 图库</button>
-            <div class="calc-bank-wrong-head">📕 错题本 <span id="calcWrongCount" class="calc-wrong-count">0</span></div>
-          </div>
-          <div class="calc-bank-wrong-list" id="calcWrongList"></div>
-          <button type="button" class="pbtn small" id="btnClearWrong">清空错题本</button>
-        </div>
       </div>
       <div class="modal-foot">
+        <button class="pbtn" data-close>完成</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 弹窗：R238 计算小超市 · 错题本（从题库弹窗右栏独立出来） ========== -->
+  <div class="modal-mask" id="modalCalcWrong" hidden>
+    <div class="modal-box" style="min-width:640px;max-width:92vw">
+      <div class="modal-head">
+        <h3>📕 计算小超市 · 错题本 <span id="calcWrongCount" class="calc-wrong-count">0</span></h3>
+        <button class="modal-x" data-close>×</button>
+      </div>
+      <div class="modal-body">
+        <div class="calc-wrong-hint">批改答错的题会自动收进来；订正完成后点「✅ 订正完成」，当天 22:00 自动收录进「📒 已做本」。</div>
+        <div class="calc-bank-wrong-list calc-wrong-list-lg" id="calcWrongList"></div>
+      </div>
+      <div class="modal-foot">
+        <button type="button" class="pbtn small" id="btnClearWrong">清空错题本</button>
         <button class="pbtn" data-close>完成</button>
       </div>
     </div>
@@ -13903,20 +13923,183 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
     save(st);
     return { ok:true, cap:c };
   }
-  // R232-2：题型「讲义 PDF」附件（家长上传；本地存档，随题型展示缩影图，点击弹窗查看）
-  function getMathTypePdfs(type){
+  // ===== R238：讲义 PDF 改存 IndexedDB（localStorage 配额仅 ~5MB，稍大 PDF 必然写入失败）=====
+  // 说明：localStorage 只保留轻量元数据（id/type/name/size/ts），PDF 二进制以 Blob 存进 IndexedDB，
+  //       因此**不再限制文件大小**；渲染时用 objectURL 喂给 <embed>。
+  const PDF_DB_NAME = 'zoo_pdf_v1';
+  const PDF_DB_STORE = 'pdfs';
+  const _pdfUrlCache = {};    // id -> objectURL
+  const _pdfMetaCache = {};   // id -> {type,name,size,ts}
+  let _pdfDbPromise = null;
+  let _pdfReadyPromise = null;
+  function _pdfDbOpen(){
+    if(_pdfDbPromise) return _pdfDbPromise;
+    _pdfDbPromise = new Promise(resolve=>{
+      try{
+        if(typeof indexedDB === 'undefined' || !indexedDB){ resolve(null); return; }
+        const req = indexedDB.open(PDF_DB_NAME, 1);
+        req.onupgradeneeded = ()=>{
+          try{
+            const db = req.result;
+            if(!db.objectStoreNames.contains(PDF_DB_STORE)) db.createObjectStore(PDF_DB_STORE, { keyPath:'id' });
+          }catch(e){}
+        };
+        req.onsuccess = ()=> resolve(req.result || null);
+        req.onerror = ()=> resolve(null);
+        req.onblocked = ()=> resolve(null);
+      }catch(e){ resolve(null); }
+    });
+    return _pdfDbPromise;
+  }
+  function _pdfPut(rec){
+    return _pdfDbOpen().then(db=> new Promise(resolve=>{
+      if(!db){ resolve(false); return; }
+      try{
+        const tx = db.transaction(PDF_DB_STORE, 'readwrite');
+        tx.objectStore(PDF_DB_STORE).put(rec);
+        tx.oncomplete = ()=> resolve(true);
+        tx.onerror = ()=> resolve(false);
+        tx.onabort = ()=> resolve(false);
+      }catch(e){ resolve(false); }
+    }));
+  }
+  function _pdfGetAll(){
+    return _pdfDbOpen().then(db=> new Promise(resolve=>{
+      if(!db){ resolve([]); return; }
+      try{
+        const tx = db.transaction(PDF_DB_STORE, 'readonly');
+        const rq = tx.objectStore(PDF_DB_STORE).getAll();
+        rq.onsuccess = ()=> resolve(Array.isArray(rq.result) ? rq.result : []);
+        rq.onerror = ()=> resolve([]);
+      }catch(e){ resolve([]); }
+    }));
+  }
+  function _pdfDelBlob(id){
+    return _pdfDbOpen().then(db=> new Promise(resolve=>{
+      if(!db){ resolve(false); return; }
+      try{
+        const tx = db.transaction(PDF_DB_STORE, 'readwrite');
+        tx.objectStore(PDF_DB_STORE).delete(String(id));
+        tx.oncomplete = ()=> resolve(true);
+        tx.onerror = ()=> resolve(false);
+      }catch(e){ resolve(false); }
+    }));
+  }
+  function _pdfObjectUrl(id, blob){
+    if(_pdfUrlCache[id]) return _pdfUrlCache[id];
+    try{ _pdfUrlCache[id] = URL.createObjectURL(blob); }
+    catch(e){ _pdfUrlCache[id] = ''; }
+    return _pdfUrlCache[id];
+  }
+  function _dataUrlToBlob(du){
+    try{
+      const s = String(du || '');
+      const i = s.indexOf(',');
+      if(i < 0) return null;
+      const head = s.slice(0, i), body = s.slice(i + 1);
+      const mime = (head.match(/data:([^;]+)/) || [])[1] || 'application/pdf';
+      if(!/;base64/i.test(head)) return new Blob([decodeURIComponent(body)], { type: mime });
+      const bin = atob(body);
+      const buf = new Uint8Array(bin.length);
+      for(let k = 0; k < bin.length; k++) buf[k] = bin.charCodeAt(k);
+      return new Blob([buf], { type: mime });
+    }catch(e){ return null; }
+  }
+  // 旧版把 base64 存在 localStorage 的 mathTypePdfs[].data —— 迁进 IndexedDB 并清掉 data 释放配额
+  function _migrateLegacyPdfs(){
     const st = load();
     const list = Array.isArray(st.mathTypePdfs) ? st.mathTypePdfs : [];
-    return list.filter(p => String(p.type||'') === String(type||''))
-      .map(p => ({ id:p.id, name:p.name||'讲义.pdf', size:p.size||0, data:p.data||'', ts:p.ts||0 }));
+    const legacy = list.filter(p => p && p.data && String(p.data).indexOf('data:') === 0);
+    if(!legacy.length) return Promise.resolve(false);
+    return Promise.all(legacy.map(p=>{
+      const blob = _dataUrlToBlob(p.data);
+      if(!blob) return Promise.resolve(false);
+      return _pdfPut({ id:p.id, type:p.type||'', name:p.name||'讲义.pdf', size:p.size || blob.size || 0, ts:p.ts || Date.now(), blob }).then(ok=>{
+        if(!ok) return false;
+        _pdfObjectUrl(p.id, blob);
+        return true;
+      });
+    })).then(results=>{
+      if(!results.some(Boolean)) return false;
+      const cur = load();
+      (Array.isArray(cur.mathTypePdfs) ? cur.mathTypePdfs : []).forEach(p=>{
+        if(p && p.data && String(p.data).indexOf('data:') === 0){ delete p.data; }
+      });
+      try{ save(cur); }catch(e){}
+      return true;
+    });
+  }
+  // 启动水合：把 IndexedDB 里的 PDF 灌进内存 URL 缓存，供同步渲染直接取用
+  function initPdfStore(){
+    if(_pdfReadyPromise) return _pdfReadyPromise;
+    _pdfReadyPromise = _pdfDbOpen()
+      .then(db => (db ? _migrateLegacyPdfs() : Promise.resolve(false)).then(()=> _pdfGetAll()))
+      .then(rows=>{
+        (rows || []).forEach(r=>{
+          if(!r || !r.id) return;
+          if(r.blob) _pdfObjectUrl(r.id, r.blob);
+          _pdfMetaCache[r.id] = { type:r.type||'', name:r.name||'', size:r.size||0, ts:r.ts||0 };
+        });
+        return true;
+      })
+      .catch(()=> false);
+    return _pdfReadyPromise;
+  }
+  // R232-2：题型「讲义 PDF」附件（家长上传；本地存档，随题型展示缩影图，点击弹窗查看）
+  function getMathTypePdfs(type){
+    const t = String(type||'');
+    const st = load();
+    const list = Array.isArray(st.mathTypePdfs) ? st.mathTypePdfs : [];
+    const out = [];
+    const seen = {};
+    list.forEach(p=>{
+      if(!p || String(p.type||'') !== t) return;
+      seen[p.id] = 1;
+      out.push({ id:p.id, name:p.name||'讲义.pdf', size:p.size||0, ts:p.ts||0, data:p.data||'', url:_pdfUrlCache[p.id] || p.data || '' });
+    });
+    // R238：若 localStorage 已满、元数据没写进去，IndexedDB 里的记录仍作为兜底来源（PDF 不会丢）
+    Object.keys(_pdfMetaCache).forEach(id=>{
+      if(seen[id]) return;
+      const m = _pdfMetaCache[id] || {};
+      if(String(m.type||'') !== t) return;
+      out.push({ id, name:m.name||'讲义.pdf', size:m.size||0, ts:m.ts||0, data:'', url:_pdfUrlCache[id] || '' });
+    });
+    out.sort((a,b)=> (a.ts||0) - (b.ts||0));
+    return out;
+  }
+  // R238：Blob 走 IndexedDB（无大小上限）；返回 Promise<{ok,item,msg}>
+  function _addMathPdfBlob(type, name, blob){
+    const id = 'mp' + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+    const size = blob.size || 0;
+    const ts = Date.now();
+    return _pdfDbOpen().then(db=>{
+      if(!db) return { ok:false, msg:'当前浏览器不支持大文件存储（IndexedDB 不可用），请用 Chrome / Edge / Safari 打开' };
+      return _pdfPut({ id, type, name, size, ts, blob }).then(okIdb=>{
+        if(!okIdb) return { ok:false, msg:'写入本地数据库失败，请重试' };
+        const st = load();
+        if(!Array.isArray(st.mathTypePdfs)) st.mathTypePdfs = [];
+        st.mathTypePdfs.push({ id, type, name, size, ts });
+        const okSave = save(st);
+        if(!okSave){
+          // 元数据落 localStorage 失败（多半是整个库已满）→ 不阻断上传：IndexedDB + 内存缓存照样能读
+          try{ st.mathTypePdfs.pop(); }catch(e){}
+        }
+        _pdfObjectUrl(id, blob);
+        _pdfMetaCache[id] = { type, name, size, ts };
+        return { ok:true, item:{ id, name, size, ts }, metaSaved: !!okSave };
+      });
+    }).catch(()=> ({ ok:false, msg:'保存失败，请重试' }));
   }
   function addMathTypePdf(rec){
-    const st = load();
-    if(!Array.isArray(st.mathTypePdfs)) st.mathTypePdfs = [];
     const type = String((rec && rec.type) || '未分类');
     const name = String((rec && rec.name) || '讲义.pdf');
+    const blob = (rec && rec.blob) || null;
+    // R238：有 Blob 就走 IndexedDB（多大都行）；老调用方传 dataURL 仍走同步 localStorage 分支
+    if(blob && typeof blob === 'object' && typeof blob.size === 'number') return _addMathPdfBlob(type, name, blob);
     const data = String((rec && rec.data) || '');
     if(!data) return { ok:false, msg:'PDF 内容为空' };
+    const st = load();
+    if(!Array.isArray(st.mathTypePdfs)) st.mathTypePdfs = [];
     const item = { id:'mp' + Date.now().toString(36) + Math.random().toString(36).slice(2,6), type, name, size:(rec && rec.size) || 0, data, ts:Date.now() };
     st.mathTypePdfs.push(item);
     // R237-4：save() 失败不抛错（返回 false），必须显式检查，否则会「假成功」——刷新后 PDF 消失
@@ -13932,6 +14115,12 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
     if(!Array.isArray(st.mathTypePdfs)) return { ok:false };
     st.mathTypePdfs = st.mathTypePdfs.filter(p => String(p.id) !== String(id));
     save(st);
+    // R238：同步清掉 IndexedDB 里的 Blob 与内存 objectURL
+    try{ _pdfDelBlob(id); }catch(e){}
+    try{
+      if(_pdfUrlCache[id]){ URL.revokeObjectURL(_pdfUrlCache[id]); delete _pdfUrlCache[id]; }
+    }catch(e){}
+    delete _pdfMetaCache[id];
     return { ok:true };
   }
   // V11.6 + V12.1：百科打卡（每段内容后打卡标记点击显示闪电/✓，统计每主题已打卡次数）
@@ -17725,7 +17914,7 @@ be 动词：am / is → was；are → were
     setMathMastery, getMathByMastery, markMathMastered, toggleMathMastery, unmarkMathMastered, migrateMathMastery, mathTypes, addMathType, removeMathType, listMathTypes,
     getMathGroups, addMathGroup, addMathTypeToGroup, assignMathTypeToGroup, groupIdOfMathType, getDefaultMathGroupName,
     // R232-2/3：题型讲义（外置图片 + 本地 PDF）
-    getMathTypeImgs, getMathLectureStat, setMathLectureStatus, setMathLectureCap, getMathTypePdfs, addMathTypePdf, delMathTypePdf,
+    getMathTypeImgs, getMathLectureStat, setMathLectureStatus, setMathLectureCap, getMathTypePdfs, addMathTypePdf, delMathTypePdf, initPdfStore,
     getReading, getDailySpeaking, addUserReading, markReadingRead, unmarkReadingRead, isReadingRead, logCheckin, unlogCheckin, markSpeakingComplete, unmarkSpeakingComplete, unmarkXueersiDailyReward, refundReadingStars,
     // R232-1：计算小超市打卡（首页必做卡 ⇄ 乐读数学 今日打卡 共用）
     markCalcDaily, unmarkCalcDaily,
@@ -21847,6 +22036,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     }
     const bankCount = (window.Store && window.Store.getCalcBank) ? window.Store.getCalcBank().length : 0;
     const bookToday = _calcBookTodayCount();
+    const wrongCount = (window.Store && window.Store.getCalcWrongs) ? window.Store.getCalcWrongs().length : 0;
     return `
       <div class="calc-board" data-calc-board>
         <div class="yw-comp-head calc-head">
@@ -21854,6 +22044,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
           <span class="calc-head-tools">
             <button type="button" class="calc-bank-btn calc-bank-inline-btn" data-calc-bank title="题库：编辑 · 添加 · 删除计算题">📚 题库（${bankCount} 题）</button>
             <button type="button" class="calc-bank-btn calc-bank-inline-btn" data-calc-book title="已做本：每日 22:00 自动收录当天答对题和订正完成题">📒 已做本（今日 ${bookToday}）</button>
+            <button type="button" class="calc-bank-btn calc-bank-inline-btn" data-calc-wrong title="错题本：批改答错的题自动收进来，订正完成后 22:00 收录进已做本">📕 错题本（${wrongCount}）</button>
           </span>
           <span class="yw-sub calc-head-sub">每日一练 · ${dateLabel}</span>
         </div>
@@ -21873,6 +22064,9 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     // R237-2：题库右侧「已做本」→ 打开已做本弹窗
     const bookBtn = board.querySelector('[data-calc-book]');
     if(bookBtn){ bookBtn.addEventListener('click', ()=> openCalcBook()); }
+    // R238：已做本右侧「错题本」→ 打开独立错题本弹窗
+    const wrongBtn = board.querySelector('[data-calc-wrong]');
+    if(wrongBtn){ wrongBtn.addEventListener('click', ()=> openCalcWrong()); }
     // R237-1：把当前作答/判分整份写进当日快照（刷新、切页不丢；22:00 收录后清空）
     const persistDrill = ()=>{
       if(!window.Store || !window.Store.saveCalcDrill) return;
@@ -21916,6 +22110,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         });
         const wc = document.getElementById('calcWrongCount');
         if(wc && window.Store.getCalcWrongs) wc.textContent = window.Store.getCalcWrongs().length;
+        updateCalcWrongBadge();
         const score = board.querySelector('[data-calc-score]');
         if(score) score.textContent = '答对 ' + correct + '/' + _CALC_N;
         if(correct === _CALC_N && okBtn){ okBtn.classList.add('is-ready'); okBtn.disabled = false; if(score) score.textContent = '全部答对，可以打卡啦！'; }
@@ -22000,13 +22195,20 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       ? bank.map((p,i)=>`<div class="calc-bank-row" data-calc-bank-row="${i}" data-cat="${esc(p.cat||'')}">${calcBankRowHTML(p,i)}</div>`).join('')
       : `<div class="calc-bank-empty">题库还没有题目，在下面「＋ 添加题目」加一道吧～</div>`;
     applyCalcBankFilter();
-    // R231-4：错题本（右侧）
+  }
+  function openCalcBank(){
+    _calcBankCat = 'all';
+    renderCalcBankModal();
+    showModal('#modalCalcBank');
+  }
+  // ---------- R238：错题本独立弹窗（原题库弹窗右栏内容迁入）----------
+  function renderCalcWrongModal(){
     const wl = document.getElementById('calcWrongList');
-    if(wl){
-      const ws = (window.Store && window.Store.getCalcWrongs) ? window.Store.getCalcWrongs() : [];
-      const wc = document.getElementById('calcWrongCount');
-      if(wc) wc.textContent = ws.length;
-      wl.innerHTML = ws.length ? ws.map(w=>`
+    if(!wl) return;
+    const ws = (window.Store && window.Store.getCalcWrongs) ? window.Store.getCalcWrongs() : [];
+    const wc = document.getElementById('calcWrongCount');
+    if(wc) wc.textContent = ws.length;
+    wl.innerHTML = ws.length ? ws.map(w=>`
         <div class="calc-wrong-item${w.fixedAt ? ' is-fixed' : ''}" data-cat="${esc(w.cat||'')}">
           <div class="calc-wrong-q">${w.a} ${w.op} ${w.b}${w.op2?(' '+w.op2+' '+w.c):''} <span class="calc-wrong-eq">= ${w.ans}</span></div>
           <div class="calc-wrong-foot">
@@ -22014,12 +22216,17 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
             <button type="button" class="pbtn small calc-wrong-fix${w.fixedAt?' is-fixed':''}" data-calc-fix="${esc(w.key||'')}" title="订正完成后标记，22:00 自动收录进已做本">${w.fixedAt ? '✅ 已订正' : '✅ 订正完成'}</button>
           </div>
         </div>`).join('') : `<div class="calc-bank-empty">还没有错题，做完题点「批改」后，答错的会自动收进来～</div>`;
-    }
   }
-  function openCalcBank(){
-    _calcBankCat = 'all';
-    renderCalcBankModal();
-    showModal('#modalCalcBank');
+  function openCalcWrong(){
+    renderCalcWrongModal();
+    showModal('#modalCalcWrong');
+  }
+  // 同步头部「📕 错题本（N）」计数（批改 / 清空 / 订正后即时刷新，无需整页重渲染）
+  function updateCalcWrongBadge(){
+    const btn = document.querySelector('[data-calc-board] [data-calc-wrong]');
+    if(!btn) return;
+    const n = (window.Store && window.Store.getCalcWrongs) ? window.Store.getCalcWrongs().length : 0;
+    btn.textContent = '📕 错题本（' + n + '）';
   }
   // ---------- R237：计算小超市「已做本」（22:00 自动收录当日答对题 + 订正完成题）----------
   function renderCalcBookModal(){
@@ -22070,6 +22277,17 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       setTimeout(()=>{ flush(); schedule(); }, next - now);
     };
     schedule();
+  }
+  // R238：启动时水合讲义 PDF（IndexedDB → objectURL）；画廊里仍占位的 PDF 自动重渲染出缩略图
+  function setupPdfStore(){
+    try{
+      if(!window.Store || !window.Store.initPdfStore) return;
+      Promise.resolve(window.Store.initPdfStore()).then(()=>{
+        try{
+          if(document.querySelector('#mathContentArea [data-pdf-pending]')) renderMathContent();
+        }catch(e){}
+      }).catch(()=>{});
+    }catch(e){}
   }
   function refreshCalcAfterBankChange(){
     try{ renderMath(); }catch(e){}
@@ -28720,12 +28938,18 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
             <img src="${esc(it.src)}" alt="${esc(type + ' ' + it.cap)}" loading="${i < MATH_GAL_PER_PAGE ? 'eager' : 'lazy'}" decoding="async">
             <figcaption><span class="mgc-cap">${esc(it.cap)}</span>${mathLectureBadge(it.status)}</figcaption>
           </figure>`);
-    const pdfCells = pdfs.map(p => `
-          <figure class="math-gal-item math-gal-pdf" data-gal-pdf-view="${esc(p.id)}" title="点击查看 PDF 详情">
-            <div class="math-gal-pdf-box"><embed type="application/pdf" src="${esc(p.data)}#page=1&toolbar=0&navpanes=0&view=FitH" title="${esc(p.name)}"></div>
+    const pdfCells = pdfs.map(p => {
+      // R238：PDF 存 IndexedDB，渲染时用 objectURL；水合未完成先占位，完成后自动重渲染
+      const src = p.url || p.data || '';
+      return `
+          <figure class="math-gal-item math-gal-pdf" data-gal-pdf-view="${esc(p.id)}"${src ? '' : ' data-pdf-pending="1"'} title="点击查看 PDF 详情">
+            <div class="math-gal-pdf-box">${src
+              ? `<embed type="application/pdf" src="${esc(src)}#page=1&toolbar=0&navpanes=0&view=FitH" title="${esc(p.name)}">`
+              : `<div class="math-pdf-loading">📄<br>${esc(p.name)}<br><span>正在载入…</span></div>`}</div>
             <button type="button" class="pbtn small math-pdf-del hidden-in-child" data-gal-pdf-del="${esc(p.id)}" title="删除这份讲义">×</button>
             <figcaption>📄 ${esc(p.name)} · ${fmtPdfSize(p.size)}</figcaption>
-          </figure>`);
+          </figure>`;
+    });
     const cells = imgCells.concat(pdfCells);
     const pages = [];
     for(let i = 0; i < cells.length; i += per) pages.push(cells.slice(i, i + per));
@@ -28977,9 +29201,10 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         const frame = document.getElementById('mathPdfFrame');
         const nameEl = document.getElementById('mathPdfName');
         const dl = document.getElementById('mathPdfDownload');
-        if(frame) frame.src = p.data;
+        const pdfSrc = p.url || p.data || '';
+        if(frame) frame.src = pdfSrc;
         if(nameEl) nameEl.textContent = p.name + '（' + fmtPdfSize(p.size) + '）';
-        if(dl){ dl.href = p.data; dl.setAttribute('download', p.name || '讲义.pdf'); }
+        if(dl){ dl.href = pdfSrc; dl.setAttribute('download', p.name || '讲义.pdf'); }
         showModal('#modalMathPdf');
         return;
       }
@@ -28997,7 +29222,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         return;
       }
     });
-    // 添加 PDF：读取为 dataURL 后落库（本地存档；单份上限 3MB）
+    // R238：添加 PDF —— File 本身就是 Blob，直接落入 IndexedDB（不再转 base64、不再限制大小）
     const file = document.getElementById('mathPdfFile');
     if(file && !file._bound){
       file._bound = true;
@@ -29005,20 +29230,26 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         const f = file.files && file.files[0];
         if(!f) return;
         if(!/\.pdf$/i.test(f.name) && f.type !== 'application/pdf'){ toast('请选择 PDF 文件'); return; }
-        if(f.size > 3 * 1024 * 1024){ toast('PDF 太大了（上限 3MB），请压缩后再上传'); return; }
         const type = _mathPdfAddType || mathTypeSel;
-        const reader = new FileReader();
-        reader.onload = ()=>{
-          const r = window.Store.addMathTypePdf({ type, name: f.name, size: f.size, data: String(reader.result || '') });
-          if(r && r.ok){
-            toast('✅ 已添加讲义 PDF：' + f.name);
+        const sizeTxt = fmtPdfSize(f.size);
+        toast('⏳ 正在保存 ' + f.name + '（' + sizeTxt + '）…');
+        let r;
+        try{
+          r = window.Store.addMathTypePdf({ type, name: f.name, size: f.size, blob: f });
+        }catch(e){
+          toast('添加失败：' + ((e && e.message) || '未知错误'));
+          return;
+        }
+        Promise.resolve(r).then(res=>{
+          if(res && res.ok){
+            toast('✅ 已添加讲义 PDF：' + f.name + '（' + sizeTxt + '）');
             if(type === mathTypeSel) renderMathContent();
           } else {
-            toast('添加失败：' + ((r && r.msg) || '未知原因'));
+            toast('添加失败：' + ((res && res.msg) || '未知原因'));
           }
-        };
-        reader.onerror = ()=>toast('读取 PDF 失败，请重试');
-        reader.readAsDataURL(f);
+        }).catch(err=>{
+          toast('添加失败：' + ((err && err.message) || '未知错误'));
+        });
       });
     }
   }
@@ -36999,26 +37230,17 @@ function renderKMAdmin(){
         applyCalcBankFilter();
       });
     }
-    // R231-4：清空错题本
+    // R231-4 / R238：清空错题本（错题本已独立成弹窗）
     const btnClearWrong = document.getElementById('btnClearWrong');
     if(btnClearWrong && !btnClearWrong._calcWrongBound){
       btnClearWrong._calcWrongBound = true;
       btnClearWrong.addEventListener('click', ()=>{
         confirmDelete('清空错题本', ()=>{
           if(window.Store.clearCalcWrongs) window.Store.clearCalcWrongs();
-          renderCalcBankModal();
-          const wc = document.getElementById('calcWrongCount'); if(wc) wc.textContent = '0';
+          renderCalcWrongModal();
+          updateCalcWrongBadge();
           toast('已清空错题本');
         });
-      });
-    }
-    // R236：题库弹窗「🖼️ 图库」按钮 → 打开「课堂讲义」图片库（乐读数学·题型画廊）
-    const btnCalcGallery = document.getElementById('btnCalcGallery');
-    if(btnCalcGallery && !btnCalcGallery._calcGalleryBound){
-      btnCalcGallery._calcGalleryBound = true;
-      btnCalcGallery.addEventListener('click', ()=>{
-        try{ hideModal('#modalCalcBank'); }catch(e){}
-        try{ goPage('math'); }catch(e){}
       });
     }
     // R237-2：错题本单题「订正完成」标记（22:00 自动收录进已做本后从错题本移除）
@@ -37033,7 +37255,7 @@ function renderKMAdmin(){
         const it = list.find(x => String(x.key) === String(key));
         const next = !(it && it.fixedAt);
         if(window.Store.setCalcWrongFixed) window.Store.setCalcWrongFixed(key, next);
-        renderCalcBankModal();
+        renderCalcWrongModal();
         toast(next ? '✅ 已标记订正完成，今天 22:00 自动收录进已做本' : '已取消订正标记');
       });
     }
@@ -37356,6 +37578,8 @@ if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
     setupReadingAutoArchive();
     // R237-2：计算小超市「已做本」每日 22:00 自动收录（答对题 + 订正完成题）
     setupCalcBookCron();
+    // R238：讲义 PDF 改存 IndexedDB，启动时水合（并迁移历史的 base64 数据）
+    setupPdfStore();
     // 需求②：每周日 23:00 自动清零当周围棋对弈记录
     setupGoWeeklyReset();
     // V55-Req8：节日当天打卡提醒
