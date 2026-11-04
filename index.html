@@ -5219,14 +5219,17 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .bs-row:last-child{border-bottom:none}
 .bs-row-text{flex:1 1 auto;color:#2c4568;font-size:14.5px;font-weight:500;line-height:1.85;letter-spacing:.3px;text-align:left;word-break:break-word;word-spacing:normal}
 /* ===== R240-2：必背知识 · 字词田字格（复用「写字表」同款 .yw-tian-card / .yw-tian-grid 蓝格） ===== */
-.bs-tian-wrap{display:flex;flex-wrap:wrap;gap:12px;padding:6px 2px 10px}
-.bs-tian{width:auto;min-width:90px;padding:8px 10px 7px}
-.bs-tian .yw-tian-grid{width:60px;height:60px}
-.bs-tian .yw-tian-han{font-size:32px}
-.bs-tian.is-wide .yw-tian-grid{width:46px;height:46px}
-.bs-tian.is-wide .yw-tian-han{font-size:24px}
-.bs-tian-row{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
-.bs-tian-note{margin-top:6px;font-size:12px;line-height:1.35;font-weight:700;color:var(--tone-600);text-align:center;max-width:180px;word-break:break-word}
+.bs-tian-wrap{display:flex;flex-wrap:wrap;gap:12px;padding:6px 2px 10px;align-items:flex-start}
+.bs-tian{width:auto;min-width:76px;padding:8px 10px 7px}
+/* R241-2：全部田字格统一为「AABB 式词语」那张卡的格子尺寸（46×46），不再分 is-wide */
+.bs-tian .yw-tian-grid,.bs-tian.is-wide .yw-tian-grid{width:46px;height:46px}
+.bs-tian .yw-tian-han,.bs-tian.is-wide .yw-tian-han{font-size:24px}
+.bs-tian-row{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-items:flex-start}
+/* R241-1：每格自带拼音位（拼音 ←→ 汉字逐字对齐），无拼音的格子用 &nbsp; 占位保持同一条基线 */
+.bs-tian-cell{display:inline-flex;flex-direction:column;align-items:center;gap:2px}
+.bs-tian-py{font-size:13px;line-height:1.1;font-weight:800;color:var(--tone-600);white-space:nowrap;min-height:15px;letter-spacing:.2px;text-align:center}
+/* R241-3：组词 / 句子等非田字格字词字号放大为原来的 2 倍（12px → 24px） */
+.bs-tian-note{margin-top:6px;font-size:24px;line-height:1.35;font-weight:700;color:var(--tone-700);text-align:center;max-width:320px;word-break:break-word}
 .bs-tian-tag{display:inline-block;margin-bottom:5px;padding:1px 8px;border-radius:999px;background:var(--tone-100);color:var(--tone-800);font-size:11px;font-weight:800}
 .bs-tian.is-pair{padding:8px 12px}
 .bs-pair-body{display:flex;align-items:center;gap:8px}
@@ -8081,28 +8084,28 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 /* ===== R233-1：讲义 PDF 并入课堂讲义画廊（排在全部图片之后，落在最后一页） ===== */
 .math-gal-pdf{
   position:relative;cursor:pointer;background:var(--tone-050);
-  display:block;width:132px;max-width:100%;justify-self:start;
+  display:block;width:86px;max-width:100%;justify-self:start;
 }
-/* R240-4：PDF 缩略图缩到原来的约 1/10（96×126 小卡），点击后在弹窗里用原生阅读器看整份文件 */
+/* R241-4：PDF 缩略图再缩到「原来（96×126）的四分之一」（48×63），只当文件小卡用，内容交给弹窗 */
 .math-gal-pdf-box{
-  position:relative;width:96px;height:126px;background:#fff;overflow:hidden;
-  margin:8px auto 6px;border:1px solid var(--tone-175);border-radius:8px;
+  position:relative;width:48px;height:63px;background:#fff;overflow:hidden;
+  margin:6px auto 4px;border:1px solid var(--tone-175);border-radius:6px;
 }
 .math-gal-pdf-box.is-thumb{display:flex;align-items:center;justify-content:center}
 .math-pdf-thumb-canvas{display:block;width:auto;max-width:100%;max-height:100%;background:#fff}
 .math-gal-pdf-box embed{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff;object-fit:contain}
-.math-pdf-icon{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:26px;line-height:1.1;color:var(--bad-main)}
-.math-pdf-icon span{font-size:11px;font-weight:800;letter-spacing:.06em;color:var(--muted)}
+.math-pdf-icon{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;font-size:16px;line-height:1.05;color:var(--bad-main)}
+.math-pdf-icon span{font-size:8.5px;font-weight:800;letter-spacing:.04em;color:var(--muted)}
 /* R238：PDF 存 IndexedDB，水合前先显示占位（随后自动重渲染成缩略图） */
-.math-pdf-loading{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:18px;font-weight:800;color:var(--tone-700);background:var(--tone-050);text-align:center;padding:4px;line-height:1.3}
-.math-pdf-loading span{font-size:10px;font-weight:600;color:var(--muted)}
+.math-pdf-loading{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;font-size:13px;font-weight:800;color:var(--tone-700);background:var(--tone-050);text-align:center;padding:2px;line-height:1.2;overflow:hidden}
+.math-pdf-loading span{font-size:8px;font-weight:600;color:var(--muted)}
 .math-gal-pdf figcaption{
-  font-size:12px;color:var(--theme-title);padding:6px 10px;background:var(--tone-100);
+  font-size:10.5px;color:var(--theme-title);padding:4px 6px;background:var(--tone-100);
   border-top:1px solid var(--tone-150);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
 .math-pdf-del{
-  position:absolute;top:6px;right:6px;width:22px;height:22px;min-width:0;padding:0;
-  border-radius:50%;line-height:1;font-size:14px;color:var(--muted);z-index:2;
+  position:absolute;top:3px;right:3px;width:16px;height:16px;min-width:0;padding:0;
+  border-radius:50%;line-height:1;font-size:11px;color:var(--muted);z-index:2;
   background:var(--tone-050);border:1px solid var(--tone-175);
 }
 /* 讲义 PDF 详情弹窗 */
@@ -20411,11 +20414,44 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     return '';
   }
   function bsHanChars(s){ return Array.from(String(s || '')).filter(c => /[\u3400-\u9FFF]/.test(c)); }
-  function bsTianCells(chars){
+  // R241-1：拼音与对应汉字逐字对齐 —— 用 BS_PY_PINYIN（无声调读音表）把「绒球（róng）」的 róng 落到「绒」的田字格正上方
+  const BS_PY_CHARS = (window.BS_PY_PINYIN || {});
+  function bsPyNorm(x){
+    try{
+      return String(x || '').toLowerCase().replace(/ü/g, 'u').replace(/v/g, 'u')
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z]/g, '');
+    }catch(e){ return String(x || '').toLowerCase().replace(/[^a-z]/g, ''); }
+  }
+  function bsPyReads(ch){ const v = BS_PY_CHARS[ch] || ''; return v ? v.split('/') : []; }
+  // 把括号里的拼音按「音节 → 对应汉字」拆开，返回与汉字等长的数组
+  function bsPyAlign(chars, py){
+    const cs = bsHanChars(chars);
+    if(!cs.length) return [];
+    const syl = String(py || '').trim().split(/[\s,，、/]+/).filter(Boolean);
+    if(!syl.length) return cs.map(()=> '');
+    if(syl.length === cs.length) return syl.slice();
+    const out = cs.map(()=> '');
+    let from = 0;
+    syl.forEach(s=>{
+      const ns = bsPyNorm(s);
+      for(let i = from; i < cs.length; i++){
+        if(bsPyReads(cs[i]).indexOf(ns) >= 0){ out[i] = s; from = i + 1; break; }
+      }
+    });
+    // 读音表没覆盖（后续新增课文）→ 兜底放在首字上方，绝不再横跨两个字
+    if(!out.some(Boolean)) out[0] = String(py || '').trim();
+    return out;
+  }
+  function bsTianCells(chars, pys){
     const cs = bsHanChars(chars);
     if(!cs.length) return '';
+    const arr = pys || [];
+    const hasPy = arr.some(Boolean);
     return `<div class="bs-tian-row${cs.length > 2 ? ' is-multi' : ''}">`
-      + cs.map(c => `<span class="yw-tian-grid"><span class="yw-tian-han">${esc(c)}</span></span>`).join('')
+      + cs.map((c, i) => `<span class="bs-tian-cell">`
+          + (hasPy ? `<span class="bs-tian-py">${arr[i] ? esc(arr[i]) : '&nbsp;'}</span>` : '')
+          + `<span class="yw-tian-grid"><span class="yw-tian-han">${esc(c)}</span></span>`
+          + `</span>`).join('')
       + '</div>';
   }
   function bsTianCard(o){
@@ -20423,8 +20459,8 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     const cls = 'yw-tian-card yw-tian-xie bs-tian' + (o.wide ? ' is-wide' : '');
     return `<div class="${cls}">`
       + (o.tag ? `<div class="bs-tian-tag">${esc(o.tag)}</div>` : '')
-      + (o.py ? `<div class="yw-tian-py-top">${esc(o.py)}</div>` : '')
-      + bsTianCells(o.chars)
+      + (!o.pys && o.py ? `<div class="yw-tian-py-top">${esc(o.py)}</div>` : '')
+      + bsTianCells(o.chars, o.pys)
       + (o.note ? `<div class="bs-tian-note">${esc(o.note)}</div>` : '')
       + '</div>';
   }
@@ -20434,7 +20470,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
   // ① 识字表注音：绒球（róng） 昂首（áng）
   function bsTianShizi(text){
     const out = []; const re = /([\u3400-\u9FFF]{1,4})\s*[（(]\s*([^）)]*?)\s*[）)]/g; let m;
-    while((m = re.exec(text))) out.push(bsTianCard({ chars:m[1], py:m[2] }));
+    while((m = re.exec(text))) out.push(bsTianCard({ chars:m[1], pys:bsPyAlign(m[1], m[2]) }));
     return bsTianWrap(out);
   }
   // ② 词语听写：山坡 学校 飘扬
@@ -29060,6 +29096,10 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
           box.innerHTML = '';
           box.classList.add('is-thumb');
           canvas.className = 'math-pdf-thumb-canvas';
+          // R241-4：缩略图必须被小卡框约束住（contain 等比缩放，绝不撑大卡片）
+          canvas.style.width = '100%';
+          canvas.style.height = '100%';
+          canvas.style.objectFit = 'contain';
           box.appendChild(canvas);
         });
       }).catch(()=>{
@@ -29071,23 +29111,51 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   }
   // R240-4：详情弹窗改用浏览器原生阅读器 —— iframe 直接加载 Blob objectURL
   // 之前的 PDF.js canvas 方案在部分设备上 worker 起不来，弹窗空白；原生阅读器最稳（电脑 / iPad 都能翻页）
+  // R241-4：弹窗预览以 PDF.js 逐页 canvas 为主路径（缩略图已验证可用，弹窗复用同一管线，
+  // 不依赖设备自带的 PDF 阅读器插件）；只有 PDF.js 也失败时才退回 iframe 原生阅读器。
+  let _pdfRenderSeq = 0;
   function renderMathPdfPages(id, url){
     const host = document.getElementById('mathPdfPages');
     const frame = document.getElementById('mathPdfFrame');
     const src = String(url || '');
+    const seq = ++_pdfRenderSeq;
+    if(frame){ frame.hidden = true; frame.removeAttribute('src'); }
+    if(!host) return;
+    host.hidden = false;
     if(!src){
-      if(frame){ frame.hidden = true; frame.removeAttribute('src'); }
-      if(host){
-        host.hidden = false;
-        host.innerHTML = '<div class="math-pdf-hint">文件还没加载好，请稍后再点一次；也可点下方「下载 / 打开 PDF」查看。</div>';
-      }
+      host.innerHTML = '<div class="math-pdf-hint">文件还没加载好，请稍后再点一次；也可点下方「下载 / 打开 PDF」查看。</div>';
       return;
     }
-    if(frame){
-      frame.hidden = false;
-      frame.setAttribute('src', src + '#view=FitH');
-    }
-    if(host){ host.hidden = true; host.innerHTML = ''; }
+    host.innerHTML = '<div class="math-pdf-hint">正在载入 PDF 页面…</div>';
+    // 等弹窗真正显示出来再量宽度，否则 clientWidth=0 会把页面渲染成 1px
+    setTimeout(()=>{
+      if(seq !== _pdfRenderSeq) return;
+      const w = Math.min(Math.max((host.clientWidth || 760) - 20, 300), 900);
+      _pdfDoc(id, src).then(pdf=>{
+        if(seq !== _pdfRenderSeq) return;
+        const total = Math.min(pdf.numPages || 1, 40);
+        host.innerHTML = '';
+        const step = n => {
+          if(seq !== _pdfRenderSeq || n > total) return Promise.resolve();
+          return _pdfPageCanvas(pdf, n, w).then(canvas=>{
+            if(seq !== _pdfRenderSeq) return;
+            const box = document.createElement('div');
+            box.className = 'math-pdf-page';
+            canvas.style.width = '100%';
+            canvas.style.height = 'auto';
+            box.appendChild(canvas);
+            host.appendChild(box);
+            return step(n + 1);
+          });
+        };
+        return step(1);
+      }).catch(()=>{
+        if(seq !== _pdfRenderSeq) return;
+        host.hidden = true;
+        host.innerHTML = '';
+        if(frame){ frame.hidden = false; frame.setAttribute('src', src + '#view=FitH'); }
+      });
+    }, 60);
   }
   function mathLectureBadge(st){
     if(st === 'mastered') return '<span class="mgb mgb-ok">✅已学</span>';
@@ -34132,6 +34200,18 @@ function renderKMAdmin(){
             o1.type='sine'; o1.frequency.setValueAtTime(880, now); o1.frequency.linearRampToValueAtTime(1200, now+0.3);
             o1.connect(out); o1.start(now); o1.stop(now+0.35);
           } break;
+        case 'pop': // 小气泡（按键音效2 · 主题卡默认）
+          o1.type='sine'; o1.frequency.setValueAtTime(1200, now); o1.frequency.exponentialRampToValueAtTime(480, now+0.12);
+          o1.start(now); o1.stop(now+0.2);
+          out.gain.cancelScheduledValues && out.gain.cancelScheduledValues(now);
+          out.gain.setValueAtTime(0.24, now); out.gain.exponentialRampToValueAtTime(0.0001, now+0.2);
+          break;
+        case 'click': // 轻响（按键音效6）
+          o1.type='square'; o1.frequency.setValueAtTime(880, now);
+          o1.start(now); o1.stop(now+0.1);
+          out.gain.cancelScheduledValues && out.gain.cancelScheduledValues(now);
+          out.gain.setValueAtTime(0.13, now); out.gain.exponentialRampToValueAtTime(0.0001, now+0.09);
+          break;
         case 'sun': // 阳光暖暖
           o1.type='sine'; o1.frequency.setValueAtTime(523, now); o1.frequency.linearRampToValueAtTime(659, now+0.25);
           o2.type='triangle'; o2.frequency.setValueAtTime(1046, now); o2.frequency.linearRampToValueAtTime(1318, now+0.25);
@@ -34288,11 +34368,16 @@ function renderKMAdmin(){
   function onGlobalSfxClick(e){
     if(e && e.__sfxHandled) return;
     if(e) e.__sfxHandled = true;
+    // R241-5：只对「真人点击」发声。页面自己用 el.click() 触发的合成点击（如新世界渲染时
+    // 自动选中各专区默认子页 renderYuwenPage/renderSlotPage）不该出声，否则一次点击会被叠加 4 声。
+    if(e && e.isTrusted === false) return;
     const t = e.target; if(!t || !t.closest) return;
     // 打卡类：各自 handler 已调用 playCheckinSound（已路由到 playClickSfx('checkin')），此处跳过避免重复
     // R155-1：补齐「新世界」各子页内部打卡键选择器，杜绝「内部按键音效重复触发（双音效）」
     if(t.closest('[data-checkin], .ri-checkin-btn, [data-ri-checkin], .kw-checkin, .checkin-btn, [data-kw-checkin], .math-btn-mastery, .math-btn-need, [data-sfx-checkin], [data-bs-checkin-sec], [data-kw-learn-toggle], [data-sh-learn], [data-suzhi-checkin], [data-en-oxford-theme], [data-en-essay-done], [data-kp-card], .sc-card, .sh-poem-card, .sz-grid-card[data-sz-card]')) return;
-    if(t.closest('.nav-btn[data-page], [data-go]')){ playClickSfx('nav'); return; }
+    // R241-5：返回键（[data-nw-back] / .br-back）也归「导航」槽位——此前它不在任何分支里，
+    //        真正的返回点击其实一声都没有，用户听到的 4 声全来自重渲染时的合成点击。
+    if(t.closest('.nav-btn[data-page], [data-go], [data-nw-back], .br-back')){ playClickSfx('nav'); return; }
     if(t.closest('.kw-lesson-card, .kb-utab, .kb-card, .sub-card, .sub-tab, [data-sfx="sub"]')){ playClickSfx('sub'); return; }
     if(t.closest('.yw-round-btn, .nw-card, .wp-card, .card, .mn-note-card, [data-sfx="theme"], .kw-acc-head')){ playClickSfx('theme'); return; }
   }
