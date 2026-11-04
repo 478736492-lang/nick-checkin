@@ -5218,6 +5218,21 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .bs-row{display:flex;align-items:center;gap:12px;padding:9px 2px;border-bottom:1px solid #eef3f9}
 .bs-row:last-child{border-bottom:none}
 .bs-row-text{flex:1 1 auto;color:#2c4568;font-size:14.5px;font-weight:500;line-height:1.85;letter-spacing:.3px;text-align:left;word-break:break-word;word-spacing:normal}
+/* ===== R240-2：必背知识 · 字词田字格（复用「写字表」同款 .yw-tian-card / .yw-tian-grid 蓝格） ===== */
+.bs-tian-wrap{display:flex;flex-wrap:wrap;gap:12px;padding:6px 2px 10px}
+.bs-tian{width:auto;min-width:90px;padding:8px 10px 7px}
+.bs-tian .yw-tian-grid{width:60px;height:60px}
+.bs-tian .yw-tian-han{font-size:32px}
+.bs-tian.is-wide .yw-tian-grid{width:46px;height:46px}
+.bs-tian.is-wide .yw-tian-han{font-size:24px}
+.bs-tian-row{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.bs-tian-note{margin-top:6px;font-size:12px;line-height:1.35;font-weight:700;color:var(--tone-600);text-align:center;max-width:180px;word-break:break-word}
+.bs-tian-tag{display:inline-block;margin-bottom:5px;padding:1px 8px;border-radius:999px;background:var(--tone-100);color:var(--tone-800);font-size:11px;font-weight:800}
+.bs-tian.is-pair{padding:8px 12px}
+.bs-pair-body{display:flex;align-items:center;gap:8px}
+.bs-pair-col{display:flex;flex-direction:column;align-items:center}
+.bs-pair-arrow{font-size:16px;font-weight:800;color:var(--tone-400)}
+.bs-tian-sub{flex:0 0 100%;font-size:12.5px;font-weight:800;color:var(--tone-700);padding:2px 0 0}
 /* R64-6：每课打卡按钮（□未学 / ✅已学） */
 .bs-checkin-row{display:flex;justify-content:flex-end;margin-top:10px;padding-top:10px;border-top:1px dashed var(--tone-200)}
 .bs-checkin-btn{flex:0 0 auto;padding:7px 18px;border-radius:999px;border:1.5px solid var(--tone-200);background:#fff;color:var(--tone-900);font-size:14px;font-weight:800;cursor:pointer;transition:.15s;font-family:inherit}
@@ -7877,8 +7892,8 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 /* R238：适当调大（12px→13.5px）便于点按，并与说明文字一起靠左贴近标题 */
 .calc-bank-inline-btn{display:inline-block;width:auto;padding:6px 15px;font-size:13.5px;margin-top:0}
 .calc-head-tools{display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0}
-/* R239：每日一练说明另起一行，靠左与标题对齐 */
-.calc-head-sub{display:block;width:100%;white-space:nowrap;margin:8px 0 0;text-align:left}
+/* R240-3：每日一练说明夹在「计算小超市」标题与题库按键之间同一行（左对齐，不换行） */
+.calc-head-sub{display:inline-flex;align-items:center;white-space:nowrap;margin:0 2px 0 0;text-align:left}
 .calc-head .calc-head-tools .calc-bank-btn{padding:6px 15px;font-size:13.5px;border-radius:11px}
 .calc-ans-ok{color:var(--ok-main)}
 .calc-ans-no{color:var(--bad-main)}
@@ -8066,18 +8081,21 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 /* ===== R233-1：讲义 PDF 并入课堂讲义画廊（排在全部图片之后，落在最后一页） ===== */
 .math-gal-pdf{
   position:relative;cursor:pointer;background:var(--tone-050);
-  display:block;
+  display:block;width:132px;max-width:100%;justify-self:start;
 }
+/* R240-4：PDF 缩略图缩到原来的约 1/10（96×126 小卡），点击后在弹窗里用原生阅读器看整份文件 */
 .math-gal-pdf-box{
-  position:relative;width:100%;aspect-ratio:16/10;background:#fff;overflow:hidden;
+  position:relative;width:96px;height:126px;background:#fff;overflow:hidden;
+  margin:8px auto 6px;border:1px solid var(--tone-175);border-radius:8px;
 }
-/* R239：PDF.js 渲染出第一页后，按页面真实比例展示（与电脑预览一致） */
-.math-gal-pdf-box.is-thumb{aspect-ratio:auto;max-height:340px;display:flex;align-items:flex-start;justify-content:center}
-.math-pdf-thumb-canvas{display:block;width:100%;height:auto;background:#fff}
-.math-gal-pdf-box embed{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff}
+.math-gal-pdf-box.is-thumb{display:flex;align-items:center;justify-content:center}
+.math-pdf-thumb-canvas{display:block;width:auto;max-width:100%;max-height:100%;background:#fff}
+.math-gal-pdf-box embed{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff;object-fit:contain}
+.math-pdf-icon{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:26px;line-height:1.1;color:var(--bad-main)}
+.math-pdf-icon span{font-size:11px;font-weight:800;letter-spacing:.06em;color:var(--muted)}
 /* R238：PDF 存 IndexedDB，水合前先显示占位（随后自动重渲染成缩略图） */
-.math-pdf-loading{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:13px;font-weight:800;color:var(--tone-700);background:var(--tone-050);text-align:center;padding:8px;line-height:1.5}
-.math-pdf-loading span{font-size:11.5px;font-weight:600;color:var(--muted)}
+.math-pdf-loading{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:18px;font-weight:800;color:var(--tone-700);background:var(--tone-050);text-align:center;padding:4px;line-height:1.3}
+.math-pdf-loading span{font-size:10px;font-weight:600;color:var(--muted)}
 .math-gal-pdf figcaption{
   font-size:12px;color:var(--theme-title);padding:6px 10px;background:var(--tone-100);
   border-top:1px solid var(--tone-150);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
@@ -8091,6 +8109,10 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 .math-pdf-box{width:min(940px,94vw);max-width:940px}
 .math-pdf-body{padding:10px 14px}
 .math-pdf-body embed{width:100%;height:66vh;border:0;border-radius:var(--card-r-sm);background:var(--tone-050)}
+/* R240-4：原生阅读器 iframe —— 打开弹窗直接看到文件页面内容 */
+.math-pdf-frame{display:block;width:100%;height:68vh;border:1px solid var(--tone-175);border-radius:var(--card-r-sm);background:#fff}
+.math-pdf-frame[hidden]{display:none}
+.math-pdf-pages[hidden]{display:none}
 /* R239：PDF.js 逐页渲染 —— 打开弹窗即可看到文件内容 */
 .math-pdf-pages{
   max-height:70vh;overflow:auto;display:flex;flex-direction:column;gap:10px;
@@ -10342,8 +10364,9 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
       <button class="modal-x" data-close>×</button>
     </div>
     <div class="modal-body math-pdf-body">
-      <!-- R239：改用 PDF.js 逐页渲染，点击后直接看到文件内容（不再依赖浏览器 PDF 插件） -->
-      <div class="math-pdf-pages" id="mathPdfPages"><div class="math-pdf-hint">正在载入 PDF 内容…</div></div>
+      <!-- R240-4：改用浏览器原生 PDF 阅读器（iframe 内嵌 objectURL），点开即见文件页面内容 -->
+      <iframe class="math-pdf-frame" id="mathPdfFrame" title="PDF 讲义预览"></iframe>
+      <div class="math-pdf-pages" id="mathPdfPages" hidden></div>
     </div>
     <div class="modal-foot">
       <a class="primary-btn" id="mathPdfDownload" href="#" download="讲义.pdf">下载 / 打开 PDF</a>
@@ -18947,7 +18970,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
   const NW_CARDS = [
     { page:'newworld-yuwen',    tag:'语文专区', corner:'语文', icon:'📚', color:'yellow',
       mods:[
-        {t:'课文同步', icon:'📖', items:['课文朗读','字词读写','必背知识']},
+        {t:'课文同步', icon:'📖', items:['课文朗读','必背知识']},
         {t:'作文专项', icon:'✏️', items:['看图写话','作文素材']},
         {t:'小学古诗文', icon:'📜', items:['古诗词','文言文']}
       ] },
@@ -19767,10 +19790,9 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
   // ============ 语文专区（V68：顶部三功能卡 + 下方通栏插槽） ============
   // 顶部三功能卡片定义：每张卡含多个圆形子按钮
   const YW_TOP_CARDS = [
-    // R24-3：「生字听写」改名为「字词读写」，并与「课文朗读」位置互换（课文朗读在前）
+    // R240-1：「字词读写」按键及内容整体移除（田字格组件样式保留，供「必背知识」字词复用）
     { title:'课文同步', icon:'📚', items:[
       { key:'keda',     icon:'📖', label:'课文朗读' },
-      { key:'shengzi',  icon:'✍️', label:'字词读写' },
       { key:'ciyu',     icon:'📘', label:'必背知识' }
     ] },
     { title:'作文专项', icon:'✏️', items:[
@@ -19846,7 +19868,6 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     let html = '';
     const pg = _ywPages[key] || 0;
     switch(key){
-      case 'shengzi':  html = ywShengzi(pg); break;
       case 'keda':     html = ywKewen(); break;
       case 'ciyu':     html = ywBeishu(); break; // R62-3：必背知识（26 课 + 语文园地，PDF 导入）
 
@@ -19893,27 +19914,6 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
           }
         });
       });
-    }
-    // 生字听写：每课「听写本课文」+ 底部「全部听写」按钮（每字读两遍、间隔 3 秒）
-    if(key === 'shengzi'){
-      slotBody.querySelectorAll('[data-dictate]').forEach(btn=>{
-        btn.addEventListener('click', ()=>{
-          const ca = btn.getAttribute('data-chars');
-          const chars = ca ? ca.split('|') : null;
-          runDictation(btn, chars);
-        });
-      });
-      // 每课「加入已学字库」按键：点击 → 加入/移出 本课生字于「已学生字库」（V75-Req1 可取消），并刷新渲染
-      slotBody.querySelectorAll('[data-yw-add-lib]').forEach(btn=>{
-        btn.addEventListener('click', ()=>{
-          const no = btn.getAttribute('data-yw-add-lib');
-          if(window.Store && window.Store.toggleKewenLessonWordLib) window.Store.toggleKewenLessonWordLib(no);
-          renderYuwenSlot(key, label, slotBody);
-        });
-      });
-      // 顶部「查看已学字库」按键 → 弹出按课文分组的已学生字库
-      const libView = slotBody.querySelector('[data-yw-view-lib]');
-      if(libView && !libView._bound){ libView._bound = true; libView.addEventListener('click', ()=> ywRenderWordLibModal()); }
     }
     bindNwZone(slotBody, ()=> renderYuwenSlot(key, label, slotBody));
     // 课文朗读：标记学习 + 整卡点击打卡 + 正文朗读 + 单元内按课分页（R41-6）
@@ -20227,123 +20227,6 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     dictateStep();
   }
 
-  // 生字听写组件（R23）：按课分组，每课三大类排版——
-  //   识字表（会认）→ 青色认读 chip；写字表（会写）→ 蓝色田字格；词语表 → 靛色词卡；
-  // 每课课题旁「加入已学字库」按键（点击即把本课生字并入已学生字库）；顶部「数据统计+已学字库入口」；
-  // 每课「听写」+ 底部「全部听写（会写字）」「听写全部词语」（每字读两遍、间隔 5 秒）
-  function ywShengzi(page){
-    const data = (typeof YW_SHENGZI_3S !== 'undefined') ? YW_SHENGZI_3S : [];
-    const lib = (window.Store && window.Store.getKewenWordLib) ? window.Store.getKewenWordLib() : [];
-    const libLessons = new Set(lib.map(c=>String(c.lesson)));
-    let totalXie = 0, totalShi = 0, totalCi = 0;
-    const lessonGroupsArr = data.map(k=>{
-      const xie = (k.xie||[]).filter(Boolean);
-      const shi = (k.shi||[]).filter(Boolean);
-      const ci = (k.ci||[]).filter(Boolean);
-      totalXie += xie.length; totalShi += shi.length; totalCi += ci.length;
-      const inLib = libLessons.has(String(k.no));
-      const isYd = (k.no==='yd1'||k.no==='yd2'||k.no==='yd3'||k.no==='yd4');
-      const lessonTitle = isYd ? k.label : `第 ${k.no} 课《${esc(k.title||'')}》`;
-
-      // 写字表（会写）→ 蓝色田字格
-      const xieBlock = xie.length ? `
-        <div class="yw-sec yw-sec--xie">
-          <div class="yw-sec-head"><span class="yw-cat-chip yw-cat-xie">写字表 · 会写</span><span class="yw-sec-count">${xie.length} 字</span></div>
-          <div class="yw-tian-scroll">${xie.map(z=>`
-            <div class="yw-tian-card yw-tian-xie">
-              <div class="yw-tian-grid"><span class="yw-tian-han">${esc(z)}</span></div>
-            </div>`).join('')}</div>
-        </div>` : '';
-      // 识字表（会认）→ 青色认读 chip
-      const shiBlock = shi.length ? `
-        <div class="yw-sec yw-sec--shi">
-          <div class="yw-sec-head"><span class="yw-cat-chip yw-cat-shi">识字表 · 会认</span><span class="yw-sec-count">${shi.length} 字</span></div>
-          <div class="yw-shi-chips">${shi.map(z=>`<span class="yw-shi-chip">${esc(z)}</span>`).join('')}</div>
-        </div>` : '';
-      // 词语表 → 靛色词卡
-      const ciBlock = ci.length ? `
-        <div class="yw-sec yw-sec--ci">
-          <div class="yw-sec-head"><span class="yw-cat-chip yw-cat-ci">词语表</span><span class="yw-sec-count">${ci.length} 词</span></div>
-          <div class="yw-ci-list">${ci.map(w=>`<span class="yw-ci-card">${esc(w)}</span>`).join('')}</div>
-        </div>` : '';
-
-      // 听写字符：优先会写字；无会写则用会认字
-      const dictateChars = (xie.length ? xie : shi).join('|');
-      const dictateLabel = xie.length ? '会写字' : '会认字';
-      return `
-        <div class="yw-lesson${inLib?' yw-in-lib':''}" data-yw-lesson="${k.no}">
-          <div class="yw-lesson-head">
-            <span class="yw-lesson-title">📖 ${lessonTitle}</span>
-            <button class="yw-add-lib ${inLib?'on':''}" data-yw-add-lib="${k.no}" title="点击把本课生字加入/移出已学字库">${inLib?'✅ 已加入字库·点此取消':'➕ 加入已学字库'}</button>
-          </div>
-          ${xieBlock}
-          ${shiBlock}
-          ${ciBlock}
-          <div class="yw-lesson-foot">
-            <button class="yw-lesson-dictate" data-dictate="1" data-dictate-label="▶ 听写" data-chars="${esc(dictateChars)}">▶ 听写（${dictateLabel}）</button>
-          </div>
-        </div>`;
-    });
-
-    const userWords = (window.Store && window.Store.getNwZone) ? window.Store.getNwZone('shengzi') : [];
-    const userCards = userWords.map((w,i)=>`
-      <div class="yw-tian-card yw-tian-user">
-        <button class="nw-zone-del yw-tian-del" data-nw-del="shengzi" data-nw-idx="${i}" title="删除">×</button>
-        <div class="yw-tian-py-top">${esc(w.t.split('|')[0]||'')}</div>
-        <div class="yw-tian-grid"><span class="yw-tian-han">${esc((w.t.split('|')[1]||'').slice(0,1))}</span></div>
-        <div class="yw-tian-py-bot">${esc(w.t.split('|')[0]||'')}</div>
-      </div>`).join('');
-    const userSection = userWords.length
-      ? `<div class="yw-lesson">
-          <div class="yw-lesson-head">✏️ 我的生词本（${userWords.length}）</div>
-          <div class="yw-tian-scroll">${userCards}<button class="yw-tian-add" id="ywTianAdd" title="添加生词">＋</button></div>
-        </div>`
-      : `<div class="yw-tian-scroll" style="padding:10px 12px"><button class="yw-tian-add" id="ywTianAdd" title="添加生词">＋</button></div>`;
-
-    // 已学生字库：由每课课题旁「加入已学字库」按键即时并入（不再依赖每日定时）
-    const libCards = lib.length ? lib.map(c=>`
-        <div class="yw-tian-card yw-lib-card">
-          <div class="yw-tian-py-top">${esc(c.py||'')}</div>
-          <div class="yw-tian-grid"><span class="yw-tian-han">${esc(c.zi||'')}</span></div>
-          <div class="yw-tian-py-bot">${esc(c.py||'')}</div>
-        </div>`).join('') : '';
-    const libSection = `
-      <div class="yw-lesson yw-lib-section">
-        <div class="yw-lesson-head">
-          <span class="yw-lesson-title">📚 已学生字库（${lib.length}）</span>
-          <span class="yw-lib-hint">点课文旁「加入已学字库」即可收录</span>
-        </div>
-        ${lib.length ? `<div class="yw-tian-scroll">${libCards}</div>` : `<div class="nw-zone-empty">还没有已学生字，去上面点「加入已学字库」吧～</div>`}
-      </div>`;
-
-    // 顶部：数据统计 + 已学字库入口
-    const statsRow = `
-      <div class="yw-stats-row">
-        <div class="yw-stat"><b>${libLessons.size}</b><span>已学课数</span></div>
-        <div class="yw-stat"><b>${lib.length}</b><span>已学字数</span></div>
-        <button class="yw-lib-view-btn" data-yw-view-lib>📚 查看已学字库</button>
-      </div>`;
-
-    // 底部：全部听写（会写字）/ 听写全部词语
-    const allXie = data.reduce((a,k)=>a.concat((k.xie||[]).filter(Boolean)), []);
-    const allCi = data.reduce((a,k)=>a.concat((k.ci||[]).filter(Boolean)), []);
-    // R28-4：按课分页（每页 1 课）
-    const szTotal = lessonGroupsArr.length;
-    const szPg = Math.min(Math.max(page||0,0), Math.max(0,szTotal-1));
-    const lessonGroups = lessonGroupsArr.slice(szPg, szPg+1).join('');
-
-    return `
-      <div class="yw-comp-head">字词读写 <span class="yw-sub">会写 ${totalXie} · 会认 ${totalShi} · 词语 ${totalCi}</span></div>
-      ${statsRow}
-      ${lessonGroups}
-      ${ywPager(szPg, szTotal)}
-      ${userSection}
-      ${libSection}
-      <div class="yw-comp-foot">
-        <button class="yw-play-btn yw-play-ci" id="ywPlayCiBtn" data-dictate="1" data-dictate-label="▶ 听写全部词语" data-chars="${esc(allCi.join('|'))}">▶ 听写全部词语</button>
-        <button class="yw-play-btn" id="ywPlayBtn" data-dictate="1" data-dictate-label="▶ 全部听写（会写字）" data-chars="${esc(allXie.join('|'))}">▶ 全部听写（会写字）</button>
-      </div>`;
-  }
 
   // 已学生字库弹窗：按课文分组展示全部已收录生字
   function ywRenderWordLibModal(){
@@ -20516,6 +20399,163 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
   // R28-4：page/perPage 透传分页
   // R62-3：必背知识（原「字词累积」）—— 按 PDF 导入的 26 课 + 语文园地子板块渲染
   let _bsIdx = 0; // 当前选中子板块索引（会话内记忆）
+  // ===== R240-2：必背知识 · 字词一律用「田字格」展示 =====
+  // 覆盖：识字表注音 / 词语听写 / 生字注音组词 / 近反义词 / 形近字 / 词语积累 / 词语解释
+  // 复用「写字表」同款 .yw-tian-card + .yw-tian-grid（蓝格），保证与原来的字词读写观感一致
+  const BS_TIAN_KINDS = ['识字表注音','词语听写','生字注音组词','近反义词','形近字','词语积累','词语解释'];
+  function bsTianKind(h){
+    const t = String(h || '');
+    for(let i = 0; i < BS_TIAN_KINDS.length; i++){
+      if(t.indexOf(BS_TIAN_KINDS[i]) >= 0) return BS_TIAN_KINDS[i];
+    }
+    return '';
+  }
+  function bsHanChars(s){ return Array.from(String(s || '')).filter(c => /[\u3400-\u9FFF]/.test(c)); }
+  function bsTianCells(chars){
+    const cs = bsHanChars(chars);
+    if(!cs.length) return '';
+    return `<div class="bs-tian-row${cs.length > 2 ? ' is-multi' : ''}">`
+      + cs.map(c => `<span class="yw-tian-grid"><span class="yw-tian-han">${esc(c)}</span></span>`).join('')
+      + '</div>';
+  }
+  function bsTianCard(o){
+    o = o || {};
+    const cls = 'yw-tian-card yw-tian-xie bs-tian' + (o.wide ? ' is-wide' : '');
+    return `<div class="${cls}">`
+      + (o.tag ? `<div class="bs-tian-tag">${esc(o.tag)}</div>` : '')
+      + (o.py ? `<div class="yw-tian-py-top">${esc(o.py)}</div>` : '')
+      + bsTianCells(o.chars)
+      + (o.note ? `<div class="bs-tian-note">${esc(o.note)}</div>` : '')
+      + '</div>';
+  }
+  function bsTianWrap(cards){
+    return cards && cards.length ? `<div class="bs-tian-wrap">${cards.join('')}</div>` : '';
+  }
+  // ① 识字表注音：绒球（róng） 昂首（áng）
+  function bsTianShizi(text){
+    const out = []; const re = /([\u3400-\u9FFF]{1,4})\s*[（(]\s*([^）)]*?)\s*[）)]/g; let m;
+    while((m = re.exec(text))) out.push(bsTianCard({ chars:m[1], py:m[2] }));
+    return bsTianWrap(out);
+  }
+  // ② 词语听写：山坡 学校 飘扬
+  function bsTianCiyu(text){
+    const words = String(text || '').split(/[\s\n]+/).filter(w => bsHanChars(w).length);
+    return bsTianWrap(words.map(w => bsTianCard({ chars:w, wide: bsHanChars(w).length > 2 })));
+  }
+  // ③ 生字注音组词：坡 pō (山坡)(斜坡)
+  function bsTianShengzi(text){
+    const out = []; const re = /([\u3400-\u9FFF])\s*([A-Za-z\u00c0-\u024f]+)\s*((?:[（(][^）)]*[）)]\s*)*)/g; let m;
+    while((m = re.exec(text))){
+      out.push(bsTianCard({ chars:m[1], py:m[2], note:(m[3] || '').replace(/\s+/g, '') }));
+    }
+    return bsTianWrap(out);
+  }
+  // ④ 近反义词：近义词：许多——众多 敬爱——爱戴
+  function bsTianJinfan(text){
+    const out = [];
+    String(text || '').split('\n').forEach(line=>{
+      const t = line.trim(); if(!t) return;
+      const mm = /^([^：:]{2,8})[：:]\s*(.*)$/.exec(t);
+      const tag = mm ? String(mm[1]).replace(/义词$/, '') : '';
+      const rest = mm ? mm[2] : t;
+      rest.split(/\s+/).filter(Boolean).forEach(pr=>{
+        const parts = pr.split(/(?:——|—|－|--|→|⇒|~|～)/).map(x => x.trim()).filter(Boolean);
+        if(parts.length >= 2){
+          out.push(`<div class="yw-tian-card yw-tian-xie bs-tian is-pair">`
+            + (tag ? `<div class="bs-tian-tag">${esc(tag)}</div>` : '')
+            + `<div class="bs-pair-body">${bsTianCells(parts[0])}<span class="bs-pair-arrow">⇄</span>${bsTianCells(parts[1])}</div>`
+            + `</div>`);
+        } else if(bsHanChars(pr).length){
+          out.push(bsTianCard({ chars:pr }));
+        }
+      });
+    });
+    return bsTianWrap(out);
+  }
+  // ⑤ 形近字：坡（山坡） 洁（洁白） / 波（波浪） 结（结果）—— 上下两行按下标配对
+  function bsTianXingjin(text){
+    const lines = String(text || '').split('\n').map(x => x.trim()).filter(Boolean);
+    const rows = lines.map(l=>{
+      const arr = []; const re = /([\u3400-\u9FFF])\s*[（(]([^）)]*)[）)]/g; let m;
+      while((m = re.exec(l))) arr.push({ ch:m[1], word:m[2] });
+      return arr;
+    }).filter(r => r.length);
+    if(!rows.length) return '';
+    const out = [];
+    if(rows.length >= 2){
+      const n = Math.min(rows[0].length, rows[1].length);
+      for(let i = 0; i < n; i++){
+        out.push(`<div class="yw-tian-card yw-tian-xie bs-tian is-pair">`
+          + `<div class="bs-pair-body">`
+          +   `<div class="bs-pair-col">${bsTianCells(rows[0][i].ch)}<div class="bs-tian-note">${esc(rows[0][i].word)}</div></div>`
+          +   `<span class="bs-pair-arrow">≈</span>`
+          +   `<div class="bs-pair-col">${bsTianCells(rows[1][i].ch)}<div class="bs-tian-note">${esc(rows[1][i].word)}</div></div>`
+          + `</div></div>`);
+      }
+    } else {
+      rows[0].forEach(o => out.push(bsTianCard({ chars:o.ch, note:o.word })));
+    }
+    return bsTianWrap(out);
+  }
+  // ⑥ 词语积累：（鲜艳）的服装 / AABB 式词语： 高高兴兴 慌慌张张
+  function bsTianJilei(text){
+    const out = [];
+    String(text || '').split('\n').map(x => x.trim()).filter(Boolean).forEach(line=>{
+      const mm = /^([^：:]{2,14})[：:]\s*(.+)$/.exec(line);
+      if(mm && !/[（(]/.test(mm[1])){
+        out.push(`<div class="bs-tian-sub">${esc(mm[1])}</div>`);
+        String(mm[2]).split(/[\s、]+/).filter(w => bsHanChars(w).length).forEach(w=>{
+          out.push(bsTianCard({ chars:w, wide: bsHanChars(w).length > 2 }));
+        });
+        return;
+      }
+      const re = /[（(]([^）)]{1,6})[）)]([^（(]*)/g; let m; let hit = 0;
+      while((m = re.exec(line))){
+        hit++;
+        out.push(bsTianCard({ chars:m[1], note:(m[2] || '').trim() }));
+      }
+      if(!hit){
+        line.split(/\s+/).filter(w => bsHanChars(w).length).forEach(w=>{
+          out.push(bsTianCard({ chars:w, wide: bsHanChars(w).length > 2 }));
+        });
+      }
+    });
+    return bsTianWrap(out);
+  }
+  // ⑦ 词语解释：①坪坝：平坦的场地 ②敬爱：尊敬热爱
+  function bsTianJieshi(text){
+    const out = [];
+    const re = /([①②③④⑤⑥⑦⑧⑨⑩⑪⑫])\s*([^\s：:①②③④⑤⑥⑦⑧⑨⑩⑪⑫]{1,8})\s*[：:]\s*([^①②③④⑤⑥⑦⑧⑨⑩⑪⑫]*)/g; let m;
+    while((m = re.exec(text))){
+      const note = (m[3] || '').replace(/\s+/g, '').replace(/^[。；;，,、]+/, '');
+      out.push(bsTianCard({ chars:m[2], note, wide: bsHanChars(m[2]).length > 2 }));
+    }
+    // 没有 ①②③ 序号的写法（如「蓑衣 ：用草或棕毛制成…」）走宽松兜底
+    if(!out.length){
+      const re2 = /([^\s：:，,。；;、]{1,6})\s*[：:]\s*([^：:]+)/g; let m2;
+      while((m2 = re2.exec(text))){
+        const note = (m2[2] || '').replace(/\s+/g, '').replace(/^[。；;，,、]+/, '');
+        if(bsHanChars(m2[1]).length) out.push(bsTianCard({ chars:m2[1], note, wide: bsHanChars(m2[1]).length > 2 }));
+      }
+    }
+    return bsTianWrap(out);
+  }
+  function bsTianHtml(h, body){
+    const kind = bsTianKind(h);
+    if(!kind) return '';
+    const text = String(body || '');
+    try{
+      if(kind === '识字表注音')   return bsTianShizi(text);
+      if(kind === '词语听写')     return bsTianCiyu(text);
+      if(kind === '生字注音组词') return bsTianShengzi(text);
+      if(kind === '近反义词')     return bsTianJinfan(text);
+      if(kind === '形近字')       return bsTianXingjin(text);
+      if(kind === '词语积累')     return bsTianJilei(text);
+      if(kind === '词语解释')     return bsTianJieshi(text);
+    }catch(e){}
+    return '';
+  }
+
   function ywBeishu(){
     const data = window.YW_BEISHU || [];
     if(!data.length) return '<div class="yw-comp-head">必背知识</div><div class="col-empty">数据尚未导入</div>';
@@ -20532,9 +20572,11 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       //        不再逐条内容设键；未打卡 □未学 / 已打卡 ✅已学
       const skey = _bsIdx + '::s' + si;
       const secDone = (window.Store && window.Store.isReadingRead) ? window.Store.isReadingRead('ywBeishu', skey) : false;
-      const itemHtml = items.length
+      // R240-2：七类字词小节改用田字格展示；其余小节保持原来的整段文字
+      const tianHtml = bsTianHtml(s.h, s.b);
+      const itemHtml = tianHtml || (items.length
         ? items.map(it=>`<div class="bs-row"><span class="bs-row-text">${esc(it)}</span></div>`).join('')
-        : `<div class="bs-row"><span class="bs-row-text">${esc(s.b||'')}</span></div>`;
+        : `<div class="bs-row"><span class="bs-row-text">${esc(s.b||'')}</span></div>`);
       const titleTxt = s.h || '背诵内容';
       return `
       <div class="bs-sec${s.h?'':' bs-sec-plain'}">
@@ -22082,14 +22124,13 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       <div class="calc-board" data-calc-board>
         <div class="yw-comp-head calc-head">
           <span class="calc-head-title">🧮 计算小超市</span>
+          <span class="yw-sub calc-head-sub">每日一练 · ${dateLabel}</span>
           <span class="calc-head-tools">
             <button type="button" class="calc-bank-btn calc-bank-inline-btn" data-calc-bank title="题库：编辑 · 添加 · 删除计算题">📚 题库（${bankCount} 题）</button>
             <button type="button" class="calc-bank-btn calc-bank-inline-btn" data-calc-book title="已做本：每日 22:00 自动收录当天答对题和订正完成题">📒 已做本（今日 ${bookToday}）</button>
             <button type="button" class="calc-bank-btn calc-bank-inline-btn" data-calc-wrong title="错题本：批改答错的题自动收进来，订正完成后 22:00 收录进已做本">📕 错题本（${wrongCount}）</button>
           </span>
         </div>
-        <!-- R239：每日一练说明另起一行、靠左（不再和按键挤在同一行） -->
-        <div class="yw-sub calc-head-sub">每日一练 · ${dateLabel}</div>
         ${done ? '' : streakLine}
         ${body}
       </div>`;
@@ -29022,38 +29063,31 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
           box.appendChild(canvas);
         });
       }).catch(()=>{
-        box.innerHTML = '<embed type="application/pdf" src="' + esc(url) + '#page=1&toolbar=0&navpanes=0&view=FitH" title="PDF">';
+        // 渲染失败时给一个固定大小的小图标，绝不撑大图块
+        box.classList.add('is-icon');
+        box.innerHTML = '<div class="math-pdf-icon">📄<span>PDF</span></div>';
       });
     });
   }
-  // 详情弹窗：逐页渲染整份 PDF（最多 60 页，避免超长文件卡顿）
+  // R240-4：详情弹窗改用浏览器原生阅读器 —— iframe 直接加载 Blob objectURL
+  // 之前的 PDF.js canvas 方案在部分设备上 worker 起不来，弹窗空白；原生阅读器最稳（电脑 / iPad 都能翻页）
   function renderMathPdfPages(id, url){
     const host = document.getElementById('mathPdfPages');
-    if(!host) return;
-    host.innerHTML = '<div class="math-pdf-hint">正在载入 PDF 内容…</div>';
-    if(!url){ host.innerHTML = '<div class="math-pdf-hint">文件还没加载好，请稍后重试～</div>'; return; }
-    _pdfDoc(id, url).then(pdf=>{
-      const total = Math.min(pdf.numPages || 0, 60);
-      host.innerHTML = '';
-      let chain = Promise.resolve();
-      for(let i = 1; i <= total; i++){
-        chain = chain.then(()=>{
-          const w = Math.max((host.clientWidth || 0) - 4, 480);
-          return _pdfPageCanvas(pdf, i, w).then(canvas=>{
-            const wrap = document.createElement('div');
-            wrap.className = 'math-pdf-page';
-            wrap.setAttribute('data-pdf-page', String(i));
-            wrap.appendChild(canvas);
-            host.appendChild(wrap);
-          }).catch(()=>{});
-        });
+    const frame = document.getElementById('mathPdfFrame');
+    const src = String(url || '');
+    if(!src){
+      if(frame){ frame.hidden = true; frame.removeAttribute('src'); }
+      if(host){
+        host.hidden = false;
+        host.innerHTML = '<div class="math-pdf-hint">文件还没加载好，请稍后再点一次；也可点下方「下载 / 打开 PDF」查看。</div>';
       }
-      return chain.then(()=>{
-        if(!host.children.length) host.innerHTML = '<div class="math-pdf-hint">没能渲染这份 PDF，可点下方「下载 / 打开 PDF」查看。</div>';
-      });
-    }).catch(()=>{
-      host.innerHTML = '<div class="math-pdf-hint">没能渲染这份 PDF，可点下方「下载 / 打开 PDF」查看。</div>';
-    });
+      return;
+    }
+    if(frame){
+      frame.hidden = false;
+      frame.setAttribute('src', src + '#view=FitH');
+    }
+    if(host){ host.hidden = true; host.innerHTML = ''; }
   }
   function mathLectureBadge(st){
     if(st === 'mastered') return '<span class="mgb mgb-ok">✅已学</span>';
@@ -29343,16 +29377,23 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         const list = (window.Store.getMathTypePdfs ? window.Store.getMathTypePdfs(mathTypeSel) : []);
         const p = list.find(x => String(x.id) === String(id));
         if(!p) return;
-        const frame = document.getElementById('mathPdfPages');
         const nameEl = document.getElementById('mathPdfName');
         const dl = document.getElementById('mathPdfDownload');
         const pdfSrc = p.url || p.data || '';
         if(nameEl) nameEl.textContent = p.name + '（' + fmtPdfSize(p.size) + '）';
         if(dl){ dl.href = pdfSrc; dl.setAttribute('download', p.name || '讲义.pdf'); }
-        if(frame) frame.innerHTML = '<div class="math-pdf-hint">正在载入 PDF 内容…</div>';
         showModal('#modalMathPdf');
-        // R239：直接把每一页渲染出来，打开即见内容（不再显示空白插件框）
+        // R240-4：iframe 原生阅读器直接展示文件页面内容
         renderMathPdfPages(p.id, pdfSrc);
+        // 兜底：万一启动水合还没完成（url 为空），这里再拉一次 IndexedDB
+        if(!pdfSrc && window.Store.initPdfStore){
+          Promise.resolve(window.Store.initPdfStore()).then(()=>{
+            const l2 = window.Store.getMathTypePdfs ? window.Store.getMathTypePdfs(mathTypeSel) : [];
+            const p2 = l2.find(x => String(x.id) === String(id));
+            const s2 = p2 ? (p2.url || p2.data || '') : '';
+            if(s2) renderMathPdfPages(id, s2);
+          }).catch(()=>{});
+        }
         return;
       }
       // R234-4：点讲义图 → 打开讲义弹窗（编辑 / 未学·已学 / 需巩固），交互与 2026 春二 A+ 题目卡一致
