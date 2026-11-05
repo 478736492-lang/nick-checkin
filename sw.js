@@ -37,7 +37,6 @@
  *     · 预缓存加 PRECACHE_TIMEOUT 超时保护，到点先激活，不再阻塞；
  *     · 完全离线且确实无缓存时，给一个可读的提示页（带「重试」按钮），不再返回 503 纯文本。
  */
-var CACHE_NAME = 'zoo-checkin-v1';
 var PRECACHE = ['./', './index.html'];
 var NAV_TIMEOUT = 2500;      // R119.1：有缓存时的快速回退窗口（原 6000ms 偏长）
 var HARD_TIMEOUT = 30000;    // R119.1：无缓存且网络长时间无响应时的兜底，避免无限转圈
@@ -45,12 +44,15 @@ var PRECACHE_TIMEOUT = 25000; // R119.1：预缓存最多占用这么久，超�
 /* R70：构建指纹。部署脚本会把 __BUILD_STAMP__ 替换为当期 index.html 的 sha256 前 12 位。
  * 作用：只在站点内容真的变化时，sw.js 本身才变化，从而触发浏览器 SW 更新流程
  * （install → 重新预缓存新 index.html → installed → 页面自动重载到新版）。 */
-var BUILD = '4b09989350fa';
+var BUILD = 'e4d3bf89e516';
+/* R244-6：缓存名绑定构建指纹 —— 版本更新时 activate 会清掉上一版缓存，
+ * 避免外置种子脚本停留在旧内容（表现为百科等板块数据「被清零」）。 */
+var CACHE_NAME = 'zoo-checkin-v1-' + BUILD;
 /* R93：版本号与版本更新时间。部署脚本会把 __APP_VERSION__ 替换为当期轮次号（如 R93）、
  * __BUILD_TIME__ 替换为本次部署时间（北京时间，格式 YYYY-MM-DD HH:mm）。
  * 用途：「设置中心 → 版本与更新」显示「当前版本 + 更新时间」，点「检查更新」后即为最新读数。 */
-var APP_VERSION = 'R243';
-var BUILD_TIME = '2026-11-05 09:24';
+var APP_VERSION = 'R244';
+var BUILD_TIME = '2026-11-05 12:24';
 
 self.addEventListener('install', function (e) {
   self.skipWaiting();
@@ -180,6 +182,29 @@ self.addEventListener('fetch', function (e) {
         resolve(cachedShell());
       });
     }));
+    return;
+  }
+
+  // ---- R244-6：外置种子脚本网络优先（种子必须与当前 index.html 同版本）----
+  // 旧实现一律 cache-first：新 index.html 上线后仍会命中上一版的 seed_*.js，
+  // 甚至把离线时的 503 'offline' 文本当成脚本执行，导致 window.*_SEED 缺失、
+  // 百科 / 题库 / 必背知识等板块显示为空，以及依赖数据的打卡交互失效。
+  if(/\.js$/.test(url.pathname) && url.pathname.indexOf('/assets/seed_') >= 0){
+    e.respondWith(
+      fetch(req).then(function(res){
+        if(res && res.ok){
+          var copy = res.clone();
+          caches.open(CACHE_NAME).then(function(c){ c.put(req, copy); }).catch(function(){});
+          return res;
+        }
+        return caches.match(req).then(function(hit){ return hit || res; });
+      }).catch(function(){
+        return caches.match(req).then(function(hit){
+          return hit || new Response('/* seed offline */',
+            { status:200, headers:{'Content-Type':'application/javascript; charset=utf-8'} });
+        });
+      })
+    );
     return;
   }
 
