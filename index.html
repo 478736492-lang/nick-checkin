@@ -8241,6 +8241,30 @@ button:active:not(:disabled){filter:brightness(.96)}
   animation:lightning 1.5s linear infinite;z-index:2;
 }
 
+/* ============================================================
+   R246-3：点击响应 —— 扩大「即时响应区」覆盖，降低触摸延迟
+   ============================================================ */
+/* 1) 一切承载点击的卡片/条目都按可点击元素处理：去掉 iOS 双击缩放等待与点击高亮。
+      此前只覆盖了 button/.pbtn，卡片类（主题卡 / 第二层 / 第三层卡片 / 列表项）仍是 div，
+      移动端会保留约 300ms 的双击判定窗口，表现为「按下去要愣一下才响应」。 */
+.nw-card,.wp-card,.card,.sub-card,.sub-tab,.kb-card,.kb-utab,.kw-lesson-card,
+.math-card,.math-type-item,.math-sub-tag,.math-sub-tag *,.math-type-item *,
+.mn-note-card,.reading-item,.kp-img-card,.sz-grid-card,.sz-detail-chip,.xia-item,
+.calc-cal-cell,.calc-cal-btn,.calc-bank-btn,.calc-check,.calc-addbook,.calc-checkin,
+.kp-add-btn,.kp-check-btn,.kp-del-mode-btn,.gal-nav,[data-gal-prev],[data-gal-next],
+select,input,textarea,label,a{
+  touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+}
+/* 2) 按键与卡片不做文本选择（长按不再弹选区，点击意图更干净）；正文区域不受影响
+      —— 题目卡 .math-card 例外：里面是长题面，家长可能需要选中复制，保持可选中 */
+button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-utab,
+.kw-lesson-card,.math-type-item,.math-sub-tag,.mn-note-card,.calc-cal-cell{
+  -webkit-user-select:none;user-select:none;
+}
+/* 3) 第三层卡片（题型卡 / 题目卡内操作区）按压反馈更轻更快，与「层级越深声音越轻」呼应 */
+.math-type-item:active,.math-sub-tag:active,.calc-cal-cell:active{transform:scale(.985)}
+.math-type-item,.math-sub-tag,.calc-cal-cell{transition:transform .08s ease-out,background-color .12s ease-out}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -11368,11 +11392,23 @@ button:active:not(:disabled){filter:brightness(.96)}
   };
 
   // ----- 加载与保存 -----
+  // R246-3：读取缓存 —— 存档是几 MB 的 JSON，而全站每次渲染/每次点击都会调用 load() 几十次
+  //         （app.js 67 处 + store.js 内部 300+ 处）。此前每次都 getItem + JSON.parse + 跑完 60 余条迁移，
+  //         表现为「点击后要顿一下才响应」。这里以「原始串」为键做缓存：串没变就直接复用上次解析结果。
+  //         好处有三：①省掉整站最贵的一次 JSON.parse；②同一会话内迁移只跑一次；
+  //         ③即便 localStorage 写满（save 失败）也不会每次 load 都重复导入种子（夏三 S 编辑键失效的根因）。
+  let _loadCacheRaw = null, _loadCacheSt = null, _loadCacheOK = false;
+  function _loadCachePut(st, raw){
+    _loadCacheSt = st; _loadCacheOK = true;
+    try{ _loadCacheRaw = (raw === undefined) ? localStorage.getItem(KEY) : raw; }catch(e){ _loadCacheRaw = null; }
+  }
   function load(){
     if(_staging && _staged) return _staged; // R131-2：暂存态下直接返回草稿，编辑期间不落库
     let st; let raw = null;
+    try{ raw = localStorage.getItem(KEY); }catch(e){ raw = null; }
+    // R246-3：命中缓存（原始串未变）→ 直接返回，跳过解析与全部迁移
+    if(_loadCacheOK && raw === _loadCacheRaw) return _loadCacheSt;
     try{
-      raw = localStorage.getItem(KEY);
       st = raw ? JSON.parse(raw) : null;
     }catch(e){
       st = null;
@@ -11442,7 +11478,7 @@ button:active:not(:disabled){filter:brightness(.96)}
     if(!st.settings) st.settings = {pin:''};
     if(st.settings && st.settings.pin === undefined) st.settings.pin = '';
     // R51-2：点击音效配置（导航栏/主题卡/次级主题卡/打卡），缺省回退默认档
-    if(!st.clickSfx) st.clickSfx = {nav:'f', theme:'f', sub:'f', checkin:'c'};
+    if(!st.clickSfx) st.clickSfx = {nav:'a', theme:'l', sub:'k', third:'h', checkin:'c'};
     // R245-5：全平台按键点击音效统一 —— 一次性把「导航 / 主题卡 / 次级主题卡」三档对齐同一预设，
     //          打卡奖励音（checkin）保持独立；老存档里各档不一致的历史配置一并纠正。
     if(!st._clickSfxUnifyR245){
@@ -11450,6 +11486,17 @@ button:active:not(:disabled){filter:brightness(.96)}
       st._clickSfxUnifyR245 = true;
       save(st);
     }
+    // R246-2：点击音效按「卡片层级」区别化 —— 一次性写入四档差异化的默认预设（老存档同样升级）：
+    //         导航=清脆滴答 a / 主题卡=星光闪 l / 次级主题卡=气泡啵 k / 三级主题卡=木鱼嗒 h / 打卡=上行琶音 c。
+    //         音高由高到低、音色由亮到闷，形成「层级越深、声音越轻」的层次感。
+    //         用户之后在设置中心的自定义选择不会被覆盖（只跑一次）。
+    if(!st._clickSfxLevelsR246){
+      st.clickSfx = Object.assign({}, st.clickSfx, { nav:'a', theme:'l', sub:'k', third:'h', checkin: st.clickSfx && st.clickSfx.checkin ? st.clickSfx.checkin : 'c' });
+      st._clickSfxLevelsR246 = true;
+      save(st);
+    }
+    if(st.clickSfx && typeof st.clickSfx.third === 'undefined') st.clickSfx.third = 'h';
+    if(st.clickSfx && st.clickSfx.sub === 'i' && st._clickSfxLevelsR246) st.clickSfx.sub = 'k';
     // R150-5：系统默认关闭所有按键音效；是否发声交由用户在设置中心自主开启（soundOn 缺省 false）
     if(typeof st.soundOn === 'undefined') st.soundOn = false;
     // v8：题库默认 2 道公因数题（含详细解答过程）；重建后立即持久化，避免每次 load() 生成新 id
@@ -11487,21 +11534,71 @@ button:active:not(:disabled){filter:brightness(.96)}
     }
     // R242-3：乐读数学「2026 夏三 S」题目幂等导入（源：乐读数学2026夏三S.docx，43 题 / 13 张配图）。
     // 标记 _mathQ3sSeedV1；按 type|desc 去重，老存档只补缺失题，不清空已有题库。
+    // R246-1：本段此前用随机 uid() 作为题目 id —— 一旦 localStorage 写满（save 返回 false），
+    //         `_mathQ3sSeedV1` 标记永远存不下去，于是**每次 load() 都会重新导入一遍并生成全新的随机 id**；
+    //         页面用第 1 次 load() 的 id 渲染，点「✏️ 编辑」时 openMathEditFor 内部又调用一次 load()，
+    //         拿到的已是另一批 id → 报「数据已不存在」。夏三 S 是最近一批、题量最大的板块，因此最明显。
+    //         现改为「按种子下标 + 题型标题」生成确定性 id，重复导入也不会变，编辑键即恢复可用。
     if(!st._mathQ3sSeedV1 && Array.isArray(window.MATH_Q3S_SEED) && window.MATH_Q3S_SEED.length){
       const existing2 = new Set((st.mathProblems||[]).map(m => `${m.type}|${m.desc||''}`));
+      const existingIds = new Set((st.mathProblems||[]).map(m => String(m.id)));
       let added2 = 0;
       // 倒序 unshift：保证最终数组顺序与种子声明顺序一致（第1题在前）
       for(let i = window.MATH_Q3S_SEED.length - 1; i >= 0; i--){
         const s = window.MATH_Q3S_SEED[i];
         const key = `${s.type}|${s.desc||''}`;
         if(existing2.has(key)) continue;
-        st.mathProblems.unshift({ id: uid(), type: s.type, title: s.title, desc: s.desc, solution: s.solution, createdAt: Date.now(), mastery: s.mastery || 'bank' });
+        const qid = q3sProblemId(i, s);
+        if(existingIds.has(qid)) continue;
+        st.mathProblems.unshift({ id: qid, type: s.type, title: s.title, desc: s.desc, solution: s.solution, createdAt: Date.now(), mastery: s.mastery || 'bank' });
+        existingIds.add(qid); existing2.add(key);
         added2++;
       }
       st._mathQ3sSeedV1 = true;
       save(st);
       if(added2) console.log('[乐读数学] 已导入 2026 夏三 S 原题 ' + added2 + ' 道');
     }
+    // R246-1：夏三 S 题目的确定性 id（种子下标 + 题型标题哈希）—— 与导入顺序/次数无关，可稳定复现
+    function q3sProblemId(i, s){
+      const str = String((s && s.type) || '') + '|' + String((s && (s.title || s.desc)) || '');
+      let h = 5381;
+      for(let k=0;k<str.length;k++) h = ((h * 33) ^ str.charCodeAt(k)) >>> 0;
+      return 'q3s_' + i + '_' + h.toString(36);
+    }
+    // R246-1：自愈 —— 老存档里的夏三 S 题目做三件事（全部幂等）：
+    //   ① 按「题型 + 标题」去重：此前 save 失败会让导入标记存不下去，每次 load() 都重灌一遍，
+    //      同一道题在库里堆出多条、id 各不相同的副本；保留第一条、删掉后续副本。
+    //   ② 把保留下来的那条的 id 改写为确定性 id（q3s_<下标>_<哈希>），从此与导入次数完全无关。
+    //   ③ 补全 id 缺失/为空的题（历史数据里出现过）。
+    (function healQ3sIds(){
+      if(!Array.isArray(st.mathProblems) || !Array.isArray(window.MATH_Q3S_SEED)) return;
+      const seedByKey = {};
+      window.MATH_Q3S_SEED.forEach((s, i) => { seedByKey[`${s.type}|${s.title || ''}`] = q3sProblemId(i, s); });
+      let fixed = 0;
+      const seen = Object.create(null);
+      const kept = [];
+      st.mathProblems.forEach(m => {
+        if(!m) return;
+        const key = `${m.type}|${m.title || ''}`;
+        const nid = seedByKey[key];
+        if(nid){
+          // 已保留过同题 → 这是重复副本，丢弃
+          if(seen[key]){ fixed++; return; }
+          seen[key] = true;
+          // 保留的那条：id 不是确定性 id 就改写（老存档随机 uid / 数字 id 一并纠正）
+          if(String(m.id) !== nid){ m.id = nid; fixed++; }
+          kept.push(m);
+          return;
+        }
+        // 非夏三 S 题目：仅补全空 id
+        if(m.id === undefined || m.id === null || m.id === ''){ m.id = uid(); fixed++; }
+        kept.push(m);
+      });
+      if(fixed){
+        st.mathProblems = kept;
+        save(st);
+      }
+    })();
     // R244-4：删除「盈亏问题一 · 第2题」重复题（新老存档都清一次，幂等）
     if(migrateQ3sDup(st)) save(st);
     // v9：旧 type（'manual'/'photo'/'voice'/'拍照题'/'手动题'）归一映射到 v9 题型分类
@@ -11926,6 +12023,7 @@ button:active:not(:disabled){filter:brightness(.96)}
     if(!Array.isArray(st.customList.sucai)) st.customList.sucai = [];
     if(!Array.isArray(st.customList.gushi)) st.customList.gushi = [];
     if(!st.kewenLearned) st.kewenLearned = []; // V71：课文朗读已学习编号数组
+    _loadCachePut(st);   // R246-3：解析 + 迁移完成后写入缓存
     return st;
   }
   // R126 安全加固：存储写入容错 —— localStorage 配额超限（如导入大量图片 dataURL）时，
@@ -11935,11 +12033,16 @@ button:active:not(:disabled){filter:brightness(.96)}
   function save(st){
     if(_staging){ _staged = st; return true; } // R131-2：暂存态下仅写入草稿，不落库
     try{
-      localStorage.setItem(KEY, JSON.stringify(st));
+      const raw = JSON.stringify(st);
+      localStorage.setItem(KEY, raw);
       _saveError = '';
+      _loadCachePut(st, raw);   // R246-3：写成功后同步缓存，下一次 load() 无需再解析
       return true;
     }catch(e){
       _saveError = (e && (e.name === 'QuotaExceededError' || e.code === 22 || /quota/i.test(String((e && e.message) || '')))) ? 'quota' : ((e && e.name) || 'error');
+      // R246-3：写失败（多见于配额超限）时，内存态仍以本次 st 为准 —— 否则会出现
+      //        「页面按新数据渲染、点击时 load() 又读回旧数据」两套真相（夏三 S 编辑键失效即此现象）。
+      _loadCachePut(st);
       return false;
     }
   }
@@ -12670,7 +12773,7 @@ button:active:not(:disabled){filter:brightness(.96)}
     save(st);
     return st.shGushiLearned.slice();
   }
-  function resetData(){ localStorage.removeItem(KEY); return load(); }
+  function resetData(){ _loadCacheOK = false; _loadCacheRaw = null; _loadCacheSt = null; localStorage.removeItem(KEY); return load(); }
 
   // ----- 档案重新计算 -----
   function recompute(st){
@@ -18251,6 +18354,29 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     const t=$('#toast'); t.textContent=msg; t.hidden=false;
     clearTimeout(t._t); t._t=setTimeout(()=>t.hidden=true,1800);
   };
+  // R246-3：存档写入失败（绝大多数是 localStorage 配额超限）时给一次可见提示。
+  // 此前 save() 只是把错误记进 _saveError 就返回 false，全站没有任何地方读它 ——
+  // 于是「写不进去」完全静默，表现为「改了没生效 / 某些题点编辑说数据不存在」这类难以定位的现象。
+  // 这里包一层 save：失败时提示一次（每会话最多一次，不刷屏），并把原因指向可清理的位置。
+  try{
+    if(S && typeof S.save === 'function' && !S.__saveGuardR246){
+      const _origSave = S.save;
+      S.save = function(st){
+        const ok = _origSave.apply(S, arguments);
+        if(!ok){
+          if(!window.__saveWarnR246){
+            window.__saveWarnR246 = true;
+            const why = (S.getSaveError && S.getSaveError && S.getSaveError()) || '';
+            try{ toast(why === 'quota'
+              ? '⚠️ 存储空间已满：本次改动没能保存，请到「设置中心」清理一些图片后重试'
+              : '⚠️ 本次改动没能保存，请刷新页面后重试'); }catch(e){}
+          }
+        }
+        return ok;
+      };
+      S.__saveGuardR246 = true;
+    }
+  }catch(e){}
   // R88：弹窗堆叠层级 —— 后打开的弹窗永远盖在之前打开的之上（修复「新增任务/编辑弹窗显示在下层」「设置中心嵌套弹窗被遮挡」）
   let _modalZ = 1000;
   const showModal = sel=>{ const el=$(sel); if(!el) return; _modalZ = Math.max(_modalZ,1000)+1; el.style.zIndex = _modalZ; el.hidden=false; };
@@ -29547,26 +29673,40 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   // 此前委托里用 `x.id === dataset.mathEdit` 严格比较且找不到就静默 return ——
   // id 类型不一致（旧存档数字 id）或题目已迁移时会表现为「点了编辑毫无反应」。
   // 这里统一按字符串比较，并加一层「按题面文本反查」兜底；最终仍找不到时给出明确提示。
+  // R246-1：夏三 S 板块的编辑键曾全部报「数据已不存在」—— 根因是 id 不稳定（详见 store.js 导入段的注释）。
+  //         除 store.js 侧改确定性 id 外，这里再加两道与 id 无关的兜底：
+  //         ①按卡片上的「题型 + 标题」精确定位；②按「题型 + 归一化题面」定位。
+  //         归一化时会去掉 [[IMG:...]] 标记与全部空白 —— 渲染后的 textContent 里图片标记是丢掉的，
+  //         原实现直接拿 textContent 与 desc 比，遇到带配图的题（夏三 S 有 15 张）必定比对不上。
   let _mathEditBusyAt = 0;
-  function openMathEditFor(rawId){
+  function mathQTextNormalize(txt){
+    return String(txt == null ? '' : txt)
+      .replace(/\[\[IMG:[\s\S]*?\]\]/g, '')   // 去内嵌图标记
+      .replace(/^\s*题目\s*/, '')            // 去卡片上的「题目」标签
+      .replace(/\s+/g, '')                   // 去全部空白（渲染后换行/缩进会变形）
+      .trim();
+  }
+  function openMathEditFor(rawId, btnEl){
     const id = String(rawId == null ? '' : rawId);
-    let m = null;
-    try{
-      const st = S.load();
-      const list = (st && st.mathProblems) || [];
-      m = list.find(x => x && String(x.id) === id) || null;
-    }catch(e){}
-    if(!m){
-      // 兜底：按卡片上展示的题面文本反查（旧存档 id 可能重复/缺失）
-      try{
-        const card = document.querySelector('.math-card[data-math-id="' + id.replace(/"/g, '\\"') + '"]');
-        const qEl = card ? card.querySelector('.math-q') : null;
-        const qTxt = (qEl ? qEl.textContent : '').replace(/^\s*题目\s*/, '').trim();
-        if(qTxt){
-          const list = (S.load() || {}).mathProblems || [];
-          m = list.find(x => x && String(x.desc || x.title || '').trim() === qTxt) || null;
-        }
-      }catch(e){}
+    const list = (()=>{ try{ return (S.load() || {}).mathProblems || []; }catch(e){ return []; } })();
+    let m = list.find(x => x && String(x.id) === id) || null;
+    // 兜底 A：按卡片属性上的「题型 + 标题」定位（与 id 完全解耦）
+    const card = (btnEl && btnEl.closest) ? btnEl.closest('.math-card')
+      : document.querySelector('.math-card[data-math-id="' + id.replace(/"/g, '\\"') + '"]');
+    if(!m && card){
+      const cType = card.getAttribute('data-math-type') || '';
+      const cTitle = card.getAttribute('data-math-title') || '';
+      if(cTitle) m = list.find(x => x && (x.type || '') === cType && String(x.title || '') === cTitle) || null;
+    }
+    // 兜底 B：按「题型 + 归一化题面」定位
+    if(!m && card){
+      const qEl = card.querySelector('.math-q');
+      const qTxt = mathQTextNormalize(qEl ? qEl.textContent : '');
+      if(qTxt){
+        const cType = card.getAttribute('data-math-type') || '';
+        m = list.find(x => x && (x.type || '') === cType && mathQTextNormalize(x.desc || x.title || '') === qTxt) || null;
+        if(!m) m = list.find(x => x && mathQTextNormalize(x.desc || x.title || '') === qTxt) || null;
+      }
     }
     if(!m){ toast('这道题的数据已不存在，刷新页面后再试一次～'); return false; }
     try{ openMathManualModal(m); return true; }
@@ -29586,7 +29726,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       _mathEditBusyAt = now;
       e.__mathEditHandled = true;
       e.preventDefault();
-      openMathEditFor(btn.getAttribute('data-math-edit'));
+      openMathEditFor(btn.getAttribute('data-math-edit'), btn);
     }, true);
   }
   function mathCardHtml(m){
@@ -29599,7 +29739,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     const tag = mastered ? '<span class="math-mastered-tag">✅ 已学 +1⭐</span>'
       : need ? '<span class="math-notmastered-tag">🔄 需巩固</span>'
       : '';
-    return `<div class="math-card status-${status}" data-math-id="${m.id}">
+    return `<div class="math-card status-${status}" data-math-id="${m.id}" data-math-type="${esc(typeName)}" data-math-title="${esc(m.title || '')}">
       <div class="math-head">
         <span class="math-type-chip">${esc(typeName)}</span>
         ${tag}
@@ -34625,11 +34765,14 @@ function renderKMAdmin(){
       else run();
     }catch(_){ }
   }
-  // R245-5：全平台按键点击音效统一 —— 导航 / 主题卡 / 次级主题卡三档统一为同一预设「轻点」，
-  // 点击任何一级按键听到的都是同一个声音；打卡（checkin）保留独立的庆祝琶音，不受影响。
-  function defaultClickSfx(){ return { nav:'f', theme:'f', sub:'f', checkin:'c' }; }
+  // R245-5：全平台按键点击音效统一 —— 导航 / 主题卡 / 次级主题卡三档统一为同一预设「轻点」。
+  // R246-2：改为「按卡片层级区别化」—— 导航键 / 主题卡 / 次级主题卡 / 三级主题卡 四档各用不同预设：
+  //         音高由高到低、音色由亮到闷（导航最清脆 → 第三档最轻短），点得越深声音越轻；
+  //         打卡（checkin）保留独立的庆祝琶音。四档均可在「设置中心 · 系统设置 · 点击音效设置」里单独更换/试听。
+  const SFX_SLOTS = ['nav', 'theme', 'sub', 'third', 'checkin'];
+  function defaultClickSfx(){ return { nav:'a', theme:'l', sub:'k', third:'h', checkin:'c' }; }
   // 读取某槽位当前音效预设 id（缺省回退默认）
-  function getClickSfx(slot){ const st=(window.Store&&window.Store.load)?window.Store.load():null; const cfg=(st&&st.clickSfx)||defaultClickSfx(); return cfg[slot] || (slot==='checkin'?'c':'b'); }
+  function getClickSfx(slot){ const st=(window.Store&&window.Store.load)?window.Store.load():null; const cfg=(st&&st.clickSfx)||defaultClickSfx(); return cfg[slot] || defaultClickSfx()[slot] || 'f'; }
   // 播放某槽位音效
   function isSoundOn(){ try{ const st=(window.Store&&window.Store.load)?window.Store.load():null; return !!(st && st.soundOn); }catch(e){ return false; } }
   // R150-5：系统默认不播放任何按键音效；仅当用户在设置中心主动开启 soundOn 后才发声
@@ -34642,26 +34785,41 @@ function renderKMAdmin(){
     st.clickSfx = st.clickSfx || defaultClickSfx(); st.clickSfx[slot] = id;
     if(window.Store&&window.Store.save) window.Store.save(st);
   }
-  // 全局点击音效分发（导航栏/主题卡/次级主题卡/打卡），注册一次
+  // 全局点击音效分发（导航栏 / 主题卡 / 次级主题卡 / 三级主题卡 / 打卡），注册一次
   // R133-2：单次物理点击去重 —— 同一事件对象只触发一个音效，杜绝「单个按键叠加多个音效」的重复播放
+  // R246-2：按卡片层级判定槽位（见 sfxSlotOf），四档差异化发声
+  function sfxSlotOf(t){
+    // 打卡类：各自 handler 已调用 playCheckinSound（已路由到 playClickSfx('checkin')），此处跳过避免重复
+    // R155-1：补齐「新世界」各子页内部打卡键选择器，杜绝「内部按键音效重复触发（双音效）」
+    if(t.closest('[data-checkin], .ri-checkin-btn, [data-ri-checkin], .kw-checkin, .checkin-btn, [data-kw-checkin], .math-btn-mastery, .math-btn-need, [data-sfx-checkin], [data-bs-checkin-sec], [data-kw-learn-toggle], [data-sh-learn], [data-suzhi-checkin], [data-en-oxford-theme], [data-en-essay-done], [data-kp-card], .sc-card, .sh-poem-card, .sz-grid-card[data-sz-card]')) return null;
+    // ① 导航键（含「返回」键）：R241-5 起返回键也必须发声，此前它不在任何分支里 → 真正的返回点击一声都没有
+    if(t.closest('.nav-btn[data-page], [data-go], [data-nw-back], .br-back, [data-sfx="nav"]')) return 'nav';
+    // ② 显式层级标注优先（便于后续逐个页面精调，不必改分发逻辑）
+    const marked = t.closest('[data-sfx-level]');
+    if(marked){
+      const lv = marked.getAttribute('data-sfx-level');
+      if(lv === 'nav' || lv === 'theme' || lv === 'sub' || lv === 'third') return lv;
+    }
+    // ③ 一级主题卡（板块入口大卡）
+    if(t.closest('.nw-card, .wp-card, .card, .mn-note-card, .yw-round-btn, .kw-acc-head, [data-sfx="theme"]')) return 'theme';
+    // ④ 二级（次级）主题卡：单元 / lesson / 专区子页 / 板块筛选卡
+    if(t.closest('.kw-lesson-card, .kb-utab, .kb-card, .sub-card, .sub-tab, .math-sub-tag, .math-filter-btn, [data-sfx="sub"]')) return 'sub';
+    // ⑤ 三级主题卡与其余一切可点按键（题型卡 / 题目卡操作 / 弹窗按键 / chip / 列表项 / 日历格…）
+    if(t.closest('button, .pbtn, [role="button"], [data-close], .math-type-item, .math-add-card-btn, .math-del-card-btn, .math-notecard-add-btn, .math-btn-edit, .kp-add-btn, .kp-del-mode-btn, .kp-check-btn, .calc-bank-btn, .calc-cal-btn, .calc-cal-nav, .calc-cal-today, .calc-cal-cell, .calc-check, .calc-addbook, .calc-checkin, .xia-item, .sz-detail-chip, .gal-nav, [data-gal-prev], [data-gal-next]')) return 'third';
+    return null;
+  }
   function onGlobalSfxClick(e){
     if(e && e.__sfxHandled) return;
     if(e) e.__sfxHandled = true;
     // R241-5：只对「真人点击」发声。页面自己用 el.click() 触发的合成点击（如新世界渲染时
     // 自动选中各专区默认子页 renderYuwenPage/renderSlotPage）不该出声，否则一次点击会被叠加 4 声。
     if(e && e.isTrusted === false) return;
+    // R246-3：音效总开关关闭时直接退出 —— 此前即便静音，每次点击仍要跑完 5 条 closest()
+    //         大选择器（几十个类名），全站每次点击都白付这份开销，是「点了没反应/迟钝」的隐性来源之一。
+    if(!isSoundOn()) return;
     const t = e.target; if(!t || !t.closest) return;
-    // 打卡类：各自 handler 已调用 playCheckinSound（已路由到 playClickSfx('checkin')），此处跳过避免重复
-    // R155-1：补齐「新世界」各子页内部打卡键选择器，杜绝「内部按键音效重复触发（双音效）」
-    if(t.closest('[data-checkin], .ri-checkin-btn, [data-ri-checkin], .kw-checkin, .checkin-btn, [data-kw-checkin], .math-btn-mastery, .math-btn-need, [data-sfx-checkin], [data-bs-checkin-sec], [data-kw-learn-toggle], [data-sh-learn], [data-suzhi-checkin], [data-en-oxford-theme], [data-en-essay-done], [data-kp-card], .sc-card, .sh-poem-card, .sz-grid-card[data-sz-card]')) return;
-    // R241-5：返回键（[data-nw-back] / .br-back）也归「导航」槽位——此前它不在任何分支里，
-    //        真正的返回点击其实一声都没有，用户听到的 4 声全来自重渲染时的合成点击。
-    if(t.closest('.nav-btn[data-page], [data-go], [data-nw-back], .br-back')){ playClickSfx('nav'); return; }
-    if(t.closest('.kw-lesson-card, .kb-utab, .kb-card, .sub-card, .sub-tab, [data-sfx="sub"]')){ playClickSfx('sub'); return; }
-    if(t.closest('.yw-round-btn, .nw-card, .wp-card, .card, .mn-note-card, [data-sfx="theme"], .kw-acc-head')){ playClickSfx('theme'); return; }
-    // R245-5：兜底 —— 其余一切可点击按键（弹窗按键 / 筛选 chip / 功能小块 / 列表项 / 日历格…）
-    //          统一走同一档，保证「各级按键」点击音效完全一致（三档预设已统一为同一声音）。
-    if(t.closest('button, .pbtn, [role="button"], .math-type-item, .math-sub-tag, .math-filter-btn, .math-add-card-btn, .math-del-card-btn, .math-notecard-add-btn, .math-btn-edit, .kp-add-btn, .kp-del-mode-btn, .kp-check-btn, .calc-bank-btn, .calc-cal-btn, .calc-cal-nav, .calc-cal-today, .calc-cal-cell, .calc-check, .calc-addbook, .calc-checkin, .xia-item, .sz-detail-chip')){ playClickSfx('sub'); return; }
+    const slot = sfxSlotOf(t);
+    if(slot) playClickSfx(slot);
   }
   function playCheckinSound(){ try{ playClickSfx('checkin'); }catch(e){} }
   window.playCheckinSound = playCheckinSound;
@@ -35776,7 +35934,8 @@ function renderKMAdmin(){
       box.id = 'sfxSettingsBlock'; box.className = 'sfx-settings-block';
       body.appendChild(box);
     }
-    const slots = [['nav','导航栏'],['theme','主题卡'],['sub','次级主题卡'],['checkin','打卡']];
+    // R246-2：四档卡片层级 + 打卡，分别配置（音高由高到低：导航 → 主题卡 → 次级主题卡 → 三级主题卡）
+    const slots = [['nav','导航栏'],['theme','主题卡'],['sub','次级主题卡'],['third','三级主题卡'],['checkin','打卡']];
     // R76-3：下拉按「分组 · 名称」展示（经典 6 首 + 按键 10 首；苹果铃声已移除）
     const opts = Object.keys(SFX_PRESETS).map(k=>`<option value="${k}">${esc(SFX_PRESETS[k].group||'经典')} · ${esc(SFX_PRESETS[k].label)}</option>`).join('');
     const cfg = (S.load().clickSfx) || defaultClickSfx();
@@ -37226,8 +37385,8 @@ function renderKMAdmin(){
     try{
       const _st = (window.Store && window.Store.load) ? window.Store.load() : null;
       if(_st && _st._clickSfxReset !== 'R143'){
-        // R245-5：与「全平台按键音效统一」保持一致 —— 导航/主题卡/次级三档同一预设，打卡音独立
-        _st.clickSfx = { nav:'f', theme:'f', sub:'f', checkin:'c' };
+        // R246-2：与「按卡片层级区别化」保持一致 —— 导航/主题卡/次级主题卡/三级主题卡四档各不相同，打卡音独立
+        _st.clickSfx = { nav:'a', theme:'l', sub:'k', third:'h', checkin:'c' };
         _st._clickSfxReset = 'R143';
         if(window.Store && window.Store.save) window.Store.save(_st);
       }
@@ -37568,7 +37727,7 @@ function renderKMAdmin(){
       if(editBtn){
         e.__mathEditHandled = true;
         e.preventDefault();
-        openMathEditFor(editBtn.getAttribute('data-math-edit'));
+        openMathEditFor(editBtn.getAttribute('data-math-edit'), editBtn);
         return;
       }
       const fav = e.target.closest('[data-math-toggle-mastery]');
