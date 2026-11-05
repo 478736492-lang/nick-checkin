@@ -8214,6 +8214,125 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 .calc-cal-sum .calc-cal-sum-wrong{color:#dc3f3c}
 
 /* ============================================================
+   R247-1：①「每日一练」说明移到打卡日历右侧；② 弹窗整体缩小 + 字号协调
+   ============================================================ */
+.calc-cal-hint{margin-left:auto;font-size:12px;font-weight:700;color:var(--muted);white-space:nowrap}
+#modalCalcCal .calc-cal-box{width:min(400px,90vw);max-width:400px;padding:12px;border-radius:14px}
+#modalCalcCal .modal-head{margin-bottom:8px}
+#modalCalcCal .modal-head h3{font-size:14px}
+#modalCalcCal .modal-x{font-size:18px}
+#modalCalcCal .modal-body{gap:7px}
+#modalCalcCal .calc-cal-ctl{gap:5px}
+#modalCalcCal .calc-cal-sel{min-width:74px;padding:5px 7px;font-size:11.5px;border-radius:8px}
+#modalCalcCal .calc-cal-nav{width:26px;height:26px;font-size:15px;border-radius:8px}
+#modalCalcCal .calc-cal-today{padding:5px 9px;font-size:11px;border-radius:8px}
+#modalCalcCal .calc-cal-legend{gap:10px;font-size:10px}
+#modalCalcCal .calc-cal-legend i{width:8px;height:8px}
+#modalCalcCal .calc-cal-weekrow{gap:3px;margin-bottom:3px}
+#modalCalcCal .calc-cal-weekrow span{font-size:9px}
+#modalCalcCal .calc-cal-grid{gap:3px}
+#modalCalcCal .calc-cal-cell{font-size:9.5px;min-height:27px;border-radius:6px;aspect-ratio:1/1.05;padding:1px}
+#modalCalcCal .calc-cal-cell .cnt{font-size:7.5px}
+#modalCalcCal .calc-cal-sum{margin-top:6px;font-size:11px}
+#modalCalcCal .calc-cal-sum b{font-size:11.5px}
+#modalCalcCal .modal-foot .pbtn{font-size:11.5px;padding:5px 12px}
+
+/* ============================================================
+   R247-2：英语专区 · 拓展练习「3500 词」——每页横向 2 张分类卡片
+   ============================================================ */
+.en3500-wrap{padding:2px 0}
+.en3500-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.en3500-title{font-size:15px;font-weight:900;color:var(--tone-800)}
+.en3500-hint{font-size:12px;color:var(--muted)}
+.en3500-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.en3500-card{background:#fff;border:1.5px solid var(--tone-200);border-radius:14px;padding:14px;box-shadow:0 3px 12px rgba(30,58,138,.08);display:flex;flex-direction:column;gap:10px}
+.en3500-card.is-checked{border-color:#2fb36a;background:linear-gradient(180deg,#f2fff7,#fff)}
+.en3500-card-h{display:flex;align-items:center;gap:8px}
+.en3500-ico{font-size:18px}
+.en3500-name{font-size:15px;font-weight:900;color:var(--tone-900)}
+.en3500-count{margin-left:auto;font-size:11.5px;font-weight:800;color:var(--muted);background:var(--tone-050);border-radius:999px;padding:2px 9px}
+.en3500-preview{font-size:12px;color:var(--muted);line-height:1.6;min-height:20px;word-break:break-word}
+.en3500-card-foot{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto}
+.en3500-open,.en3500-check,.en3500-nav{font-family:inherit;cursor:pointer;border-radius:10px;font-weight:800;transition:transform .12s ease,box-shadow .12s ease;touch-action:manipulation}
+.en3500-open,.en3500-nav{padding:7px 12px;font-size:12.5px;color:var(--z-nw-deep);background:#fff;border:1.5px solid var(--tone-200)}
+.en3500-check{padding:7px 12px;font-size:12.5px;color:#fff;background:linear-gradient(135deg,var(--z-nw-mid),var(--z-nw-main));border:none}
+.en3500-check.is-done{background:#2fb36a;cursor:default;opacity:.9}
+.en3500-open:active,.en3500-check:active,.en3500-nav:active{transform:scale(.96)}
+.en3500-nav:disabled{opacity:.45;cursor:default}
+.en3500-pager{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:14px}
+.en3500-page-no{font-size:12px;font-weight:700;color:var(--muted)}
+.en3500-box{width:min(560px,92vw);max-width:560px}
+.en3500-list{max-height:min(56vh,460px);overflow:auto;display:flex;flex-direction:column;gap:2px}
+.en3500-row{display:grid;grid-template-columns:32px minmax(90px,1.1fr) minmax(90px,1.2fr) minmax(100px,1.4fr);gap:8px;align-items:center;padding:6px 8px;border-radius:8px;font-size:12.5px}
+.en3500-row:nth-child(odd){background:var(--tone-025)}
+.en3500-no{color:var(--muted);font-weight:700}
+.en3500-w{font-weight:900;color:var(--tone-900)}
+.en3500-ipa{color:var(--sky-blue)}
+.en3500-cn{color:var(--tone-700)}
+.en3500-empty{text-align:center;color:var(--muted);padding:24px}
+@media(max-width:640px){.en3500-grid{grid-template-columns:1fr}}
+
+/* ============================================================
+   R247-3：学而思英语 · 学而思练习（独立板块）
+   ============================================================ */
+.xsex-wrap{display:flex;flex-direction:column;gap:12px}
+.xsex-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.xsex-title{font-size:15px;font-weight:900;color:var(--tone-800)}
+.xsex-hint{font-size:12px;color:var(--muted)}
+.xsex-add{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--tone-025);border:1.5px dashed var(--tone-200);border-radius:12px;padding:10px}
+.xsex-input,.xsex-select{font-family:inherit;font-size:12.5px;padding:7px 10px;border-radius:9px;border:1.5px solid var(--tone-200);background:#fff;color:var(--tone-900);min-width:0}
+.xsex-input{flex:1 1 180px}
+.xsex-select{flex:0 0 auto}
+.xsex-btn{font-family:inherit;cursor:pointer;border-radius:9px;padding:7px 12px;font-size:12.5px;font-weight:800;color:var(--tone-800);background:#fff;border:1.5px solid var(--tone-200);touch-action:manipulation;transition:transform .12s ease}
+.xsex-btn:active{transform:scale(.96)}
+.xsex-primary{color:#fff;background:linear-gradient(135deg,var(--z-nw-mid),var(--z-nw-main));border-color:transparent}
+.xsex-del{color:#c53b38}
+.xsex-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.xsex-card{background:#fff;border:1.5px solid var(--tone-200);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;box-shadow:0 3px 10px rgba(30,58,138,.07)}
+.xsex-card-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.xsex-tag{font-size:10.5px;font-weight:800;color:var(--z-nw-deep);background:var(--tone-100);border-radius:999px;padding:2px 8px}
+.xsex-name{font-size:13.5px;font-weight:900;color:var(--tone-900);word-break:break-word}
+.xsex-date{margin-left:auto;font-size:10.5px;color:var(--muted)}
+.xsex-note{font-size:12px;color:var(--tone-700);line-height:1.6;word-break:break-word}
+.xsex-imgs{display:flex;gap:6px;flex-wrap:wrap}
+.xsex-img{width:76px;height:76px;object-fit:cover;border-radius:8px;border:1px solid var(--tone-200);cursor:zoom-in}
+.xsex-foot{display:flex;gap:8px;margin-top:auto}
+.xsex-empty{grid-column:1/-1;text-align:center;color:var(--muted);font-size:13px;padding:28px 12px;background:var(--tone-025);border-radius:12px}
+@media(max-width:640px){.xsex-list{grid-template-columns:1fr}}
+
+/* ============================================================
+   R247-4：乐读数学 · 练习题（出题 / 批改 / 分步解题思路）
+   ============================================================ */
+.mex-wrap{display:flex;flex-direction:column;gap:12px}
+.mex-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.mex-title{font-size:15px;font-weight:900;color:var(--tone-800)}
+.mex-hint{font-size:12px;color:var(--muted)}
+.mex-add{display:flex;flex-direction:column;gap:8px;background:var(--tone-025);border:1.5px dashed var(--tone-200);border-radius:12px;padding:12px}
+.mex-input,.mex-textarea,.mex-ans{font-family:inherit;font-size:12.5px;padding:8px 10px;border-radius:9px;border:1.5px solid var(--tone-200);background:#fff;color:var(--tone-900);width:100%;box-sizing:border-box}
+.mex-textarea{resize:vertical;min-height:64px;line-height:1.6}
+.mex-btn{font-family:inherit;cursor:pointer;border-radius:9px;padding:7px 12px;font-size:12.5px;font-weight:800;color:var(--tone-800);background:#fff;border:1.5px solid var(--tone-200);white-space:nowrap;touch-action:manipulation;transition:transform .12s ease}
+.mex-btn:active{transform:scale(.96)}
+.mex-primary{color:#fff;background:linear-gradient(135deg,var(--z-nw-mid),var(--z-nw-main));border-color:transparent;align-self:flex-start}
+.mex-grade{color:#fff;background:linear-gradient(135deg,#4ecf8b,#2fb36a);border-color:transparent}
+.mex-del{color:#c53b38}
+.mex-list{display:flex;flex-direction:column;gap:12px}
+.mex-card{background:#fff;border:1.5px solid var(--tone-200);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:10px;box-shadow:0 3px 10px rgba(30,58,138,.07)}
+.mex-card-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.mex-no{font-size:11px;font-weight:900;color:var(--sky-blue);background:var(--tone-100);border-radius:999px;padding:2px 9px}
+.mex-q{font-size:14px;font-weight:900;color:var(--tone-900);word-break:break-word;flex:1 1 200px}
+.mex-answer-row{display:flex;gap:8px;align-items:center}
+.mex-ans{flex:1 1 auto;width:auto}
+.mex-result{background:linear-gradient(180deg,#f2fff7,#fff);border:1.5px solid #a8e6c1;border-radius:10px;padding:10px 12px}
+.mex-result-h{font-size:13px;font-weight:800;color:#1c7a48;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mex-result-h b{font-size:14px}
+.mex-you{font-size:11.5px;font-weight:700;color:var(--muted);margin-left:auto}
+.mex-steps-h{font-size:12.5px;font-weight:900;color:var(--tone-800);margin-top:10px;margin-bottom:4px}
+.mex-steps{margin:0;padding-left:22px;font-size:12.5px;line-height:1.8;color:var(--tone-700)}
+.mex-steps li{word-break:break-word}
+.mex-step-empty{font-size:12px;color:var(--muted)}
+.mex-empty{text-align:center;color:var(--muted);font-size:13px;padding:28px 12px;background:var(--tone-025);border-radius:12px}
+
+/* ============================================================
    R245-5 / R245-4：全平台按键点击反馈 + 打卡头像效果恢复
    ============================================================ */
 /* 1) 点击灵敏度：去掉移动端 300ms 双击缩放等待 + 去掉点击高亮闪块 */
@@ -8789,6 +8908,22 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
     </div>
   </div>
 
+  <!-- ========== 弹窗：R247-2 拓展练习「3500 词」· 单个分类单词列表 ========== -->
+  <div class="modal-mask" id="modalEn3500" hidden>
+    <div class="modal-box en3500-box">
+      <div class="modal-head">
+        <h3 id="en3500Title">🔠 3500 词</h3>
+        <button class="modal-x" data-close>×</button>
+      </div>
+      <div class="modal-body">
+        <div class="en3500-list" id="en3500List"></div>
+      </div>
+      <div class="modal-foot">
+        <button class="pbtn" data-close>完成</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ========== 弹窗：课程表 · 单元格编辑（R157-3：着装行/放学行统一复用本弹窗，按 schedCellKind 切换标题/标签/显隐） ========== -->
   <div class="modal-mask" id="modalSchedCell" hidden data-page-node-id="NqMZOTAMWK7FH1adTdtviZ">
     <div class="modal-box modal-sm" style="min-width:360px" data-page-node-id="xWGENN7LyrbAB1uB9Gab1G">
@@ -9042,6 +9177,8 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
     <div class="leidu-switch" data-leidu-switch>
       <button type="button" class="leidu-tab active" data-leidu-tab="calc" aria-pressed="true">🧮 计算小超市</button>
       <button type="button" class="leidu-tab" data-leidu-tab="note" aria-pressed="false">📒 乐读数学笔记</button>
+      <!-- R247-4：乐读数学笔记后方新增「练习题」出题模块 -->
+      <button type="button" class="leidu-tab" data-leidu-tab="exercise" aria-pressed="false">✏️ 练习题</button>
     </div>
     <!-- 计算小超市 内容卡（R227：从新世界·数学专区·错题本整体移入） -->
     <div class="leidu-pane" data-leidu-pane="calc" id="leiduCalcPane"></div>
@@ -9088,6 +9225,8 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
       <div class="math-content-area" id="mathContentArea" data-page-node-id="R102mathContentArea"></div>
     </div>
     </div><!-- /leiduNotePane -->
+    <!-- R247-4：练习题 内容卡（新增/删除题目 · 录入答案与分步解题思路 · 批改展示） -->
+    <div class="leidu-pane" data-leidu-pane="exercise" id="leiduExercisePane" hidden></div>
   </div></section>
 
   <!-- R102：原「题型列表页」独立页与原题目详情弹窗均已删除。
@@ -9109,8 +9248,10 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
         <button class="sub-tab" data-xs-cat="notes" data-page-node-id="R218xsNoteTab">📝 课堂笔记</button>
         <button class="sub-tab active" data-xs-cat="words" data-page-node-id="bIdFhDZ9zmRt3QscgXNna5">🔤 词汇</button>
         <button class="sub-tab" data-xs-cat="grammar" data-page-node-id="pk7ufwpxLS7x5Xj5vu8FRB">📐 语法</button>
-        <!-- V21-1：语法子板块后新增「巩固打卡」子板块（每日 10 题词汇默写 +2⭐，错题次日重现） -->
-        <button class="sub-tab" data-xs-cat="checkin" data-page-node-id="16Lidsc7U9X3IdqhZRSIjY">🎯 巩固打卡</button>
+        <!-- R247-3：语法与词汇语法巩固之间新增「学而思练习」独立板块（课堂练习 / 课前测 / 各类测试记录） -->
+        <button class="sub-tab" data-xs-cat="exercise" data-page-node-id="R247xsExerciseTab">📝 学而思练习</button>
+        <!-- V21-1：语法子板块后新增「巩固打卡」子板块（每日 10 题词汇默写 +2⭐，错题次日重现）；R247-3 改名为「词汇语法巩固」 -->
+        <button class="sub-tab" data-xs-cat="checkin" data-page-node-id="16Lidsc7U9X3IdqhZRSIjY">🎯 词汇语法巩固</button>
         <!-- R42-4：巩固打卡后新增「已默写」子板块（已答对词汇移至本主题卡内分页展示） -->
         <button class="sub-tab" data-xs-cat="done">📒 已默写</button>
       </div>
@@ -10737,6 +10878,8 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
 <script src="./assets/seed_seed_calc_bank.js"></script>
 <!-- R242-3：乐读数学「2026 夏三 S」全部题目种子（源自 乐读数学2026夏三S.docx，含题内配图；先于 store.js 加载，一次性导入） -->
 <script src="./assets/seed_math_q3s_seed.js"></script>
+<!-- R247-2：新世界·英语专区·拓展练习「3500 词」分类词库（源自 3500个高频英语单词（带音标）.pdf） -->
+<script src="./assets/seed_en_words_3500_seed.js"></script>
 <script>
 /* ============================================================
    疯狂动物城 · 三年级学习乐园
@@ -13395,7 +13538,7 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
   }
   // V12.1：通用阅读取消（按类型回退 ⭐：cnEssay/enPassage=3⭐, cnPoem=2⭐, cnWords/cnSentence=1⭐）
   function refundReadingStars(kind){
-    const map = {cnEssay:3, enPassage:2, cnPoem:2, cnWords:1, cnSentence:1, enSpeaking:0};
+    const map = {cnEssay:3, enPassage:2, cnPoem:2, cnWords:1, cnSentence:1, enSpeaking:0, en3500cat:5};
     return map[kind] || 0;
   }
   // v10 兼容旧调用（保留）
@@ -13643,6 +13786,8 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
     else if(SUZHI_UNLOCK_KINDS.indexOf(kind) >= 0){ reward=1; rewardLabel='拓展素养 +1⭐'; }
     // R228：计算小超市每日全对并完成打卡 +2⭐
     else if(kind==='calcDaily'){ reward=2; rewardLabel='计算小超市全对 +2⭐'; }
+    // R247-2：新世界·英语专区·拓展练习「3500 词」——单个分类卡片打卡 +5⭐（readFlags 幂等，不重复发放）
+    else if(kind==='en3500cat'){ reward=5; rewardLabel='3500 词分类 +5⭐'; }
     if(reward>0){
       st.archive.totalStars = (st.archive.totalStars||0) + reward;
       st.archive.exp = (st.archive.exp||0) + reward;
@@ -18060,13 +18205,21 @@ be 动词：am / is → was；are → were
     const t = Math.max(0, Number(total) || 0);
     const w = Math.max(0, Number(wrong) || 0);
     const prev = st.calcDailyLog[d] || {};
+    // R247-1：打卡日历的数据源固定为「当天第一次提交批改」的结果。
+    // 错题本订正批改、主面板再次批改、今日打卡（订正后全对）传来的分数一律不覆盖首次快照，
+    // 例：初次批改 9/10 就永远显示 9/10 并标红，订正成 10/10 也不会被洗成全对。
+    const hasFirst = !!prev.first || (Number(prev.total) > 0);
+    const base = hasFirst ? prev : { correct:c, total:t, wrong:w, at:Date.now() };
     // checked：今天点过「今日打卡」，或本次全部答对（含订正后全对）
     const checked = !!(prev.checked || (t > 0 && c >= t) || (w > 0 && c + w >= t));
-    st.calcDailyLog[d] = { correct: c, total: t, wrong: w, checked, at: Date.now() };
+    st.calcDailyLog[d] = {
+      correct: Number(base.correct)||0, total: Number(base.total)||0, wrong: Number(base.wrong)||0,
+      first: true, checked, at: Number(base.at)||Date.now()
+    };
     const keys = Object.keys(st.calcDailyLog).sort();
     if(keys.length > 400) keys.slice(0, keys.length - 400).forEach(k => { delete st.calcDailyLog[k]; });
     save(st);
-    return { ok:true, date:d, day: st.calcDailyLog[d] };
+    return { ok:true, date:d, day: st.calcDailyLog[d], first: !hasFirst };
   }
   function getCalcDailyLog(){
     const st = load();
@@ -18083,7 +18236,8 @@ be 动词：am / is → was；are → were
     if(!st.calcDailyLog || typeof st.calcDailyLog !== 'object' || Array.isArray(st.calcDailyLog)) st.calcDailyLog = {};
     const d = String(dateStr || todayStr());
     const prev = st.calcDailyLog[d] || { correct:0, total:0, wrong:0 };
-    st.calcDailyLog[d] = { correct: prev.correct||0, total: prev.total||0, wrong: prev.wrong||0, checked: true, at: Date.now() };
+    // R247-1：只翻打卡标记，分数保持首次批改快照不变
+    st.calcDailyLog[d] = { correct: prev.correct||0, total: prev.total||0, wrong: prev.wrong||0, first: !!prev.first || (Number(prev.total) > 0), checked: true, at: Number(prev.at)||Date.now() };
     save(st);
     return { ok:true, date:d, day: st.calcDailyLog[d] };
   }
@@ -19174,8 +19328,10 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     }
     const calc = document.getElementById('leiduCalcPane');
     const note = document.getElementById('leiduNotePane');
+    const exercise = document.getElementById('leiduExercisePane');
     if(calc) calc.hidden = (which !== 'calc');
     if(note) note.hidden = (which !== 'note');
+    if(exercise) exercise.hidden = (which !== 'exercise'); // R247-4：练习题模块
   }
   let _curPageName = '';
   function goPage(page){
@@ -22075,6 +22231,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         _szCurPage = 0; // R24-4：切换拓展素养板块时重置卡片分页
         if(key === 'yyxzs') _egCurSec = 0; // R24-5：进入英语小知识回到第一章
         if(key === 'zw') _enEssayPage = 0;   // R204：进入英文作文回到第一页
+        if(key === 'w3500') _en3500Page = 1; // R247-2：进入 3500 词回到第一页
         if(slotBody){
           let rerender = ()=>{
             // R234-7：记下当前板块的局部刷新函数 —— 图片导入后原地重渲染，不再退回默认板块/Unit 1
@@ -22352,29 +22509,45 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
   function genCalcProblems(count){
     count = count || _CALC_N;
     // R243-1：给每道题打上「题库全部题目里的原始序号」（no，1 起）——每日序号直接展示它
+    // R247-1：题库增删/编辑后 getCalcBank() 即时返回最新全量，新增与修改后的题目自动进入抽题池
     const raw = (window.Store && window.Store.getCalcBank) ? window.Store.getCalcBank() : [];
     const bank = raw.map((p, i)=> Object.assign({}, p, { no: i + 1 }));
     const cats = [['口算',4],['竖式',4],['巧算',2]];
     let s = _calcSeed(_calcToday()) >>> 0;
     const rnd = ()=>{ s = (Math.imul(s, 1664525) + 1013904223) >>> 0; return s / 4294967296; };
-    const pick = (arr, n)=>{
+    const shuffle = (arr)=>{
       const a = arr.slice();
       for(let i=a.length-1;i>0;i--){ const j = Math.floor(rnd()*(i+1)); const t=a[i]; a[i]=a[j]; a[j]=t; }
-      return a.slice(0, n);
+      return a;
     };
-    let out = [];
+    // R247-1：按日期种子洗牌（当天稳定）+ 全局题面去重，保证当日 10 题互不重复
+    const seen = {};
+    const out = [];
+    const take = (p)=>{
+      const k = _calcKey(p);
+      if(seen[k]) return false;
+      seen[k] = 1;
+      out.push(Object.assign({}, p, { no: p.no || 0 }));
+      return true;
+    };
     cats.forEach(([cat,n])=>{
-      let sel = pick(bank.filter(x => x.cat === cat), n);
-      if(sel.length < n){
-        const seen = {}; out.concat(sel).forEach(p=>{ seen[_calcKey(p)] = 1; });
+      let got = 0;
+      const pool = shuffle(bank.filter(x => x.cat === cat));
+      for(let i=0;i<pool.length && got<n;i++){ if(take(pool[i])) got++; }
+      // 同类题不够（或全部与前面重复）→ 先从题库其余分类补齐（含新增/修改后的题目）
+      if(got < n){
+        const rest = shuffle(bank.filter(x => x.cat !== cat));
+        for(let i=0;i<rest.length && got<n;i++){ if(take(rest[i])) got++; }
+      }
+      // 题库整体不足才回落到原生成器补位（沿用 R231-3 的兜底规则）
+      if(got < n){
         let shift = 0, guard = 0;
-        while(sel.length < n && guard < n*20){
+        while(got < n && guard < n*20){
           const cand = _calcLegacyGen(n, ++shift);
-          for(let i=0;i<cand.length && sel.length<n;i++){ const p=cand[i], k=_calcKey(p); if(!seen[k]){ seen[k]=1; sel.push(p); } }
+          for(let i=0;i<cand.length && got<n;i++){ if(take(cand[i])) got++; }
           guard++;
         }
       }
-      out = out.concat(sel);
     });
     return out.slice(0, count);
   }
@@ -22482,9 +22655,11 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     const probs = genCalcProblems(_CALC_N);
     const dateLabel = today.slice(5).replace('-','-');
     // R245-1：「连续打卡 N 天」右侧新增「📅 打卡日历」入口（点击唤起毛玻璃弹窗，按年月查看每日正确题数/总题数）
+    // R247-1：「每日一练」说明文字移到打卡日历按键右侧展示
     const streakLine = `<div class="calc-streak-row">
       <div class="calc-streak">🔥 连续打卡 <b>${streak}</b> 天</div>
       <button type="button" class="calc-cal-btn" data-calc-cal title="打开打卡日历：按年月查看每天 正确题数 / 总题数">📅 打卡日历</button>
+      <span class="calc-cal-hint">每日一练 · ${dateLabel}</span>
     </div>`;
     const dm = _calcDrillMap();
     const ws0 = (window.Store && window.Store.getCalcWrongs) ? window.Store.getCalcWrongs() : [];
@@ -22543,7 +22718,6 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       <div class="calc-board" data-calc-board>
         <div class="yw-comp-head calc-head">
           <span class="calc-head-title">🧮 计算小超市</span>
-          <span class="yw-sub calc-head-sub">每日一练 · ${dateLabel}</span>
           <span class="calc-head-tools">
             <button type="button" class="calc-bank-btn calc-bank-inline-btn" data-calc-bank title="题库：编辑 · 添加 · 删除计算题（可按题号搜索）">📚 题库（${bankCount} 题）</button>
             <button type="button" class="calc-bank-btn calc-bank-inline-btn" data-calc-book title="已做本：手动加入答对题与已订正错题（已取消定时收录）">📒 已做本（今日 ${bookToday}）</button>
@@ -22621,11 +22795,15 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         updateCalcWrongBadge();
         // R243-2：批改后按「全对 / 错题全部订正」刷新得分文案与今日打卡按钮
         updateCalcGateUI();
-        // R245-1：把本次批改的「正确题数 / 总题数」写入每日记录（打卡日历数据源）
+        // R245-1 / R247-1：把「当天第一次批改」的正确题数/总题数写入每日记录（打卡日历唯一数据源）
         try{
           const _tot = board.querySelectorAll('.calc-ans').length || _CALC_N;
           const _wr  = board.querySelectorAll('.calc-ans.wrong').length;
-          window.Store.recordCalcDay(today, correct, _tot, _wr);
+          const _day = window.Store.recordCalcDay(today, correct, _tot, _wr);
+          // R247-1：完成首次 10 题批改后即触发连续打卡计数（bumpCalcStreak 按天幂等，不重复累计）
+          if(_day && _day.first && _tot >= _CALC_N){
+            try{ window.Store.bumpCalcStreak(); }catch(e){}
+          }
         }catch(e){}
       });
     }
@@ -22849,9 +23027,10 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     return map;
   }
   function calcCalDayInfo(ds, log, bookMap){
+    // R247-1：数据源固定为「当天第一次提交批改」的 calcDailyLog 快照；
+    // 已做本（含错题本订正后「移入已做本」）不再作为日历回退，避免订正数据混入统计。
     const rec = log[ds];
     if(rec && (rec.total > 0 || rec.correct > 0)) return { correct: rec.correct || 0, total: rec.total || _CALC_N, wrong: rec.wrong || 0 };
-    if(bookMap && bookMap[ds] != null) return { correct: bookMap[ds], total: _CALC_N, wrong: 0 };
     return null;
   }
   function fillCalcCalSelects(){
@@ -24141,7 +24320,9 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     // R204：句型练习移出后，原位置新建「英文作文」（上海市优秀小学英语作文 100 篇，分页展示）
     { title:'拓展练习', items:[
       { key:'zw',  icon:'✍️', label:'英文作文' },
-      { key:'yyxzs', icon:'📖', label:'英语小知识' }
+      { key:'yyxzs', icon:'📖', label:'英语小知识' },
+      // R247-2：导入「3500 个高频常用英语单词（分类版）」PDF，按分类生成卡片并分页
+      { key:'w3500', icon:'🔠', label:'3500 词' }
     ] },
     { title:'错题本', items:[
       { key:'ctb', icon:'📓', label:'错题本' }
@@ -24288,6 +24469,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     if(key === 'gd') return renderEnKeyPoints(_enKpUnit);
     if(key === 'zw') return renderEnEssay(_enEssayPage);      // R204：英文作文（每页 4 篇）
     if(key === 'yyxzs') return enGrammar();               // R24-5：英语小知识（语法体系）
+    if(key === 'w3500') return renderEnWords3500();        // R247-2：3500 词（每页 2 张分类卡片）
     const map = {
       // R122：与上方 EN_TOP_CARDS 保持一致的板块名
       gd:  ['重点知识','📌','导入课本重点照片，逐张打卡。', true],
@@ -24296,6 +24478,100 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     const m = map[key] || [label,'🔤',''];
     return nwSlotGeneric(m[0], m[1], m[2], m[3]);
   }
+  // ===== R247-2：新世界 · 英语专区 · 拓展练习「3500 词」=====
+  // 数据源：3500个高频英语单词（带音标）.pdf → en_words_3500_seed.js（分类词库）
+  // 规则：按分类生成卡片、分页渲染、每页横向排布 2 张；完成单个分类卡片打卡 +5⭐（readFlags 幂等，不重复发放）
+  const EN3500_KIND = 'en3500cat';
+  const EN3500_PER_PAGE = 2;
+  let _en3500Page = 1;
+  function en3500Cats(){
+    const seed = window.EN_WORDS_3500_SEED;
+    return (seed && Array.isArray(seed.cats)) ? seed.cats : [];
+  }
+  function en3500Pages(){ return Math.max(1, Math.ceil(en3500Cats().length / EN3500_PER_PAGE)); }
+  function renderEnWords3500(){
+    const cats = en3500Cats();
+    if(!cats.length) return nwSlotGeneric('3500 词','🔠','词库正在整理中…', false);
+    const pages = en3500Pages();
+    if(_en3500Page > pages) _en3500Page = pages;
+    if(_en3500Page < 1) _en3500Page = 1;
+    const list = cats.slice((_en3500Page-1)*EN3500_PER_PAGE, _en3500Page*EN3500_PER_PAGE);
+    const totalWords = cats.reduce((n,c)=>n+((c && Array.isArray(c.words)) ? c.words.length : 0), 0);
+    const cards = list.map((c, i)=>{
+      const name = (c && c.name) ? String(c.name) : ('分类'+(i+1));
+      const words = (c && Array.isArray(c.words)) ? c.words : [];
+      const done = S.isReadingRead(EN3500_KIND, name);
+      const preview = words.slice(0,3).map(w=>esc(w && w.w)).join(' · ');
+      return `<div class="en3500-card${done?' is-checked':''}">
+        <div class="en3500-card-h">
+          <span class="en3500-ico">🔠</span>
+          <span class="en3500-name">${esc(name)}</span>
+          <span class="en3500-count">${words.length} 词</span>
+        </div>
+        <div class="en3500-preview">${preview}${words.length>3?' …':''}</div>
+        <div class="en3500-card-foot">
+          <button type="button" class="en3500-open" data-en3500-open="${esc(name)}">📖 查看单词</button>
+          <button type="button" class="en3500-check${done?' is-done':''}" data-en3500-check="${esc(name)}"${done?' disabled':''}>${done?'✅ 已打卡 +5⭐':'🎯 完成打卡 +5⭐'}</button>
+        </div>
+      </div>`;
+    }).join('');
+    return `<div class="en3500-wrap">
+      <div class="en3500-head">
+        <span class="en3500-title">🔠 3500 个高频常用英语单词（分类版）</span>
+        <span class="en3500-hint">按分类生成卡片 · 每页 2 张 · 完成单个分类打卡 +5⭐（不重复发放）</span>
+      </div>
+      <div class="en3500-grid">${cards}</div>
+      <div class="en3500-pager">
+        <button type="button" class="en3500-nav" data-en3500-page="prev"${_en3500Page<=1?' disabled':''}>‹ 上一页</button>
+        <span class="en3500-page-no">第 ${_en3500Page} / ${pages} 页 · 共 ${cats.length} 个分类 / ${totalWords} 词</span>
+        <button type="button" class="en3500-nav" data-en3500-page="next"${_en3500Page>=pages?' disabled':''}>下一页 ›</button>
+      </div>
+    </div>`;
+  }
+  function refreshEn3500(){
+    const box = document.getElementById('enSlotBody');
+    if(!box) return;
+    box.innerHTML = '<div class="yw-fade">' + renderEnWords3500() + '</div>';
+  }
+  function openEn3500Cat(name){
+    const cat = en3500Cats().filter(x => x && String(x.name) === String(name))[0];
+    const body = document.getElementById('en3500List');
+    if(!cat || !body) return;
+    const words = Array.isArray(cat.words) ? cat.words : [];
+    const ttl = document.getElementById('en3500Title');
+    if(ttl) ttl.textContent = '🔠 ' + String(name) + ' · ' + words.length + ' 词';
+    body.innerHTML = words.length
+      ? words.map((w,i)=>`<div class="en3500-row"><span class="en3500-no">${i+1}</span><span class="en3500-w">${esc(w && w.w)}</span><span class="en3500-ipa">${esc(w && w.ipa)}</span><span class="en3500-cn">${esc(w && w.cn)}</span></div>`).join('')
+      : '<div class="en3500-empty">这个分类暂时没有单词</div>';
+    showModal('#modalEn3500');
+  }
+  // R247-2：捕获阶段全局委托（局部重渲染不丢事件，点击反馈即时）
+  document.addEventListener('click', (e)=>{
+    const t = e.target;
+    if(!t || typeof t.closest !== 'function') return;
+    const pg = t.closest('[data-en3500-page]');
+    if(pg){
+      const v = pg.getAttribute('data-en3500-page');
+      const pages = en3500Pages();
+      if(v === 'prev') _en3500Page = Math.max(1, _en3500Page - 1);
+      else if(v === 'next') _en3500Page = Math.min(pages, _en3500Page + 1);
+      else _en3500Page = Math.min(pages, Math.max(1, parseInt(v,10) || 1));
+      refreshEn3500();
+      return;
+    }
+    const op = t.closest('[data-en3500-open]');
+    if(op){ openEn3500Cat(op.getAttribute('data-en3500-open')); return; }
+    const ck = t.closest('[data-en3500-check]');
+    if(ck){
+      const name = ck.getAttribute('data-en3500-check');
+      if(ck.disabled || ck.classList.contains('is-done')) return;
+      let r = null;
+      try{ r = S.markReadingRead(EN3500_KIND, name); }catch(err){ r = null; }
+      toast(r && r.ok ? ('🎉 「' + name + '」打卡完成，+' + (r.reward || 5) + '⭐') : '这个分类已经打过卡啦，不重复发放⭐');
+      refreshEn3500();
+      return;
+    }
+  }, true);
   function renderEnglishPage(){ renderSlotPage('enTopCards','enSlotBody','enSlotHint', EN_TOP_CARDS, enSlot, 'dd'); }
   // R122：重点知识图片导入 —— 绑定隐藏 file input（全局只绑一次，避免 slotBody 重渲染后重复绑定）
   // 流程：选图 → 过滤非图片 → 逐张压缩（最长边 1280 / JPEG 0.8）→ 写入当前单元 → 重渲染
@@ -29778,6 +30054,113 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     </div>`;
   }
   // R71-2：题型卡默认收起，点击头部展开题目内容（会话内保持展开/收起状态）
+  // ===== R247-4：乐读数学 · 练习题（出题模块）=====
+  // 支持新增 / 删除题目，录入标准答案与分步解题思路；用户填写答案后点「批改」，展示标准答案与完整解题步骤。
+  const MEX_KEY = 'math_exercises';
+  let _mexOpen = {};      // id -> { ans }：批改后展开解答（刷新页面自动收起）
+  let _mexDrafts = {};    // id -> 已填写答案（局部重渲染不丢输入）
+  function mexItems(){
+    const arr = (window.Store && window.Store.getNwZone) ? window.Store.getNwZone(MEX_KEY) : [];
+    return Array.isArray(arr) ? arr : [];
+  }
+  function mexSave(arr){
+    try{ if(window.Store && window.Store.setNwZone) window.Store.setNwZone(MEX_KEY, arr); }
+    catch(e){ toast('⚠️ 保存失败，请重试'); }
+  }
+  function mexStepsHtml(steps){
+    const lines = String(steps||'').split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+    if(!lines.length) return '<div class="mex-step-empty">（这道题还没有录入分步解题思路）</div>';
+    return '<ol class="mex-steps">' + lines.map(l=>'<li>' + esc(l) + '</li>').join('') + '</ol>';
+  }
+  function renderMathExercise(){
+    const pane = document.getElementById('leiduExercisePane');
+    if(!pane) return;
+    // 局部重渲染前保留已填答案，避免刷新后输入丢失
+    pane.querySelectorAll('.mex-ans').forEach(inp=>{
+      const id = inp.getAttribute('data-mex-ans');
+      if(id) _mexDrafts[id] = inp.value;
+    });
+    const items = mexItems();
+    const cards = items.length ? items.map((it,i)=>{
+      const id = String(it.id||'');
+      const open = !!_mexOpen[id];
+      return `<div class="mex-card">
+        <div class="mex-card-h">
+          <span class="mex-no">#${i+1}</span>
+          <span class="mex-q">${esc(it.q||'未命名题目')}</span>
+          <button type="button" class="mex-btn mex-del" data-mex-act="del" data-mex-id="${esc(id)}">🗑 删除</button>
+        </div>
+        <div class="mex-answer-row">
+          <input type="text" class="mex-ans" data-mex-ans="${esc(id)}" value="${esc(_mexDrafts[id]||'')}" placeholder="填写你的答案，再点「批改」">
+          <button type="button" class="mex-btn mex-grade" data-mex-act="grade" data-mex-id="${esc(id)}">✅ 批改</button>
+        </div>
+        ${open ? `<div class="mex-result">
+          <div class="mex-result-h">📌 标准答案：<b>${esc(it.a||'—')}</b><span class="mex-you">你的答案：${esc((_mexOpen[id] && _mexOpen[id].ans) || '—')}</span></div>
+          <div class="mex-steps-h">🧩 完整解题步骤</div>
+          ${mexStepsHtml(it.steps)}
+        </div>` : ''}
+      </div>`;
+    }).join('') : '<div class="mex-empty">还没有练习题，先在上方录入题目、标准答案和分步解题思路吧～</div>';
+    pane.innerHTML = `<div class="mex-wrap">
+      <div class="mex-head"><span class="mex-title">✏️ 练习题</span><span class="mex-hint">新增题目 / 录入标准答案与分步思路 · 填写答案后点「批改」查看完整解答</span></div>
+      <div class="mex-add">
+        <input type="text" class="mex-input" id="mexQ" maxlength="200" placeholder="题目内容（如 12 × 8 + 36 ÷ 4）">
+        <input type="text" class="mex-input" id="mexA" maxlength="120" placeholder="标准答案">
+        <textarea class="mex-textarea" id="mexSteps" rows="3" placeholder="分步解题思路（每行一步，例如：先算 12 × 8 = 96）"></textarea>
+        <button type="button" class="mex-btn mex-primary" data-mex-act="add">＋ 新增题目</button>
+      </div>
+      <div class="mex-list">${cards}</div>
+    </div>`;
+  }
+  // R247-4：捕获阶段全局委托（局部重渲染不丢事件，点击反馈即时）
+  document.addEventListener('click', (e)=>{
+    const t = e.target;
+    if(!t || typeof t.closest !== 'function') return;
+    const b = t.closest('[data-mex-act]');
+    if(!b) return;
+    const act = b.getAttribute('data-mex-act');
+    if(act === 'add'){
+      const q = document.getElementById('mexQ'), a = document.getElementById('mexA'), st = document.getElementById('mexSteps');
+      const qv = q ? String(q.value||'').trim() : '';
+      const av = a ? String(a.value||'').trim() : '';
+      if(!qv){ toast('请先填写题目内容'); if(q) q.focus(); return; }
+      if(!av){ toast('请填写标准答案'); if(a) a.focus(); return; }
+      const arr = mexItems();
+      arr.unshift({
+        id: 'mex_' + Date.now() + '_' + Math.random().toString(36).slice(2,7),
+        q: qv, a: av, steps: st ? String(st.value||'') : '', at: Date.now()
+      });
+      mexSave(arr);
+      toast('✅ 已新增练习题');
+      renderMathExercise();
+      return;
+    }
+    if(act === 'del'){
+      const id = b.getAttribute('data-mex-id');
+      const arr = mexItems();
+      const hit = arr.filter(x=>String(x.id)===String(id))[0];
+      confirmDelete(hit ? String(hit.q||'这道题') : '这道题', ()=>{
+        mexSave(arr.filter(x=>String(x.id)!==String(id)));
+        delete _mexOpen[String(id)]; delete _mexDrafts[String(id)];
+        toast('🗑 已删除');
+        renderMathExercise();
+      });
+      return;
+    }
+    if(act === 'grade'){
+      const id = b.getAttribute('data-mex-id');
+      const inp = document.querySelector('.mex-ans[data-mex-ans="' + String(id).replace(/"/g,'\\"') + '"]');
+      const val = inp ? String(inp.value||'').trim() : '';
+      _mexDrafts[String(id)] = val;
+      _mexOpen[String(id)] = { ans: val };
+      renderMathExercise();
+      const hit = mexItems().filter(x=>String(x.id)===String(id))[0];
+      if(hit && val && String(hit.a||'').trim() === val) toast('🎉 答对啦！下面是完整解题步骤');
+      else toast('📖 已展示标准答案与完整解题步骤，对照看看～');
+      return;
+    }
+  }, true);
+
   let _mathExpanded = new Set();
   // R93：乐读数学主页无筛选态；R104：筛选按键1（板块）→ 筛选按键2（题型）→ 内联内容区
   function renderMath(){
@@ -29790,6 +30173,8 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     // R227：渲染计算小超市卡片（从新世界·数学专区·错题本整体移入乐读数学页）
     const calcPane = document.getElementById('leiduCalcPane');
     if(calcPane){ calcPane.innerHTML = renderCalcBasicBoard(); bindCalcBasic(calcPane, renderMath); }
+    // R247-4：练习题模块（乐读数学笔记后方的第三个页签）
+    renderMathExercise();
   }
   // R102 的横向标签行与 R101 的【显示】键均已废弃移除（R103 起改为两个筛选按键的下拉面板）
 
@@ -32723,6 +33108,162 @@ function renderKMAdmin(){
   }
 
   // ============ 学而思英语 V20：恢复 V18 状态（仅学习汇总：词汇 + 语法） ============
+  // ===== R247-3：学而思英语 · 学而思练习（独立板块）=====
+  // 用于存放学而思课堂练习、课前测、各类测试记录；支持新增题目、删除题目、图片导入。
+  // 数据层复用 Store 的通用板块存储（getNwZone / setNwZone，图片 dataURL 不截断）。
+  const XSEX_KEY = 'xs_exercises';
+  let _xsexPendingImgs = [];
+  let _xsexTargetId = '';
+  let _xsexFileInput = null;
+  function xsexItems(){
+    const arr = (window.Store && window.Store.getNwZone) ? window.Store.getNwZone(XSEX_KEY) : [];
+    return Array.isArray(arr) ? arr : [];
+  }
+  function xsexSave(arr){
+    try{ if(window.Store && window.Store.setNwZone) window.Store.setNwZone(XSEX_KEY, arr); }
+    catch(e){ toast('⚠️ 保存失败，可能存储空间不足，请先删除部分图片'); }
+  }
+  function xsexFileInput(){
+    if(_xsexFileInput && _xsexFileInput.parentNode) return _xsexFileInput;
+    const inp = document.createElement('input');
+    inp.type='file'; inp.accept='image/*'; inp.multiple=true; inp.hidden=true; inp.id='xsexImgInput';
+    inp.addEventListener('change', ()=>{
+      const files = Array.prototype.slice.call(inp.files||[]).filter(f=>/^image\//.test(f.type||''));
+      if(!files.length){ inp.value=''; return; }
+      let pending = files.length;
+      const imgs = [];
+      files.forEach(f=>{
+        enKpCompressImage(f, (dataUrl)=>{
+          if(dataUrl) imgs.push(dataUrl);
+          pending--;
+          if(pending > 0) return;
+          inp.value = '';
+          if(_xsexTargetId){
+            const arr = xsexItems();
+            const idx = arr.findIndex(x=>String(x.id)===String(_xsexTargetId));
+            if(idx >= 0){
+              arr[idx] = Object.assign({}, arr[idx], { imgs: (Array.isArray(arr[idx].imgs) ? arr[idx].imgs : []).concat(imgs) });
+              xsexSave(arr);
+            }
+            _xsexTargetId = '';
+            toast(imgs.length ? ('✅ 已导入 ' + imgs.length + ' 张图片') : '⚠️ 图片导入失败，请重试');
+          }else{
+            _xsexPendingImgs = imgs;
+            toast(imgs.length ? ('✅ 已选 ' + imgs.length + ' 张图片，点「＋ 新增题目」保存') : '⚠️ 图片导入失败，请重试');
+          }
+          renderXsExercise();
+        });
+      });
+    });
+    document.body.appendChild(inp);
+    _xsexFileInput = inp;
+    return inp;
+  }
+  function renderXsExercise(){
+    const target = $('#xsSummaryList');
+    if(!target) return;
+    // 本板块自带新增表单，隐藏词汇 / 语法页共用的「＋ 新增」「筛选」按键（切走时由主分支恢复）
+    const addBtn = $('#btnXsContentAdd');
+    if(addBtn){ addBtn.classList.add('hidden'); addBtn.style.display = 'none'; }
+    const filterBtn = $('#btnXsGramFilter');
+    if(filterBtn) filterBtn.hidden = true;
+    const head = $('.xs-summary-pane .xs-summary-head');
+    if(head) head.classList.remove('xs-checkin-head');
+    target.classList.remove('xs-list-grammar','xs-list-raz','notes-mode');
+    const pager = $('#xsPager');
+    if(pager) pager.innerHTML = '';
+    const items = xsexItems();
+    const hint = $('#xsSummaryHint');
+    if(hint) hint.textContent = '📝 学而思练习 · 共 ' + items.length + ' 条记录（课堂练习 / 课前测 / 各类测试记录）';
+    const types = ['课堂练习','课前测','单元测试','期中/期末','其他测试记录'];
+    const cards = items.length ? items.map(it=>{
+      const imgs = Array.isArray(it.imgs) ? it.imgs : (it.img ? [it.img] : []);
+      const d = it.at ? new Date(Number(it.at)) : null;
+      const date = d ? (d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0')) : '';
+      return `<div class="xsex-card">
+        <div class="xsex-card-h">
+          <span class="xsex-tag">${esc(it.type||'课堂练习')}</span>
+          <span class="xsex-name">${esc(it.t||'未命名题目')}</span>
+          <span class="xsex-date">${esc(date)}</span>
+        </div>
+        ${it.note ? '<div class="xsex-note">' + esc(it.note) + '</div>' : ''}
+        ${imgs.length ? '<div class="xsex-imgs">' + imgs.map((src,k)=>`<img class="xsex-img" src="${esc(src)}" alt="练习图片" data-xsex-act="view" data-xsex-i="${k}" data-xsex-id="${esc(it.id)}" loading="lazy">`).join('') + '</div>' : ''}
+        <div class="xsex-foot">
+          <button type="button" class="xsex-btn" data-xsex-act="img" data-xsex-id="${esc(it.id)}">🖼 补图</button>
+          <button type="button" class="xsex-btn xsex-del" data-xsex-act="del" data-xsex-id="${esc(it.id)}">🗑 删除</button>
+        </div>
+      </div>`;
+    }).join('') : '<div class="xsex-empty">还没有练习记录，先在上方填写题目名称点「＋ 新增题目」吧～</div>';
+    target.innerHTML = `<div class="xsex-wrap">
+      <div class="xsex-head">
+        <span class="xsex-title">📝 学而思练习</span>
+        <span class="xsex-hint">课堂练习 · 课前测 · 各类测试记录，支持新增 / 删除题目与图片导入</span>
+      </div>
+      <div class="xsex-add">
+        <input type="text" class="xsex-input" id="xsexTitle" maxlength="60" placeholder="题目 / 练习名称（如 第 3 课课堂练习）">
+        <select class="xsex-select" id="xsexType">${types.map(t=>`<option value="${esc(t)}">${esc(t)}</option>`).join('')}</select>
+        <input type="text" class="xsex-input" id="xsexNote" maxlength="120" placeholder="备注（选填）">
+        <button type="button" class="xsex-btn xsex-primary" data-xsex-act="add">＋ 新增题目</button>
+        <button type="button" class="xsex-btn" data-xsex-act="pick">🖼 图片导入${_xsexPendingImgs.length ? '（已选 ' + _xsexPendingImgs.length + ' 张）' : ''}</button>
+        ${_xsexPendingImgs.length ? '<button type="button" class="xsex-btn" data-xsex-act="clearpick">✕ 清除已选图片</button>' : ''}
+      </div>
+      <div class="xsex-list">${cards}</div>
+    </div>`;
+  }
+  // R247-3：捕获阶段全局委托（内容区局部重渲染不丢事件）
+  document.addEventListener('click', (e)=>{
+    const t = e.target;
+    if(!t || typeof t.closest !== 'function') return;
+    const b = t.closest('[data-xsex-act]');
+    if(!b) return;
+    const act = b.getAttribute('data-xsex-act');
+    if(act === 'pick' || act === 'img'){
+      _xsexTargetId = (act === 'img') ? (b.getAttribute('data-xsex-id')||'') : '';
+      const inp = xsexFileInput();
+      if(inp) inp.click();
+      return;
+    }
+    if(act === 'clearpick'){ _xsexPendingImgs = []; renderXsExercise(); return; }
+    if(act === 'add'){
+      const ti = document.getElementById('xsexTitle');
+      const ty = document.getElementById('xsexType');
+      const no = document.getElementById('xsexNote');
+      const title = ti ? String(ti.value||'').trim() : '';
+      if(!title){ toast('请先填写题目 / 练习名称'); if(ti) ti.focus(); return; }
+      const arr = xsexItems();
+      arr.unshift({
+        id: 'xsex_' + Date.now() + '_' + Math.random().toString(36).slice(2,7),
+        t: title, type: ty ? String(ty.value||'课堂练习') : '课堂练习',
+        note: no ? String(no.value||'').trim() : '', imgs: _xsexPendingImgs.slice(), at: Date.now()
+      });
+      xsexSave(arr);
+      _xsexPendingImgs = [];
+      toast('✅ 已新增学而思练习');
+      renderXsExercise();
+      return;
+    }
+    if(act === 'del'){
+      const id = b.getAttribute('data-xsex-id');
+      const arr = xsexItems();
+      const hit = arr.filter(x=>String(x.id)===String(id))[0];
+      confirmDelete(hit ? String(hit.t||'这条记录') : '这条记录', ()=>{
+        xsexSave(arr.filter(x=>String(x.id)!==String(id)));
+        toast('🗑 已删除');
+        renderXsExercise();
+      });
+      return;
+    }
+    if(act === 'view'){
+      const id = b.getAttribute('data-xsex-id');
+      const k = parseInt(b.getAttribute('data-xsex-i'),10) || 0;
+      const hit = xsexItems().filter(x=>String(x.id)===String(id))[0];
+      const imgs = hit ? (Array.isArray(hit.imgs) ? hit.imgs : (hit.img ? [hit.img] : [])) : [];
+      const src = imgs[k];
+      if(src) openCustomModal('练习图片', '<img src="' + esc(src) + '" style="max-width:100%;border-radius:10px" alt="练习图片">', ()=>true);
+      return;
+    }
+  }, true);
+
   let xsCat = 'words';     // 学习汇总 → 词汇 | 语法
   function renderXueersi(){
     const st = S.load();
@@ -33178,6 +33719,8 @@ function renderKMAdmin(){
     $$('.xs-summary-pane .xs-sub-tabs [data-xs-cat]').forEach(b=>b.classList.toggle('active', b.dataset.xsCat===xsCat));
     // R218-1：课堂笔记子板块（与「新世界·英语专区·重点知识」功能/交互完全一致）
     if(xsCat === 'notes'){ renderXsNotes(); return; }
+    // R247-3：学而思练习（独立板块：课堂练习 / 课前测 / 各类测试记录）
+    if(xsCat === 'exercise'){ renderXsExercise(); return; }
     // V21-1：巩固打卡子板块 — 每日 10 题词汇默写（独立渲染，不占用词汇/语法分页）
     if(xsCat === 'checkin'){ renderXsCheckin(); return; }
     // R42-4：「已默写」子板块（词汇/语法/巩固打卡后的第 4 个按键）—— 已答对词汇移至本主题卡内展示
