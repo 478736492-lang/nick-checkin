@@ -44,15 +44,15 @@ var PRECACHE_TIMEOUT = 25000; // R119.1：预缓存最多占用这么久，超�
 /* R70：构建指纹。部署脚本会把 __BUILD_STAMP__ 替换为当期 index.html 的 sha256 前 12 位。
  * 作用：只在站点内容真的变化时，sw.js 本身才变化，从而触发浏览器 SW 更新流程
  * （install → 重新预缓存新 index.html → installed → 页面自动重载到新版）。 */
-var BUILD = '__BUILD_STAMP__';
+var BUILD = '0d539388a67c';
 /* R244-6：缓存名绑定构建指纹 —— 版本更新时 activate 会清掉上一版缓存，
  * 避免外置种子脚本停留在旧内容（表现为百科等板块数据「被清零」）。 */
 var CACHE_NAME = 'zoo-checkin-v1-' + BUILD;
 /* R93：版本号与版本更新时间。部署脚本会把 __APP_VERSION__ 替换为当期轮次号（如 R93）、
  * __BUILD_TIME__ 替换为本次部署时间（北京时间，格式 YYYY-MM-DD HH:mm）。
  * 用途：「设置中心 → 版本与更新」显示「当前版本 + 更新时间」，点「检查更新」后即为最新读数。 */
-var APP_VERSION = '__APP_VERSION__';
-var BUILD_TIME = '__BUILD_TIME__';
+var APP_VERSION = 'R245';
+var BUILD_TIME = '2026-11-05 16:29';
 
 self.addEventListener('install', function (e) {
   self.skipWaiting();
