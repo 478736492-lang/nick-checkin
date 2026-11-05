@@ -2154,6 +2154,9 @@ body.child-mode .parent-edit-fab{display:none}
 .nw-add-input::placeholder{color:#a9c2dd}
 /* 组件通用头/脚 */
 .yw-comp-head{font-size:var(--theme-title-size);font-weight:800;color:var(--theme-title);margin-bottom:16px;padding-left:4px}
+/* R244-2：导航 / 新世界专区卡点击即时反馈，避免「点了没反应」的体感 */
+.nav-btn,[data-go],[data-nw-back],.nw-card{-webkit-tap-highlight-color:rgba(64,150,255,.28)}
+.nav-btn:active,[data-go]:active,[data-nw-back]:active,.nw-card:active{filter:brightness(.93)}
 .yw-comp-head .yw-sub{font-size:13px;font-weight:700;color:var(--sky-blue);background:var(--tone-100);border:1px solid var(--tone-line-soft);border-radius:999px;padding:3px 12px;margin-left:10px;vertical-align:middle}
 /* 生字听写：会认字（认读）chip 区 */
 .yw-hr-wrap{margin-top:14px}
@@ -7853,6 +7856,14 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 .xs-note-filter-bar{ align-items:center; margin:6px 0 10px; }
 .xs-note-filter-bar .math-filter{ flex:0 1 260px; min-width:200px; max-width:300px; }
 .xs-note-filter-bar .math-filter-menu{ max-height:min(52vh,300px); }
+/* R244-5：课堂笔记标题同行靠右的「新增 / 删除 Lesson」 */
+.xs-note-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.xs-note-head-actions{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700}
+.xs-note-head-actions .pbtn[disabled]{opacity:.5;cursor:not-allowed}
+/* R244-5：Lesson 控件宽度随标签文字自适应，不再固定宽度截断 */
+.xs-note-filter-bar .math-filter[data-xs-pick-group="lesson"]{flex:0 0 auto;min-width:0;max-width:none;width:auto}
+.xs-note-filter-bar [data-xs-pick-group="lesson"] .math-filter-btn{width:auto;min-width:190px}
+.xs-note-filter-bar [data-xs-pick-group="lesson"] .mf-value{flex:0 1 auto;overflow:visible;text-overflow:clip}
 .math-filter-foot .pbtn[disabled]{ opacity:.5; cursor:not-allowed; }
 
 /* R226：数学专区·错题本卡内「计算小超市」每日计算题打卡 */
@@ -7875,6 +7886,9 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 .calc-score{font-size:15px;font-weight:800;color:var(--sky-blue)}
 .calc-check{background:var(--tone-100);border:2px solid var(--tone-line);color:var(--sky-blue);border-radius:12px;padding:9px 20px;font-size:15px;font-weight:800;cursor:pointer;transition:.15s;font-family:inherit}
 .calc-check:hover{transform:translateY(-2px);border-color:#7fb0ff}
+/* R244-1：批改与今日打卡之间的「加入已做本」 */
+.calc-addbook{background:var(--tone-050);border:2px solid var(--tone-200);color:var(--sky-blue);border-radius:12px;padding:9px 18px;font-size:15px;font-weight:800;cursor:pointer;transition:.15s;font-family:inherit}
+.calc-addbook:hover{transform:translateY(-2px);border-color:var(--tone-400);background:var(--tone-100)}
 .calc-checkin{background:linear-gradient(135deg,#f7a23a,var(--z-nw-main));border:none;color:#fff;border-radius:12px;padding:9px 22px;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 4px 12px rgba(233,131,49,.35);transition:.15s;font-family:inherit}
 .calc-checkin:disabled{background:#cdd9ea;box-shadow:none;cursor:not-allowed;opacity:.7}
 .calc-checkin.is-ready{animation:calcPulse 1.1s ease infinite}
@@ -7989,7 +8003,7 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 
 /* ===== R243-1：题库题号搜索 + 每日题号（全库原始序号） ===== */
 /* 题号可能到 4 位数（1250），序号位加宽 */
-.calc-no{width:34px;text-align:right;font-variant-numeric:tabular-nums}
+.calc-no{width:44px;text-align:right;font-variant-numeric:tabular-nums}
 .calc-ans-chip .calc-ans-no{display:inline-block;min-width:20px;color:var(--sky-blue);font-weight:800;margin-right:2px;font-variant-numeric:tabular-nums}
 .calc-bank-search{display:flex;align-items:center;gap:8px;margin:0 0 10px}
 .calc-bank-search-input{flex:1 1 auto;min-width:0;box-sizing:border-box;padding:7px 12px;border:1.5px solid var(--tone-200);border-radius:9px;font-size:14px;font-weight:700;color:#0F2447;outline:none;font-family:inherit}
@@ -8584,17 +8598,17 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
         <button class="modal-x" data-close>×</button>
       </div>
       <div class="modal-body">
-        <div class="calc-wrong-hint" id="calcWrongHint">错题默认不显示答案：重新作答后点「批改」，判对即标记已订正；错题全部订正完成后，「今日打卡」自动解锁。当天 22:00 已订正的题自动收录进「📒 已做本」。</div>
+        <div class="calc-wrong-hint" id="calcWrongHint">错题默认不显示答案：重新作答后点「批改」，判对即标记已订正；错题全部订正完成后，「今日打卡」自动解锁。点下方「📒 移入已做本」可把已订正的题收进已做本。</div>
         <div class="calc-bank-wrong-list calc-wrong-list-lg" id="calcWrongList"></div>
       </div>
       <div class="modal-foot">
-        <button type="button" class="pbtn small" id="btnClearWrong">清空错题本</button>
+        <button type="button" class="pbtn small" id="btnWrongToBook">📒 移入已做本</button>
         <button class="pbtn" data-close>完成</button>
       </div>
     </div>
   </div>
 
-  <!-- ========== 弹窗：R237 计算小超市 · 已做本（每日 22:00 自动收录答对题 + 订正完成题） ========== -->
+  <!-- ========== 弹窗：R237 / R244 计算小超市 · 已做本（手动加入，已取消 22:00 定时收录） ========== -->
   <div class="modal-mask" id="modalCalcBook" hidden>
     <div class="modal-box" style="min-width:720px;max-width:94vw">
       <div class="modal-head">
@@ -8602,7 +8616,7 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
         <button class="modal-x" data-close>×</button>
       </div>
       <div class="modal-body">
-        <div class="calc-bank-hint">每天 <b>22:00</b> 自动收录：① 当天批改<b>答对</b>的题；② 错题本里标记<b>订正完成</b>的题。<span id="calcBookCount">今日 0 题 · 累计 0 题</span></div>
+        <div class="calc-bank-hint">手动收录：主面板「加入已做本」收当天答对题；错题本「移入已做本」收已订正错题。<span id="calcBookCount">今日 0 题 · 累计 0 题</span></div>
         <div class="calc-book-list" id="calcBookList"></div>
       </div>
       <div class="modal-foot">
@@ -11217,9 +11231,20 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
   // ----- 加载与保存 -----
   function load(){
     if(_staging && _staged) return _staged; // R131-2：暂存态下直接返回草稿，编辑期间不落库
-    let st;
-    try{ const raw = localStorage.getItem(KEY); st = raw? JSON.parse(raw) : null; }catch(e){ st=null; }
-    if(!st){
+    let st; let raw = null;
+    try{
+      raw = localStorage.getItem(KEY);
+      st = raw ? JSON.parse(raw) : null;
+    }catch(e){
+      st = null;
+      // R244-6：存档损坏（写入被配额截断 / 手工误改）时先把原始串留一份快照，
+      //         避免后续迁移里的 save(st) 把尚可恢复的旧数据彻底覆盖成「全部清零」。
+      try{ if(raw) localStorage.setItem(KEY + '_corrupt_backup', raw); }catch(_e){}
+      try{ console.warn('[Store] 主存档解析失败，已保留原始快照于 ' + KEY + '_corrupt_backup'); }catch(_e){}
+    }
+    // R244-6：解析出来不是对象（如 "123" / "[]"）同样视为损坏，否则后续字段赋值会
+    //         静默失败并让整站读到一个非对象 state，表现为「各板块数据清零 + 打卡全失效」。
+    if(!st || typeof st !== 'object' || Array.isArray(st)){
       st = {
         profile:{nickname:'Nick',grade:'三年级',mode:'child'},
         tasks: defaultTasks(),
@@ -11241,9 +11266,9 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
         calcStreakLastDate: '',
         calcStreakRewardWeeks: 0,
         calcStreakBonusStars: 0,
-        // R237：当日批改快照（刷新/切页不丢失，保留至 22:00 自动收录后清空）
+        // R237 / R244：当日批改快照（刷新/切页不丢失，跨日自动失效）
         calcDrill: {date:'', items:[], checkedAt:0, score:0},
-        // R237：已做本（22:00 把当日答对题 + 订正完成题自动收录进来）
+        // R237 / R244：已做本（由「加入已做本 / 移入已做本」手动写入）
         calcBook: [],
         calcBookArchivedDate: '',
         goRecords: [],
@@ -11254,7 +11279,7 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
         // V14-T8：设置密码（4 位数字 PIN，进入设置需验证）
         settings: {pin:''}
       };
-      save(st);
+      try{ if(!raw) save(st); }catch(e){}
     }
     if(!Array.isArray(st.plots) || st.plots.length !== PLOT_COUNT){
       plotsIn(st); save(st);
@@ -11327,6 +11352,8 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
       save(st);
       if(added2) console.log('[乐读数学] 已导入 2026 夏三 S 原题 ' + added2 + ' 道');
     }
+    // R244-4：删除「盈亏问题一 · 第2题」重复题（新老存档都清一次，幂等）
+    if(migrateQ3sDup(st)) save(st);
     // v9：旧 type（'manual'/'photo'/'voice'/'拍照题'/'手动题'）归一映射到 v9 题型分类
     const TYPE_MAP = {manual:'提取公因数',photo:'脱式计算',voice:'简便计算','手动题':'提取公因数','拍照题':'脱式计算','语音题':'简便计算'};
     st.mathProblems.forEach(m=>{
@@ -17713,7 +17740,7 @@ be 动词：am / is → was；are → were
   }
   function getCalcWrongs(){ const st = load(); return Array.isArray(st.calcWrongBook) ? st.calcWrongBook.slice() : []; }
   function clearCalcWrongs(){ const st = load(); st.calcWrongBook = []; save(st); return {ok:true}; }
-  // 错题本单题「订正完成」标记（R237：22:00 自动收录进已做本，随后从错题本移除）
+  // 错题本单题「订正完成」标记（R244：由「移入已做本」手动收录后从错题本移除）
   function setCalcWrongFixed(key, fixed){
     const st = load();
     if(!Array.isArray(st.calcWrongBook)) return {ok:false};
@@ -17744,7 +17771,7 @@ be 动词：am / is → was；are → were
     const p = x => String(x).padStart(2,'0');
     return d.getFullYear() + '-' + p(d.getMonth()+1) + '-' + p(d.getDate());
   }
-  // 当日批改快照：跨日自动失效（只保留当天，直到 22:00 收录后清空）
+  // 当日批改快照：跨日自动失效（只保留当天）
   function getCalcDrill(){
     const st = load();
     const d = st.calcDrill && typeof st.calcDrill === 'object' ? st.calcDrill : calcDrillBlank();
@@ -17775,7 +17802,7 @@ be 动词：am / is → was；are → were
     const lab = x => ({'+':'+','-':'−','×':'×','÷':'÷'})[x] || x;
     return String(o.a) + ' ' + lab(o.op) + ' ' + String(o.b) + (o.op2 ? ' ' + lab(o.op2) + ' ' + String(o.c) : '');
   }
-  // 22:00 自动收录：当日批改答对题 + 错题本当日「订正完成」题 → 已做本
+  // R244：定时收录已彻底取消；此函数仅作为兼容 API 保留，不再由任何定时器调用。
   function archiveCalcBook(dateStr){
     const st = load();
     const d = String(dateStr || todayStr());
@@ -17817,6 +17844,71 @@ be 动词：am / is → was；are → were
     return {ok:true, added:add.length, removedWrongs};
   }
 
+
+  // R244-1：主面板「加入已做本」——把当日批改答对的题按 key 去重写入已做本。
+  // 可多次点击、幂等；R244 起彻底取消 22:00 定时收录，改由用户手动触发。
+  function addCalcBookRight(items, dateStr){
+    const st = load();
+    const d = String(dateStr || todayStr());
+    if(!Array.isArray(st.calcBook)) st.calcBook = [];
+    const seen = {};
+    st.calcBook.forEach(x => { if(x) seen[String(x.date||'') + '|' + String(x.key||'')] = 1; });
+    const add = [];
+    (Array.isArray(items) ? items : []).forEach(it => {
+      if(!it || it.ok !== true) return;
+      const key = String(it.key || '');
+      if(!key) return;
+      const k = d + '|' + key;
+      if(seen[k]) return;
+      seen[k] = 1;
+      add.push({date:d, key, q:String(it.q||''), ans:it.ans, val:it.val, cat:String(it.cat||''), src:'right', at:Date.now()});
+    });
+    if(add.length){
+      st.calcBook = st.calcBook.concat(add);
+      if(st.calcBook.length > 800) st.calcBook = st.calcBook.slice(-800);
+      save(st);
+    }
+    return {ok:true, added:add.length, total:st.calcBook.length};
+  }
+  // R244-1：错题本「移入已做本」——仅把已批改正确（fixedAt）的错题移入已做本，并从错题本移除。
+  // 未作答 / 未订正的错题保持原样，不会被误清。
+  function moveFixedWrongsToCalcBook(dateStr){
+    const st = load();
+    const d = String(dateStr || todayStr());
+    if(!Array.isArray(st.calcBook)) st.calcBook = [];
+    if(!Array.isArray(st.calcWrongBook)) st.calcWrongBook = [];
+    const seen = {};
+    st.calcBook.forEach(x => { if(x) seen[String(x.date||'') + '|' + String(x.key||'')] = 1; });
+    const add = [], keep = [];
+    st.calcWrongBook.forEach(w => {
+      if(!w) return;
+      if(!w.fixedAt){ keep.push(w); return; }
+      const key = String(w.key || calcWrongKey(w));
+      const k = d + '|' + key;
+      if(!seen[k]){
+        seen[k] = 1;
+        add.push({date:d, key, q:_calcQOf(w), ans:w.ans,
+                  val:(w.fixVal == null ? w.ans : w.fixVal), cat:String(w.cat||''), src:'fixed', at:Date.now()});
+      }
+    });
+    st.calcWrongBook = keep;
+    if(add.length){
+      st.calcBook = st.calcBook.concat(add);
+      if(st.calcBook.length > 800) st.calcBook = st.calcBook.slice(-800);
+    }
+    save(st);
+    return {ok:true, added:add.length, remain:keep.length};
+  }
+  // R244-4：删除「2026 夏三 S · 盈亏问题一 · 第2题」（与第1题题面完全重复），老存档幂等清理。
+  function migrateQ3sDup(st){
+    if(st._q3sDupFixV1) return false;
+    st._q3sDupFixV1 = true;
+    if(!Array.isArray(st.mathProblems)) return true;
+    const before = st.mathProblems.length;
+    st.mathProblems = st.mathProblems.filter(m => !(m && m.type === '盈亏问题一' && String(m.title||'').indexOf('第2题') >= 0));
+    return before !== st.mathProblems.length;
+  }
+
   // ----- 状态/接口暴露 -----
 
   window.Store = {
@@ -17845,9 +17937,11 @@ be 动词：am / is → was；are → were
     getCalcBank, addCalcProblem, updateCalcProblem, delCalcProblem,
     // R231-4：错题本（批改答错题自动归集）
     addCalcWrong, getCalcWrongs, clearCalcWrongs, setCalcWrongFixed, gradeCalcWrong,
-    // R237：当日批改快照 + 已做本（22:00 自动收录）
+    // R237 / R244：当日批改快照 + 已做本（手动写入，无定时收录）
     getCalcDrill, saveCalcDrill, clearCalcDrill,
     getCalcBook, clearCalcBook, archiveCalcBook,
+    // R244-1：手动加入已做本（取消 22:00 定时收录）
+    addCalcBookRight, moveFixedWrongsToCalcBook,
     getSuzhiProgress, setSuzhiProgressIfEmpty,
     addGoRecord, deleteGoRecord, getWeekGoCount, clearWeekGoRecords, getGoStars, setGoStars,
     getMaoStars, setMaoStars, maoPoemCheckedList, isMaoPoemChecked, checkMaoPoem, uncheckMaoPoem,
@@ -18789,13 +18883,8 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     }
     if(page==='home'){ renderHome(); }
     if(page==='today'){ renderToday(); refreshSystemLock(); }
-    if(page==='newworld') renderNewWorldAll();
-    if(page==='newworld-yuwen'){ renderNewWorldAll(); }
-    if(page==='newworld-math'){ renderNewWorldAll(); }
-    if(page==='newworld-english'){ renderNewWorldAll(); }
-    if(page==='newworld-suzhi'){ renderNewWorldAll(); }
-    if(page==='newworld-science'){ renderNewWorldAll(); }
-    if(page==='newworld-schedule'){ renderNewWorldAll(); }
+    // R244-2：只渲染目标子页，避免每次导航都全量重渲染 7 个页面造成点击迟钝
+    if(page==='newworld' || String(page).indexOf('newworld-')===0) renderNewWorldAll(page);
     // R234-3：从其他页面点进「乐读数学」→ 默认展示计算小超市（原页内切到笔记的停留态不重置）
     if(page==='math'){ if(_fromPage !== 'math') setLeiduTab('calc'); renderMath(); }
     if(page==='xueersi') renderXueersi();
@@ -20259,7 +20348,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
   // ===== R240-2：必背知识 · 字词一律用「田字格」展示 =====
   // 覆盖：识字表注音 / 词语听写 / 生字注音组词 / 近反义词 / 形近字 / 词语积累 / 词语解释
   // 复用「写字表」同款 .yw-tian-card + .yw-tian-grid（蓝格），保证与原来的字词读写观感一致
-  const BS_TIAN_KINDS = ['识字表注音','词语听写','生字注音组词','近反义词','形近字','词语积累','词语解释'];
+  const BS_TIAN_KINDS = ['识字表注音','词语听写','生字注音组词','多音字','近反义词','形近字','词语积累','词语解释'];
   function bsTianKind(h){
     const t = String(h || '');
     for(let i = 0; i < BS_TIAN_KINDS.length; i++){
@@ -20438,6 +20527,35 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     }
     return bsTianWrap(out, { list:true });
   }
+
+  // ⑧ 多音字：假：jià（寒假） jiǎ（假如） —— R244-3：与「生字注音组词」同款田字格
+  // 每个读音一张卡：格上是该多音字，拼音置顶，格下例词。无「字：」前缀时取段首汉字。
+  function bsTianDuoyin(text){
+    const src = String(text || '').replace(/\r/g, '');
+    const out = [];
+    const readRe = /([A-Za-z\u00c0-\u024f\u0100-\u017f\u1e00-\u1eff]+)\s*[（(]\s*([^）)]*?)\s*[）)]/g;
+    const collect = (ch, seg) => {
+      if(!ch) return;
+      let m; readRe.lastIndex = 0;
+      while((m = readRe.exec(seg))){
+        out.push(bsTianCard({ chars:ch, py:m[1], note:String(m[2] || '').trim() }));
+      }
+    };
+    String(src).split('\n').forEach(line=>{
+      const t = line.trim(); if(!t) return;
+      const headRe = /([\u3400-\u9FFF])\s*[：:]/g;
+      const heads = []; let hm;
+      while((hm = headRe.exec(t))) heads.push({ ch:hm[1], start:hm.index, end:headRe.lastIndex });
+      if(heads.length){
+        heads.forEach((h, i) => collect(h.ch, t.slice(h.end, i + 1 < heads.length ? heads[i+1].start : t.length)));
+      } else {
+        const cs = bsHanChars(t);
+        collect(cs.length ? cs[0] : '', t);
+      }
+    });
+    return bsTianWrap(out);
+  }
+
   function bsTianHtml(h, body){
     const kind = bsTianKind(h);
     if(!kind) return '';
@@ -20446,6 +20564,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       if(kind === '识字表注音')   return bsTianShizi(text);
       if(kind === '词语听写')     return bsTianCiyu(text);
       if(kind === '生字注音组词') return bsTianShengzi(text);
+      if(kind === '多音字')         return bsTianDuoyin(text);
       if(kind === '近反义词')     return bsTianJinfan(text);
       if(kind === '形近字')       return bsTianXingjin(text);
       if(kind === '词语积累')     return bsTianJilei(text);
@@ -22072,7 +22191,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         const fbCls = old && old.ok === true ? 'calc-fb ok' : (old && old.ok === false ? 'calc-fb no' : 'calc-fb');
         return `
         <div class="calc-row" data-cat="${p.cat||''}">
-          <span class="calc-no" title="题库第 ${p.no||(i+1)} 题">${p.no||(i+1)}</span>
+          <span class="calc-no" title="题库第 ${p.no||(i+1)} 题">${p.no||(i+1)}、</span>
           <span class="calc-q">${_calcQText(p)} =</span>
           <input class="calc-ans${cls}" type="number" inputmode="numeric" pattern="[0-9\-]*" data-calc-idx="${i}" data-calc-key="${esc(key)}" value="${esc(val)}" />
           <span class="${fbCls}" data-calc-fb="${i}">${fbTxt}</span>
@@ -22087,6 +22206,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         <div class="calc-bar">
           <span class="calc-score" data-calc-score>${_calcGateText(gate)}</span>
           <button class="calc-check" type="button" data-calc-check>批改</button>
+          <button class="calc-addbook" type="button" data-calc-addbook title="把本次批改答对的题移入已做本">📒 加入已做本</button>
           <button class="calc-checkin${gate.can ? ' is-ready' : ''}" type="button" data-calc-checkin${gate.can ? '' : ' disabled'}>今日打卡</button>
         </div>
         <div class="calc-tip">全部答对就能打卡；答错的题会收进「📕 错题本」，去错题本重新作答并点「批改」判对后，今日打卡同样解锁～</div>`;
@@ -22101,7 +22221,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
           <span class="yw-sub calc-head-sub">每日一练 · ${dateLabel}</span>
           <span class="calc-head-tools">
             <button type="button" class="calc-bank-btn calc-bank-inline-btn" data-calc-bank title="题库：编辑 · 添加 · 删除计算题（可按题号搜索）">📚 题库（${bankCount} 题）</button>
-            <button type="button" class="calc-bank-btn calc-bank-inline-btn" data-calc-book title="已做本：每日 22:00 自动收录当天答对题和订正完成题">📒 已做本（今日 ${bookToday}）</button>
+            <button type="button" class="calc-bank-btn calc-bank-inline-btn" data-calc-book title="已做本：手动加入答对题与已订正错题（已取消定时收录）">📒 已做本（今日 ${bookToday}）</button>
             <button type="button" class="calc-bank-btn calc-bank-inline-btn" data-calc-wrong title="错题本：批改答错的题自动收进来，重新作答批改正确即标记已订正">📕 错题本（${wrongCount}）</button>
           </span>
         </div>
@@ -22124,7 +22244,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     // R238：已做本右侧「错题本」→ 打开独立错题本弹窗
     const wrongBtn = board.querySelector('[data-calc-wrong]');
     if(wrongBtn){ wrongBtn.addEventListener('click', ()=> openCalcWrong()); }
-    // R237-1：把当前作答/判分整份写进当日快照（刷新、切页不丢；22:00 收录后清空）
+    // R237-1 / R244：把当前作答/判分整份写进当日快照（刷新、切页不丢；跨日自动失效）
     const persistDrill = ()=>{
       if(!window.Store || !window.Store.saveCalcDrill) return;
       const probs = genCalcProblems(_CALC_N);
@@ -22170,6 +22290,20 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         updateCalcWrongBadge();
         // R243-2：批改后按「全对 / 错题全部订正」刷新得分文案与今日打卡按钮
         updateCalcGateUI();
+      });
+    }
+    // R244-1：「加入已做本」——把本次批改答对的题手动收进已做本（取代 22:00 定时收录）
+    const addBookBtn = board.querySelector('[data-calc-addbook]');
+    if(addBookBtn){
+      addBookBtn.addEventListener('click', ()=>{
+        try{
+          persistDrill();
+          const snap = window.Store.getCalcDrill ? window.Store.getCalcDrill() : {items:[]};
+          const r = window.Store.addCalcBookRight(snap.items || [], today);
+          toast(r.added ? ('📒 已把 ' + r.added + ' 道答对的题加入已做本') : '还没有答对的题，先点「批改」吧～');
+          const bk = board.querySelector('[data-calc-book]');
+          if(bk) bk.textContent = '📒 已做本（今日 ' + _calcBookTodayCount() + '）';
+        }catch(e){ toast('加入已做本失败，请重试'); }
       });
     }
     if(okBtn && !window.Store.isReadingRead('calcDaily', today)){
@@ -22273,8 +22407,8 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     const hint = document.getElementById('calcWrongHint');
     if(hint){
       hint.innerHTML = unfixed > 0
-        ? '错题默认<b>不显示答案</b>：重新作答后点「批改」，判对即标记<b>已订正</b>；错题全部订正完成后，「今日打卡」自动解锁。当天 22:00 已订正的题自动收录进「📒 已做本」。<b class="calc-wrong-left">还剩 ' + unfixed + ' 道待订正</b>'
-        : '错题已全部订正完成 ✅ 现在可以回去点「今日打卡」啦～当天 22:00 会自动收录进「📒 已做本」。';
+        ? '错题默认<b>不显示答案</b>：重新作答后点「批改」，判对即标记<b>已订正</b>；错题全部订正完成后，「今日打卡」自动解锁。点下方「📒 移入已做本」可收进已做本。<b class="calc-wrong-left">还剩 ' + unfixed + ' 道待订正</b>'
+        : '错题已全部订正完成 ✅ 现在可以回去点「今日打卡」啦～也可以点「📒 移入已做本」收进已做本。';
     }
     wl.innerHTML = ws.length ? ws.map(w=>{
       const fixed = !!w.fixedAt;
@@ -22310,7 +22444,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     const n = (window.Store && window.Store.getCalcWrongs) ? window.Store.getCalcWrongs().length : 0;
     btn.textContent = '📕 错题本（' + n + '）';
   }
-  // ---------- R237：计算小超市「已做本」（22:00 自动收录当日答对题 + 订正完成题）----------
+  // ---------- R237 / R244：计算小超市「已做本」（手动加入，定时收录已取消）----------
   function renderCalcBookModal(){
     const listEl = document.getElementById('calcBookList');
     if(!listEl) return;
@@ -22320,7 +22454,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     const cnt = document.getElementById('calcBookCount');
     if(cnt) cnt.textContent = '今日 ' + todayN + ' 题 · 累计 ' + all.length + ' 题';
     if(!all.length){
-      listEl.innerHTML = `<div class="calc-bank-empty">已做本还是空的～ 每天 22:00 会把当天「批改答对」的题和「错题本里订正完成」的题自动收录进来。</div>`;
+      listEl.innerHTML = `<div class="calc-bank-empty">已做本还是空的～ 点主面板「📒 加入已做本」收当天答对题，或在错题本点「📒 移入已做本」收已订正错题。</div>`;
       return;
     }
     const groups = {};
@@ -22343,23 +22477,8 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     renderCalcBookModal();
     showModal('#modalCalcBook');
   }
-  // R237-2：每日 22:00 自动收录（同源调度，与 23:30 收录书屋一致）
-  function setupCalcBookCron(){
-    const flush = ()=>{ try{ if(window.Store && window.Store.archiveCalcBook) window.Store.archiveCalcBook(); }catch(e){} };
-    try{
-      const now = new Date();
-      const st = (window.Store && window.Store.load) ? window.Store.load() : null;
-      if(now.getHours() >= 22 && st && st.calcBookArchivedDate !== _calcToday()) flush();
-    }catch(e){}
-    const schedule = ()=>{
-      const now = new Date();
-      const next = new Date(now);
-      next.setHours(22,0,0,0);
-      if(next <= now) next.setDate(next.getDate()+1);
-      setTimeout(()=>{ flush(); schedule(); }, next - now);
-    };
-    schedule();
-  }
+  // R244-1：每日 22:00 定时收录已彻底删除（含启动补偿与递归调度），
+  //         已做本改由主面板「加入已做本」与错题本「移入已做本」两个手动入口驱动。
   function refreshCalcAfterBankChange(){
     try{ renderMath(); }catch(e){}
   }
@@ -25395,21 +25514,41 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   }
   function renderSciencePage(){ renderSlotPage('sciTopCards','sciSlotBody','sciSlotHint', SCI_TOP_CARDS, sciSlot); }
 
-  function renderNewWorldAll(){
-    renderNewWorld();
-    renderYuwenPage();
-    renderMathPage();
-    renderEnglishPage();
-    renderSuzhiPage();
-    renderScheduleAll();
-    // 绑定所有二级页返回按钮
-    // R61-4：返回按钮为静态 DOM，此前每次进入新世界都 addEventListener 一次，
-    //        导致 N 次访问后点一次「返回」触发 N 次 goPage 全量渲染 → 页面卡顿。
-    //        加 _nwBackBound 去重，按钮只绑一次。
+  // R244-2：点击迟钝根因 —— 此前每次进入任意一个「新世界」页面都会全量重渲染首页 +
+  // 6 个二级子页（含课程表、英语、数学的大列表），平板上一次点击要跑几百毫秒。
+  // 现在只渲染当前进入的那一页；返回键是静态 DOM，仍只绑定一次。
+  // R244-2：点击迟钝根因 —— 此前每次进入任意一个「新世界」页面都会同步全量重渲染
+  // 首页 + 6 个二级子页（课程表 / 语文 / 数学 / 英语 / 素养大列表），平板上一次点击
+  // 要占用主线程几百毫秒，且重渲染里的 el.click() 合成点击又会连锁触发更多渲染。
+  // 现在：本次点击只同步渲染「目标页」；其余子页在首次进入时于空闲帧预热一次。
+  // V109 已删除的 newworld-science 保持不渲染（不进映射表）。
+  let _nwWarmDone = false;
+  const NW_RENDERERS = {
+    'newworld':            renderNewWorld,
+    'newworld-yuwen':      renderYuwenPage,
+    'newworld-math':       renderMathPage,
+    'newworld-english':    renderEnglishPage,
+    'newworld-suzhi':      renderSuzhiPage,
+    'newworld-schedule':   renderScheduleAll
+  };
+  function renderNewWorldAll(page){
+    // 返回键是静态 DOM，全站只绑定一次（R61-4 去重继续生效）
     $$('[data-nw-back]').forEach(b=>{
       if(b._nwBackBound) return; b._nwBackBound = true;
       b.addEventListener('click', ()=> goPage(b.getAttribute('data-nw-back')));
     });
+    const target = NW_RENDERERS[page] ? page : 'newworld';
+    try{ NW_RENDERERS[target](); }catch(e){}
+    if(!_nwWarmDone){
+      _nwWarmDone = true;
+      // 空闲帧一次性补齐其余页面；不阻塞本次点击的首屏响应，之后各页自身交互仍会刷新。
+      setTimeout(()=>{
+        Object.keys(NW_RENDERERS).forEach(k=>{
+          if(k === target) return;
+          try{ NW_RENDERERS[k](); }catch(e){}
+        });
+      }, 0);
+    }
   }
 
   // R104：首页介绍卡里的「学段」文字（默认三年级）—— 仅家长模式可编辑修改，普通用户模式只读
@@ -28830,7 +28969,8 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   // R93：原「题库 / 需巩固 / 已掌握」全局筛选按键已按需求移除 —— 题目固定全量展示（不再按状态过滤）
   let mathGroupId = '';     // R91：当前选中的板块 id（空 → 渲染时落到默认板块）
   let mathTypeSel = '';     // R92：当前选中的题型
-  let editingMathId = null; // V56-Req10：当前正在编辑的数学题 id（null = 新增）
+  let editingMathId = null;
+  let editingMathTitle = '';   // R244-4：编辑模式保留原题号标题 // V56-Req10：当前正在编辑的数学题 id（null = 新增）
   // 从题库中提取所有题型（保持首次出现顺序），至少保证「提取公因数」子板块存在
   function mathTypeList(){
     const all = (S.load().mathProblems) || [];
@@ -29343,6 +29483,10 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     const warn = document.getElementById('mmWarn');
     if(problem){
       editingMathId = problem.id;
+      // R244-4：记住原 title（如「盈亏问题一 · 第1题」），保存时不被 desc 覆盖成乱标题
+      editingMathTitle = problem.title || '';
+      const ni = document.getElementById('mmTypeNew');
+      if(ni) ni.value = '';
       const split = splitSolution(problem.solution);
       fillMathTypeOptions(problem.type || '未分类');
       const dEl = document.getElementById('mmDesc'); if(dEl) dEl.value = problem.desc || problem.title || '';
@@ -29351,6 +29495,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       if(warn) warn.textContent = '正在编辑本题，保存后将更新原题目';
     } else {
       editingMathId = null;
+      editingMathTitle = '';
       // R91：默认选中当前板块下的第一个题型，板块内无题型时回退「提取公因数」；可下拉改选或新增题型
       // R94：从题型详情板块的【＋ 新增题目】进来时，用 opts.type 预填为当前题型的名称
       const _ag = activeMathGroup();
@@ -29380,7 +29525,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     if(!type || type === MM_NEW_TYPE){ if(warn) warn.textContent = '⚠️ 请选择或填写题型'; return; }
     const solution = [mind ? '【思路】' + mind : '', steps ? '【解答】' + steps : ''].filter(Boolean).join('\n');
     if(editingMathId){
-      S.updateMathProblem(editingMathId, { type, title: type + ' · ' + desc.slice(0, 20), desc, solution });
+      S.updateMathProblem(editingMathId, { type, title: editingMathTitle || (type + ' · ' + desc.slice(0, 20)), desc, solution });
       toast('✅ 已更新题目（「' + type + '」）');
     } else {
       S.addMathProblem({ type, title: type + ' · ' + desc.slice(0, 20), desc, solution });
@@ -29388,6 +29533,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     }
     hideModal('#modalMathManual');
     editingMathId = null;
+    editingMathTitle = '';
     // R91/R92/R102：保存后定位到该题型所属板块并筛选题型标签（全新题型挂到当前板块下）
     if(S.groupIdOfMathType && S.assignMathTypeToGroup){
       if(!S.groupIdOfMathType(type)) S.assignMathTypeToGroup(type, mathGroupId);
@@ -32064,7 +32210,7 @@ function renderKMAdmin(){
   let _xsNoteYear = null;
   let _xsNoteLesson = null;
   let _xsNotePickOpen = '';
-  let _xsNoteAutoOpen = '';      // R222-1：重渲染后需要自动展开的面板（year / lesson）
+  let _xsNoteAutoOpen = '';      // R244-5：重渲染后仅「学年管理」可自动展开 year 面板，lesson 一律不自动弹
   let _xsNoteOutsideBound = false;
   function xsNoteKey(){
     return XS_NOTE_NS + (_xsNoteYear || '') + '|' + (_xsNoteLesson || '');
@@ -32119,7 +32265,12 @@ function renderKMAdmin(){
     target.classList.remove('xs-list-grammar','xs-list-raz');
     target.classList.add('notes-mode');
     target.innerHTML = `
-      <div class="yw-comp-head">课堂笔记</div>
+      <div class="yw-comp-head xs-note-head">课堂笔记
+        <span class="xs-note-head-actions">
+          <button type="button" class="pbtn small" data-xs-pick-lesson-add="1" title="新增一个 Lesson 标签">＋ 新增 Lesson</button>
+          <button type="button" class="pbtn small" data-xs-pick-lesson-del="1" title="删除当前 Lesson 选项"${_xsNoteLesson?'':' disabled'}>－ 删除 Lesson</button>
+        </span>
+      </div>
       <div class="math-filter-bar xs-note-filter-bar">
         <div class="math-filter" data-xs-pick-group="year">
           <button type="button" class="math-filter-btn" data-xs-pick="year" aria-haspopup="listbox" aria-expanded="false" title="点击选择学年">
@@ -32161,7 +32312,9 @@ function renderKMAdmin(){
     if(pager) pager.innerHTML = '';
     xsNoteBind(target);
     // R222-1：与乐读数学一致 —— 选完学年后自动展开 lesson 面板
-    if(_xsNoteAutoOpen){ const _w = _xsNoteAutoOpen; _xsNoteAutoOpen = ''; xsNotePickerOpen(target, _w); }
+    // R244-5：进入学年后不再自动弹出 Lesson 面板；仅学年自身管理操作后可展开学年面板。
+    if(_xsNoteAutoOpen === 'year'){ _xsNoteAutoOpen = ''; xsNotePickerOpen(target, 'year'); }
+    else { _xsNoteAutoOpen = ''; }
   }
   // 事件绑定（每次重渲染后重新绑定，与重点知识页同一套交互）
   function xsNoteBind(scope){
@@ -32336,11 +32489,8 @@ function renderKMAdmin(){
         ? lessons.map(l=>`<button type="button" class="math-type-item${_xsNoteLesson===l?' active':''}" data-xs-pick-lesson="${esc(l)}"><span class="mti-name">${esc(l)}</span></button>`).join('')
         : '<div class="math-filter-empty">暂无 Lesson</div>';
       if(xsNoteHasBucket(_xsNoteYear, '')) html += `<button type="button" class="math-type-item${_xsNoteLesson===''?' active':''}" data-xs-pick-lesson=""><span class="mti-name">未分类</span></button>`;
-      lMenu.innerHTML = html
-        + `<div class="math-filter-foot">
-             <button type="button" class="pbtn small math-add-card-btn" data-xs-pick-lesson-add="1" title="在当前列表新增一个 Lesson">＋ 新增 Lesson</button>
-             <button type="button" class="pbtn small math-del-card-btn" data-xs-pick-lesson-del="1" title="删除当前 Lesson 选项"${_xsNoteLesson?'':' disabled'}>－ 删除 Lesson</button>
-           </div>`;
+      // R244-5：Lesson 的新增 / 删除按钮已上移到「课堂笔记」标题行，菜单里只保留选项
+      lMenu.innerHTML = html;
     }
   }
   // R222-1：学年 / lesson 下拉面板的开合（结构与交互 1:1 对齐乐读数学「板块 / 题型」筛选按键）
@@ -32373,7 +32523,7 @@ function renderKMAdmin(){
       b.addEventListener('click', (e)=>{
         e.stopPropagation();
         _xsNoteYear = b.getAttribute('data-xs-pick-year') || '';
-        _xsNoteAutoOpen = 'lesson';
+        _xsNoteAutoOpen = '';   // R244-5：选完学年不再自动弹出 Lesson
         renderXsNotes();
       });
     });
@@ -32410,7 +32560,7 @@ function renderKMAdmin(){
         const st = window.Store; if(!st) return;
         const arr = st.getXsNoteLessons();
         if(arr.indexOf(name) >= 0){ toast('该 Lesson 已存在'); return; }
-        st.setXsNoteLessons(arr.concat([name])); _xsNoteLesson = name; _xsNoteAutoOpen = 'lesson'; renderXsNotes();
+        st.setXsNoteLessons(arr.concat([name])); _xsNoteLesson = name; _xsNoteAutoOpen = ''; renderXsNotes();
       });
     });
     scope.querySelectorAll('[data-xs-pick-lesson-del]').forEach(b=>{
@@ -32420,7 +32570,7 @@ function renderKMAdmin(){
         const name = _xsNoteLesson;
         openCustomModal('删除 Lesson 选项', `确定删除 Lesson「<b>${esc(name)}</b>」这个选项吗？<div style="margin-top:8px;color:#5b6b85;font-size:13px">仅移除选项入口，该 Lesson 下已导入的笔记图片会一并隐藏（数据仍保留在存储中）。</div>`, ()=>{
           const st = window.Store; if(!st) return true;
-          st.setXsNoteLessons(st.getXsNoteLessons().filter(v => v !== name)); _xsNoteLesson = ''; _xsNoteAutoOpen = 'lesson'; renderXsNotes(); return true;
+          st.setXsNoteLessons(st.getXsNoteLessons().filter(v => v !== name)); _xsNoteLesson = ''; _xsNoteAutoOpen = ''; renderXsNotes(); return true;
         });
       });
     });
@@ -37221,17 +37371,18 @@ function renderKMAdmin(){
         });
       }
     }
-    // R231-4 / R238：清空错题本（错题本已独立成弹窗）
-    const btnClearWrong = document.getElementById('btnClearWrong');
-    if(btnClearWrong && !btnClearWrong._calcWrongBound){
-      btnClearWrong._calcWrongBound = true;
-      btnClearWrong.addEventListener('click', ()=>{
-        confirmDelete('清空错题本', ()=>{
-          if(window.Store.clearCalcWrongs) window.Store.clearCalcWrongs();
-          renderCalcWrongModal();
-          updateCalcWrongBadge();
-          toast('已清空错题本');
-        });
+    // R244-1：「清空错题本」改为「移入已做本」——只把已批改正确的错题收进已做本，
+    //         未订正的错题原样保留；22:00 定时收录已彻底移除。
+    const btnWrongToBook = document.getElementById('btnWrongToBook');
+    if(btnWrongToBook && !btnWrongToBook._calcWrongBound){
+      btnWrongToBook._calcWrongBound = true;
+      btnWrongToBook.addEventListener('click', ()=>{
+        let r = {ok:false, added:0, remain:0};
+        try{ r = (window.Store.moveFixedWrongsToCalcBook ? window.Store.moveFixedWrongsToCalcBook() : r); }catch(e){}
+        renderCalcWrongModal();
+        updateCalcWrongBadge();
+        try{ updateCalcGateUI(); }catch(e){}
+        toast(r.added ? ('📒 已把 ' + r.added + ' 道订正正确的题移入已做本') : '还没有已批改正确的错题，先作答并点「批改」吧～');
       });
     }
     // R243-2：错题本「重新作答 → 批改」——判对即标记已订正，并同步主面板与今日打卡闸门
@@ -37601,8 +37752,7 @@ if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
     // （setupKewenWordLibCron 函数保留定义，仅不再挂载）
     // V55-Req6：大阅读「收录书屋」每日 23:30 自动归档
     setupReadingAutoArchive();
-    // R237-2：计算小超市「已做本」每日 22:00 自动收录（答对题 + 订正完成题）
-    setupCalcBookCron();
+    // R244-1：已做本 22:00 定时收录已取消（不再挂载任何调度）。
     // 需求②：每周日 23:00 自动清零当周围棋对弈记录
     setupGoWeeklyReset();
     // V55-Req8：节日当天打卡提醒
