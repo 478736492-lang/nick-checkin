@@ -8132,6 +8132,115 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 .ml-edit-tip{font-size:12.5px;color:var(--muted)}
 
 
+/* ============================================================
+   R245-1：计算小超市「打卡日历」—— 连续打卡行 + 入口按键 + 毛玻璃弹窗
+   排版参照首页「本月完成度」：星期行 + 7 列方格，格内 日期 + 小计
+   ============================================================ */
+.calc-streak-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.calc-streak-row .calc-streak{margin-bottom:0}
+.calc-cal-btn{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:4px 12px;border-radius:999px;cursor:pointer;
+  font-size:13px;font-weight:800;font-family:inherit;
+  color:var(--z-nw-deep);background:#fff;
+  border:1.5px solid var(--z-nw-mid);
+  box-shadow:0 2px 6px rgba(30,58,138,.10);
+  transition:transform .16s ease,box-shadow .16s ease,background .16s ease;
+}
+.calc-cal-btn:hover{background:var(--z-nw-pale);box-shadow:0 4px 10px rgba(30,58,138,.18);transform:translateY(-1px)}
+.calc-cal-btn:active{transform:scale(.96)}
+
+/* —— 弹窗：遮罩 + 面板双层毛玻璃 —— */
+#modalCalcCal{background:rgba(8,16,52,.52);backdrop-filter:blur(10px) saturate(140%);-webkit-backdrop-filter:blur(10px) saturate(140%)}
+#modalCalcCal .calc-cal-box{
+  width:min(520px,94vw);max-width:520px;min-width:0;
+  background:rgba(255,255,255,.84);
+  backdrop-filter:blur(16px) saturate(150%);-webkit-backdrop-filter:blur(16px) saturate(150%);
+  border:1.5px solid rgba(255,255,255,.72);
+  box-shadow:0 18px 46px rgba(8,16,52,.32);
+}
+.calc-cal-ctl{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.calc-cal-sel{
+  flex:1 1 0;min-width:92px;padding:7px 10px;border-radius:10px;font-family:inherit;
+  font-size:13.5px;font-weight:700;color:#16243f;
+  background:rgba(255,255,255,.86);border:1.5px solid var(--tone-200);
+}
+.calc-cal-nav{
+  flex:0 0 auto;width:34px;height:34px;border-radius:10px;cursor:pointer;
+  font-size:18px;font-weight:900;line-height:1;color:var(--z-nw-deep);
+  background:#fff;border:1.5px solid var(--tone-200);
+}
+.calc-cal-nav:hover{background:var(--z-nw-pale);border-color:var(--z-nw-mid)}
+.calc-cal-nav:active{transform:scale(.94)}
+.calc-cal-today{
+  flex:0 0 auto;padding:7px 12px;border-radius:10px;cursor:pointer;
+  font-size:12.5px;font-weight:800;font-family:inherit;color:#fff;
+  background:linear-gradient(135deg,var(--z-nw-mid),var(--z-nw-main));border:none;
+}
+.calc-cal-today:active{transform:scale(.96)}
+.calc-cal-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;font-weight:700;color:#4a5f86}
+.calc-cal-legend .calc-cal-lg{display:inline-flex;align-items:center;gap:5px}
+.calc-cal-legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.calc-cal-legend i.dot-perfect{background:#2fb36a}
+.calc-cal-legend i.dot-wrong{background:#ef5350}
+.calc-cal-legend i.dot-part{background:#c8e0ff}
+.calc-cal-weekrow{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:4px}
+.calc-cal-weekrow span{text-align:center;font-size:10px;font-weight:800;color:var(--sky-blue)}
+.calc-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.calc-cal-cell{
+  aspect-ratio:1/1.12;border-radius:8px;padding:2px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+  background:rgba(255,255,255,.55);border:1px solid rgba(30,58,138,.10);
+  font-size:11px;color:#2f4a72;cursor:pointer;min-height:34px;
+  transition:transform .14s ease,box-shadow .14s ease;
+}
+.calc-cal-cell:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(30,58,138,.16)}
+.calc-cal-cell.is-muted{background:transparent;border:none;cursor:default;box-shadow:none}
+.calc-cal-cell.is-muted:hover{transform:none;box-shadow:none}
+.calc-cal-cell .num{font-weight:800;line-height:1.05}
+.calc-cal-cell .cnt{font-size:8.5px;line-height:1.05;font-weight:700;opacity:.92;white-space:nowrap}
+.calc-cal-cell.is-future{opacity:.42}
+/* 当日全部答对 → 绿色卡片 */
+.calc-cal-cell.is-perfect{background:linear-gradient(180deg,#4ecf8b,#2fb36a);border-color:#26a15d;color:#fff}
+.calc-cal-cell.is-perfect .cnt{color:#eaffef}
+/* 存在错题 → 红色卡片 */
+.calc-cal-cell.is-wrong{background:linear-gradient(180deg,#ff7d79,#ef5350);border-color:#dc3f3c;color:#fff}
+.calc-cal-cell.is-wrong .cnt{color:#ffeceb}
+/* 有作答但既非全对也无错题记录 → 中性浅蓝 */
+.calc-cal-cell.is-part{background:linear-gradient(180deg,var(--tone-100),var(--tone-200));border-color:var(--tone-350);color:var(--tone-900)}
+.calc-cal-cell.is-today{outline:2.5px solid var(--z-nw-main);outline-offset:1px}
+.calc-cal-sum{margin-top:8px;font-size:12.5px;font-weight:700;color:#4a5f86;line-height:1.6}
+.calc-cal-sum b{font-size:13.5px;font-weight:900;color:var(--z-nw-deep)}
+.calc-cal-sum .calc-cal-sum-wrong{color:#dc3f3c}
+
+/* ============================================================
+   R245-5 / R245-4：全平台按键点击反馈 + 打卡头像效果恢复
+   ============================================================ */
+/* 1) 点击灵敏度：去掉移动端 300ms 双击缩放等待 + 去掉点击高亮闪块 */
+button,.pbtn,[role="button"],[data-close],.nav-btn,.math-filter-btn,.calc-cal-btn{
+  touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+}
+/* 2) 通用按压反馈：仅用 transform/filter，不覆盖各按键自己的配色与动效
+      （类选择器 :active 规则优先级高于 button:active，故既有特写动效仍生效） */
+button:active:not(:disabled){filter:brightness(.96)}
+.pbtn:active:not(:disabled){transform:scale(.97)}
+/* 3) 打卡头像效果恢复：打卡后 = 朱迪 🐰 头像（::after）+ 左上闪电 ⚡ 光点（::before）。
+      V22-2 遗留的 `::before{content:'🐰'}` 与 ::after 叠加成两个大小不同的头像，
+      同时把闪电点覆盖掉了 —— 这里按 V30/V32 原始设计改回「单头像 + 闪电点」。 */
+.ri-checkin-btn::before{content:'';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;line-height:1}
+.ri-checkin-btn.checked::after{
+  content:'🐰';color:initial;font-size:32px;line-height:1;text-indent:0;
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  filter:drop-shadow(0 1px 2px rgba(0,0,0,.18));
+  animation:judyBob 2.6s ease-in-out infinite;
+}
+.ri-checkin-btn.checked::before{
+  content:'';position:absolute;inset:auto;left:6px;top:6px;
+  width:5px;height:8px;background:#ffeb3b;border-radius:50%;
+  box-shadow:0 0 8px #ffeb3b,0 0 14px #ffd700;opacity:.95;
+  animation:lightning 1.5s linear infinite;z-index:2;
+}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -8621,6 +8730,36 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
       </div>
       <div class="modal-foot">
         <button type="button" class="pbtn small" id="btnClearCalcBook">清空已做本</button>
+        <button class="pbtn" data-close>完成</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 弹窗：R245-1 计算小超市 · 打卡日历（毛玻璃 · 排版参照首页本月完成度） ========== -->
+  <div class="modal-mask modal-calc-cal" id="modalCalcCal" hidden>
+    <div class="modal-box calc-cal-box">
+      <div class="modal-head">
+        <h3>📅 计算小超市 · 打卡日历</h3>
+        <button class="modal-x" data-close>×</button>
+      </div>
+      <div class="modal-body">
+        <div class="calc-cal-ctl">
+          <button type="button" class="calc-cal-nav" data-calc-cal-prev title="上一个月">‹</button>
+          <select id="calcCalYear" class="calc-cal-sel" aria-label="选择年份"></select>
+          <select id="calcCalMonth" class="calc-cal-sel" aria-label="选择月份"></select>
+          <button type="button" class="calc-cal-nav" data-calc-cal-next title="下一个月">›</button>
+          <button type="button" class="calc-cal-today" data-calc-cal-today title="回到本月">回到本月</button>
+        </div>
+        <div class="calc-cal-legend">
+          <span class="calc-cal-lg"><i class="dot-perfect"></i>全部答对</span>
+          <span class="calc-cal-lg"><i class="dot-wrong"></i>存在错题</span>
+          <span class="calc-cal-lg"><i class="dot-part"></i>部分完成</span>
+        </div>
+        <div class="calc-cal-weekrow"><span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span></div>
+        <div class="calc-cal-grid" id="calcCalGrid"></div>
+        <div class="calc-cal-sum" id="calcCalSum"></div>
+      </div>
+      <div class="modal-foot">
         <button class="pbtn" data-close>完成</button>
       </div>
     </div>
@@ -11271,6 +11410,8 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
         // R237 / R244：已做本（由「加入已做本 / 移入已做本」手动写入）
         calcBook: [],
         calcBookArchivedDate: '',
+        // R245-1：计算小超市每日打卡记录（供「打卡日历」展示每天 正确题数/总题数）
+        calcDailyLog: {},
         goRecords: [],
         // v4 跨平台共享
         cloud: {enabled:false,envId:'',syncAt:0},
@@ -11296,10 +11437,19 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
     if(!Array.isArray(st.calcDrill.items)) st.calcDrill.items = [];
     if(!Array.isArray(st.calcBook)) st.calcBook = [];
     if(typeof st.calcBookArchivedDate === 'undefined') st.calcBookArchivedDate = '';
+    // R245-1：每日打卡记录（老存档补齐字段）
+    if(!st.calcDailyLog || typeof st.calcDailyLog !== 'object' || Array.isArray(st.calcDailyLog)) st.calcDailyLog = {};
     if(!st.settings) st.settings = {pin:''};
     if(st.settings && st.settings.pin === undefined) st.settings.pin = '';
     // R51-2：点击音效配置（导航栏/主题卡/次级主题卡/打卡），缺省回退默认档
-    if(!st.clickSfx) st.clickSfx = {nav:'a', theme:'b', sub:'b', checkin:'c'};
+    if(!st.clickSfx) st.clickSfx = {nav:'f', theme:'f', sub:'f', checkin:'c'};
+    // R245-5：全平台按键点击音效统一 —— 一次性把「导航 / 主题卡 / 次级主题卡」三档对齐同一预设，
+    //          打卡奖励音（checkin）保持独立；老存档里各档不一致的历史配置一并纠正。
+    if(!st._clickSfxUnifyR245){
+      st.clickSfx = Object.assign({}, st.clickSfx, { nav:'f', theme:'f', sub:'f' });
+      st._clickSfxUnifyR245 = true;
+      save(st);
+    }
     // R150-5：系统默认关闭所有按键音效；是否发声交由用户在设置中心自主开启（soundOn 缺省 false）
     if(typeof st.soundOn === 'undefined') st.soundOn = false;
     // v8：题库默认 2 道公因数题（含详细解答过程）；重建后立即持久化，避免每次 load() 生成新 id
@@ -17791,6 +17941,50 @@ be 动词：am / is → was；are → were
     return {ok:true};
   }
   function clearCalcDrill(){ const st = load(); st.calcDrill = calcDrillBlank(); save(st); return {ok:true}; }
+
+  // ===== R245-1：计算小超市 · 每日打卡记录（打卡日历数据源）=====
+  // 形如 { 'YYYY-MM-DD': {correct, total, wrong, checked, at} }
+  // 由「批改」「今日打卡」两处写入；只增不删（保留最近 400 天），供弹窗按年月读取。
+  function calcDailyLogMap(st){
+    const o = (st && st.calcDailyLog && typeof st.calcDailyLog === 'object' && !Array.isArray(st.calcDailyLog)) ? st.calcDailyLog : {};
+    return o;
+  }
+  function recordCalcDay(dateStr, correct, total, wrong){
+    const st = load();
+    if(!st.calcDailyLog || typeof st.calcDailyLog !== 'object' || Array.isArray(st.calcDailyLog)) st.calcDailyLog = {};
+    const d = String(dateStr || todayStr());
+    const c = Math.max(0, Number(correct) || 0);
+    const t = Math.max(0, Number(total) || 0);
+    const w = Math.max(0, Number(wrong) || 0);
+    const prev = st.calcDailyLog[d] || {};
+    // checked：今天点过「今日打卡」，或本次全部答对（含订正后全对）
+    const checked = !!(prev.checked || (t > 0 && c >= t) || (w > 0 && c + w >= t));
+    st.calcDailyLog[d] = { correct: c, total: t, wrong: w, checked, at: Date.now() };
+    const keys = Object.keys(st.calcDailyLog).sort();
+    if(keys.length > 400) keys.slice(0, keys.length - 400).forEach(k => { delete st.calcDailyLog[k]; });
+    save(st);
+    return { ok:true, date:d, day: st.calcDailyLog[d] };
+  }
+  function getCalcDailyLog(){
+    const st = load();
+    const o = calcDailyLogMap(st);
+    const out = {};
+    Object.keys(o).forEach(k=>{
+      const v = o[k] || {};
+      out[k] = { correct: Number(v.correct)||0, total: Number(v.total)||0, wrong: Number(v.wrong)||0, checked: !!v.checked };
+    });
+    return out;
+  }
+  function markCalcDayChecked(dateStr){
+    const st = load();
+    if(!st.calcDailyLog || typeof st.calcDailyLog !== 'object' || Array.isArray(st.calcDailyLog)) st.calcDailyLog = {};
+    const d = String(dateStr || todayStr());
+    const prev = st.calcDailyLog[d] || { correct:0, total:0, wrong:0 };
+    st.calcDailyLog[d] = { correct: prev.correct||0, total: prev.total||0, wrong: prev.wrong||0, checked: true, at: Date.now() };
+    save(st);
+    return { ok:true, date:d, day: st.calcDailyLog[d] };
+  }
+  function clearCalcDailyLog(){ const st = load(); st.calcDailyLog = {}; save(st); return {ok:true}; }
   // 已做本：按日期倒序，同日同题去重
   function getCalcBook(){
     const st = load();
@@ -17942,6 +18136,8 @@ be 动词：am / is → was；are → were
     getCalcBook, clearCalcBook, archiveCalcBook,
     // R244-1：手动加入已做本（取消 22:00 定时收录）
     addCalcBookRight, moveFixedWrongsToCalcBook,
+    // R245-1：每日打卡记录（打卡日历）
+    recordCalcDay, getCalcDailyLog, markCalcDayChecked, clearCalcDailyLog,
     getSuzhiProgress, setSuzhiProgressIfEmpty,
     addGoRecord, deleteGoRecord, getWeekGoCount, clearWeekGoRecords, getGoStars, setGoStars,
     getMaoStars, setMaoStars, maoPoemCheckedList, isMaoPoemChecked, checkMaoPoem, uncheckMaoPoem,
@@ -22159,7 +22355,11 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     const streak = calcStreak();
     const probs = genCalcProblems(_CALC_N);
     const dateLabel = today.slice(5).replace('-','-');
-    const streakLine = streak>0 ? `<div class="calc-streak">🔥 连续打卡 <b>${streak}</b> 天</div>` : '';
+    // R245-1：「连续打卡 N 天」右侧新增「📅 打卡日历」入口（点击唤起毛玻璃弹窗，按年月查看每日正确题数/总题数）
+    const streakLine = `<div class="calc-streak-row">
+      <div class="calc-streak">🔥 连续打卡 <b>${streak}</b> 天</div>
+      <button type="button" class="calc-cal-btn" data-calc-cal title="打开打卡日历：按年月查看每天 正确题数 / 总题数">📅 打卡日历</button>
+    </div>`;
     const dm = _calcDrillMap();
     const ws0 = (window.Store && window.Store.getCalcWrongs) ? window.Store.getCalcWrongs() : [];
     const unfixed = ws0.filter(w => w && !w.fixedAt).length;
@@ -22174,7 +22374,6 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       body = `<div class="calc-done" data-calc-done>
         <div class="calc-done-ico">✅</div>
         <div class="calc-done-txt">今日计算题已打卡完成！</div>
-        ${streakLine}
         <div class="calc-answers">${answers}</div>
         <div class="calc-tip">明天的题会换一批，记得每天来练计算小超市哦～</div>
       </div>`;
@@ -22225,7 +22424,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
             <button type="button" class="calc-bank-btn calc-bank-inline-btn" data-calc-wrong title="错题本：批改答错的题自动收进来，重新作答批改正确即标记已订正">📕 错题本（${wrongCount}）</button>
           </span>
         </div>
-        ${done ? '' : streakLine}
+        ${streakLine}
         ${body}
       </div>`;
   }
@@ -22244,6 +22443,12 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     // R238：已做本右侧「错题本」→ 打开独立错题本弹窗
     const wrongBtn = board.querySelector('[data-calc-wrong]');
     if(wrongBtn){ wrongBtn.addEventListener('click', ()=> openCalcWrong()); }
+    // R245-1：「📅 打卡日历」→ 打开毛玻璃打卡日历弹窗（按年月查看每日正确题数/总题数）
+    const calBtn = board.querySelector('[data-calc-cal]');
+    if(calBtn){
+      if(calBtn._calcCalBound) calBtn._calcCalBound = true;
+      calBtn.addEventListener('click', (e)=>{ e.preventDefault(); openCalcCal(); });
+    }
     // R237-1 / R244：把当前作答/判分整份写进当日快照（刷新、切页不丢；跨日自动失效）
     const persistDrill = ()=>{
       if(!window.Store || !window.Store.saveCalcDrill) return;
@@ -22290,6 +22495,12 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         updateCalcWrongBadge();
         // R243-2：批改后按「全对 / 错题全部订正」刷新得分文案与今日打卡按钮
         updateCalcGateUI();
+        // R245-1：把本次批改的「正确题数 / 总题数」写入每日记录（打卡日历数据源）
+        try{
+          const _tot = board.querySelectorAll('.calc-ans').length || _CALC_N;
+          const _wr  = board.querySelectorAll('.calc-ans.wrong').length;
+          window.Store.recordCalcDay(today, correct, _tot, _wr);
+        }catch(e){}
       });
     }
     // R244-1：「加入已做本」——把本次批改答对的题手动收进已做本（取代 22:00 定时收录）
@@ -22329,6 +22540,11 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         // R236：累计连续打卡天数，跨过 7 天里程碑时额外 +5⭐（幂等，不重复发放）
         let _sr = { streak: 0, bonus: 0 };
         try { _sr = window.Store.bumpCalcStreak() || _sr; } catch(e){}
+        // R245-1：打卡同时把当天记入打卡日历（正确题数 / 总题数，checked 标记）
+        try {
+          if(window.Store.recordCalcDay) window.Store.recordCalcDay(today, _g.correct, Math.max(_g.total, _CALC_N), _g.todayWrong);
+          if(window.Store.markCalcDayChecked) window.Store.markCalcDayChecked(today);
+        } catch(e){}
         playCheckinSound();
         toast('🎉 计算小超市今日打卡完成！' + (_sr.bonus > 0 ? ' 连续打卡 ' + _sr.streak + ' 天，额外 +' + _sr.bonus + '⭐' : ''));
         rerender();
@@ -22476,6 +22692,143 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
   function openCalcBook(){
     renderCalcBookModal();
     showModal('#modalCalcBook');
+  }
+  // ---------- R245-1：计算小超市「打卡日历」（毛玻璃弹窗 · 排版参照首页本月完成度）----------
+  // 入口：连续打卡天数右侧「📅 打卡日历」；按年月查看每天「正确题数 / 总题数」，
+  // 当日全部答对 → 绿色卡片；存在错题 → 红色卡片。数据源 Store.getCalcDailyLog()，
+  // 无记录时用「已做本」按日答对题量兜底，保证 R244 之前的老数据也能看到。
+  let _calcCalYM = '';
+  let _calcCalBoundOnce = false;
+  function calcCalNowYM(){ return _calcToday().slice(0, 7); }
+  function calcCalShiftYM(ym, delta){
+    const p = String(ym || calcCalNowYM()).split('-');
+    let y = parseInt(p[0], 10) || new Date().getFullYear();
+    let m = parseInt(p[1], 10) || 1;
+    m += delta;
+    while(m < 1){ m += 12; y -= 1; }
+    while(m > 12){ m -= 12; y += 1; }
+    return y + '-' + String(m).padStart(2, '0');
+  }
+  function calcCalLogMap(){
+    try{ return (window.Store && window.Store.getCalcDailyLog) ? window.Store.getCalcDailyLog() : {}; }catch(e){ return {}; }
+  }
+  function calcCalBookMap(){
+    const map = {};
+    try{
+      ((window.Store && window.Store.getCalcBook) ? window.Store.getCalcBook() : []).forEach(x=>{
+        if(!x || !x.date) return;
+        map[x.date] = (map[x.date] || 0) + 1;
+      });
+    }catch(e){}
+    return map;
+  }
+  function calcCalDayInfo(ds, log, bookMap){
+    const rec = log[ds];
+    if(rec && (rec.total > 0 || rec.correct > 0)) return { correct: rec.correct || 0, total: rec.total || _CALC_N, wrong: rec.wrong || 0 };
+    if(bookMap && bookMap[ds] != null) return { correct: bookMap[ds], total: _CALC_N, wrong: 0 };
+    return null;
+  }
+  function fillCalcCalSelects(){
+    const ym = _calcCalYM || calcCalNowYM();
+    const ys = ym.slice(0, 4), ms = parseInt(ym.slice(5, 7), 10) || 1;
+    const ySel = document.getElementById('calcCalYear');
+    const mSel = document.getElementById('calcCalMonth');
+    if(ySel){
+      const nowY = new Date().getFullYear();
+      let min = nowY - 2, max = nowY + 1;
+      Object.keys(calcCalLogMap()).forEach(k=>{
+        const y = parseInt(String(k).slice(0, 4), 10);
+        if(isFinite(y)){ min = Math.min(min, y); max = Math.max(max, y); }
+      });
+      const cur = parseInt(ys, 10) || nowY;
+      min = Math.min(min, cur); max = Math.max(max, cur);
+      let html = '';
+      for(let y = min; y <= max; y++) html += `<option value="${y}"${y === cur ? ' selected' : ''}>${y} 年</option>`;
+      ySel.innerHTML = html;
+    }
+    if(mSel){
+      let html = '';
+      for(let m = 1; m <= 12; m++) html += `<option value="${m}"${m === ms ? ' selected' : ''}>${m} 月</option>`;
+      mSel.innerHTML = html;
+    }
+  }
+  function renderCalcCal(){
+    const grid = document.getElementById('calcCalGrid');
+    if(!grid) return;
+    const ym = _calcCalYM || calcCalNowYM();
+    _calcCalYM = ym;
+    const y = parseInt(ym.slice(0, 4), 10) || new Date().getFullYear();
+    const m = parseInt(ym.slice(5, 7), 10) || 1;
+    const log = calcCalLogMap();
+    const bookMap = calcCalBookMap();
+    const today = _calcToday();
+    const firstDay = new Date(y, m - 1, 1).getDay();
+    const daysInMonth = new Date(y, m, 0).getDate();
+    let html = '', perfectN = 0, wrongN = 0, rightSum = 0, qSum = 0;
+    for(let i = 0; i < firstDay; i++) html += '<div class="calc-cal-cell is-muted"></div>';
+    for(let d = 1; d <= daysInMonth; d++){
+      const ds = ym + '-' + String(d).padStart(2, '0');
+      const info = calcCalDayInfo(ds, log, bookMap);
+      let cls = 'calc-cal-cell';
+      if(ds > today) cls += ' is-future';
+      if(info){
+        if(info.total > 0 && info.correct >= info.total){ cls += ' is-perfect'; perfectN++; }
+        else if(info.wrong > 0){ cls += ' is-wrong'; wrongN++; }
+        else cls += ' is-part';
+        rightSum += info.correct; qSum += info.total;
+      }
+      if(ds === today) cls += ' is-today';
+      const cnt = info ? `<div class="cnt">${info.correct}/${info.total}</div>` : '<div class="cnt">—</div>';
+      const tip = info
+        ? (ds + ' · 正确 ' + info.correct + '/' + info.total + (info.wrong > 0 ? (' · 错 ' + info.wrong + ' 题') : ' · 全对 🎉'))
+        : (ds + ' · 未打卡');
+      html += `<div class="${cls}" data-calc-cal-day="${ds}" title="${esc(tip)}"><div class="num">${d}</div>${cnt}</div>`;
+    }
+    grid.innerHTML = html;
+    const sum = document.getElementById('calcCalSum');
+    if(sum){
+      sum.innerHTML = `本月 <b>${perfectN}</b> 天全对 · 共答对 <b>${rightSum}</b>/<b>${qSum}</b> 题`
+        + (wrongN > 0 ? ` · <b class="calc-cal-sum-wrong">${wrongN}</b> 天有错题` : '');
+    }
+    fillCalcCalSelects();
+  }
+  function bindCalcCalOnce(){
+    if(_calcCalBoundOnce) return;
+    _calcCalBoundOnce = true;
+    const box = document.getElementById('modalCalcCal');
+    if(!box) return;
+    const ySel = document.getElementById('calcCalYear');
+    const mSel = document.getElementById('calcCalMonth');
+    if(ySel) ySel.addEventListener('change', ()=>{
+      _calcCalYM = String(ySel.value) + '-' + String(mSel ? mSel.value : '1').padStart(2, '0');
+      renderCalcCal();
+    });
+    if(mSel) mSel.addEventListener('change', ()=>{
+      _calcCalYM = String(ySel ? ySel.value : new Date().getFullYear()) + '-' + String(mSel.value).padStart(2, '0');
+      renderCalcCal();
+    });
+    const prev = box.querySelector('[data-calc-cal-prev]');
+    if(prev) prev.addEventListener('click', ()=>{ _calcCalYM = calcCalShiftYM(_calcCalYM, -1); renderCalcCal(); });
+    const next = box.querySelector('[data-calc-cal-next]');
+    if(next) next.addEventListener('click', ()=>{ _calcCalYM = calcCalShiftYM(_calcCalYM, 1); renderCalcCal(); });
+    const back = box.querySelector('[data-calc-cal-today]');
+    if(back) back.addEventListener('click', ()=>{ _calcCalYM = calcCalNowYM(); renderCalcCal(); });
+    const grid = document.getElementById('calcCalGrid');
+    if(grid) grid.addEventListener('click', (e)=>{
+      const cell = e.target.closest('[data-calc-cal-day]');
+      if(!cell) return;
+      const ds = cell.getAttribute('data-calc-cal-day');
+      const info = calcCalDayInfo(ds, calcCalLogMap(), calcCalBookMap());
+      toast(info
+        ? ('📅 ' + ds + ' · 正确 ' + info.correct + '/' + info.total + (info.wrong > 0 ? ('（错 ' + info.wrong + ' 题）') : '（全部答对 🎉）'))
+        : ('📅 ' + ds + ' · 这天没有打卡记录'));
+    });
+  }
+  function openCalcCal(){
+    _calcCalYM = calcCalNowYM();
+    bindCalcCalOnce();
+    renderCalcCal();
+    showModal('#modalCalcCal');
   }
   // R244-1：每日 22:00 定时收录已彻底删除（含启动补偿与递归调度），
   //         已做本改由主面板「加入已做本」与错题本「移入已做本」两个手动入口驱动。
@@ -29190,9 +29543,54 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       return imgTag + esc(rest);
     }).join('');
   }
+  // R245-6：乐读数学「✏️ 编辑」统一入口。
+  // 此前委托里用 `x.id === dataset.mathEdit` 严格比较且找不到就静默 return ——
+  // id 类型不一致（旧存档数字 id）或题目已迁移时会表现为「点了编辑毫无反应」。
+  // 这里统一按字符串比较，并加一层「按题面文本反查」兜底；最终仍找不到时给出明确提示。
+  let _mathEditBusyAt = 0;
+  function openMathEditFor(rawId){
+    const id = String(rawId == null ? '' : rawId);
+    let m = null;
+    try{
+      const st = S.load();
+      const list = (st && st.mathProblems) || [];
+      m = list.find(x => x && String(x.id) === id) || null;
+    }catch(e){}
+    if(!m){
+      // 兜底：按卡片上展示的题面文本反查（旧存档 id 可能重复/缺失）
+      try{
+        const card = document.querySelector('.math-card[data-math-id="' + id.replace(/"/g, '\\"') + '"]');
+        const qEl = card ? card.querySelector('.math-q') : null;
+        const qTxt = (qEl ? qEl.textContent : '').replace(/^\s*题目\s*/, '').trim();
+        if(qTxt){
+          const list = (S.load() || {}).mathProblems || [];
+          m = list.find(x => x && String(x.desc || x.title || '').trim() === qTxt) || null;
+        }
+      }catch(e){}
+    }
+    if(!m){ toast('这道题的数据已不存在，刷新页面后再试一次～'); return false; }
+    try{ openMathManualModal(m); return true; }
+    catch(e){ toast('打开编辑弹窗失败，请重试'); return false; }
+  }
+  // R245-6：编辑键兜底委托 —— 绑在 document 捕获阶段，任何页面重渲染 / 容器替换都不会失效；
+  //          单次点击只处理一次（__mathEditHandled 去重，避免与 #mathContentArea 委托重复打开）。
+  function bindMathEditFallback(){
+    if(window.__mathEditFallbackBound) return;
+    window.__mathEditFallbackBound = true;
+    document.addEventListener('click', (e)=>{
+      if(!e || e.__mathEditHandled) return;
+      const btn = (e.target && e.target.closest) ? e.target.closest('[data-math-edit]') : null;
+      if(!btn) return;
+      const now = Date.now();
+      if(now - _mathEditBusyAt < 260) return;   // 连点去抖
+      _mathEditBusyAt = now;
+      e.__mathEditHandled = true;
+      e.preventDefault();
+      openMathEditFor(btn.getAttribute('data-math-edit'));
+    }, true);
+  }
   function mathCardHtml(m){
-    const typeName = m.type || '未分类';
-    const status = m.mastery || 'bank';
+    const typeName = m.type || '未分类';    const status = m.mastery || 'bank';
     const mastered = status === 'mastered';
     const need = status === 'notMastered';
     const split = splitSolution(m.solution);
@@ -32267,8 +32665,8 @@ function renderKMAdmin(){
     target.innerHTML = `
       <div class="yw-comp-head xs-note-head">课堂笔记
         <span class="xs-note-head-actions">
-          <button type="button" class="pbtn small" data-xs-pick-lesson-add="1" title="新增一个 Lesson 标签">＋ 新增 Lesson</button>
-          <button type="button" class="pbtn small" data-xs-pick-lesson-del="1" title="删除当前 Lesson 选项"${_xsNoteLesson?'':' disabled'}>－ 删除 Lesson</button>
+          <button type="button" class="pbtn small" data-xs-note-add="1" title="导入课堂笔记照片（相册 / 文件夹）">➕ 新增笔记</button>
+          <button type="button" class="pbtn small${_xsNoteDelMode?' is-on':''}" data-xs-note-del-mode="1" title="进入删除模式后可点击图片删除">${_xsNoteDelMode?'🗑 退出删除':'🗑 删除笔记'}</button>
         </span>
       </div>
       <div class="math-filter-bar xs-note-filter-bar">
@@ -32291,8 +32689,6 @@ function renderKMAdmin(){
         <span class="xs-note-pick-stars"><span class="en-unit-star-icons">${starStr}</span><span class="en-unit-star-num">${done}/${total} · ${starN}/5⭐</span></span>
       </div>
       <div class="kp-add-row">
-        <button class="kp-add-btn" data-xs-note-add="1">➕ 增加</button>
-        <button class="kp-del-mode-btn${_xsNoteDelMode?' is-on':''}" data-xs-note-del-mode="1">${_xsNoteDelMode?'🗑 退出删除':'🗑 删除'}</button>
         <span class="kp-add-hint">支持从相册 / 文件夹选择图片，导入后自动压缩并自适应屏幕宽度</span>
       </div>
       ${_xsNoteDelMode ? `<div class="en-kp-del-hint">🗑 删除模式已开启：点击任意图片即可删除（每张都会再次确认）</div>` : ''}
@@ -32313,7 +32709,9 @@ function renderKMAdmin(){
     xsNoteBind(target);
     // R222-1：与乐读数学一致 —— 选完学年后自动展开 lesson 面板
     // R244-5：进入学年后不再自动弹出 Lesson 面板；仅学年自身管理操作后可展开学年面板。
+    // R245-2：Lesson 新增 / 删除后面板自动重新展开到 Lesson，便于连续管理。
     if(_xsNoteAutoOpen === 'year'){ _xsNoteAutoOpen = ''; xsNotePickerOpen(target, 'year'); }
+    else if(_xsNoteAutoOpen === 'lesson'){ _xsNoteAutoOpen = ''; xsNotePickerOpen(target, 'lesson'); }
     else { _xsNoteAutoOpen = ''; }
   }
   // 事件绑定（每次重渲染后重新绑定，与重点知识页同一套交互）
@@ -32489,9 +32887,43 @@ function renderKMAdmin(){
         ? lessons.map(l=>`<button type="button" class="math-type-item${_xsNoteLesson===l?' active':''}" data-xs-pick-lesson="${esc(l)}"><span class="mti-name">${esc(l)}</span></button>`).join('')
         : '<div class="math-filter-empty">暂无 Lesson</div>';
       if(xsNoteHasBucket(_xsNoteYear, '')) html += `<button type="button" class="math-type-item${_xsNoteLesson===''?' active':''}" data-xs-pick-lesson=""><span class="mti-name">未分类</span></button>`;
-      // R244-5：Lesson 的新增 / 删除按钮已上移到「课堂笔记」标题行，菜单里只保留选项
-      lMenu.innerHTML = html;
+      // R245-2：Lesson 的新增 / 删除按键移入 Lesson 选择卡内部（下拉面板底部），
+      //          与「学年」面板内的 ＋ 新增学年 / － 删除学年 同一套样式与交互。
+      lMenu.innerHTML = html
+        + `<div class="math-filter-foot">
+             <button type="button" class="pbtn small math-add-card-btn" data-xs-pick-lesson-add="1" title="在当前列表新增一个 Lesson 标签">＋ 新增 Lesson</button>
+             <button type="button" class="pbtn small math-del-card-btn" data-xs-pick-lesson-del="1" title="删除当前 Lesson 选项"${_xsNoteLesson?'':' disabled'}>－ 删除 Lesson</button>
+           </div>`;
     }
+  }
+  // R245-2：学年 ↔ Lesson 选择联动（切学年 → Lesson 自动对齐；切 Lesson → 学年自动对齐）
+  function xsNoteLessonsOfYear(year){
+    const st = window.Store;
+    if(!st || !st.getXsNoteLessons || !st.getEnKeyPoints) return [];
+    return st.getXsNoteLessons().filter(l => {
+      try{ return st.getEnKeyPoints(XS_NOTE_NS + (year || '') + '|' + l).length > 0; }catch(e){ return false; }
+    });
+  }
+  function xsNoteYearsOfLesson(lesson){
+    const st = window.Store;
+    if(!st || !st.getXsNoteYears || !st.getEnKeyPoints) return [];
+    return st.getXsNoteYears().filter(y => {
+      try{ return st.getEnKeyPoints(XS_NOTE_NS + y + '|' + (lesson || '')).length > 0; }catch(e){ return false; }
+    });
+  }
+  // 切学年后：当前 Lesson 在该学年下没有笔记 → 自动切到该学年第一个有笔记的 Lesson
+  function xsNoteSyncLessonToYear(){
+    const cands = xsNoteLessonsOfYear(_xsNoteYear);
+    if(!cands.length) return;
+    if(cands.indexOf(_xsNoteLesson) >= 0) return;
+    _xsNoteLesson = cands[0];
+  }
+  // 切 Lesson 后：当前学年下该 Lesson 没有笔记 → 自动切到第一个有该 Lesson 笔记的学年
+  function xsNoteSyncYearToLesson(){
+    const cands = xsNoteYearsOfLesson(_xsNoteLesson);
+    if(!cands.length) return;
+    if(cands.indexOf(_xsNoteYear) >= 0) return;
+    _xsNoteYear = cands[0];
   }
   // R222-1：学年 / lesson 下拉面板的开合（结构与交互 1:1 对齐乐读数学「板块 / 题型」筛选按键）
   function xsNotePickerOpen(scope, which){
@@ -32518,17 +32950,25 @@ function renderKMAdmin(){
         if(willOpen) xsNotePickerOpen(scope, which);
       });
     });
-    // 选中学年 → 收起本面板，并自动展开 lesson 面板（与乐读数学「选板块→自动展开题型」一致）
+    // 选中学年 → 收起本面板；R245-2：Lesson 选项按学年联动对齐（当前 Lesson 在该学年无笔记则自动切换）
     scope.querySelectorAll('[data-xs-pick-year]').forEach(b=>{
       b.addEventListener('click', (e)=>{
         e.stopPropagation();
         _xsNoteYear = b.getAttribute('data-xs-pick-year') || '';
         _xsNoteAutoOpen = '';   // R244-5：选完学年不再自动弹出 Lesson
+        xsNoteSyncLessonToYear();
         renderXsNotes();
       });
     });
     scope.querySelectorAll('[data-xs-pick-lesson]').forEach(b=>{
-      b.addEventListener('click', (e)=>{ e.stopPropagation(); _xsNoteAutoOpen=''; _xsNoteLesson = b.getAttribute('data-xs-pick-lesson') || ''; renderXsNotes(); });
+      b.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        _xsNoteAutoOpen = '';
+        _xsNoteLesson = b.getAttribute('data-xs-pick-lesson') || '';
+        // R245-2：切 Lesson → 学年同步对齐（当前学年下该 Lesson 无笔记时切到有笔记的学年）
+        xsNoteSyncYearToLesson();
+        renderXsNotes();
+      });
     });
     scope.querySelectorAll('[data-xs-pick-year-add]').forEach(b=>{
       b.addEventListener('click', (e)=>{
@@ -32560,7 +33000,7 @@ function renderKMAdmin(){
         const st = window.Store; if(!st) return;
         const arr = st.getXsNoteLessons();
         if(arr.indexOf(name) >= 0){ toast('该 Lesson 已存在'); return; }
-        st.setXsNoteLessons(arr.concat([name])); _xsNoteLesson = name; _xsNoteAutoOpen = ''; renderXsNotes();
+        st.setXsNoteLessons(arr.concat([name])); _xsNoteLesson = name; _xsNoteAutoOpen = 'lesson'; renderXsNotes();
       });
     });
     scope.querySelectorAll('[data-xs-pick-lesson-del]').forEach(b=>{
@@ -34185,7 +34625,9 @@ function renderKMAdmin(){
       else run();
     }catch(_){ }
   }
-  function defaultClickSfx(){ return { nav:'a', theme:'b', sub:'b', checkin:'c' }; }
+  // R245-5：全平台按键点击音效统一 —— 导航 / 主题卡 / 次级主题卡三档统一为同一预设「轻点」，
+  // 点击任何一级按键听到的都是同一个声音；打卡（checkin）保留独立的庆祝琶音，不受影响。
+  function defaultClickSfx(){ return { nav:'f', theme:'f', sub:'f', checkin:'c' }; }
   // 读取某槽位当前音效预设 id（缺省回退默认）
   function getClickSfx(slot){ const st=(window.Store&&window.Store.load)?window.Store.load():null; const cfg=(st&&st.clickSfx)||defaultClickSfx(); return cfg[slot] || (slot==='checkin'?'c':'b'); }
   // 播放某槽位音效
@@ -34217,6 +34659,9 @@ function renderKMAdmin(){
     if(t.closest('.nav-btn[data-page], [data-go], [data-nw-back], .br-back')){ playClickSfx('nav'); return; }
     if(t.closest('.kw-lesson-card, .kb-utab, .kb-card, .sub-card, .sub-tab, [data-sfx="sub"]')){ playClickSfx('sub'); return; }
     if(t.closest('.yw-round-btn, .nw-card, .wp-card, .card, .mn-note-card, [data-sfx="theme"], .kw-acc-head')){ playClickSfx('theme'); return; }
+    // R245-5：兜底 —— 其余一切可点击按键（弹窗按键 / 筛选 chip / 功能小块 / 列表项 / 日历格…）
+    //          统一走同一档，保证「各级按键」点击音效完全一致（三档预设已统一为同一声音）。
+    if(t.closest('button, .pbtn, [role="button"], .math-type-item, .math-sub-tag, .math-filter-btn, .math-add-card-btn, .math-del-card-btn, .math-notecard-add-btn, .math-btn-edit, .kp-add-btn, .kp-del-mode-btn, .kp-check-btn, .calc-bank-btn, .calc-cal-btn, .calc-cal-nav, .calc-cal-today, .calc-cal-cell, .calc-check, .calc-addbook, .calc-checkin, .xia-item, .sz-detail-chip')){ playClickSfx('sub'); return; }
   }
   function playCheckinSound(){ try{ playClickSfx('checkin'); }catch(e){} }
   window.playCheckinSound = playCheckinSound;
@@ -36775,11 +37220,14 @@ function renderKMAdmin(){
     if(navCalTodayBtn && !navCalTodayBtn._bound){ navCalTodayBtn._bound = true; navCalTodayBtn.onclick = ()=>navCalGoToday(); }
     // R51-2：全局点击音效分发（导航栏/主题卡/次级主题卡/打卡）→ 注册一次
     if(!window.__sfxClickBound){ document.addEventListener('click', onGlobalSfxClick); window.__sfxClickBound = true; }
+    // R245-6：乐读数学编辑键兜底委托（只绑一次，document 捕获阶段）
+    try{ bindMathEditFallback(); }catch(e){}
     // R143：清除所有按键声音并重新分级配置 —— 版本化一次性重置（覆盖旧版任何自定义按键音；不破坏用户此后在「设置」中手动改设）
     try{
       const _st = (window.Store && window.Store.load) ? window.Store.load() : null;
       if(_st && _st._clickSfxReset !== 'R143'){
-        _st.clickSfx = { nav:'a', theme:'b', sub:'b', checkin:'c' };
+        // R245-5：与「全平台按键音效统一」保持一致 —— 导航/主题卡/次级三档同一预设，打卡音独立
+        _st.clickSfx = { nav:'f', theme:'f', sub:'f', checkin:'c' };
         _st._clickSfxReset = 'R143';
         if(window.Store && window.Store.save) window.Store.save(_st);
       }
@@ -37108,6 +37556,8 @@ function renderKMAdmin(){
     // V12.2：每题 1 个「打卡 +2⭐ / 取消 -2⭐」单键 → checkMath/unmarkMath
     // V13.2：每题双键「✅ 已掌握 / 🔄 需巩固」 → toggleMathMastery；再点同一键回到 bank（题库）
     $('#mathContentArea').addEventListener('click', e => {
+      // R245-6：已被「编辑键兜底委托」（document 捕获阶段）处理过，避免重复响应
+      if(e && e.__mathEditHandled) return;
       // R94：题型详情板块底部【＋ 新增题目】→ 直接打开新增页，题型预填为当前题型
       const addProblemBtn = e.target.closest('[data-math-add-problem]');
       if(addProblemBtn){ openMathManualModal(null, { type: addProblemBtn.dataset.mathAddProblem }); return; }
@@ -37116,9 +37566,9 @@ function renderKMAdmin(){
       if(addNoteBtn){ openMathNoteModal(addNoteBtn.dataset.mathAddNote); return; }
       const editBtn = e.target.closest('[data-math-edit]');
       if(editBtn){
-        const st = S.load();
-        const m = (st.mathProblems||[]).find(x=>x.id===editBtn.dataset.mathEdit);
-        if(m) openMathManualModal(m);
+        e.__mathEditHandled = true;
+        e.preventDefault();
+        openMathEditFor(editBtn.getAttribute('data-math-edit'));
         return;
       }
       const fav = e.target.closest('[data-math-toggle-mastery]');
