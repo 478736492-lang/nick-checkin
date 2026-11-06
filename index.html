@@ -8384,6 +8384,27 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
 .math-type-item:active,.math-sub-tag:active,.calc-cal-cell:active{transform:scale(.985)}
 .math-type-item,.math-sub-tag,.calc-cal-cell{transition:transform .08s ease-out,background-color .12s ease-out}
 
+/* ============ R248-2：学而思英语标题按键尺寸对齐乐读数学 .leidu-tab ============
+   仅覆盖尺寸维度（padding / 字号 / 字重 / 圆角 / 边框宽度），配色与选中态沿用 .sub-tab 原样；
+   作用域限定 .page-xueersi .xs-sub-tabs，不影响成长档案 .report-tabs 的同名按键。 */
+.page-xueersi .xs-sub-tabs .sub-tab{padding:8px 18px;font-size:14px;font-weight:700;border-radius:18px;border-width:1.5px}
+
+/* ============ R248-3：3500 词卡片内单词直接平铺完整展示（移除查看单词按键） ============ */
+.en3500-words{max-height:min(48vh,380px);overflow-y:auto;display:flex;flex-direction:column;gap:2px;border-top:1px dashed var(--tone-200);padding-top:8px}
+.en3500-words .en3500-row{grid-template-columns:28px minmax(72px,1fr) minmax(72px,1.05fr) minmax(88px,1.25fr);gap:6px;padding:4px 6px;font-size:12px}
+.en3500-card-foot .en3500-check{flex:1 1 auto}
+.en3500-check.is-done{cursor:pointer;opacity:1}
+
+/* ============ R248-1：乐读数学练习题 · 每题答对打卡 +1⭐（可撤销） ============ */
+.mex-check{color:#fff;background:linear-gradient(135deg,#f7a23a,var(--z-nw-main));border-color:transparent}
+.mex-check.is-done{background:#2fb36a;border-color:transparent}
+.mex-card.is-checked{border-color:#2fb36a;background:linear-gradient(180deg,#f2fff7,#fff)}
+
+/* ============ R248-4：计算小超市 · 撤销今日打卡 ============ */
+.calc-undo{margin-top:8px;font-family:inherit;font-size:13px;font-weight:800;color:var(--tone-700);background:#fff;border:1.5px solid var(--tone-300);border-radius:10px;padding:7px 18px;cursor:pointer;touch-action:manipulation}
+.calc-undo:hover{background:var(--tone-100)}
+.calc-undo:active{transform:scale(.97)}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -12335,6 +12356,101 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
     return st.nwZone[key].slice();
   }
 
+  // ===== R248-1：乐读数学「练习题」独立题库 =====
+  // 与 st.mathProblems（数学笔记题库）、st.calcBank（计算题库）完全隔离，单独存于 st.mathExerciseBank。
+  // 首次读取时把 R247 存在通用 nwZone['math_exercises'] 的历史题目一次性迁移过来，不丢数据。
+  function mathExerciseBankRaw(st){
+    if(!Array.isArray(st.mathExerciseBank)){
+      const legacy = (st.nwZone && Array.isArray(st.nwZone['math_exercises'])) ? st.nwZone['math_exercises'] : [];
+      st.mathExerciseBank = legacy.map(x=>({
+        id: String((x && x.id) || uid()), q: String((x && x.q) || ''), a: String((x && x.a) || ''),
+        steps: String((x && x.steps) || ''), ans: String((x && x.ans) || ''), ok: !!(x && x.ok),
+        at: Number((x && x.at) || Date.now())
+      }));
+      save(st);
+    }
+    return st.mathExerciseBank;
+  }
+  function getMathExerciseBank(){ return mathExerciseBankRaw(load()).slice(); }
+  function setMathExerciseBank(arr){
+    const st = load();
+    mathExerciseBankRaw(st);
+    st.mathExerciseBank = Array.isArray(arr) ? arr.slice() : [];
+    save(st);
+    return st.mathExerciseBank.slice();
+  }
+  function addMathExercise(item){
+    const st = load();
+    const bank = mathExerciseBankRaw(st);
+    const rec = {
+      id: 'mex_' + Date.now() + '_' + Math.random().toString(36).slice(2,7),
+      q: String((item && item.q) || ''), a: String((item && item.a) || ''),
+      steps: String((item && item.steps) || ''), ans: '', ok: false, at: Date.now()
+    };
+    bank.unshift(rec);
+    save(st);
+    return rec;
+  }
+  function delMathExercise(id){
+    const st = load();
+    const bank = mathExerciseBankRaw(st);
+    st.mathExerciseBank = bank.filter(x => String(x && x.id) !== String(id));
+    // 题目删除时同步清掉该题打卡标记与⭐，避免留下孤儿状态
+    const key = 'mathExercise::' + String(id);
+    if(st.readFlags && st.readFlags[key]){
+      delete st.readFlags[key];
+      st.archive = st.archive || {};
+      st.archive.totalStars = Math.max(0, (st.archive.totalStars||0) - 1);
+      st.archive.exp = Math.max(0, (st.archive.exp||0) - 1);
+    }
+    save(st);
+    return st.mathExerciseBank.slice();
+  }
+  // 每题答对打卡 +1⭐（readFlags 幂等，可撤销，刷新不丢）
+  function isMathExerciseCorrect(id){
+    const st = load();
+    return !!(st.readFlags && st.readFlags['mathExercise::' + String(id)]);
+  }
+  function markMathExerciseCorrect(id){
+    const st = load();
+    if(!st.readFlags) st.readFlags = {};
+    const key = 'mathExercise::' + String(id);
+    if(st.readFlags[key]) return {ok:false, already:true};
+    st.readFlags[key] = true;
+    st.archive = st.archive || {};
+    st.archive.totalStars = (st.archive.totalStars||0) + 1;
+    st.archive.exp = (st.archive.exp||0) + 1;
+    save(st);
+    return {ok:true, reward:1};
+  }
+  function unmarkMathExerciseCorrect(id){
+    const st = load();
+    const key = 'mathExercise::' + String(id);
+    if(!st.readFlags || !st.readFlags[key]) return {ok:false, msg:'未打卡'};
+    delete st.readFlags[key];
+    st.archive = st.archive || {};
+    st.archive.totalStars = Math.max(0, (st.archive.totalStars||0) - 1);
+    st.archive.exp = Math.max(0, (st.archive.exp||0) - 1);
+    save(st);
+    return {ok:true, refund:1};
+  }
+
+  // ===== R248-4：纯视觉/标记类打卡状态的持久化（不参与⭐与阅读流水）=====
+  // 用于「点击整卡标记已读」这类原本只写 DOM class、刷新即丢的状态。
+  function isUiFlag(key){ const st = load(); return !!(st.uiFlags && st.uiFlags[String(key)]); }
+  function markUiFlag(key){
+    const st = load(); st.uiFlags = st.uiFlags || {};
+    const k = String(key);
+    if(st.uiFlags[k]) return {ok:false, already:true};
+    st.uiFlags[k] = true; save(st); return {ok:true};
+  }
+  function unmarkUiFlag(key){
+    const st = load(); st.uiFlags = st.uiFlags || {};
+    const k = String(key);
+    if(!st.uiFlags[k]) return {ok:false, msg:'未打卡'};
+    delete st.uiFlags[k]; save(st); return {ok:true};
+  }
+
   // ----- R122：新世界·英语专区「重点知识」单元图片（原「书本词汇」改名并改为图片为主） -----
   // 说明：不能用 addNwZone —— 它把 c 字段截断到 800 字符，装不下图片 dataURL。
   // 每条 { img:'data:image/...', t:'说明文字', ts }；图片在 app 侧已用 canvas 压缩（最长边 ≤1280、JPEG 0.8）。
@@ -13044,6 +13160,11 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
       const d = todayStr();
       const last = st.calcStreakLastDate || '';
       if(last !== d){
+        // R248-4：撤销当日打卡时据此快照完整还原连续天数与里程碑奖励
+        st.calcStreakPrev = st.calcStreak || 0;
+        st.calcStreakPrevDate = last;
+        st.calcStreakPrevRewardWeeks = st.calcStreakRewardWeeks || 0;
+        st.calcStreakPrevBonusStars = st.calcStreakBonusStars || 0;
         const y = new Date(); y.setDate(y.getDate() - 1);
         const p = x => String(x).padStart(2,'0');
         const yStr = y.getFullYear()+'-'+p(y.getMonth()+1)+'-'+p(y.getDate());
@@ -13062,6 +13183,22 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
       save(st);
       return { streak: st.calcStreak||0, bonus };
     }catch(e){ return { streak:0, bonus:0 }; }
+  }
+  // R248-4：撤销当日「计算小超市」打卡时还原连续天数与 7 天里程碑奖励
+  function unbumpCalcStreak(){
+    try{
+      const st = load();
+      const d = todayStr();
+      if(st.calcStreakLastDate !== d || typeof st.calcStreakPrev !== 'number') return {ok:false, msg:'今日未计入连续打卡'};
+      st.calcStreak = st.calcStreakPrev;
+      st.calcStreakLastDate = st.calcStreakPrevDate || '';
+      st.calcStreakRewardWeeks = st.calcStreakPrevRewardWeeks || 0;
+      st.calcStreakBonusStars = st.calcStreakPrevBonusStars || 0;
+      delete st.calcStreakPrev; delete st.calcStreakPrevDate;
+      delete st.calcStreakPrevRewardWeeks; delete st.calcStreakPrevBonusStars;
+      save(st);
+      return {ok:true, streak:st.calcStreak};
+    }catch(e){ return {ok:false}; }
   }
   // 汇总某段日期内的打卡计数：{ key: 次数 }
   function getCheckinLog(days){
@@ -13538,7 +13675,8 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
   }
   // V12.1：通用阅读取消（按类型回退 ⭐：cnEssay/enPassage=3⭐, cnPoem=2⭐, cnWords/cnSentence=1⭐）
   function refundReadingStars(kind){
-    const map = {cnEssay:3, enPassage:2, cnPoem:2, cnWords:1, cnSentence:1, enSpeaking:0, en3500cat:5};
+    // R248-4：撤销打卡统一按 kind 扣回（en3500cat 5⭐ / mathExercise 1⭐ / 阅读类 3·2·1⭐）
+    const map = {cnEssay:3, enPassage:2, cnPoem:2, cnWords:1, cnSentence:1, enSpeaking:0, en3500cat:5, mathExercise:1};
     return map[kind] || 0;
   }
   // v10 兼容旧调用（保留）
@@ -13911,15 +14049,23 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
     return !!st.readFlags[`${kind}::${title}`];
   }
   // 注意：此为生效版本（后者覆盖前者同名声明）；R59-1 拓展素养取消打卡需同步回退按天解锁进度
+  // R248-4：合并「退星 + 流水回滚 + 返回值」——原生效版只删 readFlags，导致
+  //   ① en3500cat 打完卡 +5⭐ 取消后回收不了；② readLog 残留污染大阅读/收录书屋；
+  //   ③ onRiCheckin 期待的 r.ok / r.refund 恒为 undefined，取消打卡连提示都没有。
+  //   仅对「refundReadingStars 返回 0」的 kind 由 app 侧自行 addStars(-N)，不会重复扣星。
   function unmarkReadingRead(kind, title){
     const st = load();
     const _rrKey = `${kind}::${title}`;
-    const _rrExisted = !!st.readFlags[_rrKey];
+    if(!st.readFlags[_rrKey]) return {ok:false, msg:'未打卡'};
     delete st.readFlags[_rrKey];
-    if(SUZHI_UNLOCK_KINDS.indexOf(kind) >= 0){
-      // R59-1：取消拓展素养打卡 → 扣回 +1⭐ 并回退按天解锁进度
-      st.archive.totalStars = Math.max(0, (st.archive.totalStars||0) - 1);
-      st.archive.exp = Math.max(0, (st.archive.exp||0) - 1);
+    // R248-4：同步移除当日打卡流水，保证「学习报告 · 大阅读」与收录书屋统计准确
+    if(Array.isArray(st.readLog)){
+      const ri = st.readLog.findIndex(x=>x && x.kind===kind && x.title===title && x.date===todayStr());
+      if(ri >= 0) st.readLog.splice(ri, 1);
+    }
+    const _isSuzhi = SUZHI_UNLOCK_KINDS.indexOf(kind) >= 0;
+    if(_isSuzhi){
+      // R59-1：取消拓展素养打卡 → 回退按天解锁进度
       st.suzhiDaily = st.suzhiDaily || {};
       const rec = st.suzhiDaily[kind];
       if(rec && rec.date === todayStr() && rec.title === title){
@@ -13928,13 +14074,15 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
         rec.title = '';
       }
     }
-    // R228：取消计算小超市打卡 → 扣回 2⭐（仅当原本确实打过卡）
-    if(kind === 'calcDaily' && _rrExisted){
+    // R248-4：统一按类型扣回⭐（拓展素养 1 / 计算小超市 2 / 其余查 refundReadingStars）
+    const refund = _isSuzhi ? 1 : (kind === 'calcDaily' ? 2 : refundReadingStars(kind));
+    if(refund > 0){
       st.archive = st.archive || {};
-      st.archive.totalStars = Math.max(0, (st.archive.totalStars||0) - 2);
-      st.archive.exp = Math.max(0, (st.archive.exp||0) - 2);
+      st.archive.totalStars = Math.max(0, (st.archive.totalStars||0) - refund);
+      st.archive.exp = Math.max(0, (st.archive.exp||0) - refund);
     }
     save(st);
+    return {ok:true, refund, kind};
   }
 
   // ----- 围棋对弈记录 -----
@@ -18241,6 +18389,26 @@ be 动词：am / is → was；are → were
     save(st);
     return { ok:true, date:d, day: st.calcDailyLog[d] };
   }
+  // R248-4：撤销打卡只翻 checked=false，首次批改快照 correct/total/wrong 保持不变（R247-1 口径）
+  function unmarkCalcDayChecked(dateStr){
+    const st = load();
+    if(!st.calcDailyLog || typeof st.calcDailyLog !== 'object' || Array.isArray(st.calcDailyLog)) st.calcDailyLog = {};
+    const d = String(dateStr || todayStr());
+    const prev = st.calcDailyLog[d] || { correct:0, total:0, wrong:0 };
+    st.calcDailyLog[d] = { correct: prev.correct||0, total: prev.total||0, wrong: prev.wrong||0,
+      first: !!prev.first || (Number(prev.total) > 0), checked: false, at: Number(prev.at)||Date.now() };
+    save(st);
+    return { ok:true, date:d, day: st.calcDailyLog[d] };
+  }
+  // R248-4：计算小超市「撤销今日打卡」一次性回滚 readFlags / readLog / 任务记录 / checkinLog / 日历 / 连续天数
+  function undoCalcDailyCheckin(n){
+    const r = unmarkCalcDaily(todayStr());
+    if(!r || !r.ok) return {ok:false, msg:'今日未打卡'};
+    unlogCheckin('calcBasic', n == null ? 10 : n);
+    unmarkCalcDayChecked(todayStr());
+    unbumpCalcStreak();
+    return {ok:true, refund:2};
+  }
   function clearCalcDailyLog(){ const st = load(); st.calcDailyLog = {}; save(st); return {ok:true}; }
   // 已做本：按日期倒序，同日同题去重
   function getCalcBook(){
@@ -18382,8 +18550,8 @@ be 动词：am / is → was；are → were
     getReading, getDailySpeaking, addUserReading, markReadingRead, unmarkReadingRead, isReadingRead, logCheckin, unlogCheckin, markSpeakingComplete, unmarkSpeakingComplete, unmarkXueersiDailyReward, refundReadingStars,
     // R232-1：计算小超市打卡（首页必做卡 ⇄ 乐读数学 今日打卡 共用）
     markCalcDaily, unmarkCalcDaily,
-    // R236：连续打卡奖励（每 7 天 +5⭐）
-    bumpCalcStreak,
+    // R236：连续打卡奖励（每 7 天 +5⭐）；R248-4：撤销打卡时还原
+    bumpCalcStreak, unbumpCalcStreak, undoCalcDailyCheckin,
     // R228：计算小超市题库（编辑 / 添加 / 删除）
     getCalcBank, addCalcProblem, updateCalcProblem, delCalcProblem,
     // R231-4：错题本（批改答错题自动归集）
@@ -18394,7 +18562,7 @@ be 动词：am / is → was；are → were
     // R244-1：手动加入已做本（取消 22:00 定时收录）
     addCalcBookRight, moveFixedWrongsToCalcBook,
     // R245-1：每日打卡记录（打卡日历）
-    recordCalcDay, getCalcDailyLog, markCalcDayChecked, clearCalcDailyLog,
+    recordCalcDay, getCalcDailyLog, markCalcDayChecked, unmarkCalcDayChecked, clearCalcDailyLog,
     getSuzhiProgress, setSuzhiProgressIfEmpty,
     addGoRecord, deleteGoRecord, getWeekGoCount, clearWeekGoRecords, getGoStars, setGoStars,
     getMaoStars, setMaoStars, maoPoemCheckedList, isMaoPoemChecked, checkMaoPoem, uncheckMaoPoem,
@@ -18449,6 +18617,11 @@ be 动词：am / is → was；are → were
     getCertMetrics, getMetricValue, getCustomCerts, addCustomCert, updateCustomCert, deleteCustomCert,
     // V70：新世界各板块用户添加内容
     getNwZone, addNwZone, delNwZone, setNwZone, // R181-6c：补导出（R179 漏导出致拖拽排序静默不落库）
+    // R248-1：练习题独立题库 + 每题答对 +1⭐ 打卡（可撤销 / 本地持久化）
+    getMathExerciseBank, setMathExerciseBank, addMathExercise, delMathExercise,
+    isMathExerciseCorrect, markMathExerciseCorrect, unmarkMathExerciseCorrect,
+    // R248-4：纯标记类打卡状态持久化
+    isUiFlag, markUiFlag, unmarkUiFlag,
     // R122：新世界·英语专区「重点知识」单元图片（含删除后打卡下标重排）
     getEnKeyPoints, addEnKeyPoint, delEnKeyPoint, shiftEnKeyPointReads,
     // R219-1：学而思英语·课堂笔记「学年 / lesson」选项（可新增 / 删除）
@@ -20469,11 +20642,18 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
           renderYuwenSlot('sucai', label, slotBody);
         });
       });
-      // 点击素材卡片 → 标记已读（橙色完成态）
+      // 点击素材卡片 → 标记已读（橙色完成态）；R248-4：再点撤销 + 状态落库，刷新不丢
       slotBody.querySelectorAll('.sc-card').forEach(card=>{
         card.addEventListener('click', ()=>{
-          card.classList.toggle('sc-read');
-          if(card.classList.contains('sc-read')) playCheckinSound();
+          const key = 'scCard::' + (card.getAttribute('data-sc-key') || '');
+          if(card.classList.contains('sc-read')){
+            if(window.Store && window.Store.unmarkUiFlag) window.Store.unmarkUiFlag(key);
+            card.classList.remove('sc-read');
+          } else {
+            if(window.Store && window.Store.markUiFlag) window.Store.markUiFlag(key);
+            card.classList.add('sc-read');
+            playCheckinSound();
+          }
         });
       });
       // R61-8：素材卡「素材打卡」按钮 —— 打卡 +2⭐（每条一次，可取消扣回）
@@ -21124,8 +21304,10 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       // R61-8：素材卡打卡按钮 —— 打卡成功 +2⭐（每条一次，可取消）
       const scKey = 'sc' + d.no + '#' + (d.title||'');
       const scDone = (window.Store && window.Store.isReadingRead) ? window.Store.isReadingRead('ywSucai', scKey) : false;
+      // R248-4：整卡「已读」标记改走 Store.uiFlags 持久化（原来只写 DOM class，刷新即丢）
+      const scCardRead = (window.Store && window.Store.isUiFlag) ? window.Store.isUiFlag('scCard::'+scKey) : false;
       return `
-      <div class="sc-card${d.__custom?' sc-custom':''}" data-part="${esc(d.part)}">
+      <div class="sc-card${d.__custom?' sc-custom':''}${scCardRead?' sc-read':''}" data-part="${esc(d.part)}" data-sc-key="${esc(scKey)}">
         <div class="sc-card-top">
           <span class="sc-no">${d.no}</span>
           <div class="sc-title-wrap">
@@ -22677,6 +22859,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         <div class="calc-done-txt">今日计算题已打卡完成！</div>
         <div class="calc-answers">${answers}</div>
         <div class="calc-tip">明天的题会换一批，记得每天来练计算小超市哦～</div>
+        <button type="button" class="calc-undo" data-calc-undo>↩️ 撤销今日打卡</button>
       </div>`;
     } else {
       let correct = 0;
@@ -22734,6 +22917,17 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     const today = _calcToday();
     const checkBtn = board.querySelector('[data-calc-check]');
     const okBtn = board.querySelector('[data-calc-checkin]');
+    // R248-4：撤销今日打卡 —— 一次性回滚 readFlags / readLog / 任务记录 / checkinLog / 日历 checked / 连续天数
+    const undoBtn = board.querySelector('[data-calc-undo]');
+    if(undoBtn){
+      undoBtn.addEventListener('click', ()=>{
+        const r = (window.Store && window.Store.undoCalcDailyCheckin)
+          ? window.Store.undoCalcDailyCheckin(_CALC_N)
+          : (window.Store.unmarkCalcDaily ? window.Store.unmarkCalcDaily(today) : null);
+        toast(r && r.ok ? '↩️ 已撤销今日打卡' : '今天还没有打卡记录');
+        rerender();
+      });
+    }
     // R228：「题库」按键 → 打开题库弹窗（编辑 / 添加 / 删除）
     const bankBtn = board.querySelector('[data-calc-bank]');
     if(bankBtn){ bankBtn.addEventListener('click', ()=> openCalcBank()); }
@@ -24501,24 +24695,26 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       const name = (c && c.name) ? String(c.name) : ('分类'+(i+1));
       const words = (c && Array.isArray(c.words)) ? c.words : [];
       const done = S.isReadingRead(EN3500_KIND, name);
-      const preview = words.slice(0,3).map(w=>esc(w && w.w)).join(' · ');
+      // R248-3：移除卡片内「查看单词」按键，分类下全部词条直接平铺完整展示（不截断、不弹窗）
+      const rows = words.length
+        ? words.map((w,j)=>`<div class="en3500-row"><span class="en3500-no">${j+1}</span><span class="en3500-w">${esc(w && w.w)}</span><span class="en3500-ipa">${esc(w && w.ipa)}</span><span class="en3500-cn">${esc(w && w.cn)}</span></div>`).join('')
+        : '<div class="en3500-empty">这个分类暂时没有单词</div>';
       return `<div class="en3500-card${done?' is-checked':''}">
         <div class="en3500-card-h">
           <span class="en3500-ico">🔠</span>
           <span class="en3500-name">${esc(name)}</span>
           <span class="en3500-count">${words.length} 词</span>
         </div>
-        <div class="en3500-preview">${preview}${words.length>3?' …':''}</div>
+        <div class="en3500-words">${rows}</div>
         <div class="en3500-card-foot">
-          <button type="button" class="en3500-open" data-en3500-open="${esc(name)}">📖 查看单词</button>
-          <button type="button" class="en3500-check${done?' is-done':''}" data-en3500-check="${esc(name)}"${done?' disabled':''}>${done?'✅ 已打卡 +5⭐':'🎯 完成打卡 +5⭐'}</button>
+          <button type="button" class="en3500-check${done?' is-done':''}" data-en3500-check="${esc(name)}" title="${done?'已打卡，点击撤销并扣回 5⭐':'完成本分类打卡 +5⭐'}">${done?'✅ 已打卡 +5⭐ · 点击撤销':'🎯 完成打卡 +5⭐'}</button>
         </div>
       </div>`;
     }).join('');
     return `<div class="en3500-wrap">
       <div class="en3500-head">
         <span class="en3500-title">🔠 3500 个高频常用英语单词（分类版）</span>
-        <span class="en3500-hint">按分类生成卡片 · 每页 2 张 · 完成单个分类打卡 +5⭐（不重复发放）</span>
+        <span class="en3500-hint">按分类生成卡片 · 每页 2 张 · 单词完整平铺 · 完成打卡 +5⭐（可撤销，刷新不丢）</span>
       </div>
       <div class="en3500-grid">${cards}</div>
       <div class="en3500-pager">
@@ -24559,15 +24755,17 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       refreshEn3500();
       return;
     }
-    const op = t.closest('[data-en3500-open]');
-    if(op){ openEn3500Cat(op.getAttribute('data-en3500-open')); return; }
+    // R248-3：卡片内已无「查看单词」按键，词表直接平铺在卡片里，不再分发 data-en3500-open
     const ck = t.closest('[data-en3500-check]');
     if(ck){
       const name = ck.getAttribute('data-en3500-check');
-      if(ck.disabled || ck.classList.contains('is-done')) return;
+      // R248-3：打卡支持撤销；状态存于 readFlags（localStorage），刷新页面不丢失
+      const done = S.isReadingRead(EN3500_KIND, name);
       let r = null;
-      try{ r = S.markReadingRead(EN3500_KIND, name); }catch(err){ r = null; }
-      toast(r && r.ok ? ('🎉 「' + name + '」打卡完成，+' + (r.reward || 5) + '⭐') : '这个分类已经打过卡啦，不重复发放⭐');
+      try{ r = done ? S.unmarkReadingRead(EN3500_KIND, name) : S.markReadingRead(EN3500_KIND, name); }
+      catch(err){ r = null; }
+      if(done) toast(r && r.ok ? ('↩️ 已撤销「' + name + '」打卡，扣回 ' + ((r && r.refund) || 5) + '⭐') : '撤销失败，请重试');
+      else toast(r && r.ok ? ('🎉 「' + name + '」打卡完成，+' + (r.reward || 5) + '⭐') : '这个分类已经打过卡啦，不重复发放⭐');
       refreshEn3500();
       return;
     }
@@ -30054,18 +30252,29 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     </div>`;
   }
   // R71-2：题型卡默认收起，点击头部展开题目内容（会话内保持展开/收起状态）
-  // ===== R247-4：乐读数学 · 练习题（出题模块）=====
-  // 支持新增 / 删除题目，录入标准答案与分步解题思路；用户填写答案后点「批改」，展示标准答案与完整解题步骤。
-  const MEX_KEY = 'math_exercises';
-  let _mexOpen = {};      // id -> { ans }：批改后展开解答（刷新页面自动收起）
+  // ===== R247-4 / R248-1：乐读数学 · 练习题（独立题库 + 每题答对打卡）=====
+  // R248-1：题库独立存于 Store.mathExerciseBank（与数学笔记题库、计算题库完全隔离）；
+  // 支持新增 / 删除题目，录入标准答案与分步解题思路；用户填写答案后点「批改」，展示标准答案与完整解题步骤；
+  // 每答对一题打卡 +1⭐（幂等、可撤销、刷新页面不丢失）。
+  let _mexOpen = {};      // id -> { ans }：批改后展开解答（会话内保持，打卡状态另存 Store）
   let _mexDrafts = {};    // id -> 已填写答案（局部重渲染不丢输入）
   function mexItems(){
-    const arr = (window.Store && window.Store.getNwZone) ? window.Store.getNwZone(MEX_KEY) : [];
-    return Array.isArray(arr) ? arr : [];
+    return (window.Store && window.Store.getMathExerciseBank) ? window.Store.getMathExerciseBank() : [];
   }
   function mexSave(arr){
-    try{ if(window.Store && window.Store.setNwZone) window.Store.setNwZone(MEX_KEY, arr); }
+    try{ if(window.Store && window.Store.setMathExerciseBank) window.Store.setMathExerciseBank(arr); }
     catch(e){ toast('⚠️ 保存失败，请重试'); }
+  }
+  // R248-1：打卡状态一律读写 Store.readFlags，绝不放在内存变量里
+  function mexCorrect(id){
+    return (window.Store && window.Store.isMathExerciseCorrect) ? window.Store.isMathExerciseCorrect(id) : false;
+  }
+  function mexMark(id, on){
+    try{
+      return on
+        ? (window.Store.markMathExerciseCorrect ? window.Store.markMathExerciseCorrect(id) : null)
+        : (window.Store.unmarkMathExerciseCorrect ? window.Store.unmarkMathExerciseCorrect(id) : null);
+    }catch(e){ return null; }
   }
   function mexStepsHtml(steps){
     const lines = String(steps||'').split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
@@ -30083,26 +30292,30 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     const items = mexItems();
     const cards = items.length ? items.map((it,i)=>{
       const id = String(it.id||'');
-      const open = !!_mexOpen[id];
-      return `<div class="mex-card">
+      // R248-1：答案与判定结果都落库，刷新后解答区、答题框、打卡状态一起还原
+      const ansText = (_mexOpen[id] && _mexOpen[id].ans != null) ? _mexOpen[id].ans : String(it.ans || '');
+      const open = !!_mexOpen[id] || !!String(it.ans || '');
+      const done = mexCorrect(id);
+      return `<div class="mex-card${done?' is-checked':''}">
         <div class="mex-card-h">
           <span class="mex-no">#${i+1}</span>
           <span class="mex-q">${esc(it.q||'未命名题目')}</span>
           <button type="button" class="mex-btn mex-del" data-mex-act="del" data-mex-id="${esc(id)}">🗑 删除</button>
         </div>
         <div class="mex-answer-row">
-          <input type="text" class="mex-ans" data-mex-ans="${esc(id)}" value="${esc(_mexDrafts[id]||'')}" placeholder="填写你的答案，再点「批改」">
+          <input type="text" class="mex-ans" data-mex-ans="${esc(id)}" value="${esc(_mexDrafts[id] != null ? _mexDrafts[id] : String(it.ans||''))}" placeholder="填写你的答案，再点「批改」">
           <button type="button" class="mex-btn mex-grade" data-mex-act="grade" data-mex-id="${esc(id)}">✅ 批改</button>
+          <button type="button" class="mex-btn mex-check${done?' is-done':''}" data-mex-act="check" data-mex-id="${esc(id)}" title="${done?'已打卡，点击撤销并扣回 1⭐':'答对本题后打卡 +1⭐'}">${done?'✅ 已打卡 +1⭐ · 点击撤销':'🎯 答对打卡 +1⭐'}</button>
         </div>
         ${open ? `<div class="mex-result">
-          <div class="mex-result-h">📌 标准答案：<b>${esc(it.a||'—')}</b><span class="mex-you">你的答案：${esc((_mexOpen[id] && _mexOpen[id].ans) || '—')}</span></div>
+          <div class="mex-result-h">📌 标准答案：<b>${esc(it.a||'—')}</b><span class="mex-you">你的答案：${esc(ansText || '—')}</span></div>
           <div class="mex-steps-h">🧩 完整解题步骤</div>
           ${mexStepsHtml(it.steps)}
         </div>` : ''}
       </div>`;
     }).join('') : '<div class="mex-empty">还没有练习题，先在上方录入题目、标准答案和分步解题思路吧～</div>';
     pane.innerHTML = `<div class="mex-wrap">
-      <div class="mex-head"><span class="mex-title">✏️ 练习题</span><span class="mex-hint">新增题目 / 录入标准答案与分步思路 · 填写答案后点「批改」查看完整解答</span></div>
+      <div class="mex-head"><span class="mex-title">✏️ 练习题</span><span class="mex-hint">独立题库 · 新增 / 删除题目 · 录入标准答案与分步思路 · 批改展示完整解答 · 每答对一题打卡 +1⭐（可撤销，刷新不丢）</span></div>
       <div class="mex-add">
         <input type="text" class="mex-input" id="mexQ" maxlength="200" placeholder="题目内容（如 12 × 8 + 36 ÷ 4）">
         <input type="text" class="mex-input" id="mexA" maxlength="120" placeholder="标准答案">
@@ -30112,25 +30325,24 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       <div class="mex-list">${cards}</div>
     </div>`;
   }
-  // R247-4：捕获阶段全局委托（局部重渲染不丢事件，点击反馈即时）
+  // R247-4 / R248-1：捕获阶段全局委托（局部重渲染不丢事件，点击反馈即时）
   document.addEventListener('click', (e)=>{
     const t = e.target;
     if(!t || typeof t.closest !== 'function') return;
     const b = t.closest('[data-mex-act]');
     if(!b) return;
     const act = b.getAttribute('data-mex-act');
+    const mexAnsInput = (id)=> document.querySelector('.mex-ans[data-mex-ans="' + String(id).replace(/"/g,'\\"') + '"]');
     if(act === 'add'){
       const q = document.getElementById('mexQ'), a = document.getElementById('mexA'), st = document.getElementById('mexSteps');
       const qv = q ? String(q.value||'').trim() : '';
       const av = a ? String(a.value||'').trim() : '';
       if(!qv){ toast('请先填写题目内容'); if(q) q.focus(); return; }
       if(!av){ toast('请填写标准答案'); if(a) a.focus(); return; }
-      const arr = mexItems();
-      arr.unshift({
-        id: 'mex_' + Date.now() + '_' + Math.random().toString(36).slice(2,7),
-        q: qv, a: av, steps: st ? String(st.value||'') : '', at: Date.now()
-      });
-      mexSave(arr);
+      const rec = { q: qv, a: av, steps: st ? String(st.value||'') : '' };
+      // R248-1：走独立题库 API（Store.mathExerciseBank），不再借用通用 nwZone 桶
+      if(window.Store && window.Store.addMathExercise) window.Store.addMathExercise(rec);
+      else { const arr = mexItems(); arr.unshift(Object.assign({id:'mex_'+Date.now(), at:Date.now()}, rec)); mexSave(arr); }
       toast('✅ 已新增练习题');
       renderMathExercise();
       return;
@@ -30140,7 +30352,8 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       const arr = mexItems();
       const hit = arr.filter(x=>String(x.id)===String(id))[0];
       confirmDelete(hit ? String(hit.q||'这道题') : '这道题', ()=>{
-        mexSave(arr.filter(x=>String(x.id)!==String(id)));
+        if(window.Store && window.Store.delMathExercise) window.Store.delMathExercise(id);
+        else mexSave(arr.filter(x=>String(x.id)!==String(id)));
         delete _mexOpen[String(id)]; delete _mexDrafts[String(id)];
         toast('🗑 已删除');
         renderMathExercise();
@@ -30149,14 +30362,40 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     }
     if(act === 'grade'){
       const id = b.getAttribute('data-mex-id');
-      const inp = document.querySelector('.mex-ans[data-mex-ans="' + String(id).replace(/"/g,'\\"') + '"]');
+      const inp = mexAnsInput(id);
       const val = inp ? String(inp.value||'').trim() : '';
+      const arr = mexItems();
+      const hit = arr.filter(x=>String(x.id)===String(id))[0];
+      const correct = !!(hit && val && String(hit.a||'').trim() === val);
+      // R248-1：把作答与判定结果落库，刷新后解答区/打卡状态一并还原
+      if(hit){ hit.ans = val; hit.ok = correct; mexSave(arr); }
       _mexDrafts[String(id)] = val;
       _mexOpen[String(id)] = { ans: val };
+      // 每答对一题自动打卡 +1⭐（同一题幂等，不重复发放）
+      let rewarded = false;
+      if(correct && !mexCorrect(id)){ const r = mexMark(id, true); rewarded = !!(r && r.ok); }
       renderMathExercise();
-      const hit = mexItems().filter(x=>String(x.id)===String(id))[0];
-      if(hit && val && String(hit.a||'').trim() === val) toast('🎉 答对啦！下面是完整解题步骤');
+      if(correct) toast(rewarded ? '🎉 答对啦！已打卡 +1⭐，下面是完整解题步骤' : '🎉 答对啦！下面是完整解题步骤');
       else toast('📖 已展示标准答案与完整解题步骤，对照看看～');
+      return;
+    }
+    if(act === 'check'){
+      const id = b.getAttribute('data-mex-id');
+      // R248-1：打卡 / 撤销双向切换，状态在 Store.readFlags 中持久化
+      if(mexCorrect(id)){
+        const r = mexMark(id, false);
+        toast(r && r.ok ? '↩️ 已撤销打卡，扣回 1⭐' : '撤销失败，请重试');
+        renderMathExercise();
+        return;
+      }
+      const inp = mexAnsInput(id);
+      const val = inp ? String(inp.value||'').trim() : '';
+      const hit = mexItems().filter(x=>String(x.id)===String(id))[0];
+      const correct = !!(hit && val && String(hit.a||'').trim() === val) || !!(hit && hit.ok);
+      if(!correct){ toast('先点「批改」并答对这道题，才能打卡 +1⭐'); return; }
+      const r = mexMark(id, true);
+      toast(r && r.ok ? '🎉 答对打卡成功，+1⭐' : '这道题已经打过卡啦');
+      renderMathExercise();
       return;
     }
   }, true);
@@ -38120,6 +38359,21 @@ function renderKMAdmin(){
       const el=$(sel); if(el && !el._taskBound){ el._taskBound=true; el.addEventListener('click', handleTodayClick); }
     });
     function handleTodayClick(e){
+      // R248-4：修复「家务小帮手」等任务打卡键点击无响应 —— 统一走 toggleCheckIn（再点即撤销，状态落库）
+      const taskCk = e.target.closest ? e.target.closest('[data-ri-checkin]') : null;
+      if(taskCk){
+        const raw = taskCk.getAttribute('data-ri-checkin') || '';
+        if(raw.indexOf('task::') === 0){
+          const tid = raw.slice(6);
+          const t0 = S.load().tasks.find(x=>x.id===tid);
+          if(isCalcDailyTask(t0)){ toggleCalcDailyFromHome(); return; }
+          const r = S.toggleCheckIn(S.todayStr(), tid);
+          if(r && r.completed){ toast('打卡成功 +'+(r.stars||0)+'⭐'); playCheckinSound(); }
+          else toast('已取消打卡');
+          renderToday(); renderHome();
+          return;
+        }
+      }
       const ed=e.target.closest('[data-edit-task]');
       if(ed){ const st=S.load(); const t=st.tasks.find(x=>x.id===ed.dataset.editTask); openTaskEdit(t); return; }
       const dl=e.target.closest('[data-del-task]');
