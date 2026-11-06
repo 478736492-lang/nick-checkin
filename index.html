@@ -3997,6 +3997,12 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
 .eg-block-p{ font-size:13.5px; line-height:1.7; color:#33415c; font-weight:500; margin-bottom:6px; }
 .eg-block-li{ margin:0; padding-left:18px; }
 .eg-block-li li{ font-size:13px; line-height:1.85; color:#3c4a63; }
+/* R249-3：十大词类卡片内嵌的 9 个词类选择按键（默认展示名词，点击切换） */
+.eg-cilei-subnav{ display:flex; flex-wrap:wrap; gap:8px; margin:10px 0 14px; padding:10px 12px; background:linear-gradient(135deg,var(--tone-075),var(--tone-100)); border:1px solid #dce9fa; border-radius:14px; }
+.eg-cilei-sub{ font-family:inherit; cursor:pointer; font-size:13px; font-weight:800; color:var(--tone-900); background:#fff; border:1px solid var(--tone-200); border-radius:10px; padding:7px 13px; touch-action:manipulation; transition:background .15s,color .15s,border-color .15s,transform .12s; }
+.eg-cilei-sub:hover{ border-color:var(--tone-400); }
+.eg-cilei-sub:active{ transform:scale(.96); }
+.eg-cilei-sub.active{ color:#fff; background:linear-gradient(135deg,var(--z-nw-mid),var(--z-nw-main)); border-color:transparent; box-shadow:0 3px 10px rgba(30,58,138,.18); }
 .eg-block-li li::marker{ color:var(--tone-600); }
 .eg-rhyme-grid{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
 .eg-rhyme-card{ position:relative; background:#fff; border:var(--card-line-soft); border-radius:var(--card-r-md); padding:14px 14px 12px 14px; box-shadow:var(--card-shadow); }
@@ -8244,7 +8250,7 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 .en3500-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
 .en3500-title{font-size:15px;font-weight:900;color:var(--tone-800)}
 .en3500-hint{font-size:12px;color:var(--muted)}
-.en3500-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.en3500-grid{display:grid;grid-template-columns:1fr;gap:14px} /* R249-2：每页仅一张分类卡片 */
 .en3500-card{background:#fff;border:1.5px solid var(--tone-200);border-radius:14px;padding:14px;box-shadow:0 3px 12px rgba(30,58,138,.08);display:flex;flex-direction:column;gap:10px}
 .en3500-card.is-checked{border-color:#2fb36a;background:linear-gradient(180deg,#f2fff7,#fff)}
 .en3500-card-h{display:flex;align-items:center;gap:8px}
@@ -8331,6 +8337,28 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 .mex-steps li{word-break:break-word}
 .mex-step-empty{font-size:12px;color:var(--muted)}
 .mex-empty{text-align:center;color:var(--muted);font-size:13px;padding:28px 12px;background:var(--tone-025);border-radius:12px}
+/* R249-1：练习题首页 = 题库入口按键 + 每日一题卡片；题库弹窗内管理全部新增 / 删除 */
+.mex-bank-btn{align-self:flex-start;color:#fff;background:linear-gradient(135deg,var(--z-nw-mid),var(--z-nw-main));border-color:transparent}
+.mex-daily{display:flex;flex-direction:column;gap:12px}
+.mex-daily-card{border-width:2px}
+.mex-daily-badge{font-size:11px;font-weight:900;color:#fff;background:linear-gradient(135deg,var(--z-nw-mid),var(--z-nw-main));border-radius:999px;padding:3px 11px}
+.mex-bank-list{display:flex;flex-direction:column;gap:8px;max-height:46vh;overflow-y:auto}
+.mex-bank-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:#fff;border:1.5px solid var(--tone-200);border-radius:10px;padding:9px 11px;box-shadow:0 2px 8px rgba(30,58,138,.06)}
+.mex-bank-no{font-size:11px;font-weight:900;color:var(--sky-blue);background:var(--tone-100);border-radius:999px;padding:2px 9px}
+.mex-bank-q{font-size:13px;font-weight:800;color:var(--tone-900);flex:1 1 160px;min-width:0;word-break:break-word}
+.mex-bank-a{font-size:11.5px;font-weight:700;color:var(--muted)}
+
+/* ===== R249-4 首页「一周打卡计划」弹窗表格（样式复用课程表 .sn-table / .kb-cell，毛玻璃弹窗与课程表一致） ===== */
+.wp-plan-btn{ font-family:inherit; cursor:pointer; font-size:14px; font-weight:800; color:#fff;
+  background:linear-gradient(135deg,var(--z-nw-mid),var(--z-nw-main)); border:1px solid transparent;
+  border-radius:12px; padding:9px 14px; margin:0 0 10px 0; width:100%; text-align:left;
+  box-shadow:0 3px 10px rgba(30,58,138,.18); }
+.wp-plan-btn:active{ transform:scale(.98); }
+.wp-week-table .wp-time-head,.wp-week-table .wp-cat-head{ background:linear-gradient(135deg,var(--z-nw-mid),var(--z-nw-main)); color:#fff; }
+.wp-week-table .wp-time-cell,.wp-week-table .wp-cat-cell{ font-size:13px; font-weight:800; }
+.wp-merge-row{ display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; padding-top:10px; border-top:1px dashed var(--tone-200); }
+.wp-merge-row .pbtn{ flex:1 1 30%; min-width:84px; }
+.wp-merge-row .pbtn:disabled{ opacity:.45; cursor:not-allowed; }
 
 /* ============================================================
    R245-5 / R245-4：全平台按键点击反馈 + 打卡头像效果恢复
@@ -8473,6 +8501,8 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
       <!-- 左侧卡片二：本周完成度 + 本月完成度 -->
       <div class="wp-card wp-card-left-stats" data-page-node-id="kC959HRKgA9qIHlwHOBCRF">
         <!-- R52-2：今日完成度（总任务饼图 + 各科目横向柱状图） -->
+        <!-- R249-4：首页「一周打卡计划」入口按键（置于今日完成度卡片上方） -->
+        <button class="wp-plan-btn" id="btnWeekPlan" title="查看一周打卡计划" data-page-node-id="R249btnWeekPlan">📅 一周打卡计划</button>
         <div class="wp-section wp-today" data-page-node-id="R52todaySec001">
           <div class="wp-mini-head" data-page-node-id="R52todayHead001">📈 今日完成度</div>
           <div class="wp-today-wrap" id="todayRateWrap" data-page-node-id="R52todayWrap001">
@@ -8984,6 +9014,57 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
     </div>
   </div>
 
+  <!-- ========== 弹窗：一周打卡计划（R249-4：首页「今日完成度」上方按键唤起；毛玻璃弹窗，表格样式与课程表一致；
+       列 = 时间 | 分类 | 周一~周日（含周六/日）；编辑态下单元格可合并/拆分；颜色 20 色） ========== -->
+  <div class="modal-mask modal-course-table-mask" id="modalWeekPlan" hidden data-page-node-id="R249modalWeekPlan">
+    <div class="modal-box modal-course-table" data-page-node-id="R249weekPlanBox">
+      <div class="ct-head-row" data-page-node-id="R249wpHeadRow">
+        <button class="nw-back" id="btnWeekPlanClose" title="关闭" data-page-node-id="R249btnWeekPlanClose">← 返回首页</button>
+        <button type="button" class="nw-sched-gear" id="btnWeekPlanGear" title="进入编辑状态后可修改所有方格" data-page-node-id="R249btnWeekPlanGear">✏️ 编辑</button>
+      </div>
+      <div class="nw-sub-body" id="weekPlanMount" data-page-node-id="R249weekPlanMount"></div>
+    </div>
+  </div>
+
+  <!-- ========== 弹窗：一周打卡计划 · 单元格编辑（R249-4：点击单元格唤起；快捷科目读取设置中心打卡任务列表，实时同步） ========== -->
+  <div class="modal-mask" id="modalWeekCell" hidden data-page-node-id="R249modalWeekCell">
+    <div class="modal-box modal-sm" style="min-width:360px" data-page-node-id="R249weekCellBox">
+      <div class="modal-head" data-page-node-id="R249weekCellHead"><h3 id="weekCellModalTitle" data-page-node-id="R249weekCellTitle">填写</h3><button class="modal-x" data-close data-page-node-id="R249weekCellX">×</button></div>
+      <div class="modal-body" data-page-node-id="R249weekCellBody">
+        <div class="sched-cell-where" id="weekCellWhere" data-page-node-id="R249weekCellWhere"></div>
+        <label class="sched-field" data-page-node-id="R249weekCellLabel"><span id="weekCellTextLabel">内容</span> <input type="text" id="weekCellText" placeholder="如：数学 / 阅读" maxlength="12" data-page-node-id="R249weekCellText" /></label>
+        <div class="sched-sub-wrap" id="weekCellSubWrap" data-page-node-id="R249weekCellSubWrap">
+          <span class="sched-sub-label" data-page-node-id="R249weekCellSubLab">快捷科目（打卡任务）</span>
+          <div class="sched-swatches sched-sub-quick" id="weekCellSubjectQuick" data-page-node-id="R249weekCellSubQuick"></div>
+          <div class="sched-manage-tip" data-page-node-id="R249weekCellSubTip">点击科目即可填入，再点一次取消。</div>
+        </div>
+        <div class="hidden-in-child" id="weekCellColorWrap" data-page-node-id="R249weekCellColorWrap">
+          <label class="sched-field" data-page-node-id="R249weekCellColorLab">区域颜色 <input type="color" id="weekCellColor" value="#ffffff" data-page-node-id="R249weekCellColor" /></label>
+          <div class="sched-swatches" id="weekSwatches" data-page-node-id="R249weekCellSwatches"></div>
+        </div>
+        <div class="wp-merge-row" id="weekCellMergeRow" data-page-node-id="R249weekCellMergeRow">
+          <button class="pbtn" id="btnWeekMergeRight" data-page-node-id="R249btnWeekMergeRight">合并 →</button>
+          <button class="pbtn" id="btnWeekMergeDown" data-page-node-id="R249btnWeekMergeDown">合并 ↓</button>
+          <button class="pbtn" id="btnWeekSplit" data-page-node-id="R249btnWeekSplit">拆分</button>
+        </div>
+      </div>
+      <div class="modal-foot" data-page-node-id="R249weekCellFoot">
+        <button class="primary-btn" id="btnWeekCellSave" data-page-node-id="R249btnWeekCellSave">保存</button>
+        <button class="pbtn danger" id="btnWeekCellClear" data-page-node-id="R249btnWeekCellClear">清空</button>
+        <button class="pbtn" data-close data-page-node-id="R249weekCellCancel">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 弹窗：练习题 · 题库（R249-1：所有新增 / 删除题目操作都在题库内执行） ========== -->
+  <div class="modal-mask" id="modalMexBank" hidden data-page-node-id="R249modalMexBank">
+    <div class="modal-box modal-sm" style="min-width:420px;max-width:560px" data-page-node-id="R249mexBankBox">
+      <div class="modal-head" data-page-node-id="R249mexBankHead"><h3>📚 练习题题库</h3><button class="modal-x" data-close data-page-node-id="R249mexBankX">×</button></div>
+      <div class="modal-body" id="mexBankBody" data-page-node-id="R249mexBankBody"></div>
+      <div class="modal-foot" data-page-node-id="R249mexBankFoot"><button class="pbtn" data-close>关闭</button></div>
+    </div>
+  </div>
+
   <!-- ========== R176：推荐书籍 · 双页书本阅读弹窗（覆盖除导航栏外全部页面区域；左上角【← 返回书目】） ========== -->
   <div class="modal-mask modal-book-read-mask" id="modalKtxsRead" hidden data-page-node-id="R176modalKtxsRead">
     <div class="modal-box modal-book-read" data-page-node-id="R176bookReadBox">
@@ -9197,12 +9278,14 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
          R234-3：进入乐读数学默认落在「计算小超市」 -->
     <div class="leidu-switch" data-leidu-switch>
       <button type="button" class="leidu-tab active" data-leidu-tab="calc" aria-pressed="true">🧮 计算小超市</button>
-      <button type="button" class="leidu-tab" data-leidu-tab="note" aria-pressed="false">📒 乐读数学笔记</button>
-      <!-- R247-4：乐读数学笔记后方新增「练习题」出题模块 -->
+      <!-- R249-1：练习题按键移至「计算小超市」与「乐读数学笔记」之间 -->
       <button type="button" class="leidu-tab" data-leidu-tab="exercise" aria-pressed="false">✏️ 练习题</button>
+      <button type="button" class="leidu-tab" data-leidu-tab="note" aria-pressed="false">📒 乐读数学笔记</button>
     </div>
     <!-- 计算小超市 内容卡（R227：从新世界·数学专区·错题本整体移入） -->
     <div class="leidu-pane" data-leidu-pane="calc" id="leiduCalcPane"></div>
+    <!-- R249-1：练习题 内容卡（题库入口 + 每日随机一题作答 / 批改 / 答对打卡） -->
+    <div class="leidu-pane" data-leidu-pane="exercise" id="leiduExercisePane" hidden></div>
     <!-- 乐读数学笔记 内容卡（= 原 板块和题型 卡片） -->
     <div class="leidu-pane" data-leidu-pane="note" id="leiduNotePane" hidden>
     <div class="math-sub-region" data-page-node-id="R91mathSubRegion">
@@ -9246,8 +9329,6 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
       <div class="math-content-area" id="mathContentArea" data-page-node-id="R102mathContentArea"></div>
     </div>
     </div><!-- /leiduNotePane -->
-    <!-- R247-4：练习题 内容卡（新增/删除题目 · 录入答案与分步解题思路 · 批改展示） -->
-    <div class="leidu-pane" data-leidu-pane="exercise" id="leiduExercisePane" hidden></div>
   </div></section>
 
   <!-- R102：原「题型列表页」独立页与原题目详情弹窗均已删除。
@@ -12894,6 +12975,31 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
   function saveSchedule(obj){
     const st = load();
     st.schedule = obj;
+    save(st);
+  }
+  // R249-4：首页「一周打卡计划」数据层（结构参照课程表，列改为 时间/分类 + 周一~周日；初始全部清空）
+  const WEEKPLAN_DAYS = ['星期一','星期二','星期三','星期四','星期五','星期六','星期日'];
+  function weekPlanSeed(){
+    return { rows:6, days:WEEKPLAN_DAYS.slice(), times:new Array(6).fill(''), cats:new Array(6).fill(''), cells:{}, merges:[], seeded:true };
+  }
+  function getWeekPlan(){
+    const st = load();
+    if(!st.weekPlan) return weekPlanSeed();
+    const wp = st.weekPlan;
+    if(!wp.days || !wp.days.length) wp.days = WEEKPLAN_DAYS.slice();
+    if(!wp.rows) wp.rows = 6;
+    if(!Array.isArray(wp.times)) wp.times = [];
+    if(!Array.isArray(wp.cats)) wp.cats = [];
+    while(wp.times.length < wp.rows) wp.times.push('');
+    while(wp.cats.length < wp.rows) wp.cats.push('');
+    if(!wp.cells || typeof wp.cells !== 'object') wp.cells = {};
+    if(!wp.merges || !Array.isArray(wp.merges)) wp.merges = [];
+    if(!wp.seeded) wp.seeded = true;
+    return wp;
+  }
+  function saveWeekPlan(obj){
+    const st = load();
+    st.weekPlan = obj;
     save(st);
   }
   // V71：课文朗读「已学习」持久化（存课文编号）
@@ -18650,6 +18756,8 @@ be 动词：am / is → was；are → were
     getNWData, saveNWData, resetNWData,
     // V98：课程表可编辑（课时行数 + 每格课程/颜色）
     getSchedule, saveSchedule,
+    // R249-4：首页「一周打卡计划」数据层
+    getWeekPlan, saveWeekPlan,
     // V71：课文朗读「已学习」持久化
     getKewenLearned, markKewenLearned, unmarkKewenLearned, toggleKewenLearned,
     // V72：生字听写「已听写」+「已学生字库」
@@ -19829,7 +19937,8 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     renderScheduleAll();
     if(window.toast) toast(_schedEditMode ? '编辑状态已开启：可修改所有方格' : '已退出编辑状态');
   }
-  const SCHED_SWATCHES = ['#ffffff','#a4d0ff','#8fc1f7','#1e3a8a','#ffd24d','#a8e6a3','#ff8fa3','#c9b6ff'];
+  // R249-4：课程区域颜色选择扩充至 20 种独立色号（课程表与一周打卡计划共用）
+  const SCHED_SWATCHES = ['#ffffff','#a4d0ff','#8fc1f7','#1e3a8a','#ffd24d','#a8e6a3','#ff8fa3','#c9b6ff','#ff9f68','#7fd1c4','#f7a8d8','#b5e48c','#ffd6a5','#cdb4db','#a0c4ff','#bde0fe','#ffadad','#9bf6ff','#fdffb6','#52b788'];
   // R43-1：课程表科目快捷选项（点击填入「课程名称」输入框，免去手打）
   const SCHED_SUBJECTS = ['班级活动','道法','科学','综合实践','体育健康','数学','艺术','语文','英语','信息技术','心理'];
   // R157-3：取规范化星期键（与渲染端一致：sc.days 经 normSchedDay 后作为 attire/dismiss 的 key）
@@ -19943,6 +20052,204 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     $('#schedCellText').value='';
     $('#schedCellColor').value = sc.addColor || '#ffffff';
     renderScheduleAll();
+  }
+  // ============ R249-4：首页「一周打卡计划」（毛玻璃弹窗表格；结构：时间 | 分类 | 周一~周日；编辑态可合并/拆分；颜色 20 色） ============
+  const WEEKPLAN_DAYS = ['星期一','星期二','星期三','星期四','星期五','星期六','星期日'];
+  let _wpEditMode = false;
+  let wpCellKind = 'day', wpCellR = 0, wpCellC = 0;
+  function wpEl(id){ return document.getElementById(id); }
+  function wpIsAnchor(wp, r, c){ return (wp.merges||[]).find(m=> m.r===r && m.c===c); }
+  function wpCoveredSet(wp){
+    const set = {};
+    (wp.merges||[]).forEach(m=>{
+      for(let i=0;i<m.rs;i++) for(let j=0;j<m.cs;j++){
+        if(i===0 && j===0) continue;
+        set[(m.r+i)+'-'+(m.c+j)] = true;
+      }
+    });
+    return set;
+  }
+  function wpCellFree(wp, r, c, ignore){
+    const cov = wpCoveredSet(wp);
+    if(cov[r+'-'+c]) return false;
+    const a = wpIsAnchor(wp, r, c);
+    if(a){ if(!ignore || a.r!==ignore.r || a.c!==ignore.c) return false; }
+    return true;
+  }
+  function renderWeekPlan(){
+    const mount = wpEl('weekPlanMount');
+    if(!mount) return;
+    const wp = S.getWeekPlan();
+    const rows = wp.rows || 6;
+    const days = ((wp.days && wp.days.length) ? wp.days : WEEKPLAN_DAYS).map(normSchedDay);
+    const covered = wpCoveredSet(wp);
+    let head = '<tr><th class="sn-th sn-th-sky wp-time-head">时间</th><th class="sn-th sn-th-sky wp-cat-head">分类</th>'
+      + days.map((d,i)=>`<th class="sn-th ${i===1||i===3||i===5?'sn-th-violet':'sn-th-sky'}">${esc(d)}</th>`).join('') + '</tr>';
+    let body = '';
+    for(let r=0;r<rows;r++){
+      const timeTxt = wp.times[r] || '';
+      const catTxt = wp.cats[r] || '';
+      body += '<tr>';
+      body += `<td><button type="button" class="kb-cell wp-time-cell${timeTxt?'':' sn-cell-empty'}" data-wp-kind="time" data-r="${r}" style="background:#ffffff">${timeTxt?esc(timeTxt):''}</button></td>`;
+      body += `<td><button type="button" class="kb-cell wp-cat-cell${catTxt?'':' sn-cell-empty'}" data-wp-kind="cat" data-r="${r}" style="background:#ffffff">${catTxt?esc(catTxt):''}</button></td>`;
+      for(let c=0;c<days.length;c++){
+        if(covered[r+'-'+c]) continue;
+        const a = wpIsAnchor(wp, r, c);
+        const cell = wp.cells[r+'-'+c] || {};
+        const txt = cell.t || '';
+        const bg = cell.c || '#ffffff';
+        const span = a ? ` colspan="${a.cs}" rowspan="${a.rs}"` : '';
+        body += `<td${span}><button type="button" class="kb-cell wp-day-cell${txt?'':' sn-cell-empty'}" data-wp-kind="day" data-r="${r}" data-c="${c}" style="background:${bg}">${txt?esc(txt):''}</button></td>`;
+      }
+      body += '</tr>';
+    }
+    // R249-4：卡片标题由「课程表」改为「一周打卡计划」，装饰与课程表卡片保持一致
+    mount.innerHTML = `<div class="sn-page${_wpEditMode?' sched-editing':''}">`
+      + `<div class="sn-deco sn-deco-tl">✨</div><div class="sn-deco sn-deco-tl2">⭐</div>`
+      + `<div class="sn-deco sn-deco-br">⛵</div><div class="sn-deco sn-deco-br2">✨</div>`
+      + `<div class="sn-title">一周打卡计划</div>`
+      + `<div class="sn-frame"><div class="sn-frame-in">`
+      + `<table class="nw-timetable sn-table sn-custom wp-week-table"><thead>${head}</thead><tbody>${body}</tbody></table>`
+      + `</div></div></div>`;
+    wpSyncEditBtn();
+    if(!_wpEditMode){
+      mount.querySelectorAll('.kb-cell').forEach(b=> b.addEventListener('click', ()=>{ if(window.toast) toast('先点右上角【✏️ 编辑】进入编辑状态'); }));
+    } else {
+      mount.querySelectorAll('.wp-time-cell').forEach(b=> b.addEventListener('click', ()=> openWeekCellEditor(parseInt(b.dataset.r,10),0,'time')));
+      mount.querySelectorAll('.wp-cat-cell').forEach(b=> b.addEventListener('click', ()=> openWeekCellEditor(parseInt(b.dataset.r,10),0,'cat')));
+      mount.querySelectorAll('.wp-day-cell').forEach(b=> b.addEventListener('click', ()=> openWeekCellEditor(parseInt(b.dataset.r,10),parseInt(b.dataset.c,10),'day')));
+    }
+  }
+  function wpSyncEditBtn(){
+    const gear = wpEl('btnWeekPlanGear');
+    if(!gear) return;
+    gear.textContent = _wpEditMode ? '✓ 完成' : '✏️ 编辑';
+    gear.classList.toggle('on', _wpEditMode);
+  }
+  function wpToggleEditMode(){
+    _wpEditMode = !_wpEditMode;
+    wpSyncEditBtn();
+    renderWeekPlan();
+    if(window.toast) toast(_wpEditMode ? '编辑状态已开启：可修改所有方格' : '已退出编辑状态');
+  }
+  function renderWeekSwatches(){
+    const sw = wpEl('weekSwatches');
+    if(!sw) return;
+    sw.innerHTML = SCHED_SWATCHES.map(col=>`<span class="sw" data-col="${col}" style="background:${col}" title="${col}"></span>`).join('');
+    sw.querySelectorAll('.sw').forEach(s=> s.addEventListener('click', ()=>{ const ci = wpEl('weekCellColor'); if(ci) ci.value = s.dataset.col; }));
+  }
+  function renderWeekSubjects(cur){
+    const st = S.load();
+    let subs = (st.tasks && Array.isArray(st.tasks)) ? st.tasks.map(t=> t && t.name).filter(Boolean) : [];
+    const seen = {};
+    subs = subs.filter(v=>{ if(seen[v]) return false; seen[v]=true; return true; });
+    if(!subs.length) subs = (typeof SCHED_SUBJECTS !== 'undefined' ? SCHED_SUBJECTS.slice() : []);
+    const curSub = String(cur||'').trim();
+    const sq = wpEl('weekCellSubjectQuick');
+    if(!sq) return;
+    sq.innerHTML = subs.map(s=>`<span class="sched-sub-btn${s===curSub?' on':''}" data-sub="${esc(s)}" title="填入「${esc(s)}」">${esc(s)}</span>`).join('');
+    sq.querySelectorAll('.sched-sub-btn').forEach(b=> b.addEventListener('click', ()=>{
+      const v = b.dataset.sub || '';
+      const inp = wpEl('weekCellText');
+      if(inp) inp.value = (String(inp.value||'').trim()===v) ? '' : v;
+      sq.querySelectorAll('.sched-sub-btn').forEach(x=> x.classList.toggle('on', x.dataset.sub===inp.value));
+    }));
+  }
+  function openWeekCellEditor(r, c, kind){
+    wpCellKind = kind; wpCellR = r; wpCellC = c;
+    const wp = S.getWeekPlan();
+    let cur = '', title = '', label = '', placeholder = '';
+    let showMerge = false;
+    if(kind==='time'){
+      cur = wp.times[r] || '';
+      title = '⏰ 填写时间'; label = '时间'; placeholder = '如：08:00';
+    } else if(kind==='cat'){
+      cur = wp.cats[r] || '';
+      title = '🏷️ 填写分类'; label = '分类'; placeholder = '如：学习 / 运动';
+    } else {
+      const cell = wp.cells[r+'-'+c] || {};
+      cur = cell.t || '';
+      const dayLabel = normSchedDay(wp.days[c] || '');
+      title = '📌 填写' + dayLabel + '计划'; label = '计划内容'; placeholder = '如：数学 / 阅读';
+      showMerge = true;
+    }
+    const tEl = wpEl('weekCellModalTitle'); if(tEl) tEl.textContent = title;
+    const lEl = wpEl('weekCellTextLabel'); if(lEl) lEl.textContent = label;
+    const inp = wpEl('weekCellText');
+    if(inp){ inp.placeholder = placeholder; inp.maxLength = 12; inp.value = cur; }
+    const curColor = (kind==='day') ? ((wp.cells[r+'-'+c]||{}).c || '') : '';
+    const colInp = wpEl('weekCellColor'); if(colInp) colInp.value = curColor || '#ffffff';
+    const subWrap = wpEl('weekCellSubWrap'); if(subWrap) subWrap.hidden = false;
+    const colorWrap = wpEl('weekCellColorWrap'); if(colorWrap) colorWrap.hidden = (kind!=='day');
+    const mergeRow = wpEl('weekCellMergeRow'); if(mergeRow) mergeRow.hidden = !showMerge;
+    renderWeekSwatches();
+    renderWeekSubjects(cur);
+    const where = wpEl('weekCellWhere');
+    if(where) where.textContent = (kind==='time') ? ('第'+(r+1)+'行 · 时间') : (kind==='cat') ? ('第'+(r+1)+'行 · 分类') : normSchedDay(wp.days[c] || '');
+    if(showMerge){
+      const a = wpIsAnchor(wp, r, c);
+      const daysN = (wp.days && wp.days.length) ? wp.days.length : 7;
+      const rowsN = wp.rows || 6;
+      const mr = wpEl('btnWeekMergeRight'); if(mr) mr.disabled = (a && a.rs>1) || (c + (a?a.cs:1) >= daysN);
+      const md = wpEl('btnWeekMergeDown'); if(md) md.disabled = (a && a.cs>1) || (r + (a?a.rs:1) >= rowsN);
+      const sp = wpEl('btnWeekSplit'); if(sp) sp.disabled = !a;
+    }
+    showModal('#modalWeekCell');
+  }
+  function doWeekMerge(r, c, dir){
+    const wp = S.getWeekPlan();
+    const daysN = (wp.days && wp.days.length) ? wp.days.length : 7;
+    const rowsN = wp.rows || 6;
+    const a = wpIsAnchor(wp, r, c);
+    if(dir==='right'){
+      if(a && a.rs>1){ if(window.toast) toast('已为纵向合并，无法横向扩展'); return; }
+      const curCs = a ? a.cs : 1;
+      const nc = c + curCs;
+      if(nc >= daysN){ if(window.toast) toast('已到最右列'); return; }
+      if(!wpCellFree(wp, r, nc, a)){ if(window.toast) toast('相邻格已被占用'); return; }
+      delete wp.cells[r+'-'+nc];
+      if(a){ a.cs = curCs + 1; } else { wp.merges.push({r, c, rs:1, cs:2}); }
+    } else {
+      if(a && a.cs>1){ if(window.toast) toast('已为横向合并，无法纵向扩展'); return; }
+      const curRs = a ? a.rs : 1;
+      const nr = r + curRs;
+      if(nr >= rowsN){ if(window.toast) toast('已到最底行'); return; }
+      if(!wpCellFree(wp, nr, c, a)){ if(window.toast) toast('相邻格已被占用'); return; }
+      delete wp.cells[nr+'-'+c];
+      if(a){ a.rs = curRs + 1; } else { wp.merges.push({r, c, rs:2, cs:1}); }
+    }
+    S.saveWeekPlan(wp);
+    renderWeekPlan();
+    openWeekCellEditor(r, c, 'day');
+  }
+  function doWeekSplit(r, c){
+    const wp = S.getWeekPlan();
+    const idx = (wp.merges||[]).findIndex(m=> m.r===r && m.c===c);
+    if(idx < 0){ if(window.toast) toast('该格未处于合并状态'); return; }
+    wp.merges.splice(idx, 1);
+    S.saveWeekPlan(wp);
+    renderWeekPlan();
+    openWeekCellEditor(r, c, 'day');
+  }
+  function saveWeekCell(){
+    const t = (wpEl('weekCellText').value||'').trim();
+    const wp = S.getWeekPlan();
+    const col = (wpEl('weekCellColor').value||'#ffffff').trim();
+    if(wpCellKind==='time'){ wp.times[wpCellR] = t; }
+    else if(wpCellKind==='cat'){ wp.cats[wpCellR] = t; }
+    else { const key = wpCellR+'-'+wpCellC; if(t){ wp.cells[key] = {t, c:col}; } else { delete wp.cells[key]; } }
+    S.saveWeekPlan(wp);
+    hideModal('#modalWeekCell');
+    renderWeekPlan();
+  }
+  function clearWeekCell(){
+    const wp = S.getWeekPlan();
+    if(wpCellKind==='time'){ wp.times[wpCellR]=''; }
+    else if(wpCellKind==='cat'){ wp.cats[wpCellR]=''; }
+    else { delete wp.cells[wpCellR+'-'+wpCellC]; }
+    S.saveWeekPlan(wp);
+    hideModal('#modalWeekCell');
+    renderWeekPlan();
   }
   function openSchedManage(){
     if(!isParent()) return;
@@ -22320,6 +22627,16 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         rerender();
       });
     });
+    // R249-3：十大词类卡片内 9 个词类选择按键（切换展示对应词类内容，默认名词）
+    slotBody.querySelectorAll('[data-eg-cilei-sub]').forEach(btn=>{
+      if(btn._egCileiBound) return; btn._egCileiBound = true;
+      btn.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        const si = parseInt(btn.getAttribute('data-eg-cilei-sub'),10);
+        _egCileiSub = isNaN(si) ? 0 : si;
+        rerender();
+      });
+    });
     // R26-1：英语小知识「➕ 添加板块」→ 弹窗录入板块名称，添加后自动跳转到该板块
     slotBody.querySelectorAll('[data-eg-add-sec]').forEach(btn=>{
       if(btn._egAddSecBound) return; btn._egAddSecBound = true;
@@ -24524,6 +24841,20 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   ];
   // ===== R24-5：英语小知识（整个英语语法体系）=====
   let _egCurSec = 0;               // 当前章节索引（16 章语法 + 第 17 项顺口溜）
+  // R249-3：十大词类卡片内嵌的 9 个词类选择按键（顺序按需求：名词/冠词/形容词/代词/动词加系动词/数词/介词/连词/副词）
+  // cbi = 该词类在原「十大词类」卡片 blocks 中的序号（用于合并其原有内容）
+  let _egCileiSub = 0;
+  const CILEI_SUBS = [
+    {label:'名词', key:'noun', cbi:0},
+    {label:'冠词', key:'article', cbi:6},
+    {label:'形容词', key:'adj', cbi:3},
+    {label:'代词', key:'pron', cbi:1},
+    {label:'动词加系动词', key:'verb', cbi:2},
+    {label:'数词', key:'num', cbi:5},
+    {label:'介词', key:'prep', cbi:7},
+    {label:'连词', key:'conj', cbi:8},
+    {label:'副词', key:'adv', cbi:4}
+  ];
   const EG_RHYME_IDX = 16;         // 顺口溜板块索引（排在 16 章语法之后）
   function enGrammar(){
     const G = (window.EN_GRAMMAR && window.EN_GRAMMAR.sections) ? window.EN_GRAMMAR.sections : [];
@@ -24626,6 +24957,41 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
           }).join('')}
         </div>
         <div class="eg-rhyme-sec-add"><button class="eg-add-sec-btn" data-eg-add-sec="1" title="新增一个英语小知识板块">➕ 添加板块</button></div>${myCardsHtml}`;
+    } else if(idx === 0){
+      // R249-3：十大词类卡片 —— 清空原 10 块内容，改为 9 个词类选择按键 + 默认名词内容
+      const _sub = CILEI_SUBS[_egCileiSub] || CILEI_SUBS[0];
+      const _subSec = G.filter(s=>s.key===_sub.key)[0] || null;
+      const _subKey = _subSec ? ('eg_' + _subSec.key) : 'eg_unknown';
+      const _subBlocks = _subSec ? (_subSec.blocks||[]) : [];
+      const _cileiBlk = (G[0] && G[0].blocks && G[0].blocks[_sub.cbi]!=null) ? G[0].blocks[_sub.cbi] : null;
+      const _interj = (G[0] && G[0].blocks && G[0].blocks[9]!=null) ? G[0].blocks[9] : null;
+      const _isLast = (_egCileiSub === CILEI_SUBS.length - 1);
+      const _blkHtml = (cid, b)=>{
+        const d = S.isReadingRead(EG_RK, cid);
+        return `
+            <div class="eg-block ${d?'is-checked':''}" data-eg-card="${esc(EG_RK)}::${esc(cid)}" title="${d?'已掌握（点击取消）':'点击卡片标记为已掌握'}">
+              <div class="eg-block-h">${esc(b.h)}</div>
+              ${b.p ? `<div class="eg-block-p">${esc(b.p)}</div>` : ''}
+              ${(b.li&&b.li.length) ? `<ul class="eg-block-li">${b.li.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>` : ''}
+              <span class="eg-user-state">${d?'✅已学':'□未学'}</span>
+            </div>`;
+      };
+      bodyHtml = `
+        <div class="eg-cilei-wrap">
+          <div class="eg-sec-head">
+            <span class="eg-sec-tag">词法基础</span>
+            <span class="eg-sec-title">🔤 十大词类</span>
+            ${addBtnHtml}
+          </div>
+          <div class="eg-cilei-subnav">${CILEI_SUBS.map((s,si)=>`<button type="button" class="eg-cilei-sub${_egCileiSub===si?' active':''}" data-eg-cilei-sub="${si}">${esc(s.label)}</button>`).join('')}</div>
+          <div class="eg-sec-intro">点击卡片即可标记为「已掌握」。原十大词类内容已并入对应词类卡片。</div>
+          <div class="eg-block-grid">
+            ${_subBlocks.map((b,bi)=>_blkHtml(_subKey + '#b' + bi + '#' + (b.h||''), b)).join('')}
+            ${_cileiBlk ? _blkHtml('eg_cilei#c' + _sub.cbi, _cileiBlk) : ''}
+            ${_isLast && _interj ? _blkHtml('eg_cilei#c9', _interj) : ''}
+          </div>
+          ${myCardsHtml}
+        </div>`;
     } else {
       const sec = G[idx];
       bodyHtml = `
@@ -24676,11 +25042,22 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   // 数据源：3500个高频英语单词（带音标）.pdf → en_words_3500_seed.js（分类词库）
   // 规则：按分类生成卡片、分页渲染、每页横向排布 2 张；完成单个分类卡片打卡 +5⭐（readFlags 幂等，不重复发放）
   const EN3500_KIND = 'en3500cat';
-  const EN3500_PER_PAGE = 2;
+  const EN3500_PER_PAGE = 1; // R249-2：每页仅展示一张分类卡片
+  const EN3500_ORDER_KEY = 'en3500_order'; // R249-2：打卡后置后的持久化顺序
   let _en3500Page = 1;
   function en3500Cats(){
     const seed = window.EN_WORDS_3500_SEED;
-    return (seed && Array.isArray(seed.cats)) ? seed.cats : [];
+    const base = (seed && Array.isArray(seed.cats)) ? seed.cats : [];
+    // R249-2：按持久化顺序重排（打卡完成的分类挪到最后），刷新不丢
+    let order = [];
+    try{ order = (window.Store && window.Store.getNwZone) ? window.Store.getNwZone(EN3500_ORDER_KEY).map(String) : []; }catch(e){ order = []; }
+    if(!order.length) return base;
+    const byName = {};
+    base.forEach(c=>{ byName[String(c.name)] = c; });
+    const ordered = [];
+    base.forEach(c=>{ if(order.indexOf(String(c.name)) < 0) ordered.push(c); }); // 未打卡分类排在前
+    order.filter(n=>byName[n]).forEach(n=>ordered.push(byName[n])); // R249-2：已打卡分类置后（移至末页）
+    return ordered;
   }
   function en3500Pages(){ return Math.max(1, Math.ceil(en3500Cats().length / EN3500_PER_PAGE)); }
   function renderEnWords3500(){
@@ -24714,7 +25091,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     return `<div class="en3500-wrap">
       <div class="en3500-head">
         <span class="en3500-title">🔠 3500 个高频常用英语单词（分类版）</span>
-        <span class="en3500-hint">按分类生成卡片 · 每页 2 张 · 单词完整平铺 · 完成打卡 +5⭐（可撤销，刷新不丢）</span>
+        <span class="en3500-hint">按分类生成卡片 · 每页 1 张 · 单词完整平铺 · 完成打卡 +5⭐（可撤销，刷新不丢）· 已打卡分类自动移至末页</span>
       </div>
       <div class="en3500-grid">${cards}</div>
       <div class="en3500-pager">
@@ -24765,7 +25142,17 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       try{ r = done ? S.unmarkReadingRead(EN3500_KIND, name) : S.markReadingRead(EN3500_KIND, name); }
       catch(err){ r = null; }
       if(done) toast(r && r.ok ? ('↩️ 已撤销「' + name + '」打卡，扣回 ' + ((r && r.refund) || 5) + '⭐') : '撤销失败，请重试');
-      else toast(r && r.ok ? ('🎉 「' + name + '」打卡完成，+' + (r.reward || 5) + '⭐') : '这个分类已经打过卡啦，不重复发放⭐');
+      else {
+        toast(r && r.ok ? ('🎉 「' + name + '」打卡完成，+' + (r.reward || 5) + '⭐') : '这个分类已经打过卡啦，不重复发放⭐');
+        // R249-2：打卡完成后自动挪至全部卡片序列的最后一页（持久化顺序）
+        try{
+          let order = (window.Store.getNwZone(EN3500_ORDER_KEY) || []).map(String);
+          order = order.filter(n => n !== String(name));
+          order.push(String(name));
+          window.Store.setNwZone(EN3500_ORDER_KEY, order);
+          _en3500Page = en3500Pages(); // 跳到最后一页（已打卡分类所在页）
+        }catch(e){}
+      }
       refreshEn3500();
       return;
     }
@@ -26624,6 +27011,23 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     // 课程表设置（增删行/列、整表外观配色）仍由表头行点击进入（仅家长模式，见 renderNwSub）
     const btnCourseTableGear = document.getElementById('btnCourseTableGear');
     if(btnCourseTableGear) btnCourseTableGear.addEventListener('click', ()=>{ schedToggleEditMode(); });
+    // R249-4：首页【一周打卡计划】入口 + 编辑态开关 + 单元格编辑 / 合并 / 拆分
+    const btnWeekPlan = document.getElementById('btnWeekPlan');
+    if(btnWeekPlan) btnWeekPlan.addEventListener('click', ()=>{ _wpEditMode = false; renderWeekPlan(); showModal('#modalWeekPlan'); });
+    const btnWeekPlanClose = document.getElementById('btnWeekPlanClose');
+    if(btnWeekPlanClose) btnWeekPlanClose.addEventListener('click', ()=> hideModal('#modalWeekPlan'));
+    const btnWeekPlanGear = document.getElementById('btnWeekPlanGear');
+    if(btnWeekPlanGear) btnWeekPlanGear.addEventListener('click', ()=> wpToggleEditMode());
+    const btnWeekCellSave = document.getElementById('btnWeekCellSave');
+    if(btnWeekCellSave) btnWeekCellSave.addEventListener('click', ()=> saveWeekCell());
+    const btnWeekCellClear = document.getElementById('btnWeekCellClear');
+    if(btnWeekCellClear) btnWeekCellClear.addEventListener('click', ()=> clearWeekCell());
+    const btnWeekMergeRight = document.getElementById('btnWeekMergeRight');
+    if(btnWeekMergeRight) btnWeekMergeRight.addEventListener('click', ()=> doWeekMerge(wpCellR, wpCellC, 'right'));
+    const btnWeekMergeDown = document.getElementById('btnWeekMergeDown');
+    if(btnWeekMergeDown) btnWeekMergeDown.addEventListener('click', ()=> doWeekMerge(wpCellR, wpCellC, 'down'));
+    const btnWeekSplit = document.getElementById('btnWeekSplit');
+    if(btnWeekSplit) btnWeekSplit.addEventListener('click', ()=> doWeekSplit(wpCellR, wpCellC));
     // R146：删除页面右上角「管理备忘」按钮（#btnMemoManage）—— 备忘内容编辑改由各便签卡右上角
     // 编辑图标进入统一弹窗（openMemoEditModal），顶部只保留标题与「返回首页」。
   }
@@ -30281,6 +30685,52 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     if(!lines.length) return '<div class="mex-step-empty">（这道题还没有录入分步解题思路）</div>';
     return '<ol class="mex-steps">' + lines.map(l=>'<li>' + esc(l) + '</li>').join('') + '</ol>';
   }
+  // R249-1：练习题首页 = 题库入口按键 + 当日随机抽取的一道题（作答 / 批改 / 答对打卡 +1⭐）
+  function mexDailyCardHtml(it){
+    const id = String(it.id||'');
+    // R248-1：答案与判定结果都落库，刷新后解答区、答题框、打卡状态一起还原
+    const ansText = (_mexOpen[id] && _mexOpen[id].ans != null) ? _mexOpen[id].ans : String(it.ans || '');
+    const open = !!_mexOpen[id] || !!String(it.ans || '');
+    const done = mexCorrect(id);
+    return `<div class="mex-card mex-daily-card${done?' is-checked':''}">
+      <div class="mex-card-h">
+        <span class="mex-daily-badge">📅 今日一题</span>
+        <span class="mex-q">${esc(it.q||'未命名题目')}</span>
+      </div>
+      <div class="mex-answer-row">
+        <input type="text" class="mex-ans" data-mex-ans="${esc(id)}" value="${esc(_mexDrafts[id] != null ? _mexDrafts[id] : String(it.ans||''))}" placeholder="填写你的答案，再点「批改」">
+        <button type="button" class="mex-btn mex-grade" data-mex-act="grade" data-mex-id="${esc(id)}">✅ 批改</button>
+        <button type="button" class="mex-btn mex-check${done?' is-done':''}" data-mex-act="check" data-mex-id="${esc(id)}" title="${done?'已打卡，点击撤销并扣回 1⭐':'答对本题后打卡 +1⭐'}">${done?'✅ 已打卡 +1⭐ · 点击撤销':'🎯 答对打卡 +1⭐'}</button>
+      </div>
+      ${open ? `<div class="mex-result">
+        <div class="mex-result-h">📌 标准答案：<b>${esc(it.a||'—')}</b><span class="mex-you">你的答案：${esc(ansText || '—')}</span></div>
+        <div class="mex-steps-h">🧩 完整解题步骤</div>
+        ${mexStepsHtml(it.steps)}
+      </div>` : ''}
+    </div>`;
+  }
+  // R249-1：题库弹窗 —— 所有新增 / 删除题目操作都在题库内执行
+  function renderMathExerciseBank(){
+    const body = document.getElementById('mexBankBody');
+    if(!body) return;
+    const bank = mexItems();
+    const rows = bank.length ? bank.map((it,i)=>{
+      const id = String(it.id||'');
+      return `<div class="mex-bank-row">
+        <span class="mex-bank-no">#${i+1}</span>
+        <span class="mex-bank-q" title="${esc(it.q||'')}">${esc(it.q||'未命名题目')}</span>
+        <span class="mex-bank-a">答：${esc(it.a||'—')}</span>
+        <button type="button" class="mex-btn mex-del" data-mex-act="del" data-mex-id="${esc(id)}">🗑 删除</button>
+      </div>`;
+    }).join('') : '<div class="mex-empty">题库还是空的，先在下面录入题目吧～</div>';
+    body.innerHTML = `<div class="mex-add">
+        <input type="text" class="mex-input" id="mexQ" maxlength="200" placeholder="题目内容（如 12 × 8 + 36 ÷ 4）">
+        <input type="text" class="mex-input" id="mexA" maxlength="120" placeholder="标准答案">
+        <textarea class="mex-textarea" id="mexSteps" rows="3" placeholder="分步解题思路（每行一步，例如：先算 12 × 8 = 96）"></textarea>
+        <button type="button" class="mex-btn mex-primary" data-mex-act="add">＋ 新增题目</button>
+      </div>
+      <div class="mex-bank-list">${rows}</div>`;
+  }
   function renderMathExercise(){
     const pane = document.getElementById('leiduExercisePane');
     if(!pane) return;
@@ -30289,40 +30739,18 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       const id = inp.getAttribute('data-mex-ans');
       if(id) _mexDrafts[id] = inp.value;
     });
-    const items = mexItems();
-    const cards = items.length ? items.map((it,i)=>{
-      const id = String(it.id||'');
-      // R248-1：答案与判定结果都落库，刷新后解答区、答题框、打卡状态一起还原
-      const ansText = (_mexOpen[id] && _mexOpen[id].ans != null) ? _mexOpen[id].ans : String(it.ans || '');
-      const open = !!_mexOpen[id] || !!String(it.ans || '');
-      const done = mexCorrect(id);
-      return `<div class="mex-card${done?' is-checked':''}">
-        <div class="mex-card-h">
-          <span class="mex-no">#${i+1}</span>
-          <span class="mex-q">${esc(it.q||'未命名题目')}</span>
-          <button type="button" class="mex-btn mex-del" data-mex-act="del" data-mex-id="${esc(id)}">🗑 删除</button>
-        </div>
-        <div class="mex-answer-row">
-          <input type="text" class="mex-ans" data-mex-ans="${esc(id)}" value="${esc(_mexDrafts[id] != null ? _mexDrafts[id] : String(it.ans||''))}" placeholder="填写你的答案，再点「批改」">
-          <button type="button" class="mex-btn mex-grade" data-mex-act="grade" data-mex-id="${esc(id)}">✅ 批改</button>
-          <button type="button" class="mex-btn mex-check${done?' is-done':''}" data-mex-act="check" data-mex-id="${esc(id)}" title="${done?'已打卡，点击撤销并扣回 1⭐':'答对本题后打卡 +1⭐'}">${done?'✅ 已打卡 +1⭐ · 点击撤销':'🎯 答对打卡 +1⭐'}</button>
-        </div>
-        ${open ? `<div class="mex-result">
-          <div class="mex-result-h">📌 标准答案：<b>${esc(it.a||'—')}</b><span class="mex-you">你的答案：${esc(ansText || '—')}</span></div>
-          <div class="mex-steps-h">🧩 完整解题步骤</div>
-          ${mexStepsHtml(it.steps)}
-        </div>` : ''}
-      </div>`;
-    }).join('') : '<div class="mex-empty">还没有练习题，先在上方录入题目、标准答案和分步解题思路吧～</div>';
+    const bank = mexItems();
+    let dailyHtml;
+    if(!bank.length){
+      dailyHtml = '<div class="mex-empty">还没有练习题，点右上角「📚 题库」录入题目吧～</div>';
+    } else {
+      // R249-1：每日从题库随机抽取一道（当天恒定：日期种子 % 题库长度）
+      const idx = _calcSeed(_calcToday()) % bank.length;
+      dailyHtml = mexDailyCardHtml(bank[idx]);
+    }
     pane.innerHTML = `<div class="mex-wrap">
-      <div class="mex-head"><span class="mex-title">✏️ 练习题</span><span class="mex-hint">独立题库 · 新增 / 删除题目 · 录入标准答案与分步思路 · 批改展示完整解答 · 每答对一题打卡 +1⭐（可撤销，刷新不丢）</span></div>
-      <div class="mex-add">
-        <input type="text" class="mex-input" id="mexQ" maxlength="200" placeholder="题目内容（如 12 × 8 + 36 ÷ 4）">
-        <input type="text" class="mex-input" id="mexA" maxlength="120" placeholder="标准答案">
-        <textarea class="mex-textarea" id="mexSteps" rows="3" placeholder="分步解题思路（每行一步，例如：先算 12 × 8 = 96）"></textarea>
-        <button type="button" class="mex-btn mex-primary" data-mex-act="add">＋ 新增题目</button>
-      </div>
-      <div class="mex-list">${cards}</div>
+      <div class="mex-head"><span class="mex-title">✏️ 练习题</span><button type="button" class="mex-btn mex-bank-btn" data-mex-act="bank">📚 题库（${bank.length}）</button><span class="mex-hint">每日从题库随机抽一题作答 · 答对打卡 +1⭐（可撤销，刷新不丢）</span></div>
+      <div class="mex-daily">${dailyHtml}</div>
     </div>`;
   }
   // R247-4 / R248-1：捕获阶段全局委托（局部重渲染不丢事件，点击反馈即时）
@@ -30333,6 +30761,12 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     if(!b) return;
     const act = b.getAttribute('data-mex-act');
     const mexAnsInput = (id)=> document.querySelector('.mex-ans[data-mex-ans="' + String(id).replace(/"/g,'\\"') + '"]');
+    if(act === 'bank'){
+      // R249-1：打开题库弹窗（所有新增 / 删除都在题库内执行）
+      renderMathExerciseBank();
+      showModal('#modalMexBank');
+      return;
+    }
     if(act === 'add'){
       const q = document.getElementById('mexQ'), a = document.getElementById('mexA'), st = document.getElementById('mexSteps');
       const qv = q ? String(q.value||'').trim() : '';
@@ -30345,6 +30779,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       else { const arr = mexItems(); arr.unshift(Object.assign({id:'mex_'+Date.now(), at:Date.now()}, rec)); mexSave(arr); }
       toast('✅ 已新增练习题');
       renderMathExercise();
+      renderMathExerciseBank();
       return;
     }
     if(act === 'del'){
@@ -30357,6 +30792,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         delete _mexOpen[String(id)]; delete _mexDrafts[String(id)];
         toast('🗑 已删除');
         renderMathExercise();
+        renderMathExerciseBank();
       });
       return;
     }
