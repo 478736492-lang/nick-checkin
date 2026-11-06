@@ -8429,6 +8429,76 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
 .calc-undo:hover{background:var(--tone-100)}
 .calc-undo:active{transform:scale(.97)}
 
+/* ============ R251-2：英语小知识·八种时态 —— 导入资料分板块 + 练习题 ============ */
+.eg-tn-practice-btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:36px;padding:6px 16px;font-family:inherit;font-size:13px;font-weight:800;color:var(--tone-900);background:linear-gradient(135deg,#fff7e6,#ffe9bd);border:1.5px solid #f2cf85;border-radius:999px;cursor:pointer;touch-action:manipulation;white-space:nowrap}
+.eg-tn-practice-btn:hover{background:linear-gradient(135deg,#ffdf9c,#f7c86a);transform:translateY(-1px)}
+.tn-wrap{margin:12px 0 18px;padding:12px 14px 16px;background:linear-gradient(135deg,var(--tone-075),var(--tone-100));border:1px solid var(--tone-line-soft);border-radius:var(--card-r-md)}
+.tn-wrap-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;font-size:15px;font-weight:800;color:var(--tone-900);margin-bottom:10px}
+.tn-sub,.zx-sub{font-size:12px;font-weight:600;color:var(--muted)}
+.tn-board-nav,.zx-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.tn-board-chip,.zx-chip{font-family:inherit;font-size:13px;font-weight:800;color:var(--tone-900);background:#fff;border:1px solid var(--tone-200);border-radius:999px;padding:7px 14px;cursor:pointer;touch-action:manipulation;transition:background .15s,color .15s,transform .12s}
+.tn-board-chip:hover,.zx-chip:hover{background:var(--tone-100)}
+.tn-board-chip.active,.zx-chip.active{background:linear-gradient(135deg,var(--tone-600),var(--tone-900));color:#fff;border-color:var(--tone-900)}
+.tn-board-title,.zx-cat-title{font-size:14px;font-weight:800;color:var(--tone-900);margin:4px 0 10px;display:flex;align-items:center;gap:10px}
+.tn-tag,.zx-count{font-size:12px;font-weight:700;color:var(--tone-700);background:#fff;border:1px solid var(--tone-200);border-radius:999px;padding:2px 10px}
+.tn-sec-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.tn-sec-card{background:#fff;border:1.5px solid var(--tone-150);border-radius:var(--card-r-sm);padding:11px 13px;min-width:0}
+.tn-sec-h{font-size:13px;font-weight:800;color:var(--tone-800);margin-bottom:7px;padding-bottom:6px;border-bottom:1px dashed var(--tone-200)}
+.tn-sec-lines{display:flex;flex-direction:column;gap:3px}
+.tn-line{font-size:12.5px;line-height:1.6;color:#33405c;word-break:break-word}
+.tn-empty,.zx-empty,.tn-blank,.tn-q-text,.tn-opt,.tn-grade,.tn-reset{font-family:inherit}
+.tn-empty,.zx-empty{padding:16px;font-size:13px;color:var(--muted);text-align:center}
+
+/* 时态练习题独立页面 */
+.tn-practice{padding:12px 14px 24px}
+.tn-practice-head{display:flex;align-items:baseline;flex-wrap:wrap;gap:12px;padding:10px 14px;background:linear-gradient(135deg,var(--tone-100),#fff);border:1.5px solid var(--tone-200);border-radius:var(--card-r-md)}
+.tn-practice-title{font-size:18px;font-weight:800;color:var(--tone-900)}
+.tn-practice-sub{font-size:13px;color:var(--muted)}
+.tn-hint{margin:10px 2px 14px;font-size:12.5px;font-weight:700;color:var(--tone-700)}
+.tn-sec-title{font-size:15px;font-weight:800;color:var(--tone-900);margin:16px 2px 10px;padding-left:10px;border-left:4px solid var(--tone-600)}
+.tn-q-list{display:flex;flex-direction:column;gap:9px}
+.tn-q{display:flex;gap:10px;background:#fff;border:1.5px solid var(--tone-150);border-radius:var(--card-r-sm);padding:10px 12px}
+.tn-q-no{flex:0 0 26px;height:26px;line-height:26px;text-align:center;border-radius:50%;background:var(--tone-100);color:var(--tone-900);font-size:12px;font-weight:800}
+.tn-q-body{flex:1;min-width:0}
+.tn-q-text{font-size:13.5px;line-height:2;color:#28344d;word-break:break-word}
+.tn-blank{display:inline-block;width:96px;margin:0 3px;padding:2px 6px;font-size:13px;font-weight:700;color:var(--tone-900);background:var(--tone-050);border:1.5px solid var(--tone-300);border-bottom-width:2px;border-radius:6px;outline:none}
+.tn-blank:focus{background:#fff;border-color:var(--tone-600)}
+.tn-blank.right{background:#e7f8ec;border-color:#58b97b;color:#1c7a43}
+.tn-blank.wrong{background:#fdecec;border-color:#e88b8b;color:#b23b3b}
+.tn-opts{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.tn-opt{font-size:12.5px;font-weight:600;color:#33405c;text-align:left;background:var(--tone-050);border:1.5px solid var(--tone-200);border-radius:9px;padding:7px 12px;cursor:pointer;touch-action:manipulation}
+.tn-opt:hover{background:var(--tone-100)}
+.tn-opt.selected{background:var(--tone-150);border-color:var(--tone-600);color:var(--tone-900)}
+.tn-opt.is-correct{background:#e7f8ec;border-color:#58b97b;color:#1c7a43}
+.tn-opt.is-wrong{background:#fdecec;border-color:#e88b8b;color:#b23b3b}
+.tn-q-result{margin-top:8px;font-size:12.5px;font-weight:700}
+.tn-q-result.ok{color:#1c7a43}
+.tn-q-result.bad{color:#b23b3b}
+.tn-foot{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-top:20px;padding:14px;background:linear-gradient(135deg,var(--tone-075),var(--tone-100));border:1.5px solid var(--tone-200);border-radius:var(--card-r-md)}
+.tn-grade,.tn-reset{font-size:14px;font-weight:800;border-radius:999px;padding:10px 24px;cursor:pointer;touch-action:manipulation}
+.tn-grade{color:#fff;background:linear-gradient(135deg,var(--tone-600),var(--tone-900));border:1.5px solid var(--tone-900)}
+.tn-grade:hover{filter:brightness(1.06)}
+.tn-grade:disabled{opacity:.5;cursor:not-allowed;filter:grayscale(.4)}
+.tn-reset{color:var(--tone-900);background:#fff;border:1.5px solid var(--tone-300)}
+.tn-score{font-size:14px;font-weight:800;color:var(--tone-900)}
+.tn-score b{font-size:18px}
+
+/* ============ R251-3：语文专区·作文专项「专项知识」 ============ */
+.zx-wrap{padding:12px 14px 18px;background:linear-gradient(135deg,var(--tone-075),var(--tone-100));border:1px solid var(--tone-line-soft);border-radius:var(--card-r-md)}
+.zx-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;font-size:16px;font-weight:800;color:var(--tone-900);margin-bottom:10px}
+.zx-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.zx-card{background:#fff;border:1.5px solid var(--tone-150);border-radius:var(--card-r-sm);padding:11px 13px;min-width:0}
+.zx-card-h{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:800;color:var(--tone-900);margin-bottom:9px;padding-bottom:7px;border-bottom:1px dashed var(--tone-200)}
+.zx-no{flex:0 0 22px;height:22px;line-height:22px;text-align:center;border-radius:50%;background:var(--tone-100);color:var(--tone-800);font-size:11px}
+.zx-fields{display:flex;flex-direction:column;gap:6px}
+.zx-field{display:flex;gap:8px;font-size:12.5px;line-height:1.65}
+/* R251-3：文档原生的分组小标题（如「人物描写」「环境描写」）无正文，单独成行不渲染空值 */
+.zx-field.is-group{margin-top:5px;padding-top:7px;border-top:1px dashed var(--tone-200)}
+.zx-field.is-group .zx-k{color:var(--tone-700);font-weight:800}
+.zx-k{flex:0 0 68px;font-weight:800;color:var(--tone-700)}
+.zx-v{flex:1;color:#33405c;word-break:break-word}
+@media(max-width:900px){.tn-sec-grid,.zx-grid{grid-template-columns:1fr}.tn-blank{width:80px}}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -9256,6 +9326,16 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
       <div class="yw-slot" id="enSlot" data-page-node-id="jtESuxiWBpTf5Aj5s3knBp">
         <div class="yw-slot-hint" id="enSlotHint" data-page-node-id="0wbkkHcVZqByHh5XkR5oHl">请选择上方功能开始学习</div>
         <div class="yw-slot-body" id="enSlotBody" data-page-node-id="CGM0xrAVSW83vpbFTbb8Cz"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- R251-2：时态练习题独立页面（由「英语小知识 → 八种时态」的「📝 练习题」按键进入） -->
+  <section class="page page-nw-sub page-tense-practice" data-page="en-tense-practice" data-zone="newworld" hidden data-page-node-id="R251TnPractice">
+    <button class="nw-back" data-tn-back="1" data-page-node-id="R251TnBack">← 返回八种时态</button>
+    <div class="yw-wrap" data-page-node-id="R251TnWrap">
+      <div class="yw-slot" id="tnSlot" data-page-node-id="R251TnSlot">
+        <div class="yw-slot-body" id="tnPracticeBody" data-page-node-id="R251TnBody"><!-- renderEnTensePractice 注入 --></div>
       </div>
     </div>
   </section>
@@ -11006,6 +11086,10 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
 <script src="./assets/seed_math_q3s_seed.js"></script>
 <!-- R247-2：新世界·英语专区·拓展练习「3500 词」分类词库（源自 3500个高频英语单词（带音标）.pdf） -->
 <script src="./assets/seed_en_words_3500_seed.js"></script>
+<!-- R251-2：英语小知识「八种时态」资料 + 配套习题（源自 时态.docx） -->
+<script src="./assets/seed_en_tenses_seed.js"></script>
+<!-- R251-3：语文专区·作文专项「专项知识」（源自 表现手法、修辞手法、表达方式.docx） -->
+<script src="./assets/seed_yw_zhuanxiang_seed.js"></script>
 <script>
 /* ============================================================
    疯狂动物城 · 三年级学习乐园
@@ -19690,6 +19774,8 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     if(page==='knowledge') renderKnowledge();
     // R118-2：Nick 的备忘录独立页面
     if(page==='memonick') renderNickMemo();
+    // R251-2：英语小知识·八种时态 → 时态练习题独立页面（进入时恢复上次作答）
+    if(page==='en-tense-practice'){ tnRestore(); renderEnTensePractice(); }
     if(page==='farm') renderFarm();
     if(page==='archive') renderArchive();
     resetIdle();
@@ -19713,7 +19799,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       mods:[
         {t:'课文同步', icon:'📖', items:['课文朗读','必背知识']},
         {t:'小学古诗文', icon:'📜', items:['古诗词','文言文']},
-        {t:'作文专项', icon:'✏️', items:['作文素材']}
+        {t:'作文专项', icon:'✏️', items:['作文素材','专项知识']}
       ] },
     { page:'newworld-math',     tag:'数学专区', corner:'数学', icon:'➗', color:'blue',
       mods:[
@@ -20859,9 +20945,34 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       { key:'wenyan',   icon:'📜', label:'文言文' }
     ] },
     { title:'作文专项', icon:'✏️', items:[
-      { key:'sucai',    icon:'💡', label:'作文素材' }
+      { key:'sucai',    icon:'💡', label:'作文素材' },
+      { key:'zxzs',     icon:'📚', label:'专项知识' }
     ] }
   ];
+
+  // ===== R251-3：作文专项「专项知识」（按 3 大分类导入 docx 内容）=====
+  let _zxCat = 0;
+  function ywZhuanxiang(){
+    const seed = (window.YW_ZHUANXIANG_SEED && typeof window.YW_ZHUANXIANG_SEED === 'object') ? window.YW_ZHUANXIANG_SEED : null;
+    const cats = (seed && Array.isArray(seed.cats)) ? seed.cats : [];
+    if(!cats.length) return '<div class="zx-empty">专项知识正在整理中…</div>';
+    if(_zxCat < 0 || _zxCat >= cats.length) _zxCat = 0;
+    const chips = cats.map((c,i)=>`<button class="zx-chip${i===_zxCat?' active':''}" data-zx-cat="${i}">${esc(c.icon||'📘')} ${esc(c.title||'')}</button>`).join('');
+    const cat = cats[_zxCat] || {};
+    const cards = (cat.items||[]).map((it,ii)=>`
+      <div class="zx-card">
+        <div class="zx-card-h"><span class="zx-no">${ii+1}</span>${esc(it.name||'')}</div>
+        <div class="zx-fields">
+          ${(it.fields||[]).map(f=>`<div class="zx-field${f.v?'':' is-group'}"><span class="zx-k">${esc(f.k||'')}</span>${f.v?`<span class="zx-v">${esc(f.v)}</span>`:''}</div>`).join('')}
+        </div>
+      </div>`).join('');
+    return `<div class="zx-wrap">
+      <div class="zx-head">📚 专项知识 <span class="zx-sub">《表现手法、修辞手法、表达方式.docx》整理 · ${cats.length} 大分类</span></div>
+      <div class="zx-chips">${chips}</div>
+      <div class="zx-cat-title">${esc(cat.icon||'')} ${esc(cat.title||'')} <span class="zx-count">${(cat.items||[]).length} 条</span></div>
+      <div class="zx-grid">${cards}</div>
+    </div>`;
+  }
 
   function renderYuwenPage(){
     const top = document.getElementById('ywTopCards');
@@ -20931,6 +21042,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
 
       // R250-3：看图写话内容页已整体移除
       case 'sucai':    html = ywSucai(pg); break;
+      case 'zxzs':     html = ywZhuanxiang(); break; // R251-3：作文专项「专项知识」
       case 'gushi':    html = ywGushi(pg); break;
       case 'wenyan':   html = ywWenyan(pg); break;
       default:         html = '';
@@ -20942,6 +21054,15 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         playBtn.textContent = '🔊 播放中…';
         if(window.__ttsSpeak){ window.__ttsSpeak(label); }
         setTimeout(()=>{ playBtn.textContent = '▶ 播放'; }, 1200);
+      });
+    }
+    // R251-3：专项知识 · 3 大分类切换（表现手法 / 修辞手法 / 表达方式）
+    if(key === 'zxzs'){
+      slotBody.querySelectorAll('[data-zx-cat]').forEach(ch=>{
+        ch.addEventListener('click', ()=>{
+          _zxCat = parseInt(ch.getAttribute('data-zx-cat'),10) || 0;
+          renderYuwenSlot(key, label, slotBody);
+        });
       });
     }
     // R62-3：必背知识 · 子板块（第N课/语文园地）切换
@@ -22665,6 +22786,23 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         const i = parseInt(btn.getAttribute('data-eg-sec'),10);
         _egCurSec = isNaN(i) ? 0 : i;
         rerender();
+      });
+    });
+    // R251-2：八种时态章节 —— 资料板块 chip 切换 + 「📝 练习题」入口（只放一个，紧挨「➕ 添加」）
+    slotBody.querySelectorAll('[data-tn-board]').forEach(btn=>{
+      if(btn._tnBoardBound) return; btn._tnBoardBound = true;
+      btn.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        _tnBoardIdx = parseInt(btn.getAttribute('data-tn-board'),10);
+        if(isNaN(_tnBoardIdx)) _tnBoardIdx = 0;
+        if(rerender) rerender();
+      });
+    });
+    slotBody.querySelectorAll('[data-tn-practice]').forEach(btn=>{
+      if(btn._tnPrBound) return; btn._tnPrBound = true;
+      btn.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        goPage('en-tense-practice');
       });
     });
     // R250-6：9 个独立词类选择按键已删除，改为十大词类下平铺全部词类分区（无需切换绑定）
@@ -24885,6 +25023,36 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     {label:'副词', key:'adv', cbi:4}
   ];
   const EG_RHYME_IDX = 16;         // 顺口溜板块索引（排在 16 章语法之后）
+  // ===== R251-2：时态资料（时态.docx）与配套练习 =====
+  let _tnBoardIdx = 0;            // 「八种时态」章节里当前展示的资料板块
+  function tnSeed(){
+    return (window.EN_TENSES_SEED && typeof window.EN_TENSES_SEED === 'object') ? window.EN_TENSES_SEED : null;
+  }
+  function tnShitaiIdx(){
+    const G = (window.EN_GRAMMAR && window.EN_GRAMMAR.sections) ? window.EN_GRAMMAR.sections : [];
+    const i = G.findIndex(s => s && s.key === 'shitai');
+    return i < 0 ? 0 : i;
+  }
+  // 「内容整合后分板块展示」：7 个板块 chip 切换（5 个时态精讲 + 2 组标志词汇总）
+  function tnBoardsHtml(){
+    const seed = tnSeed();
+    const boards = (seed && Array.isArray(seed.boards)) ? seed.boards : [];
+    if(!boards.length) return '<div class="tn-empty">时态资料正在整理中…</div>';
+    if(_tnBoardIdx < 0 || _tnBoardIdx >= boards.length) _tnBoardIdx = 0;
+    const chips = boards.map((b,i)=>`<button class="tn-board-chip${i===_tnBoardIdx?' active':''}" data-tn-board="${i}">${esc(b.icon||'📘')} ${esc(b.title||'')}</button>`).join('');
+    const b = boards[_tnBoardIdx] || {};
+    const secs = (b.secs||[]).map(s=>`
+      <div class="tn-sec-card">
+        <div class="tn-sec-h">${esc(s.h||'')}</div>
+        <div class="tn-sec-lines">${(s.lines||[]).map(x=>`<div class="tn-line">${esc(x)}</div>`).join('')}</div>
+      </div>`).join('');
+    return `<div class="tn-wrap">
+      <div class="tn-wrap-h">📚 时态资料 <span class="tn-sub">《时态.docx》整理 · 共 ${boards.length} 个板块</span></div>
+      <div class="tn-board-nav">${chips}</div>
+      <div class="tn-board-title">${esc(b.icon||'')} ${esc(b.title||'')}<span class="tn-tag">${esc(b.tag||'')}</span></div>
+      <div class="tn-sec-grid">${secs}</div>
+    </div>`;
+  }
   function enGrammar(){
     const G = (window.EN_GRAMMAR && window.EN_GRAMMAR.sections) ? window.EN_GRAMMAR.sections : [];
     const RH = (window.EN_GRAMMAR && window.EN_GRAMMAR.rhymes) ? window.EN_GRAMMAR.rhymes : [];
@@ -25029,13 +25197,18 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         </div>`;
     } else {
       const sec = G[idx];
+      // R251-2：八种时态章节 —— 「➕ 添加」旁新增 1 个「📝 练习题」按键，并在原有 8 个知识块之前分板块展示导入资料
+      const isShitai = !!sec && sec.key === 'shitai';
+      const tnPracticeBtn = isShitai ? `<button class="eg-tn-practice-btn" data-tn-practice="1" title="进入时态练习题页面">📝 练习题</button>` : '';
+      const tnHtml = isShitai ? tnBoardsHtml() : '';
       bodyHtml = `
         <div class="eg-sec-head">
           <span class="eg-sec-tag">${esc(sec.tag||'语法')}</span>
           <span class="eg-sec-title">${sec.icon} ${esc(sec.title)}</span>
-          ${addBtnHtml}
+          ${tnPracticeBtn}${addBtnHtml}
         </div>
         <div class="eg-sec-intro">${esc(sec.intro||'')}点击卡片即可标记为「已掌握」。</div>
+        ${tnHtml}
         <div class="eg-block-grid">
           ${(sec.blocks||[]).map((b,bi)=>{
             const cid = secKey + '#b' + bi + '#' + (b.h||'');
@@ -25058,6 +25231,168 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       <div class="eg-body">${bodyHtml}</div>
       ${nwZoneList('英语小知识','英语小知识')}`;
   }
+  // ===== R251-2：时态练习题独立页面（答案默认隐藏 → 全部作答 → 批改展示正确答案）=====
+  let _tnAns = {};         // 作答内容：'f1#0' -> 文本；'c1' -> 'A'/'B'/'C'
+  let _tnGraded = false;   // 是否已批改
+  let _tnSaveTimer = null;
+  function tnAnsKey(qid, i){ return i == null ? qid : (qid + '#' + i); }
+  function tnNorm(v){ return String(v==null?'':v).replace(/\s+/g,' ').trim().toLowerCase(); }
+  function tnRestore(){
+    try{
+      const st = S.load();
+      const p = st && st.tensePractice;
+      _tnAns = (p && p.ans && typeof p.ans === 'object') ? p.ans : {};
+      _tnGraded = !!(p && p.graded);
+    }catch(e){ _tnAns = {}; _tnGraded = false; }
+  }
+  function tnPersist(){
+    try{ const st = S.load(); st.tensePractice = { ans:_tnAns, graded:_tnGraded }; S.save(st); }catch(e){}
+  }
+  function tnPersistSoon(){ clearTimeout(_tnSaveTimer); _tnSaveTimer = setTimeout(tnPersist, 300); }
+  function tnExercises(){
+    const s = tnSeed();
+    if(!s || !s.exercises) return null;
+    const E = s.exercises;
+    return {
+      fill: Array.isArray(E.fill) ? E.fill : [],
+      choice: Array.isArray(E.choice) ? E.choice : [],
+      fillTitle: E.fillTitle || '一、用动词的正确形式填空',
+      choiceTitle: E.choiceTitle || '二、单项选择'
+    };
+  }
+  function tnFillAnswered(f){
+    return (f.answers||[]).every((a,i)=> String(_tnAns[tnAnsKey(f.id,i)]||'').trim().length > 0);
+  }
+  function tnFillCorrect(f){
+    return (f.answers||[]).every((a,i)=> tnNorm(_tnAns[tnAnsKey(f.id,i)]) === tnNorm(a));
+  }
+  function tnProgress(){
+    const ex = tnExercises();
+    if(!ex) return { done:0, total:0, all:false };
+    let done = 0;
+    ex.fill.forEach(f=>{ if(tnFillAnswered(f)) done++; });
+    ex.choice.forEach(c=>{ if(_tnAns[c.id]) done++; });
+    const total = ex.fill.length + ex.choice.length;
+    return { done, total, all: total > 0 && done === total };
+  }
+  function renderEnTensePractice(){
+    const mount = $('#tnPracticeBody');
+    if(!mount) return;
+    const ex = tnExercises();
+    if(!ex){ mount.innerHTML = '<div class="tn-empty">练习题正在整理中…</div>'; return; }
+    const pg = tnProgress();
+    const showAns = _tnGraded;
+    const fillHtml = ex.fill.map((f,i)=>{
+      const body = (f.parts||[]).map(p=>{
+        if('blank' in p){
+          const key = tnAnsKey(f.id, p.blank);
+          const val = String(_tnAns[key]||'');
+          const ok = tnNorm(val) === tnNorm((f.answers||[])[p.blank]||'');
+          return `<input class="tn-blank${showAns?(ok?' right':' wrong'):''}" data-tn-fill="${esc(f.id)}" data-tn-i="${p.blank}" value="${esc(val)}" placeholder="?" autocomplete="off"${showAns?' disabled':''}>`;
+        }
+        return esc(p.t||'').replace(/\n/g,'<br>');
+      }).join('');
+      const ok = tnFillCorrect(f);
+      const ansLine = showAns
+        ? `<div class="tn-q-result ${ok?'ok':'bad'}">${ok?'✅ 正确':'❌ 需订正'} · 正确答案：${(f.answers||[]).map((a,k)=>`<b>${k+1}. ${esc(a)}</b>`).join('　')}</div>` : '';
+      return `<div class="tn-q" data-tn-q="${esc(f.id)}">
+        <div class="tn-q-no">${i+1}</div>
+        <div class="tn-q-body"><div class="tn-q-text">${body}</div>${ansLine}</div>
+      </div>`;
+    }).join('');
+    const choiceHtml = ex.choice.map((c,i)=>{
+      const opts = c.options||{};
+      const picked = _tnAns[c.id]||'';
+      const buttons = ['A','B','C'].map(k=>{
+        if(opts[k]==null) return '';
+        let cls = 'tn-opt';
+        if(showAns && k === c.a) cls += ' is-correct';
+        if(picked === k) cls += ' selected';
+        if(showAns && picked === k && k !== c.a) cls += ' is-wrong';
+        return `<button type="button" class="${cls}" data-tn-opt="${esc(c.id)}" data-tn-val="${k}"${showAns?' disabled':''}><b>${k}.</b> ${esc(opts[k])}</button>`;
+      }).join('');
+      const ok = picked === c.a;
+      const ansLine = showAns ? `<div class="tn-q-result ${ok?'ok':'bad'}">${ok?'✅ 正确':'❌ 需订正'} · 正确答案：<b>${esc(c.a)}. ${esc(opts[c.a]||'')}</b></div>` : '';
+      return `<div class="tn-q" data-tn-q="${esc(c.id)}">
+        <div class="tn-q-no">${i+1}</div>
+        <div class="tn-q-body"><div class="tn-q-text">${esc(c.q||'')}</div>
+          <div class="tn-opts">${buttons}</div>${ansLine}</div>
+      </div>`;
+    }).join('');
+    let scoreHtml = '';
+    if(showAns){
+      let right = 0;
+      ex.fill.forEach(f=>{ if(tnFillCorrect(f)) right++; });
+      ex.choice.forEach(c=>{ if(_tnAns[c.id] === c.a) right++; });
+      scoreHtml = `<span class="tn-score">🎯 答对 <b>${right}</b> / ${pg.total} 题</span>`;
+    }
+    mount.innerHTML = `<div class="tn-practice">
+      <div class="tn-practice-head">
+        <span class="tn-practice-title">📝 时态练习题</span>
+        <span class="tn-practice-sub">《时态.docx》配套习题 · 共 ${pg.total} 题 · 已作答 <b id="tnDoneCount">${pg.done}</b>/${pg.total}</span>
+      </div>
+      <div class="tn-hint">✏️ 答案默认隐藏，全部题目作答完成后点「✅ 批改」查看正确答案。</div>
+      <div class="tn-sec-title">${esc(ex.fillTitle)}</div>
+      <div class="tn-q-list">${fillHtml}</div>
+      <div class="tn-sec-title">${esc(ex.choiceTitle)}</div>
+      <div class="tn-q-list">${choiceHtml}</div>
+      <div class="tn-foot">
+        <button type="button" class="tn-grade" id="tnGrade"${pg.all?'':' disabled'}>✅ 批改</button>
+        <button type="button" class="tn-reset" id="tnReset">🔄 重新作答</button>
+        ${scoreHtml}
+      </div>
+    </div>`;
+    // 填空：即时写内存 + 局部刷新进度（不整页重渲染，避免输入焦点丢失）
+    mount.querySelectorAll('[data-tn-fill]').forEach(inp=>{
+      inp.addEventListener('input', ()=>{
+        _tnAns[tnAnsKey(inp.getAttribute('data-tn-fill'), parseInt(inp.getAttribute('data-tn-i'),10))] = inp.value;
+        tnUpdatePracticeProgress();
+        tnPersistSoon();
+      });
+      inp.addEventListener('change', tnPersist);
+    });
+    mount.querySelectorAll('[data-tn-opt]').forEach(btn=>{
+      btn.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        _tnAns[btn.getAttribute('data-tn-opt')] = btn.getAttribute('data-tn-val');
+        tnPersist();
+        renderEnTensePractice();
+      });
+    });
+    const grade = mount.querySelector('#tnGrade');
+    if(grade) grade.addEventListener('click', ()=>{
+      const p = tnProgress();
+      if(!p.all){ if(window.toast) toast('请先把全部题目作答完成，再点「批改」～'); return; }
+      _tnGraded = true; tnPersist(); renderEnTensePractice();
+      if(window.toast) toast('✅ 批改完成，正确答案已展示');
+    });
+    const reset = mount.querySelector('#tnReset');
+    if(reset) reset.addEventListener('click', ()=>{
+      _tnAns = {}; _tnGraded = false; tnPersist(); renderEnTensePractice();
+      if(window.toast) toast('已清空作答，可以重新练习啦');
+    });
+  }
+  function tnUpdatePracticeProgress(){
+    const p = tnProgress();
+    const el = document.getElementById('tnDoneCount');
+    if(el) el.textContent = String(p.done);
+    const btn = document.getElementById('tnGrade');
+    if(btn){ if(p.all) btn.removeAttribute('disabled'); else btn.setAttribute('disabled','disabled'); }
+  }
+  // R251-2：练习题页返回键 → 回到「英语小知识 → 八种时态」章节
+  document.addEventListener('click', e=>{
+    const b = e.target.closest('[data-tn-back]');
+    if(!b) return;
+    e.preventDefault(); e.stopPropagation();
+    goPage('newworld-english');
+    setTimeout(()=>{
+      const z = document.querySelector('#enTopCards .yw-round-btn[data-key="yyxzs"]');
+      if(z) z.click();
+      _egCurSec = tnShitaiIdx();
+      if(typeof window.__slotRerender === 'function') window.__slotRerender();
+    }, 0);
+  }, true);
+
   function enSlot(key, label){
     // R122：书本课文 / 重点知识 改为单元卡片切换，不再用 _enCurPage 分页
     if(key === 'dd') return renderOxfordBook(_enBookUnit);
@@ -29597,16 +29932,29 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       // R54：历史上的今天卡点击 → 打开全年收录弹窗
       const hist = e.target.closest('.wp-history[data-history-open]');
       if(hist){ openHistoryAll(); return; }
-      // R250-2：取消「整卡点击直接打卡」；卡片主体点击跳转对应任务页面（非平台内部任务不跳转）
+      // R250-2 / R251-1：取消「整卡点击直接打卡」；卡片主体点击先弹确认框，确认后才跳转（非平台内部任务不跳转）
       const item = e.target.closest('.wp-task-item');
       if(item && !item.classList.contains('dragging')){
         const t0 = S.load().tasks.find(x => x.id === item.dataset.taskId);
         const dest = homeTaskPage(t0);
-        if(dest){ e.preventDefault(); goPage(dest); }
+        if(dest){
+          e.preventDefault();
+          const pageName = HOME_TASK_PAGE_LABELS[dest] || (t0 && t0.name) || '对应';
+          openCustomModal('确认跳转',
+            '确定要前往「<b>' + esc(pageName) + '</b>」页面吗？'
+            + '<div style="margin-top:8px;color:#5b6b85;font-size:13px">如需打卡，请点卡片左侧的圆形打卡按钮。</div>',
+            ()=>{ goPage(dest); });
+        }
         return;
       }
     });
   }
+  // R251-1：首页任务跳转确认弹窗里展示的板块名
+  const HOME_TASK_PAGE_LABELS = {
+    math:'乐读数学', xueersi:'学而思英语', newworld:'新世界',
+    'newworld-yuwen':'新世界·语文专区', 'newworld-english':'新世界·英语专区',
+    reading:'大阅读', kmgame:'围棋对弈'
+  };
   // R250-2：首页任务卡片 → 平台内部任务页面映射；未命中（非平台内部任务）返回空串，点击卡片不跳转
   const HOME_TASK_PAGE_MAP = {
     '乐读计算小超市':'math', '乐读数学':'math',
