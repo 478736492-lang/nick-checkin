@@ -8539,6 +8539,113 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
 .xs-gram-import-ex:hover{background:var(--tone-150)}
 @media(max-width:760px){.xs-bank-tools{flex-wrap:wrap}.xs-bank-tool{flex:1 1 45%}}
 
+/* ============ R253：需求批次样式 ============ */
+/* —— R253-2 设置中心 · 打卡任务「跳转」配置 —— */
+.task-jump-btn{margin-left:6px;font-size:11.5px;padding:3px 8px;border-radius:999px;white-space:nowrap}
+.task-jump-btn.on{background:#e8f4ff;border-color:var(--tone-300);color:var(--tone-900)}
+.task-jump-btn.off{background:#f4f6fa;border-color:var(--tone-150);color:#7a8699}
+.jump-task-name{font-size:14px;font-weight:800;color:var(--tone-950);background:var(--tone-075);border:1px solid var(--tone-150);border-radius:10px;padding:9px 12px;margin-bottom:12px}
+.jump-form-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.jump-form-label{flex:0 0 92px;font-size:13px;font-weight:800;color:var(--tone-800)}
+.jump-select{flex:1 1 auto;min-width:0;font-family:inherit;font-size:13px;font-weight:700;color:var(--tone-900);background:#fff;border:1.5px solid var(--tone-200);border-radius:10px;padding:8px 10px;cursor:pointer}
+.jump-select:disabled{background:#f2f4f8;color:#98a4b5;cursor:not-allowed}
+
+/* —— R253-3 / R253-4 巩固打卡：已答对数据下方 · 题库 + 已默写 —— */
+.xs-adv-head-side{flex-direction:column;align-items:flex-end;gap:6px}
+.xs-adv-acts{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.xs-adv-act-btn{font-family:inherit;font-size:12.5px;font-weight:800;color:var(--tone-900);background:#fff;border:1.5px solid var(--tone-200);border-radius:999px;padding:6px 13px;cursor:pointer;touch-action:manipulation;transition:background .15s,transform .12s,border-color .15s}
+.xs-adv-act-btn:hover{background:var(--tone-100);border-color:var(--tone-350)}
+.xs-adv-act-btn:active{transform:scale(.97)}
+.xs-adv-act-btn.bank{background:linear-gradient(135deg,var(--tone-075),var(--tone-150));border-color:var(--tone-250)}
+.xs-adv-act-btn.done{background:var(--z-xs-pale);border-color:var(--z-xs-mid);color:var(--z-xs-deep)}
+.xs-adv-own{display:flex;align-items:center;gap:8px;background:var(--z-xs-pale);border:1.5px solid var(--z-xs-mid);border-radius:12px;padding:9px 12px;min-width:0}
+.xs-adv-own-txt{font-size:14.5px;font-weight:800;color:var(--z-xs-deep);word-break:break-word}
+.xs-adv-submitbar{grid-column:1 / -1;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:14px;padding:12px 16px;border-radius:var(--card-r-md);background:linear-gradient(135deg,var(--tone-075),var(--tone-150));border:1.5px solid var(--tone-200)}
+.xs-adv-submitbar-hint{font-size:12.5px;font-weight:700;color:#3a4a6b;line-height:1.6}
+.xs-adv-submitbar-hint b{color:var(--z-xs-deep);font-size:14px}
+.xs-adv-submitall{min-width:132px;font-size:15px;padding:11px 20px;border-radius:999px}
+.xs-adv-submitall[disabled]{opacity:.5;cursor:not-allowed}
+
+/* 题库弹窗：词汇题 / 语法题双分区 */
+.xs-bank-secs{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.xs-bank-sec{flex:1 1 0;min-width:0;font-family:inherit;font-size:13.5px;font-weight:800;color:var(--tone-900);background:var(--tone-075);border:1.5px solid var(--tone-150);border-radius:12px;padding:10px 12px;cursor:pointer;transition:.15s}
+.xs-bank-sec b{color:var(--tone-700);font-size:12px;margin-left:4px}
+.xs-bank-sec:hover{border-color:var(--tone-350);background:var(--tone-100)}
+.xs-bank-sec.active{color:#fff;background:linear-gradient(135deg,var(--tone-300),var(--tone-900));border-color:transparent;box-shadow:0 3px 10px rgba(30,58,138,.25)}
+.xs-bank-sec.active b{color:#fff}
+.xs-bank-word{font-size:14.5px;font-weight:800;color:var(--z-xs-deep);word-break:break-word}
+.xs-bank-phon{font-size:12.5px;color:#6b8cae;margin-left:6px}
+.xs-bank-summary{background:#fff;border:1.5px solid var(--tone-150);border-radius:12px;padding:12px 14px}
+.xs-bank-summary-h{font-size:13.5px;font-weight:900;color:var(--tone-950);margin-bottom:10px}
+.xs-bank-summary-h span{font-size:11.5px;font-weight:700;color:var(--muted);margin-left:8px}
+.xs-word-sum-list{display:flex;flex-direction:column;gap:2px}
+.xs-word-sum-row{display:grid;grid-template-columns:44px 1.2fr 1fr 1.6fr;gap:8px;align-items:center;padding:6px 8px;border-radius:8px;font-size:12.5px}
+.xs-word-sum-row:nth-child(odd){background:var(--tone-025)}
+.xs-word-sum-row.is-head{font-weight:900;color:var(--tone-800);background:var(--tone-100)}
+.xs-word-sum-row .c-no{color:#8b98ab;font-weight:800;text-align:center}
+.xs-word-sum-row .c-en{font-weight:800;color:var(--z-xs-deep);word-break:break-word}
+.xs-word-sum-row .c-ph{color:#6b8cae}
+.xs-word-sum-row .c-zh{color:#33405c;word-break:break-word}
+.xs-gram-sum-list{display:flex;flex-direction:column;gap:8px}
+.xs-gram-sum-item{background:var(--tone-025);border:1px solid var(--tone-150);border-radius:10px;padding:9px 11px}
+.xs-gram-sum-top{display:flex;align-items:center;gap:8px}
+.xs-gram-sum-no{flex:0 0 22px;height:22px;line-height:22px;text-align:center;border-radius:50%;background:var(--tone-100);color:var(--tone-800);font-size:11px}
+.xs-gram-sum-title{font-size:13px;font-weight:800;color:var(--tone-900)}
+.xs-gram-sum-body{margin-top:5px;font-size:12px;line-height:1.7;color:#4a5a74;white-space:pre-wrap;word-break:break-word}
+
+/* 已默写弹窗：题目 + 历次作答留痕 */
+.xs-dict-wrap{display:flex;flex-direction:column;gap:10px}
+.xs-dict-head{display:flex;flex-direction:column;gap:3px;background:var(--z-xs-pale);border:1.5px solid var(--z-xs-mid);border-radius:12px;padding:10px 14px}
+.xs-dict-head-t{font-size:13.5px;font-weight:900;color:var(--z-xs-deep)}
+.xs-dict-head-t b{font-size:15px}
+.xs-dict-head-s{font-size:11.5px;font-weight:700;color:#4a6a92}
+.xs-dict-list{display:flex;flex-direction:column;gap:10px}
+.xs-dict-item{background:#fff;border:1.5px solid #dbe7f5;border-radius:12px;padding:10px 12px}
+.xs-dict-item.ok{background:var(--z-xs-pale);border-color:var(--z-xs-mid)}
+.xs-dict-item.bad{background:#fdeeee;border-color:#f0b8b8}
+.xs-dict-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.xs-dict-no{flex:0 0 22px;height:22px;line-height:22px;text-align:center;border-radius:50%;background:var(--tone-100);color:var(--tone-800);font-size:11px}
+.xs-dict-zh{flex:1 1 auto;min-width:0;font-size:13.5px;font-weight:800;color:var(--tone-950);word-break:break-word}
+.xs-dict-kind{font-size:11px;font-weight:800;color:var(--tone-800);background:var(--tone-100);border-radius:999px;padding:2px 7px}
+.xs-dict-state{font-size:11.5px;font-weight:900;border-radius:999px;padding:2px 9px}
+.xs-dict-state.ok{color:#1c7a36;background:#ddf5e3}
+.xs-dict-state.bad{color:#a33c3c;background:#ffe3e3}
+.xs-dict-ans{margin-top:5px;font-size:12px;font-weight:800;color:var(--z-xs-deep)}
+.xs-dict-tries{display:flex;flex-direction:column;gap:4px;margin-top:7px;padding-top:7px;border-top:1px dashed #dbe7f5}
+.xs-dict-try{display:grid;grid-template-columns:60px 48px 1fr 18px;gap:8px;align-items:center;font-size:12px}
+.xs-dict-try-no{font-weight:800;color:var(--tone-700)}
+.xs-dict-try-time{color:#8b98ab}
+.xs-dict-try-ans{color:#33405c;word-break:break-word}
+.xs-dict-try-mark{text-align:center;font-size:13px}
+.xs-dict-try.ok .xs-dict-try-mark{color:#1c7a36}
+.xs-dict-try.bad .xs-dict-try-mark{color:#c0392b}
+.xs-dict-try.none{grid-template-columns:1fr;color:#9aa7b8}
+
+/* —— R253-5 语文专项知识：一行一卡、随内容自适应 —— */
+.zx-wrap .zx-grid{grid-template-columns:1fr}
+.zx-wrap .zx-card{width:100%;height:auto;box-sizing:border-box;align-self:start}
+/* —— R253-5 英语小知识：八种时态 —— */
+.eg-tense-stickyhead{position:sticky;top:0;z-index:8;margin:-6px 0 10px;padding:10px 0 8px;background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(255,255,255,.92));backdrop-filter:blur(8px);border-bottom:1px solid var(--tone-150)}
+.eg-tense-wrap .eg-tense-nav,.eg-tense-detail .eg-tense-nav{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:8px;margin:8px 0 0;padding:8px}
+.eg-tense-wrap .eg-tense-go,.eg-tense-detail .eg-tense-go{justify-content:center;text-align:center;font-size:11.5px;line-height:1.35;padding:9px 4px;white-space:normal;word-break:break-word}
+.eg-tense-go.active{color:#fff;background:linear-gradient(135deg,var(--tone-300),var(--tone-900));border-color:transparent}
+.tn-detail-wrap,.tn-flag-wrap{margin-top:14px;padding:12px 14px;background:linear-gradient(135deg,var(--tone-025),var(--tone-075));border:1.5px solid var(--tone-150);border-radius:var(--card-r-md)}
+.tn-flag-board{margin-bottom:12px}
+.tn-flag-board:last-child{margin-bottom:0}
+.tn-flag-title{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:800;color:var(--tone-900);margin:2px 0 8px}
+.tn-detail-wrap .tn-sec-grid,.tn-flag-wrap .tn-sec-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:900px){.eg-tense-wrap .eg-tense-nav,.eg-tense-detail .eg-tense-nav{grid-template-columns:repeat(4,minmax(0,1fr))}.tn-detail-wrap .tn-sec-grid,.tn-flag-wrap .tn-sec-grid{grid-template-columns:1fr}}
+
+/* —— R253-6 计算小超市：说明一行 + 统计/日历靠左 —— */
+.calc-daily-hint{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px}
+.calc-streak-row{display:flex;align-items:center;justify-content:flex-start;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+
+/* —— R253-7 大阅读：卡片随内容自适应，取消栏内上下滚动 —— */
+.reading-col-list{max-height:none;overflow:visible;flex:0 1 auto}
+.reading-cn .reading-col-list{max-height:none;overflow:visible}
+.reading-cols{align-items:start}
+.reading-col{height:auto}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -9490,10 +9597,10 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
         <span class="xs-summary-hint" id="xsSummaryHint" data-page-node-id="GGBLPthRlsOWDFK2qdMQw6">📒 点击右下方"新增"，可单条新增词汇 / 语法知识点</span>
         <!-- R168-2：新增键右侧并列「筛选」键（仅语法 tab 显示；词汇/打卡/已默写子页隐藏） -->
         <div class="xs-summary-actions" data-page-node-id="QFPM5GEErB6Bs0hm6FnGUA">
+          <!-- R253-4：语法汇总（原「筛选」）置于「＋ 新增」左侧 -->
+          <button class="pbtn" id="btnXsGramFilter" title="查看全部语法知识点汇总" hidden data-page-node-id="BFv8xP29DGAwpbBNSmqlf4">📋 语法汇总</button>
           <button class="primary-btn" id="btnXsContentAdd" data-page-node-id="Z0fOpoY8DOjm4BIxvaJogS">＋ 新增</button>
-          <button class="pbtn" id="btnXsGramFilter" title="快速查找语法知识点" hidden data-page-node-id="BFv8xP29DGAwpbBNSmqlf4">🔍 筛选</button>
-          <!-- R252-1：语法卡例句一键自动导入语法题库（仅语法子页、家长态显示） -->
-          <button class="pbtn hidden-in-child" id="btnXsImportAll" title="把全部语法卡例句自动导入语法题库" hidden data-page-node-id="R252xsImportAll">⚡ 一键导入例句</button>
+          <!-- R253-4：「⚡ 一键导入例句」已迁入「📚 题库 → 📐 语法题」分区 -->
         </div>
       </div>
       <div class="xs-list" id="xsSummaryList" data-page-node-id="YDjIvMVxlsL8Uek4SCYodG"></div>
@@ -10413,6 +10520,35 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
   </div>
 </div>
 
+<!-- ========== R253-2：设置中心 - 打卡任务「跳转」配置弹窗 ========== -->
+<div class="modal-mask" id="modalTaskJump" hidden data-page-node-id="R253modalTaskJump">
+  <div class="modal-box" style="min-width:520px;max-width:92vw" data-page-node-id="R253modalTaskJumpBox">
+    <div class="modal-head" data-page-node-id="R253modalTaskJumpHead">
+      <h3 data-page-node-id="R253modalTaskJumpTitle">🧭 任务跳转设置</h3>
+      <button class="modal-x" data-close data-page-node-id="R253modalTaskJumpX">×</button>
+    </div>
+    <div class="modal-body" data-page-node-id="R253modalTaskJumpBody">
+      <div class="jump-task-name" id="jumpTaskName" data-page-node-id="R253jumpTaskName"></div>
+      <div class="jump-form-row" data-page-node-id="R253jumpEnabledRow">
+        <span class="jump-form-label">卡片主体点击</span>
+        <select id="jumpEnabledSel" class="jump-select" data-page-node-id="R253jumpEnabledSel">
+          <option value="1">开启跳转</option>
+          <option value="0">关闭跳转</option>
+        </select>
+      </div>
+      <div class="jump-form-row" data-page-node-id="R253jumpPageRow">
+        <span class="jump-form-label">跳转板块</span>
+        <select id="jumpPageSel" class="jump-select" data-page-node-id="R253jumpPageSel"></select>
+      </div>
+      <div class="parent-edit-hint" data-page-node-id="R253jumpHint">📌 开启后，在首页点击该任务卡片的主体区域会先弹确认框，确认后前往所选板块；点卡片左侧的圆形打卡键只打卡、不跳转。关闭后卡片主体点击无反应。</div>
+    </div>
+    <div class="modal-foot" data-page-node-id="R253modalTaskJumpFoot">
+      <button class="primary-btn" id="btnJumpSave" data-page-node-id="R253btnJumpSave">💾 保存</button>
+      <button class="pbtn" data-close data-page-node-id="R253modalTaskJumpClose">取消</button>
+    </div>
+  </div>
+</div>
+
 <!-- ========== R85：设置中心 - 游戏设置弹窗 ========== -->
 <div class="modal-mask" id="modalGameSettings" hidden data-page-node-id="R85modalGame">
   <div class="modal-box" style="min-width:520px;max-width:90vw" data-page-node-id="R85modalGameBox">
@@ -10962,11 +11098,11 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
     </div>
   </div>
 
-<!-- ========== 弹窗：语法知识点筛选（R168-2：全部主题列表，点主题看详情） ========== -->
+<!-- ========== 弹窗：语法知识点汇总（R168-2 全部主题列表；R253-4 由「筛选」改名「语法汇总」） ========== -->
 <div class="modal-mask" id="modalXsGramFilter" hidden data-page-node-id="r5nixKi8p1DJLFNv1iugrL">
   <div class="modal-box" style="min-width:520px" data-page-node-id="BLpV8yrTEj40RDp4Izkjnf">
     <div class="modal-head" data-page-node-id="JpQ801pXak50WLegdbUIOj">
-      <h3 data-page-node-id="eM38FxAbSyli2VkkJ9APrm">🔍 语法知识点筛选</h3>
+      <h3 data-page-node-id="eM38FxAbSyli2VkkJ9APrm">📋 语法汇总</h3>
       <button class="modal-x" data-close data-page-node-id="kvBkHxa2cgzdSRSTfro9Pq">×</button>
     </div>
     <div class="modal-body" id="xsGramFilterBody" data-page-node-id="776YmVXmoX7Z8yu5zDQXIE"></div>
@@ -10976,16 +11112,30 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
   </div>
 </div>
 
-<!-- ========== 弹窗：语法题库（R250-1：由词汇语法巩固页按键唤起，独立弹窗加载题库内容） ========== -->
+<!-- ========== 弹窗：题库（R253-4：词汇题 / 语法题双分区；R250-1 起由词汇语法巩固页按键唤起） ========== -->
 <div class="modal-mask" id="modalXsGramBank" hidden data-page-node-id="R250modalXsGramBank">
-  <div class="modal-box" style="min-width:560px;max-width:88vw" data-page-node-id="R250xsGramBankBox">
+  <div class="modal-box" style="min-width:640px;max-width:92vw;max-height:88vh;display:flex;flex-direction:column" data-page-node-id="R250xsGramBankBox">
     <div class="modal-head" data-page-node-id="R250xsGramBankHead">
-      <h3 data-page-node-id="R250xsGramBankTitle">📚 语法题库</h3>
+      <h3 data-page-node-id="R250xsGramBankTitle">📚 题库</h3>
       <button class="modal-x" data-close data-page-node-id="R250xsGramBankX">×</button>
     </div>
-    <div class="modal-body" id="xsGramBankBody" data-page-node-id="R250xsGramBankBody"></div>
+    <div class="modal-body" id="xsGramBankBody" style="overflow-y:auto" data-page-node-id="R250xsGramBankBody"></div>
     <div class="modal-foot" data-page-node-id="R250xsGramBankFoot">
       <button class="pbtn" data-close data-page-node-id="R250xsGramBankClose">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 弹窗：已默写（R253-3：今日提交的默写题 + 历次作答记录归集） ========== -->
+<div class="modal-mask" id="modalXsDictation" hidden data-page-node-id="R253modalXsDictation">
+  <div class="modal-box" style="min-width:620px;max-width:92vw;max-height:88vh;display:flex;flex-direction:column" data-page-node-id="R253xsDictationBox">
+    <div class="modal-head" data-page-node-id="R253xsDictationHead">
+      <h3 data-page-node-id="R253xsDictationTitle">📒 已默写</h3>
+      <button class="modal-x" data-close data-page-node-id="R253xsDictationX">×</button>
+    </div>
+    <div class="modal-body" id="xsDictationBody" style="overflow-y:auto" data-page-node-id="R253xsDictationBody"></div>
+    <div class="modal-foot" data-page-node-id="R253xsDictationFoot">
+      <button class="pbtn" data-close data-page-node-id="R253xsDictationClose">关闭</button>
     </div>
   </div>
 </div>
@@ -14755,6 +14905,53 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
     st.mathNotes = st.mathNotes.filter(x=>String(x.id)!==String(id));
     save(st);
   }
+  // R253-6：乐读数学「知识笔记」打卡 —— 与 2026 春二 A+ 题目卡同一套逻辑：
+  //   两键「✅ 已学 / 🔄 需巩固」，再点同一键回到「未学」；切到已学 +1⭐，从已学切换走扣回 1⭐。
+  //   状态存 st.mathNoteStatus = { '<noteId>': 'mastered'|'notMastered' }
+  function getMathNoteStatus(id){
+    const st = load();
+    const m = (st.mathNoteStatus || {})[String(id)];
+    return (m === 'mastered' || m === 'notMastered') ? m : 'bank';
+  }
+  function toggleMathNoteStatus(id, target){
+    const st = load();
+    const note = (st.mathNotes || []).find(x => String(x.id) === String(id));
+    if(!note) return { ok:false };
+    if(!st.mathNoteStatus) st.mathNoteStatus = {};
+    const key = String(id);
+    const prev = getMathNoteStatus(key);
+    const want = (target === 'mastered' || target === 'notMastered') ? target : 'bank';
+    const next = (prev === want) ? 'bank' : want;
+    if(next === 'bank') delete st.mathNoteStatus[key];
+    else st.mathNoteStatus[key] = next;
+    let stars = 0;
+    if(next === 'mastered' && prev !== 'mastered'){
+      st.archive.totalStars = (st.archive.totalStars||0) + 1;
+      st.archive.exp = (st.archive.exp||0) + 1;
+      stars = 1;
+      logCheckin('mathNote::' + key);
+    } else if(prev === 'mastered' && next !== 'mastered'){
+      st.archive.totalStars = Math.max(0, (st.archive.totalStars||0) - 1);
+      st.archive.exp = Math.max(0, (st.archive.exp||0) - 1);
+      stars = -1;
+      unlogCheckin('mathNote::' + key);
+    }
+    note.lastStatusAt = Date.now();
+    save(st);
+    return { ok:true, status:next, stars };
+  }
+  function getMathNoteStat(){
+    const st = load();
+    const notes = st.mathNotes || [];
+    const map = st.mathNoteStatus || {};
+    let done = 0, need = 0;
+    notes.forEach(n=>{
+      const s = map[String(n.id)];
+      if(s === 'mastered') done++;
+      else if(s === 'notMastered') need++;
+    });
+    return { total: notes.length, done, need, rest: Math.max(0, notes.length - done - need) };
+  }
   // R232-3：题型「课堂讲义图片」—— 首张固定为知识笔记，其余按名称序号
   // R234：每张讲义图升级为「可打卡卡片」——状态（未学 / 已学 / 需巩固）+ 可编辑名称；
   //      st.mathLecture = { status:{ '<题型>||<图路径>': 'mastered'|'notMastered' }, caps:{...} }
@@ -17313,6 +17510,120 @@ be 动词：am / is → was；are → were
     return b;
   }
   function _xsBankNorm(s){ return String(s == null ? '' : s).replace(/\s+/g,'').toLowerCase(); }
+  // ===== R253-4：词汇题库（可写化，与语法题库同一套结构）=====
+  // 结构：st.xueersiWordBank = { seed:[…], items:[…], edits:{}, deleted:{} }
+  //   seed —— 首次启用时对「词汇」板块现有单词做的一次快照（保证既有题目与题型总数不变）
+  //   items —— 「一键导入词汇」/「＋ 新增」写入的题目
+  //   edits —— 对 seed 题的修改覆盖层（不改写快照）
+  //   deleted —— 删除标记（seed 题无法物理删除，用标记隐藏）
+  function _xsWordBankState(st){
+    const b = st.xueersiWordBank = st.xueersiWordBank || {};
+    b.items = Array.isArray(b.items) ? b.items : [];
+    b.edits = b.edits || {};
+    b.deleted = b.deleted || {};
+    if(!Array.isArray(b.seed)){
+      b.seed = ((st.xueersiContent && st.xueersiContent.words) || []).map(w=>({
+        id: 'w_' + w.id, wordId: w.id, en: w.en || '', phonetic: w.phonetic || '',
+        zh: w.wordZh || w.zh || '', fromSeed: true
+      }));
+    }
+    return b;
+  }
+  function xsWordPool(){
+    const st = load();
+    // 首次启用：把「词汇」板块当前全部单词快照进题库并落库（此后新增词汇需「一键导入词汇」收进题库）
+    const hadSeed = !!(st.xueersiWordBank && Array.isArray(st.xueersiWordBank.seed));
+    const b = _xsWordBankState(st);
+    if(!hadSeed) save(st);
+    const merge = it => b.edits[it.id] ? Object.assign({}, it, b.edits[it.id]) : it;
+    const list = b.seed.filter(it=>!b.deleted[it.id]).map(merge)
+      .concat(b.items.filter(it=>!b.deleted[it.id]).map(merge));
+    // 去重（同一英文只保留首条），避免导入重复导致题量虚高
+    const seen = new Set(), out = [];
+    list.forEach(it=>{
+      const k = _xsBankNorm(it.en);
+      if(!k || seen.has(k)) return;
+      seen.add(k); out.push(it);
+    });
+    return out;
+  }
+  function xsWordBankAdd(item){
+    const it0 = item || {};
+    const en = String(it0.en || '').trim();
+    const zh = String(it0.zh || '').trim();
+    if(!en || !zh) return { ok:false, msg:'请填写单词与中文释义' };
+    if(xsWordPool().some(x => _xsBankNorm(x.en) === _xsBankNorm(en))) return { ok:false, msg:'题库里已有这个单词' };
+    const st = load(); const b = _xsWordBankState(st);
+    const it = {
+      id: 'uw_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2,7),
+      wordId: '', en, phonetic: String(it0.phonetic || '').trim(), zh, fromSeed: false
+    };
+    b.items.push(it); save(st);
+    return { ok:true, item:it };
+  }
+  function xsWordBankUpdate(id, patch){
+    const st = load(); const b = _xsWordBankState(st);
+    const key = String(id || '');
+    const p = {
+      en: String((patch && patch.en) || '').trim(),
+      phonetic: String((patch && patch.phonetic) || '').trim(),
+      zh: String((patch && patch.zh) || '').trim()
+    };
+    if(!p.en || !p.zh) return { ok:false, msg:'请填写单词与中文释义' };
+    const idx = b.items.findIndex(x => String(x.id) === key);
+    if(idx >= 0) b.items[idx] = Object.assign({}, b.items[idx], p);
+    else b.edits[key] = p;
+    save(st); return { ok:true, item:p };
+  }
+  function xsWordBankDelete(id){
+    const st = load(); const b = _xsWordBankState(st);
+    const key = String(id || '');
+    const before = b.items.length;
+    b.items = b.items.filter(x => String(x.id) !== key);
+    if(b.items.length === before) b.deleted[key] = true;
+    delete b.edits[key];
+    save(st); return { ok:true };
+  }
+  function xsWordBankGet(id){ return xsWordPool().find(x => String(x.id) === String(id)) || null; }
+  // 「📥 一键导入词汇」：把「词汇」板块里题库还没有的单词收进题库（逻辑与语法「⚡ 一键导入例句」一致）
+  function xsWordBankImportAll(){
+    const st = load();
+    const words = (st.xueersiContent && st.xueersiContent.words) || [];
+    const pool = xsWordPool();
+    const exist = new Set(pool.map(x=>_xsBankNorm(x.en)));
+    let added = 0, skipped = 0;
+    words.forEach(w=>{
+      const en = String(w.en || '').trim();
+      const zh = String(w.wordZh || w.zh || '').trim();
+      if(!en || !zh || exist.has(_xsBankNorm(en))){ skipped++; return; }
+      const r = xsWordBankAdd({ en, zh, phonetic: w.phonetic || '' });
+      if(r && r.ok){ added++; exist.add(_xsBankNorm(en)); } else skipped++;
+    });
+    return { ok:true, added, skipped };
+  }
+  // ===== R253-3：巩固打卡历次作答记录（正确 / 错误全量留痕，供「已默写」弹窗归集）=====
+  // st.xueersiAnswerLog = [{ date, ts, wordId, en, zh, ans, ok }]
+  const XS_ANSWER_LOG_MAX = 1200;
+  function xsLogAttempt(rec){
+    const st = load();
+    st.xueersiAnswerLog = Array.isArray(st.xueersiAnswerLog) ? st.xueersiAnswerLog : [];
+    st.xueersiAnswerLog.push({
+      date: String((rec && rec.date) || todayStr()),
+      ts: Number((rec && rec.ts) || Date.now()),
+      wordId: String((rec && rec.wordId) || ''),
+      en: String((rec && rec.en) || ''),
+      zh: String((rec && rec.zh) || ''),
+      ans: String((rec && rec.ans) || ''),
+      ok: !!(rec && rec.ok)
+    });
+    if(st.xueersiAnswerLog.length > XS_ANSWER_LOG_MAX) st.xueersiAnswerLog = st.xueersiAnswerLog.slice(-XS_ANSWER_LOG_MAX);
+    save(st);
+  }
+  function xsGetAnswerLog(date){
+    const st = load();
+    const list = Array.isArray(st.xueersiAnswerLog) ? st.xueersiAnswerLog : [];
+    return date ? list.filter(x=>x && x.date === date) : list.slice();
+  }
   function xsGramBankAdd(item){
     const st = load(); const b = _xsBankState(st);
     const en = String((item && item.en) || '').trim();
@@ -17445,7 +17756,8 @@ be 动词：am / is → was；are → were
   // 生成一批全新的「当日打卡」：10 单词 + 错题重做 + 2 语法默写（中译英）
   function xsBuildFreshDaily(){
     const st = load();
-    const all = st.xueersiContent.words || [];
+    // R253-4：巩固打卡题目改从「词汇题库」抽取（题库 = 词汇板块快照 + 一键导入 + 新增，题型总数保持 10 词 + 2 语法）
+    const all = xsWordPool();
     if(!all.length) return [];
     const today = todayStr();
     const seed = parseInt(today.replace(/-/g,''),10);
@@ -17453,21 +17765,27 @@ be 动词：am / is → was；are → were
     const out = [];
     const used = new Set();
     // 1) 先抽 10 个新词（按日期种子，每日不同；排除错题本中的词，避免与重做区重复）
-    const wrongIds = new Set((st.xueersiWrongs || []).map(w=>w.wordId));
+    //    R253-4：批次内统一使用「题库项 wordId（旧词汇 id）优先，缺省用题库 id」作为题目标识，
+    //            保证与历史错题本（存旧词汇 id）互通，答对后能正确移出错题本。
+    const _wxId = x => String((x && (x.wordId || x.id)) || '');
+    const wrongIds = new Set((st.xueersiWrongs || []).map(w=>String(w.wordId)));
     const start = (seed*7) % all.length;
     for(let i=0; out.length<n && i<all.length*2; i++){
       const x = all[(start+i)%all.length];
       if(used.has(x.id)) continue;
-      if(wrongIds.has(x.id)) continue;
+      if(wrongIds.has(String(x.id)) || wrongIds.has(String(x.wordId||''))) continue;
       used.add(x.id);
-      out.push({wordId:x.id, en:x.en, zh:x.zh, example:x.example, date:today});
+      out.push({wordId:_wxId(x), en:x.en, zh:x.zh, phonetic:x.phonetic||'', date:today});
     }
     // 2) 当日错题追加在 10 题之后（redo 标记），下一日重做
-    const wrongs = (st.xueersiWrongs || []).map(w=>all.find(x=>x.id===w.wordId)).filter(Boolean);
+    //    兼容旧存档：历史错题本里存的是词汇 id（无 w_ 前缀），两种键都试着匹配
+    const poolById = {};
+    all.forEach(x=>{ poolById[String(x.id)] = x; if(x.wordId) poolById[String(x.wordId)] = x; });
+    const wrongs = (st.xueersiWrongs || []).map(w=>poolById[String(w.wordId)]).filter(Boolean);
     for(const w of wrongs){
       if(used.has(w.id)) continue;
       used.add(w.id);
-      out.push({wordId:w.id, en:w.en, zh:w.zh, example:w.example, date:today, redo:true});
+      out.push({wordId:_wxId(w), en:w.en, zh:w.zh, phonetic:w.phonetic||'', date:today, redo:true});
     }
     // R59-3 / R-T1：第 11、12 题 —— 语法默写题（题源：中译英题库，随机 2 道，看中文默英文）
     out.push(...xsBuildDailyGrammar());
@@ -17516,7 +17834,7 @@ be 动词：am / is → was；are → were
     const total = (xsBuildDailyWords()||[]).length || 10;
     return Object.assign({}, base, {total: base.total || total});
   }
-  function xsRecordAnswer(wordId, correct){
+  function xsRecordAnswer(wordId, correct, ans){
     const st = load();
     const today = todayStr();
     st.xueersiDailyResults = st.xueersiDailyResults || {};
@@ -17534,10 +17852,12 @@ be 动词：am / is → was；are → were
       if(!rec.correctIds.includes(wordId)) rec.correctIds.push(wordId);
       rec.correct = rec.correctIds.length;
       // R250-1：取消「语法默写题每题答对 +1⭐」规则，全部题目完成统一获得 2⭐
-      st.xueersiWrongs = st.xueersiWrongs.filter(x=>x.wordId !== wordId);
+      // R253-4：按「去 w_ 前缀归一」比对，兼容旧错题本 id 与题库 id 两种写法
+      const _wk = v => String(v||'').replace(/^w_/,'');
+      st.xueersiWrongs = st.xueersiWrongs.filter(x=>_wk(x.wordId) !== _wk(wordId));
     } else {
       // R59-3：语法默写题不进词汇错题本（次日按日期种子重新抽取）
-      if(String(wordId).indexOf('gq_') !== 0 && !st.xueersiWrongs.find(x=>x.wordId === wordId)) st.xueersiWrongs.push({wordId, since: today});
+      if(String(wordId).indexOf('gq_') !== 0 && !st.xueersiWrongs.find(x=>String(x.wordId).replace(/^w_/,'') === String(wordId).replace(/^w_/,''))) st.xueersiWrongs.push({wordId, since: today});
     }
     // R250-1：全部题目完成统一获得 2⭐（不论对错，只看是否全部提交；rec.rewarded 幂等不重复发放）
     if(!rec.rewarded && answeredCount >= rec.total){
@@ -17546,6 +17866,12 @@ be 动词：am / is → was；are → were
       st.archive.exp = (st.archive.exp||0) + 2;
     }
     save(st);
+    // R253-3：历次作答留痕（含答错），供「📒 已默写」弹窗归集；答对/答错都要写入
+    if(ans !== undefined){
+      const daily = xsBuildDailyWords() || [];
+      const item = daily.find(d=>String(d.wordId) === String(wordId)) || {};
+      xsLogAttempt({ date: today, wordId, en: item.en || '', zh: item.zh || '', ans: String(ans), ok: !!correct });
+    }
     return {ok:true, correct:rec.correct, total:rec.total, rewarded:rec.rewarded};
   }
   function xsDelete(kind, id){
@@ -17737,6 +18063,35 @@ be 动词：am / is → was；are → were
   function getTasksByCard(card){
     const st = load();
     return st.tasks.filter(t=>getTaskCard(t)===card);
+  }
+  // R253-2：首页打卡任务卡「主体点击是否跳转 / 跳到哪个板块」—— 逐条任务独立配置（设置中心·打卡任务设置）
+  //   task.jumpEnabled：false = 关闭跳转（卡片主体点击无反应）；缺省视为开启
+  //   task.jumpPage   ：目标板块页面 id（与 goPage 的页面 id 一致）；留空则回落到默认映射
+  const TASK_JUMP_PAGES = [
+    { page:'math',            label:'乐读数学' },
+    { page:'xueersi',         label:'学而思英语' },
+    { page:'newworld',        label:'新世界' },
+    { page:'newworld-yuwen',  label:'新世界 · 语文专区' },
+    { page:'newworld-english',label:'新世界 · 英语专区' }
+  ];
+  function getTaskJump(t){
+    if(!t) return { enabled:false, page:'', pages:TASK_JUMP_PAGES.slice() };
+    return {
+      enabled: t.jumpEnabled !== false,
+      page: String(t.jumpPage || ''),
+      pages: TASK_JUMP_PAGES.slice()
+    };
+  }
+  function setTaskJump(taskId, patch){
+    const st = load();
+    const t = st.tasks.find(x => String(x.id) === String(taskId));
+    if(!t) return { ok:false, msg:'未找到该任务' };
+    if(patch && typeof patch === 'object'){
+      if(patch.enabled !== undefined) t.jumpEnabled = !!patch.enabled;
+      if(patch.page !== undefined) t.jumpPage = String(patch.page || '');
+    }
+    save(st);
+    return { ok:true, task:t };
   }
   // 首页横幅：图片（dataURL）+ 中文标语 + 英文标语（家长模式可改）
   const DEFAULT_BANNER = {
@@ -18862,6 +19217,12 @@ be 动词：am / is → was；are → were
     load, save, resetData,
     tasksForDate, getRecord, toggleCheckIn, makeupDay, saveWrong,
     addTask, updateTask, deleteTask,
+    // R253-2：首页任务卡跳转独立配置
+    TASK_JUMP_PAGES, getTaskJump, setTaskJump,
+    // R253-4：词汇题库（词汇语法巩固题源）
+    xsWordPool, xsWordBankAdd, xsWordBankUpdate, xsWordBankDelete, xsWordBankGet, xsWordBankImportAll,
+    // R253-3：巩固打卡历次作答记录
+    xsLogAttempt, xsGetAnswerLog,
     recompute, buildWeeklyReport, buildMonthlyReport, buildReport,
     CROP_STAGES,
     plantCrop, waterPlot, sunPlot, harvestPlot, unlockPlot, plotsIn, newPlot, newUnlockedPlot,
@@ -18870,6 +19231,8 @@ be 动词：am / is → was；are → were
     defaultMathProblems,
     addMathProblem, updateMathProblem, toggleMathStar, deleteMathProblem,
     getMathNotes, addMathNote, delMathNote,
+    // R253-6：知识笔记打卡（已学 / 需巩固）
+    getMathNoteStatus, toggleMathNoteStatus, getMathNoteStat,
     setMathMastery, getMathByMastery, markMathMastered, toggleMathMastery, unmarkMathMastered, migrateMathMastery, mathTypes, addMathType, removeMathType, listMathTypes,
     getMathGroups, addMathGroup, addMathTypeToGroup, assignMathTypeToGroup, groupIdOfMathType, getDefaultMathGroupName,
     // R232-2/3：题型讲义（外置图片；R242 已删除本地 PDF 上传/展示）
@@ -21077,7 +21440,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       </div>`;
     }).join('');
     return `<div class="zx-wrap">
-      <div class="zx-head">📚 专项知识 <span class="zx-sub">《表现手法、修辞手法、表达方式.docx》整理 · ${cats.length} 大分类</span></div>
+      <div class="zx-head">📚 专项知识</div>
       <div class="zx-chips">${chips}</div>
       <div class="zx-cat-title">${esc(cat.icon||'')} ${esc(cat.title||'')} <span class="zx-count">${(cat.items||[]).length} 条</span></div>
       <div class="zx-grid">${cards}</div>
@@ -22005,8 +22368,10 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     // 主题顺序：按出现顺序收集（保证与 seed 顺序一致）
     const order = [];
     data.forEach(d=>{ if(!order.includes(d.part)) order.push(d.part); });
-    const tabs = ['全部', ...order];
-    const filtered = (_sucaiTab==='全部') ? data : data.filter(d=>d.part===_sucaiTab);
+    // R253-5：删除「全部」按键 —— 默认停在第一个主题，只能逐主题切换
+    const tabs = order.slice();
+    if(!_sucaiTab || tabs.indexOf(_sucaiTab) < 0) _sucaiTab = tabs[0] || '';
+    const filtered = data.filter(d=>d.part===_sucaiTab);
     const PER = 2;
     const total = Math.max(1, Math.ceil(filtered.length / PER));
     const pg = Math.min(Math.max(page||0,0), total-1);
@@ -22950,7 +23315,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       if(btn._egCileiBackBound) return; btn._egCileiBackBound = true;
       btn.addEventListener('click', (e)=>{ e.stopPropagation(); _egCileiSub = -1; rerender(); });
     });
-    // R252-5：8 个时态按键 → 单独加载对应时态详情；返回键退回八种时态按键列表
+    // R252-5：8 个时态按键 → 单独加载对应时态详情；R253-4 起标题栏常驻，直接用标题卡切换，已移除返回键
     slotBody.querySelectorAll('[data-eg-tense]').forEach(btn=>{
       if(btn._egTenseBound) return; btn._egTenseBound = true;
       btn.addEventListener('click', (e)=>{
@@ -22960,10 +23325,6 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         _egCileiSub = -1;
         rerender();
       });
-    });
-    slotBody.querySelectorAll('[data-eg-tense-back]').forEach(btn=>{
-      if(btn._egTenseBackBound) return; btn._egTenseBackBound = true;
-      btn.addEventListener('click', (e)=>{ e.stopPropagation(); _egTenseIdx = -1; rerender(); });
     });
     // R251-2：八种时态章节 —— 「📝 练习题」入口（只放一个，紧挨「➕ 添加」）；R252-5 资料板块 chip 已下线
     slotBody.querySelectorAll('[data-tn-board]').forEach(btn=>{
@@ -23499,9 +23860,9 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     const streak = calcStreak();
     const probs = genCalcProblems(_CALC_N);
     const dateLabel = today.slice(5).replace('-','-');
-    // R250-4：「每日一练」说明文字移动至连续打卡数据统计区域的左侧展示
-    const streakLine = `<div class="calc-streak-row">
-      <span class="calc-cal-hint">每日一练 · ${dateLabel}</span>
+    // R253-6：「每日一练」说明单独一行；连续打卡统计与打卡日历紧随其后、整行靠左排列
+    const streakLine = `<div class="calc-daily-hint">每日一练 · ${dateLabel}</div>
+    <div class="calc-streak-row">
       <div class="calc-streak">🔥 连续打卡 <b>${streak}</b> 天</div>
       <button type="button" class="calc-cal-btn" data-calc-cal title="打开打卡日历：按年月查看每天 正确题数 / 总题数">📅 打卡日历</button>
     </div>`;
@@ -25213,6 +25574,40 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     const i = G.findIndex(s => s && s.key === 'shitai');
     return i < 0 ? 0 : i;
   }
+  // R253-5：恢复被误删的时态资料 —— 时态详情页按标题匹配《时态.docx》对应板块，整段讲解重新渲染
+  function tnSectionsFor(title){
+    const seed = tnSeed();
+    const boards = (seed && Array.isArray(seed.boards)) ? seed.boards : [];
+    const clean = x => String(x||'').replace(/^[①②③④⑤⑥⑦⑧⑨⑩\s\.、]+/,'').trim();
+    const key = clean(title);
+    const b = boards.find(x => {
+      const t = clean(x.title);
+      return !!t && !!key && (t === key || key.indexOf(t) >= 0 || t.indexOf(key) >= 0);
+    });
+    return b ? (b.secs || []) : [];
+  }
+  function tnSecCards(secs){
+    return (secs||[]).map(s=>`
+      <div class="tn-sec-card">
+        <div class="tn-sec-h">${esc(s.h||'')}</div>
+        <div class="tn-sec-lines">${(s.lines||[]).map(x=>`<div class="tn-line">${esc(x)}</div>`).join('')}</div>
+      </div>`).join('');
+  }
+  // 两个「标志词汇总」板块不属于单一进时态，统一挂在 8 个时态按键下方
+  function tnFlagBoardsHtml(){
+    const seed = tnSeed();
+    const boards = (seed && Array.isArray(seed.boards)) ? seed.boards : [];
+    const flags = boards.filter(b => /标志/.test(String(b.title||'')));
+    if(!flags.length) return '';
+    return `<div class="tn-flag-wrap">
+      <div class="tn-wrap-h">📚 时态标志词汇总</div>
+      ${flags.map(b=>`
+        <div class="tn-flag-board">
+          <div class="tn-flag-title">${esc(b.icon||'')} ${esc(b.title||'')}<span class="tn-tag">${esc(b.tag||'')}</span></div>
+          <div class="tn-sec-grid">${tnSecCards(b.secs)}</div>
+        </div>`).join('')}
+    </div>`;
+  }
   // 「内容整合后分板块展示」：7 个板块 chip 切换（5 个时态精讲 + 2 组标志词汇总）
   function tnBoardsHtml(){
     const seed = tnSeed();
@@ -25405,32 +25800,43 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       const tnPracticeBtn = isShitai ? `<button class="eg-tn-practice-btn" data-tn-practice="1" title="进入时态练习题页面">📝 练习题</button>` : '';
       if(isShitai){
         const blocks = sec.blocks || [];
+        // R253-5：八个时态标题卡一行排开；标题栏固定常驻（详情页同样保留，直接点卡切换，无需返回键）
+        const tenseNavHtml = (active)=>`<div class="eg-tense-nav">${blocks.map((b,bi)=>
+          `<button class="eg-tense-go${bi===active?' active':''}" data-eg-tense="${bi}">${esc(b.h||'')}</button>`).join('')}</div>`;
         if(_egTenseIdx >= 0 && _egTenseIdx < blocks.length){
           const b = blocks[_egTenseIdx];
           const cid = secKey + '#b' + _egTenseIdx + '#' + (b.h||'');
           bodyHtml = `
         <div class="eg-tense-detail">
-          <div class="eg-sec-head">
-            <span class="eg-sec-tag">时态详情</span>
-            <span class="eg-sec-title">⏰ ${esc(b.h||'')}</span>
-            <button class="eg-back-btn" data-eg-tense-back="1">← 返回八种时态</button>
-            ${tnPracticeBtn}${addBtnHtml}
+          <div class="eg-tense-stickyhead">
+            <div class="eg-sec-head">
+              <span class="eg-sec-tag">时态详情</span>
+              <span class="eg-sec-title">⏰ ${esc(b.h||'')}</span>
+              ${tnPracticeBtn}${addBtnHtml}
+            </div>
+            ${tenseNavHtml(_egTenseIdx)}
           </div>
-          <div class="eg-sec-intro">点击卡片即可标记为「已掌握」；当前页面只加载本时态详情。</div>
+          <div class="eg-sec-intro">点击卡片即可标记为「已掌握」；点上方的时态标题卡可直接切换时态。</div>
           <div class="eg-block-grid">${_egBlockHtml(cid, b)}</div>
+          ${(()=>{ const secs = tnSectionsFor(b.h); return secs.length ? `<div class="tn-detail-wrap">
+            <div class="tn-wrap-h">📚 时态资料精讲 <span class="tn-sub">《时态.docx》整理 · 共 ${secs.length} 个板块</span></div>
+            <div class="tn-sec-grid">${tnSecCards(secs)}</div>
+          </div>` : ''; })()}
           ${myCardsHtml}
         </div>`;
         } else {
-          const tenseBtns = blocks.map((b,bi)=>`<button class="eg-tense-go" data-eg-tense="${bi}"><span class="eg-tense-go-no">${bi+1}</span>${esc(b.h||'')}</button>`).join('');
           bodyHtml = `
         <div class="eg-tense-wrap">
-          <div class="eg-sec-head">
-            <span class="eg-sec-tag">${esc(sec.tag||'语法')}</span>
-            <span class="eg-sec-title">${sec.icon} ${esc(sec.title)}</span>
-            ${tnPracticeBtn}${addBtnHtml}
+          <div class="eg-tense-stickyhead">
+            <div class="eg-sec-head">
+              <span class="eg-sec-tag">${esc(sec.tag||'语法')}</span>
+              <span class="eg-sec-title">${sec.icon} ${esc(sec.title)}</span>
+              ${tnPracticeBtn}${addBtnHtml}
+            </div>
+            ${tenseNavHtml(-1)}
           </div>
           <div class="eg-sec-intro">${esc(sec.intro||'')}点击时态按键，单独加载对应时态详情。</div>
-          <div class="eg-tense-nav">${tenseBtns}</div>
+          ${tnFlagBoardsHtml()}
           ${myCardsHtml}
         </div>`;
         }
@@ -25681,7 +26087,6 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     return `<div class="en3500-wrap">
       <div class="en3500-head">
         <span class="en3500-title">🔠 3500 个高频常用英语单词（分类版）</span>
-        <span class="en3500-hint">按分类生成卡片 · 每页 1 个分类 · 单词双列展示 · 完成打卡 +5⭐（可撤销，刷新不丢）</span>
       </div>
       <div class="en3500-grid">${cards}</div>
       <div class="en3500-pager">
@@ -30203,6 +30608,8 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   // R252-2：仅「新世界 / 乐读数学 / 学而思英语」三大板块的任务卡片支持跳转；其余任务点击卡片不跳转
   const HOME_TASK_ALLOWED_PAGES = /^(math|xueersi|newworld(?:-[a-z-]+)?)$/;
   // R250-2 / R252-2：首页任务卡片 → 三大板块内部页面映射；未命中返回空串
+  // R253-2：逐条任务可在「设置中心 · 打卡任务设置 · 🧭 跳转」里单独配置开关与目标板块，
+  //         配置优先于默认映射；关闭跳转后卡片主体点击不弹窗、不跳转（圆形打卡键不受影响）。
   const HOME_TASK_PAGE_MAP = {
     '乐读计算小超市':'math', '乐读数学':'math',
     '学而思作业':'xueersi', 'KET学习':'newworld-english',
@@ -30211,7 +30618,11 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   function homeTaskPage(t){
     if(!t) return '';
     const n = String(t.name||'');
-    if(t.page && HOME_TASK_ALLOWED_PAGES.test(String(t.page))) return t.page;
+    const resolve = p => (p && HOME_TASK_ALLOWED_PAGES.test(String(p))) ? String(p) : '';
+    if(t.jumpEnabled === false) return '';
+    const cfgPage = resolve(t.jumpPage);
+    if(cfgPage) return cfgPage;
+    if(t.page){ const r = resolve(t.page); if(r) return r; }
     if(HOME_TASK_PAGE_MAP[n]) return HOME_TASK_PAGE_MAP[n];
     // 兼容旧存档 / 家长自定义命名：按三大板块关键词兜底（大阅读 / 围棋等不再跳转）
     if(/乐读|计算小超市/.test(n)) return 'math';
@@ -31271,13 +31682,21 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   // R53-1：知识笔记独立卡片（按题型归属，展示在对应题型第一个内容卡片位置）
   // R93：卡片上的删除按键已按需求移除（题目区不再出现任何删除键）
   function mathNoteCardHtml(n){
-    return `<div class="math-card math-note-card status-bank" data-math-note-id="${esc(n.id)}">
+    // R253-6：知识笔记补齐打卡双键（□未学 / ✅已学 +1⭐ / 🔄需巩固），全板块统一
+    const nst = (S.getMathNoteStatus ? S.getMathNoteStatus(n.id) : 'bank');
+    const nmastered = nst === 'mastered', nneed = nst === 'notMastered';
+    const ncls = nmastered ? 'status-mastered' : (nneed ? 'status-notmastered' : 'status-bank');
+    return `<div class="math-card math-note-card ${ncls}" data-math-note-id="${esc(n.id)}">
       <div class="math-head">
         <span class="math-type-chip">${esc(n.type||'未分类')}</span>
         <span class="math-note-tag">📝 知识笔记</span>
       </div>
       <div class="math-body">
         <div class="math-q"><span class="math-q-label">笔记</span>${renderMathRichText(n.body||'')}${n.img?`<img class="math-inline-img" src="${n.img}" alt="笔记照片" loading="lazy" decoding="async">`:''}</div>
+      </div>
+      <div class="math-actions">
+        <button class="pbtn math-btn-mastery ${nmastered?'active':''}" data-math-note-status="${esc(n.id)}" data-target="mastered" title="${nmastered?'已打卡（点击取消）':'打卡 +1⭐'}">${nmastered?'✅已学':'□未学'}</button>
+        <button class="pbtn math-btn-need ${nneed?'active':''}" data-math-note-status="${esc(n.id)}" data-target="notMastered" title="需巩固（移入需巩固板块）">🔄 需巩固</button>
       </div>
     </div>`;
   }
@@ -35017,9 +35436,6 @@ function renderKMAdmin(){
   }
   function renderXueersiSummary(){
     if(xsCat === 'stories') xsCat = 'words'; // V12.3：仅过滤绘本；恢复语法
-    // R252-1：语法卡例句「一键导入题库」按键仅语法子页显示
-    const xsImportAllBtn = $('#btnXsImportAll');
-    if(xsImportAllBtn) xsImportAllBtn.hidden = (xsCat !== 'grammar');
     $$('.xs-summary-pane .xs-sub-tabs [data-xs-cat]').forEach(b=>b.classList.toggle('active', b.dataset.xsCat===xsCat));
     // R218-1：课堂笔记子板块（与「新世界·英语专区·重点知识」功能/交互完全一致）
     if(xsCat === 'notes'){ renderXsNotes(); return; }
@@ -35148,7 +35564,10 @@ function renderKMAdmin(){
     const total = rec.total || daily.length;
     const correct = rec.correct || 0;
     const wrongCount = (daily.filter(d=>d.redo)||[]).length;
-    const bankCount = ((S.xsGrammarPool && S.xsGrammarPool()) || []).length;
+    // R253-4：题库 = 词汇题 + 语法题（巩固打卡题目全部从此题库抽取）
+    const wordBankCount = (S.xsWordPool ? (S.xsWordPool()||[]).length : 0);
+    const gramBankCount = (S.xsGrammarPool ? (S.xsGrammarPool()||[]).length : 0);
+    const bankCount = wordBankCount + gramBankCount;
     const target = $('#xsSummaryList');
     if(!target) return;
     // V31：将「打卡说明 + 统计」并入共享的词汇说明区域（.xs-summary-head / #xsSummaryHint），不再单独占列表内一行
@@ -35173,120 +35592,126 @@ function renderKMAdmin(){
     if(xsFilterBtnCk) xsFilterBtnCk.hidden = true;
     const hintEl = $('#xsSummaryHint');
     if(hintEl){
+      // R253-3：已答对数据下方依次为「📚 题库」「📒 已默写」两个按键（题库在已默写左侧）
       hintEl.innerHTML = `<div class="xs-adv-head-in">
         <div class="xs-adv-head-main">
           <div class="xs-adv-mascot" title="豹警官 · 单词守卫"><span class="xs-adv-mascot-leo">🐆</span><span class="xs-adv-mascot-badge" aria-hidden="true">👮</span></div>
           <div class="xs-adv-head-text">
             <div class="xs-adv-title">🎯 今日巩固打卡 · 单词闯关乐园</div>
-            <div class="xs-adv-sub">看中文默写英文 · 全部 ${total} 题完成统一获得 <b>+2⭐</b> · 当日未做完则整组顺延到次日</div>
+            <div class="xs-adv-sub">看中文默写英文 · 全部 ${total} 题填写完点底部「✅ 统一提交」· 全部完成统一 +2⭐ · 当日未做完则整组顺延到次日</div>
           </div>
         </div>
         <div class="xs-adv-head-side">
           <div class="xs-adv-progress">已答对 <b>${correct}</b>/${total}</div>
           <div class="xs-adv-stars">${stars}</div>
+          <div class="xs-adv-acts">
+            ${isChild()?'':`<button type="button" class="xs-adv-act-btn bank" id="btnXsGramBank" title="打开题库：词汇题 / 语法题两个分区">📚 题库（${bankCount}）</button>`}
+            <button type="button" class="xs-adv-act-btn done" id="btnXsBankDone" title="查看今日已提交题目与历次作答记录">📒 已默写</button>
+          </div>
           ${wrongCount>0?`<span class="xs-adv-chip">🔁 ${wrongCount} 道昨日错题今日重做</span>`:''}
-          ${isChild()?'':`<button type="button" class="xs-adv-manage-gram" id="btnXsGramBank" title="打开语法题库（独立弹窗）">📚 语法题库（${bankCount}）</button>`}
         </div>
       </div>`;
     }
     if(!daily.length){
-      target.innerHTML = '<div class="xs-ci-banner">📒 学习汇总暂无词汇，请切换到「词汇」页用其它方式添加后，再来巩固打卡</div>';
+      target.innerHTML = '<div class="xs-ci-banner">📒 词汇题库暂无题目，请到「📚 题库」→「📥 一键导入词汇」导入，或用「＋ 新增」添加后，再来巩固打卡</div>';
       return;
     }
-    // V34：巩固打卡题卡重排版为三区（中文释义区 / 答案填写区 / 提交区），10 题同框；错题追加在 10 题之后重做
-    // R40-5：拆分 已答对(ok) → 移到主题后「已默写」卡；保留 默写中(!answered) + 待巩固(answered&!ok) 在主「巩固打卡」卡
-    const cardHtml = (it,i, locked=false)=>{
+    // R253-3：题卡三区（中文释义 / 作答 / 状态）；移除每题独立提交键，改为页面底部统一提交
+    //  - 答错可反复重答，输入框保留上一次作答
+    //  - 正确答案默认不展示，仅家长模式可见
+    const logs = (S.xsGetAnswerLog ? (S.xsGetAnswerLog(S.todayStr()) || []) : []);
+    const lastBy = {};
+    logs.forEach(a=>{ lastBy[String(a.wordId)] = a.ans; });
+    const showAns = !isChild();
+    const cardHtml = (it,i)=>{
       const wid = it.wordId;
       const answered = !!(rec.answered && rec.answered[wid] !== undefined);
-      const ok = answered ? rec.answered[wid] : false;
-      const status = locked?'done':(answered?(ok?'done':'bad'):'');
-      const statusTxt = locked?'已会':(answered?(ok?'已会':'待巩固'):'默写中');
-      // R45-8：答错（待巩固）的题卡保留输入框可再次提交；正确答案直接标在中文题目下方
-    const editable = !locked && (!answered || !ok);
-    return `<div class="xs-adv-card ${status} ${it.redo?'redo':''}" data-xs-cid="${esc(wid)}">
+      const ok = answered ? !!rec.answered[wid] : false;
+      const editable = !ok;
+      const status = ok ? 'done' : (answered ? 'bad' : '');
+      const statusTxt = ok ? '已会' : (answered ? '待巩固' : '默写中');
+      const lastAns = lastBy[String(wid)] || '';
+      return `<div class="xs-adv-card ${status} ${it.redo?'redo':''}" data-xs-cid="${esc(wid)}">
       <div class="xs-adv-no">
         <span class="xs-adv-no-idx">第 ${i+1} 题${it.grammar?' 📐语法':''}</span>
-        <span class="xs-adv-status ${locked?'ok':(answered?(ok?'ok':'bad'):'todo')}">${statusTxt}</span>
+        <span class="xs-adv-status ${ok?'ok':(answered?'bad':'todo')}">${statusTxt}</span>
         ${it.grammar && !isChild() && !it.fromSeed?`<span class="xs-adv-gram-ops"><button type="button" class="xs-adv-gram-op" data-xs-gram-edit="${esc(it.grammarId)}" title="修改此题">✎</button><button type="button" class="xs-adv-gram-op" data-xs-gram-del="${esc(it.grammarId)}" title="删除此题">✕</button></span>`:''}
       </div>
-        <div class="xs-adv-zh" title="${esc(it.zh)}"><span class="xs-adv-zh-txt">${esc(it.zh)}</span>${(answered||locked)?`<span class="xs-adv-ans">正确答案：${esc(it.en)}</span>`:''}</div>
+        <div class="xs-adv-zh" title="${esc(it.zh)}"><span class="xs-adv-zh-txt">${esc(it.zh)}</span>${showAns&&answered?`<span class="xs-adv-ans">正确答案：${esc(it.en)}</span>`:''}</div>
         <div class="xs-adv-input">
           ${editable ? `
-            <input class="xs-adv-input-box" type="text" data-xs-cidate="${esc(wid)}" placeholder="写英文～" autocomplete="off" maxlength="120" />
+            <input class="xs-adv-input-box" type="text" data-xs-cidate="${esc(wid)}" value="${esc(lastAns)}" placeholder="写英文～" autocomplete="off" maxlength="120" />
           ` : `
-            <div class="xs-card-en">${esc(it.en)}</div>
-          `}
-        </div>
-        <div class="xs-adv-submit">
-          ${editable ? `
-            <button type="button" class="primary-btn xs-adv-submit-btn" data-xs-cidate-submit="${esc(wid)}">提交</button>
-          ` : `
-            <div class="xs-adv-result ${locked||ok?'ok':'bad'}">
-              <span class="xs-adv-mark">${locked||ok?'✓':'✗'}</span>
-            </div>
+            <div class="xs-adv-own"><span class="xs-adv-mark ok">✓</span><span class="xs-adv-own-txt">${esc(lastAns||it.en)}</span></div>
           `}
         </div>
       </div>`;
     };
-    // R40-5：拆分三组：① 待默写(ungraded) ② 已答错(待巩固) ③ 已答对(已默写)
-    // R49-3：全部题目提交后，答对的题目才移入「已默写」板块；未全部提交前，答对的题保留在打卡页原位（完成态展示）
-    const pending = daily.filter(d=>!(rec.answered && rec.answered[d.wordId]!==undefined));
-    const wrongList = daily.filter(d=> (rec.answered && rec.answered[d.wordId]===false));
-    const doneInlineList = daily.filter(d=> (rec.answered && rec.answered[d.wordId]===true));
-    const allSubmitted = daily.length>0 && pending.length===0; // 每题都已至少提交一次
-    const doneCount = allSubmitted ? doneInlineList.length : 0;
-    let listHtml;
-    if(allSubmitted){
-      // 全部提交后：主卡仅保留 可重做的错题；答对的移入「已默写」
-      listHtml = wrongList.map((it,i)=>cardHtml(it,i)).join('');
-    } else {
-      // 未全部提交：按原顺序完整展示（默写中 + 已答对原位完成态 + 待巩固错题重做）
-      let sepDone = false, sepGram = false;
-      listHtml = daily.map((it,i)=>{
-        let head = '';
-        if(it.redo && !sepDone){ sepDone = true; head = `<div class="xs-adv-sep">🔁 昨日错题重做 — 做完也计入今日打卡</div>`; }
-        // R59-3：语法默写题分隔条（第 11、12 题）
-        if(it.grammar && !sepGram){ sepGram = true; head += `<div class="xs-adv-sep">📐 语法默写 — 看中文例句翻译，默写英文句子</div>`; }
-        return head + cardHtml(it,i);
-      }).join('');
-    }
-    // R250-1：语法题库改为独立弹窗（点击头部「📚 语法题库」按键加载），页面内不再内嵌题库说明卡
-    target.innerHTML = `<div class="xs-adv-cards">${listHtml}</div>${doneCount?`<div class="xs-done-redirect">📒 全部提交完成！已答对 ${doneCount} 个已移至「已默写」页 · 点上方「📚 语法题库」→「📒 已默写」查看</div>`:(allSubmitted?'':'<div class="xs-done-redirect xs-done-redirect-pending">完成全部题目并提交后，答对的题目会收进「📒 已默写」</div>')}`;
-    // R252-1：头部只保留「📚 语法题库」入口；「已默写」「新增语法题」「编辑」全部收进题库弹窗
+    // 按题序完整展示：默写中 + 待巩固 + 已答对（完成态原位显示）
+    let sepDone = false, sepGram = false;
+    const listHtml = daily.map((it,i)=>{
+      let head = '';
+      if(it.redo && !sepDone){ sepDone = true; head = `<div class="xs-adv-sep">🔁 昨日错题重做 — 做完也计入今日打卡</div>`; }
+      // R59-3：语法默写题分隔条（第 11、12 题）
+      if(it.grammar && !sepGram){ sepGram = true; head += `<div class="xs-adv-sep">📐 语法默写 — 看中文例句翻译，默写英文句子</div>`; }
+      return head + cardHtml(it,i);
+    }).join('');
+    const editableCount = daily.filter(d=>!(rec.answered && rec.answered[d.wordId] === true)).length;
+    const submitBar = `<div class="xs-adv-submitbar">
+      <div class="xs-adv-submitbar-hint">共 ${total} 题 · 待完成 <b>${editableCount}</b> 题 · 答错的题改完可以再提交，直到答对为止</div>
+      <button type="button" class="primary-btn xs-adv-submitall" id="btnXsSubmitAll"${editableCount?'':' disabled'}>✅ 统一提交</button>
+    </div>`;
+    // R253-3：已默写入口在头部，底部只保留统一提交
+    target.innerHTML = `<div class="xs-adv-cards">${listHtml}</div>${submitBar}`;
+    // R253-4：头部「📚 题库」打开词汇/语法双分区题库；「📒 已默写」打开默写归集弹窗
     const bankBtn = $('#btnXsGramBank');
     if(bankBtn) bankBtn.onclick = ()=> openXsGramBank();
-    // 提交绑定（交互逻辑保持不变）
-    target.querySelectorAll('[data-xs-cidate-submit]').forEach(b=>{
-      b.onclick = ()=>{
-        // R48-6：dataset 键名修正 —— data-xs-cidate-submit → xsCidateSubmit（原 xsCidate 取到 undefined 导致提交无效）
-        const wid = b.dataset.xsCidateSubmit;
-        const input = target.querySelector(`[data-xs-cidate="${wid}"]`);
-        if(!input) return;
-        // R-T1：中译英判分归一化 —— 忽略大小写/标点/空白，并把 iPad 智能引号（U+2018/2019）与直撇号统一，
-        //        避免 don't / don’t 因设备自动转换被误判为答错。
-        const normXs = s => String(s||'').toLowerCase()
-          .replace(/[\u2018\u2019\u02bc]/g, "'")
-          .replace(/[.。,，!！?？]/g,'').replace(/\s+/g,' ').trim();
-        const ans = normXs(input.value);
-        const expected = normXs((daily.find(x=>x.wordId===wid)||{}).en);
-        if(!ans){ toast('请先输入答案哦'); return; }
-        const ok = !!ans && !!expected && ans === expected;
-        const r = S.xsRecordAnswer(wid, ok);
-        if(ok){
-          try{ playCheckinSound(); }catch(_){}
-          toast(r.rewarded ? '🎉 今日全部完成 +2⭐！' : '✅ 答对啦！');
-        } else {
-          toast('❌ 答错，已加入错题本（明日重现）');
-        }
+    const doneBtn = $('#btnXsBankDone');
+    if(doneBtn) doneBtn.onclick = ()=> openXsDictation();
+    // R253-3：统一提交 —— 一次判分所有已填写题目，未填写的保留原状态
+    const normXs = s => String(s||'').toLowerCase()
+      .replace(/[\u2018\u2019\u02bc]/g, "'")
+      .replace(/[.。,，!！?？]/g,'').replace(/\s+/g,' ').trim();
+    const submitBtn = $('#btnXsSubmitAll');
+    if(submitBtn){
+      submitBtn.onclick = ()=>{
+        if(submitBtn.disabled) return;
+        const inputs = Array.from(target.querySelectorAll('[data-xs-cidate]'));
+        const filled = inputs.filter(inp => String(inp.value||'').trim());
+        if(!filled.length){ toast('请先填写答案哦'); return; }
+        let okN = 0, badN = 0, rewarded = false;
+        filled.forEach(inp=>{
+          const wid = inp.dataset.xsCidate;
+          const item = daily.find(x=>String(x.wordId) === String(wid)) || {};
+          const ans = normXs(inp.value);
+          const expected = normXs(item.en);
+          const ok = !!ans && !!expected && ans === expected;
+          const r = S.xsRecordAnswer(wid, ok, String(inp.value||'').trim());
+          if(r && r.rewarded) rewarded = true;
+          if(ok) okN++; else badN++;
+        });
+        if(okN){ try{ playCheckinSound(); }catch(_){} }
+        const left = inputs.length - filled.length;
+        toast('✅ 答对 ' + okN + ' 题' + (badN?(' · ❌ 答错 ' + badN + ' 题，可改完再提交'):'')
+          + (left?(' · 还有 ' + left + ' 题未填写'):'')
+          + (rewarded?' · 🎉 今日全部完成 +2⭐':''));
         renderXsCheckin();
         renderHome();
+        const dm = document.getElementById('modalXsDictation');
+        if(dm && !dm.hidden) renderXsDictation();
       };
-    });
-    // 回车提交
+    }
+    // 回车 = 统一提交（不再有单题提交键）
     target.querySelectorAll('[data-xs-cidate]').forEach(inp=>{
-      inp.addEventListener('keydown', e=>{ if(e.key==='Enter'){ const btn = target.querySelector(`[data-xs-cidate-submit="${inp.dataset.xsCidate}"]`); if(btn) btn.click(); } });
+      inp.addEventListener('keydown', e=>{
+        if(e.key === 'Enter'){
+          e.preventDefault();
+          const btn = $('#btnXsSubmitAll');
+          if(btn && !btn.disabled) btn.click();
+        }
+      });
     });
-    // R252-1：「＋ 新增语法题」已移入语法题库弹窗；题卡内 ✎/✕ 编辑删除（家长）保留
+    // R252-1：题卡内 ✎/✕ 编辑删除（家长）保留
     target.querySelectorAll('[data-xs-gram-edit]').forEach(b=>{
       b.onclick = e=>{ e.stopPropagation(); openXsEditGrammar(b.dataset.xsGramEdit); };
     });
@@ -35298,18 +35723,6 @@ function renderKMAdmin(){
         confirmDelete((g && g.title) || '这道语法题', ()=>{ S.xsDelete('grammar', gid); toast('已删除'); renderXsCheckin(); });
       };
     });
-    // R40-5：已默写卡片的翻页绑定（紧跟在主巩固打卡后面）
-    const donePager = target.querySelector('#xsAdvDonePager');
-    if(donePager){
-      donePager.querySelectorAll('[data-done-page]').forEach(b=>{
-        b.onclick = ()=>{
-          const p = parseInt(b.dataset.donePage, 10);
-          if(!p || p < 1) return;
-          window.xsDonePage = p;
-          renderXsCheckin();
-        };
-      });
-    }
   }
   // R252-1：语法内容例句 → 语法题库（自动一键导入 / 手动单条导入）
   function xsGramExamplePairs(){
@@ -35343,96 +35756,200 @@ function renderKMAdmin(){
     const modal = document.getElementById('modalXsGramBank');
     if(r && r.ok && modal && !modal.hidden) renderXsGramBankModal();
   }, true);
-  // R252-1：已默写内容（原 done 子页签功能）在语法题库弹窗内展示
-  function xsBankDoneHtml(){
+  // ===== R253-3：📒 已默写 —— 归集「今日提交过的默写题」+「历次作答记录（正确 / 错误全留痕）」=====
+  function xsTryTime(ts){
+    try{
+      const d = new Date(Number(ts) || Date.now());
+      const p = n => (n<10?'0':'')+n;
+      return p(d.getHours()) + ':' + p(d.getMinutes());
+    }catch(e){ return ''; }
+  }
+  function xsDictationHtml(){
     const daily = (S.xsBuildDailyWords ? S.xsBuildDailyWords() : []) || [];
     const rec = (S.xsGetTodayResult ? S.xsGetTodayResult() : {}) || {};
     const answered = rec.answered || {};
-    // R49-3 / R252-1：沿用「全部题目提交后才入已默写」规则（搬进题库弹窗后不变）
-    const total = Number(rec.total) || daily.length;
-    const answeredCount = Object.keys(answered).length;
-    const allSubmitted = total > 0 && answeredCount >= total;
-    const doneList = allSubmitted ? daily.filter(d => answered[d.wordId] === true) : [];
-    if(!doneList.length){
-      return allSubmitted
-        ? '<div class="xs-bank-empty">今天还没有已默写的题目，完成巩固打卡并答对后会出现在这里～</div>'
-        : '<div class="xs-bank-empty">今天还没有已默写的题目 —— 完成全部 ' + total + ' 道题并提交后，答对的题目会收进「📒 已默写」～</div>';
+    const logs = (S.xsGetAnswerLog ? (S.xsGetAnswerLog(S.todayStr()) || []) : []);
+    const byWid = {};
+    logs.forEach(a=>{ const k = String(a.wordId||''); (byWid[k] = byWid[k] || []).push(a); });
+    const list = daily.filter(d => byWid[String(d.wordId)] || answered[d.wordId] !== undefined);
+    if(!list.length){
+      return '<div class="xs-bank-empty">今天还没有提交过默写题目 —— 完成「词汇语法巩固」并点「✅ 统一提交」后，题目与历次作答会自动收进这里～</div>';
     }
-    return `<div class="xs-done-wrap"><div class="xs-done-grid">${doneList.map((it,i)=>`
-      <div class="xs-done-item"><span class="xs-done-idx">${i+1}</span><span class="xs-done-zh" title="${esc(it.zh||'')}">${esc(it.zh||'')}</span><span class="xs-done-en" title="${esc(it.en||'')}">${esc(it.en||'')}</span><span class="xs-done-mark">✓</span></div>`).join('')}</div></div>`;
+    const okCount = list.filter(d=>answered[d.wordId]===true).length;
+    const showAns = !isChild();
+    return `<div class="xs-dict-wrap">
+      <div class="xs-dict-head">
+        <span class="xs-dict-head-t">📒 今日已提交 <b>${list.length}</b> 题 · 已答对 <b>${okCount}</b> 题</span>
+        <span class="xs-dict-head-s">历次作答 ${logs.length} 条 · 正确 / 错误全部留痕，可反复重答直到答对</span>
+      </div>
+      <div class="xs-dict-list">
+        ${list.map((it,idx)=>{
+          const tries = (byWid[String(it.wordId)]||[]).slice().sort((a,b)=>(a.ts||0)-(b.ts||0));
+          const okNow = answered[it.wordId] === true;
+          return `<div class="xs-dict-item ${okNow?'ok':'bad'}" data-xs-dict-item="${esc(it.wordId)}">
+            <div class="xs-dict-top">
+              <span class="xs-dict-no">${idx+1}</span>
+              <span class="xs-dict-zh">${esc(it.zh||'')}</span>
+              ${it.grammar?'<span class="xs-dict-kind">📐语法</span>':''}
+              <span class="xs-dict-state ${okNow?'ok':'bad'}">${okNow?'✅ 已答对':'🔄 待巩固'}</span>
+            </div>
+            ${showAns?`<div class="xs-dict-ans">正确答案：${esc(it.en||'')}</div>`:''}
+            <div class="xs-dict-tries">
+              ${tries.length ? tries.map((t,k)=>`<div class="xs-dict-try ${t.ok?'ok':'bad'}">
+                <span class="xs-dict-try-no">第 ${k+1} 次</span>
+                <span class="xs-dict-try-time">${esc(xsTryTime(t.ts))}</span>
+                <span class="xs-dict-try-ans">${esc(t.ans||'（未填写）')}</span>
+                <b class="xs-dict-try-mark">${t.ok?'✓':'✗'}</b>
+              </div>`).join('') : '<div class="xs-dict-try none">本题暂无作答记录</div>'}
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
   }
-  // R250-1 / R252-1：语法题库独立弹窗 —— 浏览 / 已默写 / 编辑修改 / 新增语法题 / 例句导入
+  function renderXsDictation(){
+    const body = $('#xsDictationBody');
+    if(body) body.innerHTML = xsDictationHtml();
+  }
+  function openXsDictation(){
+    renderXsDictation();
+    showModal('#modalXsDictation');
+  }
+  // ===== R253-4：📚 题库 —— 词汇题 / 语法题双分区；词汇语法巩固的题目全部从此题库抽取 =====
+  let _xsBankSec = 'words';
+  function xsBankSecId(){ return window.xsBankSec === 'grammar' ? 'grammar' : 'words'; }
+  function xsBankItemsOf(sec){ return sec === 'grammar' ? ((S.xsGrammarPool && S.xsGrammarPool()) || []) : ((S.xsWordPool && S.xsWordPool()) || []); }
+  function xsWordSummaryHtml(){
+    const list = (S.xsWordPool && S.xsWordPool()) || [];
+    if(!list.length) return '<div class="xs-bank-empty">词汇题库暂为空，点「📥 一键导入词汇」把词汇板块的单词收进来～</div>';
+    return `<div class="xs-bank-summary">
+      <div class="xs-bank-summary-h">📋 词汇汇总 <span>共 ${list.length} 个单词 · 仅展示单词 / 音标 / 释义</span></div>
+      <div class="xs-word-sum-list">
+        <div class="xs-word-sum-row is-head"><span class="c-no">#</span><span class="c-en">单词</span><span class="c-ph">音标</span><span class="c-zh">释义</span></div>
+        ${list.map((w,i)=>`<div class="xs-word-sum-row">
+          <span class="c-no">${i+1}</span>
+          <span class="c-en">${esc(w.en||'')}</span>
+          <span class="c-ph">${w.phonetic?('/'+esc(w.phonetic)+'/'):'—'}</span>
+          <span class="c-zh">${esc(w.zh||'')}</span>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }
+  function xsGramSummaryHtml(){
+    const list = (S.xsGetAll && S.xsGetAll('grammar')) || [];
+    if(!list.length) return '<div class="xs-bank-empty">语法板块暂无内容，可到「📐 语法」页新增语法知识点～</div>';
+    return `<div class="xs-bank-summary">
+      <div class="xs-bank-summary-h">📋 语法汇总 <span>共 ${list.length} 个语法知识点</span></div>
+      <div class="xs-gram-sum-list">
+        ${list.map((g,i)=>`<div class="xs-gram-sum-item">
+          <div class="xs-gram-sum-top"><span class="xs-gram-sum-no">${i+1}</span><span class="xs-gram-sum-title">${esc(g.title||'')}</span></div>
+          ${g.body?`<div class="xs-gram-sum-body">${esc(String(g.body).slice(0,220))}</div>`:''}
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }
   function renderXsGramBankModal(){
     const body = $('#xsGramBankBody');
     if(!body) return;
-    const bank = (S.xsGrammarPool ? S.xsGrammarPool() : []) || [];
-    const BANK_PAGE = 10;
-    const bankPages = Math.max(1, Math.ceil(bank.length / BANK_PAGE));
-    window.xsBankPage = Math.min(Math.max(0, window.xsBankPage || 0), bankPages - 1);
-    const bStart = window.xsBankPage * BANK_PAGE;
-    const bItems = bank.slice(bStart, bStart + BANK_PAGE);
-    const bankOpen = !!window.xsBankOpen;
+    const sec = xsBankSecId();
+    _xsBankSec = sec;
+    const isG = sec === 'grammar';
+    const items = xsBankItemsOf(sec);
+    const wordCount = xsBankItemsOf('words').length;
+    const gramCount = xsBankItemsOf('grammar').length;
+    const PAGE = 10;
+    const pages = Math.max(1, Math.ceil(items.length / PAGE));
+    window.xsBankPage = Math.min(Math.max(0, window.xsBankPage || 0), pages - 1);
+    const start = window.xsBankPage * PAGE;
+    const slice = items.slice(start, start + PAGE);
     const editMode = !!window.xsBankEditMode;
-    const doneView = !!window.xsBankDoneView;
     const editId = String(window.xsBankEditId || '');
-    const daily = S.xsBuildDailyWords();
-    const todayBankIds = daily.filter(d=>d.grammar).map(d=>String(d.wordId||'').replace(/^gq_/,''));
-    const bankList = bItems.length ? bItems.map((it,i)=>{
-      const isToday = todayBankIds.indexOf(String(it.id)) >= 0;
+    const summary = window.xsBankSummary === 'summary';
+    const daily = (S.xsBuildDailyWords && S.xsBuildDailyWords()) || [];
+    const todayIds = daily.filter(d => !!d.grammar === isG).map(d => String(d.wordId||'').replace(/^gq_/,''));
+    const listHtml = slice.length ? slice.map((it,i)=>{
+      const isToday = todayIds.indexOf(String(it.id)) >= 0;
       const isEditing = editMode && editId === String(it.id);
-      const ops = editMode && !isEditing
-        ? `<span class="xs-bank-ops"><button type="button" data-xs-bank-edit="${esc(it.id)}" title="修改此题">✎</button><button type="button" data-xs-bank-del="${esc(it.id)}" title="删除此题">✕</button></span>` : '';
-      const form = isEditing ? `<div class="xs-bank-edit-form">
+      const ops = (editMode && !isEditing)
+        ? `<span class="xs-bank-ops"><button type="button" data-xs-bank-edit="${esc(it.id)}" title="修改此题">✎</button><button type="button" data-xs-bank-del="${esc(it.id)}" title="删除此题">✕</button></span>`
+        : '';
+      const form = isEditing ? (isG ? `<div class="xs-bank-edit-form">
           <label>语法点 <input type="text" data-xs-bank-f="title" value="${esc(it.title||'')}"></label>
           <label>英文 <input type="text" data-xs-bank-f="en" value="${esc(it.en||'')}"></label>
           <label>中文 <input type="text" data-xs-bank-f="zh" value="${esc(it.zh||'')}"></label>
           <span class="xs-bank-form-ops"><button type="button" class="pbtn" data-xs-bank-save="${esc(it.id)}">💾 保存</button><button type="button" class="pbtn" data-xs-bank-cancel="1">取消</button></span>
-        </div>` : '';
+        </div>` : `<div class="xs-bank-edit-form">
+          <label>单词 <input type="text" data-xs-bank-f="en" value="${esc(it.en||'')}"></label>
+          <label>音标 <input type="text" data-xs-bank-f="phonetic" value="${esc(it.phonetic||'')}"></label>
+          <label>释义 <input type="text" data-xs-bank-f="zh" value="${esc(it.zh||'')}"></label>
+          <span class="xs-bank-form-ops"><button type="button" class="pbtn" data-xs-bank-save="${esc(it.id)}">💾 保存</button><button type="button" class="pbtn" data-xs-bank-cancel="1">取消</button></span>
+        </div>`) : '';
+      const mainHtml = isG
+        ? `<span class="xs-bank-title">${esc(it.title||'')}${isToday?'<span class="xs-bank-today-tag">今日抽中</span>':''}</span>
+           <span class="xs-bank-zh">${esc(it.zh||'')}</span>
+           <span class="xs-bank-en">${esc(it.en||'')}</span>`
+        : `<span class="xs-bank-word">${esc(it.en||'')}${isToday?'<span class="xs-bank-today-tag">今日抽中</span>':''}</span>
+           ${it.phonetic?`<span class="xs-bank-phon">/${esc(it.phonetic)}/</span>`:''}
+           <span class="xs-bank-zh">${esc(it.zh||'')}</span>`;
       return `<div class="xs-bank-item${isToday?' is-today':''}" data-xs-bank-item="${esc(it.id)}">
-        <span class="xs-bank-no">${bStart+i+1}</span>
-        <span class="xs-bank-main">
-          <span class="xs-bank-title">${esc(it.title)}${isToday?'<span class="xs-bank-today-tag">今日抽中</span>':''}</span>
-          <span class="xs-bank-zh">${esc(it.zh)}</span>
-          <span class="xs-bank-en">${esc(it.en)}</span>
-          ${form}
-        </span>
+        <span class="xs-bank-no">${start+i+1}</span>
+        <span class="xs-bank-main">${mainHtml}${form}</span>
         ${ops}
       </div>`;
-    }).join('') : '<div class="xs-bank-empty">题库暂无例句，请到「📐 语法」板块导入例句，或用「＋ 新增语法题」添加</div>';
-    // R252-1：编辑键与新增语法题按键同行摆放；已默写功能移入本弹窗
+    }).join('') : `<div class="xs-bank-empty">${isG
+        ? '语法题库暂无例句，点「⚡ 一键导入例句」把语法卡例句收进来，或用「＋ 新增」添加'
+        : '词汇题库暂为空，点「📥 一键导入词汇」把词汇板块的单词收进来，或用「＋ 新增」添加'}</div>`;
     const tools = `<div class="xs-bank-tools">
-      <button type="button" class="xs-bank-tool${doneView?' active':''}" data-xs-bank-act="done">📒 已默写</button>
+      <button type="button" class="xs-bank-tool${summary?' active':''}" data-xs-bank-summary="1">📋 ${isG?'语法汇总':'词汇汇总'}</button>
+      <button type="button" class="xs-bank-tool" data-xs-bank-act="add">＋ 新增</button>
+      <button type="button" class="xs-bank-tool" data-xs-bank-act="import">${isG?'⚡ 一键导入例句':'📥 一键导入词汇'}</button>
       <button type="button" class="xs-bank-tool${editMode?' active':''}" data-xs-bank-act="edit">✎ 编辑</button>
-      <button type="button" class="xs-bank-tool" data-xs-bank-act="add">＋ 新增语法题</button>
-      <button type="button" class="xs-bank-tool" data-xs-bank-act="import">⚡ 一键导入例句</button>
     </div>`;
-    const bankHtml = `
+    const secs = `<div class="xs-bank-secs">
+      <button type="button" class="xs-bank-sec${isG?'':' active'}" data-xs-bank-sec="words">🔤 词汇题 <b>${wordCount}</b></button>
+      <button type="button" class="xs-bank-sec${isG?' active':''}" data-xs-bank-sec="grammar">📐 语法题 <b>${gramCount}</b></button>
+    </div>`;
+    const tip = `<div class="xs-gram-bank-tip">${isG
+      ? '语法题库：中译英（看中文默英文）。支持修改已有题目、新增语法题、从语法卡例句一键导入；每日随机抽 2 题默写。'
+      : '词汇题库：看中文默写英文。支持修改已有题目、新增单词、从词汇板块一键导入；每日从中随机抽 10 个单词默写。'}</div>`;
+    body.innerHTML = `
+      ${secs}
       ${tools}
-      <div class="xs-gram-bank${bankOpen?' open':''}">
-        <div class="xs-gram-bank-head" data-xs-bank-toggle="1" title="点击展开 / 收起语法题库">
-          <span class="xs-gram-bank-ico">📚</span>
-          <span class="xs-gram-bank-name">${doneView?'已默写':(editMode?'编辑语法题库':'语法题库')}</span>
-          <span class="xs-gram-bank-count">${doneView?'今日答对题目':('共 '+bank.length+' 题 · 每日随机抽 2 题')}</span>
-          <span class="xs-gram-bank-caret">${bankOpen?'▴':'▾'}</span>
-        </div>
-        <div class="xs-gram-bank-body"${bankOpen?'':' hidden'}>
-          ${doneView ? xsBankDoneHtml() : `<div class="xs-gram-bank-tip">语法题库：中译英（看中文默英文），支持修改已有题目、新增语法题、从语法卡例句一键导入；每日随机抽 2 题默写。</div>
-          <div class="xs-gram-bank-list">${bankList}</div>
-          ${bankPages>1?`<div class="xs-gram-bank-pager">
-            <button type="button" class="xs-bank-page-btn" data-xs-bank-page="${window.xsBankPage-1}" ${window.xsBankPage<=0?'disabled':''}>‹ 上一页</button>
-            <span class="xs-bank-page-info">第 ${window.xsBankPage+1} / ${bankPages} 页</span>
-            <button type="button" class="xs-bank-page-btn" data-xs-bank-page="${window.xsBankPage+1}" ${window.xsBankPage>=bankPages-1?'disabled':''}>下一页 ›</button>
-          </div>`:''}`}
-        </div>
-      </div>`;
-    body.innerHTML = bankHtml;
+      ${summary ? (isG ? xsGramSummaryHtml() : xsWordSummaryHtml()) : `${tip}<div class="xs-gram-bank-list">${listHtml}</div>
+        ${pages>1?`<div class="xs-gram-bank-pager">
+          <button type="button" class="xs-bank-page-btn" data-xs-bank-page="${window.xsBankPage-1}" ${window.xsBankPage<=0?'disabled':''}>‹ 上一页</button>
+          <span class="xs-bank-page-info">第 ${window.xsBankPage+1} / ${pages} 页 · 共 ${items.length} 题</span>
+          <button type="button" class="xs-bank-page-btn" data-xs-bank-page="${window.xsBankPage+1}" ${window.xsBankPage>=pages-1?'disabled':''}>下一页 ›</button>
+        </div>`:''}`}`;
+    body.querySelectorAll('[data-xs-bank-sec]').forEach(b=>{
+      b.onclick = ()=>{
+        window.xsBankSec = b.getAttribute('data-xs-bank-sec') === 'grammar' ? 'grammar' : 'words';
+        window.xsBankPage = 0; window.xsBankEditId = ''; window.xsBankSummary = '';
+        renderXsGramBankModal();
+      };
+    });
+    body.querySelectorAll('[data-xs-bank-summary]').forEach(b=>{
+      b.onclick = ()=>{ window.xsBankSummary = window.xsBankSummary === 'summary' ? '' : 'summary'; window.xsBankEditId = ''; renderXsGramBankModal(); };
+    });
     body.querySelectorAll('[data-xs-bank-act]').forEach(b=>{
       b.onclick = ()=>{
         const act = b.getAttribute('data-xs-bank-act');
-        if(act === 'done'){ window.xsBankDoneView = !window.xsBankDoneView; window.xsBankEditMode = false; window.xsBankEditId = ''; window.xsBankOpen = true; }
-        else if(act === 'edit'){ window.xsBankEditMode = !window.xsBankEditMode; window.xsBankDoneView = false; window.xsBankEditId = ''; window.xsBankOpen = true; }
-        else if(act === 'add'){ window.__xsAddGramDefault = true; openXsAdd(); return; }
-        else if(act === 'import'){ xsGramAutoImportAll(); return; }
+        if(act === 'add'){
+          window.__xsAddKindForce = sec;
+          window.__xsAddFromBank = true;
+          window.__xsAddGramDefault = isG;
+          openXsAdd();
+          return;
+        }
+        if(act === 'import'){
+          if(isG){ xsGramAutoImportAll(); return; }
+          const r = (S.xsWordBankImportAll ? S.xsWordBankImportAll() : null);
+          toast(r && r.ok ? ('📥 已导入 ' + r.added + ' 个单词' + (r.skipped ? ('，跳过 ' + r.skipped + ' 个重复/缺释义') : '')) : '导入失败');
+          window.xsBankPage = 0; window.xsBankSummary = '';
+          renderXsGramBankModal();
+          return;
+        }
+        if(act === 'edit'){ window.xsBankEditMode = !window.xsBankEditMode; window.xsBankEditId = ''; window.xsBankSummary = ''; }
         renderXsGramBankModal();
       };
     });
@@ -35445,9 +35962,11 @@ function renderKMAdmin(){
     body.querySelectorAll('[data-xs-bank-save]').forEach(b=>{
       b.onclick = ()=>{
         const id = b.getAttribute('data-xs-bank-save');
-        const box = body.querySelector('[data-xs-bank-item="'+id+'"]');
-        const f = (n)=>{ const el = box ? box.querySelector('[data-xs-bank-f="'+n+'"]') : null; return el ? el.value : ''; };
-        const r = S.xsGramBankUpdate(id, {title:f('title'), en:f('en'), zh:f('zh')});
+        const box = body.querySelector('[data-xs-bank-item="' + id + '"]');
+        const f = (n)=>{ const el = box ? box.querySelector('[data-xs-bank-f="' + n + '"]') : null; return el ? el.value : ''; };
+        const r = isG
+          ? S.xsGramBankUpdate(id, { title:f('title'), en:f('en'), zh:f('zh') })
+          : S.xsWordBankUpdate(id, { en:f('en'), phonetic:f('phonetic'), zh:f('zh') });
         toast(r && r.ok ? '✅ 已保存修改' : ((r && r.msg) || '保存失败'));
         window.xsBankEditId = '';
         renderXsGramBankModal();
@@ -35456,29 +35975,29 @@ function renderKMAdmin(){
     body.querySelectorAll('[data-xs-bank-del]').forEach(b=>{
       b.onclick = ()=>{
         const id = b.getAttribute('data-xs-bank-del');
-        const it = S.xsGramBankGet ? S.xsGramBankGet(id) : null;
-        confirmDelete((it && (it.zh || it.en)) || '这道语法题', ()=>{
-          S.xsGramBankDelete(id); toast('已删除'); window.xsBankEditId = ''; renderXsGramBankModal();
+        const it = isG ? (S.xsGramBankGet ? S.xsGramBankGet(id) : null) : (S.xsWordBankGet ? S.xsWordBankGet(id) : null);
+        confirmDelete((it && (it.zh || it.en || it.title)) || (isG ? '这道语法题' : '这个单词'), ()=>{
+          if(isG) S.xsGramBankDelete(id); else S.xsWordBankDelete(id);
+          toast('已删除'); window.xsBankEditId = '';
+          renderXsGramBankModal();
         });
       };
     });
-    const bankHead = body.querySelector('[data-xs-bank-toggle]');
-    if(bankHead) bankHead.onclick = ()=>{ window.xsBankOpen = !window.xsBankOpen; renderXsCheckin(); renderXsGramBankModal(); };
     body.querySelectorAll('[data-xs-bank-page]').forEach(b=>{
       b.onclick = ()=>{
         const p = parseInt(b.dataset.xsBankPage, 10);
         if(isNaN(p) || p < 0 || b.disabled) return;
         window.xsBankPage = p;
-        window.xsBankOpen = true;
         renderXsGramBankModal();
       };
     });
   }
   function openXsGramBank(){
     window.xsBankOpen = true;
-    window.xsBankDoneView = false;
     window.xsBankEditMode = false;
     window.xsBankEditId = '';
+    window.xsBankSummary = '';
+    window.xsBankPage = 0;
     renderXsGramBankModal();
     showModal('#modalXsGramBank');
   }
@@ -35737,8 +36256,11 @@ function renderKMAdmin(){
     $('#xsAddParsedCount').textContent = '';
     // V12.3：根据当前 xsCat 默认选择分类
     // R252-1：从语法题库弹窗点「＋ 新增语法题」时默认选中「语法」分类
-    if($('#xsAddKind')) $('#xsAddKind').value = (xsCat === 'grammar' || window.__xsAddGramDefault) ? 'grammar' : 'words';
+    // R253-4：从题库弹窗进入时按分区（词汇题 / 语法题）预选分类
+    const forcedKind = (window.__xsAddKindForce === 'grammar' || window.__xsAddKindForce === 'words') ? window.__xsAddKindForce : '';
+    if($('#xsAddKind')) $('#xsAddKind').value = forcedKind || ((xsCat === 'grammar' || window.__xsAddGramDefault) ? 'grammar' : 'words');
     window.__xsAddGramDefault = false;
+    window.__xsAddKindForce = '';
     onXsAddKindChange();
     // V61-R2：复位保存键为「新增」态（防止上次编辑未保存残留）
     const save = $('#btnXsSave');
@@ -35769,10 +36291,13 @@ function renderKMAdmin(){
       const exampleZh = ($('#xsAddZh')||{}).value ? $('#xsAddZh').value.trim() : '';
       if(!en){ $('#xsAddWarn').textContent = '请填写词汇'; return; }
       S.xsAdd('words', { en, example, zh: wordZh, wordZh, exampleZh });
+      // R253-4：新增的词汇同步收进词汇题库（巩固打卡题目即从此题库抽取）
+      try{ if(S.xsWordBankAdd) S.xsWordBankAdd({ en, zh: wordZh }); }catch(e){}
       hideModal('#modalXsAdd');
       toast('✓ 已新增词汇「' + en + '」');
       xsCat = 'words';
       renderXueersiSummary();
+      if(window.__xsAddFromBank){ window.__xsAddFromBank = false; renderXsGramBankModal(); return; }
     } else if(kind === 'grammar'){
       const title = $('#xsAddGramTitle').value.trim();
       const body = $('#xsAddGramBody').value.trim();
@@ -35782,6 +36307,7 @@ function renderKMAdmin(){
       hideModal('#modalXsAdd');
       toast('✓ 已新增语法');
       xsCat = 'grammar';
+      if(window.__xsAddFromBank){ window.__xsAddFromBank = false; renderXsGramBankModal(); return; }
       // R66-1：若从巩固打卡页进入新增，保存后直接回到巩固打卡
       if(window.__xsReturnToCheckin){ window.__xsReturnToCheckin = false; renderXsCheckin(); }
       else { renderXueersiSummary(); }
@@ -38704,6 +39230,64 @@ function renderKMAdmin(){
         item.appendChild(btn);
       });
     });
+    applyTaskJumpButtons();
+  }
+  // R253-2：设置中心「打卡任务」弹窗 —— 每条任务注入「🧭 跳转」配置键（开启跳转 / 关闭跳转 + 目标板块）
+  function applyTaskJumpButtons(){
+    const BOXES = ['#settingsTaskReq','#settingsTaskOpt','#settingsTaskSport','#settingsTaskRoutine','#settingsTaskHouse'];
+    BOXES.forEach(sel=>{
+      const box = $(sel); if(!box) return;
+      box.querySelectorAll('.task-item').forEach(item=>{
+        if(item.querySelector('.task-jump-btn')) return;
+        const id = item.getAttribute('data-edit-task') || item.getAttribute('data-del-task');
+        if(!id) return;
+        const t = S.load().tasks.find(x=>String(x.id)===String(id));
+        if(!t) return;
+        const cfg = S.getTaskJump(t);
+        const on = cfg.enabled && !!homeTaskPage(t);
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'pbtn task-jump-btn' + (on ? ' on' : ' off');
+        btn.setAttribute('data-jump-task', id);
+        btn.textContent = on ? '🧭 跳转开' : '🧭 跳转关';
+        btn.title = '配置该任务卡片主体点击：是否跳转 / 跳到哪个板块';
+        btn.onclick = ()=> openTaskJumpSetting(id);
+        item.appendChild(btn);
+      });
+    });
+  }
+  function openTaskJumpSetting(taskId){
+    const t = S.load().tasks.find(x=>String(x.id)===String(taskId));
+    if(!t) return;
+    const cfg = S.getTaskJump(t);
+    const pages = S.TASK_JUMP_PAGES || [];
+    const nameEl = $('#jumpTaskName');
+    if(nameEl) nameEl.textContent = t.name || '未命名任务';
+    const enEl = $('#jumpEnabledSel');
+    if(enEl) enEl.value = cfg.enabled ? '1' : '0';
+    const pgEl = $('#jumpPageSel');
+    if(pgEl){
+      pgEl.innerHTML = pages.map(p=>`<option value="${esc(p.page)}">${esc(p.label)}</option>`).join('');
+      const cur = cfg.page || homeTaskPage(t) || (pages[0] && pages[0].page) || 'math';
+      pgEl.value = cur;
+      if(!pgEl.value) pgEl.value = (pages[0] && pages[0].page) || 'math';
+    }
+    const sync = ()=>{ if(pgEl) pgEl.disabled = !!(enEl && enEl.value === '0'); };
+    if(enEl && !enEl._bound){ enEl._bound = true; enEl.onchange = sync; }
+    sync();
+    const save = $('#btnJumpSave');
+    if(save){
+      save.onclick = ()=>{
+        const enabled = enEl ? (enEl.value === '1') : true;
+        const page = pgEl ? pgEl.value : '';
+        S.setTaskJump(taskId, { enabled, page });
+        hideModal('#modalTaskJump');
+        refreshSettingsTaskLists();
+        const label = (pages.find(p=>p.page===page) || {}).label || '';
+        toast(enabled ? ('🧭 已开启跳转：' + (t.name||'') + ' → ' + label) : ('🧭 已关闭跳转：' + (t.name||'')));
+      };
+    }
+    showModal('#modalTaskJump');
   }
   // ============ R85：设置中心 —— 各卡片弹窗路由 ============
   // R150-6：家长模式 —— 各板块打卡任务⭐奖励设置（新世界 / 乐读数学 / 学而思英语 / 大阅读 / 百科讲堂）
@@ -39714,6 +40298,22 @@ function renderKMAdmin(){
         openMathEditFor(editBtn.getAttribute('data-math-edit'), editBtn);
         return;
       }
+      // R253-6：知识笔记的「✅已学 / 🔄需巩固」—— 与 2026 春二 A+ 题目卡同一套逻辑
+      const noteFav = e.target.closest('[data-math-note-status]');
+      if(noteFav){
+        e.preventDefault(); e.stopPropagation();
+        const nid = noteFav.dataset.mathNoteStatus;
+        const ntarget = noteFav.dataset.target;
+        const nr = (S.toggleMathNoteStatus ? S.toggleMathNoteStatus(nid, ntarget) : null);
+        if(nr && nr.ok){
+          if(nr.status === 'mastered'){ toast('🎉 笔记已学 +1⭐'); playCheckinSound(); }
+          else if(nr.status === 'notMastered') toast('🔄 笔记已移至「需巩固」板块');
+          else toast('已恢复为未学');
+          renderMath(); renderHome();
+          if(mathTypeSel) renderMathContent();
+        }
+        return;
+      }
       const fav = e.target.closest('[data-math-toggle-mastery]');
       if(fav){
         const id = fav.dataset.mathToggleMastery;
@@ -40294,7 +40894,6 @@ function renderKMAdmin(){
     if($('#btnXsContentAdd')) $('#btnXsContentAdd').onclick = openXsAdd;
 // R168-2：语法筛选键 → 全部语法主题列表弹窗
 if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
-if($('#btnXsImportAll')) $('#btnXsImportAll').onclick = xsGramAutoImportAll;
     if($('#btnXsSave')) $('#btnXsSave').onclick = saveXsAdd;
     // V12.3：xsAddKind 词汇/语法 选择器 + onXsAddKindChange
     if($('#xsAddKind')) $('#xsAddKind').onchange = onXsAddKindChange;
