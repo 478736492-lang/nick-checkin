@@ -1192,3 +1192,504 @@ window.EN_TENSES_SEED = {
     ]
   }
 };
+
+// R255-3：八种时态「梳理去重 + 按板块划分」后的统一资料（与 EN_TENSES_SEED 并存，供八种时态详情页使用）
+window.EN_TENSES8_SEED = {
+  "source": "时态.docx（R255 梳理去重版）",
+  "boards": [
+    {
+      "key": "t8_1",
+      "icon": "①",
+      "title": "一般现在时",
+      "tag": "现在 · 习惯",
+      "intro": "表示经常性、习惯性的动作，客观事实，或现在的状态。",
+      "secs": [
+        {
+          "h": "1. 概念与用法",
+          "lines": [
+            "(1) 经常性、习惯性的动作：I get up at six every day.",
+            "(2) 客观事实或普遍真理：The sun rises in the east.",
+            "(3) 现在的状态、特征：She is tall and she likes music."
+          ]
+        },
+        {
+          "h": "2. 标志词",
+          "lines": [
+            "频率副词：always / usually / often / sometimes / seldom / never",
+            "时间短语：every day / every week / every morning / on Sundays",
+            "次数：once a week（每周一次）/ twice a month（每月两次）"
+          ]
+        },
+        {
+          "h": "3. 结构",
+          "lines": [
+            "肯定：主语 + 动词原形（主语为第三人称单数时用动词三单）",
+            "肯定（be）：主语 + am / is / are + 其它",
+            "否定：主语 + don't / doesn't + 动词原形",
+            "否定（be）：主语 + am / is / are + not + 其它",
+            "一般疑问：Do / Does + 主语 + 动词原形 ?",
+            "be 动词疑问：Am / Is / Are + 主语 + 其它 ?",
+            "特殊疑问：疑问词 + 一般疑问句（What do you do on Sundays?）"
+          ]
+        },
+        {
+          "h": "4. 动词三单变化",
+          "lines": [
+            "一般情况直接加 -s：play → plays",
+            "以 s, x, sh, ch, o 结尾加 -es：go → goes, watch → watches",
+            "辅音字母 + y 结尾，变 y 为 i 再加 -es：study → studies",
+            "特殊：have → has；be → am / is / are"
+          ]
+        },
+        {
+          "h": "5. 例句与易错点",
+          "lines": [
+            "例句：He goes to school by bike every day.",
+            "例句：Does he go to school by bike? — Yes, he does.",
+            "易错：三单作主语时动词忘记加 -s / -es。",
+            "易错：does / doesn't 后面必须用动词原形（× doesn't goes）。",
+            "易错：频率副词放在实义动词前、be 动词与助动词后。"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "t8_2",
+      "icon": "②",
+      "title": "一般过去时",
+      "tag": "过去 · 完成",
+      "intro": "表示过去某个时间发生的动作或存在的状态。",
+      "secs": [
+        {
+          "h": "1. 概念与用法",
+          "lines": [
+            "(1) 过去某一时间发生的动作：I watched TV last night.",
+            "(2) 过去某段时间内经常发生的动作：He often played football last year.",
+            "(3) 过去存在的状态：She was ill yesterday."
+          ]
+        },
+        {
+          "h": "2. 标志词",
+          "lines": [
+            "yesterday / yesterday morning",
+            "last night / last week / last month / last year",
+            "two days ago / a moment ago / just now",
+            "in 2020 / at that time / when I was five"
+          ]
+        },
+        {
+          "h": "3. 结构",
+          "lines": [
+            "肯定：主语 + 动词过去式",
+            "肯定（be）：主语 + was / were + 其它",
+            "否定：主语 + didn't + 动词原形",
+            "否定（be）：主语 + wasn't / weren't + 其它",
+            "一般疑问：Did + 主语 + 动词原形 ?",
+            "be 动词疑问：Was / Were + 主语 + 其它 ?",
+            "特殊疑问：疑问词 + did + 主语 + 动词原形 ?"
+          ]
+        },
+        {
+          "h": "4. 动词过去式变化",
+          "lines": [
+            "规则动词一般加 -ed：work → worked",
+            "以 e 结尾加 -d：like → liked",
+            "辅音字母 + y 结尾，变 y 为 i 加 -ed：study → studied",
+            "重读闭音节且末尾只有一个辅音字母，双写后加 -ed：stop → stopped",
+            "不规则动词：go → went, see → saw, do → did, have → had, is → was, are → were"
+          ]
+        },
+        {
+          "h": "5. 例句与易错点",
+          "lines": [
+            "例句：I watched TV last night.",
+            "例句：Did you watch TV last night? — No, I didn't.",
+            "易错：did / didn't 后面必须用动词原形（× didn't watched）。",
+            "易错：有 was / were 的句子不再加 did（× Did you were...）。"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "t8_3",
+      "icon": "③",
+      "title": "一般将来时",
+      "tag": "将来 · 计划",
+      "intro": "表示将来某个时间要发生的动作或存在的状态。",
+      "secs": [
+        {
+          "h": "1. 概念与用法",
+          "lines": [
+            "(1) 将来发生的动作：I will call you tomorrow.",
+            "(2) 事先计划或打算：We are going to visit the museum.",
+            "(3) 有迹象即将发生：Look at the clouds. It is going to rain."
+          ]
+        },
+        {
+          "h": "2. 标志词",
+          "lines": [
+            "tomorrow / tomorrow morning",
+            "next week / next month / next year",
+            "soon / in the future / in two days",
+            "this evening / this weekend"
+          ]
+        },
+        {
+          "h": "3. 结构",
+          "lines": [
+            "will：主语 + will + 动词原形",
+            "be going to：主语 + am / is / are + going to + 动词原形",
+            "否定：won't + 动词原形 / am not (isn't, aren't) going to + 动词原形",
+            "一般疑问：Will + 主语 + 动词原形 ?",
+            "be going to 疑问：Are you going to come?",
+            "There be 句型：There will be a sports meeting next week."
+          ]
+        },
+        {
+          "h": "4. 两种表达的差别",
+          "lines": [
+            "will：临时决定、单纯预测、客气请求 —— I'll help you.",
+            "be going to：事先计划，或眼前有明显迹象 —— It's going to rain.",
+            "will 没有人称和数的变化，后面一律接动词原形。"
+          ]
+        },
+        {
+          "h": "5. 例句与易错点",
+          "lines": [
+            "例句：I will call you tomorrow.",
+            "例句：She is going to learn the piano next term.",
+            "易错：will 后面加 -s / -ed（× will goes）。",
+            "易错：be going to 中漏掉 be 动词（× I going to）。"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "t8_4",
+      "icon": "④",
+      "title": "现在进行时",
+      "tag": "现在 · 进行",
+      "intro": "表示此刻正在进行，或当前一段时间内持续进行的动作。",
+      "secs": [
+        {
+          "h": "1. 概念与用法",
+          "lines": [
+            "(1) 此刻正在进行的动作：She is reading a book now.",
+            "(2) 当前一段时间内持续的动作：We are learning Unit 3 this week.",
+            "(3) 用现在进行时表示将来已安排好的事：I am leaving tomorrow."
+          ]
+        },
+        {
+          "h": "2. 标志词",
+          "lines": [
+            "now / right now / at this moment / at present",
+            "Look! / Listen! / Be quiet!",
+            "Where is ...? / What are you doing?"
+          ]
+        },
+        {
+          "h": "3. 结构",
+          "lines": [
+            "肯定：主语 + am / is / are + 现在分词（doing）",
+            "否定：主语 + am / is / are + not + doing",
+            "一般疑问：Am / Is / Are + 主语 + doing ?",
+            "特殊疑问：疑问词 + am / is / are + 主语 + doing ?"
+          ]
+        },
+        {
+          "h": "4. 现在分词变化",
+          "lines": [
+            "一般直接加 -ing：read → reading",
+            "以不发音的 e 结尾，去 e 加 -ing：write → writing, make → making",
+            "重读闭音节且末尾只有一个辅音字母，双写后加 -ing：run → running, swim → swimming",
+            "以 ie 结尾，变 ie 为 y 加 -ing：lie → lying, die → dying"
+          ]
+        },
+        {
+          "h": "5. 例句与易错点",
+          "lines": [
+            "例句：Look! The children are playing football.",
+            "例句：What is she doing? — She is drawing a picture.",
+            "易错：只写 doing 漏掉 be 动词（× She reading）。",
+            "易错：like / know / want 等表示状态或感情的动词一般不用进行时。"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "t8_5",
+      "icon": "⑤",
+      "title": "过去进行时",
+      "tag": "过去 · 进行",
+      "intro": "表示过去某一时刻或某一段时间内正在进行的动作。",
+      "secs": [
+        {
+          "h": "1. 概念与用法",
+          "lines": [
+            "(1) 过去某一时刻正在进行：I was doing my homework at eight last night.",
+            "(2) 过去某段时间内持续进行：They were building the bridge last year.",
+            "(3) 常用来为另一个过去动作提供背景。"
+          ]
+        },
+        {
+          "h": "2. 标志词",
+          "lines": [
+            "at eight o'clock last night / at that time / at that moment",
+            "this time yesterday",
+            "when + 一般过去时从句 / while + 进行时从句"
+          ]
+        },
+        {
+          "h": "3. 结构",
+          "lines": [
+            "肯定：主语 + was / were + doing",
+            "否定：主语 + wasn't / weren't + doing",
+            "一般疑问：Was / Were + 主语 + doing ?",
+            "特殊疑问：疑问词 + was / were + 主语 + doing ?"
+          ]
+        },
+        {
+          "h": "4. when 与 while 的搭配",
+          "lines": [
+            "when 后常接一般过去时的短暂动作：I was reading when he came in.",
+            "while 后常接过去进行时的持续动作：While I was reading, he was watching TV.",
+            "主句与从句的进行时/一般过去时顺序可以互换，含义基本不变。"
+          ]
+        },
+        {
+          "h": "5. 例句与易错点",
+          "lines": [
+            "例句：I was doing my homework when he came in.",
+            "例句：At that time she was cooking dinner.",
+            "易错：was / were 与主语单复数不匹配。",
+            "易错：把过去进行时写成一般过去时，丢掉「正在进行」的画面感。"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "t8_6",
+      "icon": "⑥",
+      "title": "将来进行时",
+      "tag": "将来 · 进行",
+      "intro": "表示将来某一时刻或某一段时间内正在进行的动作。",
+      "secs": [
+        {
+          "h": "1. 概念与用法",
+          "lines": [
+            "(1) 将来某一时刻正在进行：I will be flying to Beijing at this time tomorrow.",
+            "(2) 对将来某时情况的预测或设想：Don't call me at eight — I will be having dinner.",
+            "(3) 语气比一般将来时更委婉、更强调「正在进行」。"
+          ]
+        },
+        {
+          "h": "2. 标志词",
+          "lines": [
+            "at this time tomorrow / at eight tomorrow morning",
+            "this time next week / this time next year",
+            "then / at that moment（指将来）"
+          ]
+        },
+        {
+          "h": "3. 结构",
+          "lines": [
+            "肯定：主语 + will be + 现在分词（doing）",
+            "否定：主语 + won't be + doing",
+            "一般疑问：Will + 主语 + be + doing ?",
+            "特殊疑问：疑问词 + will + 主语 + be + doing ?"
+          ]
+        },
+        {
+          "h": "4. 与一般将来时的区别",
+          "lines": [
+            "will do：说明将来会发生这件事 —— I will meet him tomorrow.",
+            "will be doing：说明将来某时正处在动作进行中 —— I will be meeting him at this time tomorrow.",
+            "be going to 强调计划；will be doing 强调「届时正在进行」。"
+          ]
+        },
+        {
+          "h": "5. 例句与易错点",
+          "lines": [
+            "例句：At eight tomorrow morning I will be having an English class.",
+            "例句：They will be waiting for us at the station.",
+            "易错：漏掉 be（× will flying）。",
+            "易错：把 will be doing 与 will have done（将来完成时）混用。"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "t8_7",
+      "icon": "⑦",
+      "title": "现在完成时",
+      "tag": "现在 · 完成",
+      "intro": "表示过去发生的动作对现在造成的影响或结果，或从过去持续到现在的动作、状态。",
+      "secs": [
+        {
+          "h": "1. 概念与用法",
+          "lines": [
+            "(1) 过去动作对现在的影响：I have finished my homework.（现在可以玩了）",
+            "(2) 从过去持续到现在：I have lived here for five years.",
+            "(3) 到现在为止的经历：Have you ever been to Shanghai?"
+          ]
+        },
+        {
+          "h": "2. 标志词",
+          "lines": [
+            "already / yet / just / ever / never / before",
+            "recently / lately / so far / up to now",
+            "since + 时间点（since 2020, since last week）",
+            "for + 时间段（for three days, for a long time）"
+          ]
+        },
+        {
+          "h": "3. 结构",
+          "lines": [
+            "肯定：主语 + have / has + 过去分词",
+            "否定：主语 + haven't / hasn't + 过去分词",
+            "一般疑问：Have / Has + 主语 + 过去分词 ?",
+            "特殊疑问：疑问词 + have / has + 主语 + 过去分词 ?"
+          ]
+        },
+        {
+          "h": "4. 过去分词变化",
+          "lines": [
+            "规则动词与过去式同形：work → worked → worked",
+            "不规则动词：go → went → gone, see → saw → seen, do → did → done, eat → ate → eaten, write → wrote → written",
+            "have been to（去过，已回来）↔ have gone to（去了，还没回来）"
+          ]
+        },
+        {
+          "h": "5. 例句与易错点",
+          "lines": [
+            "例句：I have already finished my homework.",
+            "例句：He has lived in Beijing since 2019.",
+            "易错：短暂性动词（come / go / buy / die / finish）不与 for / since 连用。",
+            "易错：与一般过去时混用 —— 有 yesterday / last week 等明确过去时间时用一般过去时。"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "t8_8",
+      "icon": "⑧",
+      "title": "过去完成时",
+      "tag": "过去 · 完成",
+      "intro": "表示过去某一时间之前已经完成的动作，即「过去的过去」。",
+      "secs": [
+        {
+          "h": "1. 概念与用法",
+          "lines": [
+            "(1) 过去某时之前已完成：When I got to the station, the train had left.",
+            "(2) 过去两个动作比较先后，先发生者用过去完成时：He had finished homework before his mother came back.",
+            "(3) 常与 by the time / before 引导的时间状语连用。"
+          ]
+        },
+        {
+          "h": "2. 标志词",
+          "lines": [
+            "by the time + 一般过去时从句",
+            "by the end of last year / by then",
+            "before / after / already / never ... before"
+          ]
+        },
+        {
+          "h": "3. 结构",
+          "lines": [
+            "肯定：主语 + had + 过去分词",
+            "否定：主语 + hadn't + 过去分词",
+            "一般疑问：Had + 主语 + 过去分词 ?",
+            "特殊疑问：疑问词 + had + 主语 + 过去分词 ?"
+          ]
+        },
+        {
+          "h": "4. 判断先后关系",
+          "lines": [
+            "先发生的动作用 had done，后发生的用一般过去时。",
+            "by the time he arrived, we had waited for an hour.",
+            "有 before / after 已清楚表明先后时，也可用一般过去时替换过去完成时。"
+          ]
+        },
+        {
+          "h": "5. 例句与易错点",
+          "lines": [
+            "例句：When I got to the station, the train had left.",
+            "例句：She had learned 500 words by the end of last term.",
+            "易错：没有另一个过去时间作参照时，误用过去完成时。",
+            "易错：had 后面用动词原形而不是过去分词（× had go）。"
+          ]
+        }
+      ]
+    }
+  ],
+  "flags": {
+    "title": "八大时态标志词汇总",
+    "icon": "🔖",
+    "secs": [
+      {
+        "h": "一般现在时",
+        "lines": [
+          "always, usually, often, sometimes, seldom, never",
+          "every day / every week / every year，on Sundays",
+          "once a week, twice a month"
+        ]
+      },
+      {
+        "h": "一般过去时",
+        "lines": [
+          "yesterday, yesterday morning",
+          "last night / last week / last month / last year",
+          "two days ago, just now, in 2020"
+        ]
+      },
+      {
+        "h": "一般将来时",
+        "lines": [
+          "tomorrow, tomorrow morning",
+          "next week / next month / next year",
+          "soon, in the future, in two days, this evening"
+        ]
+      },
+      {
+        "h": "现在进行时",
+        "lines": [
+          "now, right now, at this moment, at present",
+          "Look! / Listen! / Be quiet!",
+          "Where is ...? / What are you doing?"
+        ]
+      },
+      {
+        "h": "过去进行时",
+        "lines": [
+          "at eight o'clock last night, at that time",
+          "this time yesterday",
+          "when + 一般过去时 / while + 进行时"
+        ]
+      },
+      {
+        "h": "将来进行时",
+        "lines": [
+          "at this time tomorrow",
+          "at eight tomorrow morning",
+          "this time next week"
+        ]
+      },
+      {
+        "h": "现在完成时",
+        "lines": [
+          "already, yet, just, ever, never, before",
+          "recently, so far",
+          "since + 时间点，for + 时间段"
+        ]
+      },
+      {
+        "h": "过去完成时",
+        "lines": [
+          "by the time + 一般过去时从句",
+          "by the end of last year, by then",
+          "before, after, already"
+        ]
+      }
+    ]
+  }
+};
