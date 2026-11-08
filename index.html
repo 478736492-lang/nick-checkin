@@ -8791,6 +8791,428 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
 /* 排版行数：地块区高度随「行数 × 地块尺寸」增长，行数设置立即可感知 */
 .farm-grid{grid-template-rows:none;align-content:start;min-height:var(--farm-field-h,0)}
 
+/* ============================================================
+   R256 · 通用面板 / 轻提醒 / 朗读条 / 护眼 / 悬浮键
+   ============================================================ */
+.r256-mask{
+  position:fixed;inset:0;z-index:9600;display:flex;align-items:center;justify-content:center;
+  background:rgba(16,38,66,.42);backdrop-filter:blur(3px);padding:18px;
+  animation:r256Fade .16s ease-out;
+}
+.r256-mask[hidden]{display:none!important}
+@keyframes r256Fade{from{opacity:0}to{opacity:1}}
+.r256-sheet{
+  width:min(760px,96vw);max-height:86vh;display:flex;flex-direction:column;
+  background:#fff;border-radius:20px;overflow:hidden;
+  box-shadow:0 24px 60px rgba(20,52,92,.28),0 2px 6px rgba(20,52,92,.12);
+  animation:r256Pop .2s cubic-bezier(.2,.9,.3,1.1);
+}
+@keyframes r256Pop{from{transform:translateY(14px) scale(.98);opacity:0}to{transform:none;opacity:1}}
+.r256-sheet-head{
+  display:flex;align-items:center;gap:10px;padding:14px 18px;
+  background:linear-gradient(135deg,var(--tone-100),var(--tone-050));border-bottom:1px solid var(--tone-150);
+}
+.r256-sheet-head h3{margin:0;font-size:17px;font-weight:900;color:var(--tone-900);letter-spacing:.3px}
+.r256-sheet-x{
+  margin-left:auto;width:32px;height:32px;border-radius:10px;border:none;cursor:pointer;
+  background:#fff;color:#3f5f86;font-size:15px;font-weight:900;
+  box-shadow:0 1px 4px rgba(30,58,138,.12);
+}
+.r256-sheet-x:hover{background:var(--tone-100);color:var(--tone-900)}
+.r256-sheet-body{padding:16px 18px;overflow:auto;-webkit-overflow-scrolling:touch;flex:1}
+.r256-sheet-foot{
+  display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;
+  padding:12px 18px;border-top:1px solid var(--tone-150);background:#fafcff;
+}
+.r256-sheet-foot:empty{display:none}
+body.r256-sheet-on{overflow:hidden}
+
+/* 轻提醒卡片 */
+.r256-stack{
+  position:fixed;right:18px;bottom:96px;z-index:9500;
+  display:flex;flex-direction:column;gap:10px;width:min(340px,86vw);pointer-events:none;
+}
+.r256-tip{
+  pointer-events:auto;display:flex;gap:10px;align-items:flex-start;
+  background:#fff;border-radius:14px;padding:12px 13px;
+  box-shadow:0 10px 26px rgba(24,58,100,.2);border:1px solid var(--tone-150);
+  animation:r256Slide .26s cubic-bezier(.2,.9,.3,1.1);
+}
+.r256-tip.out{animation:r256SlideOut .24s ease-in forwards}
+@keyframes r256Slide{from{transform:translateX(24px);opacity:0}to{transform:none;opacity:1}}
+@keyframes r256SlideOut{to{transform:translateX(24px);opacity:0}}
+.r256-tip-ico{font-size:22px;line-height:1}
+.r256-tip-main{flex:1;min-width:0}
+.r256-tip-title{font-size:14px;font-weight:900;color:var(--tone-900);margin-bottom:3px}
+.r256-tip-desc{font-size:12.5px;color:#5b6b85;line-height:1.45;word-break:break-word}
+.r256-tip-acts{display:flex;flex-direction:column;gap:6px;flex:0 0 auto}
+.r256-tip-btn{
+  font-family:inherit;cursor:pointer;font-size:12px;font-weight:800;white-space:nowrap;
+  border-radius:9px;border:1.5px solid var(--tone-275);background:#fff;color:var(--tone-700);padding:4px 10px;
+}
+.r256-tip-btn:hover{background:var(--tone-100)}
+.r256-tip-btn.primary{background:linear-gradient(135deg,var(--tone-600),var(--tone-700));border-color:transparent;color:#fff}
+.r256-tip-btn.primary:hover{filter:brightness(1.06)}
+.r256-tip-remind{border-left:4px solid #f7b955}
+.r256-tip-farm{border-left:4px solid #4cc38a}
+.r256-tip-eye{border-left:4px solid #b58cf0}
+.r256-tip-cert{border-left:4px solid #f2c14e}
+
+/* 朗读统一控制条 */
+.r256-speakbar{
+  position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:9400;
+  display:flex;align-items:center;gap:10px;padding:9px 14px;
+  background:rgba(255,255,255,.97);border:1px solid var(--tone-150);border-radius:999px;
+  box-shadow:0 12px 30px rgba(20,52,92,.22);max-width:94vw;
+}
+.r256-speakbar[hidden]{display:none!important}
+.rsb-btn{
+  width:32px;height:32px;border-radius:50%;border:none;cursor:pointer;flex:0 0 auto;
+  background:var(--tone-100);color:var(--tone-700);font-size:14px;font-weight:900;
+}
+.rsb-btn:hover{background:var(--tone-175)}
+.rsb-btn.on{background:linear-gradient(135deg,var(--tone-600),var(--tone-700));color:#fff}
+.rsb-bar{
+  position:relative;width:min(240px,42vw);height:9px;border-radius:99px;background:var(--tone-100);cursor:pointer;flex:1 1 auto;
+}
+.rsb-bar i{
+  display:block;height:100%;width:0;border-radius:99px;pointer-events:none;
+  background:linear-gradient(90deg,var(--tone-400),var(--tone-600));
+}
+.rsb-time{font-size:11.5px;font-weight:900;color:#5b6b85;min-width:34px;text-align:center}
+.rsb-rate{
+  font-family:inherit;font-size:12px;font-weight:800;color:var(--tone-700);border:1.5px solid var(--tone-275);
+  background:#fff;border-radius:9px;padding:4px 6px;cursor:pointer;
+}
+
+/* 护眼暖色薄层（不吃点击） */
+.r256-eye-overlay{
+  position:fixed;inset:0;z-index:9300;pointer-events:none;
+  background:rgba(255,186,110,.16);
+  mix-blend-mode:multiply;
+  backdrop-filter:saturate(.94) contrast(.98);
+}
+.r256-eye-overlay[hidden]{display:none!important}
+
+/* 悬浮键 */
+.r256-fab{
+  position:fixed;right:16px;bottom:22px;z-index:9200;display:flex;flex-direction:column;gap:8px;
+  opacity:0;transform:translateY(8px);pointer-events:none;transition:.2s ease;
+}
+.r256-fab.show{opacity:1;transform:none;pointer-events:auto}
+.r256-fab-btn{
+  width:42px;height:42px;border-radius:14px;border:1px solid var(--tone-150);cursor:pointer;
+  background:rgba(255,255,255,.96);font-size:18px;line-height:1;
+  box-shadow:0 6px 18px rgba(24,58,100,.18);
+}
+.r256-fab-btn:hover{background:var(--tone-100);transform:translateY(-1px)}
+.r256-fab-btn[hidden]{display:none!important}
+
+/* 离线提示条 */
+.r256-offline{
+  position:fixed;left:50%;top:0;transform:translateX(-50%);z-index:9700;
+  background:#3c4a5e;color:#fff;font-size:12.5px;font-weight:800;
+  padding:7px 18px;border-radius:0 0 12px 12px;box-shadow:0 6px 18px rgba(0,0,0,.18);
+}
+.r256-offline[hidden]{display:none!important}
+
+/* 帮助「?」键 */
+.r256-help-btn{
+  width:24px;height:24px;border-radius:50%;border:1.5px solid #bcd8f6;background:#fff;
+  color:var(--tone-700);font-size:13px;font-weight:900;line-height:1;cursor:pointer;
+  margin-left:8px;vertical-align:middle;font-family:inherit;
+}
+.r256-help-btn.small{width:20px;height:20px;font-size:11.5px}
+.r256-help-btn:hover{background:var(--tone-100);border-color:var(--tone-400)}
+.hp-body{font-size:13.5px;color:#3b4c63;line-height:1.9;white-space:normal}
+
+/* ============================================================
+   R256-1.1 打卡总览
+   ============================================================ */
+.archive-grid .r256-co-card{grid-column:1/-1}
+.r256-co-card .r256-co-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.co-tools{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-left:auto}
+.co-nav{
+  width:28px;height:28px;border-radius:9px;border:1.5px solid var(--tone-275);background:#fff;
+  color:var(--tone-700);font-size:16px;font-weight:900;line-height:1;cursor:pointer;font-family:inherit;
+}
+.co-nav:hover{background:var(--tone-100)}
+.co-month{font-size:13px;font-weight:900;color:var(--tone-900);min-width:104px;text-align:center}
+.co-tools select{
+  font-family:inherit;font-size:12px;font-weight:700;color:var(--tone-700);border:1.5px solid var(--tone-275);
+  border-radius:9px;padding:4px 6px;background:#fff;cursor:pointer;
+}
+.co-btn{font-size:12px!important;padding:4px 10px!important;border-radius:9px!important}
+.co-summary{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 4px}
+.co-chip{
+  font-size:12px;font-weight:800;color:#42566f;background:var(--tone-075);border:1px solid var(--tone-175);
+  border-radius:999px;padding:4px 11px;
+}
+.co-chip b{color:var(--tone-900)}
+.co-chip.ok b{color:#1f7a45}
+.co-chip.auto b{color:#7a5b16}
+.co-chip.mk b{color:#8e44ad}
+.co-cal{margin-top:8px}
+.co-wdrow{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:6px}
+.co-wdrow span{text-align:center;font-size:12px;font-weight:900;color:#7b8ba3}
+.co-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.co-cell{
+  position:relative;min-height:52px;border-radius:12px;border:1px solid var(--tone-150);background:var(--tone-025);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+  font-family:inherit;cursor:pointer;padding:3px 2px;transition:.14s ease;
+}
+.co-cell.blank{border:none;background:transparent;pointer-events:none}
+.co-cell:hover{border-color:#a9cdf5;box-shadow:0 3px 10px rgba(64,150,255,.14);transform:translateY(-1px)}
+.co-num{font-size:14px;font-weight:900;color:#37506e;line-height:1.1}
+.co-cnt{font-size:11.5px;font-weight:900;color:var(--tone-600)}
+.co-cell.full{background:linear-gradient(160deg,#e7f8ef,#f5fff9);border-color:#a8e6c4}
+.co-cell.full .co-num{color:#1f7a45}
+.co-cell.full .co-cnt{color:#1f7a45}
+.co-cell.today{outline:2.5px solid var(--tone-600);outline-offset:1px}
+.co-cell.future{opacity:.55}
+.co-cell.hit{box-shadow:0 0 0 2px #ffd166 inset}
+.co-brk{
+  position:absolute;top:-5px;right:-3px;font-size:11px;background:#fff3d9;border:1px solid #f0c36a;
+  border-radius:8px;padding:0 3px;line-height:1.4;
+}
+.co-mk{position:absolute;bottom:0;right:1px;font-size:9px;opacity:.85}
+.co-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:11.5px;color:#6b7c93;font-weight:700}
+.co-legend .dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:-1px}
+.co-legend .dot.full{background:#a8e6c4}
+.co-legend .dot.brk{background:#f0c36a}
+.co-legend .dot.today{background:var(--tone-600)}
+.co-legend .dot.hit{background:#ffd166}
+.co-hint{margin-left:auto;color:#93a2b6;font-weight:600}
+.co-day-sum{font-size:13px;font-weight:800;color:#42566f;margin-bottom:10px}
+.co-row{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:11px;border:1px solid #eef3fa;margin-bottom:6px;background:var(--tone-025)}
+.co-row.done{background:#f8fffb;border-color:#dcf2e6}
+.co-row-ico{flex:0 0 auto;font-size:14px}
+.co-row-main{flex:1;min-width:0;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.co-row-main b{font-size:13px;color:#2d4258;font-weight:800}
+.co-row-main i{font-style:normal;font-size:11px;color:#8b9bb0;background:#f1f6fc;border-radius:6px;padding:1px 5px}
+.co-row-main .req{font-style:normal;font-size:10.5px;color:#c0392b;background:#fdeeed;border-radius:6px;padding:1px 5px;font-weight:900}
+.co-row-kind{flex:0 0 auto;font-size:11.5px}
+.co-row-kind .k-active{color:#1f7a45}
+.co-row-kind .k-auto{color:#a5761b}
+.co-row-kind .k-makeup{color:#8e44ad}
+.co-row-star{flex:0 0 auto;font-size:11.5px;font-weight:900;color:#e0a100;min-width:36px;text-align:right}
+.co-empty{padding:22px;text-align:center;color:#93a2b6;font-size:13px}
+
+/* ============================================================
+   R256-1.3 补卡
+   ============================================================ */
+.mk-note{font-size:12.5px;line-height:1.7;color:#5b6b85;background:#fff8e9;border:1px solid #f6e2b8;border-radius:12px;padding:10px 12px;margin-bottom:12px}
+.mk-note b{color:#a5761b}
+.mk-field{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:800;color:#3f5470;margin-bottom:12px}
+.mk-field input[type=date],.mk-field select{
+  font-family:inherit;font-size:13px;font-weight:700;color:var(--tone-700);
+  border:1.5px solid var(--tone-275);border-radius:10px;padding:6px 10px;background:#fff;
+}
+.mk-list{display:flex;flex-direction:column;gap:6px}
+.mk-row{display:flex;align-items:center;gap:10px;padding:9px 11px;border:1px solid #eef3fa;border-radius:11px;background:var(--tone-025)}
+.mk-name{flex:1;min-width:0;font-size:13px;font-weight:800;color:#2d4258;display:flex;gap:6px;align-items:center}
+.mk-name i{font-style:normal;font-size:11px;color:#8b9bb0;background:#f1f6fc;border-radius:6px;padding:1px 5px}
+.mk-btn{font-size:12px!important;padding:4px 12px!important;border-radius:9px!important}
+.mk-done{font-size:12px;font-weight:900;color:#1f7a45;background:#e9f8f0;border-radius:8px;padding:3px 9px}
+.mk-done.is-mk{color:#8e44ad;background:#f6eeff}
+
+/* ============================================================
+   R256-1.4 星星明细
+   ============================================================ */
+.sl-tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.sl-tools select,.sl-tools input{
+  font-family:inherit;font-size:12.5px;font-weight:700;color:#3f5470;
+  border:1.5px solid var(--tone-275);border-radius:10px;padding:6px 9px;background:#fff;
+}
+.sl-tools input{flex:1;min-width:140px;color:var(--tone-700)}
+.sl-sum{font-size:12.5px;font-weight:800;color:#5b6b85;background:var(--tone-050);border:1px solid var(--tone-150);border-radius:11px;padding:8px 12px;margin-bottom:10px}
+.sl-sum b{color:var(--tone-900)}
+.sl-sum b.in{color:#1f7a45}
+.sl-sum b.out{color:#c0392b}
+.sl-list{display:flex;flex-direction:column;gap:5px}
+.sl-row{display:flex;align-items:center;gap:10px;padding:8px 10px;border-bottom:1px dashed var(--tone-150);font-size:12.5px}
+.sl-time{flex:0 0 92px;color:#8b9bb0;font-weight:700}
+.sl-time b{color:#5b6b85}
+.sl-why{flex:1;min-width:0;color:#2d4258;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sl-n{flex:0 0 62px;text-align:right;font-weight:900}
+.sl-n.in{color:#1f7a45}
+.sl-n.out{color:#c0392b}
+.sl-bal{flex:0 0 58px;text-align:right;color:#93a2b6;font-size:11.5px}
+
+/* ============================================================
+   R256-2.1 全局题库检索
+   ============================================================ */
+.qs-tabs{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.qs-tab{
+  font-family:inherit;font-size:12.5px;font-weight:900;cursor:pointer;
+  border:1.5px solid var(--tone-150);background:#fff;color:#5b6b85;border-radius:999px;padding:6px 14px;
+}
+.qs-tab.on{background:linear-gradient(135deg,var(--tone-600),var(--tone-700));border-color:transparent;color:#fff}
+.qs-tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.qs-tools input{
+  flex:1;min-width:170px;font-family:inherit;font-size:13px;font-weight:700;color:var(--tone-700);
+  border:1.5px solid var(--tone-275);border-radius:10px;padding:7px 11px;background:#fff;
+}
+.qs-tools select{
+  font-family:inherit;font-size:12.5px;font-weight:700;color:#3f5470;
+  border:1.5px solid var(--tone-275);border-radius:10px;padding:7px 9px;background:#fff;cursor:pointer;
+}
+.qs-count{font-size:12px;color:#8b9bb0;font-weight:700;margin-bottom:8px}
+.qs-count b{color:var(--tone-900)}
+.qs-list{display:flex;flex-direction:column;gap:7px}
+.qs-row{display:grid;grid-template-columns:1fr auto;gap:8px 10px;padding:10px 12px;border:1px solid #eef3fa;border-radius:13px;background:var(--tone-025)}
+.qs-main{min-width:0}
+.qs-title{font-size:13.5px;font-weight:800;color:#2d4258;line-height:1.5;word-break:break-word}
+.qs-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:5px;font-size:11px;color:#8b9bb0;font-weight:700}
+.qs-meta span{background:#f1f6fc;border-radius:6px;padding:1px 6px}
+.qs-meta .qs-src{background:#e8f3ff;color:var(--tone-700)}
+.qs-note{margin-top:5px;font-size:11.5px;color:#a5761b;line-height:1.5}
+.qs-side{display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+.qs-ans-btn{
+  font-family:inherit;font-size:11.5px;font-weight:800;cursor:pointer;
+  border:1.5px solid var(--tone-275);background:#fff;color:var(--tone-700);border-radius:9px;padding:4px 10px;white-space:nowrap;
+}
+.qs-ans-btn:hover{background:var(--tone-100)}
+.qs-fav{
+  width:30px;height:28px;border-radius:9px;border:1.5px solid #f0e0b8;background:#fffdf6;
+  cursor:pointer;font-size:14px;line-height:1;
+}
+.qs-fav.on{background:#fff5d6;border-color:#f0c36a}
+.qs-ans{grid-column:1 / -1;font-size:12.5px;color:#1f7a45;background:#f2fbf6;border-radius:9px;padding:6px 10px}
+.qs-ans[hidden]{display:none!important}
+
+/* ============================================================
+   R256-2.5 错题复练
+   ============================================================ */
+.r256-review-item{background:linear-gradient(135deg,#fff8e9,#fffdf6)!important;border:1.5px dashed #f0c36a!important}
+.r256-review-check{background:#ffeec2!important;color:#a5761b!important}
+.rp-bar{height:7px;border-radius:99px;background:var(--tone-150);overflow:hidden;margin-bottom:14px}
+.rp-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--tone-400),var(--tone-600));border-radius:99px;transition:width .25s ease}
+.rp-q{font-size:16px;font-weight:900;color:#243b57;line-height:1.65;padding:10px 2px}
+.rp-src{display:inline-block;font-size:11px;font-weight:900;color:var(--tone-700);background:var(--tone-100);border-radius:7px;padding:2px 7px;margin-right:8px;vertical-align:2px}
+.rp-note{font-size:12.5px;color:#a5761b;margin-top:6px}
+.rp-ans{margin-top:12px;font-size:14px;color:#1f7a45;background:#f2fbf6;border:1px solid #cdeedd;border-radius:12px;padding:12px 14px}
+.rp-ans[hidden]{display:none!important}
+
+/* ============================================================
+   R256-3.2/3.3 种植园提示 / 植物图鉴
+   ============================================================ */
+.cx-sum{font-size:13px;font-weight:800;color:#3f5470;background:#f2fbf6;border:1px solid #d7f0e3;border-radius:12px;padding:10px 12px;margin-bottom:12px}
+.cx-sum b{color:#1f7a45}
+.cx-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.cx-card{
+  border:1.5px solid var(--tone-150);border-radius:14px;background:var(--tone-025);padding:14px 10px;text-align:center;
+  filter:grayscale(1) opacity(.62);
+}
+.cx-card.on{filter:none;border-color:#a8e6c4;background:linear-gradient(160deg,#f5fff9,#fff)}
+.cx-ico{font-size:34px;line-height:1.2}
+.cx-name{font-size:13px;font-weight:900;color:#2d4258;margin-top:4px}
+.cx-tip{font-size:11px;color:#8b9bb0;margin-top:3px;line-height:1.4}
+.cx-own{font-size:11px;color:var(--tone-600);font-weight:800;margin-top:6px}
+.ct-tip{font-size:12.5px;color:#5b6b85;line-height:1.7;background:var(--tone-050);border:1px solid var(--tone-150);border-radius:12px;padding:10px 12px;margin-bottom:12px}
+.ct-list{display:flex;flex-direction:column;gap:7px}
+.ct-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid #eef3fa;border-radius:12px;background:var(--tone-025)}
+.ct-row.on{background:#fffdf4;border-color:#f0e0b8}
+.ct-ico{font-size:20px}
+.ct-name{flex:1;font-size:13.5px;font-weight:900;color:#2d4258}
+.ct-lock{font-size:11.5px;color:#a9b6c7;font-weight:800}
+.ct-h-title{font-size:12px;font-weight:900;color:#7b8ba3;margin:14px 0 8px}
+.ct-hist-list{display:flex;flex-direction:column;gap:5px}
+.ct-hist{display:flex;justify-content:space-between;font-size:12px;color:#5b6b85;font-weight:700;background:var(--tone-025);border-radius:9px;padding:6px 10px}
+.ct-hist i{font-style:normal;color:#8b9bb0}
+
+/* ============================================================
+   R256-4.2/4.3 设置卡
+   ============================================================ */
+.r256-set-card .r256-set-row{display:flex;align-items:center;gap:10px;margin-top:12px}
+.r256-set-label{font-size:13.5px;font-weight:900;color:#2d4258}
+.r256-sw{
+  margin-left:auto;width:50px;height:28px;border-radius:99px;border:none;cursor:pointer;
+  background:#dbe6f3;position:relative;transition:.18s ease;flex:0 0 auto;
+}
+.r256-sw i{
+  position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;
+  box-shadow:0 1px 4px rgba(20,52,92,.22);transition:.18s cubic-bezier(.2,.9,.3,1.2);
+}
+.r256-sw.is-on{background:linear-gradient(135deg,var(--tone-600),var(--tone-700))}
+.r256-sw.is-on i{left:25px}
+.r256-set-sub{font-size:11.5px;color:#8b9bb0;line-height:1.6;margin-top:5px}
+.r256-set-grid{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}
+.r256-set-grid label{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:800;color:#5b6b85}
+.r256-set-grid input{
+  font-family:inherit;font-size:12.5px;font-weight:700;color:var(--tone-700);
+  border:1.5px solid var(--tone-275);border-radius:9px;padding:5px 8px;background:#fff;width:96px;
+}
+.r256-set-quick{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px dashed var(--tone-150)}
+.r256-set-quick .pbtn{font-size:12px!important;padding:5px 12px!important;border-radius:10px!important}
+.rs-warn{font-size:12.5px;line-height:1.7;color:#8a3b2e;background:#fdf0ee;border:1px solid #f6cdc6;border-radius:12px;padding:10px 12px;margin-bottom:12px}
+
+/* ============================================================
+   R256-2.4 阅读器增强（夜间 / 批注 / 滑动）
+   ============================================================ */
+.r256-reader-tools{display:flex;gap:6px;align-items:center;margin-left:auto;flex-wrap:wrap}
+.r256-rt-btn{
+  font-family:inherit;font-size:12px;font-weight:800;cursor:pointer;
+  border:1.5px solid var(--tone-275);background:#fff;color:var(--tone-700);border-radius:9px;padding:4px 10px;white-space:nowrap;
+}
+.r256-rt-btn:hover{background:var(--tone-100)}
+.r256-rt-btn.is-on{background:linear-gradient(135deg,var(--tone-600),var(--tone-700));color:#fff;border-color:transparent}
+#modalKtxsRead.r256-night{background:#1b2430}
+#modalKtxsRead.r256-night .modal-head{background:#202b39;border-bottom-color:#2c3a4b}
+#modalKtxsRead.r256-night .modal-head h3{color:#e6d9b8}
+#modalKtxsRead.r256-night .ktxs-page{
+  background:#f4ecd8!important;color:#3a3326!important;
+  filter:brightness(.82) sepia(.18);
+}
+#modalKtxsRead.r256-night .ktxs-page *{color:#3a3326!important}
+#modalKtxsRead.r256-night .ktxs-read-stage{background:#161e28!important}
+#modalKtxsRead.r256-night .r256-rt-btn{border-color:#3b4d63;background:#243140;color:var(--tone-200)}
+#modalKtxsRead.r256-night .r256-rt-btn.is-on{background:linear-gradient(135deg,var(--tone-600),var(--tone-700));color:#fff}
+.ktxs-flip-zone{touch-action:pan-y}
+
+/* 秘境提示行 */
+.km-quiz-hintrow{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
+.km-hint-btn{
+  font-family:inherit;font-size:12.5px;font-weight:900;cursor:pointer;
+  border:1.5px solid #f0c36a;background:#fff8e6;color:#a5761b;border-radius:10px;padding:5px 12px;
+}
+.km-hint-btn:hover{background:#fff1cc}
+.km-hint-txt{font-size:12.5px;color:#5b6b85;line-height:1.55;flex:1;min-width:0}
+
+/* ============================================================
+   R256-4.5 移动端防误触 & 小屏适配
+   ============================================================ */
+.pbtn,.sub-tab,.mode-opt,.task-act,.wp-check{
+  min-height:32px;
+}
+@media (max-width:820px){
+  .r256-sheet{width:96vw;max-height:90vh;border-radius:16px}
+  .r256-sheet-body{padding:12px 13px}
+  .r256-sheet-foot{padding:10px 13px}
+  .r256-stack{right:10px;bottom:86px;width:min(300px,88vw)}
+  .r256-fab{right:10px;bottom:16px}
+  .r256-fab-btn{width:38px;height:38px;border-radius:12px;font-size:16px}
+  .r256-speakbar{bottom:12px;gap:7px;padding:7px 10px}
+  .rsb-bar{width:min(160px,34vw)}
+  .co-cell{min-height:44px}
+  .co-tools{gap:4px}
+  .co-btn{font-size:11.5px!important;padding:4px 8px!important}
+  /* 按钮间距加大，减少误触 */
+  .pbtn + .pbtn{margin-left:6px}
+  .r256-set-quick{gap:10px}
+  .r256-set-quick .pbtn{min-height:36px;padding:7px 14px!important}
+  .sl-time{flex-basis:76px}
+  .sl-bal{display:none}
+}
+@media (pointer:coarse){
+  .r256-tip-btn,.qs-tab,.qs-ans-btn,.co-nav{min-height:34px}
+  .co-cell{min-height:50px}
+}
+
+/* R256：帮助键固定在页面标题右上角 */
+.page-title{position:relative}
+.page-title .r256-help-btn{position:absolute;right:12px;top:50%;transform:translateY(-50%);margin-left:0}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -12280,6 +12702,37 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
     if(!st.calcDailyLog || typeof st.calcDailyLog !== 'object' || Array.isArray(st.calcDailyLog)) st.calcDailyLog = {};
     if(!st.settings) st.settings = {pin:''};
     if(st.settings && st.settings.pin === undefined) st.settings.pin = '';
+    /* ===== R256：新增功能的数据容器（只补缺失字段，绝不覆盖既有数据） =====
+       starLog   星星流水（save() 自动记账，任何模块的增减都会留痕）
+       remind    打卡提醒配置（开关 / 学生提醒时间 / 家长独立提醒时间）
+       eye       护眼模式（开关 / 每日可用时长 / 当日已用秒数）
+       makeup    受控补卡（本月已用次数 / 上限 / 补卡记录）
+       wrongReview 错题复练（开关 / 间隔天数 / 上次推送）
+       practice  练习断点（按页面 key 存当前题号与已填答案）
+       favorites 全局题库收藏
+       kmHints   知识秘境提示购买记录
+       codex     植物图鉴（首次收获时间）
+       helpSeen  帮助弹窗「已读」标记
+       farmNotify 种植园状态提醒配置 */
+    if(!st.r256 || typeof st.r256 !== 'object' || Array.isArray(st.r256)) st.r256 = {};
+    (function(r){
+      const obj = (k, d)=>{ if(!r[k] || typeof r[k] !== 'object' || Array.isArray(r[k])) r[k] = d; };
+      const arr = (k)=>{ if(!Array.isArray(r[k])) r[k] = []; };
+      arr('starLog');
+      obj('remind', {on:true, childTime:'19:30', parentTime:'20:30', lastFired:''});
+      obj('eye', {on:false, dailyMin:45, usedSec:0, lastDay:''});
+      obj('makeup', {month:'', used:0, limit:3, log:[]});
+      arr('makeupLog');
+      obj('wrongReview', {on:false, everyDays:3, lastAt:0, lastSig:''});
+      obj('practice', {});
+      arr('favorites');
+      arr('kmHints');
+      obj('codex', {});
+      obj('helpSeen', {});
+      arr('certs');
+      obj('farmNotify', {on:true, lastDate:''});
+      if(typeof r.pendingAnswers !== 'object' || Array.isArray(r.pendingAnswers) || !r.pendingAnswers) r.pendingAnswers = {};
+    })(st.r256);
     // R51-2：点击音效配置（导航栏/主题卡/次级主题卡/打卡），缺省回退默认档
     if(!st.clickSfx) st.clickSfx = {nav:'a', theme:'l', sub:'k', third:'h', checkin:'c'};
     // R245-5：全平台按键点击音效统一 —— 一次性把「导航 / 主题卡 / 次级主题卡」三档对齐同一预设，
@@ -12833,18 +13286,60 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
     if(_recoveredFrom){
       try{ const raw2 = JSON.stringify(st); if(_safeSet(KEY, raw2)){ _rotateBackup(raw2, true); _loadCachePut(st, raw2); } }catch(e){}
     }
+    // R256-1.4：记下「当前已落库的成长星数」，作为下一次变更记账的基线
+    try{ _r256LastStars = _r256StarsOf(st); }catch(e){}
     return st;
   }
   // R126 安全加固：存储写入容错 —— localStorage 配额超限（如导入大量图片 dataURL）时，
   // 原实现直接抛 QuotaExceededError，会让本次及其后所有 save 调用连锁抛错、页面写操作全站崩溃。
   // 改为捕获并记录错误（getSaveError 可读），返回 false 供调用方感知；内存态保持不变。
   let _saveError = '';
+  /* ============ R256-1.4：成长星流水自动记账 ============
+     星星的增减散落在 60+ 处（打卡 / 商店 / 撤销 / 种植 / 秘境 …），逐处埋点极易漏。
+     这里改为在保存落库前与「上一笔已落库的值」做差：任何模块只要改了 archive.totalStars，
+     都会自动留下一条带时间戳的流水，家长端可逐笔核对，不会出现「星星莫名增减」。
+     调用方可用 setStarWhy('打卡·背诵古诗') 提前说明来源，未说明的记为「系统结算」。 */
+  let _r256LastStars = null;
+  let _r256Why = '';
+  function _r256StarsOf(st){ try{ return (st && st.archive && (st.archive.totalStars|0)) || 0; }catch(e){ return 0; } }
+  function setStarWhy(why){ _r256Why = String(why || ''); }
+  function r256DayStr(ts){
+    const d = ts ? new Date(ts) : new Date();
+    const p = n=>String(n).padStart(2,'0');
+    return d.getFullYear() + '-' + p(d.getMonth()+1) + '-' + p(d.getDate());
+  }
+  function _r256Ledger(st){
+    if(!st || typeof st !== 'object') return null;
+    if(!st.r256 || typeof st.r256 !== 'object') st.r256 = {};
+    if(!Array.isArray(st.r256.starLog)) st.r256.starLog = [];
+    const cur = _r256StarsOf(st);
+    if(_r256LastStars === null){ _r256LastStars = cur; return null; }
+    const d = cur - _r256LastStars;
+    if(!d){ _r256Why = ''; return null; }
+    const t = Date.now();
+    const entry = { t: t, d: r256DayStr(t), n: d, why: (_r256Why || '系统结算'), bal: cur };
+    _r256Why = '';
+    _r256LastStars = cur;
+    st.r256.starLog.push(entry);
+    if(st.r256.starLog.length > 1000) st.r256.starLog = st.r256.starLog.slice(-1000);
+    return entry;
+  }
+  function _r256LedgerRollback(st, entry){
+    if(!entry) return;
+    try{
+      const log = st.r256 && st.r256.starLog;
+      if(Array.isArray(log) && log.length && log[log.length-1] === entry) log.pop();
+      _r256LastStars = entry.bal - entry.n;
+    }catch(e){}
+  }
   function _isQuotaErr(e){
     return !!(e && (e.name === 'QuotaExceededError' || e.code === 22 || /quota/i.test(String((e && e.message) || ''))));
   }
   function save(st){
     if(_staging){ _staged = st; return true; } // R131-2：暂存态下仅写入草稿，不落库
     let raw;
+    let _r256Entry = null;
+    try{ _r256Entry = _r256Ledger(st); }catch(e){}
     try{ raw = JSON.stringify(st); }
     catch(e){ _saveError = 'serialize'; _loadCachePut(st); return false; }
     try{
@@ -12860,11 +13355,13 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
         catch(e2){
           _saveError = 'quota';
           // R246-3：写失败时内存态仍以本次 st 为准，避免「渲染新数据、点击读回旧数据」两套真相
+          _r256LedgerRollback(st, _r256Entry);
           _loadCachePut(st);
           return false;
         }
       } else {
         _saveError = (e && e.name) || 'error';
+        _r256LedgerRollback(st, _r256Entry);
         _loadCachePut(st);
         return false;
       }
@@ -13754,7 +14251,8 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
       if(req.length===0) return false;
       return req.every(t=>{
         const r = st.records.find(x=>x.date===ds && x.taskId===t.id);
-        return r && r.completed;
+        // R256-1.3：补卡（isMakeup）计入累计打卡，但不算作连续打卡
+        return r && r.completed && !r.isMakeup;
       });
     }
     let streak = 0;
@@ -19576,6 +20074,272 @@ be 动词：am / is → was；are → were
     return before !== st.mathProblems.length;
   }
 
+
+  /* ============================================================
+     R256：新功能数据层（打卡总览 / 补卡 / 星星流水 / 提醒 /
+           护眼 / 错题复练 / 练习断点 / 收藏 / 秘境提示 / 图鉴 /
+           通关证书 / 离线暂存 / 单模块重置）
+     ============================================================ */
+  function _r256(){ const st = load(); if(!st.r256) st.r256 = {}; return st.r256; }
+
+  function getR256(){ try{ return JSON.parse(JSON.stringify(_r256())); }catch(e){ return {}; } }
+  function setR256(patch){
+    const st = load();
+    st.r256 = Object.assign({}, st.r256 || {}, patch || {});
+    save(st);
+    return getR256();
+  }
+
+  // ---------- 星星流水 ----------
+  function getStarLog(opt){
+    const list = (_r256().starLog || []).slice();
+    const o = opt || {};
+    let out = list;
+    if(o.day)  out = out.filter(e => e.d === o.day);
+    if(o.from) out = out.filter(e => e.d >= o.from);
+    if(o.to)   out = out.filter(e => e.d <= o.to);
+    if(o.dir === 'in')  out = out.filter(e => e.n > 0);
+    if(o.dir === 'out') out = out.filter(e => e.n < 0);
+    if(o.kw){ const k = String(o.kw); out = out.filter(e => String(e.why||'').indexOf(k) >= 0); }
+    return out.slice().reverse();
+  }
+  function clearStarLog(){ const st = load(); st.r256.starLog = []; save(st); return true; }
+
+  // ---------- 打卡提醒 ----------
+  function getRemindCfg(){ return Object.assign({on:true, childTime:'19:30', parentTime:'20:30', lastFired:''}, _r256().remind || {}); }
+  function saveRemindCfg(patch){
+    const st = load();
+    st.r256.remind = Object.assign(getRemindCfg(), patch || {});
+    save(st); return getRemindCfg();
+  }
+
+  // ---------- 护眼模式 ----------
+  function getEyeCfg(){
+    const e = Object.assign({on:false, dailyMin:45, usedSec:0, lastDay:''}, _r256().eye || {});
+    if(e.lastDay !== todayStr()){ e.usedSec = 0; e.lastDay = todayStr(); }
+    return e;
+  }
+  function saveEyeCfg(patch){
+    const st = load();
+    const cur = Object.assign({on:false, dailyMin:45, usedSec:0, lastDay:todayStr()}, st.r256.eye || {});
+    st.r256.eye = Object.assign(cur, patch || {});
+    if(st.r256.eye.lastDay !== todayStr()){ st.r256.eye.lastDay = todayStr(); if(patch && patch.usedSec === undefined) st.r256.eye.usedSec = 0; }
+    save(st); return getEyeCfg();
+  }
+
+  // ---------- 受控补卡（仅家长模式；每自然月限次） ----------
+  function makeupState(dateStr){
+    const m = Object.assign({month:'', used:0, limit:3, log:[]}, _r256().makeup || {});
+    const month = (dateStr || todayStr()).slice(0,7);
+    if(m.month !== month) return {month:month, used:0, limit:m.limit||3, remain:(m.limit||3)};
+    const limit = m.limit || 3;
+    return {month:month, used:m.used||0, limit:limit, remain:Math.max(0, limit - (m.used||0))};
+  }
+  function setMakeupLimit(n){
+    const st = load();
+    const lim = Math.max(0, Math.min(31, parseInt(n,10) || 0));
+    st.r256.makeup = Object.assign({month:todayStr().slice(0,7), used:0, limit:3, log:[]}, st.r256.makeup || {}, {limit:lim});
+    save(st); return makeupState();
+  }
+  function makeupTask(dateStr, taskId, note){
+    const st = load();
+    if(!dateStr || !/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return {ok:false, msg:'请选择要补卡的日期'};
+    if(dateStr >= todayStr()) return {ok:false, msg:'只能补今天之前的日期'};
+    const task = (st.tasks||[]).find(t=>t.id===taskId);
+    if(!task) return {ok:false, msg:'任务不存在'};
+    const m = Object.assign({month:'', used:0, limit:3, log:[]}, st.r256.makeup || {});
+    const month = dateStr.slice(0,7);
+    if(m.month !== month){ m.month = month; m.used = 0; }
+    const limit = m.limit || 3;
+    if((m.used||0) >= limit) return {ok:false, msg:'本月补卡次数已用完（上限 ' + limit + ' 次）'};
+    let r = st.records.find(x=>x.date===dateStr && x.taskId===taskId);
+    if(r && r.completed && !r.isMakeup) return {ok:false, msg:'这一天这项任务已完成，无需补卡'};
+    if(!r){
+      r = {id:uid(), date:dateStr, taskId:taskId, completed:false, actualMinutes:0, parentNote:'', stars:0, isMakeup:false, isSuspicious:false, _ts:0, count:0};
+      st.records.push(r);
+    }
+    r.completed = true;
+    r.isMakeup = true;
+    r.stars = 0;                 // 补卡不计成长星，避免刷星
+    r.actualMinutes = 0;
+    r._ts = Date.now();
+    r.parentNote = (r.parentNote ? r.parentNote + ' | ' : '') + '家长补卡' + (note ? ('：' + note) : '');
+    m.used = (m.used||0) + 1;
+    m.log = (m.log||[]).concat([{t:Date.now(), date:dateStr, taskId:taskId, name:task.name, note:note||''}]).slice(-100);
+    st.r256.makeup = m;
+    recompute(st);
+    save(st);
+    return {ok:true, used:m.used, limit:limit, remain:Math.max(0, limit - m.used)};
+  }
+  function makeupLog(){ return (_r256().makeup.log || []).slice().reverse(); }
+
+  // ---------- 错题复练 ----------
+  function getWrongReviewCfg(){ return Object.assign({on:false, everyDays:3, lastAt:0, lastSig:''}, _r256().wrongReview || {}); }
+  function saveWrongReviewCfg(patch){
+    const st = load();
+    st.r256.wrongReview = Object.assign(getWrongReviewCfg(), patch || {});
+    save(st); return getWrongReviewCfg();
+  }
+
+  // ---------- 练习断点续做 ----------
+  function getPracticeResume(key){
+    const p = _r256().practice || {};
+    const v = p[key];
+    if(!v) return null;
+    try{ return JSON.parse(JSON.stringify(v)); }catch(e){ return null; }
+  }
+  function savePracticeResume(key, data){
+    const st = load();
+    st.r256.practice = st.r256.practice || {};
+    st.r256.practice[key] = Object.assign({}, data || {}, {at:Date.now()});
+    // 只保留最近 30 个练习断点，防止存档膨胀
+    const keys = Object.keys(st.r256.practice);
+    if(keys.length > 30){
+      keys.sort((a,b)=> (st.r256.practice[a].at||0) - (st.r256.practice[b].at||0));
+      keys.slice(0, keys.length-30).forEach(k=>{ delete st.r256.practice[k]; });
+    }
+    save(st); return true;
+  }
+  function clearPracticeResume(key){
+    const st = load();
+    if(st.r256.practice && st.r256.practice[key] !== undefined){ delete st.r256.practice[key]; save(st); }
+    return true;
+  }
+
+  // ---------- 全局题库收藏 ----------
+  function getFavQuestions(){ return (_r256().favorites || []).slice(); }
+  function isFavQuestion(id){
+    const key = String(id||'');
+    return (_r256().favorites || []).some(x => String(x.id) === key);
+  }
+  function toggleFavQuestion(item){
+    const st = load();
+    st.r256.favorites = Array.isArray(st.r256.favorites) ? st.r256.favorites : [];
+    const key = String((item && item.id) || '');
+    if(!key) return false;
+    const i = st.r256.favorites.findIndex(x => String(x.id) === key);
+    if(i >= 0){ st.r256.favorites.splice(i,1); }
+    else {
+      st.r256.favorites.unshift(Object.assign({}, item, {at:Date.now()}));
+      if(st.r256.favorites.length > 300) st.r256.favorites = st.r256.favorites.slice(0,300);
+    }
+    save(st);
+    return i < 0;
+  }
+
+  // ---------- 知识秘境提示 ----------
+  function addKMHint(entry){
+    const st = load();
+    st.r256.kmHints = Array.isArray(st.r256.kmHints) ? st.r256.kmHints : [];
+    st.r256.kmHints.unshift(Object.assign({t:Date.now(), d:todayStr()}, entry||{}));
+    if(st.r256.kmHints.length > 300) st.r256.kmHints = st.r256.kmHints.slice(0,300);
+    if(!st.km) st.km = {};
+    st.km.stars = Math.max(0, (st.km.stars||0) - (entry && entry.cost ? entry.cost : 0));
+    save(st);
+    return true;
+  }
+  function getKMHints(){ return (_r256().kmHints || []).slice(); }
+
+  // ---------- 植物图鉴 ----------
+  function getPlantCodex(){ return Object.assign({}, _r256().codex || {}); }
+  function unlockPlantCodex(cropId, name){
+    const st = load();
+    st.r256.codex = st.r256.codex || {};
+    if(st.r256.codex[cropId]) return null;             // 已点亮：保留首次收获时间
+    st.r256.codex[cropId] = {name: name || cropId, firstAt: Date.now(), firstDay: todayStr(), count: 1};
+    save(st);
+    return st.r256.codex[cropId];
+  }
+
+  // ---------- 通关证书 ----------
+  function addPassCert(entry){
+    const st = load();
+    st.r256.certs = Array.isArray(st.r256.certs) ? st.r256.certs : [];
+    st.r256.certs.unshift(Object.assign({t:Date.now(), day:todayStr()}, entry||{}));
+    if(st.r256.certs.length > 100) st.r256.certs = st.r256.certs.slice(0,100);
+    save(st); return true;
+  }
+  function getPassCerts(){ return (_r256().certs || []).slice(); }
+
+  // ---------- 提交失败暂存（弱网自动重试） ----------
+  function stashPendingAnswer(key, payload){
+    const st = load();
+    st.r256.pendingAnswers = st.r256.pendingAnswers || {};
+    st.r256.pendingAnswers[String(key)] = Object.assign({at:Date.now()}, payload||{});
+    save(st); return true;
+  }
+  function listPendingAnswers(){ return Object.assign({}, _r256().pendingAnswers || {}); }
+  function clearPendingAnswer(key){
+    const st = load();
+    if(st.r256.pendingAnswers && st.r256.pendingAnswers[String(key)] !== undefined){
+      delete st.r256.pendingAnswers[String(key)];
+      save(st);
+    }
+    return true;
+  }
+
+  // ---------- 单模块重置（家长权限；不动星星与打卡以外模块） ----------
+  function resetModuleProgress(mod){
+    const st = load();
+    const a = st.archive = st.archive || {};
+    let label = '';
+    if(mod === 'checkin'){
+      label = '打卡记录';
+      st.records = [];
+      st.checkinLog = {};
+      st.calcDailyLog = {};
+      st.calcDrill = {date:'', items:[], checkedAt:0, score:0};
+      a.consecutiveDays = 0;
+      // 保留成长星 / 金币 / 经验，避免「清打卡 = 清空星星」
+    } else if(mod === 'farm'){
+      label = '种植园';
+      st.plots = Array.from({length:PLOT_COUNT}, (_,i)=> i < 4 ? newUnlockedPlot() : newPlot());
+      st.inventory = {seeds:{}, water:10, sun:10, fert:6, harvested:{}};
+      st.gifts = [];
+      st.shop = null;
+    } else if(mod === 'km'){
+      label = '知识秘境';
+      if(st.km){
+        st.km.progress = {};
+        st.km.wrong = [];
+        st.km.cleared = {chinese:false, math:false, english:false, mixed:false};
+        st.km.stars = 0;
+      }
+    } else if(mod === 'calc'){
+      label = '计算小超市';
+      st.calcWrongBook = [];
+      st.calcBook = [];
+      st.calcDrill = {date:'', items:[], checkedAt:0, score:0};
+      st.calcDailyLog = {};
+      st.calcStreak = 0; st.calcStreakLastDate = ''; st.calcStreakRewardWeeks = 0; st.calcStreakBonusStars = 0;
+    } else if(mod === 'xs'){
+      label = '学而思英语';
+      st.xueersiWrongs = [];
+      st.xueersiDailyResults = {};
+      st.xueersiAnswerLog = [];
+      st.xueersiChecked = {};
+    } else if(mod === 'reading'){
+      label = '大阅读';
+      st.readFlags = {};
+      st.readLog = {};
+      st.userReading = {cnWords:[], cnPoem:[], cnEssay:[], enPassage:[], enSpeaking:[]};
+    } else if(mod === 'baike'){
+      label = '百科讲堂';
+      st.baikeFlags = {};
+      st.baikeViewed = {};
+      st.baikeCounts = {};
+    } else if(mod === 'math'){
+      label = '乐读数学';
+      st.mathLecture = {};
+      st.mathNoteStatus = {};
+      st.mathNotes = [];
+    } else {
+      return {ok:false, msg:'未知模块'};
+    }
+    save(st);
+    return {ok:true, mod:mod, label:label};
+  }
+
   // ----- 状态/接口暴露 -----
 
   window.Store = {
@@ -19583,6 +20347,17 @@ be 动词：am / is → was；are → were
     load, save, resetData,
     // R254-1/2：数据保护 —— 备份信息 / 强制刷盘
     backupInfo, flushPersistence,
+    // R256：打卡总览 / 星星流水 / 提醒 / 护眼 / 补卡 / 错题复练 / 断点 / 收藏 / 提示 / 图鉴 / 证书 / 暂存 / 单模块重置
+    getR256, setR256, getStarLog, clearStarLog, setStarWhy,
+    getRemindCfg, saveRemindCfg, getEyeCfg, saveEyeCfg,
+    makeupState, setMakeupLimit, makeupTask, makeupLog,
+    getWrongReviewCfg, saveWrongReviewCfg,
+    getPracticeResume, savePracticeResume, clearPracticeResume,
+    getFavQuestions, isFavQuestion, toggleFavQuestion,
+    addKMHint, getKMHints, getPlantCodex, unlockPlantCodex,
+    addPassCert, getPassCerts,
+    stashPendingAnswer, listPendingAnswers, clearPendingAnswer,
+    resetModuleProgress,
     tasksForDate, getRecord, toggleCheckIn, makeupDay, saveWrong,
     addTask, updateTask, deleteTask,
     // R253-2：首页任务卡跳转独立配置
@@ -34336,10 +35111,31 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
           '<div class="km-quiz-sub">'+cfg.ico+' '+esc(cfg.name)+'　第 '+idx+'/'+totalQ+' 关</div>'+
           '<div class="km-quiz-title">'+esc(q.title)+'</div>'+
           '<div class="km-quiz-opts">'+optsHtml+'</div>'+
+          '<div class="km-quiz-hintrow">'+
+            '<button type="button" class="km-hint-btn">💡 提示（3⭐）</button>'+
+            '<span class="km-hint-txt"></span>'+
+          '</div>'+
           '<div class="km-quiz-fb"></div>'+
         '</div>';
         popup.hidden=false;
         popup.querySelectorAll('.km-opt').forEach(b=>{ b.onclick=()=>answer(g, b.getAttribute('data-o')); });
+        // R256-3.1：可选提示 —— 花少量星星换「思路引导」，不直接给答案，并记录使用
+        const _hb = popup.querySelector('.km-hint-btn');
+        if(_hb) _hb.onclick = ()=>{
+          const _t = popup.querySelector('.km-hint-txt');
+          let _h = String(q.hint || '').trim();
+          if(!_h || _h === String(q.answer)) _h = '先读两遍题干，圈出关键条件；没思路就用排除法，把明显不对的选项先划掉。';
+          if(_hb._bought){ if(_t) _t.textContent = '💡 ' + _h; return; }
+          const cost = 3;
+          const cur = (S.getKMStars ? S.getKMStars() : 0) || 0;
+          if(cur < cost){ toast('⭐ 秘境星星不足（需要 ' + cost + ' 颗），先答对几道题攒一攒'); return; }
+          _hb._bought = true;
+          try{ S.addKMHint({qid:q.id, cost:cost, level:cfg.id, title:String(q.title||'').slice(0,40)}); }catch(e){}
+          renderHUD();
+          if(_t) _t.textContent = '💡 ' + _h;
+          _hb.textContent = '💡 已用提示';
+          toast('💡 花 ' + cost + '⭐ 买了提示');
+        };
       }
       function answer(g, chosen){
         const q=g.q, ok=(chosen===q.answer), fb=popup.querySelector('.km-quiz-fb');
@@ -34385,6 +35181,15 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         starCount+=settings.starReward.clear; S.addKMStars(settings.starReward.clear);
         const before=S.getKMCleared(); const wasAll=before.chinese&&before.math&&before.english&&before.mixed;
         S.markKMCleared(cfg.id);
+        // R256-3.4：通关后提示可生成电子证书
+        setTimeout(()=>{
+          try{
+            r256PushTip({icon:'🏅', tone:'cert', autoClose:0, later:'稍后',
+              title:'「' + (cfg.name||'本关') + '」通关啦！',
+              desc:'可以生成一张可保存到本地的电子通关证书',
+              goLabel:'生成证书', goPage:'knowledge', after: ()=> r256OpenCerts()});
+          }catch(e){}
+        }, 1000);
         S.saveKMProgress(cfg.id, { currentIdx:0, questionIds:[] });   // 通关后清空本关续闯进度
         const after=S.getKMCleared();
         const allClear=after.chinese&&after.math&&after.english&&after.mixed;
@@ -37858,7 +38663,15 @@ function renderKMAdmin(){
       const fb = $('#plotBody').querySelector('[data-fert]');
       if(fb) fb.onclick = ()=>{ const r=S.fertPlot(idx); toast(r.ok?'施好肥啦，作物长得更壮了～':r.msg); if(r.ok){ renderFarm(); playZooSound('plant'); openPlotModal(idx); } };
       const hb = $('#plotBody').querySelector('[data-harvest]');
-      if(hb) hb.onclick = ()=>{ const r=S.harvestPlot(idx); toast(r.ok?`采摘成功：${r.got} 已入仓库`:r.msg); if(r.ok){hideModal('#modalPlot');renderFarm();renderHome(); playZooSound('harvest');} };
+      if(hb) hb.onclick = ()=>{
+        const _cid = ((S.load().plots || [])[idx] || {}).cropId;   // R256-3.3：收获前记下作物，用于点亮图鉴
+        const r = S.harvestPlot(idx);
+        toast(r.ok ? `采摘成功：${r.got} 已入仓库` : r.msg);
+        if(r.ok){
+          try{ if(_cid) r256UnlockCodex(_cid); }catch(e){}
+          hideModal('#modalPlot'); renderFarm(); renderHome(); playZooSound('harvest');
+        }
+      };
     }
     showModal('#modalPlot');
   }
@@ -41763,6 +42576,1435 @@ if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
       }, 1200);
     }catch(e){}
   }
+
+  /* ============================================================
+     R256 通用层：面板 / 轻提醒 / 下载 / 日期
+     ============================================================ */
+  const R256_PAD = n=>String(n).padStart(2,'0');
+  function r256Ymd(d){ return d.getFullYear() + '-' + R256_PAD(d.getMonth()+1) + '-' + R256_PAD(d.getDate()); }
+  function r256ParseDay(s){ return new Date(String(s) + 'T00:00:00'); }
+  function r256AddDays(s, n){ const d = r256ParseDay(s); d.setDate(d.getDate() + n); return r256Ymd(d); }
+  function r256MonthLast(y, m){ return new Date(y, m, 0).getDate(); }
+  function r256CsvCell(v){ return '"' + String(v == null ? '' : v).replace(/"/g,'""') + '"'; }
+
+  function r256Download(name, text, mime){
+    try{
+      const blob = new Blob(['\ufeff' + String(text||'')], {type: mime || 'text/csv;charset=utf-8'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = name;
+      document.body.appendChild(a); a.click();
+      setTimeout(()=>{ try{ URL.revokeObjectURL(url); a.remove(); }catch(e){} }, 1200);
+      toast('📄 已导出：' + name);
+      return true;
+    }catch(e){ toast('导出失败，请重试'); return false; }
+  }
+
+  function r256SheetOpen(title, bodyHtml, footHtml){
+    const mask = $('#r256Mask'); if(!mask) return;
+    const ti = $('#r256SheetTitle'), b = $('#r256SheetBody'), f = $('#r256SheetFoot');
+    if(ti) ti.textContent = title || '';
+    if(b) b.innerHTML = bodyHtml || '';
+    if(f) f.innerHTML = footHtml || '';
+    mask.hidden = false;
+    document.body.classList.add('r256-sheet-on');
+    try{ b.scrollTop = 0; }catch(e){}
+  }
+  function r256SheetClose(){
+    const mask = $('#r256Mask');
+    if(mask) mask.hidden = true;
+    document.body.classList.remove('r256-sheet-on');
+  }
+  function r256SheetToggle(sel){
+    const el = $(sel); if(!el) return;
+    const on = el.classList.contains('is-on') || el.getAttribute('aria-pressed') === 'true';
+    el.classList.toggle('is-on', !on);
+    el.setAttribute('aria-pressed', on ? 'false' : 'true');
+    toast(on ? '已关闭' : '已开启');
+  }
+
+  // 轻提醒（不拦截页面，可稍后 / 直接跳转）
+  function r256PushTip(opt){
+    const box = $('#r256Stack'); if(!box) return;
+    const o = opt || {};
+    const id = 'r256tip_' + Date.now() + '_' + Math.floor(Math.random()*1000);
+    const el = document.createElement('div');
+    el.className = 'r256-tip' + (o.tone ? (' r256-tip-' + o.tone) : '');
+    el.id = id;
+    el.innerHTML = '<div class="r256-tip-ico">' + (o.icon || '🔔') + '</div>'
+      + '<div class="r256-tip-main"><div class="r256-tip-title">' + esc(o.title || '提醒') + '</div>'
+      + '<div class="r256-tip-desc">' + (o.desc || '') + '</div></div>'
+      + '<div class="r256-tip-acts">'
+      + (o.goLabel ? '<button type="button" class="r256-tip-btn primary" data-r256-tip-go="' + esc(o.goPage || '') + '">' + esc(o.goLabel) + '</button>' : '')
+      + '<button type="button" class="r256-tip-btn" data-r256-tip-close="1">' + esc(o.later || '稍后') + '</button>'
+      + '</div>';
+    box.appendChild(el);
+    el.querySelector('[data-r256-tip-close]').onclick = ()=> el.remove();
+    if(o.goPage){
+      const gb = el.querySelector('[data-r256-tip-go]');
+      if(gb) gb.onclick = ()=>{ el.remove(); goPage(o.goPage); if(o.after) try{ o.after(); }catch(e){} };
+    }
+    if(o.autoClose !== 0) setTimeout(()=>{ try{ el.classList.add('out'); setTimeout(()=>el.remove(), 260); }catch(e){} }, o.ttl || 12000);
+    return el;
+  }
+
+  /* ============================================================
+     R256-1.1 打卡总览（成长档案 · 按月视图 / 中断点 / 导出）
+     ============================================================ */
+  let _r256CoMonth = '';
+  let _r256CoFilter = 'all';
+
+  function r256CoMonthInit(){
+    if(!_r256CoMonth){
+      const d = new Date();
+      _r256CoMonth = d.getFullYear() + '-' + R256_PAD(d.getMonth()+1);
+    }
+    return _r256CoMonth;
+  }
+  // 某天的打卡明细：distinguish 主动打卡 / 自动完成 / 家长补卡
+  function r256DayDetail(st, ds){
+    const tasks = (S.tasksForDate ? (S.tasksForDate(ds) || []) : []).slice();
+    const list = [];
+    const known = {};
+    tasks.forEach(t=>{
+      known[t.id] = 1;
+      const r = (st.records || []).find(x=>x.date===ds && x.taskId===t.id);
+      const done = !!(r && r.completed);
+      let kind = '';
+      if(done) kind = r.isMakeup ? 'makeup' : ((r.count || 0) > 0 ? 'active' : 'auto');
+      list.push({id:t.id, name:t.name, subject:t.subject || '', required:t.type==='必做任务',
+                 done:done, kind:kind, stars:done ? (r.stars||0) : 0});
+    });
+    // 历史任务（任务表里已删除，但当天有记录）也要能看到
+    (st.records || []).forEach(r=>{
+      if(r.date !== ds || !r.completed || known[r.taskId]) return;
+      const t = (st.tasks||[]).find(x=>x.id===r.taskId);
+      list.push({id:r.taskId, name:(t && t.name) || '历史任务', subject:(t && t.subject) || '',
+                 required:false, done:true,
+                 kind: r.isMakeup ? 'makeup' : ((r.count||0) > 0 ? 'active' : 'auto'), stars:r.stars||0});
+    });
+    const active = list.filter(x=>x.kind==='active').length;
+    const auto   = list.filter(x=>x.kind==='auto').length;
+    const makeup = list.filter(x=>x.kind==='makeup').length;
+    const reqs = list.filter(x=>x.required);
+    const full = reqs.length > 0 && reqs.every(x=>x.done && x.kind !== 'makeup');
+    return {date:ds, list:list, active:active, auto:auto, makeup:makeup,
+            done:active + auto + makeup, total:reqs.length || list.length, full:full,
+            reqs:reqs.length};
+  }
+  function r256OverviewStats(month){
+    const st = S.load();
+    const y = +month.slice(0,4), m = +month.slice(5,7);
+    const last = r256MonthLast(y, m);
+    const days = [];
+    for(let d=1; d<=last; d++){
+      const ds = month + '-' + R256_PAD(d);
+      days.push(r256DayDetail(st, ds));
+    }
+    const today = S.todayStr();
+    // 断点：某天没打满，但之后（本月内）又出现了打满的日子 → 该天记为中断点
+    let breaks = 0, maxRun = 0, run = 0, fullDays = 0;
+    days.forEach((dd, i)=>{
+      const past = dd.date <= today;
+      if(dd.full){ fullDays++; run++; maxRun = Math.max(maxRun, run); }
+      else { if(past) run = 0; }
+      if(!dd.full && past){
+        const later = days.slice(i+1).some(x=>x.full && x.date <= today);
+        if(later){ dd.breakPoint = true; breaks++; }
+      }
+    });
+    const tot = days.reduce((o,d)=>{
+      o.active += d.active; o.auto += d.auto; o.makeup += d.makeup; o.done += d.done;
+      return o;
+    }, {active:0, auto:0, makeup:0, done:0});
+    return {month:month, days:days, breaks:breaks, maxRun:maxRun, fullDays:fullDays,
+            active:tot.active, auto:tot.auto, makeup:tot.makeup, done:tot.done, today:today};
+  }
+  function r256RenderOverview(){
+    const card = $('#r256CoCard'); if(!card) return;
+    const month = r256CoMonthInit();
+    const data = r256OverviewStats(month);
+    const mn = $('#r256CoMonth'); if(mn) mn.textContent = month.replace('-', ' 年 ') + ' 月';
+    const sm = $('#r256CoSummary');
+    if(sm){
+      sm.innerHTML =
+        '<span class="co-chip">✅ 打满 <b>' + data.fullDays + '</b> 天</span>'
+        + '<span class="co-chip">🔥 最长连续 <b>' + data.maxRun + '</b> 天</span>'
+        + '<span class="co-chip">⚡ 中断 <b>' + data.breaks + '</b> 次</span>'
+        + '<span class="co-chip ok">🙋 主动 <b>' + data.active + '</b></span>'
+        + '<span class="co-chip auto">🤖 自动 <b>' + data.auto + '</b></span>'
+        + '<span class="co-chip mk">🩹 补卡 <b>' + data.makeup + '</b></span>';
+    }
+    const grid = $('#r256CoGrid');
+    if(grid){
+      const wd = ['日','一','二','三','四','五','六'];
+      const first = r256ParseDay(month + '-01');
+      const pad = first.getDay();
+      let html = '<div class="co-wdrow">' + wd.map(w=>'<span>' + w + '</span>').join('') + '</div><div class="co-grid">';
+      for(let i=0;i<pad;i++) html += '<div class="co-cell blank"></div>';
+      data.days.forEach(d=>{
+        const sel = (_r256CoFilter !== 'all');
+        const cnt = _r256CoFilter === 'active' ? d.active
+                  : _r256CoFilter === 'auto' ? d.auto
+                  : _r256CoFilter === 'makeup' ? d.makeup : d.done;
+        const cls = ['co-cell'];
+        if(d.date === data.today) cls.push('today');
+        if(d.full) cls.push('full');
+        if(d.breakPoint) cls.push('brk');
+        if(d.date > data.today) cls.push('future');
+        if(_r256CoFilter !== 'all' && cnt > 0) cls.push('hit');
+        html += '<button type="button" class="' + cls.join(' ') + '" data-co-day="' + d.date + '" title="' + d.date + ' · 完成 ' + d.done + ' 项">'
+          + '<span class="co-num">' + (+d.date.slice(8)) + '</span>'
+          + (cnt > 0 ? '<span class="co-cnt">' + cnt + '</span>' : '')
+          + (d.breakPoint ? '<span class="co-brk">⚡</span>' : '')
+          + (d.makeup > 0 ? '<span class="co-mk">🩹</span>' : '')
+          + '</button>';
+      });
+      html += '</div>';
+      grid.innerHTML = html;
+      grid.querySelectorAll('[data-co-day]').forEach(b=>{
+        b.onclick = ()=> r256OpenDayDetail(b.getAttribute('data-co-day'));
+      });
+    }
+    const lg = $('#r256CoLegend');
+    if(lg){
+      lg.innerHTML = '<span><i class="dot full"></i>打满必做</span><span><i class="dot brk"></i>连续中断点</span>'
+        + '<span><i class="dot today"></i>今天</span><span><i class="dot hit"></i>筛选命中</span>'
+        + '<span class="co-hint">点任意一天看当天全部任务明细</span>';
+    }
+  }
+  function r256OpenDayDetail(ds){
+    const st = S.load();
+    const d = r256DayDetail(st, ds);
+    const kindLabel = k => k === 'active' ? '<b class="k-active">主动打卡</b>'
+                            : k === 'auto' ? '<b class="k-auto">自动完成</b>'
+                            : k === 'makeup' ? '<b class="k-makeup">家长补卡</b>' : '未完成';
+    const rows = d.list.map(x=>
+      '<div class="co-row' + (x.done ? ' done' : '') + '">'
+      + '<span class="co-row-ico">' + (x.done ? '✅' : '⭕') + '</span>'
+      + '<span class="co-row-main"><b>' + esc(x.name) + '</b>'
+      + (x.subject ? '<i>' + esc(x.subject) + '</i>' : '')
+      + (x.required ? '<em class="req">必做</em>' : '') + '</span>'
+      + '<span class="co-row-kind">' + kindLabel(x.kind) + '</span>'
+      + '<span class="co-row-star">' + (x.done && x.stars ? ('+' + x.stars + '⭐') : '') + '</span>'
+      + '</div>').join('') || '<div class="co-empty">这一天没有任务记录</div>';
+    const canMakeup = isParent() && ds < S.todayStr();
+    r256SheetOpen('📅 ' + ds + ' 打卡明细',
+      '<div class="co-day-sum">完成 <b>' + d.done + '</b> 项 / 必做 ' + d.reqs + ' 项'
+      + (d.full ? ' · <b class="k-active">已打满</b>' : '') + '</div>' + rows,
+      canMakeup ? '<button type="button" class="pbtn" id="r256CoDayMakeup">🩹 给这一天补卡</button>' : '');
+    const mb = $('#r256CoDayMakeup');
+    if(mb) mb.onclick = ()=> r256OpenMakeup(ds);
+  }
+  function r256ExportOverview(){
+    const month = r256CoMonthInit();
+    const data = r256OverviewStats(month);
+    const head = ['日期','星期','完成项','主动打卡','自动完成','补卡','必做是否打满','连续中断点','任务明细'];
+    const wd = ['周日','周一','周二','周三','周四','周五','周六'];
+    const rows = data.days.map(d=>{
+      const dow = wd[r256ParseDay(d.date).getDay()];
+      const detail = d.list.filter(x=>x.done).map(x=>(x.name + '(' + (x.kind==='active'?'主动':x.kind==='auto'?'自动':'补卡') + ' ' + x.stars + '⭐)')).join(' / ');
+      return [d.date, dow, d.done, d.active, d.auto, d.makeup, d.full ? '是' : '否', d.breakPoint ? '是' : '', detail]
+        .map(r256CsvCell).join(',');
+    });
+    const sum = ['合计', '', data.done, data.active, data.auto, data.makeup, data.fullDays + ' 天打满', data.breaks + ' 次中断', '']
+      .map(r256CsvCell).join(',');
+    r256Download('打卡月度报表_' + month + '.csv', [head.map(r256CsvCell).join(',')].concat(rows, [sum]).join('\r\n'));
+  }
+
+  /* ============================================================
+     R256-1.2 打卡提醒（柔性，不拦截；家长可单独设时间）
+     ============================================================ */
+  function r256ReminderDue(){
+    const cfg = S.getRemindCfg();
+    if(!cfg.on) return null;
+    const today = S.todayStr();
+    if(cfg.lastFired === today) return null;
+    const now = new Date();
+    const hm = R256_PAD(now.getHours()) + ':' + R256_PAD(now.getMinutes());
+    const target = isChild() ? (cfg.childTime || '19:30') : (cfg.parentTime || '20:30');
+    if(hm < target) return null;
+    // 今天还有没打卡的必做任务才提醒
+    const st = S.load();
+    const req = (S.tasksForDate(today) || []).filter(t=>t.type === '必做任务');
+    const undone = req.filter(t=>{
+      const r = (st.records||[]).find(x=>x.date===today && x.taskId===t.id);
+      return !(r && r.completed);
+    });
+    if(!undone.length) return null;
+    return {undone:undone, target:target};
+  }
+  function r256ReminderTick(){
+    const due = r256ReminderDue();
+    if(!due) return;
+    S.saveRemindCfg({lastFired: S.todayStr()});
+    r256PushTip({
+      icon:'⏰', tone:'remind', ttl: 20000, later:'稍后',
+      title:'今天的必做还差 ' + due.undone.length + ' 项',
+      desc:'设定提醒时间 ' + due.target + ' · ' + due.undone.slice(0,3).map(t=>esc(t.name)).join('、') + (due.undone.length>3?' 等':''),
+      goLabel:'去打卡', goPage:'home'
+    });
+  }
+
+  /* ============================================================
+     R256-1.3 受控补卡（仅家长；按月限次；不计连续、计累计）
+     ============================================================ */
+  function r256OpenMakeup(presetDate){
+    if(!isParent()){ toast('补卡仅家长模式可用'); return; }
+    const st0 = S.makeupState();
+    const y = new Date(); y.setDate(y.getDate() - 1);
+    const def = presetDate || r256Ymd(y);
+    const tasks = S.tasksForDate(def) || [];
+    r256SheetOpen('🩹 补卡（家长）',
+      '<div class="mk-note">本月剩余 <b>' + st0.remain + '</b> / ' + st0.limit + ' 次 · 补卡<b>不计入连续打卡</b>，但计入累计打卡，且不发放成长星。</div>'
+      + '<label class="mk-field">选择日期 <input type="date" id="r256MkDate" value="' + esc(def) + '" max="' + esc(r256AddDays(S.todayStr(), -1)) + '"></label>'
+      + '<div class="mk-list" id="r256MkList"></div>',
+      '<button type="button" class="pbtn" id="r256MkLimit">调整每月次数</button>');
+    const renderList = ()=>{
+      const ds = ($('#r256MkDate') || {}).value || def;
+      const st = S.load();
+      const rows = (S.tasksForDate(ds) || []).map(t=>{
+        const r = (st.records||[]).find(x=>x.date===ds && x.taskId===t.id);
+        const done = !!(r && r.completed);
+        const isMk = done && r.isMakeup;
+        return '<div class="mk-row">'
+          + '<span class="mk-name">' + esc(t.name) + '<i>' + esc(t.subject || '') + '</i></span>'
+          + (done
+              ? '<span class="mk-done ' + (isMk?'is-mk':'') + '">' + (isMk ? '已补卡' : '已完成') + '</span>'
+              : '<button type="button" class="pbtn mk-btn" data-mk-task="' + esc(t.id) + '">补卡</button>')
+          + '</div>';
+      }).join('') || '<div class="co-empty">这一天没有可补的任务</div>';
+      $('#r256MkList').innerHTML = rows;
+      $('#r256MkList').querySelectorAll('[data-mk-task]').forEach(b=>{
+        b.onclick = ()=>{
+          const tid = b.getAttribute('data-mk-task');
+          const r = S.makeupTask(ds, tid, '家长手动补卡');
+          if(!r.ok){ toast('⚠️ ' + r.msg); return; }
+          toast('🩹 已补卡，剩余 ' + r.remain + ' 次');
+          renderList();
+          r256RenderOverview();
+        };
+      });
+    };
+    renderList();
+    const di = $('#r256MkDate'); if(di) di.onchange = renderList;
+    const lb = $('#r256MkLimit');
+    if(lb) lb.onclick = ()=>{
+      const cur = S.makeupState().limit;
+      const v = prompt('每月最多补卡几次？（0 表示禁止补卡）', String(cur));
+      if(v == null) return;
+      const n = parseInt(v, 10);
+      if(isNaN(n) || n < 0 || n > 31){ toast('请输入 0~31 之间的数字'); return; }
+      S.setMakeupLimit(n);
+      toast('已设置为每月 ' + n + ' 次');
+      r256CloseSheet();
+      r256OpenMakeup(ds_keep());
+    };
+    function ds_keep(){ return ($('#r256MkDate') || {}).value || def; }
+  }
+
+  /* ============================================================
+     R256-1.4 星星明细（每笔来源 / 时间 / 任务，可筛选导出）
+     ============================================================ */
+  let _r256StarRange = '7';
+  let _r256StarDir = 'all';
+  function r256StarFrom(range){
+    const today = S.todayStr();
+    if(range === 'today') return today;
+    if(range === '7') return r256AddDays(today, -6);
+    if(range === '30') return r256AddDays(today, -29);
+    if(range === 'month') return today.slice(0,7) + '-01';
+    return '';
+  }
+  function r256StarLogQuery(){
+    const kw = (($('#r256StarKw') || {}).value || '').trim();
+    return S.getStarLog({from: r256StarFrom(_r256StarRange), dir: _r256StarDir === 'all' ? '' : _r256StarDir, kw: kw});
+  }
+  function r256RenderStarLog(){
+    const list = r256StarLogQuery();
+    const sumIn = list.filter(e=>e.n>0).reduce((a,e)=>a+e.n,0);
+    const sumOut = list.filter(e=>e.n<0).reduce((a,e)=>a+e.n,0);
+    const total = (S.load().archive || {}).totalStars || 0;
+    const rows = list.slice(0, 200).map(e=>{
+      const t = new Date(e.t);
+      const hm = R256_PAD(t.getHours()) + ':' + R256_PAD(t.getMinutes());
+      return '<div class="sl-row">'
+        + '<span class="sl-time"><b>' + e.d.slice(5) + '</b> ' + hm + '</span>'
+        + '<span class="sl-why">' + esc(e.why || '系统结算') + '</span>'
+        + '<span class="sl-n ' + (e.n > 0 ? 'in' : 'out') + '">' + (e.n > 0 ? '+' : '') + e.n + '⭐</span>'
+        + '<span class="sl-bal">余 ' + (e.bal == null ? '-' : e.bal) + '</span>'
+        + '</div>';
+    }).join('') || '<div class="co-empty">这段时间没有星星变动</div>';
+    const body = '<div class="sl-tools">'
+      + '<select id="r256StarRange">'
+      + ['today:今天','7:近 7 天','30:近 30 天','month:本月','all:全部'].map(o=>{
+          const v = o.split(':')[0];
+          return '<option value="' + v + '"' + (v === _r256StarRange ? ' selected' : '') + '>' + o.split(':')[1] + '</option>';
+        }).join('')
+      + '</select>'
+      + '<select id="r256StarDir">'
+      + [['all','全部'],['in','收入'],['out','支出']].map(o=>'<option value="' + o[0] + '"' + (o[0] === _r256StarDir ? ' selected' : '') + '>' + o[1] + '</option>').join('')
+      + '</select>'
+      + '<input id="r256StarKw" type="search" placeholder="搜来源/任务关键词" value="' + esc((($('#r256StarKw')||{}).value)||'') + '">'
+      + '</div>'
+      + '<div class="sl-sum">当前余额 <b>' + total + '⭐</b> · 收入 <b class="in">+' + sumIn + '</b> · 支出 <b class="out">' + sumOut + '</b> · 共 ' + list.length + ' 笔</div>'
+      + '<div class="sl-list">' + rows + '</div>';
+    r256SheetOpen('⭐ 星星明细', body,
+      '<button type="button" class="pbtn" id="r256StarExport">📄 导出明细</button>'
+      + (isParent() ? '<button type="button" class="pbtn danger" id="r256StarClear">清空流水</button>' : ''));
+    const re = $('#r256StarRange'); if(re) re.onchange = ()=>{ _r256StarRange = re.value; r256RenderStarLog(); };
+    const de = $('#r256StarDir'); if(de) de.onchange = ()=>{ _r256StarDir = de.value; r256RenderStarLog(); };
+    const kw = $('#r256StarKw'); if(kw) kw.oninput = ()=>{ try{ r256RenderStarLog(); const k2 = $('#r256StarKw'); if(k2){ k2.focus(); k2.setSelectionRange(k2.value.length, k2.value.length); } }catch(e){} };
+    const ex = $('#r256StarExport');
+    if(ex) ex.onclick = ()=>{
+      const l = r256StarLogQuery();
+      const head = ['时间','日期','来源','变动','余额'].map(r256CsvCell).join(',');
+      const rows2 = l.map(e=>{
+        const t = new Date(e.t);
+        return [R256_PAD(t.getHours())+':'+R256_PAD(t.getMinutes())+':'+R256_PAD(t.getSeconds()), e.d, e.why, e.n, e.bal].map(r256CsvCell).join(',');
+      });
+      r256Download('星星明细_' + S.todayStr() + '.csv', [head].concat(rows2).join('\r\n'));
+    };
+    const cl = $('#r256StarClear');
+    if(cl) cl.onclick = ()=>{
+      if(!confirm('确认清空星星流水记录？（只清流水，不影响星星余额）')) return;
+      S.clearStarLog();
+      toast('已清空流水');
+      r256RenderStarLog();
+    };
+  }
+
+
+  /* ============================================================
+     R256-2.1 全局题库检索（题库 / 我的错题 / 收藏本）
+     ============================================================ */
+  let _r256SearchTab = 'bank';
+  function r256SubjectZh(s){
+    const m = {math:'数学', english:'英语', chinese:'语文', mixed:'综合'};
+    return m[String(s||'')] || (s ? String(s) : '综合');
+  }
+  function r256BuildQuestionIndex(){
+    const idx = [];
+    try{
+      (S.getKMQuestions() || []).forEach(q=>{
+        idx.push({id:'km:' + q.id, src:'知识秘境', subject:r256SubjectZh(q.subject), type:q.options ? '选择题' : '题目',
+                  grade:'综合', title:q.title, answer:q.answer, kw:(q.hint||'') + ' ' + ((q.options||[]).join(' '))});
+      });
+    }catch(e){}
+    try{
+      (S.getCalcBank() || []).forEach((p,i)=>{
+        const qt = (typeof _calcQText === 'function') ? _calcQText(p) : (p.a + ' ' + p.op + ' ' + p.b);
+        idx.push({id:'calc:' + ((typeof _calcKey === 'function') ? _calcKey(p) : (i + '_' + qt)), src:'计算小超市',
+                  subject:'数学', type:p.cat || '口算', grade:'三年级', title:qt + ' = ?', answer:String(p.ans), kw:''});
+      });
+    }catch(e){}
+    try{
+      const pool = (S.xsWordPool ? S.xsWordPool() : []) || [];
+      pool.forEach(w=>{
+        idx.push({id:'xs:' + w.id, src:'学而思词汇', subject:'英语', type:'词汇', grade:'三年级',
+                  title:w.en, answer:w.zh, kw:(w.en||'') + ' ' + (w.zh||'') + ' ' + (w.sentence||'')});
+      });
+    }catch(e){}
+    try{
+      (S.getMathExerciseBank() || []).forEach(m=>{
+        idx.push({id:'mex:' + (m.id || m.q), src:'乐读数学练习', subject:'数学', type:m.type || '练习题',
+                  grade:m.grade || '三年级', title:m.q, answer:(m.a != null ? m.a : (m.answer != null ? m.answer : '')), kw:''});
+      });
+    }catch(e){}
+    return idx;
+  }
+  function r256WrongItems(){
+    const out = [];
+    try{
+      (S.getKMWrong() || []).forEach(w=>{
+        out.push({id:'wkm:' + (w.id != null ? w.id : w.title), src:'秘境错题', subject:'综合',
+                  type:'选择题', title:w.title || '错题', answer:w.answer || '', note:w.hint || ''});
+      });
+    }catch(e){}
+    try{
+      const pool = (S.xsWordPool ? S.xsWordPool() : []) || [];
+      const map = {}; pool.forEach(w=>{ map[w.id] = w; });
+      (S.xsGetWrongs() || []).forEach(w=>{
+        const it = map[w.wordId] || {};
+        out.push({id:'wxs:' + w.wordId, src:'学而思错题', subject:'英语', type:'词汇',
+                  title:it.en || String(w.wordId), answer:it.zh || '', note:'自 ' + (w.since || '')});
+      });
+    }catch(e){}
+    try{
+      (S.getCalcWrongs() || []).forEach(w=>{
+        out.push({id:'wcalc:' + (w.key || w.q), src:'计算错题', subject:'数学', type:'计算',
+                  title:(w.q || '') + ' = ?', answer:String(w.ans == null ? '' : w.ans),
+                  note:(w.wrongVal != null && w.wrongVal !== '') ? ('当时写成 ' + w.wrongVal) : ''});
+      });
+    }catch(e){}
+    return out;
+  }
+  function r256SearchFilter(list){
+    const kw = (($('#r256SearchKw') || {}).value || '').trim().toLowerCase();
+    const src = (($('#r256SearchSrc') || {}).value || '');
+    const sub = (($('#r256SearchSub') || {}).value || '');
+    return list.filter(it=>{
+      if(src && it.src.indexOf(src) < 0) return false;
+      if(sub && it.subject !== sub) return false;
+      if(!kw) return true;
+      const hay = [it.title, it.answer, it.kw, it.type, it.src, it.note].join(' ').toLowerCase();
+      return hay.indexOf(kw) >= 0;
+    });
+  }
+  function r256SearchRender(){
+    const body = $('#r256SearchBody'); if(!body) return;
+    let list, empty;
+    if(_r256SearchTab === 'wrong'){
+      list = r256WrongItems(); empty = '还没有错题，继续保持！';
+    } else if(_r256SearchTab === 'fav'){
+      list = (S.getFavQuestions() || []).map(x=>Object.assign({}, x));
+      empty = '还没有收藏题目，点题目右侧的 ⭐ 收藏';
+    } else {
+      list = r256BuildQuestionIndex(); empty = '题库为空';
+    }
+    const filtered = r256SearchFilter(list);
+    const rows = filtered.slice(0, 80).map(it=>{
+      const fav = S.isFavQuestion(it.id);
+      return '<div class="qs-row" data-qs-id="' + esc(it.id) + '">'
+        + '<div class="qs-main"><div class="qs-title">' + esc(it.title) + '</div>'
+        + '<div class="qs-meta"><span class="qs-src">' + esc(it.src) + '</span>'
+        + '<span>' + esc(it.subject) + '</span><span>' + esc(it.type) + '</span>'
+        + (it.grade && it.grade !== '综合' ? '<span>' + esc(it.grade) + '</span>' : '') + '</div>'
+        + (it.note ? '<div class="qs-note">' + esc(it.note) + '</div>' : '') + '</div>'
+        + '<div class="qs-side">'
+        + '<button type="button" class="qs-ans-btn" data-qs-ans="1">看答案</button>'
+        + '<button type="button" class="qs-fav' + (fav ? ' on' : '') + '" data-qs-fav="' + esc(it.id) + '" title="收藏 / 取消收藏">' + (fav ? '⭐' : '☆') + '</button>'
+        + '</div>'
+        + '<div class="qs-ans" hidden><b>答案：' + esc(it.answer == null || it.answer === '' ? '暂无' : it.answer) + '</b></div>'
+        + '</div>';
+    }).join('') || '<div class="co-empty">' + empty + '</div>';
+    body.innerHTML = '<div class="qs-count">共 <b>' + filtered.length + '</b> 条'
+      + (filtered.length > 80 ? '（显示前 80 条，输入关键词缩小范围）' : '') + '</div>'
+      + '<div class="qs-list">' + rows + '</div>';
+    body.querySelectorAll('.qs-row').forEach(row=>{
+      const ab = row.querySelector('[data-qs-ans]');
+      if(ab) ab.onclick = ()=>{ const el = row.querySelector('.qs-ans'); el.hidden = !el.hidden; ab.textContent = el.hidden ? '看答案' : '收起'; };
+      const fb = row.querySelector('[data-qs-fav]');
+      if(fb) fb.onclick = ()=>{
+        const id = fb.getAttribute('data-qs-fav');
+        const all = (_r256SearchTab === 'fav') ? (S.getFavQuestions()||[]) : r256BuildQuestionIndex().concat(r256WrongItems());
+        const it = all.find(x=>String(x.id) === String(id)) || {id:id, title:''};
+        const nowFav = S.toggleFavQuestion(it);
+        fb.classList.toggle('on', nowFav);
+        fb.textContent = nowFav ? '⭐' : '☆';
+        if(_r256SearchTab === 'fav') r256SearchRender();
+      };
+    });
+  }
+  function r256OpenSearch(tab){
+    if(tab) _r256SearchTab = tab;
+    r256SheetOpen('🔍 全局题库检索',
+      '<div class="qs-tabs">'
+      + '<button type="button" class="qs-tab' + (_r256SearchTab==='bank'?' on':'') + '" data-qs-tab="bank">📚 全部题库</button>'
+      + '<button type="button" class="qs-tab' + (_r256SearchTab==='wrong'?' on':'') + '" data-qs-tab="wrong">❌ 我的错题</button>'
+      + '<button type="button" class="qs-tab' + (_r256SearchTab==='fav'?' on':'') + '" data-qs-tab="fav">⭐ 收藏本</button>'
+      + '</div>'
+      + '<div class="qs-tools">'
+      + '<input id="r256SearchKw" type="search" placeholder="关键词 / 知识点 / 题目文字">'
+      + '<select id="r256SearchSrc"><option value="">全部来源</option>'
+      + ['知识秘境','计算小超市','学而思','乐读数学练习','秘境错题','学而思错题','计算错题']
+          .map(x=>'<option value="' + x + '">' + x + '</option>').join('') + '</select>'
+      + '<select id="r256SearchSub"><option value="">全部学科</option><option>语文</option><option>数学</option><option>英语</option><option>综合</option></select>'
+      + '</div>'
+      + '<div id="r256SearchBody"></div>');
+    $$('.qs-tab').forEach(b=>{
+      b.onclick = ()=>{
+        _r256SearchTab = b.getAttribute('data-qs-tab');
+        $$('.qs-tab').forEach(x=>x.classList.toggle('on', x === b));
+        r256SearchRender();
+      };
+    });
+    const kw = $('#r256SearchKw');
+    if(kw) kw.oninput = ()=> r256SearchRender();
+    const sc = $('#r256SearchSrc'); if(sc) sc.onchange = ()=> r256SearchRender();
+    const sb = $('#r256SearchSub'); if(sb) sb.onchange = ()=> r256SearchRender();
+    r256SearchRender();
+  }
+
+  /* ============================================================
+     R256-2.2 练习自动续做（断点保存 / 回来接着写）
+     ============================================================ */
+  const R256_PRACTICE_PANES = [
+    {sel:'#leiduCalcPane', prefix:'calc'},
+    {sel:'#leiduExercisePane', prefix:'mex'}
+  ];
+  function r256PracticeKey(p){
+    return p.prefix + ':' + S.todayStr();
+  }
+  function r256PracticeInputs(box){
+    return Array.from(box.querySelectorAll('input')).filter(i=>{
+      const t = (i.type || 'text').toLowerCase();
+      return t !== 'checkbox' && t !== 'radio' && t !== 'file' && t !== 'hidden' && !i.disabled;
+    });
+  }
+  function r256SavePractice(box, p, silent){
+    if(!box) return;
+    const inputs = r256PracticeInputs(box);
+    if(!inputs.length) return;
+    const vals = inputs.map(i=>i.value || '');
+    if(!vals.some(v=>v !== '')) return;
+    S.savePracticeResume(r256PracticeKey(p), {
+      vals: vals,
+      scroll: (box.scrollTop || 0),
+      count: inputs.length
+    });
+    if(!silent) toast('💾 已保存进度，下次回来接着写');
+  }
+  function r256RestorePractice(box, p){
+    if(!box) return false;
+    const saved = S.getPracticeResume(r256PracticeKey(p));
+    if(!saved || !Array.isArray(saved.vals)) return false;
+    const inputs = r256PracticeInputs(box);
+    if(!inputs.length) return false;
+    let filled = 0;
+    inputs.forEach((inp, i)=>{
+      if(inp.value) return;                       // 已有内容不覆盖
+      const v = saved.vals[i];
+      if(v == null || v === '') return;
+      inp.value = v; filled++;
+      try{ inp.dispatchEvent(new Event('input', {bubbles:true})); }catch(e){}
+    });
+    if(saved.scroll){ try{ box.scrollTop = saved.scroll; }catch(e){} }
+    return filled > 0;
+  }
+  function r256BindPracticeResume(){
+    R256_PRACTICE_PANES.forEach(p=>{
+      const box = $(p.sel);
+      if(!box || box._r256PracticeBound) return;
+      box._r256PracticeBound = true;
+      const save = ()=> r256SavePractice(box, p, true);
+      box.addEventListener('input', ()=>{ clearTimeout(box._r256Pt); box._r256Pt = setTimeout(save, 600); });
+      box.addEventListener('change', save);
+      // 渲染完成后自动回填（含切页回来、刷新后）
+      const restore = ()=>{
+        if(!r256RestorePractice(box, p)) return;
+        const saved = S.getPracticeResume(r256PracticeKey(p));
+        if(saved && filledOnce(box, saved)) toast('↩️ 已恢复上次没写完的答案');
+      };
+      const filledOnce = (b, s)=> (s.vals || []).some(v=>v !== '');
+      const mo = new MutationObserver(()=>{ clearTimeout(box._r256Mt); box._r256Mt = setTimeout(restore, 120); });
+      mo.observe(box, {childList:true, subtree:true});
+      setTimeout(restore, 600);
+    });
+  }
+
+  /* ============================================================
+     R256-2.3 朗读增强（统一控制条 / 调速 / 单句循环 / 进度跳转）
+     ============================================================ */
+  const R256_SPEAK = {text:'', cur:'', factor:1, loop:false, playing:false, ratio:0, started:0, timer:null};
+  function r256SpeakBarShow(on){
+    const bar = $('#r256SpeakBar'); if(!bar) return;
+    bar.hidden = !on;
+    if(on) bar.classList.add('on'); else bar.classList.remove('on');
+  }
+  function r256SpeakSetRatio(r){
+    R256_SPEAK.ratio = Math.max(0, Math.min(1, r || 0));
+    const fill = $('#rsbFill'), t = $('#rsbTime');
+    if(fill) fill.style.width = (R256_SPEAK.ratio * 100).toFixed(1) + '%';
+    if(t) t.textContent = Math.round(R256_SPEAK.ratio * 100) + '%';
+  }
+  function r256SpeakSentenceAt(text, ratio){
+    const t = String(text || '');
+    const i = Math.floor(t.length * Math.max(0, Math.min(1, ratio)));
+    const mark = /[。！？!?；;\n\.]/;
+    let a = i, b = i;
+    while(a > 0 && !mark.test(t.charAt(a - 1))) a--;
+    while(b < t.length && !mark.test(t.charAt(b))) b++;
+    return (t.slice(a, b + 1) || t.slice(0, 40)).trim();
+  }
+  function r256SpeakRestartFrom(ratio){
+    const full = R256_SPEAK.text || R256_SPEAK.cur;
+    if(!full) return;
+    const idx = Math.floor(full.length * Math.max(0, Math.min(0.98, ratio)));
+    const seg = full.slice(idx).trim();
+    if(!seg) return;
+    R256_SPEAK.cur = seg;
+    R256_SPEAK.ratio = ratio;
+    if(/[\u4e00-\u9fa5]/.test(seg)) speakZh(seg); else speakEn(seg);
+  }
+  function r256SpeakTick(){
+    clearInterval(R256_SPEAK.timer);
+    R256_SPEAK.timer = setInterval(()=>{
+      if(!R256_SPEAK.playing) return;
+      const ss = window.speechSynthesis;
+      if(ss && ss.paused) return;
+      const len = Math.max(1, (R256_SPEAK.cur || '').length);
+      const per = 0.16 * len * 1000 / Math.max(0.5, R256_SPEAK.factor);
+      const p = Math.min(0.99, (Date.now() - R256_SPEAK.started) / per);
+      r256SpeakSetRatio(p);
+    }, 240);
+  }
+  function r256HookSpeak(){
+    if(!('speechSynthesis' in window)) return;
+    const ss = window.speechSynthesis;
+    if(ss.__r256Hooked) return;
+    ss.__r256Hooked = true;
+    const orig = ss.speak.bind(ss);
+    ss.speak = function(u){
+      try{
+        if(u && typeof u.rate === 'number' && R256_SPEAK.factor !== 1){
+          u.rate = Math.max(0.5, Math.min(2, (u.rate || 1) * R256_SPEAK.factor));
+        }
+        const txt = String(u.text || '');
+        if(txt){
+          R256_SPEAK.text = txt; R256_SPEAK.cur = txt;
+          R256_SPEAK.playing = true; R256_SPEAK.started = Date.now();
+          r256SpeakSetRatio(0);
+          r256SpeakBarShow(true);
+          const oldStart = u.onstart, oldEnd = u.onend, oldBnd = u.onboundary, oldErr = u.onerror;
+          u.onstart = function(ev){
+            R256_SPEAK.playing = true;
+            const tg = $('#rsbToggle'); if(tg) tg.textContent = '⏸';
+            r256SpeakTick();
+            if(typeof oldStart === 'function') try{ oldStart.call(u, ev); }catch(e){}
+          };
+          u.onboundary = function(ev){
+            if(ev && typeof ev.charIndex === 'number' && txt.length){
+              r256SpeakSetRatio(ev.charIndex / txt.length);
+            }
+            if(typeof oldBnd === 'function') try{ oldBnd.call(u, ev); }catch(e){}
+          };
+          u.onend = function(ev){
+            R256_SPEAK.playing = false;
+            const tg = $('#rsbToggle'); if(tg) tg.textContent = '▶';
+            clearInterval(R256_SPEAK.timer);
+            r256SpeakSetRatio(1);
+            if(typeof oldEnd === 'function') try{ oldEnd.call(u, ev); }catch(e){}
+            if(R256_SPEAK.loop){
+              const seg = r256SpeakSentenceAt(txt, R256_SPEAK.ratio < 0.99 ? R256_SPEAK.ratio : 0);
+              R256_SPEAK.playing = true;
+              setTimeout(()=>{ if(/[\u4e00-\u9fa5]/.test(seg)) speakZh(seg); else speakEn(seg); }, 320);
+            } else {
+              setTimeout(()=>{ if(!R256_SPEAK.playing) r256SpeakBarShow(false); }, 900);
+            }
+          };
+          u.onerror = function(ev){
+            R256_SPEAK.playing = false;
+            clearInterval(R256_SPEAK.timer);
+            if(typeof oldErr === 'function') try{ oldErr.call(u, ev); }catch(e){}
+          };
+        }
+      }catch(e){}
+      try{ return orig(u); }catch(e){ return undefined; }
+    };
+    const tg = $('#rsbToggle');
+    if(tg) tg.onclick = ()=>{
+      const s2 = window.speechSynthesis;
+      if(!s2) return;
+      if(s2.paused){ s2.resume(); R256_SPEAK.playing = true; tg.textContent = '⏸'; }
+      else if(s2.speaking){ s2.pause(); R256_SPEAK.playing = false; tg.textContent = '▶'; }
+      else if(R256_SPEAK.cur){ r256SpeakRestartFrom(0); }
+    };
+    const st = $('#rsbStop');
+    if(st) st.onclick = ()=>{ try{ window.speechSynthesis.cancel(); }catch(e){} R256_SPEAK.playing = false; r256SpeakBarShow(false); };
+    const lp = $('#rsbLoop');
+    if(lp) lp.onclick = ()=>{
+      R256_SPEAK.loop = !R256_SPEAK.loop;
+      lp.classList.toggle('on', R256_SPEAK.loop);
+      toast(R256_SPEAK.loop ? '🔁 单句循环已开' : '单句循环已关');
+    };
+    const bar = $('#rsbBar');
+    if(bar) bar.onclick = (e)=>{
+      const r = (e.clientX - bar.getBoundingClientRect().left) / Math.max(1, bar.getBoundingClientRect().width);
+      try{ window.speechSynthesis.cancel(); }catch(_e){}
+      setTimeout(()=> r256SpeakRestartFrom(r), 60);
+    };
+    const rt = $('#rsbRate');
+    if(rt){
+      rt.value = String(S.getR256().speakRate || 1);
+      R256_SPEAK.factor = parseFloat(rt.value) || 1;
+      rt.onchange = ()=>{
+        R256_SPEAK.factor = parseFloat(rt.value) || 1;
+        S.setR256({speakRate: R256_SPEAK.factor});
+        toast('朗读速度：' + (R256_SPEAK.factor < 1 ? '慢速' : R256_SPEAK.factor > 1 ? '稍快' : '正常'));
+        const r = R256_SPEAK.ratio;
+        try{ window.speechSynthesis.cancel(); }catch(e){}
+        setTimeout(()=> r256SpeakRestartFrom(0), 80);
+      };
+    }
+  }
+
+  /* ============================================================
+     R256-2.4 书籍阅读增强（夜间 / 批注 / 导出 / 左右滑动）
+     ============================================================ */
+  function r256ReaderNight(on){
+    const modal = $('#modalKtxsRead');
+    const v = (on == null) ? !(modal && modal.classList.contains('r256-night')) : !!on;
+    if(modal) modal.classList.toggle('r256-night', v);
+    try{ localStorage.setItem('r256_night_read', v ? '1' : '0'); }catch(e){}
+    const b = $('#r256ReaderNight');
+    if(b) b.classList.toggle('is-on', v);
+    return v;
+  }
+  function r256ReaderTitle(){
+    const t = ($('#ktxsReadTitle') || {}).textContent || '';
+    return t.replace(/^《/, '').replace(/》$/, '');
+  }
+  function r256ReaderExportNotes(){
+    const title = r256ReaderTitle();
+    const list = (S.getBookBookmarks ? S.getBookBookmarks(title) : []) || [];
+    if(!list.length){ toast('这本书还没有书签 / 批注'); return; }
+    const lines = ['《' + title + '》书签与批注', '导出时间：' + new Date().toLocaleString(), ''];
+    list.forEach((b, i)=>{
+      lines.push('[' + (i+1) + '] 第 ' + (b.page || '?') + ' 页');
+      if(b.text) lines.push('  原文：' + b.text);
+      if(b.note) lines.push('  批注：' + b.note);
+      lines.push('');
+    });
+    r256Download('批注_' + title + '.txt', lines.join('\r\n'), 'text/plain;charset=utf-8');
+  }
+  function r256MountReaderTools(){
+    const modal = $('#modalKtxsRead');
+    if(!modal || modal._r256Tools) return;
+    modal._r256Tools = true;
+    const head = modal.querySelector('.modal-head') || modal.firstElementChild;
+    if(!head) return;
+    const box = document.createElement('div');
+    box.className = 'r256-reader-tools';
+    box.innerHTML = '<button type="button" class="r256-rt-btn" id="r256ReaderNight" title="夜间阅读模式">🌙 夜间</button>'
+      + '<button type="button" class="r256-rt-btn" id="r256ReaderAnnot" title="选中文字添加批注">✍️ 批注</button>'
+      + '<button type="button" class="r256-rt-btn" id="r256ReaderExport" title="导出本书全部书签与批注">📤 导出批注</button>';
+    head.appendChild(box);
+    const nb = box.querySelector('#r256ReaderNight');
+    if(nb) nb.onclick = ()=>{ const on = r256ReaderNight(); toast(on ? '🌙 夜间阅读已开启' : '☀️ 已回到白天模式'); };
+    const ab = box.querySelector('#r256ReaderAnnot');
+    if(ab) ab.onclick = ()=>{
+      const bm = $('#btnKtxsBm');
+      if(bm){ bm.click(); }
+      else toast('请点右上角 🔖 进入批注模式');
+    };
+    const eb = box.querySelector('#r256ReaderExport');
+    if(eb) eb.onclick = r256ReaderExportNotes;
+    let night = '0';
+    try{ night = localStorage.getItem('r256_night_read') || '0'; }catch(e){}
+    if(night === '1') r256ReaderNight(true);
+    // 左右滑动翻页：横向位移明显大于纵向才翻页，避免与上下滚动冲突
+    const stage = $('#ktxsReadStage');
+    if(stage && !stage._r256Swipe){
+      stage._r256Swipe = true;
+      let sx = 0, sy = 0, moved = false;
+      stage.addEventListener('pointerdown', e=>{ sx = e.clientX; sy = e.clientY; moved = false; }, {passive:true});
+      stage.addEventListener('pointermove', e=>{ if(Math.abs(e.clientX - sx) > 12) moved = true; }, {passive:true});
+      stage.addEventListener('pointerup', e=>{
+        const dx = e.clientX - sx, dy = e.clientY - sy;
+        if(!moved || Math.abs(dx) < 60) return;
+        if(Math.abs(dx) < Math.abs(dy) * 1.6) return;      // 纵向为主 → 交给滚动
+        const dir = dx < 0 ? 1 : -1;
+        const zone = stage.querySelector('[data-ktxs-flip="' + dir + '"]');
+        if(zone) zone.click();
+      }, {passive:true});
+    }
+  }
+
+  /* ============================================================
+     R256-2.5 错题二次推送（定时抽题 → 首页必做卡）
+     ============================================================ */
+  function r256ReviewSet(){
+    const out = [];
+    r256WrongItems().forEach(w=>{
+      if(out.length >= 12) return;
+      out.push({id:w.id, src:w.src, q:w.title, a:w.answer, note:w.note});
+    });
+    // 打散，避免每次都是同一顺序
+    out.sort(()=> Math.random() - 0.5);
+    return out.slice(0, 6);
+  }
+  function r256BuildReviewCard(){
+    const box = $('#wpCardRequired'); if(!box) return;
+    const cfg = S.getWrongReviewCfg();
+    const exist = $('#r256ReviewCard');
+    if(!cfg.on){ if(exist) exist.remove(); return; }
+    const set = (S.getR256().reviewSet || {});
+    if(!set || !Array.isArray(set.items) || !set.items.length){ if(exist) exist.remove(); return; }
+    if(exist) exist.remove();
+    const el = document.createElement('div');
+    el.className = 'wp-task-item r256-review-item';
+    el.id = 'r256ReviewCard';
+    el.innerHTML = '<div class="wp-check r256-review-check">🎯</div>'
+      + '<div class="wp-task-main"><div class="wp-task-name">错题复练 · ' + set.items.length + ' 题</div>'
+      + '<div class="wp-task-sub">从错题本抽取 · 点开复习</div></div>';
+    el.onclick = ()=> r256OpenReviewPractice();
+    box.appendChild(el);
+  }
+  function r256OpenReviewPractice(){
+    const set = (S.getR256().reviewSet || {});
+    const items = (set && set.items) || [];
+    if(!items.length){ toast('本次没有待复习的错题'); return; }
+    let i = 0;
+    const render = ()=>{
+      const it = items[i];
+      const pct = Math.round(((i) / items.length) * 100);
+      r256SheetOpen('🎯 错题复练（' + (i+1) + '/' + items.length + '）',
+        '<div class="rp-bar"><i style="width:' + pct + '%"></i></div>'
+        + '<div class="rp-q"><span class="rp-src">' + esc(it.src) + '</span>' + esc(it.q) + '</div>'
+        + (it.note ? '<div class="rp-note">' + esc(it.note) + '</div>' : '')
+        + '<div class="rp-ans" hidden><b>正确答案：</b>' + esc(it.a == null || it.a === '' ? '暂无' : it.a) + '</div>',
+        '<button type="button" class="pbtn" id="rpShow">👀 看答案</button>'
+        + '<button type="button" class="pbtn" id="rpNo">还需要练</button>'
+        + '<button type="button" class="pbtn primary" id="rpYes">✅ 已经会了</button>');
+      const show = $('#rpShow'); if(show) show.onclick = ()=>{ const a = $('.rp-ans'); if(a) a.hidden = false; };
+      const next = ()=>{ i++; if(i >= items.length){ r256FinishReview(); } else render(); };
+      const yes = $('#rpYes'); if(yes) yes.onclick = next;
+      const no = $('#rpNo'); if(no) no.onclick = ()=>{ const a = $('.rp-ans'); if(a) a.hidden = false; setTimeout(next, 900); };
+    };
+    render();
+  }
+  function r256FinishReview(){
+    r256SheetClose();
+    S.saveWrongReviewCfg({lastAt: Date.now()});
+    S.setR256({reviewSet: null});
+    r256BuildReviewCard();
+    toast('🎉 错题复练完成，明天再来一轮');
+  }
+  function r256MaybePushReview(force){
+    const cfg = S.getWrongReviewCfg();
+    if(!cfg.on) { r256BuildReviewCard(); return; }
+    const days = Math.max(1, parseInt(cfg.everyDays, 10) || 3);
+    const gap = days * 86400000;
+    if(!force && cfg.lastAt && (Date.now() - cfg.lastAt) < gap){ r256BuildReviewCard(); return; }
+    const items = r256ReviewSet();
+    if(!items.length){ r256BuildReviewCard(); return; }
+    S.setR256({reviewSet: {items:items, at: Date.now()}});
+    S.saveWrongReviewCfg({lastAt: Date.now()});
+    r256BuildReviewCard();
+  }
+
+
+  /* ============================================================
+     R256-3.2 种植园状态提醒（成熟 / 缺水缺肥 → 首页轻提示）
+     ============================================================ */
+  function r256FarmScan(){
+    const cfg = (S.getR256().farmNotify || {});
+    if(cfg.on === false) return;
+    if(cfg.lastDate === S.todayStr()) return;
+    const st = S.load();
+    let mature = 0, thirsty = 0, hungry = 0, needFert = 0;
+    (st.plots || []).forEach(p=>{
+      if(!p || !p.unlocked || !p.cropId) return;
+      if((p.stage || 0) >= 4){ mature++; return; }
+      if((p.waterCount || 0) < (p.waterNeeded || 0)) thirsty++;
+      if((p.sunCount || 0) < (p.sunNeeded || 0)) hungry++;
+      if((p.fertCount || 0) < (p.fertNeeded || 0)) needFert++;
+    });
+    const parts = [];
+    if(mature) parts.push(mature + ' 块可收获');
+    if(thirsty) parts.push(thirsty + ' 块缺水');
+    if(hungry) parts.push(hungry + ' 块缺阳光');
+    if(needFert) parts.push(needFert + ' 块缺肥料');
+    if(!parts.length) return;
+    S.setR256({farmNotify: Object.assign({}, cfg, {lastDate: S.todayStr()})});
+    r256PushTip({
+      icon:'🌱', tone:'farm', ttl: 15000, later:'知道了',
+      title:'种植园有 ' + parts.length + ' 类状态要处理',
+      desc: parts.join(' · '),
+      goLabel:'去种植园', goPage:'farm'
+    });
+  }
+
+  /* ============================================================
+     R256-3.3 植物图鉴（收获即点亮，记录首次收获时间）
+     ============================================================ */
+  const R256_CROPS = [
+    {id:'corn', name:'玉米', ico:'🌽', tip:'喜阳光，长得快'},
+    {id:'potato', name:'土豆', ico:'🥔', tip:'耐旱，产量高'},
+    {id:'carrot', name:'胡萝卜', ico:'🥕', tip:'需要多浇水'},
+    {id:'rice', name:'水稻', ico:'🌾', tip:'水生作物'},
+    {id:'strawberry', name:'草莓', ico:'🍓', tip:'娇气，要施肥'},
+    {id:'watermelon', name:'西瓜', ico:'🍉', tip:'生长期最长'}
+  ];
+  function r256UnlockCodex(cropId){
+    const c = R256_CROPS.find(x=>x.id === cropId);
+    const r = S.unlockPlantCodex(cropId, (c && c.name) || cropId);
+    if(r){ toast('📖 图鉴点亮：' + ((c && c.name) || cropId) + ' 已收录'); }
+    return r;
+  }
+  function r256OpenCodex(){
+    const codex = S.getPlantCodex();
+    const st = S.load();
+    const inv = (st.inventory && st.inventory.harvested) || {};
+    const cards = R256_CROPS.map(c=>{
+      const got = codex[c.id];
+      const own = inv[c.id] || 0;
+      return '<div class="cx-card' + (got ? ' on' : '') + '">'
+        + '<div class="cx-ico">' + (got ? c.ico : '❔') + '</div>'
+        + '<div class="cx-name">' + (got ? c.name : '未解锁') + '</div>'
+        + '<div class="cx-tip">' + (got ? ('首次收获 ' + (got.firstDay || '')) : c.tip) + '</div>'
+        + '<div class="cx-own">仓库 ' + own + ' 个</div>'
+        + '</div>';
+    }).join('');
+    const done = R256_CROPS.filter(c=>codex[c.id]).length;
+    r256SheetOpen('📖 植物图鉴',
+      '<div class="cx-sum">已点亮 <b>' + done + '</b> / ' + R256_CROPS.length + ' 种 · 收获过的作物会自动点亮</div>'
+      + '<div class="cx-grid">' + cards + '</div>');
+  }
+
+  /* ============================================================
+     R256-3.4 知识秘境通关证书（可保存为图片）
+     ============================================================ */
+  function r256KmLevels(){
+    try{
+      if(typeof KM_LEVELS !== 'undefined' && KM_LEVELS){
+        return Object.keys(KM_LEVELS).map(k=>({key:k, name:(KM_LEVELS[k] && KM_LEVELS[k].name) || k, ico:(KM_LEVELS[k] && KM_LEVELS[k].ico) || '🏆'}));
+      }
+    }catch(e){}
+    return [{key:'chinese',name:'语文神殿',ico:'📖'},{key:'math',name:'数学神殿',ico:'🔢'},
+            {key:'english',name:'英语神殿',ico:'🔤'},{key:'mixed',name:'综合神殿',ico:'🏛️'}];
+  }
+  function r256MakeCert(level){
+    const W = 900, H = 640;
+    const cv = document.createElement('canvas');
+    cv.width = W; cv.height = H;
+    const ctx = cv.getContext('2d');
+    // 底色
+    const g = ctx.createLinearGradient(0, 0, W, H);
+    g.addColorStop(0, '#0b2545'); g.addColorStop(.5, '#123c6b'); g.addColorStop(1, '#0b2545');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    // 光晕
+    const rg = ctx.createRadialGradient(W/2, H*0.42, 40, W/2, H*0.42, 420);
+    rg.addColorStop(0, 'rgba(255,214,102,.22)'); rg.addColorStop(1, 'rgba(255,214,102,0)');
+    ctx.fillStyle = rg; ctx.fillRect(0, 0, W, H);
+    // 边框
+    ctx.strokeStyle = '#f2c14e'; ctx.lineWidth = 6;
+    ctx.strokeRect(26, 26, W-52, H-52);
+    ctx.strokeStyle = 'rgba(242,193,78,.35)'; ctx.lineWidth = 2;
+    ctx.strokeRect(40, 40, W-80, H-80);
+    // 文案
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#ffe9a8';
+    ctx.font = 'bold 34px "PingFang SC","Microsoft YaHei",sans-serif';
+    ctx.fillText('知 识 秘 境 · 通 关 证 书', W/2, 132);
+    ctx.fillStyle = 'rgba(255,255,255,.72)';
+    ctx.font = '18px "PingFang SC","Microsoft YaHei",sans-serif';
+    ctx.fillText('CERTIFICATE OF CLEARANCE', W/2, 168);
+    // 主标题
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 52px "PingFang SC","Microsoft YaHei",sans-serif';
+    ctx.fillText((level.ico || '🏆') + ' ' + (level.name || '关卡'), W/2, 268);
+    // 正文
+    ctx.fillStyle = 'rgba(255,255,255,.86)';
+    ctx.font = '22px "PingFang SC","Microsoft YaHei",sans-serif';
+    const nick = (S.load().profile || {}).nickname || 'Nick';
+    ctx.fillText('恭喜 ' + nick + ' 完成本关全部挑战', W/2, 336);
+    ctx.fillStyle = 'rgba(255,255,255,.62)';
+    ctx.font = '18px "PingFang SC","Microsoft YaHei",sans-serif';
+    ctx.fillText('勇气 · 智慧 · 坚持，缺一不可', W/2, 374);
+    // 星星三连
+    ctx.font = '40px sans-serif';
+    ctx.fillText('⭐ ⭐ ⭐', W/2, 446);
+    // 日期与落款
+    const dstr = S.todayStr();
+    ctx.textAlign = 'left';
+    ctx.fillStyle = 'rgba(255,255,255,.66)';
+    ctx.font = '18px "PingFang SC","Microsoft YaHei",sans-serif';
+    ctx.fillText('通关日期：' + dstr, 92, H-92);
+    ctx.textAlign = 'right';
+    ctx.fillText('疯狂动物城 · 学习乐园', W-92, H-92);
+    // 印章
+    ctx.beginPath();
+    ctx.arc(W-140, H-146, 52, 0, Math.PI*2);
+    ctx.strokeStyle = '#f2c14e'; ctx.lineWidth = 3; ctx.stroke();
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#f2c14e';
+    ctx.font = 'bold 20px "PingFang SC","Microsoft YaHei",sans-serif';
+    ctx.fillText('秘境', W-140, H-156);
+    ctx.fillText('认可', W-140, H-128);
+    return cv;
+  }
+  function r256DownloadCert(level){
+    try{
+      const cv = r256MakeCert(level);
+      const url = cv.toDataURL('image/png');
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = '通关证书_' + (level.name || level.key) + '_' + S.todayStr() + '.png';
+      document.body.appendChild(a); a.click();
+      setTimeout(()=>a.remove(), 800);
+      S.addPassCert({key:level.key, name:level.name, ico:level.ico});
+      toast('🏅 通关证书已保存');
+    }catch(e){ toast('生成证书失败，请重试'); }
+  }
+  function r256OpenCerts(){
+    const cleared = (S.getKMCleared ? S.getKMCleared() : {}) || {};
+    const levels = r256KmLevels();
+    const rows = levels.map(l=>{
+      const ok = !!cleared[l.key];
+      return '<div class="ct-row' + (ok ? ' on' : '') + '">'
+        + '<span class="ct-ico">' + l.ico + '</span>'
+        + '<span class="ct-name">' + esc(l.name) + '</span>'
+        + (ok ? '<button type="button" class="pbtn" data-cert="' + esc(l.key) + '">🏅 生成证书</button>'
+              : '<span class="ct-lock">未通关</span>')
+        + '</div>';
+    }).join('');
+    const hist = (S.getPassCerts() || []).slice(0, 6).map(c=>
+      '<div class="ct-hist"><span>' + (c.ico || '🏅') + ' ' + esc(c.name || c.key) + '</span><i>' + (c.day || '') + '</i></div>').join('');
+    r256SheetOpen('🏅 通关证书',
+      '<div class="ct-tip">每完成一个大关卡即可生成一张可保存的电子证书（PNG 图片，存到本地相册/下载目录）。</div>'
+      + '<div class="ct-list">' + rows + '</div>'
+      + (hist ? '<div class="ct-h-title">最近领取</div><div class="ct-hist-list">' + hist + '</div>' : ''));
+    $$('[data-cert]').forEach(b=>{
+      b.onclick = ()=>{
+        const k = b.getAttribute('data-cert');
+        const l = levels.find(x=>x.key === k) || {key:k, name:k, ico:'🏆'};
+        r256DownloadCert(l);
+        setTimeout(()=> r256OpenCerts(), 400);
+      };
+    });
+  }
+
+  /* ============================================================
+     R256-4.1 离线可用 + 提交失败暂存重试
+     ============================================================ */
+  let _r256OfflineStash = false;
+  function r256OfflineInit(){
+    const banner = (on)=>{
+      let b = $('#r256OfflineBar');
+      if(!b){
+        b = document.createElement('div');
+        b.id = 'r256OfflineBar';
+        b.className = 'r256-offline';
+        b.innerHTML = '<span>📴 当前离线，已加载的内容仍可浏览；作答会先存在本机</span>';
+        document.body.appendChild(b);
+      }
+      b.hidden = !on;
+    };
+    window.addEventListener('offline', ()=>{ banner(true); toast('📴 网络断开，已切换离线浏览'); });
+    window.addEventListener('online', ()=>{
+      banner(false);
+      toast('🌐 网络已恢复');
+      // 把暂存的作答重新落库
+      try{
+        const st = S.load();
+        S.clearPendingAnswer('autosave');
+        if(S.save(st)){ toast('✅ 暂存内容已自动保存'); }
+      }catch(e){}
+    });
+    if(!navigator.onLine) banner(true);
+    // save 失败 → 打标记（下次联网 / 下次打开时自动重试）
+    const _origSave = S.save;
+    if(!S.__r256SaveWrapped){
+      S.__r256SaveWrapped = true;
+      S.save = function(st){
+        let ok = false;
+        try{ ok = _origSave.apply(S, arguments); }catch(e){ ok = false; }
+        if(!ok){
+          _r256OfflineStash = true;
+          try{ S.stashPendingAnswer('autosave', {at: Date.now(), note: '本机存储写入失败，已标记重试'}); }catch(e){}
+        }
+        return ok;
+      };
+    }
+  }
+
+  /* ============================================================
+     R256-4.2 家长管控：单模块重置
+     ============================================================ */
+  const R256_RESET_MODS = [
+    {id:'checkin', name:'打卡记录（保留星星）'},
+    {id:'calc', name:'计算小超市'},
+    {id:'xs', name:'学而思英语'},
+    {id:'reading', name:'大阅读'},
+    {id:'math', name:'乐读数学'},
+    {id:'baike', name:'百科讲堂'},
+    {id:'km', name:'知识秘境'},
+    {id:'farm', name:'种植园'}
+  ];
+  function r256OpenReset(){
+    if(!isParent()){ toast('仅家长模式可用'); return; }
+    const opts = R256_RESET_MODS.map(m=>'<option value="' + m.id + '">' + m.name + '</option>').join('');
+    r256SheetOpen('🧹 单模块重置（家长）',
+      '<div class="rs-warn">⚠️ 只清空所选板块的进度，<b>不会清零星星、金币与其它板块</b>。操作不可撤销。</div>'
+      + '<label class="mk-field">选择板块 <select id="r256ResetMod">' + opts + '</select></label>',
+      '<button type="button" class="pbtn danger" id="r256ResetGo">清空该板块进度</button>');
+    const go = $('#r256ResetGo');
+    if(go) go.onclick = ()=>{
+      const sel = $('#r256ResetMod');
+      const mod = sel ? sel.value : '';
+      const label = (R256_RESET_MODS.find(m=>m.id === mod) || {}).name || mod;
+      if(!confirm('确认清空「' + label + '」的全部进度？\n星星与其它板块不受影响，此操作不可撤销。')) return;
+      const r = S.resetModuleProgress(mod);
+      if(!r.ok){ toast('重置失败：' + (r.msg || '')); return; }
+      toast('🧹 已清空「' + label + '」的进度');
+      r256CloseSheet();
+      try{ renderHome(); }catch(e){}
+      if(mod === 'farm'){ try{ renderFarm(); }catch(e){} }
+      if(mod === 'km'){ try{ renderKnowledge(); }catch(e){} }
+      if(mod === 'calc'){ try{ renderCalcBasicBoard(); }catch(e){} }
+    };
+  }
+
+  /* ============================================================
+     R256-4.3 护眼模式（降蓝光 / 限时 / 休息提醒）
+     ============================================================ */
+  let _r256EyeTimer = null;
+  let _r256EyeLastTip = 0;
+  function r256EyeApply(){
+    const cfg = S.getEyeCfg();
+    const ov = $('#r256EyeOverlay');
+    if(ov) ov.hidden = !cfg.on;
+    document.body.classList.toggle('r256-eye-on', !!cfg.on);
+    return cfg;
+  }
+  function r256EyeTick(){
+    const cfg = S.getEyeCfg();
+    if(!cfg.on) return;
+    const st = S.load();
+    if(!st.r256) st.r256 = {};
+    const cur = Object.assign({on:true, dailyMin:45, usedSec:0, lastDay:S.todayStr()}, st.r256.eye || {});
+    if(cur.lastDay !== S.todayStr()){ cur.lastDay = S.todayStr(); cur.usedSec = 0; }
+    cur.usedSec = (cur.usedSec || 0) + 60;
+    st.r256.eye = cur;
+    S.save(st);
+    const limit = Math.max(5, parseInt(cur.dailyMin, 10) || 45) * 60;
+    if(cur.usedSec >= limit && Date.now() - _r256EyeLastTip > 10 * 60000){
+      _r256EyeLastTip = Date.now();
+      r256PushTip({
+        icon:'👀', tone:'eye', ttl: 25000, later:'稍后休息',
+        title:'已经连续用眼 ' + Math.round(cur.usedSec/60) + ' 分钟啦',
+        desc:'今天设定的可用时长为 ' + cur.dailyMin + ' 分钟，起来看看远处、眨眨眼吧～',
+        goLabel:'休息一下', goPage:'', after: null
+      });
+    }
+  }
+  function r256EyeStart(){
+    r256EyeApply();
+    if(_r256EyeTimer) clearInterval(_r256EyeTimer);
+    _r256EyeTimer = setInterval(r256EyeTick, 60000);
+  }
+
+  /* ============================================================
+     R256-4.4 统一帮助弹窗（复杂板块右上角 ? ）
+     ============================================================ */
+  const R256_HELP = {
+    archive:{t:'成长档案怎么用', b:'· 周度 / 月度学习报告：看各板块完成量\n· 打卡总览：按月看每天打卡，⚡ 是连续中断点，点某天看明细\n· 数据统计 / 徽章墙 / 电子奖状：长期记录\n· 家长模式可导出报表、补卡'},
+    calc:{t:'计算小超市怎么用', b:'1. 每天自动生成一练，填完点「批改」\n2. 错题会自动进错题本，可订正后移入已做本\n3. 已做本里的题不再重复抽到\n4. 中途退出会自动保存，下次回来接着写'},
+    km:{t:'知识秘境怎么玩', b:'· 方向键 / 屏幕按键移动，跳过障碍到达终点\n· 撞到答题门要答对才能继续，可花星星买提示\n· 每关通关可生成电子证书\n· 错题会进秘境错题本，可在首页做错题复练'},
+    farm:{t:'种植园怎么玩', b:'· 播种 → 浇水 / 晒太阳 / 施肥，三者达标才进阶\n· 成熟后收获，作物进仓库可在市集卖金币\n· 收获过的作物自动点亮「植物图鉴」'},
+    xs:{t:'学而思英语怎么用', b:'· 词汇 / 语法：点亮即打卡\n· 词汇语法巩固：全部填完点底部「统一提交」\n· 题库可新增 / 一键导入，家长模式可见\n· 答错可重做，同一题错 3 次自动显示答案'},
+    settings:{t:'设置中心说明', b:'· 修改后记得点底部「保存设置」\n· 学生 / 家长模式切换后，部分按键会显示或隐藏\n· 家长模式可设置提醒、护眼时长、单模块重置'},
+    reading:{t:'大阅读怎么用', b:'· 书籍可加书签 / 批注，支持导出\n· 阅读页右上角可切夜间模式\n· 左右滑动翻页，上下滑动滚动正文'},
+    math:{t:'乐读数学说明', b:'· 计算小超市：每日一练 + 打卡日历\n· 练习题：题库随机抽题，答对可打卡\n· 知识笔记：已学 / 需巩固双键打卡'},
+    xueersi:{t:'学而思说明', b:'· 打卡页按今日任务完成即得星星\n· 巩固页支持断点续做与统一提交\n· 错题会进入错题本，可在题库里检索'}
+  };
+  function r256OpenHelp(key){
+    const h = R256_HELP[key] || {t:'使用说明', b:'这个板块暂时没有说明。'};
+    r256SheetOpen('❓ ' + h.t, '<div class="hp-body">' + esc(h.b).replace(/\n/g,'<br>') + '</div>');
+    try{
+      const seen = Object.assign({}, S.getR256().helpSeen || {});
+      seen[key] = 1;
+      S.setR256({helpSeen: seen});
+    }catch(e){}
+  }
+  function r256InjectHelp(){
+    const map = [['home','archive'],['archive','archive'],['math','math'],['xueersi','xs'],
+                 ['reading','reading'],['knowledge','km'],['farm','farm'],['settings','settings'],['newworld','xs']];
+    map.forEach(([page, key])=>{
+      const sec = document.querySelector('.page[data-page="' + page + '"]');
+      if(!sec) return;
+      const head = sec.querySelector('.page-title');
+      if(!head || head.querySelector('[data-r256-help]')) return;
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'r256-help-btn';
+      b.setAttribute('data-r256-help', key);
+      b.title = '使用说明';
+      b.textContent = '?';
+      b.onclick = (e)=>{ e.stopPropagation(); r256OpenHelp(key); };
+      head.appendChild(b);
+    });
+    // 计算小超市 / 题库导入 / 打卡配置 三处重点位置
+    const extra = [
+      ['#leiduCalcPane', 'calc'],
+      ['#settingsTaskList', 'settings'],
+      ['#settingsGrid', 'settings']
+    ];
+    extra.forEach(([sel, key])=>{
+      const box = $(sel); if(!box) return;
+      const head = box.querySelector('.card-head, .calc-head, h3');
+      if(!head || head.querySelector('[data-r256-help]')) return;
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'r256-help-btn small';
+      b.setAttribute('data-r256-help', key); b.title = '使用说明'; b.textContent = '?';
+      b.onclick = (e)=>{ e.stopPropagation(); r256OpenHelp(key); };
+      head.appendChild(b);
+    });
+  }
+
+  /* ============================================================
+     R256-4.5 移动端防误触：回顶 / 悬浮键
+     ============================================================ */
+  function r256BindFab(){
+    const fab = $('#r256Fab'), top = $('#r256FabTop');
+    const onScroll = ()=>{
+      const y = window.pageYOffset || document.documentElement.scrollTop || 0;
+      if(top) top.hidden = y < 400;
+      if(fab) fab.classList.toggle('show', y > 120);
+    };
+    window.addEventListener('scroll', onScroll, {passive:true});
+    onScroll();
+    if(top) top.onclick = ()=> window.scrollTo({top:0, behavior:'smooth'});
+    const sb = $('#r256FabSearch');
+    if(sb) sb.onclick = ()=> r256OpenSearch();
+  }
+
+  /* ============================================================
+     R256 挂载：设置卡 / 档案卡 / 初始化
+     ============================================================ */
+  function r256MountArchiveCard(){
+    const grid = document.querySelector('.page[data-page="archive"] .archive-grid');
+    if(!grid || grid.querySelector('#r256CoCard')) return;
+    const card = document.createElement('div');
+    card.className = 'card r256-co-card';
+    card.id = 'r256CoCard';
+    card.innerHTML = '<div class="card-head r256-co-head">'
+      + '<h3>🗓️ 打卡总览</h3>'
+      + '<div class="co-tools">'
+      + '<button type="button" class="co-nav" id="r256CoPrev" title="上个月">‹</button>'
+      + '<span class="co-month" id="r256CoMonth"></span>'
+      + '<button type="button" class="co-nav" id="r256CoNext" title="下个月">›</button>'
+      + '<select id="r256CoFilter" title="筛选"><option value="all">全部</option><option value="active">只看主动</option><option value="auto">只看自动</option><option value="makeup">只看补卡</option></select>'
+      + '<button type="button" class="pbtn co-btn" id="r256CoExport">📄 月度报表</button>'
+      + '<button type="button" class="pbtn co-btn hidden-in-child" id="r256CoMakeup">🩹 补卡</button>'
+      + '<button type="button" class="pbtn co-btn" id="r256CoStars">⭐ 星星明细</button>'
+      + '</div></div>'
+      + '<div class="co-summary" id="r256CoSummary"></div>'
+      + '<div class="co-cal" id="r256CoGrid"></div>'
+      + '<div class="co-legend" id="r256CoLegend"></div>';
+    grid.insertBefore(card, grid.firstChild);
+
+    const shift = (n)=>{
+      const y = +_r256CoMonth.slice(0,4), m = +_r256CoMonth.slice(5,7);
+      const d = new Date(y, m - 1 + n, 1);
+      _r256CoMonth = d.getFullYear() + '-' + R256_PAD(d.getMonth()+1);
+      r256RenderOverview();
+    };
+    const prev = $('#r256CoPrev'); if(prev) prev.onclick = ()=> shift(-1);
+    const next = $('#r256CoNext'); if(next) next.onclick = ()=> shift(1);
+    const fl = $('#r256CoFilter');
+    if(fl) fl.onchange = ()=>{ _r256CoFilter = fl.value; r256RenderOverview(); };
+    const ex = $('#r256CoExport'); if(ex) ex.onclick = r256ExportOverview;
+    const mk = $('#r256CoMakeup'); if(mk) mk.onclick = ()=> r256OpenMakeup();
+    const st = $('#r256CoStars'); if(st) st.onclick = ()=> r256RenderStarLog();
+    r256RenderOverview();
+  }
+
+  function r256MountSettingsCard(){
+    const grid = $('#settingsGrid');
+    if(!grid || $('#r256SetCard')) return;
+    const rem = S.getRemindCfg();
+    const eye = S.getEyeCfg();
+    const wr = S.getWrongReviewCfg();
+    const card = document.createElement('div');
+    card.className = 'settings-card r256-set-card';
+    card.id = 'r256SetCard';
+    card.innerHTML = '<div class="settings-card-main"><div class="settings-card-body">'
+      + '<div class="settings-card-head"><span class="settings-card-icon">🧩</span><span class="settings-card-title">提醒 · 护眼 · 家长管控</span></div>'
+      // 提醒
+      + '<div class="r256-set-row"><span class="r256-set-label">⏰ 打卡提醒</span>'
+      + '<button type="button" class="r256-sw' + (rem.on ? ' is-on' : '') + '" id="r256SwRemind" aria-pressed="' + (rem.on?'true':'false') + '"><i></i></button></div>'
+      + '<div class="r256-set-sub">到点只弹轻提示，不拦截页面；还有必做没打卡才提醒。</div>'
+      + '<div class="r256-set-grid">'
+      + '<label>学生提醒 <input type="time" id="r256RemindChild" value="' + esc(rem.childTime || '19:30') + '"></label>'
+      + '<label>家长提醒 <input type="time" id="r256RemindParent" value="' + esc(rem.parentTime || '20:30') + '"></label>'
+      + '</div>'
+      // 护眼
+      + '<div class="r256-set-row"><span class="r256-set-label">👀 护眼模式（降低蓝光）</span>'
+      + '<button type="button" class="r256-sw' + (eye.on ? ' is-on' : '') + '" id="r256SwEye" aria-pressed="' + (eye.on?'true':'false') + '"><i></i></button></div>'
+      + '<div class="r256-set-grid"><label>每天可用（分钟） <input type="number" id="r256EyeMin" min="5" max="300" step="5" value="' + (eye.dailyMin || 45) + '"></label></div>'
+      // 错题复练
+      + '<div class="r256-set-row"><span class="r256-set-label">🎯 错题复练推送</span>'
+      + '<button type="button" class="r256-sw' + (wr.on ? ' is-on' : '') + '" id="r256SwWrong" aria-pressed="' + (wr.on?'true':'false') + '"><i></i></button></div>'
+      + '<div class="r256-set-grid"><label>间隔天数 <input type="number" id="r256WrongDays" min="1" max="30" value="' + (wr.everyDays || 3) + '"></label>'
+      + '<button type="button" class="pbtn" id="r256WrongNow">立即生成一套</button></div>'
+      // 快捷入口
+      + '<div class="r256-set-quick">'
+      + '<button type="button" class="pbtn" id="r256QuickStars">⭐ 星星明细</button>'
+      + '<button type="button" class="pbtn" id="r256QuickSearch">🔍 题库检索</button>'
+      + '<button type="button" class="pbtn hidden-in-child" id="r256QuickMakeup">🩹 补卡</button>'
+      + '<button type="button" class="pbtn" id="r256QuickCodex">📖 植物图鉴</button>'
+      + '<button type="button" class="pbtn" id="r256QuickCerts">🏅 通关证书</button>'
+      + '<button type="button" class="pbtn danger hidden-in-child" id="r256QuickReset">🧹 单模块重置</button>'
+      + '</div>'
+      + '</div></div>';
+    grid.appendChild(card);
+
+    const bindSw = (sel, get, set, after)=>{
+      const b = $(sel); if(!b) return;
+      b.onclick = ()=>{
+        const on = !b.classList.contains('is-on');
+        b.classList.toggle('is-on', on);
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+        set(on);
+        if(after) after(on);
+        toast(on ? '已开启' : '已关闭');
+      };
+    };
+    bindSw('#r256SwRemind', null, on=> S.saveRemindCfg({on:on}));
+    bindSw('#r256SwEye', null, on=>{ S.saveEyeCfg({on:on}); r256EyeApply(); toast(on ? '👀 护眼模式已开启（暖色 + 限时提醒）' : '护眼模式已关闭'); });
+    bindSw('#r256SwWrong', null, on=>{ S.saveWrongReviewCfg({on:on}); if(on) r256MaybePushReview(true); else r256BuildReviewCard(); });
+
+    const rc = $('#r256RemindChild'); if(rc) rc.onchange = ()=>{ S.saveRemindCfg({childTime: rc.value}); toast('学生提醒时间：' + rc.value); };
+    const rp = $('#r256RemindParent'); if(rp) rp.onchange = ()=>{ S.saveRemindCfg({parentTime: rp.value}); toast('家长提醒时间：' + rp.value); };
+    const em = $('#r256EyeMin'); if(em) em.onchange = ()=>{ const n = Math.max(5, Math.min(300, parseInt(em.value,10)||45)); em.value = n; S.saveEyeCfg({dailyMin:n}); toast('每天可用 ' + n + ' 分钟'); };
+    const wd = $('#r256WrongDays'); if(wd) wd.onchange = ()=>{ const n = Math.max(1, Math.min(30, parseInt(wd.value,10)||3)); wd.value = n; S.saveWrongReviewCfg({everyDays:n}); toast('每 ' + n + ' 天推送一次'); };
+    const wn = $('#r256WrongNow'); if(wn) wn.onclick = ()=>{ r256MaybePushReview(true); toast('🎯 已生成一套错题复练，回首页必做区查看'); };
+
+    const q = (sel, fn)=>{ const b = $(sel); if(b) b.onclick = fn; };
+    q('#r256QuickStars', ()=> r256RenderStarLog());
+    q('#r256QuickSearch', ()=> r256OpenSearch());
+    q('#r256QuickMakeup', ()=> r256OpenMakeup());
+    q('#r256QuickCodex', ()=> r256OpenCodex());
+    q('#r256QuickCerts', ()=> r256OpenCerts());
+    q('#r256QuickReset', ()=> r256OpenReset());
+  }
+
+  function r256Init(){
+    // 面板 / 浮层基础事件
+    const mask = $('#r256Mask');
+    if(mask){
+      mask.addEventListener('click', (e)=>{ if(e.target === mask) r256SheetClose(); });
+      const x = $('#r256SheetClose'); if(x) x.onclick = r256SheetClose;
+      document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') r256SheetClose(); });
+    }
+    r256MountArchiveCard();
+    r256MountSettingsCard();
+    r256BindFab();
+    r256InjectHelp();
+    r256HookSpeak();
+    r256BindPracticeResume();
+    r256MountReaderTools();
+    r256EyeStart();
+    r256OfflineInit();
+    r256MaybePushReview(false);
+    // 首页重绘后把「错题复练」卡补回去（首页任务区会被整体重建）
+    if(typeof renderHome === 'function' && !renderHome.__r256Wrapped){
+      const _rh = renderHome;
+      renderHome = function(){
+        const r = _rh.apply(null, arguments);
+        try{ r256BuildReviewCard(); }catch(e){}
+        return r;
+      };
+      renderHome.__r256Wrapped = true;
+    }
+    // 提醒：每 30 秒检查一次（只在页面可见时）
+    setInterval(()=>{ try{ if(!document.hidden) r256ReminderTick(); }catch(e){} }, 30000);
+    setTimeout(()=>{ try{ r256ReminderTick(); }catch(e){} }, 4000);
+    // 种植园状态：进入首页 / 每 10 分钟检查
+    setTimeout(()=>{ try{ r256FarmScan(); }catch(e){} }, 6000);
+    setInterval(()=>{ try{ if(!document.hidden) r256FarmScan(); }catch(e){} }, 600000);
+    // 点击导航到档案页时刷新总览（月份可能跨月）
+    document.addEventListener('click', (e)=>{
+      const nb = e.target.closest('.nav-btn[data-page]');   // 只认左侧导航键，避免页面内点击误触发
+      if(!nb) return;
+      const p = nb.getAttribute('data-page');
+      if(p === 'archive') setTimeout(()=>{ try{ r256RenderOverview(); }catch(err){} }, 60);
+    }, true);
+  }
+
   function init(){
     tickClock();
     // 初始模式
@@ -41802,6 +44044,8 @@ if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
     if(initSt.cloud && initSt.cloud.enabled && initSt.cloud.envId){
       setupCloud(true, initSt.cloud.envId);
     }
+    // R256：新功能挂载（打卡总览 / 提醒 / 护眼 / 题库检索 / 朗读控制条 / 阅读增强 / 图鉴 / 证书 …）
+    try{ r256Init(); }catch(e){ try{ console.warn('[R256] init failed', e); }catch(_e){} }
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init);
   else init();
@@ -42063,6 +44307,45 @@ if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
 
 <!-- R218-1：学而思英语「课堂笔记」图片导入（与重点知识同款流程，独立 input） -->
 <input type="file" id="xsNoteImgInput" accept="image/*" multiple style="display:none" data-page-node-id="R218xsNoteImgInput" />
+
+
+<!-- ================= R256：全局面板 / 提醒 / 悬浮组件 ================= -->
+<div class="r256-mask" id="r256Mask" hidden>
+  <div class="r256-sheet" id="r256Sheet" role="dialog" aria-modal="true" aria-labelledby="r256SheetTitle">
+    <div class="r256-sheet-head">
+      <h3 id="r256SheetTitle">面板</h3>
+      <button type="button" class="r256-sheet-x" id="r256SheetClose" aria-label="关闭">✕</button>
+    </div>
+    <div class="r256-sheet-body" id="r256SheetBody"></div>
+    <div class="r256-sheet-foot" id="r256SheetFoot"></div>
+  </div>
+</div>
+
+<!-- 轻量提醒栈：打卡提醒 / 种植园状态 / 护眼休息（不拦截页面） -->
+<div class="r256-stack" id="r256Stack" aria-live="polite"></div>
+
+<!-- 朗读统一控制条（播放/暂停、调速、单句循环、进度跳转） -->
+<div class="r256-speakbar" id="r256SpeakBar" hidden>
+  <button type="button" class="rsb-btn" id="rsbToggle" title="播放 / 暂停">⏸</button>
+  <div class="rsb-bar" id="rsbBar" title="点击进度条任意位置从这里继续"><i id="rsbFill"></i></div>
+  <span class="rsb-time" id="rsbTime">0%</span>
+  <select class="rsb-rate" id="rsbRate" title="朗读速度">
+    <option value="0.7">慢速</option>
+    <option value="1" selected>正常</option>
+    <option value="1.3">稍快</option>
+  </select>
+  <button type="button" class="rsb-btn" id="rsbLoop" title="单句循环">🔁</button>
+  <button type="button" class="rsb-btn" id="rsbStop" title="停止">✕</button>
+</div>
+
+<!-- 护眼暖色遮罩（只做视觉，不拦截点击） -->
+<div class="r256-eye-overlay" id="r256EyeOverlay" hidden></div>
+
+<!-- 移动端悬浮键：全局检索 / 回到顶部 -->
+<div class="r256-fab" id="r256Fab">
+  <button type="button" class="r256-fab-btn" id="r256FabSearch" title="全局题库检索">🔍</button>
+  <button type="button" class="r256-fab-btn" id="r256FabTop" title="回到顶部" hidden>⬆</button>
+</div>
 
 </body>
 </html>
