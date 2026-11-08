@@ -1122,7 +1122,10 @@ button[hidden]{display:none!important}
   position:relative;z-index:2;
   min-height:0;
 }
-.farm-field-area{display:flex;justify-content:center;align-items:center}
+.farm-field-area{display:flex;justify-content:center;align-items:center;width:100%}
+/* R257-6.1：2 行 × 4 列 · 地块在单元格内居中放大，田地铺满外框，消除右侧大面积空白 */
+.farm-grid{justify-items:center}
+.farm-plot{width:100%;max-width:var(--farm-plot-size,120px)}
 .field-frame{
   background:linear-gradient(135deg,#a8d885,#7fb56b);
   border:3px solid #5a8a4a;border-radius:22px;
@@ -8751,7 +8754,8 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
    R255-4 计算小超市：统计 / 日历 / 说明同一行靠右 + 日历字号翻倍
    ============================================================ */
 .calc-stat-row{
-  display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap;
+  /* R257-4.1：每日一练说明 / 连续打卡统计 / 打卡日历 —— 同行排布且整组靠左 */
+  display:flex;align-items:center;justify-content:flex-start;gap:10px;flex-wrap:wrap;
   margin:2px 0 12px;
 }
 .calc-stat-row .calc-daily-hint{margin:0;font-size:12.5px;font-weight:700;color:var(--muted);white-space:nowrap}
@@ -9213,6 +9217,76 @@ body.r256-sheet-on{overflow:hidden}
 .page-title{position:relative}
 .page-title .r256-help-btn{position:absolute;right:12px;top:50%;transform:translateY(-50%);margin-left:0}
 
+/* ============================================================
+   R257-8.1 大阅读 · 文学小常识（内容预留卡）
+   ============================================================ */
+.reading-lore .lore-list{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;min-height:96px}
+.lore-empty{
+  grid-column:1/-1;display:flex;align-items:center;justify-content:center;gap:8px;
+  min-height:96px;border:1.5px dashed var(--tone-200);border-radius:12px;
+  background:var(--tone-025);color:var(--muted);font-size:13px;font-weight:600;
+}
+.lore-empty-ico{font-size:20px;filter:grayscale(.15)}
+@media (max-width:820px){ .reading-lore .lore-list{grid-template-columns:1fr} }
+
+/* ============================================================
+   R257-11.1 打卡总览 · 年月滑动选择
+   ============================================================ */
+.co-month-btn{
+  border:1.5px solid var(--tone-275);background:#fff;color:var(--tone-900);
+  font-family:inherit;font-size:13px;font-weight:800;padding:5px 12px;border-radius:10px;cursor:pointer;
+  line-height:1;white-space:nowrap;
+}
+.co-month-btn:hover{background:var(--tone-100);border-color:var(--tone-400)}
+.co-pick-wrap{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:4px 2px 0}
+.co-pick-col{display:flex;flex-direction:column;gap:6px;min-width:0}
+.co-pick-h{font-size:12.5px;font-weight:800;color:var(--tone-700);text-align:center}
+.co-pick-list{
+  height:228px;overflow-y:auto;scroll-snap-type:y mandatory;
+  border:1.5px solid var(--tone-200);border-radius:12px;background:var(--tone-025);
+  padding:6px;display:flex;flex-direction:column;gap:4px;
+  -webkit-overflow-scrolling:touch;
+}
+.co-pick-item{
+  scroll-snap-align:center;flex:0 0 auto;height:38px;border-radius:9px;border:1.5px solid transparent;
+  background:transparent;color:var(--tone-900);font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;
+}
+.co-pick-item:hover{background:var(--tone-075)}
+.co-pick-item.on{background:var(--tone-600);border-color:var(--tone-700);color:#fff;box-shadow:0 4px 10px rgba(64,150,255,.28)}
+.co-pick-tip{margin-top:10px;font-size:12px;color:var(--muted);text-align:center}
+
+/* ============================================================
+   R257-2.1 打卡任务设置 · 逐条任务卡跳转开关
+   ============================================================ */
+.task-jump-row{
+  display:flex;align-items:center;gap:8px;margin-top:6px;padding:5px 9px;
+  border-radius:10px;background:var(--tone-050);border:1px dashed var(--tone-200);
+  font-size:11.5px;color:var(--tone-700);line-height:1;
+}
+.task-jump-row .tjr-label{font-weight:800;white-space:nowrap}
+.tjr-sw{
+  width:36px;height:20px;border-radius:999px;border:none;background:#cfd8e3;
+  position:relative;cursor:pointer;padding:0;flex:0 0 auto;transition:.16s;
+}
+.tjr-sw i{position:absolute;top:2.5px;left:2.5px;width:15px;height:15px;border-radius:50%;background:#fff;transition:.16s;box-shadow:0 1px 3px rgba(0,0,0,.22)}
+.tjr-sw.is-on{background:var(--tone-600)}
+.tjr-sw.is-on i{left:18.5px}
+.tjr-state{color:var(--muted);min-width:42px}
+.tjr-cfg{
+  margin-left:auto;border:none;background:transparent;color:var(--tone-700);
+  font-weight:800;cursor:pointer;font-family:inherit;font-size:11.5px;padding:2px 4px;border-radius:6px;
+}
+.tjr-cfg:hover{background:var(--tone-100)}
+
+/* ============================================================
+   R257-9.1/9.2 设置中心：数据同步 / 分类导出文件 / 版本与更新 三卡同行
+   ============================================================ */
+#settingsGrid{align-items:start}
+.settings-row-3{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:start}
+.settings-row-3 .settings-card{min-width:0}
+#r256SetCard{grid-column:1/-1}
+@media (max-width:900px){ .settings-row-3{grid-template-columns:1fr} }
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -9536,7 +9610,9 @@ body.r256-sheet-on{overflow:hidden}
         <span class="settings-card-arrow" data-page-node-id="R85cardMusicArrow">›</span>
       </div>
 
-      <!-- 4) 数据同步 -->
+      <!-- 4~6) 数据同步 / 分类导出文件 / 版本与更新 —— R257-9.1/9.2：三张卡同一行，
+           分类导出文件稳定位于「数据同步」与「版本与更新」中间，且三卡等高等宽（版本卡恢复原尺寸） -->
+      <div class="settings-row-3" id="settingsRow3">
       <div class="settings-card" id="cardSyncSettings" data-page-node-id="R85cardSync">
         <div class="settings-card-main" data-page-node-id="R85cardSyncMain">
           <div class="settings-card-body">
@@ -9577,6 +9653,7 @@ body.r256-sheet-on{overflow:hidden}
         </div>
         <span class="settings-card-arrow" data-page-node-id="R85cardVerArrow">›</span>
       </div>
+      </div><!-- /#settingsRow3 -->
     </div>
 
     <!-- 设置中心详情面板（点击卡片后展开/弹窗的占位容器，实际弹窗见下方 modal） -->
@@ -10202,6 +10279,17 @@ body.r256-sheet-on{overflow:hidden}
         <div class="reading-col rc-essay" data-page-node-id="2jApxR3uzYCEJ5m1AbLm7">
           <div class="reading-col-head" data-page-node-id="6QzDKw1tyYYlAeKOogr4DF">📝 优秀作文</div>
           <div class="reading-col-list" id="cnColEssay" data-page-node-id="UpqHqBYMlMq8oxJHmYonsl8"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- R257-8.1：文学小常识（新增第 4 张卡片，内容预留，后续补充） -->
+    <div class="reading-area reading-lore" id="cnLoreCard" data-page-node-id="R257cnLoreCard">
+      <div class="reading-area-head" data-page-node-id="R257cnLoreHead">📖 文学小常识</div>
+      <div class="lore-list" id="cnLoreList" data-page-node-id="R257cnLoreList">
+        <div class="lore-empty" data-page-node-id="R257cnLoreEmpty">
+          <span class="lore-empty-ico">🪶</span>
+          <span class="lore-empty-txt">内容正在整理中，后续补充～</span>
         </div>
       </div>
     </div>
@@ -11705,6 +11793,8 @@ body.r256-sheet-on{overflow:hidden}
     </div>
     <div class="modal-body" id="xsGramBankBody" style="overflow-y:auto" data-page-node-id="R250xsGramBankBody"></div>
     <div class="modal-foot" data-page-node-id="R250xsGramBankFoot">
+      <!-- R257-1.1：关闭键左侧新增「💾 保存」——一键导入/编辑后点保存即关闭弹窗并同步刷新题库数据 -->
+      <button class="pbtn primary-btn" id="xsGramBankSave" data-page-node-id="R257xsBankSave">💾 保存</button>
       <button class="pbtn" data-close data-page-node-id="R250xsGramBankClose">关闭</button>
     </div>
   </div>
@@ -12368,7 +12458,7 @@ body.r256-sheet-on{overflow:hidden}
     });
     return changed;
   }
-  const PLOT_COUNT = 12; // v10.2：3 行 x 4 列 = 12 块田（含未解锁）
+  const PLOT_COUNT = 8; // R257-6.1：2 行 x 4 列 = 8 块田（含未解锁）
   const STAGE_NEED = {0:8,1:12,2:16,3:20,4:24}; // v8：每阶段进下一阶段需要的水/阳光
   function newPlot(){
     // R254-4：新增肥料（fert）—— 消耗数量规则与「水」完全一致
@@ -13167,7 +13257,12 @@ body.r256-sheet-on{overflow:hidden}
       }
     })();
     // V17-5：种植园排版（家长模式可调）
-    if(!st.farmLayout) st.farmLayout = {cols:5, gap:8, plotSize:54};
+    // R257-6.1：默认排版改为 2 行 × 4 列、地块更大（加宽田地、消除空白）
+    if(!st.farmLayout) st.farmLayout = {cols:4, rows:2, gap:10, plotSize:120};
+    else if(st.farmLayout.cols === 5 && (st.farmLayout.plotSize|0) === 54 && (st.farmLayout.rows==null || st.farmLayout.rows === 3)){
+      // 从未手动改过排版的老存档（仍是旧默认 5 列 / 54px）→ 平滑升级到新默认
+      st.farmLayout.cols = 4; st.farmLayout.rows = 2; st.farmLayout.gap = 10; st.farmLayout.plotSize = 120;
+    }
     // V17-8：家长可增删改的电子奖状（关联打卡数据）
     if(!st.archive) st.archive = {};
     if(!st.archive.customCerts){
@@ -13383,10 +13478,19 @@ body.r256-sheet-on{overflow:hidden}
     if(!_staging || !_staged) return true; // 未进入暂存态：幂等无操作
     const draft = _staged;
     _staging = false;                      // 先退出暂存态，使 save() 真正写入 localStorage
+    _saveError = '';                       // R257-5.1：清掉上一次的旧错误码，避免误报「存储空间不足」
     let ok = save(draft);                  // 此刻 save() 落库（不再被暂存分支拦截）
-    // R255-5：再读回主档确认「确实保存成功」，提示语只认这个结果，避免误报失败
+    // R257-5.1：提示语只认本次保存的真实结果。
+    //   原实现只要「读回校验」拿不到内容就判失败，而读回失败可能是浏览器隐私策略/读取异常，
+    //   于是出现「设置其实已经生效，却提示存储空间不足」。现在只有确认写不进去才算失败。
     if(ok){
-      try{ const back = _safeGet(KEY); ok = !!back && back.length > 0; }catch(e){ ok = false; }
+      try{
+        const back = _safeGet(KEY);
+        if(back){                          // 读得到才校验；读不到（异常/受限）不改变已成功的结果
+          const _p = JSON.parse(back);
+          ok = !!(_p && _p.archive);
+        }
+      }catch(e){ /* 读回校验异常不改判：本次 save() 已明确返回成功 */ }
     }
     _staging = true;                       // 提交后保持在暂存态（最新已保存状态作为新草稿），后续编辑仍需再次点击保存
     try { _staged = _cloneState(load()); } catch(e){ _staged = load(); }
@@ -14541,15 +14645,22 @@ body.r256-sheet-on{overflow:hidden}
   // ----- 种植园（v10.2：12 块田 = 3 行 x 4 列；解锁需 10 颗成长星） -----
   function plotsIn(st){
     if(!Array.isArray(st.plots) || st.plots.length !== PLOT_COUNT){
-      // v10.2：从 25 块（v8）迁移时保留前 12 块状态；其他长度重建
-      const oldArr = Array.isArray(st.plots) ? st.plots.slice(0, PLOT_COUNT) : [];
+      // R257-6.1：旧存档（25 块 / 12 块）迁移到 8 块（2 行 × 4 列）
+      const oldArr = Array.isArray(st.plots) ? st.plots.slice() : [];
       const oldPlot = st.plot; // v3 单 plot 兼容
       const fresh = Array.from({length:PLOT_COUNT}, (_,i)=> i<4 ? newUnlockedPlot() : newPlot());
-      // 用旧前 12 块的状态覆盖（若存在）
+      // 同位置覆盖（保留前 8 块的存活状态与进度）
       for(let i=0;i<oldArr.length && i<PLOT_COUNT;i++){
         const o = oldArr[i];
-        fresh[i] = Object.assign({}, fresh[i], o);
+        if(o) fresh[i] = Object.assign({}, fresh[i], o);
       }
+      // 被裁掉的第 9~12 块若还种着作物，回收进空闲地块，保证不丢进度
+      const _extra = oldArr.slice(PLOT_COUNT).filter(p=>p && p.cropId);
+      _extra.forEach(function(p){
+        const slot = fresh.find(function(x){ return !x.cropId; });
+        if(slot){ Object.assign(slot, p, {unlocked:true}); }
+        else { (st.farmRetiredPlots = st.farmRetiredPlots || []).push(p); } // 实在没位置就留档，不静默销毁
+      });
       if(oldPlot && oldPlot.cropId){ fresh[0] = Object.assign({}, fresh[0], oldPlot); }
       st.plots = fresh;
       delete st.plot;
@@ -15078,8 +15189,8 @@ body.r256-sheet-on{overflow:hidden}
     st.inventory.warehouse = {};
     st.inventory.gifts = [];
     st.inventory.wishlist = [];
-    // 12 块田恢复为未解锁
-    st.plots = Array.from({length: 12}, () => ({unlocked:false, kind:'locked', cropId:null}));
+    // R257-6.1：田块数统一走 PLOT_COUNT（8 块），清零后全部恢复为未解锁
+    st.plots = Array.from({length: PLOT_COUNT}, () => ({unlocked:false, kind:'locked', cropId:null}));
     st.plot = null;
     save(st);
     return {ok:true};
@@ -19507,7 +19618,7 @@ be 动词：am / is → was；are → were
   }
   function getFarmLayout(){
     const st = load();
-    return Object.assign({cols:5, rows:3, gap:8, plotSize:54}, st.farmLayout||{});
+    return Object.assign({cols:4, rows:2, gap:10, plotSize:120}, st.farmLayout||{});
   }
   function setFarmLayout(layout){
     const st = load();
@@ -21413,11 +21524,11 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     if(!S || typeof S.commitSettings !== 'function'){ toast('⚠️ 当前环境无法保存设置'); return; }
     const ok = S.commitSettings();
     if(ok){ toast('✅ 设置已保存并立即生效'); return; }
-    // R255-5：提示语与真实结果一致 —— 只有确实没写进去才提示失败，并说明具体原因
+    // R257-5.1：提示与实际结果一致 —— 只有本次确实没写进本机存档时才提示失败，并区分原因
     const why = (S.getSaveError && S.getSaveError && S.getSaveError()) || '';
     toast(why === 'quota'
-      ? '⚠️ 存储空间不足，设置未保存：请先删除部分图片后重试'
-      : '⚠️ 设置未保存，请重试');
+      ? '⚠️ 存储空间不足，设置未能写入本机：请先删除部分图片后重试'
+      : '⚠️ 设置未能写入本机存档，请重试一次');
   }
 
   // ============ 首页 ============
@@ -24467,7 +24578,13 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         e.stopPropagation();
         const i = parseInt(btn.getAttribute('data-eg-sec'),10);
         _egCurSec = isNaN(i) ? 0 : i;
-        _egCileiSub = -1; _egTenseIdx = -1;
+        _egCileiSub = -1;
+        // R257-3.1：点「八种时态」入口直接进「一般现在时」详情页（不再停在 8 键列表 / 标志词汇总页）
+        (function(){
+          const G0 = (window.EN_GRAMMAR && window.EN_GRAMMAR.sections) ? window.EN_GRAMMAR.sections : [];
+          const _s = G0[_egCurSec];
+          _egTenseIdx = (_s && _s.key === 'shitai') ? 0 : -1;
+        })();
         rerender();
       });
     });
@@ -25046,7 +25163,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     const streak = calcStreak();
     const probs = genCalcProblems(_CALC_N);
     const dateLabel = today.slice(5).replace('-','-');
-    // R255-4：每日一练说明 / 连续打卡统计 / 打卡日历 —— 同一行排布，整组靠右
+    // R257-4.1：每日一练说明 / 连续打卡统计 / 打卡日历 —— 同一行排布，整组靠左
     const streakLine = `<div class="calc-stat-row">
       <div class="calc-daily-hint">每日一练 · ${dateLabel}</div>
       <div class="calc-streak">🔥 连续打卡 <b>${streak}</b> 天</div>
@@ -27062,7 +27179,6 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
             ${tenseNavHtml(-1)}
           </div>
           <div class="eg-sec-intro">${esc(sec.intro||'')}点击时态按键，单独加载对应时态详情。</div>
-          ${tnFlagBoardsHtml()}
           ${myCardsHtml}
         </div>`;
         }
@@ -34614,199 +34730,55 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   ];
   // R255-7：以 (x, base) 为左下角、w×h 为画布盒绘制「实景风」地标图标
   //         —— 天空渐变 + 云 + 地面 + 彩色细节，像一张风景明信片，取代 R254 的单色剪影
+  // R257-7.1：地标图标重做 —— 明信片卡片 + 高清 emoji 主图 + 中文名标注。
+  //   旧实现是纯几何绘制，细节在小尺寸下被卡片圆角裁掉、且部分造型与真实地标不符；
+  //   现在统一用「认清度高的图形 + 名称」呈现，主图按卡片尺寸自适应并留足边距，不再出现裁切。
+  const KM_LANDMARK_ICON = [
+    { ico:'🗼', name:'埃菲尔铁塔' },
+    { ico:'🔺', name:'吉萨金字塔' },
+    { ico:'🧱', name:'万里长城' },
+    { ico:'🏛️', name:'罗马斗兽场' },
+    { ico:'🕌', name:'泰姬陵' },
+    { ico:'🗽', name:'自由女神像' },
+    { ico:'🕰️', name:'大本钟' },
+    { ico:'🎭', name:'悉尼歌剧院' }
+  ];
   function kmDrawLandmark(ctx, x, base, w, h, idx){
     if(!ctx || !(w>0) || !(h>0)) return;
-    const cx = x + w/2, top = base - h;
-    const rect = (a,b,c,d,fill)=>{ ctx.fillStyle=fill; ctx.fillRect(a,b,c,d); };
-    const tri = (p1,p2,p3,fill)=>{ ctx.fillStyle=fill; ctx.beginPath(); ctx.moveTo(p1[0],p1[1]); ctx.lineTo(p2[0],p2[1]); ctx.lineTo(p3[0],p3[1]); ctx.closePath(); ctx.fill(); };
+    const top = base - h;
     const rr = (a,b,c,d,r)=>{ ctx.beginPath(); ctx.moveTo(a+r,b); ctx.lineTo(a+c-r,b); ctx.quadraticCurveTo(a+c,b,a+c,b+r);
       ctx.lineTo(a+c,b+d-r); ctx.quadraticCurveTo(a+c,b+d,a+c-r,b+d); ctx.lineTo(a+r,b+d);
       ctx.quadraticCurveTo(a,b+d,a,b+d-r); ctx.lineTo(a,b+r); ctx.quadraticCurveTo(a,b,a+r,b); ctx.closePath(); };
-    const globe = (px,py,r,fill)=>{ ctx.fillStyle=fill; ctx.beginPath(); ctx.arc(px,py,r,0,7); ctx.fill(); };
+    const it = KM_LANDMARK_ICON[idx % KM_LANDMARK_ICON.length];
     ctx.save();
     ctx.lineJoin = 'round';
     // 明信片底：天空
-    const sky = ctx.createLinearGradient(0, top-6, 0, base);
-    sky.addColorStop(0, '#9fd2ff'); sky.addColorStop(0.55, '#d9efff'); sky.addColorStop(1, '#f6ecd8');
-    rr(x-3, top-6, w+6, h+10, 7); ctx.fillStyle = sky; ctx.fill();
-    ctx.save(); rr(x-3, top-6, w+6, h+10, 7); ctx.clip();
-    // 云朵
-    ctx.fillStyle = 'rgba(255,255,255,.85)';
-    globe(x + w*0.24, top + h*0.14, w*0.10, '#ffffff');
-    globe(x + w*0.34, top + h*0.12, w*0.07, '#ffffff');
+    const sky = ctx.createLinearGradient(0, top - 4, 0, base);
+    sky.addColorStop(0, '#cfe9ff'); sky.addColorStop(0.6, '#eaf6ff'); sky.addColorStop(1, '#fff6e2');
+    rr(x - 2, top - 4, w + 4, h + 8, 8); ctx.fillStyle = sky; ctx.fill();
+    // 卡片内绘制（统一裁剪，但不贴边，主图不裁）
+    ctx.save(); rr(x - 2, top - 4, w + 4, h + 8, 8); ctx.clip();
+    // 草地 / 地平线
+    const gy = base - Math.max(5, h * 0.13);
+    ctx.fillStyle = '#a8d989'; ctx.fillRect(x - 2, gy, w + 4, base - gy + 4);
     ctx.fillStyle = 'rgba(255,255,255,.55)';
-    globe(x + w*0.78, top + h*0.22, w*0.06, '#ffffff');
-    // 地平线
-    const gy = base - Math.max(4, h*0.07);
-    switch(idx % 8){
-      case 0: { // 埃菲尔铁塔（巴黎 · 塞纳河畔）
-        rect(x, gy, w, base-gy, '#8fbf5f');
-        rect(x, base - h*0.10, w, h*0.10, '#a8cfe8');          // 塞纳河
-        const iron = '#7a5a3a', iron2 = '#9c7a55';
-        // 塔身两侧曲线
-        ctx.strokeStyle = iron2; ctx.lineWidth = Math.max(2, w*0.10);
-        ctx.beginPath();
-        ctx.moveTo(cx - w*0.34, gy);
-        ctx.quadraticCurveTo(cx - w*0.12, base - h*0.40, cx - w*0.045, top + h*0.14);
-        ctx.moveTo(cx + w*0.34, gy);
-        ctx.quadraticCurveTo(cx + w*0.12, base - h*0.40, cx + w*0.045, top + h*0.14);
-        ctx.stroke();
-        // 三层平台
-        tri([cx-w*0.34, gy], [cx+w*0.34, gy], [cx+w*0.20, gy-h*0.16], iron);
-        rect(cx - w*0.20, gy - h*0.18, w*0.40, Math.max(2, h*0.045), iron);
-        rect(cx - w*0.13, base - h*0.52, w*0.26, Math.max(2, h*0.035), iron);
-        rect(cx - w*0.07, base - h*0.70, w*0.14, Math.max(1.5, h*0.025), iron);
-        // 塔尖 + 金顶
-        rect(cx - Math.max(1,w*0.02), top + h*0.06, Math.max(2,w*0.04), h*0.10, iron);
-        globe(cx, top + h*0.05, Math.max(1.6, w*0.045), '#f2c94c');
-        break;
-      }
-      case 1: { // 吉萨金字塔（撒哈拉沙漠）
-        rect(x, gy, w, base-gy, '#ecd3a0');
-        // 远金字塔
-        tri([x + w*0.02, gy], [x + w*0.44, gy], [x + w*0.23, gy - h*0.34], '#d9b675');
-        // 主金字塔
-        tri([x + w*0.18, gy], [x + w*0.94, gy], [x + w*0.56, gy - h*0.72], '#f0cf8b');
-        tri([x + w*0.56, gy - h*0.72], [x + w*0.94, gy], [x + w*0.60, gy], '#cda660'); // 背光面
-        // 顶部金尖
-        tri([x + w*0.56, gy - h*0.72], [x + w*0.62, gy - h*0.60], [x + w*0.50, gy - h*0.60], '#f6e3ae');
-        // 骆驼与棕榈剪影
-        ctx.fillStyle = '#8a6a45';
-        ctx.beginPath(); ctx.ellipse(x + w*0.12, gy - h*0.03, w*0.09, h*0.025, 0, 0, 7); ctx.fill();
-        rect(x + w*0.05, gy - h*0.09, Math.max(1.5,w*0.03), h*0.07, '#8a6a45');
-        break;
-      }
-      case 2: { // 万里长城（群山之巅）
-        const hill = ctx.createLinearGradient(0, gy - h*0.5, 0, gy);
-        hill.addColorStop(0, '#7fb36a'); hill.addColorStop(1, '#5b8b4a');
-        ctx.fillStyle = hill; ctx.beginPath();
-        ctx.moveTo(x, gy); ctx.lineTo(x + w*0.18, gy - h*0.42); ctx.lineTo(x + w*0.42, gy - h*0.16);
-        ctx.lineTo(x + w*0.66, gy - h*0.46); ctx.lineTo(x + w, gy - h*0.12); ctx.lineTo(x + w, gy);
-        ctx.closePath(); ctx.fill();
-        // 城墙（顺山势）
-        ctx.strokeStyle = '#c9bfa8'; ctx.lineWidth = Math.max(4, h*0.12);
-        ctx.beginPath(); ctx.moveTo(x - 2, gy - h*0.10); ctx.lineTo(x + w*0.20, gy - h*0.44);
-        ctx.lineTo(x + w*0.44, gy - h*0.20); ctx.lineTo(x + w*0.68, gy - h*0.48);
-        ctx.lineTo(x + w + 2, gy - h*0.16); ctx.stroke();
-        // 敌楼
-        rect(cx - w*0.14, gy - h*0.62, w*0.28, h*0.40, '#d6cdb8');
-        for(let i=0;i<3;i++) rect(cx - w*0.14 + i*w*0.10, gy - h*0.68, w*0.06, h*0.08, '#b9ad93');
-        rect(cx - w*0.05, gy - h*0.34, w*0.10, h*0.18, '#6b5442');
-        break;
-      }
-      case 3: { // 罗马斗兽场
-        rect(x, gy, w, base-gy, '#cbb894');
-        const stone = '#e0cfae', stone2 = '#c8b28a';
-        ctx.fillStyle = stone; ctx.beginPath();
-        ctx.moveTo(x + w*0.04, gy); ctx.lineTo(x + w*0.04, gy - h*0.52);
-        ctx.quadraticCurveTo(cx, gy - h*0.70, x + w*0.96, gy - h*0.52);
-        ctx.lineTo(x + w*0.96, gy); ctx.closePath(); ctx.fill();
-        // 拱券三层
-        for(let r=0;r<3;r++){
-          const ay = gy - h*0.44 + r*h*0.14;
-          for(let c=0;c<5;c++){
-            const ax = x + w*0.10 + c*w*0.17 + (r%2)*w*0.02;
-            ctx.fillStyle = '#8c7854';
-            ctx.beginPath(); ctx.arc(ax + w*0.055, ay, w*0.05, Math.PI, 0); ctx.fill();
-            ctx.fillRect(ax, ay, w*0.11, h*0.09);
-          }
-          rect(x + w*0.04, ay + h*0.09, w*0.92, Math.max(1.5, h*0.022), stone2);
-        }
-        break;
-      }
-      case 4: { // 泰姬陵（白色大理石 + 倒影池）
-        rect(x, gy, w, base-gy, '#9ec9a0');
-        rect(x + w*0.30, gy + h*0.02, w*0.40, base-gy-h*0.02, '#8fc4e8');
-        const marble = '#f7f3e8', shade1 = '#e4ddca';
-        rect(x + w*0.16, gy - h*0.40, w*0.68, h*0.40, marble);   // 主体
-        rect(x + w*0.16, gy - h*0.40, w*0.10, h*0.40, shade1);
-        globe(cx, gy - h*0.40, w*0.235, marble);                  // 大穹顶
-        globe(cx, gy - h*0.46, w*0.17, marble);
-        rect(cx - Math.max(1,w*0.015), gy - h*0.72, Math.max(2,w*0.03), h*0.10, '#e6cf8f');
-        globe(cx, gy - h*0.74, Math.max(1.5,w*0.03), '#e6cf8f');
-        [0.05, 0.87].forEach(px=>{                                 // 宣礼塔
-          rect(x + w*px, gy - h*0.62, w*0.08, h*0.62, marble);
-          globe(x + w*px + w*0.04, gy - h*0.62, w*0.045, shade1);
-          rect(x + w*px, gy - h*0.66, w*0.08, h*0.04, '#e6cf8f');
-        });
-        // 拱门
-        ctx.fillStyle = '#6f6248';
-        ctx.beginPath(); ctx.arc(cx, gy - h*0.16, w*0.075, Math.PI, 0); ctx.fill();
-        rect(cx - w*0.075, gy - h*0.16, w*0.15, h*0.16, '#6f6248');
-        break;
-      }
-      case 5: { // 自由女神像（纽约港）
-        rect(x, gy, w, base-gy, '#8fbf62');
-        rect(x, base - h*0.12, w, h*0.12, '#7fb8dd');
-        const cu = '#63b8a4';
-        rect(x + w*0.30, gy - h*0.22, w*0.40, h*0.22, '#cdbfa4');   // 基座
-        rect(x + w*0.34, gy - h*0.30, w*0.32, h*0.08, '#b8a889');
-        // 身体（长袍）
-        ctx.fillStyle = cu; ctx.beginPath();
-        ctx.moveTo(cx - w*0.14, gy - h*0.30);
-        ctx.lineTo(cx - w*0.10, gy - h*0.70);
-        ctx.quadraticCurveTo(cx, gy - h*0.76, cx + w*0.10, gy - h*0.70);
-        ctx.lineTo(cx + w*0.16, gy - h*0.30); ctx.closePath(); ctx.fill();
-        globe(cx, gy - h*0.76, w*0.09, cu);                          // 头
-        // 皇冠七芒
-        ctx.strokeStyle = cu; ctx.lineWidth = Math.max(1, w*0.03);
-        for(let k=-2;k<=2;k++){
-          ctx.beginPath(); ctx.moveTo(cx + k*w*0.045, gy - h*0.82);
-          ctx.lineTo(cx + k*w*0.075, gy - h*0.92); ctx.stroke();
-        }
-        // 举火炬的手臂
-        ctx.strokeStyle = cu; ctx.lineWidth = Math.max(2, w*0.06);
-        ctx.beginPath(); ctx.moveTo(cx + w*0.08, gy - h*0.66); ctx.lineTo(cx + w*0.22, gy - h*0.84); ctx.stroke();
-        globe(cx + w*0.24, gy - h*0.87, w*0.06, '#f2a63b');
-        globe(cx + w*0.24, gy - h*0.89, w*0.03, '#ffd97a');
-        // 左手独立宣言
-        rect(cx - w*0.20, gy - h*0.62, w*0.08, h*0.12, '#e8e2cf');
-        break;
-      }
-      case 6: { // 大本钟（伦敦 · 泰晤士河）
-        rect(x, gy, w, base-gy, '#a9b98a');
-        rect(x, base - h*0.10, w, h*0.10, '#7fa9c9');
-        const tan1 = '#d9b98a', tan2 = '#c19d6b';
-        rect(x + w*0.26, gy - h*0.66, w*0.48, h*0.66, tan1);
-        rect(x + w*0.26, gy - h*0.66, w*0.12, h*0.66, tan2);
-        rect(x + w*0.22, gy - h*0.72, w*0.56, h*0.07, '#8f7a58');
-        // 尖顶
-        tri([x + w*0.24, gy - h*0.72], [x + w*0.76, gy - h*0.72], [cx, gy - h*0.90], '#6e7f8c');
-        rect(cx - Math.max(1,w*0.012), gy - h*0.93, Math.max(2,w*0.024), h*0.04, '#6e7f8c');
-        // 钟面
-        globe(cx, gy - h*0.52, w*0.16, '#fdfbf2');
-        globe(cx, gy - h*0.52, w*0.135, '#f7f2df');
-        ctx.strokeStyle = '#3a3a3a'; ctx.lineWidth = Math.max(1, w*0.03);
-        ctx.beginPath(); ctx.moveTo(cx, gy - h*0.52); ctx.lineTo(cx, gy - h*0.60);
-        ctx.moveTo(cx, gy - h*0.52); ctx.lineTo(cx + w*0.08, gy - h*0.52); ctx.stroke();
-        // 窗
-        rect(cx - w*0.05, gy - h*0.30, w*0.10, h*0.14, '#7d6a4c');
-        break;
-      }
-      default: { // 悉尼歌剧院（海港）
-        rect(x, gy, w, base-gy, '#8dc6e8');
-        rect(x, base - h*0.06, w, h*0.06, '#6fb0d6');
-        rect(x + w*0.08, gy - h*0.22, w*0.84, h*0.22, '#d8cfbe');   // 基座
-        for(let i=0;i<3;i++){
-          const sw = w*(0.34 - i*0.04), sx = x + w*0.10 + i*w*0.26;
-          const sg = ctx.createLinearGradient(sx, gy - h*0.22, sx + sw, gy - h*0.22 - h*0.5);
-          sg.addColorStop(0, '#ffffff'); sg.addColorStop(1, '#dfe9f2');
-          ctx.fillStyle = sg;
-          ctx.beginPath();
-          ctx.moveTo(sx, gy - h*0.22);
-          ctx.quadraticCurveTo(sx + sw*0.45, gy - h*(0.62 + i*0.07), sx + sw, gy - h*0.22);
-          ctx.closePath(); ctx.fill();
-          ctx.strokeStyle = 'rgba(150,175,195,.55)'; ctx.lineWidth = 0.8; ctx.stroke();
-        }
-        break;
-      }
-    }
+    ctx.beginPath(); ctx.arc(x + w * 0.78, top + h * 0.14, Math.max(2, w * 0.07), 0, 7); ctx.fill();
+    // 主图：emoji 自适应居中（留 8% 边距，垂直略上移给标签让位）
+    const size = Math.max(11, Math.min(w * 0.84, h * 0.58));
+    ctx.font = size + 'px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji","PingFang SC",sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(it.ico, x + w / 2, top + h * 0.42);
+    // 名称标签（避免「图样与实景不符」的歧义）
+    const fs = Math.max(6.5, Math.min(10.5, w * 0.17));
+    ctx.font = '700 ' + fs + 'px "PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif';
+    ctx.fillStyle = '#33506e';
+    ctx.fillText(it.name, x + w / 2, base - Math.max(6, h * 0.075));
     ctx.restore();
     // 明信片白边
-    ctx.strokeStyle = 'rgba(255,255,255,.9)'; ctx.lineWidth = 1.6;
-    rr(x-3, top-6, w+6, h+10, 7); ctx.stroke();
+    ctx.strokeStyle = 'rgba(255,255,255,.95)'; ctx.lineWidth = 1.6;
+    rr(x - 2, top - 4, w + 4, h + 8, 8); ctx.stroke();
     ctx.strokeStyle = 'rgba(30,58,138,.18)'; ctx.lineWidth = 1;
-    rr(x-1.5, top-4.5, w+3, h+7, 6); ctx.stroke();
+    rr(x - 0.5, top - 2.5, w + 1, h + 5, 7); ctx.stroke();
     ctx.restore();
   }
   // R12-Req7：障碍物改为形态各异的积木（取代烟囱 / 📚）
@@ -35308,9 +35280,9 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         for(const g of gates){ const x=g.x-camX; if(x<-60||x>W+60) continue;
           if(g.opened){ ctx.fillStyle='rgba(255,255,255,0.22)'; ctx.fillRect(x,groundY()-60,14,60); }
           else {
-            // R254-5：答题门改为世界知名地标建筑
+            // R254-5：答题门改为世界知名地标建筑（R257-7.1：卡片加宽，主图 + 名称不再裁切）
             const hh = g.hh || 92;
-            kmDrawLandmark(ctx, x-6, groundY(), 46, hh, (g.li||0));
+            kmDrawLandmark(ctx, x-10, groundY(), 56, hh, (g.li||0));
             ctx.fillStyle='#fff'; ctx.font='bold 18px Arial'; ctx.textAlign='center'; ctx.textBaseline='alphabetic';
             ctx.fillText('?', x+17, groundY()-hh*0.48);
           }
@@ -37574,6 +37546,18 @@ function renderKMAdmin(){
       };
     });
   }
+  // R257-1.1：题库页「💾 保存」——一键导入 / 编辑后点保存：关闭弹窗 + 同步刷新题库数据（题面 / 计数）
+  function xsGramBankCommit(){
+    const w = (S.xsWordPool && S.xsWordPool()) || [];
+    const g = (S.xsGrammarPool && S.xsGrammarPool()) || [];
+    hideModal('#modalXsGramBank');
+    window.xsBankOpen = false;
+    window.xsBankEditId = '';
+    window.xsBankEditMode = false;
+    try{ if(typeof renderXueersi === 'function') renderXueersi(); }catch(e){}
+    try{ if(typeof renderXsCheckin === 'function' && xsCat === 'checkin') renderXsCheckin(); }catch(e){}
+    toast('✅ 题库已保存：词汇 ' + w.length + ' 题 · 语法 ' + g.length + ' 题');
+  }
   function openXsGramBank(){
     window.xsBankOpen = true;
     window.xsBankEditMode = false;
@@ -37581,6 +37565,8 @@ function renderKMAdmin(){
     window.xsBankSummary = '';
     window.xsBankPage = 0;
     renderXsGramBankModal();
+    const sv = $('#xsGramBankSave');
+    if(sv) sv.onclick = ()=> xsGramBankCommit();
     showModal('#modalXsGramBank');
   }
   // R42-4：已默写子板块 —— 已巩固打卡（今日答对）的单词/词组移至本主题卡内展示；
@@ -38242,9 +38228,11 @@ function renderKMAdmin(){
   function renderFarmGrid(st){
     const grid = document.getElementById('farmFieldGrid');
     if(!grid) return;
-    const plots = (st.plots||[]).slice(0, 12);
+    // R257-6.1：田块数量由存档决定（默认 8 = 2 行 × 4 列），不再写死 12
+    const plots = (st.plots||[]);
+    const _N = Math.max(1, plots.length);
     let html = '';
-    for(let idx=0; idx<12; idx++){
+    for(let idx=0; idx<_N; idx++){
       const p = plots[idx] || { unlocked:false, kind:'locked', cropId:null, waterCount:0, sunCount:0, stage:0 };
       if(!p.unlocked){
         html += `<div class="farm-plot locked" data-plot="${idx}" title="花费 10 成长星解锁"></div>`;
@@ -40856,27 +40844,43 @@ function renderKMAdmin(){
     });
     applyTaskJumpButtons();
   }
-  // R253-2：设置中心「打卡任务」弹窗 —— 每条任务注入「🧭 跳转」配置键（开启跳转 / 关闭跳转 + 目标板块）
+  // R253-2：设置中心「打卡任务」弹窗 —— 每条任务注入「任务卡跳转」配置项
+  // R257-2.1：升级为「逐条任务独立开关」——开关直接切换是否开启跳转，右侧「目标」可选跳转板块
   function applyTaskJumpButtons(){
     const BOXES = ['#settingsTaskReq','#settingsTaskOpt','#settingsTaskSport','#settingsTaskRoutine','#settingsTaskHouse'];
     BOXES.forEach(sel=>{
       const box = $(sel); if(!box) return;
       box.querySelectorAll('.task-item, .wp-task-item').forEach(item=>{
-        if(item.querySelector('.task-jump-btn')) return;
+        if(item.querySelector('.task-jump-row')) return;
         const id = item.getAttribute('data-edit-task') || item.getAttribute('data-del-task') || item.getAttribute('data-task-id');
         if(!id) return;
         const t = S.load().tasks.find(x=>String(x.id)===String(id));
         if(!t) return;
         const cfg = S.getTaskJump(t);
         const on = cfg.enabled && !!homeTaskPage(t);
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'pbtn task-jump-btn' + (on ? ' on' : ' off');
-        btn.setAttribute('data-jump-task', id);
-        btn.textContent = on ? '🧭 跳转开' : '🧭 跳转关';
-        btn.title = '配置该任务卡片主体点击：是否跳转 / 跳到哪个板块';
-        btn.onclick = ()=> openTaskJumpSetting(id);
-        item.appendChild(btn);
+        const row = document.createElement('div');
+        row.className = 'task-jump-row';
+        row.setAttribute('data-jump-task', id);
+        row.innerHTML = '<span class="tjr-label">🧭 任务卡跳转</span>'
+          + '<button type="button" class="tjr-sw' + (on ? ' is-on' : '') + '" data-jump-toggle="' + esc(id) + '" aria-pressed="' + (on?'true':'false') + '" title="开启 / 关闭该任务卡片点击跳转"><i></i></button>'
+          + '<span class="tjr-state">' + (on ? '已开启' : '未开启') + '</span>'
+          + '<button type="button" class="tjr-cfg" data-jump-cfg="' + esc(id) + '" title="选择跳转目标板块">目标 ›</button>';
+        item.appendChild(row);
+        const sw = row.querySelector('[data-jump-toggle]');
+        if(sw) sw.onclick = (e)=>{
+          e.stopPropagation();
+          const cur = S.getTaskJump(t);
+          const next = !cur.enabled;
+          S.setTaskJump(id, { enabled: next, page: cur.page || homeTaskPage(t) });
+          row.querySelector('.tjr-sw').classList.toggle('is-on', next);
+          row.querySelector('.tjr-sw').setAttribute('aria-pressed', next ? 'true' : 'false');
+          row.querySelector('.tjr-state').textContent = next ? '已开启' : '未开启';
+          const pages = S.TASK_JUMP_PAGES || [];
+          const lab = (pages.find(p=>p.page === (cur.page || homeTaskPage(t))) || {}).label || '';
+          toast(next ? ('🧭 已开启跳转：' + (t.name||'') + (lab ? (' → ' + lab) : '')) : ('🧭 已关闭跳转：' + (t.name||'')));
+        };
+        const cg = row.querySelector('[data-jump-cfg]');
+        if(cg) cg.onclick = (e)=>{ e.stopPropagation(); openTaskJumpSetting(id); };
       });
     });
   }
@@ -42724,7 +42728,7 @@ if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
     const card = $('#r256CoCard'); if(!card) return;
     const month = r256CoMonthInit();
     const data = r256OverviewStats(month);
-    const mn = $('#r256CoMonth'); if(mn) mn.textContent = month.replace('-', ' 年 ') + ' 月';
+    const mn = $('#r256CoMonth'); if(mn) mn.textContent = month.replace('-', ' 年 ') + ' 月 ▾';
     const sm = $('#r256CoSummary');
     if(sm){
       sm.innerHTML =
@@ -43194,140 +43198,9 @@ if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
   }
 
   /* ============================================================
-     R256-2.3 朗读增强（统一控制条 / 调速 / 单句循环 / 进度跳转）
+     R257-10.1 朗读：已按需求撤销 R256 的朗读增强（调速 / 单句循环 / 进度条跳转 /
+     统一控制条），朗读回到 R255 之前的原生行为。下面 2.4 起为书籍阅读增强，保留。
      ============================================================ */
-  const R256_SPEAK = {text:'', cur:'', factor:1, loop:false, playing:false, ratio:0, started:0, timer:null};
-  function r256SpeakBarShow(on){
-    const bar = $('#r256SpeakBar'); if(!bar) return;
-    bar.hidden = !on;
-    if(on) bar.classList.add('on'); else bar.classList.remove('on');
-  }
-  function r256SpeakSetRatio(r){
-    R256_SPEAK.ratio = Math.max(0, Math.min(1, r || 0));
-    const fill = $('#rsbFill'), t = $('#rsbTime');
-    if(fill) fill.style.width = (R256_SPEAK.ratio * 100).toFixed(1) + '%';
-    if(t) t.textContent = Math.round(R256_SPEAK.ratio * 100) + '%';
-  }
-  function r256SpeakSentenceAt(text, ratio){
-    const t = String(text || '');
-    const i = Math.floor(t.length * Math.max(0, Math.min(1, ratio)));
-    const mark = /[。！？!?；;\n\.]/;
-    let a = i, b = i;
-    while(a > 0 && !mark.test(t.charAt(a - 1))) a--;
-    while(b < t.length && !mark.test(t.charAt(b))) b++;
-    return (t.slice(a, b + 1) || t.slice(0, 40)).trim();
-  }
-  function r256SpeakRestartFrom(ratio){
-    const full = R256_SPEAK.text || R256_SPEAK.cur;
-    if(!full) return;
-    const idx = Math.floor(full.length * Math.max(0, Math.min(0.98, ratio)));
-    const seg = full.slice(idx).trim();
-    if(!seg) return;
-    R256_SPEAK.cur = seg;
-    R256_SPEAK.ratio = ratio;
-    if(/[\u4e00-\u9fa5]/.test(seg)) speakZh(seg); else speakEn(seg);
-  }
-  function r256SpeakTick(){
-    clearInterval(R256_SPEAK.timer);
-    R256_SPEAK.timer = setInterval(()=>{
-      if(!R256_SPEAK.playing) return;
-      const ss = window.speechSynthesis;
-      if(ss && ss.paused) return;
-      const len = Math.max(1, (R256_SPEAK.cur || '').length);
-      const per = 0.16 * len * 1000 / Math.max(0.5, R256_SPEAK.factor);
-      const p = Math.min(0.99, (Date.now() - R256_SPEAK.started) / per);
-      r256SpeakSetRatio(p);
-    }, 240);
-  }
-  function r256HookSpeak(){
-    if(!('speechSynthesis' in window)) return;
-    const ss = window.speechSynthesis;
-    if(ss.__r256Hooked) return;
-    ss.__r256Hooked = true;
-    const orig = ss.speak.bind(ss);
-    ss.speak = function(u){
-      try{
-        if(u && typeof u.rate === 'number' && R256_SPEAK.factor !== 1){
-          u.rate = Math.max(0.5, Math.min(2, (u.rate || 1) * R256_SPEAK.factor));
-        }
-        const txt = String(u.text || '');
-        if(txt){
-          R256_SPEAK.text = txt; R256_SPEAK.cur = txt;
-          R256_SPEAK.playing = true; R256_SPEAK.started = Date.now();
-          r256SpeakSetRatio(0);
-          r256SpeakBarShow(true);
-          const oldStart = u.onstart, oldEnd = u.onend, oldBnd = u.onboundary, oldErr = u.onerror;
-          u.onstart = function(ev){
-            R256_SPEAK.playing = true;
-            const tg = $('#rsbToggle'); if(tg) tg.textContent = '⏸';
-            r256SpeakTick();
-            if(typeof oldStart === 'function') try{ oldStart.call(u, ev); }catch(e){}
-          };
-          u.onboundary = function(ev){
-            if(ev && typeof ev.charIndex === 'number' && txt.length){
-              r256SpeakSetRatio(ev.charIndex / txt.length);
-            }
-            if(typeof oldBnd === 'function') try{ oldBnd.call(u, ev); }catch(e){}
-          };
-          u.onend = function(ev){
-            R256_SPEAK.playing = false;
-            const tg = $('#rsbToggle'); if(tg) tg.textContent = '▶';
-            clearInterval(R256_SPEAK.timer);
-            r256SpeakSetRatio(1);
-            if(typeof oldEnd === 'function') try{ oldEnd.call(u, ev); }catch(e){}
-            if(R256_SPEAK.loop){
-              const seg = r256SpeakSentenceAt(txt, R256_SPEAK.ratio < 0.99 ? R256_SPEAK.ratio : 0);
-              R256_SPEAK.playing = true;
-              setTimeout(()=>{ if(/[\u4e00-\u9fa5]/.test(seg)) speakZh(seg); else speakEn(seg); }, 320);
-            } else {
-              setTimeout(()=>{ if(!R256_SPEAK.playing) r256SpeakBarShow(false); }, 900);
-            }
-          };
-          u.onerror = function(ev){
-            R256_SPEAK.playing = false;
-            clearInterval(R256_SPEAK.timer);
-            if(typeof oldErr === 'function') try{ oldErr.call(u, ev); }catch(e){}
-          };
-        }
-      }catch(e){}
-      try{ return orig(u); }catch(e){ return undefined; }
-    };
-    const tg = $('#rsbToggle');
-    if(tg) tg.onclick = ()=>{
-      const s2 = window.speechSynthesis;
-      if(!s2) return;
-      if(s2.paused){ s2.resume(); R256_SPEAK.playing = true; tg.textContent = '⏸'; }
-      else if(s2.speaking){ s2.pause(); R256_SPEAK.playing = false; tg.textContent = '▶'; }
-      else if(R256_SPEAK.cur){ r256SpeakRestartFrom(0); }
-    };
-    const st = $('#rsbStop');
-    if(st) st.onclick = ()=>{ try{ window.speechSynthesis.cancel(); }catch(e){} R256_SPEAK.playing = false; r256SpeakBarShow(false); };
-    const lp = $('#rsbLoop');
-    if(lp) lp.onclick = ()=>{
-      R256_SPEAK.loop = !R256_SPEAK.loop;
-      lp.classList.toggle('on', R256_SPEAK.loop);
-      toast(R256_SPEAK.loop ? '🔁 单句循环已开' : '单句循环已关');
-    };
-    const bar = $('#rsbBar');
-    if(bar) bar.onclick = (e)=>{
-      const r = (e.clientX - bar.getBoundingClientRect().left) / Math.max(1, bar.getBoundingClientRect().width);
-      try{ window.speechSynthesis.cancel(); }catch(_e){}
-      setTimeout(()=> r256SpeakRestartFrom(r), 60);
-    };
-    const rt = $('#rsbRate');
-    if(rt){
-      rt.value = String(S.getR256().speakRate || 1);
-      R256_SPEAK.factor = parseFloat(rt.value) || 1;
-      rt.onchange = ()=>{
-        R256_SPEAK.factor = parseFloat(rt.value) || 1;
-        S.setR256({speakRate: R256_SPEAK.factor});
-        toast('朗读速度：' + (R256_SPEAK.factor < 1 ? '慢速' : R256_SPEAK.factor > 1 ? '稍快' : '正常'));
-        const r = R256_SPEAK.ratio;
-        try{ window.speechSynthesis.cancel(); }catch(e){}
-        setTimeout(()=> r256SpeakRestartFrom(0), 80);
-      };
-    }
-  }
 
   /* ============================================================
      R256-2.4 书籍阅读增强（夜间 / 批注 / 导出 / 左右滑动）
@@ -43854,6 +43727,60 @@ if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
   /* ============================================================
      R256 挂载：设置卡 / 档案卡 / 初始化
      ============================================================ */
+  // R257-11.1：打卡总览「年月」选择器 —— 点击唤起弹窗，弹窗内用数字滑动（滚动吸附）选定年 / 月
+  function r256OpenMonthPicker(){
+    const cur = r256CoMonthInit();
+    let py = +cur.slice(0,4), pm = +cur.slice(5,7);
+    const nowY = new Date().getFullYear();
+    const years = [];
+    for(let y = nowY - 4; y <= nowY + 1; y++) years.push(y);
+    if(years.indexOf(py) < 0) years.push(py);
+    years.sort((a,b)=>a-b);
+    const body = '<div class="co-pick-wrap">'
+      + '<div class="co-pick-col"><div class="co-pick-h">年</div><div class="co-pick-list" id="r256PickYear">'
+      + years.map(y=>'<button type="button" class="co-pick-item'+(y===py?' on':'')+'" data-py="'+y+'">'+y+'</button>').join('')
+      + '</div></div>'
+      + '<div class="co-pick-col"><div class="co-pick-h">月</div><div class="co-pick-list" id="r256PickMonth">'
+      + Array.from({length:12},(_,i)=>i+1).map(m=>'<button type="button" class="co-pick-item'+(m===pm?' on':'')+'" data-pm="'+m+'">'+m+' 月</button>').join('')
+      + '</div></div></div>'
+      + '<div class="co-pick-tip">上下滑动选择年月 · 点「确定」查看该月打卡总览</div>';
+    r256SheetOpen('🗓️ 选择年月', body,
+      '<button type="button" class="pbtn" id="r256PickOk">确定</button>'
+      + '<button type="button" class="pbtn" id="r256PickCancel">取消</button>');
+    const yBox = $('#r256PickYear'), mBox = $('#r256PickMonth');
+    const mark = (box, attr, val)=>{
+      if(!box) return;
+      box.querySelectorAll('.co-pick-item').forEach(b=>{
+        b.classList.toggle('on', String(b.getAttribute(attr)) === String(val));
+      });
+    };
+    const scrollToOn = (box)=>{
+      if(!box) return;
+      const on = box.querySelector('.co-pick-item.on');
+      try{ if(on && typeof on.scrollIntoView === 'function') on.scrollIntoView({block:'center'}); }catch(e){}
+    };
+    if(yBox){
+      yBox.querySelectorAll('[data-py]').forEach(b=>{
+        b.onclick = ()=>{ py = +b.getAttribute('data-py'); mark(yBox,'data-py',py); };
+      });
+      scrollToOn(yBox);
+    }
+    if(mBox){
+      mBox.querySelectorAll('[data-pm]').forEach(b=>{
+        b.onclick = ()=>{ pm = +b.getAttribute('data-pm'); mark(mBox,'data-pm',pm); };
+      });
+      scrollToOn(mBox);
+    }
+    const ok = $('#r256PickOk');
+    if(ok) ok.onclick = ()=>{
+      _r256CoMonth = py + '-' + R256_PAD(pm);
+      r256SheetClose();
+      r256RenderOverview();
+      toast('🗓️ 已切到 ' + py + ' 年 ' + pm + ' 月');
+    };
+    const cc = $('#r256PickCancel'); if(cc) cc.onclick = r256SheetClose;
+  }
+
   function r256MountArchiveCard(){
     const grid = document.querySelector('.page[data-page="archive"] .archive-grid');
     if(!grid || grid.querySelector('#r256CoCard')) return;
@@ -43863,9 +43790,7 @@ if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
     card.innerHTML = '<div class="card-head r256-co-head">'
       + '<h3>🗓️ 打卡总览</h3>'
       + '<div class="co-tools">'
-      + '<button type="button" class="co-nav" id="r256CoPrev" title="上个月">‹</button>'
-      + '<span class="co-month" id="r256CoMonth"></span>'
-      + '<button type="button" class="co-nav" id="r256CoNext" title="下个月">›</button>'
+      + '<button type="button" class="co-month co-month-btn" id="r256CoMonth" title="点击选择年 / 月">年月</button>'
       + '<select id="r256CoFilter" title="筛选"><option value="all">全部</option><option value="active">只看主动</option><option value="auto">只看自动</option><option value="makeup">只看补卡</option></select>'
       + '<button type="button" class="pbtn co-btn" id="r256CoExport">📄 月度报表</button>'
       + '<button type="button" class="pbtn co-btn hidden-in-child" id="r256CoMakeup">🩹 补卡</button>'
@@ -43876,14 +43801,8 @@ if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
       + '<div class="co-legend" id="r256CoLegend"></div>';
     grid.insertBefore(card, grid.firstChild);
 
-    const shift = (n)=>{
-      const y = +_r256CoMonth.slice(0,4), m = +_r256CoMonth.slice(5,7);
-      const d = new Date(y, m - 1 + n, 1);
-      _r256CoMonth = d.getFullYear() + '-' + R256_PAD(d.getMonth()+1);
-      r256RenderOverview();
-    };
-    const prev = $('#r256CoPrev'); if(prev) prev.onclick = ()=> shift(-1);
-    const next = $('#r256CoNext'); if(next) next.onclick = ()=> shift(1);
+    // R257-11.1：年月改为「点击唤起弹窗 + 数字滑动选择」（原 ‹ › 逐月翻页按键已移除）
+    const mon = $('#r256CoMonth'); if(mon) mon.onclick = ()=> r256OpenMonthPicker();
     const fl = $('#r256CoFilter');
     if(fl) fl.onchange = ()=>{ _r256CoFilter = fl.value; r256RenderOverview(); };
     const ex = $('#r256CoExport'); if(ex) ex.onclick = r256ExportOverview;
@@ -43974,7 +43893,8 @@ if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
     r256MountSettingsCard();
     r256BindFab();
     r256InjectHelp();
-    r256HookSpeak();
+    // R257-10.1：按需求撤销 R256 朗读增强（调速 / 单句循环 / 进度条跳转 / 统一控制条），
+    //            朗读回到 R255 之前的原生行为 —— 不再包装 speechSynthesis.speak，也不再弹朗读控制条。
     r256BindPracticeResume();
     r256MountReaderTools();
     r256EyeStart();
@@ -44324,19 +44244,7 @@ if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
 <!-- 轻量提醒栈：打卡提醒 / 种植园状态 / 护眼休息（不拦截页面） -->
 <div class="r256-stack" id="r256Stack" aria-live="polite"></div>
 
-<!-- 朗读统一控制条（播放/暂停、调速、单句循环、进度跳转） -->
-<div class="r256-speakbar" id="r256SpeakBar" hidden>
-  <button type="button" class="rsb-btn" id="rsbToggle" title="播放 / 暂停">⏸</button>
-  <div class="rsb-bar" id="rsbBar" title="点击进度条任意位置从这里继续"><i id="rsbFill"></i></div>
-  <span class="rsb-time" id="rsbTime">0%</span>
-  <select class="rsb-rate" id="rsbRate" title="朗读速度">
-    <option value="0.7">慢速</option>
-    <option value="1" selected>正常</option>
-    <option value="1.3">稍快</option>
-  </select>
-  <button type="button" class="rsb-btn" id="rsbLoop" title="单句循环">🔁</button>
-  <button type="button" class="rsb-btn" id="rsbStop" title="停止">✕</button>
-</div>
+<!-- R257-10.1：朗读统一控制条已按需求撤销（朗读恢复 R255 之前的原生播放/暂停按钮行为） -->
 
 <!-- 护眼暖色遮罩（只做视觉，不拦截点击） -->
 <div class="r256-eye-overlay" id="r256EyeOverlay" hidden></div>
