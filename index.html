@@ -9287,6 +9287,60 @@ body.r256-sheet-on{overflow:hidden}
 #r256SetCard{grid-column:1/-1}
 @media (max-width:900px){ .settings-row-3{grid-template-columns:1fr} }
 
+/* ============================================================
+   R258-2.1 种植园：仓库 / 农场市集 / 云上小卖部 / 心愿盒 由卡片改为按键（点击唤起弹窗）
+   R258-2.2 田地默认 4 行 × 3 列（12 块），田地加宽居中
+   R258-3.1 任务新增/编辑弹窗内的「任务卡片跳转」配置
+   ============================================================ */
+.page-farm .field-frame{max-width:480px}
+.farm-tools{
+  display:flex;flex-direction:column;gap:10px;min-height:0;
+  background:rgba(246,238,216,.80);border:2px solid rgba(196,167,138,.65);border-radius:18px;
+  padding:12px;box-shadow:0 6px 14px rgba(120,90,50,.14);
+}
+.farm-tools-title{font-size:13px;font-weight:900;color:#7a5a32;display:flex;align-items:center;gap:6px}
+.farm-tool-list{display:flex;flex-direction:column;gap:8px}
+.farm-tool-btn{
+  display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border-radius:14px;
+  border:1.5px solid rgba(196,167,138,.55);background:rgba(255,255,255,.86);cursor:pointer;
+  font-family:inherit;text-align:left;transition:.16s;
+}
+.farm-tool-btn:hover{transform:translateY(-1px);border-color:#c4a78a;box-shadow:0 4px 10px rgba(196,167,138,.28)}
+.farm-tool-btn:active{transform:translateY(0) scale(.99)}
+.farm-tool-btn .ftb-ico{font-size:22px;line-height:1}
+.farm-tool-btn .ftb-main{display:flex;flex-direction:column;gap:2px;min-width:0}
+.farm-tool-btn .ftb-main b{font-size:13.5px;color:#5a3a1f;font-weight:900}
+.farm-tool-btn .ftb-main i{font-style:normal;font-size:11px;color:#a07f56}
+.farm-tool-btn .ftb-go{margin-left:auto;color:#b99770;font-size:18px;font-weight:900}
+
+/* 弹窗内的原有内容（市集 / 小卖部 / 仓库 / 心愿盒） */
+#modalFarmPanel .modal-box{min-width:640px}
+.farm-hub-tip{
+  font-size:12px;color:#8a6a45;background:rgba(255,248,235,.9);
+  border:1px solid rgba(196,167,138,.5);border-radius:10px;padding:7px 10px;font-weight:700;
+}
+.farm-hub-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:10px}
+.farm-hub-foot{display:flex;justify-content:flex-end;margin-top:12px}
+.farm-hub-empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:26px 8px;font-size:13px}
+.farm-hub-empty span{font-size:11.5px}
+@media (max-width:900px){ .farm-hub-grid{grid-template-columns:repeat(2,minmax(0,1fr))} }
+
+/* 任务弹窗内的跳转配置（复用 .tjr-sw 开关样式） */
+.task-jump-block{
+  margin-top:10px;padding:10px 12px;border-radius:12px;
+  background:var(--tone-050);border:1px dashed var(--tone-275);
+}
+.task-jump-block .tjb-head{font-size:12.5px;font-weight:900;color:var(--tone-700);margin-bottom:8px}
+.task-jump-block .tjb-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.task-jump-block .tjb-state{font-size:12px;font-weight:800;color:var(--tone-700)}
+.task-jump-block .tjb-tip{font-size:11px;color:var(--muted);flex:1 1 170px;line-height:1.35}
+.task-jump-block .tjb-page{
+  display:flex;align-items:center;gap:8px;margin-top:8px;
+  font-size:12px;font-weight:800;color:var(--tone-700);
+}
+.task-jump-block .tjb-page select{flex:1;min-width:0}
+.task-jump-block.is-off{opacity:.75}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -10422,32 +10476,36 @@ body.r256-sheet-on{overflow:hidden}
         <span class="fts fts-sun" data-page-node-id="2AcRBZKRiDZaYrikoKNYs2"><span class="fts-ico" data-page-node-id="I0BMYpsXq88UVFvDR9En9q">☀️</span><b id="farmSun" data-page-node-id="kqPYlgKI6EcEBRYKIrxxiT">0</b></span>
         <span class="fts fts-coins" data-page-node-id="W1UCiESjj73O9pwfmPtDFO"><span class="fts-ico" data-page-node-id="kFjH2qNWTQESVnxqVbPJAx">💰</span><b id="farmCoins" data-page-node-id="0Ansxhd6S6tCQk1PuQqU8V">0</b></span>
       </div>
-      <aside class="farm-warehouse" data-page-node-id="b8qYHweFNlmmj8LS5GQGu6">
-        <div class="warehouse-title" data-page-node-id="QopQC549pgN0bpXJjXc3Rt">📦 仓库</div>
-        <div class="warehouse-tabs" data-page-node-id="9FqAQJTDi6JkwtZqpNBFfh">
-          <button class="wh-tab active" data-wh-tab="seeds" data-page-node-id="L2NWRXAQ5Y9AmjMbNeOP87">种子</button>
-          <button class="wh-tab" data-wh-tab="crops" data-page-node-id="BoDYNSYsxlD5wmoic1KEzj">作物</button>
+      <!-- R258-2.1：仓库 / 农场市集 / 云上小卖部 / 心愿盒 由卡片改为按键，点击唤起弹窗查看原内容 -->
+      <aside class="farm-tools" id="farmTools" data-page-node-id="R258farmTools">
+        <div class="farm-tools-title" data-page-node-id="R258farmToolsTitle">🧰 我的农具</div>
+        <div class="farm-tool-list" data-page-node-id="R258farmToolList">
+          <button type="button" class="farm-tool-btn" data-farm-open="warehouse" id="farmToolWarehouse" data-page-node-id="R258farmToolWarehouse">
+            <span class="ftb-ico" data-page-node-id="R258ftbWhIco">📦</span>
+            <span class="ftb-main" data-page-node-id="R258ftbWhMain"><b data-page-node-id="R258ftbWhName">仓库</b><i id="farmToolWhSub" data-page-node-id="R258ftbWhSub">种子 / 作物</i></span>
+            <span class="ftb-go" data-page-node-id="R258ftbWhGo">›</span>
+          </button>
+          <button type="button" class="farm-tool-btn" data-farm-open="market" id="farmToolMarket" data-page-node-id="R258farmToolMarket">
+            <span class="ftb-ico" data-page-node-id="R258ftbMkIco">🛒</span>
+            <span class="ftb-main" data-page-node-id="R258ftbMkMain"><b data-page-node-id="R258ftbMkName">农场市集</b><i data-page-node-id="R258ftbMkSub">成长星兑换</i></span>
+            <span class="ftb-go" data-page-node-id="R258ftbMkGo">›</span>
+          </button>
+          <button type="button" class="farm-tool-btn" data-farm-open="shop" id="farmToolShop" data-page-node-id="R258farmToolShop">
+            <span class="ftb-ico" data-page-node-id="R258ftbSpIco">🍦</span>
+            <span class="ftb-main" data-page-node-id="R258ftbSpMain"><b data-page-node-id="R258ftbSpName">云上小卖部</b><i data-page-node-id="R258ftbSpSub">金币兑换礼物</i></span>
+            <span class="ftb-go" data-page-node-id="R258ftbSpGo">›</span>
+          </button>
+          <button type="button" class="farm-tool-btn" data-farm-open="wish" id="farmToolWish" data-page-node-id="R258farmToolWish">
+            <span class="ftb-ico" data-page-node-id="R258ftbWsIco">🎁</span>
+            <span class="ftb-main" data-page-node-id="R258ftbWsMain"><b data-page-node-id="R258ftbWsName">心愿盒</b><i id="farmToolWishSub" data-page-node-id="R258ftbWsSub">已兑礼物</i></span>
+            <span class="ftb-go" data-page-node-id="R258ftbWsGo">›</span>
+          </button>
         </div>
-        <div class="warehouse-content" id="warehouseContent" data-page-node-id="cEHfbz9WCjUzE7TyIcI3Os"></div>
       </aside>
       </div><!-- /.farm-wh-col -->
     </main>
 
-    <!-- 底部三面板：农场市集 + 云上小卖部 + 心愿盒 -->
-    <footer class="farm-bottom-panels" data-page-node-id="ipXVqFBDTygpjzpbMNmBBb">
-      <div class="panel panel-market" data-page-node-id="hADiikAuppGRr6P2rmBAZv">
-        <div class="panel-title" data-page-node-id="4I2h1uo2c8nhmXbWPaUTi4">🛒 农场市集 <span class="panel-tip" data-page-node-id="EAVqRSCTe1K9W2HdIRVq8h">成长星兑换</span><button class="pbtn small panel-edit-btn hidden-in-child" id="btnMarketEdit" title="编辑：价格/物品" data-page-node-id="ywDpeTKQ3GaNeGr8ul3ap0">✏️ 编辑</button></div>
-        <div class="panel-grid" id="marketGrid" data-page-node-id="wixBVtkQ0ulPEHkL4GllBF"></div>
-      </div>
-      <div class="panel panel-shop" data-page-node-id="iRqBcEilsDsFQl41ngK6dE">
-        <div class="panel-title" data-page-node-id="FHAAvQNbcC2wisIVn3p3mh">🍦 云上小卖部 <span class="panel-tip" data-page-node-id="2JXVRlJwj5L90W7Da3VwRv">金币兑换礼物</span><button class="pbtn small panel-edit-btn hidden-in-child" id="btnShopEdit" title="编辑：价格/物品" data-page-node-id="awm51PYEQMKqeOucPamvFE">✏️ 编辑</button></div>
-        <div class="panel-grid" id="shopGrid" data-page-node-id="w62JlhFQt2n88LmeQfJwEg"></div>
-      </div>
-      <div class="panel panel-wishlist" data-page-node-id="I3AxFpcm3GcuESHiGRdU89">
-        <div class="panel-title" data-page-node-id="NUqziQWtsZMeBDQvezCCSA">🎁 心愿盒 <span class="panel-tip" data-page-node-id="RirBkbGFGCC1QWcaeqnBGB">已兑礼物</span><button class="pbtn small panel-edit-btn hidden-in-child" id="btnWishlistAchieved" title="标记礼物为已实现" data-page-node-id="yWIxJgxL7GuQHhBY01pEm6">✅ 已实现</button></div>
-        <div class="panel-grid" id="wishlistGrid" data-page-node-id="AI1w79fEGcHqFdZcys5aKl"></div>
-      </div>
-    </footer>
+    <!-- R258-2.1：底部三面板（农场市集 / 云上小卖部 / 心愿盒）已改为右侧农具按键 + 弹窗，原卡片区移除以放大田地 -->
   </div></section>
 
   <!-- ================= 成长档案 ================= -->
@@ -10602,6 +10660,18 @@ body.r256-sheet-on{overflow:hidden}
         </div>
       </label>
       <label data-page-node-id="IHE6D0k28EMB3mrhGcwErM">是否周末专属 <select id="tWeekend" data-page-node-id="jfwmT2iacC5DscfCGH72t8"><option value="0" data-page-node-id="cC0Et3BQHvO3JIfHhMHZXC">否</option><option value="1" data-page-node-id="33ABn4izWy07nqhkQoU21R">是</option></select></label>
+      <!-- R258-3.1：任务卡片跳转配置（新增/编辑任务弹窗内，逐条任务独立设置） -->
+      <div class="task-jump-block" id="tJumpBlock" data-page-node-id="R258tJumpBlock">
+        <div class="tjb-head" data-page-node-id="R258tjbHead">🧭 任务卡片跳转</div>
+        <div class="tjb-row" data-page-node-id="R258tjbRow">
+          <button type="button" class="tjr-sw" id="tJumpEnabled" data-page-node-id="R258tJumpEnabled" aria-pressed="true"><i></i></button>
+          <span class="tjb-state" id="tJumpState" data-page-node-id="R258tJumpState">已开启</span>
+          <span class="tjb-tip" data-page-node-id="R258tjbTip">关闭后点首页任务卡主体不跳转（右侧打卡键照常）</span>
+        </div>
+        <label class="tjb-page" data-page-node-id="R258tjbPage">跳转目标
+          <select id="tJumpPage" data-page-node-id="R258tJumpPage"></select>
+        </label>
+      </div>
       <div class="form-warn" id="tWarn" data-page-node-id="lqDbvL6V4Jl6kpiY4lDfng"></div>
     </div>
     <div class="modal-foot" data-page-node-id="xmh6nSugqicOPGXExSdPxh">
@@ -11623,6 +11693,10 @@ body.r256-sheet-on{overflow:hidden}
     </div>
     <div class="modal-body" id="farmPanelBody" data-page-node-id="v5GOerH3CEA6jYp0yjxB4A"></div>
     <div class="modal-foot" data-page-node-id="sQZrBWuXOJrXWSDXviTQ55">
+      <!-- R258-2.1：原卡片上的编辑入口随内容一起进弹窗（仅家长模式可见，按当前分区显隐） -->
+      <button class="pbtn small hidden-in-child" id="btnMarketEdit" hidden title="编辑：市集价格/物品" data-page-node-id="R258btnMarketEdit">✏️ 编辑市集</button>
+      <button class="pbtn small hidden-in-child" id="btnShopEdit" hidden title="编辑：小卖部礼物" data-page-node-id="R258btnShopEdit">✏️ 编辑小卖部</button>
+      <button class="pbtn small hidden-in-child" id="btnWishlistAchieved" hidden title="标记礼物为已实现" data-page-node-id="R258btnWishlistAchieved">✅ 已实现</button>
       <button class="primary-btn" data-close data-page-node-id="eyEZqwxBSuafQkX1aUhFv0">关闭</button>
     </div>
   </div>
@@ -11973,6 +12047,10 @@ body.r256-sheet-on{overflow:hidden}
   const KEY_BAK1 = KEY + '_bak1';
   const KEY_BAK2 = KEY + '_bak2';
   const KEY_META = KEY + '_meta';
+  // R258-1.1：主存档写不进（配额已满）时，设置类小字段单独落一份快照，避免「设置存不下」
+  const KEY_SNAPSHOT = KEY + '_settings';
+  const SNAPSHOT_KEY_ALWAYS = ['tasks','settings','taskGroups','taskJump','farmOpen','rewardRules','weekPlan','calcSettings'];
+  const SNAPSHOT_BUDGET = 400 * 1024;   // 快照总字节上限，避免和主档抢空间
   const SCHEMA_VERSION = 254;
   let _lastBakAt = 0;
   let _recoveredFrom = '';
@@ -12029,6 +12107,7 @@ body.r256-sheet-on{overflow:hidden}
       if(!_loadCacheRaw) return false;
       const raw = JSON.stringify(st);
       if(!_safeSet(KEY, raw)) return false;
+      _snapshotClear();   // R258-1.1：主档已整体落盘，应急设置快照作废
       _rotateBackup(raw, true);
       _loadCachePut(st, raw);
       return true;
@@ -12458,7 +12537,7 @@ body.r256-sheet-on{overflow:hidden}
     });
     return changed;
   }
-  const PLOT_COUNT = 8; // R257-6.1：2 行 x 4 列 = 8 块田（含未解锁）
+  const PLOT_COUNT = 12; // R258-2.2：4 行 x 3 列 = 12 块田（含未解锁）
   const STAGE_NEED = {0:8,1:12,2:16,3:20,4:24}; // v8：每阶段进下一阶段需要的水/阳光
   function newPlot(){
     // R254-4：新增肥料（fert）—— 消耗数量规则与「水」完全一致
@@ -12771,6 +12850,8 @@ body.r256-sheet-on{overflow:hidden}
       };
       try{ if(!raw) save(st); }catch(e){}
     }
+    // R258-1.1：主档写不进时设置单独存的快照，这里叠加回来（只在主档本身可读时合并，避免半份状态）
+    st = _snapshotApply(st);
     if(!Array.isArray(st.plots) || st.plots.length !== PLOT_COUNT){
       plotsIn(st); save(st);
     }
@@ -13258,10 +13339,14 @@ body.r256-sheet-on{overflow:hidden}
     })();
     // V17-5：种植园排版（家长模式可调）
     // R257-6.1：默认排版改为 2 行 × 4 列、地块更大（加宽田地、消除空白）
-    if(!st.farmLayout) st.farmLayout = {cols:4, rows:2, gap:10, plotSize:120};
+    // R258-2.2：默认排版改为 4 行 × 3 列（12 块田）
+    if(!st.farmLayout) st.farmLayout = {cols:3, rows:4, gap:10, plotSize:120};
     else if(st.farmLayout.cols === 5 && (st.farmLayout.plotSize|0) === 54 && (st.farmLayout.rows==null || st.farmLayout.rows === 3)){
-      // 从未手动改过排版的老存档（仍是旧默认 5 列 / 54px）→ 平滑升级到新默认
-      st.farmLayout.cols = 4; st.farmLayout.rows = 2; st.farmLayout.gap = 10; st.farmLayout.plotSize = 120;
+      // 从未手动改过排版的老存档（旧默认 5 列 / 54px）→ 平滑升级
+      st.farmLayout.cols = 3; st.farmLayout.rows = 4; st.farmLayout.gap = 10; st.farmLayout.plotSize = 120;
+    } else if(st.farmLayout.cols === 4 && (st.farmLayout.rows|0) === 2 && (st.farmLayout.plotSize|0) === 120){
+      // R257 的默认（2 行 × 4 列 / 120px）→ 升级为 4 行 × 3 列
+      st.farmLayout.cols = 3; st.farmLayout.rows = 4; st.farmLayout.gap = 10; st.farmLayout.plotSize = 120;
     }
     // V17-8：家长可增删改的电子奖状（关联打卡数据）
     if(!st.archive) st.archive = {};
@@ -13430,6 +13515,50 @@ body.r256-sheet-on{overflow:hidden}
   function _isQuotaErr(e){
     return !!(e && (e.name === 'QuotaExceededError' || e.code === 22 || /quota/i.test(String((e && e.message) || ''))));
   }
+  /* ============ R258-1.1：设置快照（主档写不进时的兜底） ============
+     现象：用户点「保存设置」提示存储空间不足，但页面里设置已经变了（内存态生效、落库失败）。
+     根因：设置是塞在整份存档里一起写的，存档（含图片 dataURL）接近配额上限时，
+           这一次整体重写就会超限；而备份副本占着同样的空间，删掉也未必够。
+     做法：① 写成功后用「写入串 == 读回串」逐字节确认，提示语只跟这个真实结果走；
+           ② 确实写不进（quota）时，把设置类字段单独写进一个小快照键
+              （优先 tasks/settings 等，总预算 400KB），load() 时再叠加回主档。
+              这样设置一定能存住，提示也能如实说「已保存」。
+           ③ 主档任意一次整体写成功后，快照即冗余，立刻清掉，避免两份真相。 */
+  let _snapshotRecovered = false;
+  function _snapshotOf(st){
+    const out = {};
+    if(!st || typeof st !== 'object') return out;
+    let used = 0;
+    SNAPSHOT_KEY_ALWAYS.forEach(function(k){
+      if(st[k] === undefined) return;
+      try{ const t = JSON.stringify(st[k]); used += k.length + t.length; out[k] = st[k]; }catch(e){}
+    });
+    Object.keys(st).forEach(function(k){
+      if(out[k] !== undefined || k === '__settingsSnapshot') return;
+      let t = '';
+      try{ t = JSON.stringify(st[k]); }catch(e){ return; }
+      if(used + k.length + t.length > SNAPSHOT_BUDGET) return;
+      out[k] = st[k]; used += k.length + t.length;
+    });
+    return out;
+  }
+  function _snapshotWrite(st){
+    try{ return _safeSet(KEY_SNAPSHOT, JSON.stringify(_snapshotOf(st))); }catch(e){ return false; }
+  }
+  function _snapshotClear(){ try{ localStorage.removeItem(KEY_SNAPSHOT); }catch(e){} }
+  function _snapshotApply(st){
+    if(!st || typeof st !== 'object' || Array.isArray(st)) return st;
+    const raw = _safeGet(KEY_SNAPSHOT);
+    if(!raw) return st;
+    let snap = null;
+    try{ snap = JSON.parse(raw); }catch(e){ snap = null; }
+    if(!snap || typeof snap !== 'object' || Array.isArray(snap)) return st;
+    Object.keys(snap).forEach(function(k){ st[k] = snap[k]; });
+    st.__settingsSnapshot = 1;
+    _snapshotRecovered = true;
+    return st;
+  }
+  function hasSettingsSnapshot(){ return !!_safeGet(KEY_SNAPSHOT); }
   function save(st){
     if(_staging){ _staged = st; return true; } // R131-2：暂存态下仅写入草稿，不落库
     let raw;
@@ -13461,8 +13590,21 @@ body.r256-sheet-on{overflow:hidden}
         return false;
       }
     }
+    // R258-1.1：回读校验 —— 写进去的长度必须与本次序列化结果一致；
+    //           部分浏览器在空间临界时会「不报错但没写全」，只看返回值会误判成功。
+    try{
+      const _back = localStorage.getItem(KEY);
+      if(_back != null && _back.length !== raw.length){
+        _saveError = 'quota';
+        _r256LedgerRollback(st, _r256Entry);
+        _loadCachePut(st);
+        return false;
+      }
+    }catch(e){ /* 读不到（隐私模式/受限）时不推翻已返回成功的写入 */ }
     _saveError = '';
     _loadCachePut(st, raw);   // R246-3：写成功后同步缓存，下一次 load() 无需再解析
+    // R258-1.1：主档已完整落库，之前为应急写的设置快照立刻作废（避免两份真相）
+    _snapshotClear();
     // R255-5：备份属于「附加保险」，它失败绝不能让主存档被判定为失败
     try{ _rotateBackup(raw, false); }catch(e){}
     return true;
@@ -13480,21 +13622,25 @@ body.r256-sheet-on{overflow:hidden}
     _staging = false;                      // 先退出暂存态，使 save() 真正写入 localStorage
     _saveError = '';                       // R257-5.1：清掉上一次的旧错误码，避免误报「存储空间不足」
     let ok = save(draft);                  // 此刻 save() 落库（不再被暂存分支拦截）
-    // R257-5.1：提示语只认本次保存的真实结果。
-    //   原实现只要「读回校验」拿不到内容就判失败，而读回失败可能是浏览器隐私策略/读取异常，
-    //   于是出现「设置其实已经生效，却提示存储空间不足」。现在只有确认写不进去才算失败。
+    // R258-1.1：唯一判据 = 写进本机的那份内容，和本次要保存的内容逐字节一致。
+    let verified = ok;
     if(ok){
       try{
-        const back = _safeGet(KEY);
-        if(back){                          // 读得到才校验；读不到（异常/受限）不改变已成功的结果
-          const _p = JSON.parse(back);
-          ok = !!(_p && _p.archive);
-        }
-      }catch(e){ /* 读回校验异常不改判：本次 save() 已明确返回成功 */ }
+        const back = _readMainRaw().raw;
+        if(back) verified = (back === JSON.stringify(draft));  // 读得到就必须完全一致
+      }catch(e){ /* 读回异常时以 save() 的返回值 + save 内部回读长度校验为准 */ }
+    }
+    let result = verified ? true : false;
+    // R258-1.1：主档确实塞不下（配额已满）→ 走设置快照，保证「点保存 = 设置存住」
+    if(!verified && _saveError === 'quota'){
+      if(_snapshotWrite(draft)){
+        result = 'partial';
+        _saveError = '';
+      }
     }
     _staging = true;                       // 提交后保持在暂存态（最新已保存状态作为新草稿），后续编辑仍需再次点击保存
     try { _staged = _cloneState(load()); } catch(e){ _staged = load(); }
-    return ok;
+    return result;
   }
   function discardSettings(){ _staging = false; _staged = null; }
   function isStaging(){ return _staging; }
@@ -19618,7 +19764,7 @@ be 动词：am / is → was；are → were
   }
   function getFarmLayout(){
     const st = load();
-    return Object.assign({cols:4, rows:2, gap:10, plotSize:120}, st.farmLayout||{});
+    return Object.assign({cols:3, rows:4, gap:10, plotSize:120}, st.farmLayout||{});
   }
   function setFarmLayout(layout){
     const st = load();
@@ -20454,7 +20600,7 @@ be 动词：am / is → was；are → were
   // ----- 状态/接口暴露 -----
 
   window.Store = {
-    KEY, KEY_BAK1, KEY_BAK2, KEY_META, SCHEMA_VERSION, SUBJECTS, PLOT_COUNT, STAGE_NEED, todayStr, weekRange, uid,
+    KEY, KEY_BAK1, KEY_BAK2, KEY_META, KEY_SNAPSHOT, SCHEMA_VERSION, hasSettingsSnapshot, SUBJECTS, PLOT_COUNT, STAGE_NEED, todayStr, weekRange, uid,
     load, save, resetData,
     // R254-1/2：数据保护 —— 备份信息 / 强制刷盘
     backupInfo, flushPersistence,
@@ -21522,12 +21668,16 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
   // R131-2：点击【保存设置】→ 提交暂存草稿到 localStorage 并立即生效
   function commitSettingsNow(){
     if(!S || typeof S.commitSettings !== 'function'){ toast('⚠️ 当前环境无法保存设置'); return; }
-    const ok = S.commitSettings();
-    if(ok){ toast('✅ 设置已保存并立即生效'); return; }
-    // R257-5.1：提示与实际结果一致 —— 只有本次确实没写进本机存档时才提示失败，并区分原因
+    const res = S.commitSettings();
+    // R258-1.1：提示只跟真实结果走 —— true 全部写入；'partial' 主档满但设置已单独存住；false 才是真失败
+    if(res === true){ toast('✅ 设置已保存并立即生效'); return; }
+    if(res === 'partial'){
+      toast('✅ 设置已保存并立即生效（本机主存档空间紧张，设置已单独存好）');
+      return;
+    }
     const why = (S.getSaveError && S.getSaveError && S.getSaveError()) || '';
     toast(why === 'quota'
-      ? '⚠️ 存储空间不足，设置未能写入本机：请先删除部分图片后重试'
+      ? '⚠️ 本机存储空间不足，设置未能写入：请先删除部分图片后重试'
       : '⚠️ 设置未能写入本机存档，请重试一次');
   }
 
@@ -35816,7 +35966,8 @@ function renderKMAdmin(){
       grid.style.setProperty('--farm-gap', layout.gap + 'px');
       // 行数 × 地块尺寸决定地块区最小高度，让「行数」在画面上可感知
       const _rows = Math.max(1, parseInt(layout.rows)||3);
-      grid.style.setProperty('--farm-field-h', (_rows * (layout.plotSize + 26) + (_rows - 1) * layout.gap) + 'px');
+      // R258-2.2：行高按「地块 + 少量标签余量」计算（原 +26 在 4 行时会多出约 90px 空白）
+      grid.style.setProperty('--farm-field-h', (_rows * (layout.plotSize + 12) + (_rows - 1) * layout.gap) + 'px');
       $$('.farm-plot').forEach(el=>{
         el.style.setProperty('--farm-plot-size', layout.plotSize + 'px');
       });
@@ -37954,10 +38105,23 @@ function renderKMAdmin(){
     renderFarmTop(st);
     renderFarmGrid(st);
     applyFarmLayout(); // V17-5：应用种植园排版
-    renderWarehouse(st);
-    renderMarket(st);
-    renderShop(st);
-    renderWishlist(st);
+    renderFarmToolSubs(st);   // R258-2.1：四张卡片改为按键后，副标题显示实时数量
+  }
+  // R258-2.1：右侧农具按键的副标题（仓库种子数 / 心愿盒礼物数）
+  function renderFarmToolSubs(st){
+    try{
+      const inv = (st && st.inventory) || {};
+      const seedKinds = Object.keys(inv.seeds || {}).filter(k => (inv.seeds[k]|0) > 0).length;
+      const cropKinds = Object.keys(inv.harvested || {}).filter(k => (inv.harvested[k]|0) > 0).length;
+      const whSub = document.getElementById('farmToolWhSub');
+      if(whSub) whSub.textContent = '种子 ' + seedKinds + ' · 作物 ' + cropKinds;
+      const wishSub = document.getElementById('farmToolWishSub');
+      if(wishSub){
+        const gifts = (st && st.gifts) || [];
+        const pending = gifts.filter(g => !g.redeemedAt).length;
+        wishSub.textContent = pending ? (pending + ' 件待兑现') : ('已兑 ' + gifts.length + ' 件');
+      }
+    }catch(e){}
   }
   // V14：右上角音乐开关绑定（用 dataset 内存保存状态，避免 localStorage）
   // V56-Req4：背景音乐设置已从种植园顶部移至「设置」板块。此处绑定设置里的开关/样式/上传。
@@ -38586,10 +38750,13 @@ function renderKMAdmin(){
       const invSeeds = Object.entries(st.inventory.seeds||{}).filter(([k,v])=>v>0);
       $('#plotTitle').textContent = `🌱 田块 #${idx+1} · 选种子`;
       if(!invSeeds.length){
+        // R258-2.3：按键文案改「去农贸市集」，点击直接进入农贸市集（市集弹窗）
         $('#plotBody').innerHTML = `<div style="text-align:center;color:var(--muted);padding:30px 10px">
-          📦 仓库里还没有种子，先去商店购买吧～<br>
-          <button class="primary-btn" style="margin-top:10px" onclick="document.querySelector('[data-farm-action=shop]').click()">去商店</button>
+          📦 仓库里还没有种子，先去农贸市集兑换吧～<br>
+          <button class="primary-btn" style="margin-top:10px" data-go-market>🛒 去农贸市集</button>
         </div>`;
+        const gm = $('#plotBody').querySelector('[data-go-market]');
+        if(gm) gm.onclick = ()=>{ hideModal('#modalPlot'); openFarmPanel('market'); };
         showModal('#modalPlot');
         return;
       }
@@ -38603,7 +38770,7 @@ function renderKMAdmin(){
           <div class="si-price">库存 ${qty}</div>
           <button class="si-buy" data-plant="${esc(s.id)}">种植</button>
         </div>`;
-      }).join('')||'<div style="color:var(--muted)">请先去商店购买种子</div>'}</div>`;
+      }).join('')||'<div style="color:var(--muted)">请先去农贸市集兑换种子</div>'}</div>`;
       $('#plotBody').querySelectorAll('[data-plant]').forEach(b=>{
         b.onclick=()=>{
           const r = S.plantCrop(idx, b.dataset.plant);
@@ -39346,11 +39513,142 @@ function renderKMAdmin(){
   window.playZooSound = playZooSound;
   window.setupKewenWordLibCron = setupKewenWordLibCron;
 
-  // ============ 仓库弹窗 ============
+  // ============ R258-2.1：种植园四按键 → 弹窗（仓库 / 农场市集 / 云上小卖部 / 心愿盒） ============
   function openFarmPanel(area){
-    if(area==='warehouse') renderWarehousePanel();
-    else if(area==='shop') renderShopPanel();
-    else if(area==='gift') renderGiftPanel();
+    if(area === 'market') return renderFarmMarketPanel();
+    if(area === 'shop')   return renderFarmShopGoodsPanel();
+    if(area === 'wish' || area === 'gift') return renderGiftPanel();
+    if(area === 'store')  return renderShopPanel();     // 兼容「去回收换金币」旧入口
+    return renderFarmWarehousePanel();
+  }
+  // —— 仓库：种子 / 作物 两页签 + 作物可卖出（内容与改版前的仓库卡一致）
+  // R258-2.1：弹窗底部编辑入口按当前分区显隐（原卡片上的编辑键移入弹窗）
+  function setFarmPanelEditBtns(kind){
+    [['btnMarketEdit','market'],['btnShopEdit','shop'],['btnWishlistAchieved','wish']].forEach(function(it){
+      const el = document.getElementById(it[0]);
+      if(el) el.hidden = (it[1] !== kind);
+    });
+  }
+  function renderFarmWarehousePanel(){
+    setFarmPanelEditBtns('warehouse');
+    const st = S.load();
+    const inv = st.inventory || {};
+    const seeds = S.getState().seeds;
+    const tab = (warehouseTab === 'crops') ? 'crops' : 'seeds';
+    let grid = '';
+    if(tab === 'seeds'){
+      const items = seeds.filter(s => ((inv.seeds || {})[s.id] | 0) > 0);
+      grid = items.length
+        ? '<div class="farm-hub-grid">' + items.map(s =>
+            `<div class="wh-item"><div class="wh-ico">${s.ico}</div><div class="wh-name">${esc(s.name.replace('种子',''))}</div><div class="wh-qty">×${inv.seeds[s.id]}</div></div>`).join('') + '</div>'
+        : '<div class="farm-hub-empty">📭 暂无种子<br><span>去农贸市集兑换种子</span></div>';
+    } else {
+      const harv = inv.harvested || {};
+      const items = Object.entries(harv).filter(([k, v]) => (v | 0) > 0);
+      grid = items.length
+        ? '<div class="farm-hub-grid">' + items.map(([k, qty]) => {
+            const seed = seeds.find(s => s.crop === k);
+            if(!seed) return '';
+            return `<div class="wh-item">
+              <div class="wh-ico">${seed.ico}</div>
+              <div class="wh-name">${esc(seed.name.replace('种子',''))}</div>
+              <div class="wh-qty">×${qty}</div>
+              <button class="wh-sell" data-sell="${esc(k)}" data-sell-name="${esc(seed.name.replace('种子',''))}" data-sell-qty="${qty}">💰 卖</button>
+            </div>`;
+          }).join('') + '</div>'
+        : '<div class="farm-hub-empty">📭 暂无作物<br><span>等待作物成熟采摘</span></div>';
+    }
+    $('#farmPanelTitle').textContent = '📦 仓库';
+    $('#farmPanelBody').innerHTML = `
+      <div class="warehouse-tabs">
+        <button type="button" class="wh-tab ${tab==='seeds'?'active':''}" data-wh-tab="seeds">种子</button>
+        <button type="button" class="wh-tab ${tab==='crops'?'active':''}" data-wh-tab="crops">作物</button>
+      </div>
+      ${grid}
+      <div class="farm-hub-foot"><button type="button" class="primary-btn" data-hub-market>🛒 去农贸市集</button></div>`;
+    $$('#farmPanelBody .wh-tab').forEach(b => {
+      b.onclick = () => { warehouseTab = b.dataset.whTab; renderFarmWarehousePanel(); };
+    });
+    $$('#farmPanelBody [data-sell]').forEach(b => {
+      b.onclick = () => {
+        const r = S.sellCrop(b.dataset.sell, parseInt(b.dataset.sellQty, 10) || 1);
+        toast(r.ok ? `卖出 ${b.dataset.sellName} +${r.coins}💰` : (r.msg || '卖出失败'));
+        if(r.ok) playZooSound('harvest');
+        renderFarm(); renderHome(); renderFarmWarehousePanel();
+      };
+    });
+    const goMk = $('#farmPanelBody [data-hub-market]');
+    if(goMk) goMk.onclick = () => renderFarmMarketPanel();
+    showModal('#modalFarmPanel');
+  }
+  // —— 农场市集：成长星兑换种子 / 水·阳光·肥料（内容与改版前的市集卡一致）
+  function renderFarmMarketPanel(){
+    setFarmPanelEditBtns('market');
+    const st = S.load();
+    const stars = (st.archive && st.archive.totalStars) || 0;
+    const seeds = S.getState().seeds || [];
+    const growth = S.getState().growth || [];
+    const seedCards = seeds.map(s => `
+      <div class="market-item ${stars < s.price ? 'locked' : ''}" data-hub-seed="${esc(s.id)}">
+        <div class="mi-ico">${s.ico}</div>
+        <div class="mi-name">${esc(s.name.replace('种子',''))}</div>
+        <div class="mi-price">⭐ ${s.price}</div>
+      </div>`).join('');
+    const growthCards = growth.map(g => `
+      <div class="market-item ${stars < g.price ? 'locked' : ''}" data-hub-growth="${esc(g.id)}">
+        <div class="mi-ico">${_shopIcoHtml(g.ico)}</div>
+        <div class="mi-name">${esc(g.name)}</div>
+        <div class="mi-price">⭐ ${g.price}</div>
+      </div>`).join('');
+    $('#farmPanelTitle').textContent = '🛒 农场市集';
+    $('#farmPanelBody').innerHTML = `
+      <div class="farm-hub-tip">🌱 用成长星兑换种子与工具 ｜ 当前 ⭐ ${stars}</div>
+      <div class="farm-hub-grid">${seedCards}${growthCards}</div>`;
+    $$('#farmPanelBody [data-hub-seed]').forEach(b => {
+      b.onclick = () => {
+        const r = S.buyShopItem(b.dataset.hubSeed, 'seed');
+        toast(r.ok ? '种子到手，去种起来！' : (r.msg || '购买失败'));
+        if(r.ok) playZooSound('plant');
+        renderFarm(); renderHome(); renderFarmMarketPanel();
+      };
+    });
+    $$('#farmPanelBody [data-hub-growth]').forEach(b => {
+      b.onclick = () => {
+        const r = S.buyShopItem(b.dataset.hubGrowth, 'growth');
+        if(r.ok){
+          const gid = b.dataset.hubGrowth;
+          toast((gid.indexOf('fert') >= 0 ? '🌱 肥料 +' : '资源 +') + (/5$/.test(gid) ? 5 : 1) + '～');
+        } else toast(r.msg || '购买失败');
+        renderFarm(); renderHome(); renderFarmMarketPanel();
+      };
+    });
+    showModal('#modalFarmPanel');
+  }
+  // —— 云上小卖部：金币兑换心愿礼物（礼物按所需金币升序，与改版前一致）
+  function renderFarmShopGoodsPanel(){
+    setFarmPanelEditBtns('shop');
+    const st = S.load();
+    const coins = (st.archive && st.archive.totalCoins) || 0;
+    const gifts = (S.getState().gifts || []).slice().sort((a, b) => (parseInt(a.price) || 0) - (parseInt(b.price) || 0));
+    const cards = gifts.map(g => `
+      <div class="shop-item ${coins < g.price ? 'locked' : ''}" data-hub-gift="${esc(g.id)}">
+        <div class="si-ico">${g.ico}</div>
+        <div class="si-name">${esc(g.name)}</div>
+        <div class="si-price">💰 ${g.price}</div>
+      </div>`).join('');
+    $('#farmPanelTitle').textContent = '🍦 云上小卖部';
+    $('#farmPanelBody').innerHTML = `
+      <div class="farm-hub-tip">🎁 用金币兑换心愿礼物，兑换后进入心愿盒 ｜ 当前 💰 ${coins}</div>
+      <div class="farm-hub-grid">${cards || '<div class="farm-hub-empty">还没有可兑换的礼物</div>'}</div>`;
+    $$('#farmPanelBody [data-hub-gift]').forEach(b => {
+      b.onclick = () => {
+        const r = S.buyShopItem(b.dataset.hubGift, 'gift');
+        toast(r.ok ? '🎁 礼物已放入心愿盒～' : (r.msg || '兑换失败'));
+        if(r.ok) playZooSound('redeem');
+        renderFarm(); renderHome(); renderFarmShopGoodsPanel();
+      };
+    });
+    showModal('#modalFarmPanel');
   }
   function renderWarehousePanel(){
     const st = S.load();
@@ -39367,7 +39665,7 @@ function renderKMAdmin(){
       const hv = inv.harvested[s.crop]||0;
       if(hv>0) cells.push(`<div class="wh-cell"><div class="wh-ico">${s.ico}</div><div class="wh-name">${esc(s.name.replace('种子',''))}</div><div class="wh-qty">${hv}</div><div class="wh-meta">个 · 回收价${s.sellCoins}💰</div></div>`);
     });
-    $('#farmPanelTitle').textContent = '📦 仓库（成熟作物可去商店回收区换金币）';
+    $('#farmPanelTitle').textContent = '📦 仓库（成熟作物可去农贸市集换金币）';
     $('#farmPanelBody').innerHTML = `
       <div style="display:flex;justify-content:flex-end;margin-bottom:10px">
         <button class="primary-btn" id="btnGoRecycle">🛒 去回收换金币</button>
@@ -39377,6 +39675,7 @@ function renderKMAdmin(){
     showModal('#modalFarmPanel');
   }
   function renderShopPanel(area){
+    setFarmPanelEditBtns('');
     farmShopArea = area || farmShopArea;
     const st = S.load();
     const state = S.getState();
@@ -39449,9 +39748,10 @@ function renderKMAdmin(){
   }
   let farmShopArea = 'seed';
   function renderGiftPanel(){
+    setFarmPanelEditBtns('wish');
     const st = S.load();
     const gifts = st.gifts;
-    $('#farmPanelTitle').textContent = `🎁 待兑现礼物（${gifts.length}件）`;
+    $('#farmPanelTitle').textContent = `🎁 心愿盒（${gifts.length} 件礼物）`;
     $('#farmPanelBody').innerHTML = `
       <div class="gift-list">${gifts.length? gifts.map(g=>`
         <div class="gift-card ${g.redeemedAt?'redeemed':''}">
@@ -39459,7 +39759,7 @@ function renderKMAdmin(){
           <div class="gift-name">${esc(g.name)}</div>
           <div class="gift-status">${g.redeemedAt?'✅ 已兑现 '+new Date(g.redeemedAt).toLocaleDateString():'⏳ 待兑现'}</div>
           ${g.redeemedAt?'':`<button class="primary-btn" data-redeem="${g.id}" style="width:100%">✨ 兑现</button>`}
-        </div>`).join('') : '<div style="color:var(--muted);text-align:center;padding:20px">还没有礼物，去商店心愿礼物区兑换吧～</div>'}</div>`;
+        </div>`).join('') : '<div style="color:var(--muted);text-align:center;padding:20px">还没有礼物，去云上小卖部兑换吧～</div>'}</div>`;
     $('#farmPanelBody').querySelectorAll('[data-redeem]').forEach(b=>b.onclick=()=>{
       const r=S.redeemGift(b.dataset.redeem); toast(r.ok?'礼物已兑现，恭喜！🎉':'失败'); if(r.ok) renderGiftPanel();
     });
@@ -39699,6 +39999,40 @@ function renderKMAdmin(){
   let editingTaskId = null;
   // V11.4：任务附加日期（除 7 天复选 + 主日期外的额外具体日期）
   let taskExtraDates = [];
+  /* R258-3.1：任务卡片跳转配置（新增 / 编辑任务弹窗内）
+     · 开关：task.jumpEnabled（缺省视为开启）
+     · 目标：task.jumpPage（空 = 按任务类型自动匹配，与首页既有规则一致） */
+  let _tJumpOn = true;
+  function syncTaskJumpUI(){
+    const sw = document.getElementById('tJumpEnabled');
+    const sel = document.getElementById('tJumpPage');
+    const state = document.getElementById('tJumpState');
+    const blk = document.getElementById('tJumpBlock');
+    const on = !!_tJumpOn;
+    if(sw){ sw.classList.toggle('is-on', on); sw.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+    if(state) state.textContent = on ? '已开启' : '未开启';
+    if(sel) sel.disabled = !on;
+    if(blk) blk.classList.toggle('is-off', !on);
+  }
+  function initTaskJumpEditor(task){
+    const sel = document.getElementById('tJumpPage');
+    const jp = (S && S.getTaskJump) ? S.getTaskJump(task || null) : { pages: [] };
+    if(sel){
+      const pages = (jp.pages && jp.pages.length) ? jp.pages : [];
+      sel.innerHTML = '<option value="">默认（按任务类型自动匹配）</option>'
+        + pages.map(pg => `<option value="${esc(pg.page)}">${esc(pg.label)}</option>`).join('');
+      const want = (task && task.jumpPage) ? String(task.jumpPage) : '';
+      sel.value = want;
+      if(want && sel.value !== want) sel.value = '';   // 目标板块已下线 → 回落默认
+    }
+    _tJumpOn = task ? (task.jumpEnabled !== false) : true;
+    syncTaskJumpUI();
+    const sw = document.getElementById('tJumpEnabled');
+    if(sw && !sw._bound){
+      sw._bound = true;
+      sw.onclick = ()=>{ _tJumpOn = !_tJumpOn; syncTaskJumpUI(); };
+    }
+  }
   function openTaskEdit(task, presetSubject){
     editingTaskId = task? task.id : null;
     $('#taskEditTitle').textContent = task? '编辑任务' : '新增任务';
@@ -39713,6 +40047,8 @@ function renderKMAdmin(){
     syncStarsUI();
     $('#tWeekend').value = task && task.weekendOnly? '1':'0';
     $('#tWarn').textContent = '';
+    // R258-3.1：新增/编辑任务弹窗内的「任务卡片跳转」配置
+    initTaskJumpEditor(task);
     $('#btnDeleteTask').style.display = task? 'inline-block':'none';
     // V11.4：周几复选 + 跳选日期
     const days = (task && task.daysOfWeek) || [];
@@ -39803,7 +40139,10 @@ function renderKMAdmin(){
       daysOfWeek,
       extraDates: [...taskExtraDates],
       weekendOnly: $('#tWeekend').value==='1',
-      stars: Math.max(0, parseInt($('#tStars').value)||0)
+      stars: Math.max(0, parseInt($('#tStars').value)||0),
+      // R258-3.1：任务卡片跳转（逐条任务独立保存）
+      jumpEnabled: !!_tJumpOn,
+      jumpPage: (document.getElementById('tJumpPage') ? document.getElementById('tJumpPage').value : '') || ''
     };
     if(editingTaskId) S.updateTask(editingTaskId, data);
     else S.addTask(data);
@@ -42526,7 +42865,12 @@ function renderKMAdmin(){
     if(btnBaikeAddSave && !btnBaikeAddSave._bound){ btnBaikeAddSave._bound = true; btnBaikeAddSave.onclick = saveBaikeAdd; }
     $('#btnSaveReading').onclick = saveReadingFromModal;
     // v10.2：种植园事件绑定（田块点击 + 仓库 tab + 标题按钮）
-    $$('.wh-tab').forEach(b=>b.onclick=()=>{ warehouseTab = b.dataset.whTab; renderFarm(); });
+    // R258-2.1：仓库 / 农场市集 / 云上小卖部 / 心愿盒 → 点击唤起弹窗（原有内容详情）
+    $$('[data-farm-open]').forEach(b=>{
+      if(b._bound) return;
+      b._bound = true;
+      b.onclick = ()=> openFarmPanel(b.dataset.farmOpen);
+    });
     // Req1：取消点击标题卡返回首页的操作（标题卡不再绑定回首页）
     $$('.farm-bell').forEach(b=>b.onclick=()=>toast('🔔 暂无新消息～'));
     // v8 5x5 农田点击 — 未解锁→解锁；已解锁空地/作物→打开弹窗
