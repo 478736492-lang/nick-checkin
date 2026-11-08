@@ -8009,6 +8009,10 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 .calc-wrong-expr{font-size:16px;font-weight:800;color:#0F2447;white-space:nowrap;font-variant-numeric:tabular-nums}
 .calc-wrong-no{display:inline-block;font-size:11.5px;font-weight:800;color:var(--sky-blue);background:var(--tone-100);border-radius:6px;padding:1px 7px;font-variant-numeric:tabular-nums}
 .calc-wrong-ans{font-size:17px;font-weight:800;color:var(--ok-main);font-variant-numeric:tabular-nums}
+/* R254-3：错题 / 已做本一致展示「原始错误答案」（红色）在正确答案前方 */
+.calc-wrong-mine{font-size:16px;font-weight:800;color:#e53935;font-variant-numeric:tabular-nums;margin-right:2px}
+.calc-wrong-mine.is-hint{font-size:11.5px;font-weight:700;color:#e53935;opacity:.85;margin-left:4px}
+.calc-book-wrong{color:#e53935;font-weight:900;text-decoration:line-through;text-decoration-thickness:1.5px}
 .calc-wrong-input{width:96px;box-sizing:border-box;padding:6px 8px;border:1.5px solid var(--tone-200);border-radius:8px;font-size:16px;font-weight:800;color:#0F2447;text-align:center;outline:none;font-family:inherit}
 .calc-wrong-input:focus{border-color:var(--tone-600);box-shadow:0 0 0 3px rgba(64,150,255,.15)}
 .calc-wrong-input.right{border-color:var(--ok-main);background:var(--ok-pale)}
@@ -8220,10 +8224,12 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 #modalCalcCal .calc-cal-legend{gap:10px;font-size:10px}
 #modalCalcCal .calc-cal-legend i{width:8px;height:8px}
 #modalCalcCal .calc-cal-weekrow{gap:3px;margin-bottom:3px}
-#modalCalcCal .calc-cal-weekrow span{font-size:9px}
+#modalCalcCal .calc-cal-weekrow span{font-size:9px;line-height:1.15}
 #modalCalcCal .calc-cal-grid{gap:3px}
-#modalCalcCal .calc-cal-cell{font-size:9.5px;min-height:27px;border-radius:6px;aspect-ratio:1/1.05;padding:1px}
-#modalCalcCal .calc-cal-cell .cnt{font-size:7.5px}
+#modalCalcCal .calc-cal-cell{font-size:9px;min-height:27px;border-radius:6px;aspect-ratio:1/1.05;padding:1px}
+/* R254-3：日历内全部文字字号与首行（星期）完全一致 —— 日期 / 题数 / 首行同为 9px */
+#modalCalcCal .calc-cal-cell .num{font-size:9px}
+#modalCalcCal .calc-cal-cell .cnt{font-size:9px}
 #modalCalcCal .calc-cal-sum{margin-top:6px;font-size:11px}
 #modalCalcCal .calc-cal-sum b{font-size:11.5px}
 #modalCalcCal .modal-foot .pbtn{font-size:11.5px;padding:5px 12px}
@@ -8645,6 +8651,55 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
 .reading-cn .reading-col-list{max-height:none;overflow:visible}
 .reading-cols{align-items:start}
 .reading-col{height:auto}
+
+/* ============================================================
+   R254-4：种植园 —— 化肥统计 / 各生长阶段动画 / 浇灌弹窗
+   ============================================================ */
+.farm-title-stats .fts-fert{background:linear-gradient(135deg,#e8f7e4,#cdeec6);border-color:#8fce83}
+.farm-title-stats .fts-fert b{color:#2f6b25}
+/* 种子期：轻微呼吸脉动 */
+.fp-ico-0{animation:fpSeedBreath 2.6s ease-in-out infinite;transform-origin:50% 60%}
+/* 幼苗期：左右轻摆 */
+.fp-ico-1{animation:fpSproutSway 2.4s ease-in-out infinite;transform-origin:50% 92%}
+/* 成长期：叶片舒展 */
+.fp-ico-2{animation:fpLeafGrow 3s ease-in-out infinite;transform-origin:50% 92%}
+/* 结果期：果实弹跳 */
+.fp-ico-3{animation:fpFruitBounce 2.2s ease-in-out infinite;transform-origin:50% 90%}
+/* 成熟期：金色光晕呼吸 */
+.fp-ico-4{animation:fpMatureGlow 1.8s ease-in-out infinite;transform-origin:50% 90%}
+.fp-ico-empty{animation:fpSeedBreath 3.4s ease-in-out infinite;opacity:.72}
+.fp-spark{position:absolute;top:5px;right:6px;font-size:14px;line-height:1;pointer-events:none;
+  filter:drop-shadow(0 0 5px #ffd24d);animation:fpSparkle 1.6s ease-in-out infinite}
+.farm-plot.harvestable .fp-ico{filter:drop-shadow(0 0 10px #ffd24d)}
+@keyframes fpSeedBreath{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+@keyframes fpSproutSway{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
+@keyframes fpLeafGrow{0%,100%{transform:scale(1) rotate(-2deg)}50%{transform:scale(1.06) rotate(2deg)}}
+@keyframes fpFruitBounce{0%,100%{transform:translateY(0) scale(1)}45%{transform:translateY(-5px) scale(1.05)}}
+@keyframes fpMatureGlow{0%,100%{transform:scale(1);filter:drop-shadow(0 0 4px #ffd24d)}
+  50%{transform:scale(1.1);filter:drop-shadow(0 0 14px #ffcf3f)}}
+@keyframes fpSparkle{0%,100%{opacity:.35;transform:scale(.8) rotate(-8deg)}50%{opacity:1;transform:scale(1.2) rotate(8deg)}}
+
+.plot-grow-stage{position:relative;text-align:center;margin:2px 0 6px}
+.plot-grow-ico{font-size:72px;line-height:1.05;display:inline-block;filter:drop-shadow(0 4px 6px rgba(0,0,0,.25))}
+.plot-grow-bars{max-width:340px;margin:0 auto 4px;display:flex;flex-direction:column;gap:5px}
+.plot-grow-row{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:#41506b}
+.pgr-k{width:58px;flex:none}
+.pgr-bar{flex:1;height:9px;border-radius:999px;background:#e6eefc;overflow:hidden;display:block}
+.pgr-bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--tone-400),var(--tone-600));transition:width .3s ease}
+.pgr-bar-fert i{background:linear-gradient(90deg,#a6e59a,#4caf50)}
+.pgr-v{width:56px;text-align:right;flex:none;font-variant-numeric:tabular-nums;color:#2a3a55}
+@media (prefers-reduced-motion: reduce){
+  .fp-ico-0,.fp-ico-1,.fp-ico-2,.fp-ico-3,.fp-ico-4,.fp-ico-empty,.fp-spark{animation:none}
+}
+
+/* R254-6：小学古诗文 —— 一页一行，同一行横向排布三首诗词卡片 */
+.sh-poem-grid.sh-poem-grid3{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:1100px){
+  .sh-poem-grid.sh-poem-grid3{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media (max-width:760px){
+  .sh-poem-grid.sh-poem-grid3{grid-template-columns:1fr}
+}
 
 </style>
 </head>
@@ -9762,6 +9817,8 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
       <div class="farm-title-stats" data-page-node-id="pQoy2qUAJglkq07hfs1Rzl">
         <span class="fts fts-stars" data-page-node-id="ibQitRhCqDh8S9ntY9D6ML"><span class="fts-ico" data-page-node-id="qMbgyyOmEqHGc5tDmyVDjc">⭐</span><b id="farmStars" data-page-node-id="guaQdavqnuwu83YC5wsIwD">0</b></span>
         <span class="fts fts-water" data-page-node-id="BfpRssUxHgg9q5ETOY5sTu"><span class="fts-ico" data-page-node-id="0QQSa5e1ybgZXFhfLOTdZQ">💧</span><b id="farmWater" data-page-node-id="95PYZiV4dm0IoTArKKMn5D">0</b></span>
+        <!-- R254-4：水与阳光之间新增化肥统计 -->
+        <span class="fts fts-fert" id="farmFertStat"><span class="fts-ico">🧪</span><b id="farmFert">0</b></span>
         <span class="fts fts-sun" data-page-node-id="2AcRBZKRiDZaYrikoKNYs2"><span class="fts-ico" data-page-node-id="I0BMYpsXq88UVFvDR9En9q">☀️</span><b id="farmSun" data-page-node-id="kqPYlgKI6EcEBRYKIrxxiT">0</b></span>
         <span class="fts fts-coins" data-page-node-id="W1UCiESjj73O9pwfmPtDFO"><span class="fts-ico" data-page-node-id="kFjH2qNWTQESVnxqVbPJAx">💰</span><b id="farmCoins" data-page-node-id="0Ansxhd6S6tCQk1PuQqU8V">0</b></span>
       </div>
@@ -10783,6 +10840,7 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
           <span id="updateHint" style="font-size:12px;color:var(--muted)" data-page-node-id="R85updHint">点此立即拉取最新版本</span>
         </div>
         <div class="form-warn" style="margin-top:8px" data-page-node-id="R85verTip">应用已开启离线缓存，正常情况下打开页面会自动获取最新版；若发现内容仍是旧的，点「检查更新」即可立即刷新。</div>
+        <div class="form-warn" id="verDataSafe" style="margin-top:6px;border-color:#9fd8b4;color:#1f8a4c" data-page-node-id="R254verDataSafe">🛡️ 数据保护：本页更新只替换界面与功能，<b>不会清除</b>任何打卡记录、错题、种植园与自定义内容；更新前会自动做一次本地备份。<span id="verBackupInfo" style="display:block;margin-top:4px;font-weight:400"></span></div>
       </div>
     </div>
       <div class="modal-foot" data-page-node-id="R85modalVerFoot">
@@ -11289,6 +11347,88 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
 (function(){
   const SUBJECTS = ['语文','数学','英语','运动','围棋','习惯家务','错题'];
   const KEY = 'zoo_checkin_v3';
+  /* ============ R254-1 / R254-2：数据保护与持久化加固 ============
+     规则（对应需求 1.1~1.3 / 2.1~2.2）：
+       ① 版本更新只「补缺失字段」，绝不重置 / 清空 / 替换用户已有数据；
+       ② 每次落库同步滚动双代备份（bak1 最新、bak2 上一代），主存档损坏可回滚；
+       ③ 主存档解析失败 / 被截断时优先从备份恢复，而不是新建空存档覆盖；
+       ④ 离开页面（pagehide / beforeunload / 切后台）强制刷盘一次，避免最后一次操作丢失。
+     备份键与主键同源，卸载 / 重新打开 / 换版本都不会清除。 */
+  const KEY_BAK1 = KEY + '_bak1';
+  const KEY_BAK2 = KEY + '_bak2';
+  const KEY_META = KEY + '_meta';
+  const SCHEMA_VERSION = 254;
+  let _lastBakAt = 0;
+  let _recoveredFrom = '';
+  function _safeGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+  function _safeSet(k,v){ try{ localStorage.setItem(k,v); return true; }catch(e){ return false; } }
+  // 判断一段原始串是否是「可用的存档对象」——必须能解析成非数组对象且带档案结构
+  function _rawUsable(raw){
+    if(!raw) return false;
+    try{
+      const o = JSON.parse(raw);
+      if(!o || typeof o !== 'object' || Array.isArray(o)) return false;
+      return !!(o.archive || o.records || o.tasks || o.readFlags);
+    }catch(e){ return false; }
+  }
+  // 读取主存档；损坏则依次回退 bak1 / bak2（绝不直接新建空档）
+  function _readMainRaw(){
+    const main = _safeGet(KEY);
+    if(_rawUsable(main)) return {raw:main, from:KEY};
+    for(const k of [KEY_BAK1, KEY_BAK2]){
+      const b = _safeGet(k);
+      if(_rawUsable(b)){ _recoveredFrom = k; return {raw:b, from:k}; }
+    }
+    return {raw:main, from:KEY};
+  }
+  // 滚动备份：raw 为刚写入主存档的完整串；20 秒节流，避免每次点击都重复写 MB 级数据
+  function _rotateBackup(raw, force){
+    if(!raw) return;
+    try{
+      const now = Date.now();
+      if(!force && now - _lastBakAt < 20000) return;
+      const b1 = _safeGet(KEY_BAK1);
+      if(b1 && b1 !== raw) _safeSet(KEY_BAK2, b1);
+      if(_safeSet(KEY_BAK1, raw)){
+        _lastBakAt = now;
+        _safeSet(KEY_META, JSON.stringify({schema:SCHEMA_VERSION, savedAt:now, bytes:raw.length}));
+      }
+    }catch(e){}
+  }
+  function backupInfo(){
+    let meta = null;
+    try{ meta = JSON.parse(_safeGet(KEY_META) || 'null'); }catch(e){ meta = null; }
+    const b1 = _safeGet(KEY_BAK1), b2 = _safeGet(KEY_BAK2);
+    return {schema:SCHEMA_VERSION, savedAt:(meta && meta.savedAt) || 0,
+            bytes:(meta && meta.bytes) || 0, hasBak1:!!b1, hasBak2:!!b2,
+            recoveredFrom:_recoveredFrom};
+  }
+  // R254-2：离开页面 / 切后台时强制刷盘（含备份），保证最后一次操作不丢
+  function flushPersistence(){
+    try{
+      const st = _loadCacheSt || _staged;
+      if(!st) return false;
+      // 安全闸：本次会话从未成功读到 / 写过存档时，绝不把内存里的默认空档刷进主档
+      // （数据保护第一原则：宁可少写一次，也不能覆盖 iPad 上已有的打卡记录）
+      if(!_loadCacheRaw) return false;
+      const raw = JSON.stringify(st);
+      if(!_safeSet(KEY, raw)) return false;
+      _rotateBackup(raw, true);
+      _loadCachePut(st, raw);
+      return true;
+    }catch(e){ return false; }
+  }
+  if(typeof window !== 'undefined' && window.addEventListener){
+    try{
+      window.addEventListener('pagehide', flushPersistence);
+      window.addEventListener('beforeunload', flushPersistence);
+      if(typeof document !== 'undefined' && document.addEventListener){
+        document.addEventListener('visibilitychange', ()=>{
+          try{ if(document.visibilityState === 'hidden') flushPersistence(); }catch(e){}
+        });
+      }
+    }catch(e){}
+  }
   // R131-2：设置中心「保存设置」暂存（staging）状态
   let _staged = null, _staging = false;
   // 乐读数学 Word 原题种子（v1）：22 题型 / 43 题；由 gen_leidu_math_seed.js 从 leidu-math/data.json 生成
@@ -11705,10 +11845,13 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
   const PLOT_COUNT = 12; // v10.2：3 行 x 4 列 = 12 块田（含未解锁）
   const STAGE_NEED = {0:8,1:12,2:16,3:20,4:24}; // v8：每阶段进下一阶段需要的水/阳光
   function newPlot(){
-    return { unlocked:false, cropId:null, plantedAt:0, waterNeeded:STAGE_NEED[0], sunNeeded:STAGE_NEED[0], waterCount:0, sunCount:0, stage:0, plantedTimes:0, kind:'locked' };
+    // R254-4：新增化肥（fert）—— 消耗数量规则与「水」完全一致
+    return { unlocked:false, cropId:null, plantedAt:0, waterNeeded:STAGE_NEED[0], sunNeeded:STAGE_NEED[0],
+             fertNeeded:STAGE_NEED[0], waterCount:0, sunCount:0, fertCount:0, stage:0, plantedTimes:0, kind:'locked' };
   }
   function newUnlockedPlot(){
-    return { unlocked:true, cropId:null, plantedAt:0, waterNeeded:STAGE_NEED[0], sunNeeded:STAGE_NEED[0], waterCount:0, sunCount:0, stage:0, plantedTimes:0, kind:'empty' };
+    return { unlocked:true, cropId:null, plantedAt:0, waterNeeded:STAGE_NEED[0], sunNeeded:STAGE_NEED[0],
+             fertNeeded:STAGE_NEED[0], waterCount:0, sunCount:0, fertCount:0, stage:0, plantedTimes:0, kind:'empty' };
   }
 
   // 工具
@@ -11818,6 +11961,9 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
   const growthShop = ()=>[
     {id:'g_water1',name:'水壶(1滴)',ico:'💧',desc:'浇灌作物1次',price:1,unit:'water',qty:1},
     {id:'g_water5',name:'大水桶(5滴)',ico:'🪣',desc:'浇灌作物5次',price:4,unit:'water',qty:5},
+    // R254-4：水兑换项后方新增化肥兑换项（消耗⭐与水完全一致：1⭐/袋、4⭐/5袋）
+    {id:'g_fert1',name:'化肥(1袋)',ico:'🧪',desc:'给作物施肥1次',price:1,unit:'fert',qty:1},
+    {id:'g_fert5',name:'化肥包(5袋)',ico:'🧴',desc:'给作物施肥5次',price:4,unit:'fert',qty:5},
     {id:'g_sun1',name:'阳光瓶(1束)',ico:'☀️',desc:'照耀作物1次',price:1,unit:'sun',qty:1},
     {id:'g_sun5',name:'阳光罐(5束)',ico:'🌞',desc:'照耀作物5次',price:4,unit:'sun',qty:5}
   ];
@@ -11951,7 +12097,9 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
   function load(){
     if(_staging && _staged) return _staged; // R131-2：暂存态下直接返回草稿，编辑期间不落库
     let st; let raw = null;
-    try{ raw = localStorage.getItem(KEY); }catch(e){ raw = null; }
+    // R254-1：主存档损坏 / 截断时回退备份，避免版本更新或异常写入后「数据全没了」
+    const _rd = _readMainRaw();
+    raw = _rd.raw;
     // R246-3：命中缓存（原始串未变）→ 直接返回，跳过解析与全部迁移
     if(_loadCacheOK && raw === _loadCacheRaw) return _loadCacheSt;
     try{
@@ -11976,7 +12124,7 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
         // 种植园：25 块田（v8：5 行 x 5 列，前 4 块默认解锁；50金币扩建）
         plots: Array.from({length:PLOT_COUNT}, (_,i)=> i<4 ? newUnlockedPlot() : newPlot()),
         plot: null, // v3 残留字段，新结构迁入 plots
-        inventory: {seeds:{},water:10,sun:10,harvested:{}},
+        inventory: {seeds:{},water:10,sun:10,fert:6,harvested:{}},
         gifts: [],
         mathProblems: [],
         baikeViewed: {},
@@ -12007,7 +12155,9 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
     if(!Array.isArray(st.plots) || st.plots.length !== PLOT_COUNT){
       plotsIn(st); save(st);
     }
-    if(!st.inventory) st.inventory = {seeds:{},water:10,sun:10,harvested:{}};
+    if(!st.inventory) st.inventory = {seeds:{},water:10,sun:10,fert:6,harvested:{}};
+    // R254-4：老存档补「化肥」库存字段（只补不覆盖，已有库存原样保留）
+    if(typeof st.inventory.fert !== 'number') st.inventory.fert = 6;
     if(!st.gifts) st.gifts = [];
     if(!st.mathProblems) st.mathProblems = [];
     if(!Array.isArray(st.calcBank)) st.calcBank = [];
@@ -12569,7 +12719,13 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
     if(!Array.isArray(st.customList.sucai)) st.customList.sucai = [];
     if(!Array.isArray(st.customList.gushi)) st.customList.gushi = [];
     if(!st.kewenLearned) st.kewenLearned = []; // V71：课文朗读已学习编号数组
+    // R254-1：版本标记只写「当前 schema 版本」，不参与任何数据重置
+    if(st.__schema !== SCHEMA_VERSION) st.__schema = SCHEMA_VERSION;
     _loadCachePut(st);   // R246-3：解析 + 迁移完成后写入缓存
+    // R254-1：若本次是从备份救回来的，立即回写主存档，保证下次打开读的是完整数据
+    if(_recoveredFrom){
+      try{ const raw2 = JSON.stringify(st); if(_safeSet(KEY, raw2)){ _rotateBackup(raw2, true); _loadCachePut(st, raw2); } }catch(e){}
+    }
     return st;
   }
   // R126 安全加固：存储写入容错 —— localStorage 配额超限（如导入大量图片 dataURL）时，
@@ -12583,6 +12739,7 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
       localStorage.setItem(KEY, raw);
       _saveError = '';
       _loadCachePut(st, raw);   // R246-3：写成功后同步缓存，下一次 load() 无需再解析
+      _rotateBackup(raw, false); // R254-2：同步滚动双代备份（20s 节流，离开页面时强制刷盘）
       return true;
     }catch(e){
       _saveError = (e && (e.name === 'QuotaExceededError' || e.code === 22 || /quota/i.test(String((e && e.message) || '')))) ? 'quota' : ((e && e.name) || 'error');
@@ -13774,6 +13931,10 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
         if(p.waterNeeded===undefined) p.waterNeeded = STAGE_NEED[p.stage||0] || 8;
         if(p.sunNeeded===undefined) p.sunNeeded = STAGE_NEED[p.stage||0] || 8;
         if(p.kind===undefined) p.kind = p.cropId? 'has' : (p.unlocked? 'empty' : 'locked');
+        // R254-4：化肥字段补齐 —— 老存档里正在生长的作物把本阶段化肥视为「已施足」，
+        //         既不丢进度，也不因为新规则突然卡住（数据保护：只补字段、不改用户已有状态）
+        if(p.fertNeeded===undefined) p.fertNeeded = (p.waterNeeded!==undefined ? p.waterNeeded : (STAGE_NEED[p.stage||0] || 8));
+        if(p.fertCount===undefined) p.fertCount = p.cropId ? p.fertNeeded : 0;
       });
     }
     return st.plots;
@@ -13809,8 +13970,8 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
     st.inventory.seeds[seedId]--;
     p.cropId = seedId;
     p.plantedAt = Date.now();
-    p.waterCount = 0; p.sunCount = 0; p.stage = 0;
-    p.waterNeeded = STAGE_NEED[0]; p.sunNeeded = STAGE_NEED[0];
+    p.waterCount = 0; p.sunCount = 0; p.fertCount = 0; p.stage = 0;
+    p.waterNeeded = STAGE_NEED[0]; p.sunNeeded = STAGE_NEED[0]; p.fertNeeded = STAGE_NEED[0];
     p.plantedTimes = (p.plantedTimes||0)+1;
     p.kind = 'has';
     save(st);
@@ -13848,14 +14009,35 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
     save(st);
     return {ok:true, plotIdx:idx};
   }
+  // R254-4：施肥 —— 规则与浇水完全一致（每次消耗 1 袋化肥、本阶段达标后与水土阳光一起推进）
+  function fertPlot(plotIdx){
+    const idx = Number.isInteger(plotIdx) ? plotIdx : 0;
+    const st = load();
+    const plots = plotsIn(st);
+    const p = plots[idx];
+    if(!p) return {ok:false, msg:'田块不存在'};
+    if(!p.unlocked) return {ok:false, msg:'该地块未开垦'};
+    if(!p.cropId) return {ok:false, msg:'田里无作物'};
+    const need = (p.fertNeeded === undefined) ? (p.waterNeeded||STAGE_NEED[p.stage||0]||8) : p.fertNeeded;
+    if((st.inventory.fert||0)<=0) return {ok:false, msg:'化肥不足，去农场市集兑换'};
+    if((p.fertCount||0) >= need) return {ok:false, msg:'本阶段施肥已足'};
+    st.inventory.fert = (st.inventory.fert||0) - 1;
+    p.fertCount = (p.fertCount||0) + 1;
+    advancePlot(p);
+    save(st);
+    return {ok:true, plotIdx:idx};
+  }
   // v8：阶段进阶 — 当本阶段 waterCount 与 sunCount 都达到所需，自动 stage++
   function advancePlot(plot){
-    if(plot.waterCount >= plot.waterNeeded && plot.sunCount >= plot.sunNeeded && plot.stage<4){
+    // R254-4：本阶段的水 / 阳光 / 化肥三者都达标才进阶（化肥消耗规则与水完全一致）
+    const _fn = (plot.fertNeeded === undefined) ? plot.waterNeeded : plot.fertNeeded;
+    if(plot.waterCount >= plot.waterNeeded && plot.sunCount >= plot.sunNeeded
+       && (plot.fertCount||0) >= _fn && plot.stage<4){
       plot.stage++;
       const need = STAGE_NEED[plot.stage];
-      plot.waterNeeded = need; plot.sunNeeded = need;
+      plot.waterNeeded = need; plot.sunNeeded = need; plot.fertNeeded = need;
       // 重置下一阶段的累积
-      plot.waterCount = 0; plot.sunCount = 0;
+      plot.waterCount = 0; plot.sunCount = 0; plot.fertCount = 0;
     }
   }
   function harvestPlot(plotIdx){
@@ -13870,8 +14052,8 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
     const seed = seedShop().find(s=>s.id===p.cropId);
     const cropKey = seed ? seed.crop : p.cropId;
     st.inventory.harvested[cropKey] = (st.inventory.harvested[cropKey]||0) + 1;
-    p.cropId = null; p.waterCount=0; p.sunCount=0; p.stage=0; p.plantedAt=0;
-    p.waterNeeded = STAGE_NEED[0]; p.sunNeeded = STAGE_NEED[0];
+    p.cropId = null; p.waterCount=0; p.sunCount=0; p.fertCount=0; p.stage=0; p.plantedAt=0;
+    p.waterNeeded = STAGE_NEED[0]; p.sunNeeded = STAGE_NEED[0]; p.fertNeeded = STAGE_NEED[0];
     p.kind = 'empty';
     save(st);
     return {ok:true, got: seed? seed.name : '作物', plotIdx:idx};
@@ -18962,7 +19144,10 @@ be 动词：am / is → was；are → were
     const key = calcWrongKey(p);
     if(st.calcWrongBook.some(w => w.key === key)) return {ok:true, dup:true};
     const it = calcBankItem(p);
-    st.calcWrongBook.unshift({a:p.a, b:p.b, op:p.op, c:p.c, op2:p.op2, ans:it.ans, cat:p.cat||'', no:Number(p.no)||0, key, at:Date.now()});
+    // R254-3：错题留存「原始错误答案」，与正确答案一并保存，后续订正 / 移入已做本都不丢
+    const _wv = (p.val != null || p.wrongVal != null) ? Number(p.wrongVal != null ? p.wrongVal : p.val) : null;
+    st.calcWrongBook.unshift({a:p.a, b:p.b, op:p.op, c:p.c, op2:p.op2, ans:it.ans,
+      wrongVal:(isFinite(_wv) ? _wv : null), cat:p.cat||'', no:Number(p.no)||0, key, at:Date.now()});
     save(st);
     return {ok:true};
   }
@@ -18989,7 +19174,11 @@ be 动词：am / is → was；are → were
     const num = Number(raw);
     const correct = isFinite(num) && num === Number(it.ans);
     if(correct && !it.fixedAt){ it.fixedAt = Date.now(); it.fixVal = num; save(st); }
-    return {ok:true, correct, ans:it.ans, fixedAt: it.fixedAt || 0};
+    // R254-3：答错时把这次作答记为「原始错误答案」；已有则保留最早一条，不覆盖
+    else if(!correct && isFinite(num) && (it.wrongVal == null || it.wrongVal === '')){
+      it.wrongVal = num; save(st);
+    }
+    return {ok:true, correct, ans:it.ans, wrongVal:(it.wrongVal == null ? null : it.wrongVal), fixedAt: it.fixedAt || 0};
   }
 
   // ===== R237：计算小超市 · 当日批改快照 + 已做本 =====
@@ -19098,7 +19287,29 @@ be 动词：am / is → was；are → were
     const list = Array.isArray(st.calcBook) ? st.calcBook : [];
     return list.slice().sort((a,b)=> (Number(b.at)||0) - (Number(a.at)||0));
   }
-  function clearCalcBook(){ const st = load(); st.calcBook = []; save(st); return {ok:true}; }
+  // R254-3：已归入已做本的题目 key 集合 —— 每日抽题时排除，不再重复出现
+  // calcBook 展示历史有 800 条上限（超出裁剪），因此另存 calcDoneKeys 长期 key 集合，
+  // 保证被裁剪掉的老题也不会重新回到抽题池（只在出现新 key 时补写一次）。
+  function getCalcBookKeys(){
+    const st = load();
+    const list = Array.isArray(st.calcBook) ? st.calcBook.slice() : [];
+    const seen = {};
+    if(!Array.isArray(st.calcDoneKeys)) st.calcDoneKeys = [];
+    st.calcDoneKeys.forEach(k => { if(k != null && k !== '') seen[String(k)] = 1; });
+    let grew = false;
+    list.forEach(x=>{
+      const k = x && x.key != null ? String(x.key) : '';
+      if(!k || seen[k]) return;
+      seen[k] = 1; st.calcDoneKeys.push(k); grew = true;
+    });
+    if(grew){
+      if(st.calcDoneKeys.length > 6000) st.calcDoneKeys = st.calcDoneKeys.slice(-6000);
+      save(st);
+    }
+    return Object.keys(seen);
+  }
+  // 清空已做本 = 用户主动把题目放回抽题池（连同长期 key 集合一起清）
+  function clearCalcBook(){ const st = load(); st.calcBook = []; st.calcDoneKeys = []; save(st); return {ok:true}; }
   function _calcQOf(o){
     const lab = x => ({'+':'+','-':'−','×':'×','÷':'÷'})[x] || x;
     return String(o.a) + ' ' + lab(o.op) + ' ' + String(o.b) + (o.op2 ? ' ' + lab(o.op2) + ' ' + String(o.c) : '');
@@ -19132,7 +19343,7 @@ be 动词：am / is → was；are → were
       const k = d + '|' + key;
       if(!seen[k]){
         seen[k] = 1;
-        add.push({date:d, key, q:_calcQOf(w), ans:w.ans, val:w.ans, cat:String(w.cat||''), src:'fixed', at:Date.now()});
+        add.push({date:d, key, q:_calcQOf(w), ans:w.ans, wrongVal:(w.wrongVal == null ? null : w.wrongVal), val:w.ans, cat:String(w.cat||''), src:'fixed', at:Date.now()});
       }
       removedWrongs++;
     });
@@ -19188,7 +19399,7 @@ be 动词：am / is → was；are → were
       const k = d + '|' + key;
       if(!seen[k]){
         seen[k] = 1;
-        add.push({date:d, key, q:_calcQOf(w), ans:w.ans,
+        add.push({date:d, key, q:_calcQOf(w), ans:w.ans, wrongVal:(w.wrongVal == null ? null : w.wrongVal),
                   val:(w.fixVal == null ? w.ans : w.fixVal), cat:String(w.cat||''), src:'fixed', at:Date.now()});
       }
     });
@@ -19213,8 +19424,10 @@ be 动词：am / is → was；are → were
   // ----- 状态/接口暴露 -----
 
   window.Store = {
-    KEY, SUBJECTS, PLOT_COUNT, STAGE_NEED, todayStr, weekRange, uid,
+    KEY, KEY_BAK1, KEY_BAK2, KEY_META, SCHEMA_VERSION, SUBJECTS, PLOT_COUNT, STAGE_NEED, todayStr, weekRange, uid,
     load, save, resetData,
+    // R254-1/2：数据保护 —— 备份信息 / 强制刷盘
+    backupInfo, flushPersistence,
     tasksForDate, getRecord, toggleCheckIn, makeupDay, saveWrong,
     addTask, updateTask, deleteTask,
     // R253-2：首页任务卡跳转独立配置
@@ -19225,8 +19438,10 @@ be 动词：am / is → was；are → were
     xsLogAttempt, xsGetAnswerLog,
     recompute, buildWeeklyReport, buildMonthlyReport, buildReport,
     CROP_STAGES,
-    plantCrop, waterPlot, sunPlot, harvestPlot, unlockPlot, plotsIn, newPlot, newUnlockedPlot,
+    plantCrop, waterPlot, sunPlot, fertPlot, harvestPlot, unlockPlot, plotsIn, newPlot, newUnlockedPlot,
     sellCrop,
+    // R254-3：已做本题目 key（抽题排除）
+    getCalcBookKeys,
     buyShopItem, redeemGift, unredeemGift, getState, resetFarmCurrencies,
     defaultMathProblems,
     addMathProblem, updateMathProblem, toggleMathStar, deleteMathProblem,
@@ -20181,8 +20396,18 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
   }
 
   // ============ 导航 ============
-  // R234-3：乐读数学「计算小超市 / 乐读数学笔记」页签切换（进入页面默认计算小超市）
+  /* R254-7：板块页内「上次浏览位置」记忆 —— 新世界各专区子页 / 乐读数学页签 / 学而思页签。
+     存 localStorage 小键，不参与主存档的读写，刷新、重开、版本更新都保留。 */
+  function _uiMem(key, val){
+    try{
+      const k = 'ui_mem_' + key;
+      if(arguments.length > 1){ localStorage.setItem(k, String(val)); return String(val); }
+      return localStorage.getItem(k);
+    }catch(e){ return null; }
+  }
+  // R234-3：乐读数学「计算小超市 / 乐读数学笔记」页签切换（进入页面恢复上次页签）
   function setLeiduTab(which){
+    _uiMem('leiduTab', which || 'calc');
     const box = document.querySelector('[data-leidu-switch]');
     if(box){
       box.querySelectorAll('[data-leidu-tab]').forEach(b=>{
@@ -20222,14 +20447,21 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         bindFarmMusicUpload();
       }, 50);
     } else {
+      // R254-4：离开种植园时背景音乐（含试听）自动暂停
       stopFarmAmbient();
+      try{ stopFarmPreview(); }catch(e){}
+    }
+    // R254-5：离开知识秘境游戏页（含返回关卡选择 / 切到其他板块）时背景音乐自动暂停
+    if(page !== 'kmgame'){
+      try{ if(typeof kmBgmStop === 'function') kmBgmStop(); }catch(e){}
     }
     if(page==='home'){ renderHome(); }
     if(page==='today'){ renderToday(); refreshSystemLock(); }
     // R244-2：只渲染目标子页，避免每次导航都全量重渲染 7 个页面造成点击迟钝
     if(page==='newworld' || String(page).indexOf('newworld-')===0) renderNewWorldAll(page);
     // R234-3：从其他页面点进「乐读数学」→ 默认展示计算小超市（原页内切到笔记的停留态不重置）
-    if(page==='math'){ if(_fromPage !== 'math') setLeiduTab('calc'); renderMath(); }
+    // R254-7：进入乐读数学时停在上次浏览的页签（计算小超市 / 乐读数学笔记 / 练习题）
+    if(page==='math'){ if(_fromPage !== 'math') setLeiduTab(_uiMem('leiduTab') || 'calc'); renderMath(); }
     if(page==='xueersi') renderXueersi();
     // R56-6：每次进入大阅读默认回到「今日阅读三栏」主视图（收录书屋需点按钮切换）
     if(page==='reading'){ _bsOpen = false; renderReading(); }
@@ -21482,6 +21714,8 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         if(slotHint) slotHint.style.display = 'none';
         const key = btn.getAttribute('data-yw-key');
         const label = btn.getAttribute('data-yw-label');
+        _uiMem('nwSlot:newworld-yuwen', key); // R254-7：记住当前子页
+
         // R53-2：进入课文朗读卡片时，默认定位到上次浏览位置（本地记忆的单元 + 课文）
         let kwRestoreScroll = false;
         if(key==='keda' && _kwOpen==null){
@@ -21498,9 +21732,11 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         }
       });
     });
-    // R40-4：进入语文专区默认落在「课文同步 → 课文朗读」，直接显示课文内容
-    //        （原 R11-Req2 默认为「字词读写 shengzi」，现改为 keda；子按钮顺序与其余逻辑不变）
-    const defYw = top.querySelector('.yw-round-btn[data-yw-key="keda"]');
+    // R40-4：首次进入落在「课文同步 → 课文朗读」
+    // R254-7：再次进入时回到上次退出的子页（古诗词 / 文言文 / 作文素材 …）
+    const _lastYw = _uiMem('nwSlot:newworld-yuwen');
+    const _ywKey = (_lastYw && top.querySelector('.yw-round-btn[data-yw-key="' + _lastYw + '"]')) ? _lastYw : 'keda';
+    const defYw = top.querySelector('.yw-round-btn[data-yw-key="' + _ywKey + '"]');
     if(defYw) defYw.click();
   }
 
@@ -22464,11 +22700,11 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     const poems = all.filter(p=>p.type==='poem').concat(custom);
     const learned = (window.Store && window.Store.getShGushiLearned) ? window.Store.getShGushiLearned() : [];
     const learnedSet = new Set(learned);
-    const PER = 4; // R28-4：一页四篇，分页展示
+    const PER = 3; // R254-6：一页一行、每行三首（一页三篇）
     const total = Math.max(1, Math.ceil(poems.length / PER));
     const pg = Math.min(Math.max(page||0,0), total-1);
     const slice = poems.slice(pg*PER, pg*PER+PER);
-    const list = slice.length ? `<div class="sh-poem-grid">${slice.map(it=>renderShGushiCard(it, learnedSet.has(it.id))).join('')}</div>` : '<div class="nw-zone-empty">古诗词正在路上～</div>';
+    const list = slice.length ? `<div class="sh-poem-grid sh-poem-grid3">${slice.map(it=>renderShGushiCard(it, learnedSet.has(it.id))).join('')}</div>` : '<div class="nw-zone-empty">古诗词正在路上～</div>';
     return `
       <div class="yw-comp-head">古诗词鉴赏 <span class="yw-sub">上海市 1-5 年级课内 · 共 ${poems.length} 首</span></div>
       <div class="yw-gushi-bar">
@@ -23423,6 +23659,10 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       </div>`).join('');
     if(slotHint) slotHint.style.display = 'flex';
     if(slotBody) slotBody.innerHTML = '';
+    // R254-7：记住 / 恢复该专区上次浏览的子页
+    const _memKey = 'nwSlot:' + slotBodyId;
+    const _memLast = _uiMem(_memKey);
+    const _defKey = (_memLast && top.querySelector('.yw-round-btn[data-key="' + _memLast + '"]')) ? _memLast : defaultKey;
     top.querySelectorAll('.yw-round-btn').forEach(btn=>{
       btn.addEventListener('click', ()=>{
         top.querySelectorAll('.yw-round-btn').forEach(b=>b.classList.remove('active'));
@@ -23430,6 +23670,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         if(slotHint) slotHint.style.display = 'none';
         const key = btn.getAttribute('data-key');
         const label = btn.getAttribute('data-label');
+        _uiMem(_memKey, key);
         if(key === 'dd' || key === 'gd'){ _enCurPage = 0; _enCurKey = key; } // V116：切换两板块时重置分页
         // R122：切回板块时各自回到第一个单元
         if(key === 'dd'){ _enBookUnit = 0; }
@@ -23522,10 +23763,11 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       });
     });
     // R29：进入对应专区自动显示默认内容（数学→课本同步 / 英语→书本课文 / 拓展→推荐书籍）
-    if(defaultKey){
-      const def = top.querySelector(`.yw-round-btn[data-key="${defaultKey}"]`);
+    // R254-7：已浏览过则停在上次退出的子页
+    if(_defKey){
+      const def = top.querySelector(`.yw-round-btn[data-key="${_defKey}"]`);
       if(def) def.click();
-      if(defaultKey === 'kbtb') refreshKbSlotComplete();
+      if(_defKey === 'kbtb') refreshKbSlotComplete();
     }
   }
 
@@ -23712,12 +23954,20 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     return out;
   }
   // R231-3：每日一练按分类抽取 —— 口算 4 题 / 竖式 4 题 / 巧算 2 题（各库按日期种子洗牌，当天稳定）
+  // R254-3：题目标识（与 Store.calcWrongKey 同构：含分类），用于比对该题是否已归入已做本
+  function _calcBankKey(p){
+    return [p.a, p.op, p.b, p.op2||'', p.op2 ? p.c : '', p.cat||''].join('|');
+  }
   function genCalcProblems(count){
     count = count || _CALC_N;
     // R243-1：给每道题打上「题库全部题目里的原始序号」（no，1 起）——每日序号直接展示它
     // R247-1：题库增删/编辑后 getCalcBank() 即时返回最新全量，新增与修改后的题目自动进入抽题池
     const raw = (window.Store && window.Store.getCalcBank) ? window.Store.getCalcBank() : [];
-    const bank = raw.map((p, i)=> Object.assign({}, p, { no: i + 1 }));
+    // R254-3：已归入「已做本」的题目自动退出抽题池，不再参与每日抽题
+    const _doneKeys = (window.Store && window.Store.getCalcBookKeys) ? window.Store.getCalcBookKeys() : [];
+    const _doneSet = {};
+    (_doneKeys || []).forEach(k=>{ if(k != null) _doneSet[String(k)] = 1; });
+    const bank = raw.map((p, i)=> Object.assign({}, p, { no: i + 1 })).filter(p=> !_doneSet[_calcBankKey(p)]);
     const cats = [['口算',4],['竖式',4],['巧算',2]];
     let s = _calcSeed(_calcToday()) >>> 0;
     const rnd = ()=>{ s = (Math.imul(s, 1664525) + 1013904223) >>> 0; return s / 4294967296; };
@@ -23732,6 +23982,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     const take = (p)=>{
       const k = _calcKey(p);
       if(seen[k]) return false;
+      if(_doneSet[_calcBankKey(p)]) return false; // R254-3：已做本题不再抽
       seen[k] = 1;
       out.push(Object.assign({}, p, { no: p.no || 0 }));
       return true;
@@ -24004,7 +24255,8 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
           const i = parseInt(inp.getAttribute('data-calc-idx'),10);
           const v = (inp.value||'').trim();
           if(v!=='' && Number(v) !== probs[i].ans){
-            try{ window.Store.addCalcWrong(probs[i]); }catch(e){}
+            // R254-3：一并把这次写错的答案作为「原始错误答案」存进错题本
+            try{ window.Store.addCalcWrong(Object.assign({}, probs[i], { val: Number(v) })); }catch(e){}
           }
         });
         const wc = document.getElementById('calcWrongCount');
@@ -24158,8 +24410,8 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
             ${no}
             <span class="calc-wrong-expr">${expr} =</span>
             ${fixed
-              ? `<span class="calc-wrong-ans">${w.ans}</span><span class="calc-wrong-fb ok">✓</span>`
-              : `<input class="calc-wrong-input" type="number" inputmode="numeric" pattern="[0-9\-]*" data-calc-wrong-input="${esc(w.key||'')}" placeholder="?" aria-label="作答" /><span class="calc-wrong-fb" data-calc-wrong-fb="${esc(w.key||'')}"></span>`}
+              ? `${w.wrongVal != null ? `<span class="calc-wrong-mine" title="原始错误答案">✗ ${esc(String(w.wrongVal))}</span>` : ''}<span class="calc-wrong-ans">${w.ans}</span><span class="calc-wrong-fb ok">✓</span>`
+              : `<input class="calc-wrong-input" type="number" inputmode="numeric" pattern="[0-9\-]*" data-calc-wrong-input="${esc(w.key||'')}" placeholder="?" aria-label="作答" /><span class="calc-wrong-fb" data-calc-wrong-fb="${esc(w.key||'')}"></span>${w.wrongVal != null ? `<span class="calc-wrong-mine is-hint" title="上次写错的答案">上次 ✗ ${esc(String(w.wrongVal))}</span>` : ''}`}
           </div>
           <div class="calc-wrong-foot">
             <span class="calc-wrong-cat">${esc(w.cat||'未分类')}</span>
@@ -24204,7 +24456,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         <div class="calc-book-rows">${items.map((x,i)=>`
           <div class="calc-book-row">
             <span class="calc-book-no">${i+1}</span>
-            <span class="calc-book-q">${esc(x.q || '')} = <b>${x.ans == null ? '' : esc(String(x.ans))}</b></span>
+            <span class="calc-book-q">${esc(x.q || '')} = ${x.wrongVal != null ? `<b class="calc-book-wrong" title="原始错误答案">${esc(String(x.wrongVal))}</b> ` : ''}<b>${x.ans == null ? '' : esc(String(x.ans))}</b></span>
             <span class="calc-book-tag ${x.src === 'fixed' ? 'is-fixed' : 'is-right'}">${x.src === 'fixed' ? '🔄 订正' : '✅ 答对'}</span>
           </div>`).join('')}</div>
       </div>`;
@@ -33018,6 +33270,8 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   function kmBgmStart(levelId){
     const set = kmBgmGetLevelSet(levelId||'chinese');
     if(!set.on) return;
+    // R254-5：启动前先停掉上一轮（重复进关卡不叠音）
+    try{ kmBgmStop(); }catch(e){}
     kmBgmOn = true;
     kmBgmCurLevel = levelId||'chinese';
     if(set.src){
@@ -33356,6 +33610,132 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     '</svg>');
   }
 
+  /* ============ R254-5：知识秘境视觉升级 ============
+     ① 答题门由「积木房子」换成世界各地知名地标建筑（埃菲尔铁塔 / 金字塔 / 长城 /
+        斗兽场 / 泰姬陵 / 自由女神 / 大本钟 / 悉尼歌剧院 共 8 座）；
+     ② 地面小怪由「来回巡逻」改为原地静止的怪兽 / 猛兽 / 异兽（只保留待机呼吸动画，
+        不再左右移动），碰撞扣命规则不变。 */
+  const KM_LANDMARKS = [
+    { key:'eiffel',      name:'埃菲尔铁塔' },
+    { key:'pyramid',     name:'吉萨金字塔' },
+    { key:'wall',        name:'万里长城' },
+    { key:'colosseum',   name:'罗马斗兽场' },
+    { key:'taj',         name:'泰姬陵' },
+    { key:'liberty',     name:'自由女神像' },
+    { key:'bigben',      name:'大本钟' },
+    { key:'opera',       name:'悉尼歌剧院' }
+  ];
+  const KM_BEASTS = [
+    { ico:'🐉', name:'异兽' },
+    { ico:'🦖', name:'猛兽' },
+    { ico:'🐗', name:'野猪猛兽' },
+    { ico:'👾', name:'怪兽' },
+    { ico:'🐍', name:'巨蟒异兽' },
+    { ico:'🦂', name:'毒蝎异兽' }
+  ];
+  // 以 (x, base) 为左下角、w×h 为画布盒绘制地标剪影
+  function kmDrawLandmark(ctx, x, base, w, h, idx){
+    if(!ctx || !(w>0) || !(h>0)) return;
+    const cx = x + w/2;
+    const C = { stone:'#e8dfcd', stone2:'#c9bda6', dark:'#9c8f78',
+                gold:'#e8c46a', white:'#f6f3ea', blue:'#9fc8e8', green:'#8fbf5f' };
+    const rect = (a,b,c,d,fill)=>{ ctx.fillStyle=fill; ctx.fillRect(a,b,c,d); };
+    const tri = (p1,p2,p3,fill)=>{ ctx.fillStyle=fill; ctx.beginPath(); ctx.moveTo(p1[0],p1[1]); ctx.lineTo(p2[0],p2[1]); ctx.lineTo(p3[0],p3[1]); ctx.closePath(); ctx.fill(); };
+    ctx.save();
+    ctx.lineJoin='round';
+    switch(idx % 8){
+      case 0: { // 埃菲尔铁塔
+        const top = base - h;
+        ctx.strokeStyle = C.dark; ctx.lineWidth = Math.max(2, w*0.09);
+        ctx.beginPath();
+        ctx.moveTo(cx - w*0.40, base); ctx.quadraticCurveTo(cx - w*0.10, base - h*0.42, cx - w*0.05, top + h*0.10);
+        ctx.moveTo(cx + w*0.40, base); ctx.quadraticCurveTo(cx + w*0.10, base - h*0.42, cx + w*0.05, top + h*0.10);
+        ctx.stroke();
+        rect(cx - w*0.20, base - h*0.34, w*0.40, Math.max(2,h*0.05), C.stone2); // 一层平台
+        rect(cx - w*0.12, base - h*0.58, w*0.24, Math.max(2,h*0.04), C.stone2); // 二层平台
+        ctx.strokeStyle = C.gold; ctx.lineWidth = Math.max(1.5,w*0.05);
+        ctx.beginPath(); ctx.moveTo(cx, top + h*0.10); ctx.lineTo(cx, top - h*0.02); ctx.stroke();
+        break;
+      }
+      case 1: { // 金字塔
+        tri([cx - w*0.46, base], [cx + w*0.46, base], [cx, base - h], C.gold);
+        tri([cx, base - h], [cx + w*0.46, base], [cx + w*0.06, base], C.stone2);
+        tri([cx - w*0.10, base - h*0.80], [cx + w*0.10, base - h*0.80], [cx, base - h], C.white);
+        break;
+      }
+      case 2: { // 万里长城
+        const wh = h*0.52, wy = base - wh;
+        rect(x, wy, w, wh, C.stone2);
+        for(let i=0;i<4;i++) rect(x + i*(w/4) + w*0.03, wy - h*0.10, w/4 - w*0.06, h*0.11, C.stone); // 垛口
+        rect(cx - w*0.16, base - h*0.92, w*0.32, h*0.92, C.stone); // 敌楼
+        rect(cx - w*0.20, base - h*0.98, w*0.40, h*0.07, C.dark);
+        rect(cx - w*0.07, base - h*0.34, w*0.14, h*0.20, '#6b5b45'); // 城门
+        break;
+      }
+      case 3: { // 罗马斗兽场
+        const rh = h*0.78, ry = base - rh;
+        ctx.fillStyle = C.stone; ctx.beginPath();
+        ctx.moveTo(x, base); ctx.lineTo(x, ry + h*0.10);
+        ctx.quadraticCurveTo(cx, ry - h*0.05, x + w, ry + h*0.10);
+        ctx.lineTo(x + w, base); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = C.dark;
+        for(let r=0;r<3;r++) for(let c=0;c<4;c++){
+          const ax = x + w*0.10 + c*w*0.21, ay = ry + h*0.20 + r*h*0.17;
+          ctx.beginPath(); ctx.arc(ax + w*0.06, ay, w*0.055, Math.PI, 0); ctx.fill();
+          ctx.fillRect(ax, ay, w*0.12, h*0.10);
+        }
+        break;
+      }
+      case 4: { // 泰姬陵
+        rect(x + w*0.10, base - h*0.46, w*0.80, h*0.46, C.white);   // 主体
+        ctx.fillStyle = C.white; ctx.beginPath();                     // 大圆顶
+        ctx.arc(cx, base - h*0.46, w*0.26, Math.PI, 0); ctx.fill();
+        rect(cx - w*0.02, base - h*0.86, w*0.04, h*0.14, C.gold);     // 尖顶
+        [0.06, 0.90].forEach(px=>{                                    // 两侧宣礼塔
+          rect(x + w*px, base - h*0.80, w*0.05, h*0.80, C.white);
+          ctx.fillStyle = C.stone2; ctx.beginPath(); ctx.arc(x + w*px + w*0.025, base - h*0.80, w*0.035, Math.PI, 0); ctx.fill();
+        });
+        ctx.fillStyle = '#7a6a52'; ctx.beginPath();                   // 拱门
+        ctx.arc(cx, base - h*0.16, w*0.10, Math.PI, 0); ctx.fill(); ctx.fillRect(cx - w*0.10, base - h*0.16, w*0.20, h*0.16);
+        break;
+      }
+      case 5: { // 自由女神像
+        rect(x + w*0.28, base - h*0.28, w*0.44, h*0.28, C.stone2);    // 基座
+        ctx.fillStyle = '#79c2b0';                                    // 身体
+        ctx.beginPath(); ctx.moveTo(cx - w*0.13, base - h*0.28);
+        ctx.lineTo(cx - w*0.08, base - h*0.74); ctx.lineTo(cx + w*0.10, base - h*0.74);
+        ctx.lineTo(cx + w*0.15, base - h*0.28); ctx.closePath(); ctx.fill();
+        ctx.beginPath(); ctx.arc(cx + w*0.01, base - h*0.80, w*0.08, 0, 7); ctx.fill(); // 头
+        ctx.strokeStyle = '#79c2b0'; ctx.lineWidth = Math.max(2,w*0.06);  // 举火炬的手臂
+        ctx.beginPath(); ctx.moveTo(cx + w*0.08, base - h*0.70); ctx.lineTo(cx + w*0.24, base - h*0.92); ctx.stroke();
+        ctx.fillStyle = C.gold; ctx.beginPath(); ctx.arc(cx + w*0.26, base - h*0.96, w*0.07, 0, 7); ctx.fill();
+        break;
+      }
+      case 6: { // 大本钟
+        rect(x + w*0.20, base - h*0.80, w*0.60, h*0.80, C.stone2);
+        rect(x + w*0.24, base - h*0.86, w*0.52, h*0.07, C.dark);
+        tri([cx - w*0.30, base - h*0.86], [cx + w*0.30, base - h*0.86], [cx, base - h], C.dark);
+        ctx.fillStyle = C.white; ctx.beginPath(); ctx.arc(cx, base - h*0.62, w*0.16, 0, 7); ctx.fill();
+        ctx.strokeStyle = '#3a3a3a'; ctx.lineWidth = Math.max(1.2,w*0.035);
+        ctx.beginPath(); ctx.moveTo(cx, base - h*0.62); ctx.lineTo(cx, base - h*0.72);
+        ctx.moveTo(cx, base - h*0.62); ctx.lineTo(cx + w*0.09, base - h*0.62); ctx.stroke();
+        break;
+      }
+      default: { // 悉尼歌剧院
+        rect(x + w*0.06, base - h*0.26, w*0.88, h*0.26, C.stone2);
+        for(let i=0;i<3;i++){
+          const sw = w*(0.30 - i*0.05), sx = x + w*0.14 + i*w*0.24;
+          ctx.fillStyle = i%2 ? C.white : '#eae4d4';
+          ctx.beginPath();
+          ctx.moveTo(sx, base - h*0.26);
+          ctx.quadraticCurveTo(sx + sw*0.55, base - h*(0.72 + i*0.10), sx + sw, base - h*0.26);
+          ctx.closePath(); ctx.fill();
+        }
+        break;
+      }
+    }
+    ctx.restore();
+  }
   // R12-Req7：障碍物改为形态各异的积木（取代烟囱 / 📚）
   const KM_BLOCK_SHAPES = ['tower','stair','L','T','arch','pyramid'];
   const KM_BLOCK_COLORS = [
@@ -33460,7 +33840,11 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       const gates=questions.map((q,i)=>({ x:startX+i*gateGap, q, opened:false, attempts:0 }));
       // R12-Req7：题目门改为高低不同的积木房子（四档高度按关卡种子分布）
       (function(){ let hs=(cfg.seed||1)*13+7; const hr=()=>{ hs=(hs*9301+49297)%233280; return hs/233280; };
-        gates.forEach((g)=>{ g.hi = Math.floor(hr()*KM_HOUSE_H.length) % KM_HOUSE_H.length; g.hh = KM_HOUSE_H[g.hi]; });
+        gates.forEach((g)=>{ g.hi = Math.floor(hr()*KM_HOUSE_H.length) % KM_HOUSE_H.length; g.hh = KM_HOUSE_H[g.hi];
+          // R254-5：每道答题门 = 一座世界知名地标（8 座轮换，避免相邻重复）
+          g.li = Math.floor(hr()*KM_LANDMARKS.length) % KM_LANDMARKS.length;
+          g.lname = KM_LANDMARKS[g.li].name;
+        });
       })();
       const finishX=worldLen-120;
       // 知识星：门之间均匀布置
@@ -33480,11 +33864,12 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
           coins.push({ x:px, y:py-28, got:false });       // 烟囱顶上方一枚金币
           if(i%2===0) coins.push({ x:px+30, y:groundY()-60-Math.sin(i)*20, got:false }); // 沿途散落
         }
-        // 爬行障碍：地面巡逻的小怪，碰到扣 1 命（带 1 秒无敌冷却，避免连环扣命）
+        // R254-5：地面障碍改为「静止」的怪兽 / 猛兽 / 异兽 —— 位置固定，只保留待机呼吸动画
         let cs=(cfg.seed||1)*7+3; const crnd=()=>{ cs=(cs*9301+49297)%233280; return cs/233280; };
         for(let i=2;i<gates.length;i+=3){
           const cx=startX+i*gateGap+gateGap*0.42;
-          crawlers.push({ x:cx, baseX:cx, y:groundY()-22, w:34, h:22, dir:(crnd()<0.5?-1:1), range:gateGap*0.34, speed:1.2*settings.speed, cd:0 });
+          crawlers.push({ x:cx, baseX:cx, y:groundY()-38, w:46, h:38, dir:1, range:0, speed:0, cd:0,
+            beast: Math.floor(crnd()*KM_BEASTS.length) % KM_BEASTS.length, ph: crnd()*Math.PI*2, still:true });
         }
       })();
       // 检查点旗：每 10 道关插一面（第10/20/30/40题处）
@@ -33611,14 +33996,13 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
             spawnParticles(c.x-camX, c.y, 'coin', '#ffd24d');
           }
         }
-        // 爬行障碍：地面巡逻小怪，碰撞扣命（带冷却避免连环扣）
+        // R254-5：静止异兽 —— 不巡逻、不位移，碰到依旧扣 1 命（带冷却避免连环扣）
         for(const cr of crawlers){
-          cr.x += cr.dir*cr.speed;
-          if(cr.x < cr.baseX-cr.range){ cr.x=cr.baseX-cr.range; cr.dir=1; }
-          if(cr.x > cr.baseX+cr.range){ cr.x=cr.baseX+cr.range; cr.dir=-1; }
           if(cr.cd>0) cr.cd-=16;
           if(cr.cd<=0 && player.x<cr.x+cr.w && player.x+player.w>cr.x && player.y+player.h>cr.y && player.y<cr.y+cr.h){
-            cr.cd=1000; lives--; deaths++; renderHUD(); KM_SFX.wrong(); showBanner('🐛 被爬行怪碰到！生命 -1');
+            cr.cd=1000; lives--; deaths++; renderHUD(); KM_SFX.wrong();
+            const _bn = (KM_BEASTS[cr.beast||0] || KM_BEASTS[0]).name;
+            showBanner('👾 撞上' + _bn + '！生命 -1');
             player.x = Math.max(0, player.x-50);
             if(lives<=0){ showFail(); return; }
           }
@@ -33807,12 +34191,11 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         for(const g of gates){ const x=g.x-camX; if(x<-60||x>W+60) continue;
           if(g.opened){ ctx.fillStyle='rgba(255,255,255,0.22)'; ctx.fillRect(x,groundY()-60,14,60); }
           else {
-            // R12-Req7：题目门为高低不同的积木房子
+            // R254-5：答题门改为世界知名地标建筑
             const hh = g.hh || 92;
-            const ht = tex['house'+(g.hi||0)] || tex.house;
-            if(ht) ctx.drawImage(ht, x-3, groundY()-hh, 40, hh);
-            else { ctx.fillStyle=themeColor; rrect(x,groundY()-hh+2,30,hh-2,5); ctx.fill(); }
-            ctx.fillStyle='#fff'; ctx.font='bold 18px Arial'; ctx.textAlign='center'; ctx.fillText('?',x+17,groundY()-hh*0.48);
+            kmDrawLandmark(ctx, x-6, groundY(), 46, hh, (g.li||0));
+            ctx.fillStyle='#fff'; ctx.font='bold 18px Arial'; ctx.textAlign='center'; ctx.textBaseline='alphabetic';
+            ctx.fillText('?', x+17, groundY()-hh*0.48);
           }
         }
         // 检查点旗
@@ -33824,15 +34207,30 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         const ex=finishX-camX; if(ex>-20&&ex<W+20){ ctx.fillStyle='#cfd4da'; ctx.fillRect(ex,groundY()-150,5,150); ctx.fillStyle='#2ecc71'; ctx.beginPath(); ctx.moveTo(ex+5,groundY()-150); ctx.lineTo(ex+38,groundY()-132); ctx.lineTo(ex+5,groundY()-114); ctx.fill(); ctx.fillStyle='#e74c3c'; ctx.beginPath(); ctx.arc(ex+2,groundY()-152,5,0,7); ctx.fill(); }
         for(const c of coins){ if(c.got) continue; const x=c.x-camX; if(x<-30||x>W+30) continue; const yy=c.y+Math.sin(performance.now()/250+c.x)*4; if(tex.coin) ctx.drawImage(tex.coin, x-14, yy-14, 28, 28); else { ctx.fillStyle='#ffd24d'; ctx.beginPath(); ctx.arc(x,yy,11,0,7); ctx.fill(); } }
         for(const st of stars){ if(st.got) continue; const x=st.x-camX; if(x<-30||x>W+30) continue; const yy=st.y+Math.sin(performance.now()/300+st.x)*4; if(tex.star) ctx.drawImage(tex.star, x-14, yy-14, 28, 28); else drawStar(x,yy,9); }
-        // 爬行障碍绘制（地面小怪）
+        // R254-5：静止异兽绘制（怪兽 / 猛兽 / 异兽 emoji + 待机呼吸 + 地面阴影）
         for(const cr of crawlers){ const x=cr.x-camX; if(x<-60||x>W+60) continue;
-          const y=cr.y, w=cr.w, h=cr.h;
-          ctx.fillStyle='#5fae3a'; rrect(x,y,w,h,8); ctx.fill();                                   // 身体
-          ctx.fillStyle='#4c9430'; ctx.beginPath(); ctx.arc(x+(cr.dir>0?w-8:8), y+h/2, 7, 0, 7); ctx.fill(); // 头
-          ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(x+(cr.dir>0?w-6:10), y+h/2-2, 2.4, 0, 7); ctx.fill(); // 眼白
-          ctx.fillStyle='#2c2c2c'; ctx.beginPath(); ctx.arc(x+(cr.dir>0?w-6:10), y+h/2-2, 1.1, 0, 7); ctx.fill(); // 瞳孔
-          ctx.strokeStyle='#3c7a26'; ctx.lineWidth=2;
-          for(let li=0; li<3; li++){ const lx=x+8+li*9; ctx.beginPath(); ctx.moveTo(lx,y+h); ctx.lineTo(lx+(cr.dir>0?-3:3),y+h+5); ctx.stroke(); } // 腿
+          const b = KM_BEASTS[cr.beast||0] || KM_BEASTS[0];
+          const bw = cr.w, bh = cr.h, bx = x + bw/2, by = cr.y + bh;
+          // 地面投影
+          ctx.fillStyle='rgba(0,0,0,.20)';
+          ctx.beginPath(); ctx.ellipse(bx, groundY()-2, bw*0.44, 5, 0, 0, 7); ctx.fill();
+          // 待机呼吸（缩放幅度很小，保持「静止」观感）
+          const br = 1 + Math.sin(performance.now()/700 + (cr.ph||0)) * 0.045;
+          ctx.save();
+          ctx.translate(bx, by);
+          ctx.scale(br, 2 - br);
+          ctx.font = Math.round(bh*0.96) + 'px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",serif';
+          ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+          ctx.fillText(b.ico, 0, 0);
+          ctx.restore();
+          // 名称标签（方便孩子识别「怪兽 / 猛兽 / 异兽」）
+          ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'center';
+          ctx.fillStyle = 'rgba(20,30,50,.55)';
+          const tw = ctx.measureText(b.name).width + 8;
+          rrect(bx - tw/2, cr.y - 12, tw, 11, 4); ctx.fill();
+          ctx.fillStyle = '#fff'; ctx.textBaseline = 'middle';
+          ctx.fillText(b.name, bx, cr.y - 6.2);
+          ctx.textBaseline = 'alphabetic';
         }
         const px=player.x-camX;
         if(tex.char) ctx.drawImage(tex.char, px, player.y, player.w, player.h);
@@ -34987,6 +35385,9 @@ function renderKMAdmin(){
   let xsCat = 'words';     // 学习汇总 → 词汇 | 语法
   function renderXueersi(){
     const st = S.load();
+    // R254-7：进入学而思英语时恢复上次浏览的页签（词汇 / 语法 / 课堂笔记 / 巩固打卡 / 练习题）
+    const _xsLast = _uiMem('xsCat');
+    if(_xsLast && ['words','grammar','notes','exercise','checkin'].indexOf(_xsLast) >= 0) xsCat = _xsLast;
     renderXueersiSummary();
   }
   // ---- 汇总（v10：词汇/语法 两子页） ----
@@ -35436,6 +35837,7 @@ function renderKMAdmin(){
   }
   function renderXueersiSummary(){
     if(xsCat === 'stories') xsCat = 'words'; // V12.3：仅过滤绘本；恢复语法
+    _uiMem('xsCat', xsCat); // R254-7：记住当前页签（下次进入直接回到这里）
     $$('.xs-summary-pane .xs-sub-tabs [data-xs-cat]').forEach(b=>b.classList.toggle('active', b.dataset.xsCat===xsCat));
     // R218-1：课堂笔记子板块（与「新世界·英语专区·重点知识」功能/交互完全一致）
     if(xsCat === 'notes'){ renderXsNotes(); return; }
@@ -36644,6 +37046,7 @@ function renderKMAdmin(){
     const set = (id,v)=>{ const el=document.getElementById(id); if(el) el.textContent=v; };
     set('farmStars', a.totalStars||0);
     set('farmWater', inv.water||0);
+    set('farmFert',  inv.fert||0);   // R254-4：化肥统计（介于水与阳光之间）
     set('farmSun',   inv.sun||0);
     set('farmCoins', a.totalCoins||0);
   }
@@ -36660,7 +37063,7 @@ function renderKMAdmin(){
       }
       if(!p.cropId){
         html += `<div class="farm-plot empty" data-plot="${idx}">
-          <div class="fp-ico">🌱</div>
+          <div class="fp-ico fp-ico-empty">🌱</div>
           <div class="fp-stage">空地</div>
         </div>`;
         continue;
@@ -36670,18 +37073,24 @@ function renderKMAdmin(){
       const arr = S.CROP_STAGES[crop]||['🌰','🌱','🌿','🌳','🌳'];
       const ico = arr[Math.min(p.stage||0, arr.length-1)] || '🌱';
       const stageName = STAGE_NAMES_V102[Math.min(p.stage||0,5)];
+      const _stg = Math.max(0, Math.min(4, p.stage||0));
+      const fertNeed = (p.fertNeeded === undefined) ? (p.waterNeeded||S.STAGE_NEED[_stg]||8) : p.fertNeeded;
       let stageText, progressPct, harvestClass = '';
-      if((p.stage||0) >= 4){
+      if(_stg >= 4){
         stageText = '🌾 可采摘！';
         progressPct = 100;
         harvestClass = 'harvestable';
       } else {
-        const need = S.STAGE_NEED[p.stage||0] || 8;
-        stageText = `${stageName} · 💧${p.waterCount||0}/${p.waterNeeded||need} ☀️${p.sunCount||0}/${p.sunNeeded||need}`;
-        progressPct = Math.min(100, Math.round((((p.waterCount||0)+(p.sunCount||0))/((p.waterNeeded||need)+(p.sunNeeded||need)))*100));
+        const need = S.STAGE_NEED[_stg] || 8;
+        // R254-4：水 / 阳光 / 化肥三条进度一起展示
+        stageText = `${stageName} · 💧${p.waterCount||0}/${p.waterNeeded||need} ☀️${p.sunCount||0}/${p.sunNeeded||need} 🧪${p.fertCount||0}/${fertNeed}`;
+        const _all = (p.waterNeeded||need)+(p.sunNeeded||need)+fertNeed;
+        progressPct = Math.min(100, Math.round((((p.waterCount||0)+(p.sunCount||0)+(p.fertCount||0))/_all)*100));
       }
-      html += `<div class="farm-plot has ${harvestClass}" data-plot="${idx}" title="${(p.stage||0)>=4?'点击：浇水/采摘':'点击：浇水/阳光'}">
-        <div class="fp-ico">${ico}</div>
+      // R254-4：阶段视觉 —— 种子 / 幼苗 / 结果 / 成熟 各有独立动画
+      html += `<div class="farm-plot has fp-s${_stg} ${harvestClass}" data-plot="${idx}" title="${_stg>=4?'点击：采摘 / 收获':'点击：浇水·阳光·化肥'}">
+        <div class="fp-ico fp-ico-${_stg}">${ico}</div>
+        ${_stg>=4?'<span class="fp-spark">✨</span>':''}
         <div class="fp-stage">${stageText}</div>
         <div class="fp-progress"><div class="fp-progress-bar" style="width:${progressPct}%"></div></div>
       </div>`;
@@ -36764,7 +37173,12 @@ function renderKMAdmin(){
     el.querySelectorAll('[data-buy-growth]').forEach(b=>{
       b.onclick = ()=>{
         const r = S.buyShopItem(b.dataset.buyGrowth, 'growth');
-        if(r.ok) toast(`资源 +${b.dataset.buyGrowth.includes('water5')||b.dataset.buyGrowth.includes('sun5')?'5':'1'}～`);
+        if(r.ok){
+          const _gid = b.dataset.buyGrowth;
+          const _n = /5$/.test(_gid) ? 5 : 1;
+          const _lab = _gid.indexOf('fert') >= 0 ? '🧪 化肥 +' + _n : ('资源 +' + _n);
+          toast(_lab + '～');
+        }
         else toast(r.msg||'购买失败');
         renderFarm();
       };
@@ -37027,25 +37441,38 @@ function renderKMAdmin(){
       const ico = arr[Math.min(p.stage, arr.length-1)] || '🌱';
       const needWater = (p.waterNeeded||0) - (p.waterCount||0);
       const needSun = (p.sunNeeded||0) - (p.sunCount||0);
-      const stageName = STAGE_NAMES_V8[Math.min(p.stage, 5)];
+      const _stg = Math.max(0, Math.min(4, p.stage||0));
+      const fertNeed = (p.fertNeeded === undefined) ? (p.waterNeeded||S.STAGE_NEED[_stg]||8) : p.fertNeeded;
+      const needFert = fertNeed - (p.fertCount||0);
+      const stageName = STAGE_NAMES_V102[Math.min(p.stage, 5)];
+      const pct = (a,b)=> b>0 ? Math.min(100, Math.round(a/b*100)) : 0;
       $('#plotTitle').textContent = `${seed?seed.name:'作物'} · 田块 #${idx+1} · ${stageName}`;
       $('#plotBody').innerHTML = `
-        <div style="text-align:center;font-size:72px;margin:8px 0;filter:drop-shadow(0 4px 6px rgba(0,0,0,.25))">${ico}</div>
-        <div style="text-align:center;font-size:13px;color:#5f6473;margin-bottom:8px">
-          💧 ${p.waterCount}/${p.waterNeeded||8} ｜ ☀️ ${p.sunCount}/${p.sunNeeded||8}
+        <div class="plot-grow-stage fp-s${_stg}">
+          <div class="plot-grow-ico fp-ico-${_stg}">${ico}</div>
+          ${_stg>=4?'<span class="fp-spark">✨</span>':''}
         </div>
-        <div style="text-align:center;font-size:11px;color:var(--muted);margin-bottom:10px">
-          当前阶段：${stageName} · 下一阶段需：💧${p.waterNeeded||8} ☀️${p.sunNeeded||8}
+        <div class="plot-grow-bars">
+          <div class="plot-grow-row"><span class="pgr-k">💧 水</span><span class="pgr-bar"><i style="width:${pct(p.waterCount||0,p.waterNeeded||8)}%"></i></span><span class="pgr-v">${p.waterCount||0}/${p.waterNeeded||8}</span></div>
+          <div class="plot-grow-row"><span class="pgr-k">☀️ 阳光</span><span class="pgr-bar"><i style="width:${pct(p.sunCount||0,p.sunNeeded||8)}%"></i></span><span class="pgr-v">${p.sunCount||0}/${p.sunNeeded||8}</span></div>
+          <div class="plot-grow-row"><span class="pgr-k">🧪 化肥</span><span class="pgr-bar pgr-bar-fert"><i style="width:${pct(p.fertCount||0,fertNeed)}%"></i></span><span class="pgr-v">${p.fertCount||0}/${fertNeed}</span></div>
+        </div>
+        <div style="text-align:center;font-size:11px;color:var(--muted);margin:6px 0 10px">
+          当前阶段：${stageName} · 水 / 阳光 / 化肥三项都达标即进入下一阶段
         </div>
         <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
           <button class="primary-btn" data-water ${needWater<=0||st.inventory.water<=0?'disabled':''}>💧 浇水(${st.inventory.water})</button>
           <button class="primary-btn" data-sun ${needSun<=0||st.inventory.sun<=0?'disabled':''}>☀️ 阳光(${st.inventory.sun})</button>
+          <button class="primary-btn" data-fert ${needFert<=0||(st.inventory.fert||0)<=0?'disabled':''}>🧪 施肥(${st.inventory.fert||0})</button>
           <button class="primary-btn" data-harvest ${p.stage<4?'disabled':''}>🧺 采摘</button>
         </div>`;
+      // R254-4：浇灌 / 施肥后不关弹窗，原地刷新进度，方便一次把水·阳光·化肥补齐
       const wb = $('#plotBody').querySelector('[data-water]');
-      if(wb) wb.onclick = ()=>{ const r=S.waterPlot(idx); toast(r.ok?'浇好水啦～':r.msg); if(r.ok){hideModal('#modalPlot');renderFarm(); playZooSound('water');} };
+      if(wb) wb.onclick = ()=>{ const r=S.waterPlot(idx); toast(r.ok?'浇好水啦～':r.msg); if(r.ok){ renderFarm(); playZooSound('water'); openPlotModal(idx); } };
       const sb = $('#plotBody').querySelector('[data-sun]');
-      if(sb) sb.onclick = ()=>{ const r=S.sunPlot(idx); toast(r.ok?'晒到太阳啦🌞':r.msg); if(r.ok){hideModal('#modalPlot');renderFarm(); playZooSound('sun');} };
+      if(sb) sb.onclick = ()=>{ const r=S.sunPlot(idx); toast(r.ok?'晒到太阳啦🌞':r.msg); if(r.ok){ renderFarm(); playZooSound('sun'); openPlotModal(idx); } };
+      const fb = $('#plotBody').querySelector('[data-fert]');
+      if(fb) fb.onclick = ()=>{ const r=S.fertPlot(idx); toast(r.ok?'施好肥啦🧪':r.msg); if(r.ok){ renderFarm(); playZooSound('plant'); openPlotModal(idx); } };
       const hb = $('#plotBody').querySelector('[data-harvest]');
       if(hb) hb.onclick = ()=>{ const r=S.harvestPlot(idx); toast(r.ok?`采摘成功：${r.got} 已入仓库`:r.msg); if(r.ok){hideModal('#modalPlot');renderFarm();renderHome(); playZooSound('harvest');} };
     }
@@ -39411,6 +39838,22 @@ function renderKMAdmin(){
     // 否则 onclick 里的同步 reload 会打断底部脚本的异步清缓存链，且小写消息 SW 不识别。
     // 版本号/更新时间/构建指纹也由底部脚本 readSwBuild() 渲染，此处不再写死覆盖，改在打开时刷新一次。
     try{ if(window.__readSwBuild) window.__readSwBuild(); }catch(e){}
+    // R254-2：展示本地自动备份状态（最近一次备份时间 / 双代备份是否就绪）
+    try{
+      const info = (window.Store && window.Store.backupInfo) ? window.Store.backupInfo() : null;
+      const el = document.getElementById('verBackupInfo');
+      if(el){
+        if(info && info.savedAt){
+          const d = new Date(info.savedAt);
+          const p2 = n=>String(n).padStart(2,'0');
+          el.textContent = '最近一次自动备份：' + d.getFullYear() + '-' + p2(d.getMonth()+1) + '-' + p2(d.getDate())
+            + ' ' + p2(d.getHours()) + ':' + p2(d.getMinutes()) + ' · 双代备份 '
+            + (info.hasBak1 ? (info.hasBak2 ? '已就绪（2 份）' : '已就绪（1 份）') : '生成中');
+        } else {
+          el.textContent = '本地备份正在建立，稍后再打开即可看到时间。';
+        }
+      }
+    }catch(e){}
     showModal('#modalVersionSettings');
   }
   function openExportSettings(){
@@ -40576,6 +41019,8 @@ function renderKMAdmin(){
         updateCalcWrongBadge();
         try{ updateCalcGateUI(); }catch(e){}
         toast(r.added ? ('📒 已把 ' + r.added + ' 道订正正确的题移入已做本') : '还没有已批改正确的错题，先作答并点「批改」吧～');
+        // R254-3：已订正题目成功移入已做本后，自动收起错题弹窗
+        if(r.added > 0){ try{ hideModal('#modalCalcWrong'); }catch(e){} }
       });
     }
     // R243-2：错题本「重新作答 → 批改」——判对即标记已订正，并同步主面板与今日打卡闸门
@@ -41066,7 +41511,11 @@ if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
       btn.disabled = true;
       // 清掉自动重载的节流标记，避免 8 秒保护把这次手动刷新拦掉
       try{ localStorage.removeItem('__sw_reload_at'); }catch(e){}
-      var done = function(){ location.reload(); };
+      // R254-2：更新前强制把用户数据刷盘（主档 + 双代备份），更新 / 刷新绝不动用户数据
+      var done = function(){
+        try{ if(window.Store && window.Store.flushPersistence) window.Store.flushPersistence(); }catch(e){}
+        location.reload();
+      };
       var clearCaches = function(){
         if(!('caches' in window)) return Promise.resolve();
         return caches.keys().then(function(ns){
