@@ -9375,7 +9375,7 @@ body.r256-sheet-on{overflow:hidden}
 .farm-tools-title{display:none}
 /* R263-2.2：四按键适当缩小，改为「单列自上而下」并整体靠右；仍保持正方形图片卡片，
    与 4 列 × 100px 的田地尺寸相互协调 */
-.page-farm .farm-tools{width:100%;max-width:132px;margin-left:auto}
+.page-farm .farm-tools{width:100%;max-width:106px;margin-left:auto}
 .farm-tool-list{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;justify-content:end}
 .farm-tool-btn{
   position:relative;display:block;width:100%;height:auto;aspect-ratio:1/1;padding:0;
@@ -9642,10 +9642,11 @@ textarea.xs-adv-input-box{
 .farm-music-toggle:hover{transform:translateY(-1px);filter:brightness(1.04)}
 .farm-music-toggle.is-paused{color:#2f6b25;background:linear-gradient(135deg,#eafbe9,#d3f0cf);border-color:#8fce83}
 
-/* ============ R263-2.1：暂停音乐键 / 田地 / 页面全部按键 = 50% 毛玻璃，底层背景图部分透出 ============ */
-/* 半透明 50% + 背景模糊 + 柔和亮边构成毛玻璃；hover / 键盘聚焦临时提亮保证可辨识与可操作；统计数字保持清晰 */
-.page-farm .farm-field-area{opacity:.5;transition:opacity .18s;-webkit-backdrop-filter:blur(5px) saturate(1.08);backdrop-filter:blur(5px) saturate(1.08)}
-.page-farm button{opacity:.5;transition:opacity .18s;-webkit-backdrop-filter:blur(5px) saturate(1.08);backdrop-filter:blur(5px) saturate(1.08)}
+/* ============ R263-2.1 / R264-1.1：暂停音乐键 / 田地 / 页面全部按键 = 70% 毛玻璃，底层背景图部分透出 ============ */
+/* 半透明 + 背景模糊 + 柔和亮边构成毛玻璃；hover / 键盘聚焦临时提亮保证可辨识与可操作；统计数字保持清晰 */
+/* R264-1.1：透明度由 50% 提到 70%（四张卡片与田地一同调整） */
+.page-farm .farm-field-area{opacity:.7;transition:opacity .18s;-webkit-backdrop-filter:blur(5px) saturate(1.08);backdrop-filter:blur(5px) saturate(1.08)}
+.page-farm button{opacity:.7;transition:opacity .18s;-webkit-backdrop-filter:blur(5px) saturate(1.08);backdrop-filter:blur(5px) saturate(1.08)}
 .page-farm .farm-music-toggle{border:1.5px solid rgba(255,255,255,.78);box-shadow:0 2px 10px rgba(255,255,255,.4),0 2px 7px rgba(150,110,40,.18)}
 .page-farm .farm-field-area{border-radius:22px}
 .page-farm button:hover,.page-farm button:focus-visible{opacity:.9}
@@ -9715,27 +9716,31 @@ textarea.xs-adv-input-box{
    R263-2.3 种植园三组动态特效（纯 CSS / emoji，不占存档配额）
    ① 桃花飘舞 ② 苹果树上爬动的小松鼠 ③ 草地小狗小猫追逐
    ========================================================================== */
+/* R264-1.1：桃花轨迹全部由 CSS 变量驱动，app.js 的 farmRandomizePetals()
+   为每片花瓣随机生成起点 / 时长 / 延迟 / 摆幅 / 旋转 / 大小，并在每次
+   animationiteration 后重新随机 —— 每一轮飘落路线都不同，不再固定循环。 */
 .farm-anim-layer .farm-petal{
-  position:absolute;top:-8%;width:13px;height:13px;
+  position:absolute;top:-8%;left:var(--petal-x,7%);
+  width:var(--petal-size,13px);height:var(--petal-size,13px);
   background:linear-gradient(135deg,#ffe0ec,#ff9dc0 62%,#ff7fae);
   border-radius:70% 0 70% 0;
   box-shadow:0 1px 3px rgba(190,70,110,.22);
   opacity:0;pointer-events:none;
-  animation:farmPetalFall 13s linear infinite;
+  animation:farmPetalFall var(--petal-dur,13s) linear var(--petal-delay,0s) infinite;
 }
-.farm-petal-1{left:7%;animation-delay:0s;animation-duration:13s}
-.farm-petal-2{left:21%;animation-delay:2.4s;animation-duration:16s}
-.farm-petal-3{left:36%;animation-delay:5.1s;animation-duration:14.5s}
-.farm-petal-4{left:55%;animation-delay:1.3s;animation-duration:17s}
-.farm-petal-5{left:72%;animation-delay:7.2s;animation-duration:15s}
-.farm-petal-6{left:88%;animation-delay:3.8s;animation-duration:18s}
+.farm-petal-1{--petal-x:7%}
+.farm-petal-2{--petal-x:21%}
+.farm-petal-3{--petal-x:36%}
+.farm-petal-4{--petal-x:55%}
+.farm-petal-5{--petal-x:72%}
+.farm-petal-6{--petal-x:88%}
 @keyframes farmPetalFall{
   0%{transform:translate3d(0,-6vh,0) rotate(0deg);opacity:0}
   8%{opacity:.9}
-  30%{transform:translate3d(6vw,26vh,0) rotate(120deg)}
-  55%{transform:translate3d(-4vw,54vh,0) rotate(240deg)}
-  80%{transform:translate3d(7vw,82vh,0) rotate(360deg);opacity:.75}
-  100%{transform:translate3d(2vw,108vh,0) rotate(480deg);opacity:0}
+  30%{transform:translate3d(var(--sway1,6vw),26vh,0) rotate(var(--rot1,120deg))}
+  55%{transform:translate3d(var(--sway2,-4vw),54vh,0) rotate(var(--rot2,240deg))}
+  80%{transform:translate3d(var(--sway3,7vw),82vh,0) rotate(var(--rot3,360deg));opacity:.75}
+  100%{transform:translate3d(var(--sway4,2vw),108vh,0) rotate(var(--spin,480deg));opacity:0}
 }
 .farm-anim-layer .farm-tree-scene{
   position:absolute;right:5%;bottom:17%;width:112px;height:132px;
@@ -9808,6 +9813,146 @@ textarea.xs-adv-input-box{
 @media (prefers-reduced-motion:reduce){
   .farm-anim-layer .farm-petal,.farm-anim-layer .farm-squirrel,
   .farm-anim-layer .farm-dog,.farm-anim-layer .farm-cat{animation:none}
+}
+
+/* ==========================================================================
+   R264-1.1 种植园：全身动态猫狗 + 右侧统计/卡片上移 + 顶部留白缩减
+   ① 猫狗由单个 emoji 改为内联 SVG 全身形象，四肢 / 尾巴 / 头 / 耳朵各自摆动；
+   ② 桃花由固定 6 条轨迹改为 JS 随机轨迹（见 app.js farmRandomizePetals）；
+   ③ 右上统计区与四张卡片整体上移，主题卡 / topbar / 内容区顶部留白收紧。
+   ========================================================================== */
+.farm-anim-layer .farm-dog svg,.farm-anim-layer .farm-cat svg{
+  display:block;width:78px;height:50px;overflow:visible;
+  filter:drop-shadow(0 3px 4px rgba(50,80,40,.25));
+}
+.farm-anim-layer .farm-dog,.farm-anim-layer .farm-cat{font-size:0}
+/* 四肢：以各自顶端为轴交替前后摆动，四条腿错相位形成奔跑步态 */
+.farm-anim-layer .fd-leg,.farm-anim-layer .fc-leg{
+  transform-box:fill-box;transform-origin:50% 0;
+  animation:farmLegRun .38s ease-in-out infinite alternate;
+}
+.farm-anim-layer .fd-leg-b1,.farm-anim-layer .fc-leg-b1{animation-delay:-.19s}
+.farm-anim-layer .fd-leg-f1,.farm-anim-layer .fc-leg-f1{animation-delay:-.09s}
+.farm-anim-layer .fd-leg-f2,.farm-anim-layer .fc-leg-f2{animation-delay:-.28s}
+@keyframes farmLegRun{
+  from{transform:rotate(-26deg)}
+  to{transform:rotate(26deg)}
+}
+/* 尾巴：以根部为轴左右摇摆 */
+.farm-anim-layer .fd-tail{
+  transform-box:fill-box;transform-origin:100% 100%;
+  animation:farmTailWag .46s ease-in-out infinite alternate;
+}
+.farm-anim-layer .fc-tail{
+  transform-box:fill-box;transform-origin:100% 0;
+  animation:farmTailWag .52s ease-in-out infinite alternate-reverse;
+}
+@keyframes farmTailWag{
+  from{transform:rotate(-18deg)}
+  to{transform:rotate(22deg)}
+}
+/* 头部随跑动轻微起伏；耳朵独立抖动 */
+.farm-anim-layer .fd-head,.farm-anim-layer .fc-head{
+  transform-box:fill-box;transform-origin:20% 100%;
+  animation:farmHeadBob .38s ease-in-out infinite alternate;
+}
+.farm-anim-layer .fd-ear,.farm-anim-layer .fc-ear-l,.farm-anim-layer .fc-ear-r{
+  transform-box:fill-box;transform-origin:50% 100%;
+  animation:farmEarFlap .3s ease-in-out infinite alternate;
+}
+.farm-anim-layer .fc-ear-r{animation-delay:-.15s}
+@keyframes farmHeadBob{
+  from{transform:translateY(0) rotate(-2deg)}
+  to{transform:translateY(-2px) rotate(3deg)}
+}
+@keyframes farmEarFlap{
+  from{transform:rotate(-9deg)}
+  to{transform:rotate(9deg)}
+}
+/* 顶部留白：主题卡下边距、topbar 内边距、内容区上边距、主区间距一并收紧；
+   右侧统计区与四张卡片再整体上移 12px，让背景图更早露出。 */
+.page-farm .page-content{padding-top:8px}
+.page-farm .farm-topbar{padding-top:4px;padding-bottom:4px;gap:4px}
+.page-farm .farm-mine-banner{margin-bottom:6px}
+.page-farm .farm-main{gap:14px;padding-top:0}
+.page-farm .farm-wh-col{position:relative;top:-12px;gap:8px}
+@media (prefers-reduced-motion:reduce){
+  .farm-anim-layer .fd-leg,.farm-anim-layer .fc-leg,
+  .farm-anim-layer .fd-tail,.farm-anim-layer .fc-tail,
+  .farm-anim-layer .fd-head,.farm-anim-layer .fc-head,
+  .farm-anim-layer .fd-ear,.farm-anim-layer .fc-ear-l,
+  .farm-anim-layer .fc-ear-r{animation:none}
+}
+
+
+/* ==========================================================================
+   R264-3.1 乐读数学：全部按键 + 内容卡片外层/底层白色容器卡片 → 平台蓝阶 tone-300
+   ① 外层底层白色容器卡 = R90-1 起的 .page-math .page-content 白色圆角底板，
+      它是所有内容卡片下面的那一层；改为平台蓝阶 --tone-300（即需求指定的底色）；
+   ② 乐读数学「全部按键」（页面内 + 本板块专属弹窗内）统一以 --tone-300 为底色，
+      深蓝字 --tone-900 + 略深蓝描边 --tone-400，保证在蓝底容器上仍清晰可辨；
+   ③ 仅状态色保留：选中页签 / 已掌握 / 已完成 / 需巩固 / 答错 / 禁用，
+      避免打卡与批改反馈被统一底色吞掉（全部用同层级 !important 后置覆盖）。
+   ========================================================================== */
+.page-math .page-content{
+  background:var(--tone-300) !important;
+  border-color:var(--tone-400) !important;
+}
+.page-math button,
+.page-math [role="button"],
+#modalCalcBank button,
+#modalCalcWrong button,
+#modalCalcBook button,
+#modalCalcCal button,
+#modalMathLecture button,
+#modalMathDelType button,
+#modalMathManual button,
+#modalMathNote button{
+  background:var(--tone-300) !important;
+  border-color:var(--tone-400) !important;
+  color:var(--tone-900) !important;
+}
+/* 状态色复原（保留功能反馈，不参与统一底色） */
+.page-math .leidu-tab.active,
+.page-math .math-sub-tag.active,
+.page-math .math-type-item.active,
+.page-math .math-filter.open .math-filter-btn,
+.page-math .calc-bank-tab.active,
+#modalCalcBank .calc-bank-tab.active,
+#modalCalcWrong .calc-bank-tab.active,
+#modalCalcCal .calc-cal-cell.today{
+  background:var(--tone-600) !important;
+  border-color:var(--tone-600) !important;
+  color:#fff !important;
+}
+.page-math .math-check-btn.done,
+.page-math .math-card.status-mastered .math-check-btn,
+.page-math .math-actions .pbtn.mastery,
+.page-math .math-actions .math-btn-mastery.active,
+.page-math .math-actions .pbtn.mastery.active,
+#modalMathLecture .math-btn-mastery.active{
+  background:#2f9e6f !important;
+  border-color:#2f9e6f !important;
+  color:#fff !important;
+}
+.page-math .math-actions .pbtn.notmastery,
+.page-math .math-actions .math-btn-need.active,
+.page-math .math-type-item.is-need{
+  background:#ffe9ec !important;
+  border-color:#ff5b6e !important;
+  color:#c0354a !important;
+}
+.page-math button:disabled,
+.page-math button[disabled],
+.page-math .calc-checkin:disabled{
+  background:#cdd9ea !important;
+  border-color:#cdd9ea !important;
+  color:#5b6b85 !important;
+}
+.page-math .calc-checkin.is-ready{
+  background:linear-gradient(135deg,#f7a23a,#e98331) !important;
+  border-color:#e98331 !important;
+  color:#fff !important;
 }
 
 </style>
@@ -10920,11 +11065,49 @@ textarea.xs-adv-input-box{
         </div>
         <span class="farm-squirrel">🐿️</span>
       </div>
-      <!-- R263-2.3 ③ 草地小狗 / 小猫追逐（小狗在前、小猫紧追，带小跳与尾巴摆动） -->
+      <!-- R263-2.3 / R264-1.1 ③ 草地小狗 / 小猫追逐：
+           R264 起改用内联 SVG 绘制「全身」形象，四肢交替奔跑、尾巴摆动、头部起伏、
+           耳朵抖动均由独立 keyframes 驱动，外层仍沿用 farmChaseDog / farmChaseCat 位移。 -->
       <div class="farm-ground-scene">
         <i class="farm-grass-line"></i>
-        <span class="farm-dog">🐶</span>
-        <span class="farm-cat">🐱</span>
+        <span class="farm-dog" aria-hidden="true">
+          <svg class="fd-svg" viewBox="0 0 100 64" xmlns="http://www.w3.org/2000/svg">
+            <g class="fd-tail"><path d="M24 31 C10 27 5 17 11 9 C14 20 20 23 27 25 Z" fill="#c98a45"/></g>
+            <g class="fd-leg fd-leg-b1"><rect x="30" y="40" width="8" height="21" rx="4" fill="#b8793c"/></g>
+            <g class="fd-leg fd-leg-b2"><rect x="59" y="40" width="8" height="21" rx="4" fill="#b8793c"/></g>
+            <ellipse cx="48" cy="32" rx="26" ry="14" fill="#d8a05a"/>
+            <g class="fd-leg fd-leg-f1"><rect x="38" y="41" width="8" height="21" rx="4" fill="#e0ad68"/></g>
+            <g class="fd-leg fd-leg-f2"><rect x="66" y="41" width="8" height="21" rx="4" fill="#e0ad68"/></g>
+            <path d="M65 22 L67 38" stroke="#e2504b" stroke-width="4" stroke-linecap="round"/>
+            <g class="fd-head">
+              <path class="fd-ear" d="M70 15 C63 6 59 14 62 25 C66 23 68 19 70 15 Z" fill="#a9703a"/>
+              <circle cx="76" cy="24" r="12" fill="#e5b46e"/>
+              <ellipse cx="88" cy="28" rx="8" ry="6" fill="#f4d29d"/>
+              <circle cx="92" cy="26" r="2.4" fill="#46301c"/>
+              <circle cx="79" cy="21" r="1.9" fill="#3a2a18"/>
+              <path d="M83 32 q4 3 7 0" stroke="#a9703a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            </g>
+          </svg>
+        </span>
+        <span class="farm-cat" aria-hidden="true">
+          <svg class="fc-svg" viewBox="0 0 100 64" xmlns="http://www.w3.org/2000/svg">
+            <g class="fc-tail"><path d="M21 34 C7 34 4 18 12 9 C10 22 16 27 27 29" fill="none" stroke="#e3a04b" stroke-width="7" stroke-linecap="round"/></g>
+            <g class="fc-leg fc-leg-b1"><rect x="30" y="40" width="7" height="21" rx="3.5" fill="#d9913c"/></g>
+            <ellipse cx="48" cy="33" rx="25" ry="12" fill="#f0b45c"/>
+            <path d="M37 24 l4 8 M47 22 l4 9 M57 24 l4 8" stroke="#d9913c" stroke-width="3" stroke-linecap="round"/>
+            <g class="fc-leg fc-leg-f1"><rect x="40" y="41" width="7" height="21" rx="3.5" fill="#f0b45c"/></g>
+            <g class="fc-leg fc-leg-f2"><rect x="64" y="41" width="7" height="21" rx="3.5" fill="#f0b45c"/></g>
+            <g class="fc-head">
+              <path class="fc-ear fc-ear-l" d="M68 16 L70 4 L78 14 Z" fill="#f0b45c"/>
+              <path class="fc-ear fc-ear-r" d="M82 14 L90 5 L90 18 Z" fill="#f0b45c"/>
+              <circle cx="78" cy="24" r="11" fill="#f7c474"/>
+              <circle cx="74" cy="22" r="1.9" fill="#3a2a18"/>
+              <circle cx="83" cy="22" r="1.9" fill="#3a2a18"/>
+              <path d="M78 27 l-2 2 M78 27 l2 2" stroke="#c47a2c" stroke-width="1.4"/>
+              <path d="M67 27 h-7 M67 30 h-7 M89 27 h7 M89 30 h7" stroke="#fff4dd" stroke-width="1.2"/>
+            </g>
+          </svg>
+        </span>
       </div>
     </div>
     <div class="farm-deco-farm-fence" data-page-node-id="k7bMqOwS5bFQPq1npzK3vI"></div>
@@ -12608,6 +12791,32 @@ textarea.xs-adv-input-box{
   let _recoveredFrom = '';
   function _safeGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
   function _safeSet(k,v){ try{ localStorage.setItem(k,v); return true; }catch(e){ return false; } }
+  /* R264-2.1：主档「最后成功落库时间」必须每次写入都更新。
+     旧实现只在 _rotateBackup()（20 秒节流）里写 KEY_META.savedAt，于是保存设置失败后
+     写的快照 __snapAt 永远比 savedAt 新 → 过期快照判断形同虚设，旧快照反复覆盖新数据。 */
+  function _lastSavedAt(){
+    try{ const m = JSON.parse(_safeGet(KEY_META) || 'null'); return (m && m.savedAt) || 0; }catch(e){ return 0; }
+  }
+  function _touchSavedAt(rawLen){
+    try{
+      let m = {}; try{ m = JSON.parse(_safeGet(KEY_META) || 'null') || {}; }catch(e){ m = {}; }
+      m.schema = SCHEMA_VERSION; m.savedAt = Date.now();
+      if(rawLen) m.bytes = rawLen;
+      _safeSet(KEY_META, JSON.stringify(m));
+    }catch(e){}
+  }
+  function _usageBytes(){
+    let n = 0;
+    try{ for(let i=0;i<localStorage.length;i++){ const k = localStorage.key(i); if(k) n += k.length + (_safeGet(k)||'').length; } }catch(e){}
+    return n;
+  }
+  // R264-2.1：iPad Safari localStorage 约 5MB，留 1MB 给主档增长；备份永不能挤掉主档
+  const SPACE_SOFT_LIMIT = 4 * 1024 * 1024;
+  function storageUsage(){
+    const keys = {};
+    try{ for(let i=0;i<localStorage.length;i++){ const k = localStorage.key(i); if(k) keys[k] = (_safeGet(k)||'').length; } }catch(e){}
+    return { used:_usageBytes(), softLimit:SPACE_SOFT_LIMIT, savedAt:_lastSavedAt(), keys:keys };
+  }
   // 判断一段原始串是否是「可用的存档对象」——必须能解析成非数组对象且带档案结构
   function _rawUsable(raw){
     if(!raw) return false;
@@ -12633,6 +12842,13 @@ textarea.xs-adv-input-box{
     try{
       const now = Date.now();
       if(!force && now - _lastBakAt < 20000) return;
+      /* R264-2.1：备份只是附加保险，绝不能反过来把主档挤出配额。
+         双代「整份主档」备份 + 600KB 更新前副本 + 快照 + 补丁同量级叠加，
+         正是 iPad 5MB 配额下真实「本机主存档空间紧张」的主要来源。
+         预算不够时直接跳过备份（主档此时已经写成功，数据不丢）。 */
+      const used = _usageBytes();
+      const b1len = (_safeGet(KEY_BAK1)||'').length;
+      if(used - b1len + raw.length > SPACE_SOFT_LIMIT){ _lastBakAt = now; return; }
       const b1 = _safeGet(KEY_BAK1);
       if(b1 && b1 !== raw) _safeSet(KEY_BAK2, b1);
       if(_safeSet(KEY_BAK1, raw)){
@@ -14308,8 +14524,17 @@ textarea.xs-adv-input-box{
   function _pendingWrite(st){
     if(!st || typeof st !== 'object') return false;
     const base = _pendingBase();
+    /* R264-2.2：补丁是「所有未落库修改」的唯一真相，必须可累积、不可被后来的
+       局部状态覆盖。旧实现每次从零构造并整体替换 KEY_PENDING，于是
+       _snapshotApply() 用「主档 + 仅 8 个白名单字段」的状态一写，
+       知识秘境/种植园开放时间、货币、每日巩固题库、乐读已做提交等
+       非白名单字段就全部从补丁里消失，刷新后表现为「所有操作均丢失」。 */
+    const prev = _pendingRead();
     const patch = {};
-    let used = 0;
+    if(prev && prev.patch && typeof prev.patch === 'object'){
+      Object.keys(prev.patch).forEach(function(k){ patch[k] = prev.patch[k]; });
+    }
+    // 本次状态里与主档不同的字段覆盖进去（新值优先）
     Object.keys(st).forEach(function(k){
       if(k === '__pendingApplied' || k === '__settingsSnapshot') return;
       let s;
@@ -14317,13 +14542,25 @@ textarea.xs-adv-input-box{
       if(s === undefined) return;
       let same = false;
       try{ same = (base && JSON.stringify(base[k]) === s); }catch(e){ same = false; }
-      if(same) return;
-      if(used + s.length + k.length > PENDING_BUDGET) return;  // 超大字段跳过，不挤爆配额
-      patch[k] = st[k]; used += s.length + k.length;
+      if(same && patch[k] === undefined) return;
+      patch[k] = st[k];
     });
-    if(!Object.keys(patch).length) return false;
+    // 预算裁剪：设置类白名单字段优先，超大图片字段（主档本就有）不进补丁
+    const out = {}; let used = 0;
+    const keys = Object.keys(patch).sort(function(a,b){
+      const pa = SNAPSHOT_KEY_ALWAYS.indexOf(a) >= 0 ? 0 : 1;
+      const pb = SNAPSHOT_KEY_ALWAYS.indexOf(b) >= 0 ? 0 : 1;
+      return pa - pb;
+    });
+    keys.forEach(function(k){
+      let s; try{ s = JSON.stringify(patch[k]); }catch(e){ return; }
+      if(s === undefined) return;
+      if(used + s.length + k.length > PENDING_BUDGET) return;
+      out[k] = patch[k]; used += s.length + k.length;
+    });
+    if(!Object.keys(out).length) return false;
     let raw;
-    try{ raw = JSON.stringify({ __at: Date.now(), __v: 261, patch: patch }); }catch(e){ return false; }
+    try{ raw = JSON.stringify({ __at: Date.now(), __v: 264, patch: out }); }catch(e){ return false; }
     for(let i=0;i<3;i++){
       if(_safeSet(KEY_PENDING, raw)) return true;
       if(!_evictForQuota([KEY_PENDING])) break;
@@ -14374,6 +14611,8 @@ textarea.xs-adv-input-box{
       try{ JSON.stringify(st[k]); out[k] = st[k]; }catch(e){}
     });
     out.__snapAt = Date.now();
+    // R264-2.1：记下「写这份快照时主档的落库时间」，用于判定它是否已经过期
+    out.__baseSavedAt = _lastSavedAt();
     return out;
   }
   function _snapshotWrite(st){
@@ -14394,11 +14633,18 @@ textarea.xs-adv-input-box{
     let snap = null;
     try{ snap = JSON.parse(raw); }catch(e){ snap = null; }
     if(!snap || typeof snap !== 'object' || Array.isArray(snap)) return st;
-    /* R261-5.1：主档比快照还新时，说明这份快照是上一次「写不进」留下的旧值，
-       若继续叠加就会把用户后来保存的修改覆盖回初始状态（刷新即丢失的根因之一）。
-       以 _meta 的最后落库时间为准，过期快照直接作废。 */
-    let lastSaved = 0;
-    try{ const meta = JSON.parse(_safeGet(KEY_META) || 'null'); lastSaved = (meta && meta.savedAt) || 0; }catch(e){}
+    /* R264-2.2【数据丢失主因】：已有完整差异补丁时，补丁才是「全部修改」的唯一真相。
+       旧实现在这里无条件调用 _pendingWrite(st)，用「旧主档 + 仅 8 个白名单字段」的
+       状态整体覆写掉那份完整补丁；下一次 load() 的 _pendingApply 只能捞回设置类字段，
+       开放时间 / 货币 / 题库 / 已做提交等全部蒸发。现在有补丁就直接用补丁，快照作废。 */
+    if(_pendingRead()){ _snapshotClear(); return st; }
+    /* R261-5.1 / R264-2.1：主档比快照还新时，说明这份快照是上一次「写不进」留下的旧值，
+       继续叠加会把用户后来保存的修改覆盖回初始状态。以「快照写入时的主档落库时间」
+       为基准；savedAt 现在每次成功落库都会更新，判断不再受 20 秒备份节流干扰。 */
+    const lastSaved = _lastSavedAt();
+    if(lastSaved && typeof snap.__baseSavedAt === 'number' && lastSaved > snap.__baseSavedAt){
+      _snapshotClear(); return st;
+    }
     if(lastSaved && snap.__snapAt && snap.__snapAt <= lastSaved){ _snapshotClear(); return st; }
     // R259：同样只回填白名单内的设置类字段，业务数据一律不碰
     SNAPSHOT_KEY_ALWAYS.forEach(function(k){
@@ -14463,9 +14709,12 @@ textarea.xs-adv-input-box{
     _saveError = '';
     _sessionPersisted = true; // R263-3.1：本次会话已有可信落库，pagehide 刷盘安全闸放行
     _loadCachePut(st, raw);   // R246-3：写成功后同步缓存，下一次 load() 无需再解析
+    _touchSavedAt(raw.length); // R264-2.1：每次成功落库都记时间，过期快照判断才可靠
     // R258-1.1：主档已完整落库，之前为应急写的设置快照立刻作废（避免两份真相）
     _snapshotClear();
     _pendingClear();          // R261-5.1：主档已完整落库，差异补丁同样作废
+    // R264-2.1：空间吃紧时优先保住主档与业务数据，更新前副本是可重建的临时保险
+    try{ if(_usageBytes() > SPACE_SOFT_LIMIT) localStorage.removeItem(KEY_PRE_UPDATE); }catch(e){}
     _persistedShape = _guardCapture(st);   // R259：记录本次落库后的保护字段大小
     // R255-5：备份属于「附加保险」，它失败绝不能让主存档被判定为失败
     try{ _rotateBackup(raw, false); }catch(e){}
@@ -14507,19 +14756,20 @@ textarea.xs-adv-input-box{
       }catch(e){ /* 读回 / 解析异常时以 save() 的返回值 + save 内部回读长度校验为准 */ }
     }
     let result = verified ? true : false;
-    // R258-1.1 / R260-1.1：主档确实塞不下（配额已满，或写回后校验不一致）
-    //                      → 走设置快照，保证「点保存 = 设置存住」，并如实提示已保存。
+    // R258-1.1 / R264-2.2：主档确实塞不下（配额已满，或写回后校验不一致）
+    //   → 先写「完整差异补丁」（唯一真相，含全部业务字段），再写设置快照作二级兜底。
+    //   刷新时 load() 会优先认补丁，快照不再有机会销毁它。
     if(!verified){
-      // R261-5.1：主档塞不下时，除设置快照外再留一份完整差异补丁，
-      //           保证「打卡 / 任务 / 自定义内容」等非设置类修改刷新后也能回来
       try{ _pendingWrite(draft); }catch(e){}
-      if(_snapshotWrite(draft)){
-        result = 'partial';
-        _saveError = '';
-      }
+      if(_snapshotWrite(draft)) result = 'partial';
+      /* R264-2.1：提示文案是否说「空间紧张」由真实错误码决定。
+         旧实现无条件清空 _saveError，导致任何一次非配额的校验不一致
+         都被 UI 说成「本机主存档空间紧张」，用户无从判断是否真该删图片。 */
+      if(_saveError !== 'quota' && _saveError !== 'verify') _saveError = '';
     }
     _staging = true;                       // 提交后保持在暂存态（最新已保存状态作为新草稿），后续编辑仍需再次点击保存
-    try { _staged = _cloneState(load()); } catch(e){ _staged = load(); }
+    // R264-2.2：直接以本次草稿续作，绝不从磁盘重新 load()（磁盘可能是写失败的旧值）
+    try { _staged = _cloneState(draft); } catch(e){ _staged = draft; }
     return result;
   }
   function discardSettings(){ _staging = false; _staged = null; }
@@ -21527,6 +21777,8 @@ be 动词：am / is → was；are → were
     load, save, resetData,
     // R254-1/2：数据保护 —— 备份信息 / 强制刷盘
     backupInfo, flushPersistence,
+    // R264-2.1：本机存储用量诊断（核验是否真的空间紧张、由哪些副本占用）
+    storageUsage,
     // R256：打卡总览 / 星星流水 / 提醒 / 护眼 / 补卡 / 错题复练 / 断点 / 收藏 / 提示 / 图鉴 / 证书 / 暂存 / 单模块重置
     getR256, setR256, getStarLog, clearStarLog, setStarWhy,
     getRemindCfg, saveRemindCfg, getEyeCfg, saveEyeCfg,
@@ -22602,10 +22854,16 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
   function commitSettingsNow(){
     if(!S || typeof S.commitSettings !== 'function'){ toast('⚠️ 当前环境无法保存设置'); return; }
     const res = S.commitSettings();
-    // R258-1.1：提示只跟真实结果走 —— true 全部写入；'partial' 主档满但设置已单独存住；false 才是真失败
+    // R258-1.1 / R264-2.1：提示只跟真实结果 + 真实错误码走；'partial' 不再一口咬定「空间紧张」
     if(res === true){ toast('✅ 设置已保存并立即生效'); return; }
     if(res === 'partial'){
-      toast('✅ 设置已保存并立即生效（本机主存档空间紧张，设置已单独存好）');
+      /* R264-2.1：提示必须与真实错误码一致 —— 只有真 quota 才说「空间紧张」。
+         旧版把任何一次校验不一致都写成「本机主存档空间紧张，设置已单独存好」，
+         用户既无法判断要不要删图片，也误以为只有设置被单独保存、其它修改没存住。 */
+      const why2 = (S.getSaveError && S.getSaveError()) || '';
+      toast(why2 === 'quota'
+        ? '✅ 设置已保存（本机存档空间紧张，已自动腾挪并安全暂存，刷新不会丢失）'
+        : '✅ 设置已保存并立即生效');
       return;
     }
     const why = (S.getSaveError && S.getSaveError && S.getSaveError()) || '';
@@ -39150,12 +39408,49 @@ function renderKMAdmin(){
   // ============ 种植园（v10.2：2D Q 版清新田园 UI · 12 块田 = 3x4 + 仓库 + 市集 + 小卖部 + 心愿盒） ============
   const STAGE_NAMES_V102 = ['种子','发芽','成长','开花','结果','成熟'];
   let warehouseTab = 'seeds'; // 当前仓库子标签
+  /* R264-1.1：桃花「随机飘落」—— 每片花瓣独立随机起点 / 时长 / 延迟 / 左右摆幅 /
+     旋转角度 / 大小；每次 animationiteration（花瓣落出屏幕、opacity=0 的瞬间）重新随机，
+     因此不会出现固定循环轨迹。CSS 侧全部改用 var(--petal-*) / var(--sway*) 承接。 */
+  function farmRandomizePetal(el, initial){
+    if(!el || !el.style) return;
+    const rnd = function(a,b){ return a + Math.random() * (b - a); };
+    el.style.setProperty('--petal-x', rnd(2,94).toFixed(1) + '%');
+    el.style.setProperty('--petal-size', rnd(9,17).toFixed(1) + 'px');
+    el.style.setProperty('--petal-dur', rnd(9,20).toFixed(2) + 's');
+    if(initial) el.style.setProperty('--petal-delay', (-rnd(0,18)).toFixed(2) + 's');
+    el.style.setProperty('--sway1', rnd(-3,10).toFixed(1) + 'vw');
+    el.style.setProperty('--sway2', rnd(-10,3).toFixed(1) + 'vw');
+    el.style.setProperty('--sway3', rnd(-2,11).toFixed(1) + 'vw');
+    el.style.setProperty('--sway4', rnd(-6,8).toFixed(1) + 'vw');
+    el.style.setProperty('--rot1', Math.round(rnd(70,190)) + 'deg');
+    el.style.setProperty('--rot2', Math.round(rnd(190,330)) + 'deg');
+    el.style.setProperty('--rot3', Math.round(rnd(330,430)) + 'deg');
+    el.style.setProperty('--spin', Math.round(rnd(420,760)) + 'deg');
+  }
+  function farmRandomizePetals(){
+    try{
+      const petals = document.querySelectorAll('.farm-anim-layer .farm-petal');
+      for(let i=0;i<petals.length;i++){
+        const el = petals[i];
+        if(el.__r264PetalBound){ farmRandomizePetal(el, false); continue; }
+        el.__r264PetalBound = true;
+        farmRandomizePetal(el, true);
+        el.addEventListener('animationiteration', function(){ farmRandomizePetal(el, false); });
+      }
+    }catch(e){}
+  }
+  try{
+    if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', farmRandomizePetals);
+    else setTimeout(farmRandomizePetals, 0);
+  }catch(e){}
+
   function renderFarm(){
     const st = S.load();
     renderFarmTop(st);
     renderFarmGrid(st);
     applyFarmLayout(); // V17-5：应用种植园排版
     renderFarmToolSubs(st);   // R258-2.1：四张卡片改为按键后，副标题显示实时数量
+    farmRandomizePetals();    // R264-1.1：每次进入种植园重新随机花瓣轨迹
   }
   // R258-2.1：右侧农具按键的副标题（仓库种子数 / 心愿盒礼物数）
   function renderFarmToolSubs(st){
