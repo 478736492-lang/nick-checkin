@@ -1135,11 +1135,13 @@ button[hidden]{display:none!important}
   box-shadow:inset 0 0 18px rgba(0,0,0,.18),0 6px 14px rgba(120,170,90,.28);
   width:100%;max-width:680px;
 }
+/* R262-2.3：列/行/间距统一由 app.js 的 applyFarmLayout() 注入 CSS 变量驱动，
+   默认 4 列 × 2 行，避免写死 3 行造成新排版错位 */
 .farm-grid{
   display:grid;
-  grid-template-columns:repeat(4,1fr);
-  grid-template-rows:repeat(3,1fr);
-  gap:10px;
+  grid-template-columns:repeat(var(--farm-cols,4),minmax(0,1fr));
+  grid-template-rows:repeat(var(--farm-rows,2),minmax(0,1fr));
+  gap:var(--farm-gap,8px);
   padding:6px;
 }
 .farm-plot{
@@ -9362,7 +9364,8 @@ body.r256-sheet-on{overflow:hidden}
    R258-2.2 田地默认 4 行 × 3 列（12 块），田地加宽居中
    R258-3.1 任务新增/编辑弹窗内的「任务卡片跳转」配置
    ============================================================ */
-.page-farm .field-frame{max-width:480px}
+/* R262-2.3：4 列 × 100px + 3×8px 间距 + 内边距 ≈ 452px → 外框放宽到 520px，田地不挤压 */
+.page-farm .field-frame{max-width:520px}
 /* R260-2.1：农具按键改为正方形图片按键 —— 一行 2 个，尺寸随右栏宽度自适应（aspect-ratio 撑成正方形），
    图片本身自带名称，按键内文字块仅保留给脚本更新数量（视觉隐藏）。 */
 .farm-tools{
@@ -9370,10 +9373,12 @@ body.r256-sheet-on{overflow:hidden}
   background:transparent;border:none;border-radius:0;padding:0;box-shadow:none;
 }
 .farm-tools-title{display:none}
-/* R261-2.1：改为一行一个、共四行；按键高度随视口自适应，宽度随右栏自适应 */
-.farm-tool-list{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
+/* R262-2.1：恢复「正方形图片卡片」原貌（2 列 × 2 行），整组靠右摆放；
+   边长随右栏自适应，与 4 列 × 100px 的田地尺寸相互协调 */
+.page-farm .farm-tools{width:100%;max-width:290px;margin-left:auto}
+.farm-tool-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;justify-content:end}
 .farm-tool-btn{
-  position:relative;display:block;width:100%;height:74px;height:clamp(74px,12vh,124px);aspect-ratio:auto;padding:0;
+  position:relative;display:block;width:100%;height:auto;aspect-ratio:1/1;padding:0;
   border:none;border-radius:20px;cursor:pointer;overflow:hidden;
   background-color:#f4ead3;background-repeat:no-repeat;background-position:center;background-size:cover;
   box-shadow:0 6px 14px rgba(120,90,50,.18);transition:.18s;
@@ -9442,20 +9447,20 @@ body.r256-sheet-on{overflow:hidden}
 .task-jump-block .tjb-page select{flex:1;min-width:0}
 .task-jump-block.is-off{opacity:.75}
 
-/* ================= R261-1.1 设置中心：提醒卡片加宽 + 三张工具卡移到右侧自上而下竖排 ================= */
-/* 双类特异性覆盖 R257 的 .settings-row-3{grid-column:1/-1;repeat(3,1fr)} */
+/* ================= R262-1.1 设置中心：全部设置卡片统一等宽 ================= */
+/* display:contents 让「提醒卡 + 三张工具卡」四张卡直接参与同一个 2 列网格，
+   列宽与上方 .settings-grid 的 repeat(2,1fr) 完全一致，卡片高度也拉齐 */
 .settings-row-r261{
   grid-column:1/-1;display:grid;
-  grid-template-columns:minmax(0,1.6fr) minmax(200px,0.72fr);
-  gap:14px;align-items:start;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:14px;align-items:stretch;
 }
-.r261-remind-slot{min-width:0}
-.r261-remind-slot #r256SetCard{width:100%;grid-column:auto}
-.settings-row-3.settings-row-3-side{grid-column:auto;display:flex;flex-direction:column;gap:14px;align-items:stretch}
-.settings-row-3.settings-row-3-side .settings-card{width:100%;min-width:0}
+.r261-remind-slot,
+.settings-row-3.settings-row-3-side{display:contents}
+.r261-remind-slot #r256SetCard{width:100%;height:100%;grid-column:auto;box-sizing:border-box}
+.settings-row-3.settings-row-3-side .settings-card{width:100%;height:100%;min-width:0;box-sizing:border-box}
 @media (max-width:900px){
   .settings-row-r261{grid-template-columns:1fr}
-  .settings-row-3.settings-row-3-side{display:grid;grid-template-columns:1fr}
 }
 
 /* ================= R261-2.1 出售 / 兑换二次弹窗：数量改为滑动选择 ================= */
@@ -9496,20 +9501,46 @@ body.r256-sheet-on{overflow:hidden}
   from{opacity:.35;transform:skewX(-16deg) translateX(-2%)}
   to{opacity:.9;transform:skewX(-16deg) translateX(4%)}
 }
+/* R262-2.5：飞鸟改为纯 CSS 剪影 —— 双翅独立扇动 + 起伏滑翔 + 远近缩放 + 淡入淡出，
+   缓动曲线取代匀速直线；三只鸟错峰、速度与体量各异，观感更自然且与田园背景协调 */
 .farm-fly{
   position:absolute;top:0;left:0;font-size:26px;line-height:1;opacity:.9;
   will-change:transform;filter:drop-shadow(0 2px 3px rgba(80,60,20,.22));
 }
-.farm-bird{animation:farmBirdFly 19s linear infinite}
-.farm-bird-1{animation-delay:-2s;font-size:24px}
-.farm-bird-2{animation-delay:-9s;font-size:20px;animation-duration:23s}
-.farm-bird-3{animation-delay:-15s;font-size:28px;animation-duration:16s}
+.farm-bird{
+  width:36px;height:18px;font-size:0;filter:drop-shadow(0 3px 4px rgba(60,80,50,.18));
+  animation:farmBirdFly 26s cubic-bezier(.42,0,.58,1) infinite;
+}
+.farm-bird .fb-wing{
+  position:absolute;top:1px;width:19px;height:12px;
+  background:linear-gradient(180deg,rgba(58,74,92,.9),rgba(38,52,68,.72));
+  animation:farmBirdFlap .46s ease-in-out infinite alternate;
+}
+.farm-bird .fb-wing-l{left:0;border-radius:90% 15% 70% 30%;transform-origin:100% 60%}
+.farm-bird .fb-wing-r{right:0;border-radius:15% 90% 30% 70%;transform-origin:0 60%;animation-delay:-.12s}
+.farm-bird .fb-body{
+  position:absolute;left:15px;top:6px;width:8px;height:6px;border-radius:50%;
+  background:rgba(44,58,74,.92);
+}
+.farm-bird .fb-body::after{
+  content:'';position:absolute;right:-4px;top:1px;width:6px;height:3px;
+  border-radius:0 60% 60% 0;background:rgba(240,182,72,.9);
+}
+.farm-bird-1{animation-delay:-3s;animation-duration:26s}
+.farm-bird-2{animation-delay:-12s;animation-duration:31s}
+.farm-bird-3{animation-delay:-20s;animation-duration:22s}
+@keyframes farmBirdFlap{
+  from{transform:rotate(-16deg) scaleY(.72)}
+  to{transform:rotate(24deg) scaleY(1.14)}
+}
 @keyframes farmBirdFly{
-  0%{transform:translate(-10vw,20vh) scale(.85)}
-  25%{transform:translate(24vw,9vh) scale(.95)}
-  50%{transform:translate(58vw,17vh) scale(.9)}
-  75%{transform:translate(88vw,6vh) scale(.85)}
-  100%{transform:translate(122vw,14vh) scale(.85)}
+  0%{transform:translate(-14vw,30vh) scale(.58);opacity:0}
+  10%{opacity:.82}
+  24%{transform:translate(18vw,15vh) scale(.76)}
+  42%{transform:translate(44vw,23vh) scale(.92)}
+  58%{transform:translate(64vw,11vh) scale(.84)}
+  78%{transform:translate(92vw,20vh) scale(.7);opacity:.72}
+  100%{transform:translate(120vw,27vh) scale(.55);opacity:0}
 }
 .farm-butterfly{animation:farmButterflyFly 15s ease-in-out infinite alternate}
 .farm-butterfly-1{animation-delay:-1s;font-size:23px}
@@ -9522,7 +9553,7 @@ body.r256-sheet-on{overflow:hidden}
   75%{transform:translate(66vw,52vh) rotate(10deg)}
   100%{transform:translate(86vw,64vh) rotate(-12deg)}
 }
-@media (prefers-reduced-motion:reduce){ .farm-fly,.farm-sunbeam{animation:none} }
+@media (prefers-reduced-motion:reduce){ .farm-fly,.farm-sunbeam,.farm-bird .fb-wing{animation:none} }
 
 /* ================= R261-3.1 每日巩固语法题：填写区随句子长度自适应换行 ================= */
 /* 元素选择器 + 类特异性高于旧 .xs-adv-input-box{flex:1;...}，且写在文件末尾防止被反杀 */
@@ -9545,15 +9576,24 @@ textarea.xs-adv-input-box{
   max-height:none;overflow:visible;border-top:1px dashed var(--tone-200);padding-top:10px;
 }
 .en3500-words .en3500-row.en3500-word-card{
-  display:grid;grid-template-columns:34px minmax(0,1.05fr) minmax(0,1.25fr);
+  display:grid;grid-template-columns:40px minmax(0,1.05fr) minmax(0,1.25fr);
   gap:8px;align-items:center;box-sizing:border-box;width:100%;
   padding:9px 11px;background:#fff;border:1.5px solid var(--tone-200);border-radius:12px;
   box-shadow:0 2px 8px rgba(30,58,138,.07);font-size:12.5px;
 }
+/* R262-3.1：序号改「方框按键 + 框内数字」，点击仍唤起原有标记弹窗（绿/红态同步换框色） */
 .en3500-word-card .en3500-no{
-  width:auto;height:auto;min-width:0;font-size:16px;line-height:1.1;
-  background:transparent;border:none;border-radius:0;padding:0;overflow:visible;
+  width:30px;height:30px;min-width:30px;box-sizing:border-box;
+  display:inline-flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:900;line-height:1;
+  color:var(--tone-800);background:#fff;
+  border:2px solid var(--tone-400);border-radius:7px;
+  box-shadow:0 2px 5px rgba(30,58,138,.12);
+  padding:0;overflow:visible;cursor:pointer;transition:.15s;
 }
+.en3500-word-card .en3500-no:hover{background:var(--tone-100);border-color:var(--tone-600);transform:translateY(-1px)}
+.en3500-row.en3500-word-card.is-ok .en3500-no{border-color:#2fb36a;background:#eafaf0;color:#1f7a45}
+.en3500-row.en3500-word-card.is-need .en3500-no{border-color:#e07b7b;background:#fff0f0;color:#b3261e}
 .en3500-word-card .en3500-w{font-size:23px;line-height:1.2}
 .en3500-word-card .en3500-meta{
   display:flex;flex-direction:row;align-items:center;justify-content:flex-start;
@@ -9589,6 +9629,25 @@ textarea.xs-adv-input-box{
   .eg-cilei-wrap .eg-cilei-navbar .eg-cilei-go,
   .eg-cilei-detail .eg-cilei-navbar .eg-cilei-go{font-size:10px;padding:7px 1px}
 }
+
+/* ================= R262-2.2 板块音乐暂停按键：金币数据上方 ================= */
+.farm-music-toggle{
+  align-self:flex-end;display:inline-flex;align-items:center;gap:6px;
+  margin:0 2px 2px auto;padding:5px 12px;
+  font-size:12px;font-weight:800;line-height:1.2;white-space:nowrap;
+  color:#7a4f10;background:linear-gradient(135deg,#fff2d6,#ffe3ab);
+  border:1.5px solid #e4b86a;border-radius:999px;cursor:pointer;
+  box-shadow:0 2px 7px rgba(150,110,40,.18);transition:.15s;
+}
+.farm-music-toggle:hover{transform:translateY(-1px);filter:brightness(1.04)}
+.farm-music-toggle.is-paused{color:#2f6b25;background:linear-gradient(135deg,#eafbe9,#d3f0cf);border-color:#8fce83}
+
+/* ================= R262-2.5 田地与全部按键透明度 30%，底层背景图正常透出 ================= */
+/* 静态统一 30%；hover / 键盘聚焦时临时提升，保证仍可辨识与操作；统计数字保持原清晰度 */
+.page-farm .farm-field-area{opacity:.3;transition:opacity .18s}
+.page-farm button{opacity:.3;transition:opacity .18s}
+.page-farm button:hover,.page-farm button:focus-visible{opacity:.9}
+.page-farm .farm-title-stats{opacity:1}
 
 </style>
 </head>
@@ -10670,14 +10729,15 @@ textarea.xs-adv-input-box{
   <section class="page page-farm" data-page="farm" hidden data-page-node-id="KBzw9h5nsTXcaruZBZRwwe">
     <!-- 装饰背景：天空 + 草地 -->
     <div class="farm-bg" data-page-node-id="lHGty1nDWUniRN962OxWMZ"></div>
-    <!-- R261-2.3：动态背景 —— 左上角斜向洒落的阳光 + 自由飞舞的飞鸟 / 蝴蝶。
-         纯 CSS 动画、pointer-events:none，不拦截任何点击，也不占用存档与配额。 -->
+    <!-- R261-2.3 / R262-2.5：动态背景 —— 左上角斜向洒落的阳光 + 自由飞舞的飞鸟 / 蝴蝶。
+          R262 起飞鸟改为纯 CSS 剪影（双翅独立扇动 + 起伏滑翔 + 远近缩放 + 淡入淡出），
+          比 emoji 更自然、与田园背景更协调；pointer-events:none，不拦截点击、不占存档配额。 -->
     <div class="farm-anim-layer" aria-hidden="true">
       <div class="farm-sunbeam"></div>
       <div class="farm-sunbeam farm-sunbeam-2"></div>
-      <span class="farm-fly farm-bird farm-bird-1">🕊️</span>
-      <span class="farm-fly farm-bird farm-bird-2">🐦</span>
-      <span class="farm-fly farm-bird farm-bird-3">🕊️</span>
+      <span class="farm-fly farm-bird farm-bird-1"><i class="fb-wing fb-wing-l"></i><i class="fb-wing fb-wing-r"></i><i class="fb-body"></i></span>
+      <span class="farm-fly farm-bird farm-bird-2"><i class="fb-wing fb-wing-l"></i><i class="fb-wing fb-wing-r"></i><i class="fb-body"></i></span>
+      <span class="farm-fly farm-bird farm-bird-3"><i class="fb-wing fb-wing-l"></i><i class="fb-wing fb-wing-r"></i><i class="fb-body"></i></span>
       <span class="farm-fly farm-butterfly farm-butterfly-1">🦋</span>
       <span class="farm-fly farm-butterfly farm-butterfly-2">🦋</span>
       <span class="farm-fly farm-butterfly farm-butterfly-3">🦋</span>
@@ -10736,6 +10796,8 @@ textarea.xs-adv-input-box{
       <!-- R113：数据统计（⭐💧☀️💰）移至仓库上方展示，原 ID/功能不变
            R260-2.5：靠右分两行 —— 第一行 ⭐ / 金币，第二行 阳光 / 水 / 肥料 -->
       <div class="farm-title-stats" data-page-node-id="pQoy2qUAJglkq07hfs1Rzl">
+        <!-- R262-2.2：板块音乐暂停 / 播放按键，位于金币数据上方，与设置中心音乐开关共用状态 -->
+        <button type="button" class="farm-music-toggle" id="farmMusicToggle" aria-pressed="true" title="点击暂停种植园背景音乐">⏸ 暂停音乐</button>
         <div class="fts-row" data-page-node-id="R260ftsRow1">
           <span class="fts fts-stars" data-page-node-id="ibQitRhCqDh8S9ntY9D6ML"><span class="fts-ico" data-page-node-id="qMbgyyOmEqHGc5tDmyVDjc">⭐</span><b id="farmStars" data-page-node-id="guaQdavqnuwu83YC5wsIwD">0</b></span>
           <span class="fts fts-coins" data-page-node-id="W1UCiESjj73O9pwfmPtDFO"><span class="fts-ico" data-page-node-id="kFjH2qNWTQESVnxqVbPJAx">💰</span><b id="farmCoins" data-page-node-id="0Ansxhd6S6tCQk1PuQqU8V">0</b></span>
@@ -12844,7 +12906,7 @@ textarea.xs-adv-input-box{
     });
     return changed;
   }
-  const PLOT_COUNT = 6;  // R261-2.2：2 行 × 3 列 = 6 块田，按单块逐块解锁
+  const PLOT_COUNT = 8;  // R262-2.3：2 行 × 4 列 = 8 块田，按单块逐块解锁
   const STAGE_NEED = {0:8,1:12,2:16,3:20,4:24}; // v8：每阶段进下一阶段需要的水/阳光
   function newPlot(){
     // R254-4：新增肥料（fert）—— 消耗数量规则与「水」完全一致
@@ -12962,8 +13024,8 @@ textarea.xs-adv-input-box{
   ];
   const growthShop = ()=>[
     // R261-2.4：水的标识文字改为「壶 / 桶」——1 壶浇 1 次，1 桶 = 5 壶浇 5 次
-    {id:'g_water1',name:'水滴水壶 · 1壶',ico:'💧',desc:'浇灌作物1次',price:1,unit:'water',qty:1},
-    {id:'g_water5',name:'大水桶 · 1桶（5壶）',ico:'🪣',desc:'浇灌作物5次',price:4,unit:'water',qty:5},
+    {id:'g_water1',name:'1 壶水',ico:'💧',desc:'浇灌作物1次',price:1,unit:'water',qty:1},
+    {id:'g_water5',name:'1 桶水（5 壶水）',ico:'🪣',desc:'浇灌作物5次',price:4,unit:'water',qty:5},
     // R254-4：水兑换项后方新增肥料兑换项（消耗⭐与水完全一致：1⭐/袋、4⭐/5袋）
     {id:'g_fert1',name:'肥料(1袋)',ico:'__bag__',desc:'给作物施肥1次（1⭐=1袋）',price:1,unit:'fert',qty:1},
     {id:'g_fert5',name:'肥料(5袋)',ico:'__bag__',desc:'给作物施肥5次（4⭐=5袋）',price:4,unit:'fert',qty:5},
@@ -13815,17 +13877,22 @@ textarea.xs-adv-input-box{
       }
     })();
     // V17-5：种植园排版（家长模式可调）
-    // R261-2.2：默认排版 2 行 × 3 列（6 块田），地块尺寸 120px 保持不变
-    if(!st.farmLayout) st.farmLayout = {cols:3, rows:2, gap:10, plotSize:120};
+    // R262-2.3：默认排版 2 行 × 4 列（8 块田），地块 100px / 间距 8px，与右侧按键尺寸协调
+    if(!st.farmLayout) st.farmLayout = {cols:4, rows:2, gap:8, plotSize:100};
     else if(st.farmLayout.cols === 5 && (st.farmLayout.plotSize|0) === 54 && (st.farmLayout.rows==null || st.farmLayout.rows === 3)){
       // 从未手动改过排版的老存档（旧默认 5 列 / 54px）→ 平滑升级
-      st.farmLayout.cols = 3; st.farmLayout.rows = 2; st.farmLayout.gap = 10; st.farmLayout.plotSize = 120;
-    } else if(st.farmLayout.cols === 4 && (st.farmLayout.rows|0) === 2 && (st.farmLayout.plotSize|0) === 120){
-      // R257 的默认（2 行 × 4 列 / 120px）→ 升级为 2 行 × 3 列
-      st.farmLayout.cols = 3; st.farmLayout.rows = 2; st.farmLayout.gap = 10; st.farmLayout.plotSize = 120;
+      st.farmLayout.cols = 4; st.farmLayout.rows = 2; st.farmLayout.gap = 8; st.farmLayout.plotSize = 100;
+    } else if((st.farmLayout.cols|0) === 3 && (st.farmLayout.rows|0) === 2 && (st.farmLayout.plotSize|0) === 120){
+      // R261 的默认（2 行 × 3 列 / 120px）→ 升级为 2 行 × 4 列
+      st.farmLayout.cols = 4; st.farmLayout.rows = 2; st.farmLayout.gap = 8; st.farmLayout.plotSize = 100;
+    } else if((st.farmLayout.cols|0) === 4 && (st.farmLayout.rows|0) === 2 && (st.farmLayout.plotSize|0) === 120){
+      // R257 的默认（2 行 × 4 列 / 120px）→ 列数不变，尺寸收敛到新版统一值
+      st.farmLayout.cols = 4; st.farmLayout.rows = 2; st.farmLayout.gap = 8; st.farmLayout.plotSize = 100;
     }
-    // R261-2.2：R258/R260 的「4 行 × 3 列」老存档统一收敛到 2 行（只改行数，不动地块尺寸）
-    if((st.farmLayout.rows|0) === 4 && (st.farmLayout.cols|0) === 3) st.farmLayout.rows = 2;
+    // R262-2.3：R258/R260 的「4 行 × 3 列」老存档统一收敛到 2 行 × 4 列
+    if((st.farmLayout.rows|0) === 4 && (st.farmLayout.cols|0) === 3){
+      st.farmLayout.cols = 4; st.farmLayout.rows = 2; st.farmLayout.gap = 8; st.farmLayout.plotSize = 100;
+    }
     // V17-8：家长可增删改的电子奖状（关联打卡数据）
     if(!st.archive) st.archive = {};
     if(!st.archive.customCerts){
@@ -20377,7 +20444,7 @@ be 动词：am / is → was；are → were
   }
   function getFarmLayout(){
     const st = load();
-    return Object.assign({cols:3, rows:2, gap:10, plotSize:120}, st.farmLayout||{});
+    return Object.assign({cols:4, rows:2, gap:8, plotSize:100}, st.farmLayout||{});
   }
   function setFarmLayout(layout){
     const st = load();
@@ -22289,6 +22356,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     $$('.nav-btn').forEach(b=>b.classList.toggle('active', b.dataset.page===page));
     // V14：种植园背景自然声 — 离开种植园时停止，进入时按「设置」里的背景音乐开关决定播放
     if(page==='farm'){
+      try{ syncFarmMusicQuickToggle(); }catch(e){}
       setTimeout(()=>{
         const on = window.__farmMusicOn !== false; // 默认开
         if(on) startFarmAmbient();
@@ -28234,12 +28302,8 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   const EN3500_PER_PAGE = 1; // R252-4：一个分类卡片单独占用一页
   const EN3500_ORDER_KEY = 'en3500_order'; // 兼容旧存档的打卡顺序
   let _en3500Page = 1;
-  /* R261-4.2：带圈 emoji 序号 1️⃣ 2️⃣ 3️⃣ …；两位数按位拼接（11 → 1️⃣1️⃣），
-     词库单个分类最多 20+ 词，纯 emoji 序号全量覆盖且无需字体/图片。 */
-  const EN3500_DIGITS = ['0️⃣','1️⃣','2️⃣','3️⃣','4️⃣','5️⃣','6️⃣','7️⃣','8️⃣','9️⃣'];
-  function en3500Circled(n){
-    return String(n).split('').map(function(d){ return EN3500_DIGITS[Number(d)] || d; }).join('');
-  }
+  /* R262-3.1：序号改回「方框按键 + 阿拉伯数字」，点击仍唤起原有标记弹窗；
+     不再使用 R261 的带圈 emoji 序号（方框样式由 .en3500-word-card .en3500-no 提供）。 */
   function en3500Cats(){
     const seed = window.EN_WORDS_3500_SEED;
     const base = (seed && Array.isArray(seed.cats)) ? seed.cats : [];
@@ -28269,10 +28333,10 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         ? words.map((w,j)=>{
             const wd = String((w && w.w) || '');
             const mk = marks[wd] || '';
-            // R261-4.2：每个单词独立成一张卡片；序号改带圈 emoji；序号/单词/音标/释义同一行
+            // R262-3.1：每词一张独立卡片；序号为方框数字按键（点击仍弹「已掌握 / 需巩固」）；四项同行
             const cls = (mk === 'ok' ? ' is-ok' : (mk === 'need' ? ' is-need' : '')) + ' en3500-word-card';
             return `<div class="en3500-row${cls}" data-en3500-row="${esc(name)}" data-en3500-word="${esc(wd)}">`
-              + `<button type="button" class="en3500-no" data-en3500-mark="${esc(wd)}" data-en3500-cat="${esc(name)}" title="点这里标记：已掌握 / 需巩固">${en3500Circled(j+1)}</button>`
+              + `<button type="button" class="en3500-no" data-en3500-mark="${esc(wd)}" data-en3500-cat="${esc(name)}" title="点这里标记：已掌握 / 需巩固">${j+1}</button>`
               + `<span class="en3500-w" data-en3500-speak="${esc(wd)}" title="点击朗读">${esc(wd)}</span>`
               + `<span class="en3500-meta"><span class="en3500-ipa">${esc(w && w.ipa)}</span><span class="en3500-cn">${esc(w && w.cn)}</span></span>`
               + `</div>`;
@@ -28356,7 +28420,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     const ttl = document.getElementById('en3500Title');
     if(ttl) ttl.textContent = '🔠 ' + String(name) + ' · ' + words.length + ' 词';
     body.innerHTML = words.length
-      ? words.map((w,i)=>`<div class="en3500-row"><span class="en3500-no">${en3500Circled(i+1)}</span><span class="en3500-w">${esc(w && w.w)}</span><span class="en3500-ipa">${esc(w && w.ipa)}</span><span class="en3500-cn">${esc(w && w.cn)}</span></div>`).join('')
+      ? words.map((w,i)=>`<div class="en3500-row"><span class="en3500-no">${i+1}</span><span class="en3500-w">${esc(w && w.w)}</span><span class="en3500-ipa">${esc(w && w.ipa)}</span><span class="en3500-cn">${esc(w && w.cn)}</span></div>`).join('')
       : '<div class="en3500-empty">这个分类暂时没有单词</div>';
     showModal('#modalEn3500');
   }
@@ -38951,6 +39015,34 @@ function renderKMAdmin(){
     }catch(e){}
     return started;
   }
+  // R262-2.2：种植园「板块音乐暂停」快捷按键（位于金币数据上方）
+  // 与设置中心「开启种植园背景音乐」共用同一状态：window.__farmMusicOn + localStorage.farmMusicOn
+  function syncFarmMusicQuickToggle(){
+    const btn = document.getElementById('farmMusicToggle');
+    if(!btn) return;
+    const on = window.__farmMusicOn !== false;
+    btn.textContent = on ? '⏸ 暂停音乐' : '▶ 播放音乐';
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    btn.classList.toggle('is-paused', !on);
+    btn.title = on ? '点击暂停种植园背景音乐' : '点击播放种植园背景音乐';
+  }
+  document.addEventListener('click', (e)=>{
+    const t = e.target;
+    const btn = (t && typeof t.closest === 'function') ? t.closest('#farmMusicToggle') : null;
+    if(!btn) return;
+    e.preventDefault(); e.stopPropagation();
+    const nextOn = (window.__farmMusicOn === false); // 当前关 → 开；当前开 → 关
+    window.__farmMusicOn = nextOn;
+    try{ localStorage.setItem('farmMusicOn', nextOn ? '1' : '0'); }catch(err){}
+    const cb = document.getElementById('farmMusicOn');
+    if(cb) cb.checked = nextOn;
+    try{
+      if(nextOn){ stopFarmAmbient(); startFarmAmbient(); }
+      else { stopFarmAmbient(); }
+    }catch(err){}
+    syncFarmMusicQuickToggle();
+    toast(nextOn ? '▶ 板块音乐已播放' : '⏸ 板块音乐已暂停');
+  }, true);
   function bindFarmMusicToggle(){
     const onCb = document.getElementById('farmMusicOn');
     if(onCb && !onCb._bound){
@@ -38958,6 +39050,7 @@ function renderKMAdmin(){
       onCb.onchange = ()=>{
         window.__farmMusicOn = !!onCb.checked;
         localStorage.setItem('farmMusicOn', onCb.checked ? '1' : '0');
+        try{ syncFarmMusicQuickToggle(); }catch(e){}
         const onFarm = !document.querySelector('.page[data-page="farm"]').hidden;
         if(window.__farmMusicOn){
           if(onFarm){ stopFarmAmbient(); startFarmAmbient(); }
@@ -39003,6 +39096,7 @@ function renderKMAdmin(){
     if(style) window.__farmMusicStyle = style;
     else if(window.__farmMusicStyle === undefined) window.__farmMusicStyle = 'birds';
     renderFarmMusicOptions();
+    try{ syncFarmMusicQuickToggle(); }catch(e){}
   }
   // R76-3：种植园背景音乐下拉 —— 10 首内置曲目（含 3 首日本民谣）
   function renderFarmMusicOptions(){
