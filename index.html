@@ -9373,10 +9373,10 @@ body.r256-sheet-on{overflow:hidden}
   background:transparent;border:none;border-radius:0;padding:0;box-shadow:none;
 }
 .farm-tools-title{display:none}
-/* R262-2.1：恢复「正方形图片卡片」原貌（2 列 × 2 行），整组靠右摆放；
-   边长随右栏自适应，与 4 列 × 100px 的田地尺寸相互协调 */
-.page-farm .farm-tools{width:100%;max-width:290px;margin-left:auto}
-.farm-tool-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;justify-content:end}
+/* R263-2.2：四按键适当缩小，改为「单列自上而下」并整体靠右；仍保持正方形图片卡片，
+   与 4 列 × 100px 的田地尺寸相互协调 */
+.page-farm .farm-tools{width:100%;max-width:132px;margin-left:auto}
+.farm-tool-list{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;justify-content:end}
 .farm-tool-btn{
   position:relative;display:block;width:100%;height:auto;aspect-ratio:1/1;padding:0;
   border:none;border-radius:20px;cursor:pointer;overflow:hidden;
@@ -9642,12 +9642,173 @@ textarea.xs-adv-input-box{
 .farm-music-toggle:hover{transform:translateY(-1px);filter:brightness(1.04)}
 .farm-music-toggle.is-paused{color:#2f6b25;background:linear-gradient(135deg,#eafbe9,#d3f0cf);border-color:#8fce83}
 
-/* ================= R262-2.5 田地与全部按键透明度 30%，底层背景图正常透出 ================= */
-/* 静态统一 30%；hover / 键盘聚焦时临时提升，保证仍可辨识与操作；统计数字保持原清晰度 */
-.page-farm .farm-field-area{opacity:.3;transition:opacity .18s}
-.page-farm button{opacity:.3;transition:opacity .18s}
+/* ============ R263-2.1：暂停音乐键 / 田地 / 页面全部按键 = 50% 毛玻璃，底层背景图部分透出 ============ */
+/* 半透明 50% + 背景模糊 + 柔和亮边构成毛玻璃；hover / 键盘聚焦临时提亮保证可辨识与可操作；统计数字保持清晰 */
+.page-farm .farm-field-area{opacity:.5;transition:opacity .18s;-webkit-backdrop-filter:blur(5px) saturate(1.08);backdrop-filter:blur(5px) saturate(1.08)}
+.page-farm button{opacity:.5;transition:opacity .18s;-webkit-backdrop-filter:blur(5px) saturate(1.08);backdrop-filter:blur(5px) saturate(1.08)}
+.page-farm .farm-music-toggle{border:1.5px solid rgba(255,255,255,.78);box-shadow:0 2px 10px rgba(255,255,255,.4),0 2px 7px rgba(150,110,40,.18)}
+.page-farm .farm-field-area{border-radius:22px}
 .page-farm button:hover,.page-farm button:focus-visible{opacity:.9}
 .page-farm .farm-title-stats{opacity:1}
+
+/* ==========================================================================
+   R263-1.1 学生 / 家长切换键迁移到「设置中心标题卡」右上角
+   原「使用模式」设置卡片已移除；#cardModeSettings 保留为紧凑容器，
+   所有 ID / 交互 / app.js 绑定零改动，这里只重排外观。
+   ========================================================================== */
+.page-settings > .page-title.settings-title-card{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:12px;flex-wrap:nowrap;position:relative;
+}
+.page-settings > .page-title.settings-title-card h2{flex:0 1 auto;min-width:0;margin:0}
+.page-settings > .page-title.settings-title-card .r263-mode-corner{
+  flex:0 0 auto;margin:0 0 0 auto;display:flex;align-items:center;
+  background:transparent;border:none;box-shadow:none;padding:0;cursor:default;
+}
+.page-settings > .page-title.settings-title-card .settings-card-row-mode{margin:0;padding:0;border:none;gap:0}
+/* 说明文字保留给历史断言与读屏器，视觉隐藏，避免标题卡拥挤 */
+.page-settings > .page-title.settings-title-card .settings-card-desc{
+  position:absolute;width:1px;height:1px;overflow:hidden;
+  clip:rect(0 0 0 0);white-space:nowrap;flex:0 0 0;min-width:0;
+}
+.page-settings > .page-title.settings-title-card .settings-mode-seg-card{
+  margin:0;align-self:center;flex:0 0 auto;
+  background:rgba(255,255,255,.62);
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+  border:1px solid rgba(255,255,255,.75);
+  box-shadow:0 2px 8px rgba(30,58,138,.14);
+}
+.page-settings > .page-title.settings-title-card .settings-card-arrow{display:none}
+.page-settings > .page-title.settings-title-card .settings-card-main{padding:0;margin:0;background:transparent;border:none;box-shadow:none}
+.page-settings > .page-title.settings-title-card .settings-card-body{background:transparent;border:none;box-shadow:none;padding:0;margin:0;min-height:0;border-radius:0}
+.page-settings > .page-title.settings-title-card .settings-card-head{display:none}
+@media (max-width:900px){
+  .page-settings > .page-title.settings-title-card{flex-wrap:wrap}
+  .page-settings > .page-title.settings-title-card .r263-mode-corner{margin-left:0}
+}
+
+/* ==========================================================================
+   R263-1.2 右列四卡竖排：音乐设置 → 数据同步 → 分类导出文件 → 版本与更新
+   提醒卡稳定占左列并拉齐高度；右列四张卡等宽等高，
+   特别保证「数据同步」与「版本与更新」尺寸完全一致。
+   ========================================================================== */
+.settings-row-r261 #r256SetCard{grid-column:1;grid-row:1 / span 4;align-self:stretch}
+.settings-row-r261 #cardMusicSettings{grid-column:2;grid-row:1}
+.settings-row-r261 #cardSyncSettings{grid-column:2;grid-row:2}
+.settings-row-r261 #cardExportSettings{grid-column:2;grid-row:3}
+.settings-row-r261 #cardVersionSettings{grid-column:2;grid-row:4}
+.settings-row-r261 #cardMusicSettings,
+.settings-row-r261 #cardSyncSettings,
+.settings-row-r261 #cardExportSettings,
+.settings-row-r261 #cardVersionSettings{
+  min-height:92px;max-height:none;height:100%;box-sizing:border-box;
+}
+@media (max-width:900px){
+  .settings-row-r261 #r256SetCard{grid-column:1;grid-row:1}
+  .settings-row-r261 #cardMusicSettings{grid-column:1;grid-row:2}
+  .settings-row-r261 #cardSyncSettings{grid-column:1;grid-row:3}
+  .settings-row-r261 #cardExportSettings{grid-column:1;grid-row:4}
+  .settings-row-r261 #cardVersionSettings{grid-column:1;grid-row:5}
+}
+
+/* ==========================================================================
+   R263-2.3 种植园三组动态特效（纯 CSS / emoji，不占存档配额）
+   ① 桃花飘舞 ② 苹果树上爬动的小松鼠 ③ 草地小狗小猫追逐
+   ========================================================================== */
+.farm-anim-layer .farm-petal{
+  position:absolute;top:-8%;width:13px;height:13px;
+  background:linear-gradient(135deg,#ffe0ec,#ff9dc0 62%,#ff7fae);
+  border-radius:70% 0 70% 0;
+  box-shadow:0 1px 3px rgba(190,70,110,.22);
+  opacity:0;pointer-events:none;
+  animation:farmPetalFall 13s linear infinite;
+}
+.farm-petal-1{left:7%;animation-delay:0s;animation-duration:13s}
+.farm-petal-2{left:21%;animation-delay:2.4s;animation-duration:16s}
+.farm-petal-3{left:36%;animation-delay:5.1s;animation-duration:14.5s}
+.farm-petal-4{left:55%;animation-delay:1.3s;animation-duration:17s}
+.farm-petal-5{left:72%;animation-delay:7.2s;animation-duration:15s}
+.farm-petal-6{left:88%;animation-delay:3.8s;animation-duration:18s}
+@keyframes farmPetalFall{
+  0%{transform:translate3d(0,-6vh,0) rotate(0deg);opacity:0}
+  8%{opacity:.9}
+  30%{transform:translate3d(6vw,26vh,0) rotate(120deg)}
+  55%{transform:translate3d(-4vw,54vh,0) rotate(240deg)}
+  80%{transform:translate3d(7vw,82vh,0) rotate(360deg);opacity:.75}
+  100%{transform:translate3d(2vw,108vh,0) rotate(480deg);opacity:0}
+}
+.farm-anim-layer .farm-tree-scene{
+  position:absolute;right:5%;bottom:17%;width:112px;height:132px;
+  pointer-events:none;opacity:.92;
+}
+.farm-tree{position:absolute;inset:0}
+.farm-tree-trunk{
+  position:absolute;left:48px;bottom:0;width:16px;height:58px;border-radius:6px 6px 3px 3px;
+  background:linear-gradient(90deg,#8b5e3c,#b07a4a 55%,#7a4f31);
+  box-shadow:inset -3px 0 5px rgba(60,35,15,.28);
+}
+.farm-tree-crown{
+  position:absolute;left:8px;top:0;width:96px;height:84px;border-radius:50% 50% 44% 44%;
+  background:radial-gradient(circle at 32% 28%,#9fd47a,#6fae59 62%,#4e8b42);
+  box-shadow:0 5px 14px rgba(40,90,35,.25),inset 0 -8px 16px rgba(40,90,35,.18);
+}
+.farm-apple{
+  position:absolute;width:11px;height:11px;border-radius:50%;
+  background:radial-gradient(circle at 32% 30%,#ff9b8f,#e2453c 70%);
+  box-shadow:0 1px 3px rgba(120,20,20,.3);
+}
+.farm-apple-1{left:30px;top:30px}
+.farm-apple-2{left:66px;top:22px}
+.farm-apple-3{left:52px;top:55px}
+.farm-anim-layer .farm-squirrel{
+  position:absolute;left:60px;bottom:18px;font-size:24px;line-height:1;
+  filter:drop-shadow(0 3px 4px rgba(60,40,20,.28));
+  animation:farmSquirrelClimb 7.5s ease-in-out infinite;
+}
+@keyframes farmSquirrelClimb{
+  0%{transform:translate(0,0) rotate(-12deg)}
+  22%{transform:translate(-10px,-18px) rotate(8deg)}
+  45%{transform:translate(6px,-40px) rotate(-8deg)}
+  62%{transform:translate(10px,-56px) rotate(12deg)}
+  80%{transform:translate(-6px,-26px) rotate(-10deg)}
+  100%{transform:translate(0,0) rotate(-12deg)}
+}
+.farm-anim-layer .farm-ground-scene{
+  position:absolute;left:0;right:0;bottom:3%;height:52px;pointer-events:none;
+}
+.farm-grass-line{
+  position:absolute;left:0;right:0;bottom:0;height:12px;
+  background:linear-gradient(180deg,rgba(126,181,89,0),rgba(96,158,70,.5));
+  border-radius:50% 50% 0 0;
+}
+.farm-anim-layer .farm-dog,.farm-anim-layer .farm-cat{
+  position:absolute;bottom:6px;font-size:25px;line-height:1;
+  filter:drop-shadow(0 3px 4px rgba(50,80,40,.25));
+}
+.farm-anim-layer .farm-dog{animation:farmChaseDog 11s cubic-bezier(.42,0,.58,1) infinite}
+.farm-anim-layer .farm-cat{animation:farmChaseCat 11s cubic-bezier(.42,0,.58,1) .55s infinite}
+@keyframes farmChaseDog{
+  0%{transform:translateX(-6vw) translateY(0) rotate(-4deg)}
+  18%{transform:translateX(14vw) translateY(-7px) rotate(4deg)}
+  36%{transform:translateX(34vw) translateY(0) rotate(-3deg)}
+  54%{transform:translateX(54vw) translateY(-8px) rotate(5deg)}
+  72%{transform:translateX(76vw) translateY(0) rotate(-4deg)}
+  90%{transform:translateX(96vw) translateY(-6px) rotate(3deg)}
+  100%{transform:translateX(110vw) translateY(0) rotate(-4deg)}
+}
+@keyframes farmChaseCat{
+  0%{transform:translateX(-6vw) translateY(0) rotate(4deg)}
+  18%{transform:translateX(14vw) translateY(-5px) rotate(-4deg)}
+  36%{transform:translateX(34vw) translateY(0) rotate(3deg)}
+  54%{transform:translateX(54vw) translateY(-6px) rotate(-5deg)}
+  72%{transform:translateX(76vw) translateY(0) rotate(4deg)}
+  90%{transform:translateX(96vw) translateY(-5px) rotate(-3deg)}
+  100%{transform:translateX(110vw) translateY(0) rotate(4deg)}
+}
+@media (prefers-reduced-motion:reduce){
+  .farm-anim-layer .farm-petal,.farm-anim-layer .farm-squirrel,
+  .farm-anim-layer .farm-dog,.farm-anim-layer .farm-cat{animation:none}
+}
 
 </style>
 </head>
@@ -9895,23 +10056,19 @@ textarea.xs-adv-input-box{
   </section>
   <!-- ================= R85：设置中心（从任务设置独立出来，统一收纳全部配置） ================= -->
   <section class="page page-settings" data-page="settings" hidden data-page-node-id="R85pageSettings">
-    <!-- 标题卡：平台风格（R118-3：模式选择改为设置网格内一张卡片，与打卡任务等同款呈现） -->
-        <div class="page-title settings-title-card" data-page-node-id="R85setTitle">
+    <!-- R263-1.1：学生 / 家长切换按键迁移到「设置中心标题卡」右上角；原「使用模式」设置卡片已移除。
+         ID 与交互结构（#cardModeSettings / #modeSegSettings / #modeChildSettings / #modeParentSettings /
+         #modeSliderSettings）全部保留，app.js 的 setModeUI / 模式点击绑定零改动。 -->
+    <div class="page-title settings-title-card" data-page-node-id="R85setTitle">
       <h2 data-page-node-id="R85setTitleLbl"></h2>
-    </div><div class="page-content">
-
-    <!-- 设置中心卡片网格 -->
-    <div class="settings-grid" id="settingsGrid" data-page-node-id="R85settingsGrid">
-      <!-- 0) 使用模式（R118-3：模式选择卡片化，与打卡任务等卡片同款；ID 全部保留） -->
-      <div class="settings-card settings-card-mode" id="cardModeSettings" data-page-node-id="R118cardMode">
+      <div class="settings-card-mode r263-mode-corner" id="cardModeSettings" data-page-node-id="R118cardMode">
         <div class="settings-card-main" data-page-node-id="R118cardModeMain">
           <div class="settings-card-body">
           <div class="settings-card-head">
             <span class="settings-card-icon" data-page-node-id="R118cardModeIco">👥</span>
             <span class="settings-card-title" data-page-node-id="R118cardModeTitle">使用模式</span>
           </div>
-          <!-- R121-2：模式按键移至「使用模式」说明文字右侧并靠右摆放（说明文字在左，按键贴行尾） -->
-          <div class="settings-card-row settings-card-row-mode" data-page-node-id="R121cardModeRow">
+        <div class="settings-card-row settings-card-row-mode" data-page-node-id="R121cardModeRow">
           <div class="settings-card-desc" data-page-node-id="R118cardModeDesc">学生模式 / 家长模式切换</div>
           <div class="settings-mode-seg settings-mode-seg-mini settings-mode-seg-card" id="modeSegSettings" data-page-node-id="R85modeSeg">
             <button class="mode-opt" data-mode="child" id="modeChildSettings" data-page-node-id="R85modeChild">
@@ -9924,12 +10081,14 @@ textarea.xs-adv-input-box{
             </button>
             <span class="mode-slider" id="modeSliderSettings" data-page-node-id="R85modeSlider"></span>
           </div>
-          </div>
+        </div>
           </div>
         </div>
-        <span class="settings-card-arrow" data-page-node-id="R118cardModeArrow">›</span>
       </div>
+    </div><div class="page-content">
 
+    <!-- 设置中心卡片网格 -->
+    <div class="settings-grid" id="settingsGrid" data-page-node-id="R85settingsGrid">
       <!-- 1) 打卡任务 -->
       <div class="settings-card" id="cardTaskSettings" data-page-node-id="R85cardTask">
         <div class="settings-card-main" data-page-node-id="R85cardTaskMain">
@@ -9958,6 +10117,12 @@ textarea.xs-adv-input-box{
         <span class="settings-card-arrow" data-page-node-id="R85cardGameArrow">›</span>
       </div>
 
+      <!-- R261-1.1：提醒卡片（左，加宽） + 数据同步 / 分类导出文件 / 版本与更新（右，自上而下竖排）。
+           提醒卡片由 app.js 的 r256MountSettingsCard() 注入到 #r256SetCardSlot。 -->
+      <div class="settings-row-r261">
+      <div class="r261-remind-slot" id="r256SetCardSlot"></div>
+      <div class="settings-row-3 settings-row-3-side" id="settingsRow3">
+      <!-- R263-1.2 ①：音乐设置移到提醒卡右侧右列首位 -->
       <!-- 3) 音乐设置 -->
       <div class="settings-card" id="cardMusicSettings" data-page-node-id="R85cardMusic">
         <div class="settings-card-main" data-page-node-id="R85cardMusicMain">
@@ -9972,11 +10137,6 @@ textarea.xs-adv-input-box{
         <span class="settings-card-arrow" data-page-node-id="R85cardMusicArrow">›</span>
       </div>
 
-      <!-- R261-1.1：提醒卡片（左，加宽） + 数据同步 / 分类导出文件 / 版本与更新（右，自上而下竖排）。
-           提醒卡片由 app.js 的 r256MountSettingsCard() 注入到 #r256SetCardSlot。 -->
-      <div class="settings-row-r261">
-      <div class="r261-remind-slot" id="r256SetCardSlot"></div>
-      <div class="settings-row-3 settings-row-3-side" id="settingsRow3">
       <div class="settings-card" id="cardSyncSettings" data-page-node-id="R85cardSync">
         <div class="settings-card-main" data-page-node-id="R85cardSyncMain">
           <div class="settings-card-body">
@@ -10729,9 +10889,10 @@ textarea.xs-adv-input-box{
   <section class="page page-farm" data-page="farm" hidden data-page-node-id="KBzw9h5nsTXcaruZBZRwwe">
     <!-- 装饰背景：天空 + 草地 -->
     <div class="farm-bg" data-page-node-id="lHGty1nDWUniRN962OxWMZ"></div>
-    <!-- R261-2.3 / R262-2.5：动态背景 —— 左上角斜向洒落的阳光 + 自由飞舞的飞鸟 / 蝴蝶。
+    <!-- R261-2.3 / R262-2.5 / R263-2.3：动态背景 —— 斜向阳光 + CSS 剪影飞鸟 / 蝴蝶 +
+          桃花飘舞 + 苹果树上爬动的小松鼠 + 草地小狗小猫追逐。
           R262 起飞鸟改为纯 CSS 剪影（双翅独立扇动 + 起伏滑翔 + 远近缩放 + 淡入淡出），
-          比 emoji 更自然、与田园背景更协调；pointer-events:none，不拦截点击、不占存档配额。 -->
+          R263 新增三组特效同样纯 CSS / emoji 实现，pointer-events:none，不拦截点击、不占存档配额。 -->
     <div class="farm-anim-layer" aria-hidden="true">
       <div class="farm-sunbeam"></div>
       <div class="farm-sunbeam farm-sunbeam-2"></div>
@@ -10741,6 +10902,30 @@ textarea.xs-adv-input-box{
       <span class="farm-fly farm-butterfly farm-butterfly-1">🦋</span>
       <span class="farm-fly farm-butterfly farm-butterfly-2">🦋</span>
       <span class="farm-fly farm-butterfly farm-butterfly-3">🦋</span>
+      <!-- R263-2.3 ① 桃花飘舞：6 片 CSS 花瓣，各自旋转 / 左右摇摆 / 错峰下落 -->
+      <span class="farm-petal farm-petal-1"></span>
+      <span class="farm-petal farm-petal-2"></span>
+      <span class="farm-petal farm-petal-3"></span>
+      <span class="farm-petal farm-petal-4"></span>
+      <span class="farm-petal farm-petal-5"></span>
+      <span class="farm-petal farm-petal-6"></span>
+      <!-- R263-2.3 ② 苹果树 + 沿树干上下爬动的小松鼠 -->
+      <div class="farm-tree-scene">
+        <div class="farm-tree">
+          <i class="farm-tree-trunk"></i>
+          <i class="farm-tree-crown"></i>
+          <i class="farm-apple farm-apple-1"></i>
+          <i class="farm-apple farm-apple-2"></i>
+          <i class="farm-apple farm-apple-3"></i>
+        </div>
+        <span class="farm-squirrel">🐿️</span>
+      </div>
+      <!-- R263-2.3 ③ 草地小狗 / 小猫追逐（小狗在前、小猫紧追，带小跳与尾巴摆动） -->
+      <div class="farm-ground-scene">
+        <i class="farm-grass-line"></i>
+        <span class="farm-dog">🐶</span>
+        <span class="farm-cat">🐱</span>
+      </div>
     </div>
     <div class="farm-deco-farm-fence" data-page-node-id="k7bMqOwS5bFQPq1npzK3vI"></div>
 
@@ -12414,6 +12599,8 @@ textarea.xs-adv-input-box{
   // 刷新 / 点击版本更新后 load() 会先叠加补丁，再尝试写回主档，避免用户修改全部丢失。
   const KEY_PENDING = KEY + '_pending';
   const PENDING_BUDGET = 400 * 1024;
+  // R263-3.1：本次会话已经有过一次成功落库（用于放宽 flushPersistence 的安全闸）
+  let _sessionPersisted = false;
   const SNAPSHOT_KEY_ALWAYS = ['tasks','settings','taskGroups','taskJump','farmOpen','rewardRules','weekPlan','calcSettings'];
   const SNAPSHOT_BUDGET = 400 * 1024;   // 快照总字节上限，避免和主档抢空间
   const SCHEMA_VERSION = 254;
@@ -12470,7 +12657,9 @@ textarea.xs-adv-input-box{
       if(!st) return false;
       // 安全闸：本次会话从未成功读到 / 写过存档时，绝不把内存里的默认空档刷进主档
       // （数据保护第一原则：宁可少写一次，也不能覆盖 iPad 上已有的打卡记录）
-      if(!_loadCacheRaw) return false;
+      // R263-3.1：只要本次会话有过成功落库，就允许刷盘；
+      // 原「!_loadCacheRaw 一律拒绝」在首启 / 缓存异常时反而挡住了最后一次保存。
+      if(!_loadCacheRaw && !_sessionPersisted) return false;
       _guardBeforeSave(st);   // R259：刷盘同样过写盘闸，关页面 / 切后台也守保护规则
       const raw = JSON.stringify(st);
       // R260-1.1：刷盘同样走配额回收链，避免「关页面最后一次操作因空间不足丢失」
@@ -13318,7 +13507,7 @@ textarea.xs-adv-input-box{
     };
   }
   function load(){
-    if(_staging && _staged) return _staged; // R131-2：暂存态下直接返回草稿，编辑期间不落库
+    if(_staging && _staged) return _staged; // R131-2：暂存态下直接返回草稿供 UI 使用（R263-3.1 起草稿同时已即时落库）
     let st; let raw = null;
     // R254-1：主存档损坏 / 截断时回退备份，避免版本更新或异常写入后「数据全没了」
     const _rd = _readMainRaw();
@@ -14223,7 +14412,17 @@ textarea.xs-adv-input-box{
   }
   function hasSettingsSnapshot(){ return !!_safeGet(KEY_SNAPSHOT); }
   function save(st){
-    if(_staging){ _staged = st; return true; } // R131-2：暂存态下仅写入草稿，不落库
+    /* R263-3.1 持久化丢失根治：暂存态也必须「立即落库」。
+       原实现 `if(_staging){ _staged = st; return true; }` 把进入设置中心之后的
+       每一次修改都只留在内存草稿里，只有点【保存设置】或 pagehide 刷盘才写盘。
+       iPad Safari / PWA / Service Worker 版本更新触发重载时 pagehide 未必执行，
+       草稿随之蒸发，load() 读回的还是旧主档 →「刷新页面 / 点击版本更新后
+       用户修改全部丢失、恢复至初始状态」（探针 _r263_persist_probe.js 场景 1/3/5 已复现）。
+       且 commitSettings() 提交后仍保持 _staging=true，后续所有 save 继续被吞。
+       现在草稿与磁盘同步：暂存态保留 _staged 供 UI 使用，但每次 save 都走完整落库链
+       （写盘闸 → 配额回收 → 回读校验 → 失败留差异补丁 → 双代备份），
+       任何时刻刷新 / 重载都不丢；写不进时由 R261 的 _pending 补丁兜底。 */
+    if(_staging){ _staged = st; }
     st = _guardBeforeSave(st);                 // R259：写盘闸 —— 非用户主动的清空一律回填
     let raw;
     let _r256Entry = null;
@@ -14262,6 +14461,7 @@ textarea.xs-adv-input-box{
       }
     }catch(e){ /* 读不到（隐私模式/受限）时不推翻已返回成功的写入 */ }
     _saveError = '';
+    _sessionPersisted = true; // R263-3.1：本次会话已有可信落库，pagehide 刷盘安全闸放行
     _loadCachePut(st, raw);   // R246-3：写成功后同步缓存，下一次 load() 无需再解析
     // R258-1.1：主档已完整落库，之前为应急写的设置快照立刻作废（避免两份真相）
     _snapshotClear();
@@ -22350,7 +22550,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     // R131-2：离开设置中心且处于暂存态 → 丢弃未保存草稿（防止污染其他页面/存储）
     if(S && typeof S.isStaging === 'function' && S.isStaging() && page !== 'settings'){ S.discardSettings(); }
     $$('.page').forEach(p=>p.hidden = (p.dataset.page!==page));
-    // R131-2：进入设置中心 → 开启暂存态（编辑期间不落库，点击【保存设置】才提交）
+    // R131-2：进入设置中心 → 开启暂存态（R263-3.1 起修改即时落库，保存按钮仅作确认/快照提交）
     if(page === 'settings' && S && typeof S.beginSettings === 'function' && !S.isStaging()){ S.beginSettings(); }
     // R101：乐读数学「题型列表页」已删除（板块下方就地加载题型），导航特判随之移除
     $$('.nav-btn').forEach(b=>b.classList.toggle('active', b.dataset.page===page));
