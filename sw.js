@@ -41,18 +41,18 @@ var PRECACHE = ['./', './index.html'];
 var NAV_TIMEOUT = 2500;      // R119.1：有缓存时的快速回退窗口（原 6000ms 偏长）
 var HARD_TIMEOUT = 30000;    // R119.1：无缓存且网络长时间无响应时的兜底，避免无限转圈
 var PRECACHE_TIMEOUT = 25000; // R119.1：预缓存最多占用这么久，超时就先激活 SW
-/* R70：构建指纹。部署脚本会把 77fa9a47dad1 替换为当期 index.html 的 sha256 前 12 位。
+/* R70：构建指纹。部署脚本会把 49cf9cb65ed2 替换为当期 index.html 的 sha256 前 12 位。
  * 作用：只在站点内容真的变化时，sw.js 本身才变化，从而触发浏览器 SW 更新流程
  * （install → 重新预缓存新 index.html → installed → 页面自动重载到新版）。 */
-var BUILD = '77fa9a47dad1';
+var BUILD = '49cf9cb65ed2';
 /* R244-6：缓存名绑定构建指纹 —— 版本更新时 activate 会清掉上一版缓存，
  * 避免外置种子脚本停留在旧内容（表现为百科等板块数据「被清零」）。 */
 var CACHE_NAME = 'zoo-checkin-v1-' + BUILD;
-/* R93：版本号与版本更新时间。部署脚本会把 R260 替换为当期轮次号（如 R93）、
- * 2026-11-09 10:50 替换为本次部署时间（北京时间，格式 YYYY-MM-DD HH:mm）。
+/* R93：版本号与版本更新时间。部署脚本会把 R261 替换为当期轮次号（如 R93）、
+ * 2026-11-09 14:06 替换为本次部署时间（北京时间，格式 YYYY-MM-DD HH:mm）。
  * 用途：「设置中心 → 版本与更新」显示「当前版本 + 更新时间」，点「检查更新」后即为最新读数。 */
-var APP_VERSION = 'R260';
-var BUILD_TIME = '2026-11-09 10:50';
+var APP_VERSION = 'R261';
+var BUILD_TIME = '2026-11-09 14:06';
 
 self.addEventListener('install', function (e) {
   self.skipWaiting();
