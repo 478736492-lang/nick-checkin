@@ -12049,6 +12049,8 @@ body.r256-sheet-on{overflow:hidden}
   const KEY_META = KEY + '_meta';
   // R258-1.1：主存档写不进（配额已满）时，设置类小字段单独落一份快照，避免「设置存不下」
   const KEY_SNAPSHOT = KEY + '_settings';
+  // R259：更新前保护副本（版本更新 / 关页面时写一份，极端情况下可回滚用户数据）
+  const KEY_PRE_UPDATE = KEY + '_preupdate';
   const SNAPSHOT_KEY_ALWAYS = ['tasks','settings','taskGroups','taskJump','farmOpen','rewardRules','weekPlan','calcSettings'];
   const SNAPSHOT_BUDGET = 400 * 1024;   // 快照总字节上限，避免和主档抢空间
   const SCHEMA_VERSION = 254;
@@ -12105,6 +12107,7 @@ body.r256-sheet-on{overflow:hidden}
       // 安全闸：本次会话从未成功读到 / 写过存档时，绝不把内存里的默认空档刷进主档
       // （数据保护第一原则：宁可少写一次，也不能覆盖 iPad 上已有的打卡记录）
       if(!_loadCacheRaw) return false;
+      _guardBeforeSave(st);   // R259：刷盘同样过写盘闸，关页面 / 切后台也守保护规则
       const raw = JSON.stringify(st);
       if(!_safeSet(KEY, raw)) return false;
       _snapshotClear();   // R258-1.1：主档已整体落盘，应急设置快照作废
@@ -12792,6 +12795,135 @@ body.r256-sheet-on{overflow:hidden}
     _loadCacheSt = st; _loadCacheOK = true;
     try{ _loadCacheRaw = (raw === undefined) ? localStorage.getItem(KEY) : raw; }catch(e){ _loadCacheRaw = null; }
   }
+  /* ============ R259：用户数据保护（Data Guard） ============
+     规则：平台更新数据保护规则 1.1 ~ 1.5。任何「版本更新 / 页面改版 / 功能迭代 / 配置推送」
+     都不得覆盖、重置、清空、回退用户私有数据；只有用户主动点「清空 / 重置 / 删除」才放行。
+
+     三道闸门：
+       ① 写盘闸 `_guardBeforeSave`：对「只增不减」的用户记录，若本次写入把它变成空，
+          而上一份已落库的存档里还有数据 → 判定为非用户主动清空，从上一代备份回填。
+       ② 迁移闸 `_guardRestore`：load() 跑完字段迁移后再比对一次，schema 改动造成的意外清零
+          立刻回滚（规则 1.4.1 / 1.4.2：冲突时优先保留用户值）。
+       ③ 更新闸 `protectBeforeUpdate`：点「检查更新」/ 关页面前，把受保护字段单独留一份
+          `zoo_checkin_v3_preupdate`，即便更新过程出极端问题也能救回（规则 1.3）。 */
+  const PROTECT_KEYS = [
+    // 1.1.2 用户自定义编辑内容
+    'profile','tasks','taskGroups','taskJump','settings','rewardRules','weekPlan','calcSettings',
+    'userReading','customList','nwZone','kewenLearned','mathProblems','mathNotes','mathNoteStatus',
+    'mathLecture','mathGroups','mathGallery','xueersiWordBank',
+    // 1.1.1 打卡 / 学习记录类
+    'records','checkinLog','goRecords','archive','r256',
+    'calcBook','calcDoneKeys','calcDailyLog','calcDrill','calcWrongBook','calcBank',
+    'calcStreak','calcStreakLastDate','calcStreakRewardWeeks','calcStreakBonusStars',
+    'readFlags','readLog','xueersiWrongs','xueersiDailyResults','xueersiAnswerLog',
+    'xueersiChecked','xueersiCheckin','baikeViewed','baikeFlags','baikeCounts','lastBaikeDate',
+    'plots','inventory','gifts','shop','km'
+  ];
+  /* 只做「原先有 → 现在空」拦截的字段：这些都属于只增不减的记录，
+     正常业务里不存在「整份变成空」的合法路径；用户主动清空会先 allowUserClear() 放行。 */
+  /* 写盘闸只盯「只增不减」的记录类字段：正常业务里不存在整份变空的合法路径
+     （用户主动清空会先 allowUserClear 放行）。
+     ⚠️ 错题本 / 百科打卡 / 学而思错题这类「答对一题就少一条」的集合不能进写盘闸，
+        否则用户订正掉最后一道错题时会被误判成「数据被清空」而回填。 */
+  const GUARD_WIPE_KEYS = [
+    'records','checkinLog','goRecords','archive','r256','profile',
+    'calcBook','calcDoneKeys','calcDailyLog','calcDrill',
+    'readFlags','readLog','kewenLearned','xueersiAnswerLog',
+    'tasks','plots','inventory','xueersiWordBank','mathNoteStatus'
+  ];
+  /* 迁移闸（只在 load() 跑完字段迁移后比对一次）覆盖面更大：
+     迁移是「更新」唯一会自动执行的写入路径，把 1.1 里的记录类全放进来，
+     正常打开页面时不会有代码把它们清零，因此不会误伤用户的正常删除。 */
+  const GUARD_MIGRATION_KEYS = GUARD_WIPE_KEYS.concat([
+    'calcWrongBook','calcStreak','xueersiWrongs','xueersiDailyResults','xueersiChecked',
+    'baikeFlags','baikeCounts','baikeViewed','km'
+  ]);
+  let _clearAll = false;        // 用户主动清空：本次 save 不做回填
+  let _persistedShape = null;   // 上一次成功落库时各保护字段的「大小」
+  function allowUserClear(){ _clearAll = true; return true; }
+  function _shapeOf(v){
+    if(v == null) return 0;
+    if(Array.isArray(v)) return v.length;
+    if(typeof v === 'object'){ let n = 0; try{ n = Object.keys(v).length; }catch(e){ n = 0; } return n; }
+    if(typeof v === 'number') return v > 0 ? 1 : 0;
+    if(typeof v === 'string') return v.length ? 1 : 0;
+    return v ? 1 : 0;
+  }
+  function _guardCapture(st, keys){
+    const cap = {};
+    if(!st || typeof st !== 'object') return cap;
+    (keys || GUARD_WIPE_KEYS).forEach(function(k){ cap[k] = _shapeOf(st[k]); });
+    return cap;
+  }
+  // 取回被误清的保护字段：优先用「主档当前内容」（写盘闸在写入之前执行，此时主档还是上一份好数据），
+  // 主档取不到 / 该字段本身为空时再退回上一代备份。只解析一次，正常写入零开销。
+  function _restoreFromBackup(st, keys){
+    if(!keys.length) return [];
+    const readObj = function(raw){ try{ const o = JSON.parse(raw || 'null'); return (o && typeof o === 'object' && !Array.isArray(o)) ? o : null; }catch(e){ return null; } };
+    const srcs = [ readObj(_safeGet(KEY)), readObj(_safeGet(KEY_BAK1)), readObj(_safeGet(KEY_BAK2)) ].filter(Boolean);
+    if(!srcs.length) return [];
+    const done = [];
+    keys.forEach(function(k){
+      for(let i=0;i<srcs.length;i++){
+        const v = srcs[i][k];
+        if(v !== undefined && _shapeOf(v) > 0){ st[k] = v; done.push(k); break; }
+      }
+    });
+    if(done.length){
+      st.__dataGuard = { at: Date.now(), version: 'R259', keys: done.slice(0, 20), n: done.length };
+      try{ console.warn('[Store] 数据保护：已阻止一次用户数据清空 →', done.join(',')); }catch(e){}
+    }
+    return done;
+  }
+  function _guardBeforeSave(st){
+    const allowAll = _clearAll; _clearAll = false;   // 一次用户操作只放行一次
+    if(allowAll || !_persistedShape || !st || typeof st !== 'object') return st;
+    const bad = [];
+    GUARD_WIPE_KEYS.forEach(function(k){
+      if((_persistedShape[k] || 0) > 0 && _shapeOf(st[k]) === 0) bad.push(k);
+    });
+    if(bad.length) _restoreFromBackup(st, bad);
+    return st;
+  }
+  function _guardRestore(st, cap){
+    if(!st || typeof st !== 'object' || !cap) return [];
+    const bad = [];
+    Object.keys(cap).forEach(function(k){
+      if((cap[k] || 0) > 0 && _shapeOf(st[k]) === 0) bad.push(k);
+    });
+    const done = _restoreFromBackup(st, bad);
+    if(done.length){
+      // 迁移造成的清零：把救回的数据立即落库，避免下次又读到坏值
+      try{ const raw = JSON.stringify(st); if(_safeSet(KEY, raw)){ _rotateBackup(raw, true); _loadCachePut(st, raw); } }catch(e){}
+    }
+    return done;
+  }
+  /* ============ R259：更新前保护副本 ============ */
+  function protectBeforeUpdate(){
+    try{
+      const st = _loadCacheSt || _staged || null;
+      if(!st || typeof st !== 'object') return false;
+      const out = { __preupdate: 1, at: Date.now(), schema: st.__schema || 0 };
+      PROTECT_KEYS.forEach(function(k){ if(st[k] !== undefined) out[k] = st[k]; });
+      let raw = '';
+      try{ raw = JSON.stringify(out); }catch(e){ return false; }
+      const ok = _safeSet(KEY_PRE_UPDATE, raw);
+      try{ flushPersistence(); }catch(e){}
+      return ok;
+    }catch(e){ return false; }
+  }
+  function hasPreUpdateBackup(){ return !!_safeGet(KEY_PRE_UPDATE); }
+  function dataGuardInfo(){
+    return {
+      version: 'R259',
+      protectedCount: PROTECT_KEYS.length,
+      wipeGuarded: GUARD_WIPE_KEYS.length,
+      migrationGuarded: GUARD_MIGRATION_KEYS.length,
+      preUpdateBackup: hasPreUpdateBackup(),
+      shape: _persistedShape ? { calcBook: _persistedShape.calcBook, calcDailyLog: _persistedShape.calcDailyLog, records: _persistedShape.records } : null,
+      lastRestore: (function(){ try{ const r = _loadCacheSt && _loadCacheSt.__dataGuard; return r || null; }catch(e){ return null; } })()
+    };
+  }
   function load(){
     if(_staging && _staged) return _staged; // R131-2：暂存态下直接返回草稿，编辑期间不落库
     let st; let raw = null;
@@ -12852,6 +12984,8 @@ body.r256-sheet-on{overflow:hidden}
     }
     // R258-1.1：主档写不进时设置单独存的快照，这里叠加回来（只在主档本身可读时合并，避免半份状态）
     st = _snapshotApply(st);
+    // R259：迁移前拍一份「保护字段当前大小」，迁移后再比对，防止字段迁移把用户数据清零
+    const _gcap = _guardCapture(st, GUARD_MIGRATION_KEYS);
     if(!Array.isArray(st.plots) || st.plots.length !== PLOT_COUNT){
       plotsIn(st); save(st);
     }
@@ -13040,11 +13174,19 @@ body.r256-sheet-on{overflow:hidden}
     // R243-1：题库题目/答案核查修正（幂等）
     if(migrateCalcBankFix(st)) save(st);
     // R236：连续打卡（计算小超市）天数清零 + 7 天连打卡奖励初始化（一次性）
+    // R259：这条一次性迁移原会无条件把连续打卡清零。若设备上已经有计算小超市数据
+    // （打卡日志 / 已做本 / 连续天数），说明早已越过该迁移，只是标记丢失（配额写失败等）——
+    // 此时绝不能再清一次，只补标记（规则 1.2.1 / 1.4.2：用户值优先）。
     if(!st.__calcStreakResetR236){
-      st.calcStreak = 0;
-      st.calcStreakLastDate = '';
-      st.calcStreakRewardWeeks = 0;
-      st.calcStreakBonusStars = 0;
+      const _hasCalcData = (st.calcDailyLog && Object.keys(st.calcDailyLog).length > 0)
+        || (Array.isArray(st.calcBook) && st.calcBook.length > 0)
+        || (st.calcStreak | 0) > 0;
+      if(!_hasCalcData){
+        st.calcStreak = 0;
+        st.calcStreakLastDate = '';
+        st.calcStreakRewardWeeks = 0;
+        st.calcStreakBonusStars = 0;
+      }
       st.__calcStreakResetR236 = true;
       save(st);
     }
@@ -13461,6 +13603,9 @@ body.r256-sheet-on{overflow:hidden}
     if(!st.kewenLearned) st.kewenLearned = []; // V71：课文朗读已学习编号数组
     // R254-1：版本标记只写「当前 schema 版本」，不参与任何数据重置
     if(st.__schema !== SCHEMA_VERSION) st.__schema = SCHEMA_VERSION;
+    // R259：迁移闸 —— 任何被迁移逻辑清零的保护字段，在这里立刻从备份回填
+    _guardRestore(st, _gcap);
+    _persistedShape = _guardCapture(st);
     _loadCachePut(st);   // R246-3：解析 + 迁移完成后写入缓存
     // R254-1：若本次是从备份救回来的，立即回写主存档，保证下次打开读的是完整数据
     if(_recoveredFrom){
@@ -13528,18 +13673,16 @@ body.r256-sheet-on{overflow:hidden}
   function _snapshotOf(st){
     const out = {};
     if(!st || typeof st !== 'object') return out;
-    let used = 0;
+    /* R259 修复（数据丢失根因）：快照**只能**装设置类字段。
+       原实现会按 400KB 预算把 calcBook / calcDailyLog / records 等业务数据一起写进快照，
+       之后每次 load() 都用这份旧快照覆盖主档 → 刷新或点「检查更新」后
+       计算小超市的今日批改 / 已做本 / 打卡日历回退到写快照那一刻，表现为「数据被清空」。
+       现在严格白名单，业务数据一个都不进快照。 */
     SNAPSHOT_KEY_ALWAYS.forEach(function(k){
       if(st[k] === undefined) return;
-      try{ const t = JSON.stringify(st[k]); used += k.length + t.length; out[k] = st[k]; }catch(e){}
+      try{ JSON.stringify(st[k]); out[k] = st[k]; }catch(e){}
     });
-    Object.keys(st).forEach(function(k){
-      if(out[k] !== undefined || k === '__settingsSnapshot') return;
-      let t = '';
-      try{ t = JSON.stringify(st[k]); }catch(e){ return; }
-      if(used + k.length + t.length > SNAPSHOT_BUDGET) return;
-      out[k] = st[k]; used += k.length + t.length;
-    });
+    out.__snapAt = Date.now();
     return out;
   }
   function _snapshotWrite(st){
@@ -13553,7 +13696,10 @@ body.r256-sheet-on{overflow:hidden}
     let snap = null;
     try{ snap = JSON.parse(raw); }catch(e){ snap = null; }
     if(!snap || typeof snap !== 'object' || Array.isArray(snap)) return st;
-    Object.keys(snap).forEach(function(k){ st[k] = snap[k]; });
+    // R259：同样只回填白名单内的设置类字段，业务数据一律不碰
+    SNAPSHOT_KEY_ALWAYS.forEach(function(k){
+      if(snap[k] !== undefined) st[k] = snap[k];
+    });
     st.__settingsSnapshot = 1;
     _snapshotRecovered = true;
     return st;
@@ -13561,6 +13707,7 @@ body.r256-sheet-on{overflow:hidden}
   function hasSettingsSnapshot(){ return !!_safeGet(KEY_SNAPSHOT); }
   function save(st){
     if(_staging){ _staged = st; return true; } // R131-2：暂存态下仅写入草稿，不落库
+    st = _guardBeforeSave(st);                 // R259：写盘闸 —— 非用户主动的清空一律回填
     let raw;
     let _r256Entry = null;
     try{ _r256Entry = _r256Ledger(st); }catch(e){}
@@ -13605,6 +13752,7 @@ body.r256-sheet-on{overflow:hidden}
     _loadCachePut(st, raw);   // R246-3：写成功后同步缓存，下一次 load() 无需再解析
     // R258-1.1：主档已完整落库，之前为应急写的设置快照立刻作废（避免两份真相）
     _snapshotClear();
+    _persistedShape = _guardCapture(st);   // R259：记录本次落库后的保护字段大小
     // R255-5：备份属于「附加保险」，它失败绝不能让主存档被判定为失败
     try{ _rotateBackup(raw, false); }catch(e){}
     return true;
@@ -13733,7 +13881,7 @@ body.r256-sheet-on{overflow:hidden}
     save(st);
     return true;
   }
-  function deleteTask(id){
+  function deleteTask(id){ allowUserClear();
     const st=load();
     st.tasks = st.tasks.filter(t=>t.id!==id);
     st.records = st.records.filter(r=>r.taskId!==id);
@@ -14242,7 +14390,7 @@ body.r256-sheet-on{overflow:hidden}
     st.nwCards = obj;
     save(st);
   }
-  function resetNWData(){
+  function resetNWData(){ allowUserClear();
     const st = load();
     delete st.nwCards;
     save(st);
@@ -14490,7 +14638,7 @@ body.r256-sheet-on{overflow:hidden}
     save(st);
     return st.shGushiLearned.slice();
   }
-  function resetData(){ _loadCacheOK = false; _loadCacheRaw = null; _loadCacheSt = null; localStorage.removeItem(KEY); return load(); }
+  function resetData(){ allowUserClear(); _loadCacheOK = false; _loadCacheRaw = null; _loadCacheSt = null; localStorage.removeItem(KEY); return load(); }
 
   // ----- 档案重新计算 -----
   function recompute(st){
@@ -15074,7 +15222,7 @@ body.r256-sheet-on{overflow:hidden}
     const st = load(); st.shop = s; save(st);
     return {ok:true, item: it};
   }
-  function resetShop(){
+  function resetShop(){ allowUserClear();
     const st = load();
     st.shop = {seeds: seedShop(), growth: growthShop(), gifts: giftShop()};
     save(st);
@@ -15232,7 +15380,7 @@ body.r256-sheet-on{overflow:hidden}
     save(st);
     return {ok:true, list: st.customMathTypes.slice()};
   }
-  function removeMathType(name){
+  function removeMathType(name){ allowUserClear();
     const st = load();
     const listed = Array.isArray(st.customMathTypes) && st.customMathTypes.indexOf(name) >= 0;
     const hasProb = (st.mathProblems||[]).some(m => m.type === name);
@@ -15322,7 +15470,7 @@ body.r256-sheet-on{overflow:hidden}
     return {ok:true, groupId:g.id};
   }
   // V12.6：种植园清零（水/阳光/成长星/金币/解锁田 — 解锁田恢复成 12 块未解锁）
-  function resetFarmCurrencies(){
+  function resetFarmCurrencies(){ allowUserClear();
     const st = load();
     st.archive.totalStars = 0;
     st.archive.exp = 0;
@@ -15631,7 +15779,7 @@ body.r256-sheet-on{overflow:hidden}
     return st.goRecords.filter(g=>wk.includes(g.date)).length;
   }
   // 需求②：每周日 23:00 自动清零当周（本周）围棋对弈记录
-  function clearWeekGoRecords(){
+  function clearWeekGoRecords(){ allowUserClear();
     const st = load();
     const wk = weekRange();
     const before = st.goRecords.length;
@@ -15914,7 +16062,7 @@ body.r256-sheet-on{overflow:hidden}
     save(st);
     return true;
   }
-  function deleteKtxsBook(title){
+  function deleteKtxsBook(title){ allowUserClear();
     const st = load();
     if(st.nwZone && st.nwZone.ktxs_books){ st.nwZone.ktxs_books = st.nwZone.ktxs_books.filter(b=>b && (b.t||'') !== title); }
     if(st.nwZone && st.nwZone['ktxs_' + title]) delete st.nwZone['ktxs_' + title];
@@ -16300,7 +16448,7 @@ body.r256-sheet-on{overflow:hidden}
     st.km.questions = JSON.parse(JSON.stringify(arr));
     save(st); return getKMQuestions();
   }
-  function resetKMQuestions(){
+  function resetKMQuestions(){ allowUserClear();
     const st = load(); kmEnsure(st);
     st.km.questions = null; save(st); return getKMQuestions();
   }
@@ -16431,7 +16579,7 @@ body.r256-sheet-on{overflow:hidden}
     km.stars = (km.stars||0) + (n||0); save(st); return km.stars;
   }
   // R14-Req1：仅清零星星数量（通关记录 / 错题 / 续闯进度均不受影响）
-  function resetKMStars(){
+  function resetKMStars(){ allowUserClear();
     const st = load(); const km = kmEnsure(st);
     km.stars = 0; save(st); return 0;
   }
@@ -16453,8 +16601,8 @@ body.r256-sheet-on{overflow:hidden}
     save(st); return km.wrong.slice();
   }
   function getKMWrong(){ const st = load(); const km = kmEnsure(st); return km.wrong.slice(); }
-  function clearKMWrong(){ const st = load(); const km = kmEnsure(st); km.wrong = []; save(st); return []; }
-  function resetKMProgress(){
+  function clearKMWrong(){ allowUserClear(); const st = load(); const km = kmEnsure(st); km.wrong = []; save(st); return []; }
+  function resetKMProgress(){ allowUserClear();
     const st = load(); const km = kmEnsure(st);
     km.stars = 0; km.cleared = {chinese:false, math:false, english:false, mixed:false}; km.wrong = []; km.progress = {};
     save(st); return getKMState();
@@ -18425,7 +18573,7 @@ be 动词：am / is → was；are → were
     const st = load();
     return (st.archive && st.archive.xsWordCheckins) || 0;
   }
-  function resetXsWordCheckins(){
+  function resetXsWordCheckins(){ allowUserClear();
     const st = load();
     st.archive = st.archive || {};
     st.archive.xsWordCheckins = 0;
@@ -18444,7 +18592,7 @@ be 动词：am / is → was；are → were
     return days.size;
   }
   // V13.2：清零 + 设置数量（家长模式）
-  function resetArchiveCounter(field){
+  function resetArchiveCounter(field){ allowUserClear();
     const st = load();
     st.archive = st.archive || {};
     if(field==='all'){ st.archive.totalStars=0; st.archive.totalCoins=0; st.archive.exp=0; }
@@ -18469,7 +18617,7 @@ be 动词：am / is → was；are → were
     save(st);
     return {ok:true, totalStars: st.archive.totalStars};
   }
-  function resetInventory(field){
+  function resetInventory(field){ allowUserClear();
     const st = load();
     st.inventory = st.inventory || {};
     st.inventory[field] = 0;
@@ -19967,7 +20115,7 @@ be 动词：am / is → was；are → were
     save(st);
     return {ok:true, item:calcBankItem(rec), idx, total:st.calcBank.length};
   }
-  function delCalcProblem(idx){
+  function delCalcProblem(idx){ allowUserClear();
     const st = load();
     if(!Array.isArray(st.calcBank)) return {ok:false, msg:'题库为空'};
     idx = parseInt(idx,10);
@@ -19980,6 +20128,8 @@ be 动词：am / is → was；are → were
   // R231-2：一次性迁移导入 xlsx 题库（1250 题，带 cat 与 ans）；清空旧库，幂等
   function migrateCalcBank(st){
     if(st.calcBankImported) return false;
+    // R259：库里已经有题（用户可能编辑过）→ 只补标记，绝不整份替换（规则 1.2.3）
+    if(Array.isArray(st.calcBank) && st.calcBank.length){ st.calcBankImported = true; return true; }
     const seed = (typeof window !== 'undefined') ? window.CALC_BANK_SEED : null;
     if(Array.isArray(seed) && seed.length){
       st.calcBank = seed.map(x => {
@@ -20062,7 +20212,7 @@ be 动词：am / is → was；are → were
     return {ok:true};
   }
   function getCalcWrongs(){ const st = load(); return Array.isArray(st.calcWrongBook) ? st.calcWrongBook.slice() : []; }
-  function clearCalcWrongs(){ const st = load(); st.calcWrongBook = []; save(st); return {ok:true}; }
+  function clearCalcWrongs(){ allowUserClear(); const st = load(); st.calcWrongBook = []; save(st); return {ok:true}; }
   // 错题本单题「订正完成」标记（R244：由「移入已做本」手动收录后从错题本移除）
   function setCalcWrongFixed(key, fixed){
     const st = load();
@@ -20117,7 +20267,7 @@ be 动词：am / is → was；are → were
     save(st);
     return {ok:true};
   }
-  function clearCalcDrill(){ const st = load(); st.calcDrill = calcDrillBlank(); save(st); return {ok:true}; }
+  function clearCalcDrill(){ allowUserClear(); const st = load(); st.calcDrill = calcDrillBlank(); save(st); return {ok:true}; }
 
   // ===== R245-1：计算小超市 · 每日打卡记录（打卡日历数据源）=====
   // 形如 { 'YYYY-MM-DD': {correct, total, wrong, checked, at} }
@@ -20190,7 +20340,7 @@ be 动词：am / is → was；are → were
     unbumpCalcStreak();
     return {ok:true, refund:2};
   }
-  function clearCalcDailyLog(){ const st = load(); st.calcDailyLog = {}; save(st); return {ok:true}; }
+  function clearCalcDailyLog(){ allowUserClear(); const st = load(); st.calcDailyLog = {}; save(st); return {ok:true}; }
   // 已做本：按日期倒序，同日同题去重
   function getCalcBook(){
     const st = load();
@@ -20219,7 +20369,7 @@ be 动词：am / is → was；are → were
     return Object.keys(seen);
   }
   // 清空已做本 = 用户主动把题目放回抽题池（连同长期 key 集合一起清）
-  function clearCalcBook(){ const st = load(); st.calcBook = []; st.calcDoneKeys = []; save(st); return {ok:true}; }
+  function clearCalcBook(){ allowUserClear(); const st = load(); st.calcBook = []; st.calcDoneKeys = []; save(st); return {ok:true}; }
   function _calcQOf(o){
     const lab = x => ({'+':'+','-':'−','×':'×','÷':'÷'})[x] || x;
     return String(o.a) + ' ' + lab(o.op) + ' ' + String(o.b) + (o.op2 ? ' ' + lab(o.op2) + ' ' + String(o.c) : '');
@@ -20360,7 +20510,7 @@ be 动词：am / is → was；are → were
     if(o.kw){ const k = String(o.kw); out = out.filter(e => String(e.why||'').indexOf(k) >= 0); }
     return out.slice().reverse();
   }
-  function clearStarLog(){ const st = load(); st.r256.starLog = []; save(st); return true; }
+  function clearStarLog(){ allowUserClear(); const st = load(); st.r256.starLog = []; save(st); return true; }
 
   // ---------- 打卡提醒 ----------
   function getRemindCfg(){ return Object.assign({on:true, childTime:'19:30', parentTime:'20:30', lastFired:''}, _r256().remind || {}); }
@@ -20457,7 +20607,7 @@ be 动词：am / is → was；are → were
     }
     save(st); return true;
   }
-  function clearPracticeResume(key){
+  function clearPracticeResume(key){ allowUserClear();
     const st = load();
     if(st.r256.practice && st.r256.practice[key] !== undefined){ delete st.r256.practice[key]; save(st); }
     return true;
@@ -20526,7 +20676,7 @@ be 动词：am / is → was；are → were
     save(st); return true;
   }
   function listPendingAnswers(){ return Object.assign({}, _r256().pendingAnswers || {}); }
-  function clearPendingAnswer(key){
+  function clearPendingAnswer(key){ allowUserClear();
     const st = load();
     if(st.r256.pendingAnswers && st.r256.pendingAnswers[String(key)] !== undefined){
       delete st.r256.pendingAnswers[String(key)];
@@ -20536,7 +20686,7 @@ be 动词：am / is → was；are → were
   }
 
   // ---------- 单模块重置（家长权限；不动星星与打卡以外模块） ----------
-  function resetModuleProgress(mod){
+  function resetModuleProgress(mod){ allowUserClear();
     const st = load();
     const a = st.archive = st.archive || {};
     let label = '';
@@ -20600,7 +20750,8 @@ be 动词：am / is → was；are → were
   // ----- 状态/接口暴露 -----
 
   window.Store = {
-    KEY, KEY_BAK1, KEY_BAK2, KEY_META, KEY_SNAPSHOT, SCHEMA_VERSION, hasSettingsSnapshot, SUBJECTS, PLOT_COUNT, STAGE_NEED, todayStr, weekRange, uid,
+    KEY, KEY_BAK1, KEY_BAK2, KEY_META, KEY_SNAPSHOT, KEY_PRE_UPDATE, SCHEMA_VERSION,
+    hasSettingsSnapshot, PROTECT_KEYS, allowUserClear, protectBeforeUpdate, hasPreUpdateBackup, dataGuardInfo, SUBJECTS, PLOT_COUNT, STAGE_NEED, todayStr, weekRange, uid,
     load, save, resetData,
     // R254-1/2：数据保护 —— 备份信息 / 强制刷盘
     backupInfo, flushPersistence,
@@ -21615,6 +21766,13 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
   function goPage(page){
     const _fromPage = _curPageName;
     _curPageName = page;
+    // R259：浏览状态记忆（规则 1.1.4）—— 记住上次停留页面，存独立小键，不进主存档，
+    //       版本更新 / 刷新 / 重开都不会丢；设置中心与游戏页不参与恢复。
+    try{
+      if(page && page !== 'settings' && page !== 'kmgame' && page !== 'en-tense-practice'){
+        _uiMem('lastPage', page);
+      }
+    }catch(e){}
     // R131-2：离开设置中心且处于暂存态 → 丢弃未保存草稿（防止污染其他页面/存储）
     if(S && typeof S.isStaging === 'function' && S.isStaging() && page !== 'settings'){ S.discardSettings(); }
     $$('.page').forEach(p=>p.hidden = (p.dataset.page!==page));
@@ -41393,9 +41551,16 @@ function renderKMAdmin(){
         if(info && info.savedAt){
           const d = new Date(info.savedAt);
           const p2 = n=>String(n).padStart(2,'0');
+          let _guardTxt = '';
+          try{
+            const gi = (window.Store && window.Store.dataGuardInfo) ? window.Store.dataGuardInfo() : null;
+            if(gi) _guardTxt = ' · 🛡️ 更新保护 R259（' + gi.protectedCount + ' 类数据受保护'
+              + (gi.preUpdateBackup ? '，更新前副本已就绪' : '') + '）';
+          }catch(e){}
           el.textContent = '最近一次自动备份：' + d.getFullYear() + '-' + p2(d.getMonth()+1) + '-' + p2(d.getDate())
             + ' ' + p2(d.getHours()) + ':' + p2(d.getMinutes()) + ' · 双代备份 '
-            + (info.hasBak1 ? (info.hasBak2 ? '已就绪（2 份）' : '已就绪（1 份）') : '生成中');
+            + (info.hasBak1 ? (info.hasBak2 ? '已就绪（2 份）' : '已就绪（1 份）') : '生成中')
+            + _guardTxt;
         } else {
           el.textContent = '本地备份正在建立，稍后再打开即可看到时间。';
         }
@@ -44310,6 +44475,13 @@ if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
     }
     // R256：新功能挂载（打卡总览 / 提醒 / 护眼 / 题库检索 / 朗读控制条 / 阅读增强 / 图鉴 / 证书 …）
     try{ r256Init(); }catch(e){ try{ console.warn('[R256] init failed', e); }catch(_e){} }
+    // R259：恢复上次停留的页面（只恢复可安全直达的板块，设置中心/游戏页除外）
+    try{
+      const _lp = _uiMem('lastPage');
+      const _SAFE = ['home','today','farm','math','xueersi','reading','baike','knowledge','archive','memonick',
+                     'newworld','newworld-yuwen','newworld-math','newworld-english','newworld-suzhi'];
+      if(_lp && _lp !== 'home' && _SAFE.indexOf(_lp) >= 0) goPage(_lp);
+    }catch(e){}
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init);
   else init();
@@ -44330,6 +44502,8 @@ if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
       if(Date.now() - last < 8000) return;
       localStorage.setItem(RELOAD_FLAG, String(Date.now()));
     }catch(e){ return; }
+    // R259：切换版本前先落一份用户数据保护副本（更新只换页面，不动任何用户数据）
+    try{ if(window.Store && window.Store.protectBeforeUpdate) window.Store.protectBeforeUpdate(); }catch(e){}
     location.reload();
   }
   window.addEventListener('load', function(){
@@ -44413,6 +44587,8 @@ if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
       try{ localStorage.removeItem('__sw_reload_at'); }catch(e){}
       // R254-2：更新前强制把用户数据刷盘（主档 + 双代备份），更新 / 刷新绝不动用户数据
       var done = function(){
+        // R259：更新前保护 —— ①单独留一份受保护字段副本 ②强制把内存态刷回主档；然后才 reload
+        try{ if(window.Store && window.Store.protectBeforeUpdate) window.Store.protectBeforeUpdate(); }catch(e){}
         try{ if(window.Store && window.Store.flushPersistence) window.Store.flushPersistence(); }catch(e){}
         location.reload();
       };
