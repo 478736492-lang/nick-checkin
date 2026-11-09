@@ -9370,9 +9370,10 @@ body.r256-sheet-on{overflow:hidden}
   background:transparent;border:none;border-radius:0;padding:0;box-shadow:none;
 }
 .farm-tools-title{display:none}
-.farm-tool-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+/* R261-2.1：改为一行一个、共四行；按键高度随视口自适应，宽度随右栏自适应 */
+.farm-tool-list{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
 .farm-tool-btn{
-  position:relative;display:block;width:100%;aspect-ratio:1/1;padding:0;
+  position:relative;display:block;width:100%;height:74px;height:clamp(74px,12vh,124px);aspect-ratio:auto;padding:0;
   border:none;border-radius:20px;cursor:pointer;overflow:hidden;
   background-color:#f4ead3;background-repeat:no-repeat;background-position:center;background-size:cover;
   box-shadow:0 6px 14px rgba(120,90,50,.18);transition:.18s;
@@ -9440,6 +9441,154 @@ body.r256-sheet-on{overflow:hidden}
 }
 .task-jump-block .tjb-page select{flex:1;min-width:0}
 .task-jump-block.is-off{opacity:.75}
+
+/* ================= R261-1.1 设置中心：提醒卡片加宽 + 三张工具卡移到右侧自上而下竖排 ================= */
+/* 双类特异性覆盖 R257 的 .settings-row-3{grid-column:1/-1;repeat(3,1fr)} */
+.settings-row-r261{
+  grid-column:1/-1;display:grid;
+  grid-template-columns:minmax(0,1.6fr) minmax(200px,0.72fr);
+  gap:14px;align-items:start;
+}
+.r261-remind-slot{min-width:0}
+.r261-remind-slot #r256SetCard{width:100%;grid-column:auto}
+.settings-row-3.settings-row-3-side{grid-column:auto;display:flex;flex-direction:column;gap:14px;align-items:stretch}
+.settings-row-3.settings-row-3-side .settings-card{width:100%;min-width:0}
+@media (max-width:900px){
+  .settings-row-r261{grid-template-columns:1fr}
+  .settings-row-3.settings-row-3-side{display:grid;grid-template-columns:1fr}
+}
+
+/* ================= R261-2.1 出售 / 兑换二次弹窗：数量改为滑动选择 ================= */
+.ftd-qty-val{min-width:50px;text-align:center;font-size:22px;font-weight:900;color:#d9761f;line-height:1}
+.ftd-row .ftd-unit{margin-left:0}
+.ftd-qty.ftd-slider{
+  -webkit-appearance:none;appearance:none;width:100%;height:22px;margin:14px 0 2px;padding:0;
+  border:none;border-radius:0;background:transparent;color:inherit;font:inherit;cursor:pointer;
+}
+.ftd-qty.ftd-slider::-webkit-slider-runnable-track{
+  height:12px;border-radius:999px;border:1px solid var(--tone-275);
+  background:linear-gradient(90deg,#ffb74d 0%,#ffb74d var(--ftd-pct,0%),var(--tone-275) var(--ftd-pct,0%),var(--tone-275) 100%);
+}
+.ftd-qty.ftd-slider::-webkit-slider-thumb{
+  -webkit-appearance:none;appearance:none;width:26px;height:26px;margin-top:-8px;border-radius:50%;
+  background:#fff;border:3px solid #ff9f2e;box-shadow:0 2px 8px rgba(180,110,20,.35);cursor:grab;
+}
+.ftd-qty.ftd-slider::-moz-range-track{height:12px;border-radius:999px;background:var(--tone-275);border:1px solid var(--tone-275)}
+.ftd-qty.ftd-slider::-moz-range-progress{height:12px;border-radius:999px;background:#ffb74d}
+.ftd-qty.ftd-slider::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:#fff;border:3px solid #ff9f2e}
+.ftd-slider-scale{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);font-weight:700;margin-top:2px}
+
+/* ================= R261-2.2 田地 2 行 × 3 列：整体靠页面下方，单块尺寸不变 ================= */
+.page-farm .farm-main{min-height:clamp(330px,58vh,540px)}
+.page-farm .farm-field-area{align-self:end;align-items:flex-end;padding-bottom:2px}
+.page-farm .field-frame{margin-top:auto}
+
+/* ================= R261-2.3 种植园动态背景：斜向阳光 + 自由飞舞的飞鸟 / 蝴蝶 ================= */
+.page-farm .farm-anim-layer{position:absolute;inset:0;z-index:6;pointer-events:none;overflow:hidden}
+.farm-sunbeam{
+  position:absolute;top:-26%;left:-16%;width:56%;height:155%;
+  background:linear-gradient(128deg,rgba(255,249,205,.72) 0%,rgba(255,241,168,.28) 34%,rgba(255,241,168,0) 70%);
+  transform:skewX(-16deg);mix-blend-mode:screen;opacity:.72;
+  animation:farmSunShine 6.5s ease-in-out infinite alternate;
+}
+.farm-sunbeam-2{left:-6%;width:36%;opacity:.4;animation-duration:9s;animation-delay:-3s}
+@keyframes farmSunShine{
+  from{opacity:.35;transform:skewX(-16deg) translateX(-2%)}
+  to{opacity:.9;transform:skewX(-16deg) translateX(4%)}
+}
+.farm-fly{
+  position:absolute;top:0;left:0;font-size:26px;line-height:1;opacity:.9;
+  will-change:transform;filter:drop-shadow(0 2px 3px rgba(80,60,20,.22));
+}
+.farm-bird{animation:farmBirdFly 19s linear infinite}
+.farm-bird-1{animation-delay:-2s;font-size:24px}
+.farm-bird-2{animation-delay:-9s;font-size:20px;animation-duration:23s}
+.farm-bird-3{animation-delay:-15s;font-size:28px;animation-duration:16s}
+@keyframes farmBirdFly{
+  0%{transform:translate(-10vw,20vh) scale(.85)}
+  25%{transform:translate(24vw,9vh) scale(.95)}
+  50%{transform:translate(58vw,17vh) scale(.9)}
+  75%{transform:translate(88vw,6vh) scale(.85)}
+  100%{transform:translate(122vw,14vh) scale(.85)}
+}
+.farm-butterfly{animation:farmButterflyFly 15s ease-in-out infinite alternate}
+.farm-butterfly-1{animation-delay:-1s;font-size:23px}
+.farm-butterfly-2{animation-delay:-6s;font-size:19px;animation-duration:18s}
+.farm-butterfly-3{animation-delay:-11s;font-size:25px;animation-duration:13s}
+@keyframes farmButterflyFly{
+  0%{transform:translate(8vw,66vh) rotate(-10deg)}
+  25%{transform:translate(27vw,54vh) rotate(12deg)}
+  50%{transform:translate(45vw,70vh) rotate(-8deg)}
+  75%{transform:translate(66vw,52vh) rotate(10deg)}
+  100%{transform:translate(86vw,64vh) rotate(-12deg)}
+}
+@media (prefers-reduced-motion:reduce){ .farm-fly,.farm-sunbeam{animation:none} }
+
+/* ================= R261-3.1 每日巩固语法题：填写区随句子长度自适应换行 ================= */
+/* 元素选择器 + 类特异性高于旧 .xs-adv-input-box{flex:1;...}，且写在文件末尾防止被反杀 */
+textarea.xs-adv-input-box{
+  display:block;flex:0 0 auto;width:100%;box-sizing:border-box;
+  min-height:46px;max-height:none;height:auto;
+  padding:11px 14px;border:2px solid var(--tone-200);border-radius:12px;
+  font-size:16px;font-weight:600;line-height:1.5;text-align:left;
+  color:var(--sky-blue);background:#fff;outline:none;transition:.15s;
+  resize:none;overflow:hidden;overflow-wrap:break-word;word-break:break-word;white-space:pre-wrap;
+}
+.xs-adv-cards > .xs-adv-card .xs-adv-input{overflow:visible;max-width:100%}
+.xs-adv-cards > .xs-adv-card .xs-adv-zh-txt{max-width:100%;overflow:visible;white-space:pre-wrap}
+
+/* ================= R261-4.2 3500 词：每词一张独立卡片 + 带圈序号 + 四项同行 ================= */
+/* 选择器特异性高于 R250-5 / R260-6.2 旧规则，且写在文件末尾，避免被同特异性旧规则反杀；
+   .en3500-meta 仍保留为容器（历史断言与绿红态配色依赖），内部由竖排改为横排同行。 */
+.en3500-card .en3500-words{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;
+  max-height:none;overflow:visible;border-top:1px dashed var(--tone-200);padding-top:10px;
+}
+.en3500-words .en3500-row.en3500-word-card{
+  display:grid;grid-template-columns:34px minmax(0,1.05fr) minmax(0,1.25fr);
+  gap:8px;align-items:center;box-sizing:border-box;width:100%;
+  padding:9px 11px;background:#fff;border:1.5px solid var(--tone-200);border-radius:12px;
+  box-shadow:0 2px 8px rgba(30,58,138,.07);font-size:12.5px;
+}
+.en3500-word-card .en3500-no{
+  width:auto;height:auto;min-width:0;font-size:16px;line-height:1.1;
+  background:transparent;border:none;border-radius:0;padding:0;overflow:visible;
+}
+.en3500-word-card .en3500-w{font-size:23px;line-height:1.2}
+.en3500-word-card .en3500-meta{
+  display:flex;flex-direction:row;align-items:center;justify-content:flex-start;
+  flex-wrap:nowrap;gap:8px;min-width:0;overflow:hidden;
+}
+.en3500-word-card .en3500-meta .en3500-ipa{
+  flex:0 1 auto;min-width:0;font-size:11.5px;line-height:1.3;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.en3500-word-card .en3500-meta .en3500-cn{
+  flex:1 1 auto;min-width:0;font-size:11.5px;line-height:1.3;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.en3500-row.en3500-word-card.is-ok{border-color:#86d3a4}
+.en3500-row.en3500-word-card.is-need{border-color:#eea3a3}
+@media(max-width:640px){.en3500-card .en3500-words{grid-template-columns:1fr}}
+
+/* ================= R261-4.3 十大词类：删除返回键后，9 个次标题同行排布 ================= */
+/* 加 .eg-tense-nav 提高特异性，压过 R252-5 的 repeat(3/2) 与 R260-6.3 的 1100px→repeat(5) 断点 */
+.eg-cilei-wrap .eg-cilei-navbar.eg-tense-nav,
+.eg-cilei-detail .eg-cilei-navbar.eg-tense-nav{
+  display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:4px;
+  width:100%;box-sizing:border-box;margin:8px 0 0;padding:6px;
+}
+.eg-cilei-wrap .eg-cilei-navbar .eg-cilei-go,
+.eg-cilei-detail .eg-cilei-navbar .eg-cilei-go{
+  width:100%;min-width:0;box-sizing:border-box;justify-content:center;text-align:center;
+  font-size:11px;line-height:1.25;padding:8px 2px;white-space:normal;word-break:break-word;
+}
+@media(max-width:1100px){
+  .eg-cilei-wrap .eg-cilei-navbar.eg-tense-nav,
+  .eg-cilei-detail .eg-cilei-navbar.eg-tense-nav{grid-template-columns:repeat(9,minmax(0,1fr));gap:3px;padding:5px}
+  .eg-cilei-wrap .eg-cilei-navbar .eg-cilei-go,
+  .eg-cilei-detail .eg-cilei-navbar .eg-cilei-go{font-size:10px;padding:7px 1px}
+}
 
 </style>
 </head>
@@ -9764,9 +9913,11 @@ body.r256-sheet-on{overflow:hidden}
         <span class="settings-card-arrow" data-page-node-id="R85cardMusicArrow">›</span>
       </div>
 
-      <!-- 4~6) 数据同步 / 分类导出文件 / 版本与更新 —— R257-9.1/9.2：三张卡同一行，
-           分类导出文件稳定位于「数据同步」与「版本与更新」中间，且三卡等高等宽（版本卡恢复原尺寸） -->
-      <div class="settings-row-3" id="settingsRow3">
+      <!-- R261-1.1：提醒卡片（左，加宽） + 数据同步 / 分类导出文件 / 版本与更新（右，自上而下竖排）。
+           提醒卡片由 app.js 的 r256MountSettingsCard() 注入到 #r256SetCardSlot。 -->
+      <div class="settings-row-r261">
+      <div class="r261-remind-slot" id="r256SetCardSlot"></div>
+      <div class="settings-row-3 settings-row-3-side" id="settingsRow3">
       <div class="settings-card" id="cardSyncSettings" data-page-node-id="R85cardSync">
         <div class="settings-card-main" data-page-node-id="R85cardSyncMain">
           <div class="settings-card-body">
@@ -9808,6 +9959,7 @@ body.r256-sheet-on{overflow:hidden}
         <span class="settings-card-arrow" data-page-node-id="R85cardVerArrow">›</span>
       </div>
       </div><!-- /#settingsRow3 -->
+      </div><!-- /.settings-row-r261 -->
     </div>
 
     <!-- 设置中心详情面板（点击卡片后展开/弹窗的占位容器，实际弹窗见下方 modal） -->
@@ -10518,6 +10670,18 @@ body.r256-sheet-on{overflow:hidden}
   <section class="page page-farm" data-page="farm" hidden data-page-node-id="KBzw9h5nsTXcaruZBZRwwe">
     <!-- 装饰背景：天空 + 草地 -->
     <div class="farm-bg" data-page-node-id="lHGty1nDWUniRN962OxWMZ"></div>
+    <!-- R261-2.3：动态背景 —— 左上角斜向洒落的阳光 + 自由飞舞的飞鸟 / 蝴蝶。
+         纯 CSS 动画、pointer-events:none，不拦截任何点击，也不占用存档与配额。 -->
+    <div class="farm-anim-layer" aria-hidden="true">
+      <div class="farm-sunbeam"></div>
+      <div class="farm-sunbeam farm-sunbeam-2"></div>
+      <span class="farm-fly farm-bird farm-bird-1">🕊️</span>
+      <span class="farm-fly farm-bird farm-bird-2">🐦</span>
+      <span class="farm-fly farm-bird farm-bird-3">🕊️</span>
+      <span class="farm-fly farm-butterfly farm-butterfly-1">🦋</span>
+      <span class="farm-fly farm-butterfly farm-butterfly-2">🦋</span>
+      <span class="farm-fly farm-butterfly farm-butterfly-3">🦋</span>
+    </div>
     <div class="farm-deco-farm-fence" data-page-node-id="k7bMqOwS5bFQPq1npzK3vI"></div>
 
     <!-- V110：合并「我的种植园」横幅；R113：数据统计迁出至仓库上方，主题卡仅保留背景贴图 -->
@@ -12184,6 +12348,10 @@ body.r256-sheet-on{overflow:hidden}
   const KEY_SNAPSHOT = KEY + '_settings';
   // R259：更新前保护副本（版本更新 / 关页面时写一份，极端情况下可回滚用户数据）
   const KEY_PRE_UPDATE = KEY + '_preupdate';
+  // R261-5.1：主档写不进（配额满）时，把「本次状态相对主档的顶层差异」单独存一份小补丁。
+  // 刷新 / 点击版本更新后 load() 会先叠加补丁，再尝试写回主档，避免用户修改全部丢失。
+  const KEY_PENDING = KEY + '_pending';
+  const PENDING_BUDGET = 400 * 1024;
   const SNAPSHOT_KEY_ALWAYS = ['tasks','settings','taskGroups','taskJump','farmOpen','rewardRules','weekPlan','calcSettings'];
   const SNAPSHOT_BUDGET = 400 * 1024;   // 快照总字节上限，避免和主档抢空间
   const SCHEMA_VERSION = 254;
@@ -12235,7 +12403,8 @@ body.r256-sheet-on{overflow:hidden}
   // R254-2：离开页面 / 切后台时强制刷盘（含备份），保证最后一次操作不丢
   function flushPersistence(){
     try{
-      const st = _loadCacheSt || _staged;
+      // R261-5.1：暂存态下草稿才是最新内存态 —— 优先刷草稿，避免把旧缓存写回覆盖新修改
+      const st = (_staging && _staged) ? _staged : (_loadCacheSt || _staged);
       if(!st) return false;
       // 安全闸：本次会话从未成功读到 / 写过存档时，绝不把内存里的默认空档刷进主档
       // （数据保护第一原则：宁可少写一次，也不能覆盖 iPad 上已有的打卡记录）
@@ -12243,8 +12412,9 @@ body.r256-sheet-on{overflow:hidden}
       _guardBeforeSave(st);   // R259：刷盘同样过写盘闸，关页面 / 切后台也守保护规则
       const raw = JSON.stringify(st);
       // R260-1.1：刷盘同样走配额回收链，避免「关页面最后一次操作因空间不足丢失」
-      if(!_writeMain(raw).ok) return false;
+      if(!_writeMain(raw).ok){ try{ _pendingWrite(st); }catch(e){} return false; }
       _snapshotClear();   // R258-1.1：主档已整体落盘，应急设置快照作废
+      _pendingClear();    // R261-5.1：主档已整体落盘，差异补丁作废
       _rotateBackup(raw, true);
       _loadCachePut(st, raw);
       return true;
@@ -12674,7 +12844,7 @@ body.r256-sheet-on{overflow:hidden}
     });
     return changed;
   }
-  const PLOT_COUNT = 12; // R258-2.2：4 行 x 3 列 = 12 块田（含未解锁）
+  const PLOT_COUNT = 6;  // R261-2.2：2 行 × 3 列 = 6 块田，按单块逐块解锁
   const STAGE_NEED = {0:8,1:12,2:16,3:20,4:24}; // v8：每阶段进下一阶段需要的水/阳光
   function newPlot(){
     // R254-4：新增肥料（fert）—— 消耗数量规则与「水」完全一致
@@ -12791,9 +12961,9 @@ body.r256-sheet-on{overflow:hidden}
     {id:'s_watermelon',name:'西瓜种子',  ico:'🍉',desc:'生长慢',     price:12, crop:'watermelon',sellCoins:36}
   ];
   const growthShop = ()=>[
-    // R260-2.3：水的计量单位文案由「滴」改为「桶」（1 桶 / 5 桶）
-    {id:'g_water1',name:'水桶(1桶)',ico:'💧',desc:'浇灌作物1次',price:1,unit:'water',qty:1},
-    {id:'g_water5',name:'大水桶(5桶)',ico:'🪣',desc:'浇灌作物5次',price:4,unit:'water',qty:5},
+    // R261-2.4：水的标识文字改为「壶 / 桶」——1 壶浇 1 次，1 桶 = 5 壶浇 5 次
+    {id:'g_water1',name:'水滴水壶 · 1壶',ico:'💧',desc:'浇灌作物1次',price:1,unit:'water',qty:1},
+    {id:'g_water5',name:'大水桶 · 1桶（5壶）',ico:'🪣',desc:'浇灌作物5次',price:4,unit:'water',qty:5},
     // R254-4：水兑换项后方新增肥料兑换项（消耗⭐与水完全一致：1⭐/袋、4⭐/5袋）
     {id:'g_fert1',name:'肥料(1袋)',ico:'__bag__',desc:'给作物施肥1次（1⭐=1袋）',price:1,unit:'fert',qty:1},
     {id:'g_fert5',name:'肥料(5袋)',ico:'__bag__',desc:'给作物施肥5次（4⭐=5袋）',price:4,unit:'fert',qty:5},
@@ -13064,10 +13234,12 @@ body.r256-sheet-on{overflow:hidden}
       out.__skipped = skipped;
       let raw = '';
       try{ raw = JSON.stringify(out); }catch(e){ return false; }
+      // R261-5.1：先刷主档再写副本 —— 旧顺序让副本抢占本就紧张的配额，
+      //           主档反而写不进；更新前的用户修改必须先落到主档（或差异补丁）。
+      try{ flushPersistence(); }catch(e){}
       // 已有旧副本先删，避免新旧两份同时占空间（这份副本自身体量也可能逼近配额）
       try{ localStorage.removeItem(KEY_PRE_UPDATE); }catch(e){}
       const ok = _safeSet(KEY_PRE_UPDATE, raw);
-      try{ flushPersistence(); }catch(e){}
       return ok;
     }catch(e){ return false; }
   }
@@ -13111,7 +13283,7 @@ body.r256-sheet-on{overflow:hidden}
                   unlockedBadges:[],unlockedCerts:[],readDays:0,sportDays:0,goDays:0,fullDays:0,sleepStreak:0,
                   monthDone:0,monthMax:0,thisMonth:'',weekDone:0,lastDateDone:'',badges:{},certs:{}},
         // 种植园：25 块田（v8：5 行 x 5 列，前 4 块默认解锁；50金币扩建）
-        plots: Array.from({length:PLOT_COUNT}, (_,i)=> i<4 ? newUnlockedPlot() : newPlot()),
+        plots: Array.from({length:PLOT_COUNT}, (_,i)=> i<1 ? newUnlockedPlot() : newPlot()),
         plot: null, // v3 残留字段，新结构迁入 plots
         inventory: {seeds:{},water:10,sun:10,fert:6,harvested:{}},
         gifts: [],
@@ -13143,6 +13315,8 @@ body.r256-sheet-on{overflow:hidden}
     }
     // R258-1.1：主档写不进时设置单独存的快照，这里叠加回来（只在主档本身可读时合并，避免半份状态）
     st = _snapshotApply(st);
+    // R261-5.1：主档写不进时留下的差异补丁在这里叠加并尝试写回主档（刷新 / 版本更新后不丢修改）
+    try{ _pendingApply(st); }catch(e){}
     // R259：迁移前拍一份「保护字段当前大小」，迁移后再比对，防止字段迁移把用户数据清零
     const _gcap = _guardCapture(st, GUARD_MIGRATION_KEYS);
     if(!Array.isArray(st.plots) || st.plots.length !== PLOT_COUNT){
@@ -13641,16 +13815,17 @@ body.r256-sheet-on{overflow:hidden}
       }
     })();
     // V17-5：种植园排版（家长模式可调）
-    // R257-6.1：默认排版改为 2 行 × 4 列、地块更大（加宽田地、消除空白）
-    // R258-2.2：默认排版改为 4 行 × 3 列（12 块田）
-    if(!st.farmLayout) st.farmLayout = {cols:3, rows:4, gap:10, plotSize:120};
+    // R261-2.2：默认排版 2 行 × 3 列（6 块田），地块尺寸 120px 保持不变
+    if(!st.farmLayout) st.farmLayout = {cols:3, rows:2, gap:10, plotSize:120};
     else if(st.farmLayout.cols === 5 && (st.farmLayout.plotSize|0) === 54 && (st.farmLayout.rows==null || st.farmLayout.rows === 3)){
       // 从未手动改过排版的老存档（旧默认 5 列 / 54px）→ 平滑升级
-      st.farmLayout.cols = 3; st.farmLayout.rows = 4; st.farmLayout.gap = 10; st.farmLayout.plotSize = 120;
+      st.farmLayout.cols = 3; st.farmLayout.rows = 2; st.farmLayout.gap = 10; st.farmLayout.plotSize = 120;
     } else if(st.farmLayout.cols === 4 && (st.farmLayout.rows|0) === 2 && (st.farmLayout.plotSize|0) === 120){
-      // R257 的默认（2 行 × 4 列 / 120px）→ 升级为 4 行 × 3 列
-      st.farmLayout.cols = 3; st.farmLayout.rows = 4; st.farmLayout.gap = 10; st.farmLayout.plotSize = 120;
+      // R257 的默认（2 行 × 4 列 / 120px）→ 升级为 2 行 × 3 列
+      st.farmLayout.cols = 3; st.farmLayout.rows = 2; st.farmLayout.gap = 10; st.farmLayout.plotSize = 120;
     }
+    // R261-2.2：R258/R260 的「4 行 × 3 列」老存档统一收敛到 2 行（只改行数，不动地块尺寸）
+    if((st.farmLayout.rows|0) === 4 && (st.farmLayout.cols|0) === 3) st.farmLayout.rows = 2;
     // V17-8：家长可增删改的电子奖状（关联打卡数据）
     if(!st.archive) st.archive = {};
     if(!st.archive.customCerts){
@@ -13859,6 +14034,67 @@ body.r256-sheet-on{overflow:hidden}
     return {ok:false, err:'quota'};
   }
   function quotaEvicted(){ return _quotaEvicted.slice(); }
+  /* ============ R261-5.1：差异补丁（刷新 / 版本更新后不丢用户修改） ============
+     根因：主档（含用户导入的图片 dataURL）逼近 localStorage 5MB 配额时，整份重写的
+           setItem 抛 QuotaExceededError。旧实现只把新状态留在内存里，用户一刷新或点
+           「检查更新」，页面重新读到的是旧主档 → 本次及之后所有修改「全部丢失、恢复初始状态」。
+     做法：主档写不进时，把「本次状态相对主档的顶层差异」单独存一份小补丁；
+           load() 若发现补丁，先叠加回内存，再立刻把合并结果写回主档，成功即清补丁。
+     铁律：补丁只消费一次、成功后立刻删除、绝不装业务全量快照 —— 不会变成
+           R259 里那种「每次 load 覆盖主档」的时间胶囊。超大字段（图片）不进补丁，
+           仍由主档 + 双代备份 + 写盘闸 / 迁移闸保护。 */
+  function _pendingBase(){
+    try{
+      const o = JSON.parse(_safeGet(KEY) || 'null');
+      return (o && typeof o === 'object' && !Array.isArray(o)) ? o : null;
+    }catch(e){ return null; }
+  }
+  function _pendingWrite(st){
+    if(!st || typeof st !== 'object') return false;
+    const base = _pendingBase();
+    const patch = {};
+    let used = 0;
+    Object.keys(st).forEach(function(k){
+      if(k === '__pendingApplied' || k === '__settingsSnapshot') return;
+      let s;
+      try{ s = JSON.stringify(st[k]); }catch(e){ return; }
+      if(s === undefined) return;
+      let same = false;
+      try{ same = (base && JSON.stringify(base[k]) === s); }catch(e){ same = false; }
+      if(same) return;
+      if(used + s.length + k.length > PENDING_BUDGET) return;  // 超大字段跳过，不挤爆配额
+      patch[k] = st[k]; used += s.length + k.length;
+    });
+    if(!Object.keys(patch).length) return false;
+    let raw;
+    try{ raw = JSON.stringify({ __at: Date.now(), __v: 261, patch: patch }); }catch(e){ return false; }
+    for(let i=0;i<3;i++){
+      if(_safeSet(KEY_PENDING, raw)) return true;
+      if(!_evictForQuota([KEY_PENDING])) break;
+    }
+    return false;
+  }
+  function _pendingClear(){ try{ localStorage.removeItem(KEY_PENDING); }catch(e){} }
+  function _pendingRead(){
+    const raw = _safeGet(KEY_PENDING);
+    if(!raw) return null;
+    try{
+      const o = JSON.parse(raw);
+      return (o && typeof o === 'object' && o.patch && typeof o.patch === 'object' && !Array.isArray(o.patch)) ? o : null;
+    }catch(e){ return null; }
+  }
+  function _pendingApply(st){
+    const p = _pendingRead();
+    if(!p || !st || typeof st !== 'object') return false;
+    Object.keys(p.patch).forEach(function(k){ st[k] = p.patch[k]; });
+    st.__pendingApplied = p.__at;
+    // 叠加后立刻把完整状态写回主档；成功即清补丁（下次不会重复叠加）
+    try{
+      const raw = JSON.stringify(st);
+      if(_writeMain(raw).ok){ _pendingClear(); _snapshotClear(); _rotateBackup(raw, true); }
+    }catch(e){}
+    return true;
+  }
   /* ============ R258-1.1：设置快照（主档写不进时的兜底） ============
      现象：用户点「保存设置」提示存储空间不足，但页面里设置已经变了（内存态生效、落库失败）。
      根因：设置是塞在整份存档里一起写的，存档（含图片 dataURL）接近配额上限时，
@@ -13902,12 +14138,20 @@ body.r256-sheet-on{overflow:hidden}
     let snap = null;
     try{ snap = JSON.parse(raw); }catch(e){ snap = null; }
     if(!snap || typeof snap !== 'object' || Array.isArray(snap)) return st;
+    /* R261-5.1：主档比快照还新时，说明这份快照是上一次「写不进」留下的旧值，
+       若继续叠加就会把用户后来保存的修改覆盖回初始状态（刷新即丢失的根因之一）。
+       以 _meta 的最后落库时间为准，过期快照直接作废。 */
+    let lastSaved = 0;
+    try{ const meta = JSON.parse(_safeGet(KEY_META) || 'null'); lastSaved = (meta && meta.savedAt) || 0; }catch(e){}
+    if(lastSaved && snap.__snapAt && snap.__snapAt <= lastSaved){ _snapshotClear(); return st; }
     // R259：同样只回填白名单内的设置类字段，业务数据一律不碰
     SNAPSHOT_KEY_ALWAYS.forEach(function(k){
       if(snap[k] !== undefined) st[k] = snap[k];
     });
     st.__settingsSnapshot = 1;
     _snapshotRecovered = true;
+    // R261-5.1：快照只消费一次 —— 叠加结果转成差异补丁，由 _pendingApply 写回主档后即作废
+    try{ if(_pendingWrite(st)) _snapshotClear(); }catch(e){}
     return st;
   }
   function hasSettingsSnapshot(){ return !!_safeGet(KEY_SNAPSHOT); }
@@ -13930,7 +14174,9 @@ body.r256-sheet-on{overflow:hidden}
         if(_wr.err === 'quota') _saveError = 'quota';
         else _saveError = _wr.err || 'error';
         // R246-3：写失败时内存态仍以本次 st 为准，避免「渲染新数据、点击读回旧数据」两套真相
+        // R261-5.1：主档写不进 → 立刻留差异补丁，刷新 / 版本更新后能把修改捞回来
         _r256LedgerRollback(st, _r256Entry);
+        try{ _pendingWrite(st); }catch(e){}
         _loadCachePut(st);
         return false;
       }
@@ -13943,6 +14189,7 @@ body.r256-sheet-on{overflow:hidden}
       if(_back != null && _back.length !== raw.length){
         _saveError = 'verify';
         _r256LedgerRollback(st, _r256Entry);
+        try{ _pendingWrite(st); }catch(e){}   // R261-5.1：回读不一致同样留补丁
         _loadCachePut(st);
         return false;
       }
@@ -13951,6 +14198,7 @@ body.r256-sheet-on{overflow:hidden}
     _loadCachePut(st, raw);   // R246-3：写成功后同步缓存，下一次 load() 无需再解析
     // R258-1.1：主档已完整落库，之前为应急写的设置快照立刻作废（避免两份真相）
     _snapshotClear();
+    _pendingClear();          // R261-5.1：主档已完整落库，差异补丁同样作废
     _persistedShape = _guardCapture(st);   // R259：记录本次落库后的保护字段大小
     // R255-5：备份属于「附加保险」，它失败绝不能让主存档被判定为失败
     try{ _rotateBackup(raw, false); }catch(e){}
@@ -13995,6 +14243,9 @@ body.r256-sheet-on{overflow:hidden}
     // R258-1.1 / R260-1.1：主档确实塞不下（配额已满，或写回后校验不一致）
     //                      → 走设置快照，保证「点保存 = 设置存住」，并如实提示已保存。
     if(!verified){
+      // R261-5.1：主档塞不下时，除设置快照外再留一份完整差异补丁，
+      //           保证「打卡 / 任务 / 自定义内容」等非设置类修改刷新后也能回来
+      try{ _pendingWrite(draft); }catch(e){}
       if(_snapshotWrite(draft)){
         result = 'partial';
         _saveError = '';
@@ -15156,7 +15407,7 @@ body.r256-sheet-on{overflow:hidden}
       // R257-6.1：旧存档（25 块 / 12 块）迁移到 8 块（2 行 × 4 列）
       const oldArr = Array.isArray(st.plots) ? st.plots.slice() : [];
       const oldPlot = st.plot; // v3 单 plot 兼容
-      const fresh = Array.from({length:PLOT_COUNT}, (_,i)=> i<4 ? newUnlockedPlot() : newPlot());
+      const fresh = Array.from({length:PLOT_COUNT}, (_,i)=> i<1 ? newUnlockedPlot() : newPlot());
       // 同位置覆盖（保留前 8 块的存活状态与进度）
       for(let i=0;i<oldArr.length && i<PLOT_COUNT;i++){
         const o = oldArr[i];
@@ -20126,7 +20377,7 @@ be 动词：am / is → was；are → were
   }
   function getFarmLayout(){
     const st = load();
-    return Object.assign({cols:3, rows:4, gap:10, plotSize:120}, st.farmLayout||{});
+    return Object.assign({cols:3, rows:2, gap:10, plotSize:120}, st.farmLayout||{});
   }
   function setFarmLayout(layout){
     const st = load();
@@ -20914,7 +21165,7 @@ be 动词：am / is → was；are → were
       // 保留成长星 / 金币 / 经验，避免「清打卡 = 清空星星」
     } else if(mod === 'farm'){
       label = '种植园';
-      st.plots = Array.from({length:PLOT_COUNT}, (_,i)=> i < 4 ? newUnlockedPlot() : newPlot());
+      st.plots = Array.from({length:PLOT_COUNT}, (_,i)=> i < 1 ? newUnlockedPlot() : newPlot());
       st.inventory = {seeds:{}, water:10, sun:10, fert:6, harvested:{}};
       st.gifts = [];
       st.shop = null;
@@ -22127,17 +22378,41 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       ] }
   ];
 
+  /* R261-4.1：新世界首页各专区的「次标题 / 条目」实时跟随专区内部的 TOP_CARDS。
+     以前首页 NW_CARDS 里另存一份硬编码 mods，专区内部改名 / 增删后首页仍是旧文案
+     （例如英语专区内部已改「课外扩展」并新增 3500 词，首页还写着「拓展练习」）。
+     现在统一由专区内部数据源生成；家长在编辑面板里手动改过的（modsCustom）仍优先。 */
+  function nwHomeModsFor(page, cd){
+    if(cd && cd.modsCustom && Array.isArray(cd.mods)) return cd.mods;
+    let src = null, ico = {};
+    try{
+      if(page==='newworld-yuwen'){ src = YW_TOP_CARDS; ico = {'课文同步':'📖','小学古诗文':'📜','作文专项':'✏️'}; }
+      else if(page==='newworld-math'){ src = SX_TOP_CARDS; ico = {'同步课时练习':'📁','思维拓展':'📚','错题本':'📓'}; }
+      else if(page==='newworld-english'){ src = EN_TOP_CARDS; ico = {'同步课时练习':'📁','课外扩展':'💬','错题本':'📓'}; }
+      else if(page==='newworld-suzhi'){ src = SZ_TOP_CARDS; ico = {'拓展阅读':'📚','人文拓展':'🏛️','综合素养':'🔬'}; }
+    }catch(e){ src = null; } // 常量尚未初始化时安全回退
+    if(!src || !Array.isArray(src)) return (cd && Array.isArray(cd.mods)) ? cd.mods : [];
+    return src.map(function(g){
+      return {
+        t: String((g && g.title) || ''),
+        icon: String((g && g.icon) || ico[(g && g.title) || ''] || '•'),
+        items: ((g && g.items) || []).map(function(it){ return String((it && it.label) || ''); })
+      };
+    });
+  }
+
   function renderNewWorld(){
     const home = document.getElementById('nwHome');
     if(!home) return;
     const saved = (window.Store && window.Store.getNWData) ? window.Store.getNWData() : null;
     home.innerHTML = NW_CARDS.map(c=>{
       const cd = (saved && saved[c.page]) ? saved[c.page] : c;
+      const mods = nwHomeModsFor(c.page, cd); // R261-4.1：以专区内部次标题为真源
       let body;
       if(c.page==='newworld-schedule'){
         body = `<div class="nw-capsule-row">${schedCapsulesHTML()}</div>`;
-      } else if(cd.mods){
-        body = `<div class="nw-mods">${cd.mods.map(m=>`
+      } else if(mods && mods.length){
+        body = `<div class="nw-mods">${mods.map(m=>`
           <div class="nw-mod">
             ${m.t?`<div class="nw-mod-head"><span class="nw-mod-ico">${esc(m.icon||'•')}</span><span class="nw-mod-t">${esc(m.t)}</span></div>`:''}
             <div class="nw-mod-items">${(m.items||[]).filter(i=>i!=='重点问答').map(i=>`<span class="nw-item">${esc(i)}</span>`).join('')}</div>
@@ -23057,7 +23332,9 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     const saved = (window.Store && window.Store.getNWData) ? window.Store.getNWData() : null;
     if(saved && saved[page]) return saved[page];
     const def = NW_CARDS.find(c=>c.page===page);
-    return def || {tag:page};
+    if(!def) return {tag:page};
+    // R261-4.1：编辑面板打开时也拿专区内部的实时次标题，避免编辑到过期文案
+    return Object.assign({}, def, {mods: nwHomeModsFor(page, def)});
   }
 
   // 各专区「📌 本专区内容」同步块（渲染与首页卡同源的可编辑数据）
@@ -23070,7 +23347,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       const caps = schedCapsulesHTML();
       inner = caps ? `<div class="nw-extra-caps">${caps}</div>` : '<div class="nw-card-empty">（暂无时间胶囊）</div>';
     } else {
-      const mods = (cd.mods||[]).map(m=>`
+      const mods = (nwHomeModsFor(page, cd)||[]).map(m=>`
         <div class="nw-extra-mod">
           <div class="nw-mod-head"><span class="nw-mod-ico">${esc(m.icon||'•')}</span><span class="nw-mod-t">${esc(m.t)}</span></div>
           <div class="nw-mod-items">${(m.items||[]).map(i=>`<span class="nw-item">${esc(i)}</span>`).join('')}</div>
@@ -23194,6 +23471,8 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
   function saveNwEditor(){
     if(!nwEditorPage || !nwEditorDraft) return;
     const saved = (window.Store && window.Store.getNWData) ? (window.Store.getNWData()||{}) : {};
+    // R261-4.1：家长手动编辑过的清单打标记，之后以自定义为准；没编辑过的仍自动跟随专区内部次标题
+    nwEditorDraft.modsCustom = true;
     saved[nwEditorPage] = nwEditorDraft;
     if(window.Store && window.Store.saveNWData) window.Store.saveNWData(saved);
     renderNewWorld();
@@ -25152,7 +25431,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         rerender();
       });
     });
-    // R252-5：十大词类下方 9 个按键 → 对应词类独立内容页；返回键退回十大词类
+    // R252-5 / R261-4.3：9 个词类次标题常驻标题栏直接切换；返回键已删除，回总览用顶部章节键
     slotBody.querySelectorAll('[data-eg-cilei-go]').forEach(btn=>{
       if(btn._egCileiGoBound) return; btn._egCileiGoBound = true;
       btn.addEventListener('click', (e)=>{
@@ -25162,10 +25441,6 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         _egTenseIdx = -1;
         rerender();
       });
-    });
-    slotBody.querySelectorAll('[data-eg-cilei-back]').forEach(btn=>{
-      if(btn._egCileiBackBound) return; btn._egCileiBackBound = true;
-      btn.addEventListener('click', (e)=>{ e.stopPropagation(); _egCileiSub = -1; rerender(); });
     });
     // R252-5：8 个时态按键 → 单独加载对应时态详情；R253-4 起标题栏常驻，直接用标题卡切换，已移除返回键
     slotBody.querySelectorAll('[data-eg-tense]').forEach(btn=>{
@@ -27668,12 +27943,11 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
             <div class="eg-sec-head">
               <span class="eg-sec-tag">词类详情</span>
               <span class="eg-sec-title">🔤 ${esc(sub.label)}</span>
-              <button class="eg-back-btn" data-eg-cilei-back="1">← 返回十大词类</button>
               ${addBtnHtml}
             </div>
             ${cileiNavHtml(_egCileiSub)}
           </div>
-          <div class="eg-sec-intro">点击卡片即可标记为「已掌握」；点上方的词类标题卡可直接切换词类。</div>
+          <div class="eg-sec-intro">点击卡片即可标记为「已掌握」；点上方词类标题卡可直接切换，点顶部章节键回到十大词类总览。</div>
           <div class="eg-block-grid">${_detailCardsHtml(_egCileiSub)}</div>
           ${myCardsHtml}
         </div>`;
@@ -27960,6 +28234,12 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   const EN3500_PER_PAGE = 1; // R252-4：一个分类卡片单独占用一页
   const EN3500_ORDER_KEY = 'en3500_order'; // 兼容旧存档的打卡顺序
   let _en3500Page = 1;
+  /* R261-4.2：带圈 emoji 序号 1️⃣ 2️⃣ 3️⃣ …；两位数按位拼接（11 → 1️⃣1️⃣），
+     词库单个分类最多 20+ 词，纯 emoji 序号全量覆盖且无需字体/图片。 */
+  const EN3500_DIGITS = ['0️⃣','1️⃣','2️⃣','3️⃣','4️⃣','5️⃣','6️⃣','7️⃣','8️⃣','9️⃣'];
+  function en3500Circled(n){
+    return String(n).split('').map(function(d){ return EN3500_DIGITS[Number(d)] || d; }).join('');
+  }
   function en3500Cats(){
     const seed = window.EN_WORDS_3500_SEED;
     const base = (seed && Array.isArray(seed.cats)) ? seed.cats : [];
@@ -27989,9 +28269,10 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         ? words.map((w,j)=>{
             const wd = String((w && w.w) || '');
             const mk = marks[wd] || '';
-            const cls = mk === 'ok' ? ' is-ok' : (mk === 'need' ? ' is-need' : '');
+            // R261-4.2：每个单词独立成一张卡片；序号改带圈 emoji；序号/单词/音标/释义同一行
+            const cls = (mk === 'ok' ? ' is-ok' : (mk === 'need' ? ' is-need' : '')) + ' en3500-word-card';
             return `<div class="en3500-row${cls}" data-en3500-row="${esc(name)}" data-en3500-word="${esc(wd)}">`
-              + `<button type="button" class="en3500-no" data-en3500-mark="${esc(wd)}" data-en3500-cat="${esc(name)}" title="点这里标记：已掌握 / 需巩固">${j+1}</button>`
+              + `<button type="button" class="en3500-no" data-en3500-mark="${esc(wd)}" data-en3500-cat="${esc(name)}" title="点这里标记：已掌握 / 需巩固">${en3500Circled(j+1)}</button>`
               + `<span class="en3500-w" data-en3500-speak="${esc(wd)}" title="点击朗读">${esc(wd)}</span>`
               + `<span class="en3500-meta"><span class="en3500-ipa">${esc(w && w.ipa)}</span><span class="en3500-cn">${esc(w && w.cn)}</span></span>`
               + `</div>`;
@@ -28075,7 +28356,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     const ttl = document.getElementById('en3500Title');
     if(ttl) ttl.textContent = '🔠 ' + String(name) + ' · ' + words.length + ' 词';
     body.innerHTML = words.length
-      ? words.map((w,i)=>`<div class="en3500-row"><span class="en3500-no">${i+1}</span><span class="en3500-w">${esc(w && w.w)}</span><span class="en3500-ipa">${esc(w && w.ipa)}</span><span class="en3500-cn">${esc(w && w.cn)}</span></div>`).join('')
+      ? words.map((w,i)=>`<div class="en3500-row"><span class="en3500-no">${en3500Circled(i+1)}</span><span class="en3500-w">${esc(w && w.w)}</span><span class="en3500-ipa">${esc(w && w.ipa)}</span><span class="en3500-cn">${esc(w && w.cn)}</span></div>`).join('')
       : '<div class="en3500-empty">这个分类暂时没有单词</div>';
     showModal('#modalEn3500');
   }
@@ -37813,7 +38094,7 @@ function renderKMAdmin(){
         <div class="xs-adv-zh" title="${esc(it.zh)}"><span class="xs-adv-zh-txt">${esc(it.zh)}</span></div>
         <div class="xs-adv-input">
           ${editable ? `
-            <input class="xs-adv-input-box" type="text" data-xs-cidate="${esc(wid)}" value="${esc(lastAns)}" placeholder="写英文～" autocomplete="off" maxlength="120" />
+            <textarea class="xs-adv-input-box" data-xs-cidate="${esc(wid)}" placeholder="写英文～" autocomplete="off" maxlength="120" rows="1">${esc(lastAns)}</textarea>
           ` : `
             <div class="xs-adv-own"><span class="xs-adv-mark ok">✓</span><span class="xs-adv-own-txt">${esc(lastAns||it.en)}</span></div>
           `}
@@ -37877,6 +38158,16 @@ function renderKMAdmin(){
     }
     // 回车 = 统一提交（不再有单题提交键）
     target.querySelectorAll('[data-xs-cidate]').forEach(inp=>{
+      /* R261-3.1：语法题句子长 —— 填写区按内容自动换行并自动增高，
+         保证输入内容完整铺满、全部可见，不会被单行输入框截断隐藏。 */
+      const growXs = ()=>{
+        try{
+          inp.style.height = 'auto';
+          inp.style.height = Math.max(46, inp.scrollHeight + 4) + 'px';
+        }catch(e){}
+      };
+      growXs();
+      inp.addEventListener('input', growXs);
       inp.addEventListener('keydown', e=>{
         if(e.key === 'Enter'){
           e.preventDefault();
@@ -40058,13 +40349,18 @@ function renderKMAdmin(){
       + '</div>'
       + '<div class="ftd-row">'
       + '<span class="ftd-lbl">' + (isSell ? '出售数量' : '兑换数量') + '</span>'
-      + '<input type="number" id="farmTradeQty" class="ftd-qty" value="1" min="1" max="' + max + '" step="1" inputmode="numeric">'
+      /* R261-2.1：数量改为「弹窗内滑动选择」—— 拖动滑块选数量，数值实时大字回显 */
+      + '<b class="ftd-qty-val" id="farmTradeQtyVal">1</b>'
+      + '<span class="ftd-unit">/ ' + max + '</span>'
       + '<button type="button" class="pbtn small" id="farmTradeAll">全部</button>'
       + '</div>'
+      + '<input type="range" id="farmTradeQty" class="ftd-qty ftd-slider" value="1" min="1" max="' + max + '" step="1" aria-label="滑动选择数量">'
+      + '<div class="ftd-slider-scale"><span>1</span><span>👉 滑动选择数量</span><span>' + max + '</span></div>'
       + '<div class="ftd-sum" id="farmTradeSum"></div>'
       + '<div class="ftd-tip" id="farmTradeTip">' + (cfg.tip || (isSell ? '确认后作物离开仓库，金币立即到账。' : '确认后扣除' + unit + '，物品立即到账。')) + '</div>';
     const qtyEl = document.getElementById('farmTradeQty');
     const sumEl = document.getElementById('farmTradeSum');
+    const qtyValEl = document.getElementById('farmTradeQtyVal');
     const allBtn = document.getElementById('farmTradeAll');
     const readQty = ()=>{
       let n = parseInt(qtyEl && qtyEl.value, 10);
@@ -40075,6 +40371,11 @@ function renderKMAdmin(){
     const paint = ()=>{
       const n = readQty();
       const total = Math.max(0, (cfg.price | 0)) * n;
+      // R261-2.1：滑块进度 + 大字数值同步回显
+      if(qtyValEl) qtyValEl.textContent = n;
+      if(qtyEl && qtyEl.style){
+        qtyEl.style.setProperty('--ftd-pct', (max > 1 ? ((n - 1) / (max - 1) * 100) : 100) + '%');
+      }
       if(sumEl){
         sumEl.innerHTML = isSell
           ? ('本次获得 <b>' + total + ' 💰</b> 金币　·　单价 ' + (cfg.price | 0) + ' 💰')
@@ -44888,7 +45189,9 @@ if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
       + '<button type="button" class="pbtn danger hidden-in-child" id="r256QuickReset">🧹 单模块重置</button>'
       + '</div>'
       + '</div></div>';
-    grid.appendChild(card);
+    // R261-1.1：提醒卡注入左侧加宽槽位，右侧由三张工具卡竖向排列
+    const slot = $('#r256SetCardSlot');
+    (slot || grid).appendChild(card);
 
     const bindSw = (sel, get, set, after)=>{
       const b = $(sel); if(!b) return;
