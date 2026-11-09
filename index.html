@@ -6,7 +6,36 @@
 <meta name="apple-mobile-web-app-capable" content="yes" data-page-node-id="txp63PBKafuAIvQgPCrB3q">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" data-page-node-id="bLAdK0fHIxdLUZ3tfIvYfK">
 <meta name="apple-mobile-web-app-title" content="学习打卡" data-page-node-id="gdX5SkLc0100dNpHQ2Y29F">
-<script>(function(){try{var t='__ls_test__';window.localStorage.setItem(t,t);window.localStorage.removeItem(t);}catch(e){var m={},s={getItem:function(k){return Object.prototype.hasOwnProperty.call(m,k)?m[k]:null;},setItem:function(k,v){m[k]=String(v);},removeItem:function(k){delete m[k];},clear:function(){m={};}};try{Object.defineProperty(window,'localStorage',{value:s,configurable:true,writable:true});}catch(e2){try{window.localStorage=s;}catch(e3){}}}})();</script>
+<script>(function(){
+  var ls=null;
+  try{ ls=window.localStorage; if(ls) ls.getItem('__ls_probe__'); }catch(e){ ls=null; }
+  if(ls){
+    var writable=false, warn='';
+    try{
+      var t='__ls_test__';
+      try{ ls.setItem(t,t); ls.removeItem(t); writable=true; }
+      catch(e1){
+        warn='quota';
+        var junk=['zoo_checkin_v3_preupdate','zoo_checkin_v3_corrupt_backup'];
+        for(var i=0;i<junk.length;i++){ try{ ls.removeItem(junk[i]); }catch(e2){} }
+        try{ ls.setItem(t,t); ls.removeItem(t); writable=true; }catch(e3){}
+      }
+    }catch(e4){}
+    window.__STORAGE_BOOT__={mode:'native',writable:writable,warn:writable?'':warn};
+    return;
+  }
+  var m={},s={
+    getItem:function(k){return Object.prototype.hasOwnProperty.call(m,k)?m[k]:null;},
+    setItem:function(k,v){m[k]=String(v);},
+    removeItem:function(k){delete m[k];},
+    clear:function(){m={};},
+    key:function(i){var ks=Object.keys(m);return (i>=0&&i<ks.length)?ks[i]:null;},
+    get length(){return Object.keys(m).length;}
+  };
+  try{Object.defineProperty(window,'localStorage',{value:s,configurable:true,writable:true});}
+  catch(e2){try{window.localStorage=s;}catch(e3){}}
+  window.__STORAGE_BOOT__={mode:'shim',writable:true,warn:'blocked'};
+})();</script>
 <title>疯狂动物城 · 三年级学习打卡乐园</title>
 <style>
 /* ============================================================
@@ -9642,14 +9671,14 @@ textarea.xs-adv-input-box{
 .farm-music-toggle:hover{transform:translateY(-1px);filter:brightness(1.04)}
 .farm-music-toggle.is-paused{color:#2f6b25;background:linear-gradient(135deg,#eafbe9,#d3f0cf);border-color:#8fce83}
 
-/* ============ R263-2.1 / R264-1.1：暂停音乐键 / 田地 / 页面全部按键 = 70% 毛玻璃，底层背景图部分透出 ============ */
+/* ============ R263-2.1 / R264-1.1 / R265-1.1：暂停音乐键 / 田地 / 页面全部按键 = 90% 毛玻璃，底层背景图部分透出 ============ */
 /* 半透明 + 背景模糊 + 柔和亮边构成毛玻璃；hover / 键盘聚焦临时提亮保证可辨识与可操作；统计数字保持清晰 */
-/* R264-1.1：透明度由 50% 提到 70%（四张卡片与田地一同调整） */
-.page-farm .farm-field-area{opacity:.7;transition:opacity .18s;-webkit-backdrop-filter:blur(5px) saturate(1.08);backdrop-filter:blur(5px) saturate(1.08)}
-.page-farm button{opacity:.7;transition:opacity .18s;-webkit-backdrop-filter:blur(5px) saturate(1.08);backdrop-filter:blur(5px) saturate(1.08)}
+/* R264-1.1：50% → 70%；R265-1.1：四张卡片与田地再调整到 90% */
+.page-farm .farm-field-area{opacity:.9;transition:opacity .18s;-webkit-backdrop-filter:blur(5px) saturate(1.08);backdrop-filter:blur(5px) saturate(1.08)}
+.page-farm button{opacity:.9;transition:opacity .18s;-webkit-backdrop-filter:blur(5px) saturate(1.08);backdrop-filter:blur(5px) saturate(1.08)}
 .page-farm .farm-music-toggle{border:1.5px solid rgba(255,255,255,.78);box-shadow:0 2px 10px rgba(255,255,255,.4),0 2px 7px rgba(150,110,40,.18)}
 .page-farm .farm-field-area{border-radius:22px}
-.page-farm button:hover,.page-farm button:focus-visible{opacity:.9}
+.page-farm button:hover,.page-farm button:focus-visible{opacity:1}
 .page-farm .farm-title-stats{opacity:1}
 
 /* ==========================================================================
@@ -9742,42 +9771,6 @@ textarea.xs-adv-input-box{
   80%{transform:translate3d(var(--sway3,7vw),82vh,0) rotate(var(--rot3,360deg));opacity:.75}
   100%{transform:translate3d(var(--sway4,2vw),108vh,0) rotate(var(--spin,480deg));opacity:0}
 }
-.farm-anim-layer .farm-tree-scene{
-  position:absolute;right:5%;bottom:17%;width:112px;height:132px;
-  pointer-events:none;opacity:.92;
-}
-.farm-tree{position:absolute;inset:0}
-.farm-tree-trunk{
-  position:absolute;left:48px;bottom:0;width:16px;height:58px;border-radius:6px 6px 3px 3px;
-  background:linear-gradient(90deg,#8b5e3c,#b07a4a 55%,#7a4f31);
-  box-shadow:inset -3px 0 5px rgba(60,35,15,.28);
-}
-.farm-tree-crown{
-  position:absolute;left:8px;top:0;width:96px;height:84px;border-radius:50% 50% 44% 44%;
-  background:radial-gradient(circle at 32% 28%,#9fd47a,#6fae59 62%,#4e8b42);
-  box-shadow:0 5px 14px rgba(40,90,35,.25),inset 0 -8px 16px rgba(40,90,35,.18);
-}
-.farm-apple{
-  position:absolute;width:11px;height:11px;border-radius:50%;
-  background:radial-gradient(circle at 32% 30%,#ff9b8f,#e2453c 70%);
-  box-shadow:0 1px 3px rgba(120,20,20,.3);
-}
-.farm-apple-1{left:30px;top:30px}
-.farm-apple-2{left:66px;top:22px}
-.farm-apple-3{left:52px;top:55px}
-.farm-anim-layer .farm-squirrel{
-  position:absolute;left:60px;bottom:18px;font-size:24px;line-height:1;
-  filter:drop-shadow(0 3px 4px rgba(60,40,20,.28));
-  animation:farmSquirrelClimb 7.5s ease-in-out infinite;
-}
-@keyframes farmSquirrelClimb{
-  0%{transform:translate(0,0) rotate(-12deg)}
-  22%{transform:translate(-10px,-18px) rotate(8deg)}
-  45%{transform:translate(6px,-40px) rotate(-8deg)}
-  62%{transform:translate(10px,-56px) rotate(12deg)}
-  80%{transform:translate(-6px,-26px) rotate(-10deg)}
-  100%{transform:translate(0,0) rotate(-12deg)}
-}
 .farm-anim-layer .farm-ground-scene{
   position:absolute;left:0;right:0;bottom:3%;height:52px;pointer-events:none;
 }
@@ -9811,7 +9804,7 @@ textarea.xs-adv-input-box{
   100%{transform:translateX(110vw) translateY(0) rotate(4deg)}
 }
 @media (prefers-reduced-motion:reduce){
-  .farm-anim-layer .farm-petal,.farm-anim-layer .farm-squirrel,
+  .farm-anim-layer .farm-petal,
   .farm-anim-layer .farm-dog,.farm-anim-layer .farm-cat{animation:none}
 }
 
@@ -9886,17 +9879,17 @@ textarea.xs-adv-input-box{
 
 
 /* ==========================================================================
-   R264-3.1 乐读数学：全部按键 + 内容卡片外层/底层白色容器卡片 → 平台蓝阶 tone-300
+   R264-3.1 / R265-3.1 乐读数学：全部按键 → tone-300；内容底板（页容器）→ tone-250
    ① 外层底层白色容器卡 = R90-1 起的 .page-math .page-content 白色圆角底板，
-      它是所有内容卡片下面的那一层；改为平台蓝阶 --tone-300（即需求指定的底色）；
+      它是所有内容卡片下面的那一层；R265 起改为平台蓝阶 --tone-250（即需求指定的底色）；
    ② 乐读数学「全部按键」（页面内 + 本板块专属弹窗内）统一以 --tone-300 为底色，
       深蓝字 --tone-900 + 略深蓝描边 --tone-400，保证在蓝底容器上仍清晰可辨；
    ③ 仅状态色保留：选中页签 / 已掌握 / 已完成 / 需巩固 / 答错 / 禁用，
       避免打卡与批改反馈被统一底色吞掉（全部用同层级 !important 后置覆盖）。
    ========================================================================== */
 .page-math .page-content{
-  background:var(--tone-300) !important;
-  border-color:var(--tone-400) !important;
+  background:var(--tone-250) !important;
+  border-color:var(--tone-300) !important;
 }
 .page-math button,
 .page-math [role="button"],
@@ -9953,6 +9946,72 @@ textarea.xs-adv-input-box{
   background:linear-gradient(135deg,#f7a23a,#e98331) !important;
   border-color:#e98331 !important;
   color:#fff !important;
+}
+
+
+/* ==========================================================================
+   R265-1.1 种植园：音乐按键移到主题卡右侧并改为正方形
+   ① 位置：从右上数据统计区（金币上方）迁入 .farm-mine-banner 主题卡内，
+      flex 布局里 margin-left:auto 推到最右；留出 38px 给家长模式的 🎨 背景编辑键；
+   ② 形状：固定 46×46 正方形、aspect-ratio:1/1、圆角 12px，
+      JS 只写图标（⏸ / ▶），完整语义交给 title / aria-label，避免撑破卡面；
+   ③ 与设置中心音乐开关、点击启停逻辑完全共用，ID 与事件绑定零改动。
+   ========================================================================== */
+.page-farm .farm-mine-banner .farm-music-toggle.r265-farm-music-square{
+  flex:0 0 auto;align-self:center;
+  width:46px;height:46px;aspect-ratio:1/1;
+  margin:0 38px 0 auto;padding:0;
+  display:inline-flex;align-items:center;justify-content:center;
+  font-size:20px;line-height:1;white-space:nowrap;
+  border-radius:12px;
+}
+.page-farm .farm-mine-banner .farm-music-toggle.r265-farm-music-square:hover{transform:scale(1.06)}
+
+/* ==========================================================================
+   R265-2 设置中心：学生 / 家长切换键移到「主题卡」与「游戏设置」卡片之间
+   DOM：.page-title.settings-title-card → .page-content > #cardModeSettings → .settings-grid
+   ① 独立横向条：白底卡片 + 与 7 张设置卡一致的圆角 / 描边 / 投影，宽度贴合内容区；
+   ② 标题「使用模式」与说明文字常驻左侧，学生/家长分段按键靠右，不再挤在主题卡右上角；
+   ③ 所有 ID / class / app.js 模式绑定零改动，只覆盖外观，特异性高于历史 .settings-card-* 规则。
+   ========================================================================== */
+.page-settings > .page-content > .r265-mode-between{
+  display:flex;align-items:center;gap:14px;
+  width:100%;box-sizing:border-box;
+  margin:0 2px 14px;padding:10px 16px;
+  background:var(--set-card-bg);
+  border:1.5px solid var(--set-card-border);
+  border-radius:var(--set-card-radius);
+  box-shadow:var(--set-card-shadow);
+  cursor:default;
+}
+.page-settings > .page-content > .r265-mode-between:hover{transform:none;box-shadow:var(--set-card-shadow)}
+.page-settings .r265-mode-between .settings-card-main{flex:1 1 auto;min-width:0;padding:0;margin:0;background:transparent;border:none;box-shadow:none}
+.page-settings .r265-mode-between .settings-card-body{
+  display:flex;flex-direction:row;align-items:center;gap:12px;
+  width:100%;min-height:0;margin:0;padding:0;
+  background:transparent;border:none;box-shadow:none;border-radius:0;
+}
+.page-settings .r265-mode-between .settings-card-head{display:flex;align-items:center;gap:8px;margin:0;flex:0 0 auto}
+.page-settings .r265-mode-between .settings-card-head .settings-card-icon{font-size:24px;line-height:1;text-align:left}
+.page-settings .r265-mode-between .settings-card-head .settings-card-title{font-size:15px;font-weight:800;color:var(--tone-900);margin:0}
+.page-settings .r265-mode-between .settings-card-row-mode{
+  display:flex;align-items:center;justify-content:space-between;
+  flex:1 1 auto;min-width:0;margin:0;padding:0;border:none;gap:12px;
+}
+.page-settings .r265-mode-between .settings-card-desc{
+  flex:1 1 auto;min-width:0;margin:0;font-size:12px;color:#33507e;
+  white-space:normal;overflow:visible;text-overflow:clip;
+}
+.page-settings .r265-mode-between .settings-mode-seg-card{
+  margin:0 0 0 auto;align-self:center;flex:0 0 auto;
+  background:rgba(255,255,255,.62);
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+  border:1px solid rgba(255,255,255,.75);
+  box-shadow:0 2px 8px rgba(30,58,138,.14);
+}
+@media (max-width:900px){
+  .page-settings .r265-mode-between .settings-card-body{flex-wrap:wrap}
+  .page-settings .r265-mode-between .settings-card-row-mode{flex-wrap:wrap}
 }
 
 </style>
@@ -10201,12 +10260,14 @@ textarea.xs-adv-input-box{
   </section>
   <!-- ================= R85：设置中心（从任务设置独立出来，统一收纳全部配置） ================= -->
   <section class="page page-settings" data-page="settings" hidden data-page-node-id="R85pageSettings">
-    <!-- R263-1.1：学生 / 家长切换按键迁移到「设置中心标题卡」右上角；原「使用模式」设置卡片已移除。
+    <!-- R265-2：学生 / 家长切换按键从「设置中心主题卡右上角」迁移到主题卡与「游戏设置」卡片之间，
+         即主题卡下方、设置网格上方的独立横向条；原「使用模式」设置卡片仍保持移除状态。
          ID 与交互结构（#cardModeSettings / #modeSegSettings / #modeChildSettings / #modeParentSettings /
          #modeSliderSettings）全部保留，app.js 的 setModeUI / 模式点击绑定零改动。 -->
     <div class="page-title settings-title-card" data-page-node-id="R85setTitle">
       <h2 data-page-node-id="R85setTitleLbl"></h2>
-      <div class="settings-card-mode r263-mode-corner" id="cardModeSettings" data-page-node-id="R118cardMode">
+    </div><div class="page-content">
+    <div class="settings-card-mode r265-mode-between" id="cardModeSettings" data-page-node-id="R118cardMode">
         <div class="settings-card-main" data-page-node-id="R118cardModeMain">
           <div class="settings-card-body">
           <div class="settings-card-head">
@@ -10230,7 +10291,6 @@ textarea.xs-adv-input-box{
           </div>
         </div>
       </div>
-    </div><div class="page-content">
 
     <!-- 设置中心卡片网格 -->
     <div class="settings-grid" id="settingsGrid" data-page-node-id="R85settingsGrid">
@@ -11034,10 +11094,11 @@ textarea.xs-adv-input-box{
   <section class="page page-farm" data-page="farm" hidden data-page-node-id="KBzw9h5nsTXcaruZBZRwwe">
     <!-- 装饰背景：天空 + 草地 -->
     <div class="farm-bg" data-page-node-id="lHGty1nDWUniRN962OxWMZ"></div>
-    <!-- R261-2.3 / R262-2.5 / R263-2.3：动态背景 —— 斜向阳光 + CSS 剪影飞鸟 / 蝴蝶 +
-          桃花飘舞 + 苹果树上爬动的小松鼠 + 草地小狗小猫追逐。
+    <!-- R261-2.3 / R262-2.5 / R263-2.3 / R265-1.1：动态背景 —— 斜向阳光 + CSS 剪影飞鸟 / 蝴蝶 +
+          桃花随机飘舞 + 草地小狗小猫全身动态追逐。
           R262 起飞鸟改为纯 CSS 剪影（双翅独立扇动 + 起伏滑翔 + 远近缩放 + 淡入淡出），
-          R263 新增三组特效同样纯 CSS / emoji 实现，pointer-events:none，不拦截点击、不占存档配额。 -->
+          R265 按需求删除苹果树与爬动小松鼠（DOM / CSS / 动画一并移除），
+          其余特效 pointer-events:none，不拦截点击、不占存档配额。 -->
     <div class="farm-anim-layer" aria-hidden="true">
       <div class="farm-sunbeam"></div>
       <div class="farm-sunbeam farm-sunbeam-2"></div>
@@ -11054,17 +11115,7 @@ textarea.xs-adv-input-box{
       <span class="farm-petal farm-petal-4"></span>
       <span class="farm-petal farm-petal-5"></span>
       <span class="farm-petal farm-petal-6"></span>
-      <!-- R263-2.3 ② 苹果树 + 沿树干上下爬动的小松鼠 -->
-      <div class="farm-tree-scene">
-        <div class="farm-tree">
-          <i class="farm-tree-trunk"></i>
-          <i class="farm-tree-crown"></i>
-          <i class="farm-apple farm-apple-1"></i>
-          <i class="farm-apple farm-apple-2"></i>
-          <i class="farm-apple farm-apple-3"></i>
-        </div>
-        <span class="farm-squirrel">🐿️</span>
-      </div>
+      <!-- R265-1.1：苹果树 + 小松鼠已按需求删除（相关 CSS / keyframes 同步移除） -->
       <!-- R263-2.3 / R264-1.1 ③ 草地小狗 / 小猫追逐：
            R264 起改用内联 SVG 绘制「全身」形象，四肢交替奔跑、尾巴摆动、头部起伏、
            耳朵抖动均由独立 keyframes 驱动，外层仍沿用 farmChaseDog / farmChaseCat 位移。 -->
@@ -11115,6 +11166,9 @@ textarea.xs-adv-input-box{
     <!-- V110：合并「我的种植园」横幅；R113：数据统计迁出至仓库上方，主题卡仅保留背景贴图 -->
     <header class="farm-mine-banner" data-page-node-id="k7gGVRGPXTexmfjQSMRLhz">
       <div class="fmb-title" data-page-node-id="ORAjABkCUuUIXY4NX84Hb4"></div>
+      <!-- R265-1.1：板块音乐暂停 / 播放按键移到主题卡右侧，改为正方形按键；
+           ID / 交互 / 与设置中心共用的开关状态完全不变，仅文案收为图标由 JS 维护。 -->
+      <button type="button" class="farm-music-toggle r265-farm-music-square" id="farmMusicToggle" aria-pressed="true" aria-label="暂停种植园背景音乐" title="点击暂停种植园背景音乐">⏸</button>
     </header><div class="page-content">
     <header class="farm-topbar" data-page-node-id="x9B9feSzgAEZORx4DAEhIL">
       <div class="farm-topbar-main" data-page-node-id="CbgtYRniGUlt1LfNtsG19r">
@@ -11164,8 +11218,7 @@ textarea.xs-adv-input-box{
       <!-- R113：数据统计（⭐💧☀️💰）移至仓库上方展示，原 ID/功能不变
            R260-2.5：靠右分两行 —— 第一行 ⭐ / 金币，第二行 阳光 / 水 / 肥料 -->
       <div class="farm-title-stats" data-page-node-id="pQoy2qUAJglkq07hfs1Rzl">
-        <!-- R262-2.2：板块音乐暂停 / 播放按键，位于金币数据上方，与设置中心音乐开关共用状态 -->
-        <button type="button" class="farm-music-toggle" id="farmMusicToggle" aria-pressed="true" title="点击暂停种植园背景音乐">⏸ 暂停音乐</button>
+        <!-- R265-1.1：音乐按键已移到主题卡右侧，此处仅保留数据统计 -->
         <div class="fts-row" data-page-node-id="R260ftsRow1">
           <span class="fts fts-stars" data-page-node-id="ibQitRhCqDh8S9ntY9D6ML"><span class="fts-ico" data-page-node-id="qMbgyyOmEqHGc5tDmyVDjc">⭐</span><b id="farmStars" data-page-node-id="guaQdavqnuwu83YC5wsIwD">0</b></span>
           <span class="fts fts-coins" data-page-node-id="W1UCiESjj73O9pwfmPtDFO"><span class="fts-ico" data-page-node-id="kFjH2qNWTQESVnxqVbPJAx">💰</span><b id="farmCoins" data-page-node-id="0Ansxhd6S6tCQk1PuQqU8V">0</b></span>
@@ -12797,10 +12850,10 @@ textarea.xs-adv-input-box{
   function _lastSavedAt(){
     try{ const m = JSON.parse(_safeGet(KEY_META) || 'null'); return (m && m.savedAt) || 0; }catch(e){ return 0; }
   }
-  function _touchSavedAt(rawLen){
+  function _touchSavedAt(rawLen, ts){
     try{
       let m = {}; try{ m = JSON.parse(_safeGet(KEY_META) || 'null') || {}; }catch(e){ m = {}; }
-      m.schema = SCHEMA_VERSION; m.savedAt = Date.now();
+      m.schema = SCHEMA_VERSION; m.savedAt = ts || Date.now();
       if(rawLen) m.bytes = rawLen;
       _safeSet(KEY_META, JSON.stringify(m));
     }catch(e){}
@@ -12816,6 +12869,136 @@ textarea.xs-adv-input-box{
     const keys = {};
     try{ for(let i=0;i<localStorage.length;i++){ const k = localStorage.key(i); if(k) keys[k] = (_safeGet(k)||'').length; } }catch(e){}
     return { used:_usageBytes(), softLimit:SPACE_SOFT_LIMIT, savedAt:_lastSavedAt(), keys:keys };
+  }
+  /* ============ R265-4：第二持久化介质 —— IndexedDB 全量镜像 ============
+     iPad Safari 上有两种 localStorage 根本靠不住的情况：
+       ① 5MB 配额被主档 + 双代备份 + 更新前副本挤满，setItem 长期抛 QuotaExceededError；
+       ② 隐私模式 / 站点数据被禁，构建期启动自检只能退到纯内存 localStorage shim。
+     此前所有兜底（备份 / 快照 / 差异补丁）都写在 localStorage 里，介质一坏就一起失效。
+     IndexedDB 与 localStorage 是两套独立配额，这里在每次落库时异步写一份完整镜像，
+     启动时若镜像比本机主档新（或本机没有可用存档）就把镜像恢复回来并重渲染。
+     设计铁律：镜像只做「恢复源」，正常可用本机存储时绝不参与读取，不改变任何现有语义。 */
+  const MIRROR_DB = 'zoo_checkin_mirror';
+  const MIRROR_STORE = 'kv';
+  const MIRROR_KEY = 'main';
+  let _mirrorAvailable = null;
+  let _mirrorLastTs = 0;
+  let _mirrorHydrated = false;
+  let _mirrorDb = null, _mirrorQueue = [], _mirrorOpening = false;
+  function _idb(){
+    try{
+      if(typeof indexedDB !== 'undefined' && indexedDB) return indexedDB;
+      if(typeof window !== 'undefined' && window.indexedDB) return window.indexedDB;
+    }catch(e){}
+    return null;
+  }
+  function _mirrorFlushQueue(db){
+    const q = _mirrorQueue.slice(); _mirrorQueue = []; _mirrorOpening = false;
+    q.forEach(function(fn){ try{ fn(db); }catch(e){} });
+  }
+  function _mirrorOpen(cb){
+    if(_mirrorDb){ cb(_mirrorDb); return; }
+    _mirrorQueue.push(cb);
+    if(_mirrorOpening) return;
+    const idb = _idb();
+    if(!idb){ _mirrorAvailable = false; _mirrorFlushQueue(null); return; }
+    _mirrorOpening = true;
+    let req;
+    try{ req = idb.open(MIRROR_DB, 1); }
+    catch(e){ _mirrorAvailable = false; _mirrorFlushQueue(null); return; }
+    req.onupgradeneeded = function(){
+      try{
+        const db = req.result;
+        if(db && db.objectStoreNames && !db.objectStoreNames.contains(MIRROR_STORE)) db.createObjectStore(MIRROR_STORE);
+      }catch(e){}
+    };
+    req.onerror = function(){ _mirrorAvailable = false; _mirrorFlushQueue(null); };
+    req.onblocked = function(){ _mirrorFlushQueue(null); };
+    req.onsuccess = function(){ _mirrorAvailable = true; _mirrorDb = req.result || null; _mirrorFlushQueue(_mirrorDb); };
+  }
+  function _mirrorWrite(raw, ts, cb){
+    if(!raw){ try{ cb && cb(false); }catch(e){} return; }
+    _mirrorOpen(function(db){
+      if(!db){ try{ cb && cb(false); }catch(e){} return; }
+      try{
+        const tx = db.transaction(MIRROR_STORE, 'readwrite');
+        tx.objectStore(MIRROR_STORE).put({ raw:raw, ts:ts || Date.now() }, MIRROR_KEY);
+        tx.oncomplete = function(){ _mirrorLastTs = ts || _mirrorLastTs; try{ cb && cb(true); }catch(e){} };
+        tx.onerror = tx.onabort = function(){ try{ cb && cb(false); }catch(e){} };
+      }catch(e){ try{ cb && cb(false); }catch(e2){} }
+    });
+  }
+  function _mirrorRead(cb){
+    _mirrorOpen(function(db){
+      if(!db){ cb(null); return; }
+      try{
+        const req = db.transaction(MIRROR_STORE, 'readonly').objectStore(MIRROR_STORE).get(MIRROR_KEY);
+        req.onsuccess = function(){ cb(req.result || null); };
+        req.onerror = function(){ cb(null); };
+      }catch(e){ cb(null); }
+    });
+  }
+  /* 启动时调用一次：只有「本机无可用存档」或「镜像确实更新」才采纳，
+     避免正常状态下反复覆盖 / 重渲染。done(true) 表示已从镜像恢复数据。 */
+  function hydrateMirror(done){
+    if(_mirrorHydrated){ try{ done && done(false); }catch(e){} return; }
+    _mirrorHydrated = true;
+    _mirrorRead(function(rec){
+      if(!rec || typeof rec.raw !== 'string' || !_rawUsable(rec.raw)){
+        try{ done && done(false); }catch(e){} return;
+      }
+      const localTs = _lastSavedAt();
+      const localRaw = _safeGet(KEY);
+      const localOk = _rawUsable(localRaw);
+      if(localOk && localTs && rec.ts <= localTs + 1000){
+        try{ done && done(false); }catch(e){} return;
+      }
+      try{
+        try{ localStorage.setItem(KEY, rec.raw); }catch(e){}
+        _loadCacheOK = false; _loadCacheRaw = null; _loadCacheSt = null;
+        load();                                  // 重新解析 + 跑迁移，旧缓存不挡镜像
+        _touchSavedAt(rec.raw.length);            // 本机时间戳刷新，避免下次启动无谓恢复
+        _mirrorLastTs = rec.ts || 0;
+        try{ done && done(true); }catch(e){}
+      }catch(e){ try{ done && done(false); }catch(e2){} }
+    });
+  }
+  function storageHealth(){
+    const boot = (typeof window !== 'undefined' && window.__STORAGE_BOOT__) || null;
+    let writable = false;
+    try{ const t = '__ls_health__'; localStorage.setItem(t, t); localStorage.removeItem(t); writable = true; }catch(e){}
+    return {
+      mode: boot ? boot.mode : 'native',
+      writable: writable,
+      volatile: !!(boot && boot.mode === 'shim'),
+      warn: (boot && boot.warn) || '',
+      mirror: _mirrorAvailable === true,
+      mirrorTs: _mirrorLastTs,
+      used: _usageBytes(), softLimit: SPACE_SOFT_LIMIT,
+      savedAt: _lastSavedAt(), lastError: _saveError
+    };
+  }
+  /* R265-4：事件驱动兜底刷盘。iPad Safari 的 pagehide / beforeunload 不可靠，
+     而少数 UI 路径只改 load() 返回的内存对象、不显式调用 save()。
+     这里在冒泡阶段（所有业务处理器之后）检查内存态是否已偏离上次落库串，
+     偏离就补一次 save；不建定时器，避免后台常驻与测试进程悬挂。 */
+  let _autoFlushOn = false, _autoFlushAt = 0;
+  function startAutoFlush(){
+    if(_autoFlushOn || typeof window === 'undefined' || !window.addEventListener) return true;
+    _autoFlushOn = true;
+    const sweep = function(){
+      const now = Date.now();
+      if(now - _autoFlushAt < 120) return;
+      _autoFlushAt = now;
+      const st = (_staging && _staged) ? _staged : _loadCacheSt;
+      if(!st || typeof st !== 'object') return;
+      let raw;
+      try{ raw = JSON.stringify(st); }catch(e){ return; }
+      if(raw === _loadCacheRaw) return;
+      try{ save(st); }catch(e){}
+    };
+    ['click','change'].forEach(function(ev){ try{ window.addEventListener(ev, sweep, false); }catch(e){} });
+    return true;
   }
   // 判断一段原始串是否是「可用的存档对象」——必须能解析成非数组对象且带档案结构
   function _rawUsable(raw){
@@ -12878,8 +13061,12 @@ textarea.xs-adv-input-box{
       if(!_loadCacheRaw && !_sessionPersisted) return false;
       _guardBeforeSave(st);   // R259：刷盘同样过写盘闸，关页面 / 切后台也守保护规则
       const raw = JSON.stringify(st);
+      // R265-4：版本更新 / 关页面前同样留一份 IndexedDB 镜像（pagehide 在 iPad 上不一定触发）
+      const _fts = Date.now();
+      try{ _mirrorWrite(raw, _fts); }catch(e){}
       // R260-1.1：刷盘同样走配额回收链，避免「关页面最后一次操作因空间不足丢失」
       if(!_writeMain(raw).ok){ try{ _pendingWrite(st); }catch(e){} return false; }
+      _touchSavedAt(raw.length, _fts);
       _snapshotClear();   // R258-1.1：主档已整体落盘，应急设置快照作废
       _pendingClear();    // R261-5.1：主档已整体落盘，差异补丁作废
       _rotateBackup(raw, true);
@@ -14675,6 +14862,11 @@ textarea.xs-adv-input-box{
     try{ _r256Entry = _r256Ledger(st); }catch(e){}
     try{ raw = JSON.stringify(st); }
     catch(e){ _saveError = 'serialize'; _loadCachePut(st); return false; }
+    /* R265-4：无论本机 localStorage 写不写得进，都异步留一份 IndexedDB 全量镜像。
+       iPad 上介质失效（配额满 / 隐私模式 / 内存 shim）时，这份镜像是唯一能跨刷新的副本。
+       时间戳与成功落库时的 KEY_META.savedAt 共用，hydrateMirror 才能准确判断新旧。 */
+    const _ts = Date.now();
+    try{ _mirrorWrite(raw, _ts); }catch(e){}
     try{
       localStorage.setItem(KEY, raw);
     }catch(e){
@@ -14693,12 +14885,13 @@ textarea.xs-adv-input-box{
         return false;
       }
     }
-    // R258-1.1：回读校验 —— 写进去的长度必须与本次序列化结果一致；
-    //           部分浏览器在空间临界时会「不报错但没写全」，只看返回值会误判成功。
-    //           R260-1.1：这里失败属于「读回不一致」，不再冒充 quota（否则 UI 会误报空间不足）。
+    // R258-1.1 / R265-4：回读校验 —— 必须与本次序列化结果**逐字节一致**。
+    //   旧实现只比长度，只要旧存档与新串长度碰巧相同（或写入被某层包装器静默吞掉），
+    //   就会把「什么都没写进去」误判成成功，并清掉补丁 / 快照，刷新后数据全无。
+    //   R260-1.1：这里失败属于「读回不一致」，不再冒充 quota（否则 UI 会误报空间不足）。
     try{
       const _back = localStorage.getItem(KEY);
-      if(_back != null && _back.length !== raw.length){
+      if(_back != null && _back !== raw){
         _saveError = 'verify';
         _r256LedgerRollback(st, _r256Entry);
         try{ _pendingWrite(st); }catch(e){}   // R261-5.1：回读不一致同样留补丁
@@ -14709,7 +14902,7 @@ textarea.xs-adv-input-box{
     _saveError = '';
     _sessionPersisted = true; // R263-3.1：本次会话已有可信落库，pagehide 刷盘安全闸放行
     _loadCachePut(st, raw);   // R246-3：写成功后同步缓存，下一次 load() 无需再解析
-    _touchSavedAt(raw.length); // R264-2.1：每次成功落库都记时间，过期快照判断才可靠
+    _touchSavedAt(raw.length, _ts); // R264-2.1 / R265-4：每次成功落库都记时间，与镜像同源时间戳
     // R258-1.1：主档已完整落库，之前为应急写的设置快照立刻作废（避免两份真相）
     _snapshotClear();
     _pendingClear();          // R261-5.1：主档已完整落库，差异补丁同样作废
@@ -21779,6 +21972,8 @@ be 动词：am / is → was；are → were
     backupInfo, flushPersistence,
     // R264-2.1：本机存储用量诊断（核验是否真的空间紧张、由哪些副本占用）
     storageUsage,
+    // R265-4：IndexedDB 镜像恢复 / 存储健康自检 / 事件驱动兜底刷盘
+    hydrateMirror, storageHealth, startAutoFlush,
     // R256：打卡总览 / 星星流水 / 提醒 / 护眼 / 补卡 / 错题复练 / 断点 / 收藏 / 提示 / 图鉴 / 证书 / 暂存 / 单模块重置
     getR256, setR256, getStarLog, clearStarLog, setStarWhy,
     getRemindCfg, saveRemindCfg, getEyeCfg, saveEyeCfg,
@@ -39510,14 +39705,16 @@ function renderKMAdmin(){
     }catch(e){}
     return started;
   }
-  // R262-2.2：种植园「板块音乐暂停」快捷按键（位于金币数据上方）
+  // R262-2.2 / R265-1.1：种植园「板块音乐暂停」快捷按键（R265 起移至主题卡右侧、正方形）
   // 与设置中心「开启种植园背景音乐」共用同一状态：window.__farmMusicOn + localStorage.farmMusicOn
+  // 正方形按键只放图标，完整语义放在 title / aria-label，避免文字撑破方形卡面。
   function syncFarmMusicQuickToggle(){
     const btn = document.getElementById('farmMusicToggle');
     if(!btn) return;
     const on = window.__farmMusicOn !== false;
-    btn.textContent = on ? '⏸ 暂停音乐' : '▶ 播放音乐';
+    btn.textContent = on ? '⏸' : '▶';
     btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    btn.setAttribute('aria-label', on ? '暂停种植园背景音乐' : '播放种植园背景音乐');
     btn.classList.toggle('is-paused', !on);
     btn.title = on ? '点击暂停种植园背景音乐' : '点击播放种植园背景音乐';
   }
@@ -42205,7 +42402,17 @@ function renderKMAdmin(){
     window.__lsPatchDone = true;
     const orig = localStorage.setItem;
     const wrapped = function(k, v){
-      try { orig.call(localStorage, k, v); } catch(e){}
+      /* R265-4【iPad 数据丢失第二根因】：写入异常必须原样抛回给 store.js。
+         旧实现 `try{ orig.call(...) }catch(e){}` 把 QuotaExceededError / SecurityError
+         全部吞掉 → save() 以为写成功：配额回收链、KEY_PENDING 差异补丁、设置快照、
+         回读校验、失败提示全部被跳过；更坏的是成功后还会 _pendingClear() /
+         _snapshotClear() 把仅剩的兜底删掉。于是本机存储一旦写不进，
+         用户在 iPad 上做的每次修改都只留内存，刷新 / 点版本更新立刻回到初始态。
+         现在只有写入真正成功才触发云端推送；失败时把原始错误抛回，由 store.js
+         走完整的配额腾挪 + 补丁 + IndexedDB 镜像链路。 */
+      let err = null;
+      try { orig.call(localStorage, k, v); } catch(e){ err = e; }
+      if(err) throw err;
       if(k === 'zoo_checkin_v3' && window._cbApp && !window._cloudSync.pulling){
         window._cloudSync.lastLocalSave = Date.now();
         scheduleCloudPush();
@@ -45903,6 +46110,25 @@ if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
       const _SAFE = ['home','today','farm','math','xueersi','reading','baike','knowledge','archive','memonick',
                      'newworld','newworld-yuwen','newworld-math','newworld-english','newworld-suzhi'];
       if(_lp && _lp !== 'home' && _SAFE.indexOf(_lp) >= 0) goPage(_lp);
+    }catch(e){}
+    /* R265-4：存储兜底挂载（iPad 刷新 / 版本更新后数据丢失的最终闭环）
+       ① 事件驱动刷盘：补上只改内存、没显式 save() 的 UI 路径，且不依赖 pagehide；
+       ② IndexedDB 镜像恢复：本机存储被禁用 / 写满时，从独立介质恢复并重渲染当前页；
+       ③ 自检提示：本机介质不可写时明确告知，不再静默「改了没生效」。 */
+    try{ if(S.startAutoFlush) S.startAutoFlush(); }catch(e){}
+    try{
+      if(S.hydrateMirror) S.hydrateMirror(function(restored){
+        if(restored){
+          try{ renderCurrentPage(); }catch(e){}
+          try{ toast('✅ 已从本机安全副本恢复上次的记录'); }catch(e){}
+        }
+      });
+    }catch(e){}
+    try{
+      const _h = S.storageHealth ? S.storageHealth() : null;
+      if(_h && (!_h.writable || _h.volatile) && !_h.mirror){
+        try{ toast('⚠️ 本机存储不可用，改动可能无法保留，请在浏览器设置中允许本站存储数据'); }catch(e){}
+      }
     }catch(e){}
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init);
