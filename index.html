@@ -1053,12 +1053,14 @@ button[hidden]{display:none!important}
   white-space:nowrap;flex:0 0 auto;min-width:0;
 }
 .farm-mine-banner .farm-title-stats{margin-left:auto}
-/* V58-R2：4 统计并入主标题卡内部（深色底上浅色 pill） */
+/* V58-R2：4 统计并入主标题卡内部（深色底上浅色 pill）
+   R260-2.5：改为靠右分两行 —— 第一行 ⭐ / 金币，第二行 阳光 / 水 / 肥料 */
 .farm-title-stats{
-  display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:8px;
+  display:flex;flex-direction:column;align-items:flex-end;justify-content:flex-end;gap:6px;
   padding:0;margin-left:auto;
   background:transparent;border:none;box-shadow:none;
 }
+.farm-title-stats .fts-row{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:nowrap}
 .farm-title-stats .fts{
   display:inline-flex;align-items:center;gap:5px;
   padding:5px 11px;
@@ -1344,6 +1346,10 @@ button[hidden]{display:none!important}
 .modal-mask[hidden]{display:none}
 .modal-box{background:#fff;border-radius:16px;padding:18px;min-width:360px;max-width:600px;max-height:80vh;max-height:80dvh;overflow:auto;box-shadow:0 10px 30px rgba(0,0,0,.3)}
 .modal-sm{min-width:280px}
+/* R260-3.1：确认弹窗提示文字单行完整展示（首页跳转确认）：弹窗按内容自适应宽度，文字不折行 */
+#modalConfirm .modal-box.modal-width-fitline{min-width:0;width:auto;max-width:92vw;text-align:center}
+.cm-one-line{display:block;white-space:nowrap;font-size:15px;line-height:1.55}
+.cm-one-line b{color:var(--tiffany-deep)}
 .modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
 .modal-head h3{font-size:17px;color:var(--orange-dark)}
 .modal-x{background:#f0f0f0;border:none;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:14px;color:var(--muted)}
@@ -1702,8 +1708,9 @@ body.child-mode .parent-edit-fab{display:none}
 
 /* V53：巩固打卡题卡改横向 — 中文释义 / 答案填写 / 提交 三区一字排开（flex row 1:1:1） */
 /* V57-R5：巩固打卡题卡 → 整行宽度（与上方说明卡片等长） + 卡内所有内容横向一字排开 */
-/* Req7：严格一题一行纵向排列（取消 V58.1 的 2 列网格，改回单列 flex column） */
-.xs-adv-cards{grid-column:1 / -1;display:flex;flex-direction:column;gap:12px;margin-top:14px;align-items:stretch;width:100%;padding:0;box-sizing:border-box}
+/* Req7：严格一题一行纵向排列（取消 V58.1 的 2 列网格，改回单列 flex column）
+   R260-4.2：单字题目改为**一行两道题**（2 列网格），卡内由横排改竖排以适配半宽 */
+.xs-adv-cards{grid-column:1 / -1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px;align-items:start;width:100%;padding:0;box-sizing:border-box}
 /* V58-R3：题卡与主题卡（.xs-pane）融合 — 去独立边框/阴影，作为主题卡内的"题行" */
 .xs-adv-cards-row{display:flex;flex-direction:column;gap:8px;margin-top:10px}
 /* V32：题卡宽度变 2 倍（4 列 → 2 列），整体空间更宽裕；浅蓝主调与学而思版面协调 */
@@ -1721,6 +1728,15 @@ body.child-mode .parent-edit-fab{display:none}
   width:100%;
   box-sizing:border-box;
 }
+/* R260-4.2：一行两道题 → 卡内改为竖排（题标一行 / 中文释义 / 作答框 / 结果行依次向下） */
+.xs-adv-cards > .xs-adv-card{flex-direction:column;align-items:stretch;gap:8px}
+.xs-adv-cards > .xs-adv-card .xs-adv-no{
+  flex:0 0 auto;min-width:0;width:100%;flex-direction:row;align-items:center;
+  justify-content:flex-start;gap:8px;
+}
+.xs-adv-cards > .xs-adv-card .xs-adv-zh{flex:0 0 auto;width:100%;max-width:100%}
+.xs-adv-cards > .xs-adv-card .xs-adv-input{flex:0 0 auto;width:100%;min-width:0}
+.xs-adv-cards > .xs-adv-card .xs-adv-eval{width:100%;flex:0 0 auto}
 /* ① 题标：固定 80px，左对齐，序号 + 状态小标同行 */
 .xs-adv-no{flex:0 0 80px;min-width:80px;display:flex;flex-direction:column;justify-content:center;gap:3px;align-items:flex-start}
 .xs-adv-no-idx{font-size:14px;font-weight:800;color:var(--sky-blue);white-space:nowrap;line-height:1.2}
@@ -8273,6 +8289,46 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 .en3500-ipa{color:var(--sky-blue)}
 .en3500-cn{color:var(--tone-700)}
 .en3500-empty{text-align:center;color:var(--muted);padding:24px}
+/* ========== R260-6.2：3500 词交互升级 ==========
+   ① 单词字号扩大一倍（11.5px → 23px），序号变可点按键，词性/释义竖排到右侧腾出宽度；
+   ② 点单词朗读；点序号弹「已掌握 / 需巩固」；
+   ③ 已掌握整行绿色、需巩固整行红色；
+   ④ 该分类全部标记已掌握后，打卡按键才可点。 */
+.en3500-words .en3500-row{
+  grid-template-columns:30px minmax(0,1.15fr) minmax(0,1fr);
+  gap:8px;padding:6px 8px;align-items:center;
+}
+.en3500-words .en3500-w{font-size:23px;line-height:1.2;font-weight:900;color:var(--tone-900);cursor:pointer;word-break:break-word}
+.en3500-words .en3500-w:hover{text-decoration:underline dotted}
+.en3500-meta{display:flex;flex-direction:column;gap:1px;min-width:0}
+.en3500-meta .en3500-ipa{color:var(--sky-blue);font-size:11.5px;line-height:1.25;word-break:break-word}
+.en3500-meta .en3500-cn{color:var(--tone-700);font-size:11.5px;line-height:1.3;word-break:break-word}
+.en3500-no{
+  border:none;background:transparent;padding:0;font-family:inherit;cursor:pointer;
+  font-size:13px;font-weight:800;color:var(--muted);text-align:center;line-height:1;
+  width:26px;height:26px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;
+}
+.en3500-no:hover{background:var(--tone-100);color:var(--z-nw-deep)}
+.en3500-row.is-ok{background:linear-gradient(90deg,#e6f8ec,#f4fcf7)!important;box-shadow:inset 0 0 0 1.5px #86d3a4}
+.en3500-row.is-ok .en3500-w,.en3500-row.is-ok .en3500-meta .en3500-ipa,
+.en3500-row.is-ok .en3500-meta .en3500-cn,.en3500-row.is-ok .en3500-no{color:#1f7a45}
+.en3500-row.is-need{background:linear-gradient(90deg,#fdeaea,#fff5f5)!important;box-shadow:inset 0 0 0 1.5px #eea3a3}
+.en3500-row.is-need .en3500-w,.en3500-row.is-need .en3500-meta .en3500-ipa,
+.en3500-row.is-need .en3500-meta .en3500-cn,.en3500-row.is-need .en3500-no{color:#b3261e}
+.en3500-prog{font-size:11.5px;font-weight:800;color:var(--tone-700);margin-right:auto}
+.en3500-prog b{color:var(--z-nw-deep)}
+.en3500-check:disabled{opacity:.55;cursor:default;filter:grayscale(.35)}
+/* 标记选择弹窗 */
+.en3500-mark-box{min-width:320px;max-width:360px}
+.en3500-mark-word{font-size:24px;font-weight:900;color:var(--tone-900);text-align:center;word-break:break-word}
+.en3500-mark-cn{font-size:12.5px;color:var(--muted);text-align:center;margin-top:4px}
+.en3500-mark-acts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.en3500-mark-btn{font-family:inherit;cursor:pointer;border-radius:12px;padding:14px 8px;font-size:15px;font-weight:900;border:2px solid transparent;transition:.15s}
+.en3500-mark-btn.ok{background:#e8f8ee;color:#1f7a45;border-color:#86d3a4}
+.en3500-mark-btn.need{background:#fdecec;color:#b3261e;border-color:#eea3a3}
+.en3500-mark-btn.is-cur{box-shadow:0 0 0 3px rgba(64,150,255,.4)}
+.en3500-mark-btn:active{transform:scale(.97)}
+.en3500-mark-tip{margin-top:12px;font-size:11.5px;color:var(--muted);line-height:1.45;text-align:center}
 @media(max-width:640px){.en3500-grid{grid-template-columns:1fr}}
 
 /* ============================================================
@@ -8424,7 +8480,7 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
 /* ============ R248-3：3500 词卡片内单词直接平铺完整展示（移除查看单词按键） ============ */
 /* R250-5：单词布局由单列改为双列；取消卡片内限高滚动（全部展开，无需上下滑动浏览） */
 .en3500-words{max-height:none;overflow:visible;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px 10px;border-top:1px dashed var(--tone-200);padding-top:8px}
-.en3500-words .en3500-row{grid-template-columns:24px minmax(54px,1fr) minmax(54px,1fr) minmax(64px,1.15fr);gap:5px;padding:4px 6px;font-size:11.5px}
+/* R260-6.2：行内改为「序号 + 单词 + 音标释义竖排」三列，覆盖 R250-5 的旧四列模板 */
 @media(max-width:640px){.en3500-words{grid-template-columns:1fr}}
 /* R252-4：打卡按键缩小并固定放在分类卡片右下角 */
 .en3500-card-foot{justify-content:flex-end}
@@ -8638,6 +8694,20 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
 .eg-tense-wrap .eg-tense-nav,.eg-tense-detail .eg-tense-nav{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:8px;margin:8px 0 0;padding:8px}
 .eg-tense-wrap .eg-tense-go,.eg-tense-detail .eg-tense-go{justify-content:center;text-align:center;font-size:11.5px;line-height:1.35;padding:9px 4px;white-space:normal;word-break:break-word}
 .eg-tense-go.active{color:#fff;background:linear-gradient(135deg,var(--tone-300),var(--tone-900));border-color:transparent}
+/* ============ R260-6.3：十大词类排版对齐八种时态 ============
+   同一套骨架：常驻 sticky 标题栏（.eg-tense-stickyhead）+ 一行排开的标题卡（.eg-tense-nav/.eg-tense-go）
+   + 同样的 .eg-sec-head / .eg-sec-intro / .eg-block-grid 内容网格。 */
+.eg-cilei-wrap .eg-cilei-navbar,.eg-cilei-detail .eg-cilei-navbar{
+  display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:6px;margin:8px 0 0;padding:8px;
+}
+.eg-cilei-wrap .eg-cilei-navbar .eg-cilei-go,
+.eg-cilei-detail .eg-cilei-navbar .eg-cilei-go{
+  justify-content:center;text-align:center;font-size:11.5px;line-height:1.35;
+  padding:9px 3px;white-space:normal;word-break:break-word;
+}
+@media(max-width:1100px){
+  .eg-cilei-wrap .eg-cilei-navbar,.eg-cilei-detail .eg-cilei-navbar{grid-template-columns:repeat(5,minmax(0,1fr))}
+}
 .tn-detail-wrap,.tn-flag-wrap{margin-top:14px;padding:12px 14px;background:linear-gradient(135deg,var(--tone-025),var(--tone-075));border:1.5px solid var(--tone-150);border-radius:var(--card-r-md)}
 .tn-flag-board{margin-bottom:12px}
 .tn-flag-board:last-child{margin-bottom:0}
@@ -9293,25 +9363,30 @@ body.r256-sheet-on{overflow:hidden}
    R258-3.1 任务新增/编辑弹窗内的「任务卡片跳转」配置
    ============================================================ */
 .page-farm .field-frame{max-width:480px}
+/* R260-2.1：农具按键改为正方形图片按键 —— 一行 2 个，尺寸随右栏宽度自适应（aspect-ratio 撑成正方形），
+   图片本身自带名称，按键内文字块仅保留给脚本更新数量（视觉隐藏）。 */
 .farm-tools{
   display:flex;flex-direction:column;gap:10px;min-height:0;
-  background:rgba(246,238,216,.80);border:2px solid rgba(196,167,138,.65);border-radius:18px;
-  padding:12px;box-shadow:0 6px 14px rgba(120,90,50,.14);
+  background:transparent;border:none;border-radius:0;padding:0;box-shadow:none;
 }
-.farm-tools-title{font-size:13px;font-weight:900;color:#7a5a32;display:flex;align-items:center;gap:6px}
-.farm-tool-list{display:flex;flex-direction:column;gap:8px}
+.farm-tools-title{display:none}
+.farm-tool-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .farm-tool-btn{
-  display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border-radius:14px;
-  border:1.5px solid rgba(196,167,138,.55);background:rgba(255,255,255,.86);cursor:pointer;
-  font-family:inherit;text-align:left;transition:.16s;
+  position:relative;display:block;width:100%;aspect-ratio:1/1;padding:0;
+  border:none;border-radius:20px;cursor:pointer;overflow:hidden;
+  background-color:#f4ead3;background-repeat:no-repeat;background-position:center;background-size:cover;
+  box-shadow:0 6px 14px rgba(120,90,50,.18);transition:.18s;
 }
-.farm-tool-btn:hover{transform:translateY(-1px);border-color:#c4a78a;box-shadow:0 4px 10px rgba(196,167,138,.28)}
-.farm-tool-btn:active{transform:translateY(0) scale(.99)}
-.farm-tool-btn .ftb-ico{font-size:22px;line-height:1}
-.farm-tool-btn .ftb-main{display:flex;flex-direction:column;gap:2px;min-width:0}
-.farm-tool-btn .ftb-main b{font-size:13.5px;color:#5a3a1f;font-weight:900}
-.farm-tool-btn .ftb-main i{font-style:normal;font-size:11px;color:#a07f56}
-.farm-tool-btn .ftb-go{margin-left:auto;color:#b99770;font-size:18px;font-weight:900}
+.farm-tool-btn.ftb-wh{background-image:url('./assets/396b6592b7a4.jpg')}
+.farm-tool-btn.ftb-market{background-image:url('./assets/eeda413b9bb2.jpg')}
+.farm-tool-btn.ftb-shop{background-image:url('./assets/4793d2d3aca5.jpg')}
+.farm-tool-btn.ftb-wish{background-image:url('./assets/096a59516878.jpg')}
+.farm-tool-btn:hover{transform:translateY(-2px);box-shadow:0 10px 20px rgba(120,90,50,.26)}
+.farm-tool-btn:active{transform:translateY(0) scale(.98)}
+.farm-tool-btn:focus-visible{outline:3px solid var(--tone-600);outline-offset:2px}
+.farm-tool-btn .ftb-ico,
+.farm-tool-btn .ftb-main,
+.farm-tool-btn .ftb-go{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;padding:0;margin:-1px}
 
 /* 弹窗内的原有内容（市集 / 小卖部 / 仓库 / 心愿盒） */
 #modalFarmPanel .modal-box{min-width:640px}
@@ -9320,6 +9395,31 @@ body.r256-sheet-on{overflow:hidden}
   border:1px solid rgba(196,167,138,.5);border-radius:10px;padding:7px 10px;font-weight:700;
 }
 .farm-hub-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:10px}
+/* R260-2.4：市集分两个卡片容器（种子 / 水·阳光·肥料） */
+.farm-hub-sec{
+  background:rgba(255,251,240,.96);border:1.5px solid rgba(196,167,138,.5);
+  border-radius:14px;padding:12px;margin-top:12px;
+}
+.farm-hub-sec-title{font-size:13px;font-weight:900;color:#7a5a32;letter-spacing:.5px}
+.farm-hub-sec .farm-hub-grid{margin-top:8px}
+/* R260-2.2：出售 / 兑换二次确认弹窗 */
+.farm-trade-box{min-width:380px;max-width:460px}
+.ftd-item{
+  display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;
+  background:var(--tone-050);border:1px dashed var(--tone-275);
+}
+.ftd-ico{font-size:26px;line-height:1}
+.ftd-name{font-size:15px;font-weight:900;color:var(--tone-900)}
+.ftd-unit{margin-left:auto;font-size:12px;color:var(--muted);font-weight:700}
+.ftd-row{display:flex;align-items:center;gap:10px;margin-top:12px}
+.ftd-lbl{font-size:13px;font-weight:800;color:var(--tone-700)}
+.ftd-qty{
+  width:96px;text-align:center;font-size:16px;font-weight:800;padding:7px 8px;
+  border-radius:10px;border:1.5px solid var(--tone-275);background:#fff;color:var(--tone-900);font-family:inherit;
+}
+.ftd-sum{margin-top:12px;font-size:13.5px;color:var(--tone-800);font-weight:700}
+.ftd-sum b{font-size:17px;color:#d9761f}
+.ftd-tip{margin-top:8px;font-size:11.5px;color:var(--muted);line-height:1.4}
 .farm-hub-foot{display:flex;justify-content:flex-end;margin-top:12px}
 .farm-hub-empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:26px 8px;font-size:13px}
 .farm-hub-empty span{font-size:11.5px}
@@ -10212,10 +10312,11 @@ body.r256-sheet-on{overflow:hidden}
     <!-- R227：乐读数学页「计算小超市 / 乐读数学笔记」切换按键（位于板块和题型卡片上端）
          R234-3：进入乐读数学默认落在「计算小超市」 -->
     <div class="leidu-switch" data-leidu-switch>
-      <button type="button" class="leidu-tab active" data-leidu-tab="calc" aria-pressed="true">🧮 计算小超市</button>
+      <!-- R260-5.1：「计算小超市」与「乐读数学笔记」按键位置互换（笔记在前、小超市在后），默认仍落在计算小超市 -->
+      <button type="button" class="leidu-tab" data-leidu-tab="note" aria-pressed="false">📒 乐读数学笔记</button>
       <!-- R249-1：练习题按键移至「计算小超市」与「乐读数学笔记」之间 -->
       <button type="button" class="leidu-tab" data-leidu-tab="exercise" aria-pressed="false">✏️ 练习题</button>
-      <button type="button" class="leidu-tab" data-leidu-tab="note" aria-pressed="false">📒 乐读数学笔记</button>
+      <button type="button" class="leidu-tab active" data-leidu-tab="calc" aria-pressed="true">🧮 计算小超市</button>
     </div>
     <!-- 计算小超市 内容卡（R227：从新世界·数学专区·错题本整体移入） -->
     <div class="leidu-pane" data-leidu-pane="calc" id="leiduCalcPane"></div>
@@ -10285,8 +10386,9 @@ body.r256-sheet-on{overflow:hidden}
         <button class="sub-tab active" data-xs-cat="words" data-page-node-id="bIdFhDZ9zmRt3QscgXNna5">🔤 词汇</button>
         <button class="sub-tab" data-xs-cat="grammar" data-page-node-id="pk7ufwpxLS7x5Xj5vu8FRB">📐 语法</button>
         <button class="sub-tab" data-xs-cat="notes" data-page-node-id="R218xsNoteTab">📝 课堂笔记</button>
-        <!-- V21-1：巩固打卡子板块（每日默写）；R247-3 改名「词汇语法巩固」；R250-1 与学而思练习互换位置 -->
-        <button class="sub-tab" data-xs-cat="checkin" data-page-node-id="16Lidsc7U9X3IdqhZRSIjY">🎯 词汇语法巩固</button>
+        <!-- V21-1：巩固打卡子板块（每日默写）；R247-3 改名「词汇语法巩固」；R250-1 与学而思练习互换位置
+             R260-4.1：板块按键名称改为「每日巩固」 -->
+        <button class="sub-tab" data-xs-cat="checkin" data-page-node-id="16Lidsc7U9X3IdqhZRSIjY">🎯 每日巩固</button>
         <!-- R247-3：学而思练习独立板块（课堂练习 / 课前测 / 各类测试记录）；R250-1 移至词汇语法巩固之后 -->
         <button class="sub-tab" data-xs-cat="exercise" data-page-node-id="R247xsExerciseTab">📝 学而思练习</button>
         <!-- R252-1：「📒 已默写」子页签已删除，功能移入「📚 语法题库」弹窗内 -->
@@ -10467,38 +10569,43 @@ body.r256-sheet-on{overflow:hidden}
         </div>
       </section>
       <div class="farm-wh-col">
-      <!-- R113：数据统计（⭐💧☀️💰）移至仓库上方展示，原 ID/功能不变 -->
+      <!-- R113：数据统计（⭐💧☀️💰）移至仓库上方展示，原 ID/功能不变
+           R260-2.5：靠右分两行 —— 第一行 ⭐ / 金币，第二行 阳光 / 水 / 肥料 -->
       <div class="farm-title-stats" data-page-node-id="pQoy2qUAJglkq07hfs1Rzl">
-        <span class="fts fts-stars" data-page-node-id="ibQitRhCqDh8S9ntY9D6ML"><span class="fts-ico" data-page-node-id="qMbgyyOmEqHGc5tDmyVDjc">⭐</span><b id="farmStars" data-page-node-id="guaQdavqnuwu83YC5wsIwD">0</b></span>
-        <span class="fts fts-water" data-page-node-id="BfpRssUxHgg9q5ETOY5sTu"><span class="fts-ico" data-page-node-id="0QQSa5e1ybgZXFhfLOTdZQ">💧</span><b id="farmWater" data-page-node-id="95PYZiV4dm0IoTArKKMn5D">0</b></span>
-        <!-- R255-6：水与阳光之间为肥料统计（袋装肥料图标） -->
-        <span class="fts fts-fert" id="farmFertStat"><span class="fts-ico"><svg class="fert-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8.2 3.2h7.6l-1.1 2.6H9.3L8.2 3.2Z" fill="#c79a5b"/><path d="M9.3 5.8h5.4l2.3 14.1c.13.8-.5 1.5-1.3 1.5H8.3c-.8 0-1.43-.7-1.3-1.5L9.3 5.8Z" fill="#f0d9b5" stroke="#b8863f" stroke-width="1.2" stroke-linejoin="round"/><path d="M8.1 11.2h7.8l.9 5.5H7.2l.9-5.5Z" fill="#6fb44a"/><path d="M12 10.4c0-1.9 1.2-3.1 3-3.3-.1 1.9-1.1 3.1-3 3.3Z" fill="#8fce63"/><text x="12" y="15.6" font-size="4" font-weight="700" text-anchor="middle" fill="#ffffff" font-family="Arial,Helvetica,sans-serif">NPK</text></svg></span><b id="farmFert">0</b></span>
-        <span class="fts fts-sun" data-page-node-id="2AcRBZKRiDZaYrikoKNYs2"><span class="fts-ico" data-page-node-id="I0BMYpsXq88UVFvDR9En9q">☀️</span><b id="farmSun" data-page-node-id="kqPYlgKI6EcEBRYKIrxxiT">0</b></span>
-        <span class="fts fts-coins" data-page-node-id="W1UCiESjj73O9pwfmPtDFO"><span class="fts-ico" data-page-node-id="kFjH2qNWTQESVnxqVbPJAx">💰</span><b id="farmCoins" data-page-node-id="0Ansxhd6S6tCQk1PuQqU8V">0</b></span>
+        <div class="fts-row" data-page-node-id="R260ftsRow1">
+          <span class="fts fts-stars" data-page-node-id="ibQitRhCqDh8S9ntY9D6ML"><span class="fts-ico" data-page-node-id="qMbgyyOmEqHGc5tDmyVDjc">⭐</span><b id="farmStars" data-page-node-id="guaQdavqnuwu83YC5wsIwD">0</b></span>
+          <span class="fts fts-coins" data-page-node-id="W1UCiESjj73O9pwfmPtDFO"><span class="fts-ico" data-page-node-id="kFjH2qNWTQESVnxqVbPJAx">💰</span><b id="farmCoins" data-page-node-id="0Ansxhd6S6tCQk1PuQqU8V">0</b></span>
+        </div>
+        <div class="fts-row" data-page-node-id="R260ftsRow2">
+          <span class="fts fts-sun" data-page-node-id="2AcRBZKRiDZaYrikoKNYs2"><span class="fts-ico" data-page-node-id="I0BMYpsXq88UVFvDR9En9q">☀️</span><b id="farmSun" data-page-node-id="kqPYlgKI6EcEBRYKIrxxiT">0</b></span>
+          <span class="fts fts-water" data-page-node-id="BfpRssUxHgg9q5ETOY5sTu"><span class="fts-ico" data-page-node-id="0QQSa5e1ybgZXFhfLOTdZQ">💧</span><b id="farmWater" data-page-node-id="95PYZiV4dm0IoTArKKMn5D">0</b></span>
+          <!-- R255-6：肥料统计（袋装肥料图标） -->
+          <span class="fts fts-fert" id="farmFertStat"><span class="fts-ico"><svg class="fert-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8.2 3.2h7.6l-1.1 2.6H9.3L8.2 3.2Z" fill="#c79a5b"/><path d="M9.3 5.8h5.4l2.3 14.1c.13.8-.5 1.5-1.3 1.5H8.3c-.8 0-1.43-.7-1.3-1.5L9.3 5.8Z" fill="#f0d9b5" stroke="#b8863f" stroke-width="1.2" stroke-linejoin="round"/><path d="M8.1 11.2h7.8l.9 5.5H7.2l.9-5.5Z" fill="#6fb44a"/><path d="M12 10.4c0-1.9 1.2-3.1 3-3.3-.1 1.9-1.1 3.1-3 3.3Z" fill="#8fce63"/><text x="12" y="15.6" font-size="4" font-weight="700" text-anchor="middle" fill="#ffffff" font-family="Arial,Helvetica,sans-serif">NPK</text></svg></span><b id="farmFert">0</b></span>
+        </div>
       </div>
-      <!-- R258-2.1：仓库 / 农场市集 / 云上小卖部 / 心愿盒 由卡片改为按键，点击唤起弹窗查看原内容 -->
+      <!-- R258-2.1：仓库 / 农场市集 / 云上小卖部 / 心愿盒 由卡片改为按键，点击唤起弹窗查看原内容
+           R260-2.1：按键改为**正方形图片按键**，一行 2 个、尺寸随页面自适应，用图片作背景 -->
       <aside class="farm-tools" id="farmTools" data-page-node-id="R258farmTools">
-        <div class="farm-tools-title" data-page-node-id="R258farmToolsTitle">🧰 我的农具</div>
         <div class="farm-tool-list" data-page-node-id="R258farmToolList">
-          <button type="button" class="farm-tool-btn" data-farm-open="warehouse" id="farmToolWarehouse" data-page-node-id="R258farmToolWarehouse">
-            <span class="ftb-ico" data-page-node-id="R258ftbWhIco">📦</span>
+          <button type="button" class="farm-tool-btn ftb-wh" data-farm-open="warehouse" id="farmToolWarehouse" aria-label="仓库" title="仓库" data-page-node-id="R258farmToolWarehouse">
+            <span class="ftb-ico" data-page-node-id="R258ftbWhIco" hidden>📦</span>
             <span class="ftb-main" data-page-node-id="R258ftbWhMain"><b data-page-node-id="R258ftbWhName">仓库</b><i id="farmToolWhSub" data-page-node-id="R258ftbWhSub">种子 / 作物</i></span>
-            <span class="ftb-go" data-page-node-id="R258ftbWhGo">›</span>
+            <span class="ftb-go" data-page-node-id="R258ftbWhGo" hidden>›</span>
           </button>
-          <button type="button" class="farm-tool-btn" data-farm-open="market" id="farmToolMarket" data-page-node-id="R258farmToolMarket">
-            <span class="ftb-ico" data-page-node-id="R258ftbMkIco">🛒</span>
+          <button type="button" class="farm-tool-btn ftb-market" data-farm-open="market" id="farmToolMarket" aria-label="农场市集" title="农场市集" data-page-node-id="R258farmToolMarket">
+            <span class="ftb-ico" data-page-node-id="R258ftbMkIco" hidden>🛒</span>
             <span class="ftb-main" data-page-node-id="R258ftbMkMain"><b data-page-node-id="R258ftbMkName">农场市集</b><i data-page-node-id="R258ftbMkSub">成长星兑换</i></span>
-            <span class="ftb-go" data-page-node-id="R258ftbMkGo">›</span>
+            <span class="ftb-go" data-page-node-id="R258ftbMkGo" hidden>›</span>
           </button>
-          <button type="button" class="farm-tool-btn" data-farm-open="shop" id="farmToolShop" data-page-node-id="R258farmToolShop">
-            <span class="ftb-ico" data-page-node-id="R258ftbSpIco">🍦</span>
+          <button type="button" class="farm-tool-btn ftb-shop" data-farm-open="shop" id="farmToolShop" aria-label="云上小卖部" title="云上小卖部" data-page-node-id="R258farmToolShop">
+            <span class="ftb-ico" data-page-node-id="R258ftbSpIco" hidden>🍦</span>
             <span class="ftb-main" data-page-node-id="R258ftbSpMain"><b data-page-node-id="R258ftbSpName">云上小卖部</b><i data-page-node-id="R258ftbSpSub">金币兑换礼物</i></span>
-            <span class="ftb-go" data-page-node-id="R258ftbSpGo">›</span>
+            <span class="ftb-go" data-page-node-id="R258ftbSpGo" hidden>›</span>
           </button>
-          <button type="button" class="farm-tool-btn" data-farm-open="wish" id="farmToolWish" data-page-node-id="R258farmToolWish">
-            <span class="ftb-ico" data-page-node-id="R258ftbWsIco">🎁</span>
+          <button type="button" class="farm-tool-btn ftb-wish" data-farm-open="wish" id="farmToolWish" aria-label="心愿盒" title="心愿盒" data-page-node-id="R258farmToolWish">
+            <span class="ftb-ico" data-page-node-id="R258ftbWsIco" hidden>🎁</span>
             <span class="ftb-main" data-page-node-id="R258ftbWsMain"><b data-page-node-id="R258ftbWsName">心愿盒</b><i id="farmToolWishSub" data-page-node-id="R258ftbWsSub">已兑礼物</i></span>
-            <span class="ftb-go" data-page-node-id="R258ftbWsGo">›</span>
+            <span class="ftb-go" data-page-node-id="R258ftbWsGo" hidden>›</span>
           </button>
         </div>
       </aside>
@@ -11702,7 +11809,33 @@ body.r256-sheet-on{overflow:hidden}
   </div>
 </div>
 
+<!-- R260-2.2：种植园出售 / 兑换的二次确认弹窗（可填数量 + 实时合计 + 确认后执行） -->
+<div class="modal-mask" id="modalFarmTrade" hidden data-page-node-id="R260modalFarmTrade">
+  <div class="modal-box modal-sm farm-trade-box" data-page-node-id="R260farmTradeBox">
+    <div class="modal-head" data-page-node-id="R260farmTradeHead">
+      <h3 id="farmTradeTitle" data-page-node-id="R260farmTradeTitle">确认</h3>
+      <button class="modal-x" data-close data-page-node-id="R260farmTradeX">×</button>
+    </div>
+    <div class="modal-body" id="farmTradeBody" data-page-node-id="R260farmTradeBody"></div>
+    <div class="modal-foot" data-page-node-id="R260farmTradeFoot">
+      <button class="ghost-btn" data-close data-page-node-id="R260farmTradeCancel">取消</button>
+      <button class="primary-btn" id="farmTradeOk" data-page-node-id="R260farmTradeOk">确认</button>
+    </div>
+  </div>
+</div>
+
 <!-- R56-1：数学「录入方式选择」弹窗与「拍照录入」弹窗已按需求删除 —— 新增内容统一进入新增页 -->
+
+<!-- R260-6.2：3500 词 · 单词标记选择窗（已掌握 / 需巩固） -->
+<div class="modal-mask" id="modalEn3500Mark" hidden data-page-node-id="R260en3500Mark">
+  <div class="modal-box modal-sm en3500-mark-box" data-page-node-id="R260en3500MarkBox">
+    <div class="modal-head" data-page-node-id="R260en3500MarkHead">
+      <h3 id="en3500MarkTitle" data-page-node-id="R260en3500MarkTitle">🏷️ 标记单词</h3>
+      <button class="modal-x" data-close data-page-node-id="R260en3500MarkX">×</button>
+    </div>
+    <div class="modal-body" id="en3500MarkBody" data-page-node-id="R260en3500MarkBody"></div>
+  </div>
+</div>
 <!-- R94：「新增内容」选择弹窗已删除 —— 「新增题目」「新增知识笔记」两个入口直接落在题型详情板块内 -->
 
 <!-- ========== 弹窗：R94 － 删除题型（列出当前板块全部题型，点选后二次确认） ========== -->
@@ -12109,7 +12242,8 @@ body.r256-sheet-on{overflow:hidden}
       if(!_loadCacheRaw) return false;
       _guardBeforeSave(st);   // R259：刷盘同样过写盘闸，关页面 / 切后台也守保护规则
       const raw = JSON.stringify(st);
-      if(!_safeSet(KEY, raw)) return false;
+      // R260-1.1：刷盘同样走配额回收链，避免「关页面最后一次操作因空间不足丢失」
+      if(!_writeMain(raw).ok) return false;
       _snapshotClear();   // R258-1.1：主档已整体落盘，应急设置快照作废
       _rotateBackup(raw, true);
       _loadCachePut(st, raw);
@@ -12657,8 +12791,9 @@ body.r256-sheet-on{overflow:hidden}
     {id:'s_watermelon',name:'西瓜种子',  ico:'🍉',desc:'生长慢',     price:12, crop:'watermelon',sellCoins:36}
   ];
   const growthShop = ()=>[
-    {id:'g_water1',name:'水壶(1滴)',ico:'💧',desc:'浇灌作物1次',price:1,unit:'water',qty:1},
-    {id:'g_water5',name:'大水桶(5滴)',ico:'🪣',desc:'浇灌作物5次',price:4,unit:'water',qty:5},
+    // R260-2.3：水的计量单位文案由「滴」改为「桶」（1 桶 / 5 桶）
+    {id:'g_water1',name:'水桶(1桶)',ico:'💧',desc:'浇灌作物1次',price:1,unit:'water',qty:1},
+    {id:'g_water5',name:'大水桶(5桶)',ico:'🪣',desc:'浇灌作物5次',price:4,unit:'water',qty:5},
     // R254-4：水兑换项后方新增肥料兑换项（消耗⭐与水完全一致：1⭐/袋、4⭐/5袋）
     {id:'g_fert1',name:'肥料(1袋)',ico:'__bag__',desc:'给作物施肥1次（1⭐=1袋）',price:1,unit:'fert',qty:1},
     {id:'g_fert5',name:'肥料(5袋)',ico:'__bag__',desc:'给作物施肥5次（4⭐=5袋）',price:4,unit:'fert',qty:5},
@@ -12899,14 +13034,38 @@ body.r256-sheet-on{overflow:hidden}
     return done;
   }
   /* ============ R259：更新前保护副本 ============ */
+  /* R260-1.1：给更新前副本加**体积上限**。
+     原来它把 52 个受保护字段整份序列化（体积与主档同级，几百 KB ~ 几 MB），
+     而且写入后从不清理，常驻 localStorage。iPad 配额只有 5MB，
+     这份副本一旦存在，主档的「整份重写」就再也挤不进配额 →
+     用户点保存设置必然弹「存储空间不足」。
+     现在按预算裁剪：优先保住体积小、最不可再生的用户自建内容（任务 / 设置 / 表格 / 自定义文本），
+     大块记录类字段仍由主档 + bak1 + 写盘闸 + 迁移闸保护，副本只做兜底。 */
+  const PREUPDATE_BUDGET = 600 * 1024;
   function protectBeforeUpdate(){
     try{
       const st = _loadCacheSt || _staged || null;
       if(!st || typeof st !== 'object') return false;
       const out = { __preupdate: 1, at: Date.now(), schema: st.__schema || 0 };
-      PROTECT_KEYS.forEach(function(k){ if(st[k] !== undefined) out[k] = st[k]; });
+      let used = 0, skipped = 0;
+      // 先放用户手写内容，再放大块记录 —— 预算用完就停，保证副本永不反客为主
+      const ordered = PROTECT_KEYS.slice().sort(function(a, b){
+        const pri = k => (SNAPSHOT_KEY_ALWAYS.indexOf(k) >= 0 ? 0 : 1);
+        return pri(a) - pri(b);
+      });
+      ordered.forEach(function(k){
+        if(st[k] === undefined) return;
+        let n = 0;
+        try{ n = JSON.stringify(st[k]).length; }catch(e){ skipped++; return; }
+        if(used + n > PREUPDATE_BUDGET){ skipped++; return; }
+        out[k] = st[k]; used += n;
+      });
+      out.__bytes = used;
+      out.__skipped = skipped;
       let raw = '';
       try{ raw = JSON.stringify(out); }catch(e){ return false; }
+      // 已有旧副本先删，避免新旧两份同时占空间（这份副本自身体量也可能逼近配额）
+      try{ localStorage.removeItem(KEY_PRE_UPDATE); }catch(e){}
       const ok = _safeSet(KEY_PRE_UPDATE, raw);
       try{ flushPersistence(); }catch(e){}
       return ok;
@@ -13204,6 +13363,8 @@ body.r256-sheet-on{overflow:hidden}
     if(!st.chuangguan) st.chuangguan = {level:1, totalCorrect:0, bestStreak:0};
     if(!st.userReading) st.userReading = {cnWords:[],cnPoem:[],cnEssay:[],enPassage:[],enSpeaking:[]};
     if(!st.readFlags) st.readFlags = {};
+    // R260-6.2：3500 词「已掌握 / 需巩固」标记 { 分类: { 单词: 'ok'|'need' } }（只补缺失，不动已有）
+    if(!st.en3500Marks || typeof st.en3500Marks !== 'object' || Array.isArray(st.en3500Marks)) st.en3500Marks = {};
     // R177-3：推荐书籍阅读进度（单调递增 0~100）+ 奖励发放标记 + 每本书 100% 完成⭐配置
     if(!st.bookReadProgress) st.bookReadProgress = {};
     if(!st.bookReadAward10) st.bookReadAward10 = {};
@@ -13660,6 +13821,44 @@ body.r256-sheet-on{overflow:hidden}
   function _isQuotaErr(e){
     return !!(e && (e.name === 'QuotaExceededError' || e.code === 22 || /quota/i.test(String((e && e.message) || ''))));
   }
+  /* ============ R260-1.1：配额回收链（修复「保存设置误报存储空间不足」） ============
+     根因：主档（含用户导入的图片 dataURL）一旦接近 localStorage 配额，本次「整份重写」
+           需要的空间 > 剩余空间，setItem 抛 QuotaExceededError。
+           旧实现只删 bak2 / bak1 / corrupt_backup 再重试一次，漏掉了两个同样「与主档同量级」
+           的副本 —— `_preupdate`（更新前副本，点检查更新 / 自动重载后常驻，从不清理）
+           与 `_settings` 快照。于是删完备份仍然超限 → 判定 'quota' → 弹出
+           「存储空间不足，设置未能写入本机」，而用户其实只改了一个开关。
+     做法：① 按「可重建 → 较旧 → 较新」的优先级逐级腾挪，每腾一级就重试一次写入；
+           ② 用户数据（主档）永远优先于任何副本：主档写成功是第一目标；
+           ③ 顺序：设置快照 → 损坏副本 → 更新前副本 → 上一代备份 → 最新备份。 */
+  const QUOTA_EVICT_ORDER = [KEY_SNAPSHOT, KEY + '_corrupt_backup', KEY_PRE_UPDATE, KEY_BAK2, KEY_BAK1];
+  let _quotaEvicted = [];
+  function _evictForQuota(skip){
+    for(let i=0;i<QUOTA_EVICT_ORDER.length;i++){
+      const k = QUOTA_EVICT_ORDER[i];
+      if(skip && skip.indexOf(k) >= 0) continue;
+      let has = false;
+      try{ has = localStorage.getItem(k) != null; }catch(e){ has = false; }
+      if(!has) continue;
+      try{ localStorage.removeItem(k); _quotaEvicted.push(k); return true; }catch(e){ /* 换下一级 */ }
+    }
+    return false;
+  }
+  /* 统一的主档写入：带配额回收重试。返回 {ok, err} */
+  function _writeMain(raw){
+    let err = null;
+    for(let attempt=0; attempt<=QUOTA_EVICT_ORDER.length; attempt++){
+      try{ localStorage.setItem(KEY, raw); return {ok:true, err:''}; }
+      catch(e){
+        err = e;
+        if(!_isQuotaErr(e)) return {ok:false, err:(e && e.name) || 'error'};
+        // 配额不足：腾一级副本再试；没有可腾的副本就到此为止
+        if(!_evictForQuota()) break;
+      }
+    }
+    return {ok:false, err:'quota'};
+  }
+  function quotaEvicted(){ return _quotaEvicted.slice(); }
   /* ============ R258-1.1：设置快照（主档写不进时的兜底） ============
      现象：用户点「保存设置」提示存储空间不足，但页面里设置已经变了（内存态生效、落库失败）。
      根因：设置是塞在整份存档里一起写的，存档（含图片 dataURL）接近配额上限时，
@@ -13686,7 +13885,14 @@ body.r256-sheet-on{overflow:hidden}
     return out;
   }
   function _snapshotWrite(st){
-    try{ return _safeSet(KEY_SNAPSHOT, JSON.stringify(_snapshotOf(st))); }catch(e){ return false; }
+    let payload;
+    try{ payload = JSON.stringify(_snapshotOf(st)); }catch(e){ return false; }
+    // R260-1.1：快照本身也可能写不下 —— 先腾挪非必要副本（不删自己），最多试 3 轮
+    for(let i=0;i<3;i++){
+      if(_safeSet(KEY_SNAPSHOT, payload)) return true;
+      if(!_evictForQuota([KEY_SNAPSHOT])) break;
+    }
+    return false;
   }
   function _snapshotClear(){ try{ localStorage.removeItem(KEY_SNAPSHOT); }catch(e){} }
   function _snapshotApply(st){
@@ -13716,22 +13922,14 @@ body.r256-sheet-on{overflow:hidden}
     try{
       localStorage.setItem(KEY, raw);
     }catch(e){
-      // R255-5：配额不足时先释放「可重建」的备份键再重试一次 —— 用户数据优先于备份副本。
-      //          原实现在这里直接判失败，导致「主档其实已经写进去 / 只是备份写不下」时仍弹失败。
-      if(_isQuotaErr(e)){
-        try{ localStorage.removeItem(KEY_BAK2); }catch(_e){}
-        try{ localStorage.removeItem(KEY_BAK1); }catch(_e){}
-        try{ localStorage.removeItem(KEY + '_corrupt_backup'); }catch(_e){}
-        try{ localStorage.setItem(KEY, raw); }
-        catch(e2){
-          _saveError = 'quota';
-          // R246-3：写失败时内存态仍以本次 st 为准，避免「渲染新数据、点击读回旧数据」两套真相
-          _r256LedgerRollback(st, _r256Entry);
-          _loadCachePut(st);
-          return false;
-        }
-      } else {
-        _saveError = (e && e.name) || 'error';
+      // R255-5 / R260-1.1：配额不足时按优先级腾挪副本（快照 → 损坏副本 → 更新前副本 → 旧备份 → 新备份）
+      //                      每腾一级重试一次，用户数据优先于任何副本。
+      const _wr = _writeMain(raw);
+      if(!_wr.ok){
+        // R260-1.1：区分「配额不足」与「读回不一致 / 其它错误」，避免一律误报空间不足
+        if(_wr.err === 'quota') _saveError = 'quota';
+        else _saveError = _wr.err || 'error';
+        // R246-3：写失败时内存态仍以本次 st 为准，避免「渲染新数据、点击读回旧数据」两套真相
         _r256LedgerRollback(st, _r256Entry);
         _loadCachePut(st);
         return false;
@@ -13739,10 +13937,11 @@ body.r256-sheet-on{overflow:hidden}
     }
     // R258-1.1：回读校验 —— 写进去的长度必须与本次序列化结果一致；
     //           部分浏览器在空间临界时会「不报错但没写全」，只看返回值会误判成功。
+    //           R260-1.1：这里失败属于「读回不一致」，不再冒充 quota（否则 UI 会误报空间不足）。
     try{
       const _back = localStorage.getItem(KEY);
       if(_back != null && _back.length !== raw.length){
-        _saveError = 'quota';
+        _saveError = 'verify';
         _r256LedgerRollback(st, _r256Entry);
         _loadCachePut(st);
         return false;
@@ -13764,23 +13963,38 @@ body.r256-sheet-on{overflow:hidden}
   // 点击【保存设置】commitSettings() 才真正写入 localStorage 并立即生效；离开设置中心未保存则 discardSettings() 丢弃。
   function _cloneState(o){ try { return JSON.parse(JSON.stringify(o)); } catch(e){ return o; } }
   function beginSettings(){ try { _staged = _cloneState(load()); } catch(e){ _staged = load(); } _staging = true; return true; }
+  /* R260-1.1：设置字段指纹 —— 保存判据只看「设置类字段是否一致」。
+     原实现拿整份存档的 JSON 串逐字节比对，任何一次时钟 / 流水 / 缓存字段的差异
+     （starLog 记账、__snapAt、_meta 等）都会被判成「保存失败」，
+     于是一个只改了开关的操作会弹出「存储空间不足」。 */
+  function _settingsSig(o){
+    if(!o || typeof o !== 'object') return '';
+    const out = {};
+    SNAPSHOT_KEY_ALWAYS.forEach(function(k){ if(o[k] !== undefined) out[k] = o[k]; });
+    try{ return JSON.stringify(out); }catch(e){ return ''; }
+  }
   function commitSettings(){
     if(!_staging || !_staged) return true; // 未进入暂存态：幂等无操作
     const draft = _staged;
+    const wantSig = _settingsSig(draft);
     _staging = false;                      // 先退出暂存态，使 save() 真正写入 localStorage
     _saveError = '';                       // R257-5.1：清掉上一次的旧错误码，避免误报「存储空间不足」
-    let ok = save(draft);                  // 此刻 save() 落库（不再被暂存分支拦截）
-    // R258-1.1：唯一判据 = 写进本机的那份内容，和本次要保存的内容逐字节一致。
+    const ok = save(draft);                // 此刻 save() 落库（不再被暂存分支拦截）
+    // R260-1.1：判据 = 本机那份存档里的「设置类字段」与本次要保存的一致（不再整串比对）
     let verified = ok;
     if(ok){
       try{
         const back = _readMainRaw().raw;
-        if(back) verified = (back === JSON.stringify(draft));  // 读得到就必须完全一致
-      }catch(e){ /* 读回异常时以 save() 的返回值 + save 内部回读长度校验为准 */ }
+        if(back){
+          const got = JSON.parse(back);
+          verified = (_settingsSig(got) === wantSig);
+        }
+      }catch(e){ /* 读回 / 解析异常时以 save() 的返回值 + save 内部回读长度校验为准 */ }
     }
     let result = verified ? true : false;
-    // R258-1.1：主档确实塞不下（配额已满）→ 走设置快照，保证「点保存 = 设置存住」
-    if(!verified && _saveError === 'quota'){
+    // R258-1.1 / R260-1.1：主档确实塞不下（配额已满，或写回后校验不一致）
+    //                      → 走设置快照，保证「点保存 = 设置存住」，并如实提示已保存。
+    if(!verified){
       if(_snapshotWrite(draft)){
         result = 'partial';
         _saveError = '';
@@ -20749,6 +20963,46 @@ be 动词：am / is → was；are → were
 
   // ----- 状态/接口暴露 -----
 
+  /* ============ R260-6.2：3500 词「已掌握 / 需巩固」标记 ============
+     存储：st.en3500Marks = { 分类名: { 单词: 'ok' | 'need' } }
+     规则：只有该分类下**全部单词**都标记为 'ok' 时，才允许打卡领 ⭐（由界面层判定 + 这里兜底）。
+     单词键用「分类|单词」拼接，避免不同分类出现同名单词时互相污染。 */
+  function _en3500WordKey(cat, word){ return String(cat || '') + '|' + String(word || ''); }
+  function getEn3500Marks(cat){
+    const st = load();
+    const box = (st.en3500Marks && st.en3500Marks[String(cat || '')]) || {};
+    return Object.assign({}, box);
+  }
+  function setEn3500Mark(cat, word, status){
+    const st = load();
+    if(!st.en3500Marks || typeof st.en3500Marks !== 'object' || Array.isArray(st.en3500Marks)) st.en3500Marks = {};
+    const k = String(cat || '');
+    if(!st.en3500Marks[k] || typeof st.en3500Marks[k] !== 'object') st.en3500Marks[k] = {};
+    const w = String(word || '');
+    if(status === 'ok' || status === 'need') st.en3500Marks[k][w] = status;
+    else delete st.en3500Marks[k][w];
+    save(st);
+    return {ok:true, status: st.en3500Marks[k][w] || ''};
+  }
+  function getEn3500Mark(cat, word){
+    const st = load();
+    const box = (st.en3500Marks && st.en3500Marks[String(cat || '')]) || {};
+    return box[String(word || '')] || '';
+  }
+  function resetEn3500Marks(cat){
+    const st = load();
+    if(st.en3500Marks) delete st.en3500Marks[String(cat || '')];
+    save(st);
+    return {ok:true};
+  }
+  // 该分类是否「全部已掌握」（words 由调用方传入，避免 store 依赖种子数据结构）
+  function en3500AllMastered(cat, words){
+    const box = getEn3500Marks(cat);
+    const list = Array.isArray(words) ? words : [];
+    if(!list.length) return false;
+    return list.every(w => box[String((w && w.w) || w)] === 'ok');
+  }
+
   window.Store = {
     KEY, KEY_BAK1, KEY_BAK2, KEY_META, KEY_SNAPSHOT, KEY_PRE_UPDATE, SCHEMA_VERSION,
     hasSettingsSnapshot, PROTECT_KEYS, allowUserClear, protectBeforeUpdate, hasPreUpdateBackup, dataGuardInfo, SUBJECTS, PLOT_COUNT, STAGE_NEED, todayStr, weekRange, uid,
@@ -20905,7 +21159,9 @@ be 动词：am / is → was；are → were
     // V75-Req1：指定课文生字「加入/移出」已学生字库（可取消）
     toggleKewenLessonWordLib,
     // V73-Req4：上海 1-5 年级课内古诗文「已学」持久化
-    getShGushiLearned, toggleShGushiLearned
+    getShGushiLearned, toggleShGushiLearned,
+    // R260-6.2：新世界·英语专区「3500 词」已掌握 / 需巩固标记
+    getEn3500Marks, setEn3500Mark, getEn3500Mark, resetEn3500Marks, en3500AllMastered
   };
 })();
 </script>
@@ -27147,11 +27403,12 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     ] },
     // R24-5：「听力训练」改为「英语小知识」（整个英语语法体系）
     // R204：句型练习移出后，原位置新建「英文作文」（上海市优秀小学英语作文 100 篇，分页展示）
-    { title:'拓展练习', items:[
-      { key:'zw',  icon:'✍️', label:'英文作文' },
-      { key:'yyxzs', icon:'📖', label:'英语小知识' },
+    // R260-6.1：板块名「拓展练习」→「课外扩展」；板块内「英文作文」与「3500 词」按键位置互换
+    { title:'课外扩展', items:[
       // R247-2：导入「3500 个高频常用英语单词（分类版）」PDF，按分类生成卡片并分页
-      { key:'w3500', icon:'🔠', label:'3500 词' }
+      { key:'w3500', icon:'🔠', label:'3500 词' },
+      { key:'yyxzs', icon:'📖', label:'英语小知识' },
+      { key:'zw',  icon:'✍️', label:'英文作文' }
     ] },
     { title:'错题本', items:[
       { key:'ctb', icon:'📓', label:'错题本' }
@@ -27399,36 +27656,41 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         if(cards.length > 1) cards.unshift(cards.pop());
         return cards.map(c=>_blkHtml(c.cid, c.b)).join('');
       };
+      /* R260-6.3：词类按键行 —— 与八种时态的 .eg-tense-nav 完全同款：
+         常驻 sticky 标题栏内、一行排开、当前项高亮、点击直接切换（不再有「返回 → 再点」两级跳）。 */
+      const cileiNavHtml = (active)=>`<div class="eg-cilei-navbar eg-tense-nav">${CILEI_SUBS.map((s,si)=>
+        `<button class="eg-tense-go eg-cilei-go${si===active?' active':''}" data-eg-cilei-go="${si}">${esc(s.label)}</button>`).join('')}</div>`;
       if(_egCileiSub >= 0){
         const sub = CILEI_SUBS[_egCileiSub] || CILEI_SUBS[0];
         bodyHtml = `
         <div class="eg-cilei-detail">
-          <div class="eg-sec-head">
-            <span class="eg-sec-tag">词类详情</span>
-            <span class="eg-sec-title">🔤 ${esc(sub.label)}</span>
-            <button class="eg-back-btn" data-eg-cilei-back="1">← 返回十大词类</button>
-            ${addBtnHtml}
+          <div class="eg-tense-stickyhead eg-cilei-stickyhead">
+            <div class="eg-sec-head">
+              <span class="eg-sec-tag">词类详情</span>
+              <span class="eg-sec-title">🔤 ${esc(sub.label)}</span>
+              <button class="eg-back-btn" data-eg-cilei-back="1">← 返回十大词类</button>
+              ${addBtnHtml}
+            </div>
+            ${cileiNavHtml(_egCileiSub)}
           </div>
-          <div class="eg-sec-intro">本词类的全部知识卡片，点击卡片即可标记为「已掌握」。</div>
+          <div class="eg-sec-intro">点击卡片即可标记为「已掌握」；点上方的词类标题卡可直接切换词类。</div>
           <div class="eg-block-grid">${_detailCardsHtml(_egCileiSub)}</div>
           ${myCardsHtml}
         </div>`;
       } else {
         const introCards = (G[0].blocks||[]).map((b,bi)=>_blkHtml('eg_cilei#c'+bi, b)).join('');
-        const subBtns = CILEI_SUBS.map((s,si)=>`<button class="eg-cilei-go" data-eg-cilei-go="${si}"><span class="eg-cilei-go-no">${si+1}</span>${esc(s.label)}</button>`).join('');
         bodyHtml = `
         <div class="eg-cilei-wrap">
-          <div class="eg-sec-head">
-            <span class="eg-sec-tag">词法基础</span>
-            <span class="eg-sec-title">🔤 十大词类</span>
-            ${addBtnHtml}
+          <div class="eg-tense-stickyhead eg-cilei-stickyhead">
+            <div class="eg-sec-head">
+              <span class="eg-sec-tag">词法基础</span>
+              <span class="eg-sec-title">🔤 十大词类</span>
+              ${addBtnHtml}
+            </div>
+            ${cileiNavHtml(-1)}
           </div>
-          <div class="eg-sec-intro">点击卡片即可标记为「已掌握」；下方 9 个词类按键可进入对应词类的独立内容页。</div>
+          <div class="eg-sec-intro">点击卡片即可标记为「已掌握」；点上方的词类标题卡可进入该词类的独立内容页。</div>
           <div class="eg-block-grid">${introCards}</div>
-          <div class="eg-cilei-nav">
-            <div class="eg-cilei-nav-h">📚 词类独立内容页</div>
-            <div class="eg-cilei-nav-btns">${subBtns}</div>
-          </div>
           ${myCardsHtml}
         </div>`;
       }
@@ -27717,11 +27979,31 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       const name = (c && c.name) ? String(c.name) : ('分类'+(i+1));
       const words = (c && Array.isArray(c.words)) ? c.words : [];
       const done = S.isReadingRead(EN3500_KIND, name);
+      // R260-6.2：单词级「已掌握 / 需巩固」标记 —— 整行绿 / 红；全部已掌握才允许打卡
+      const marks = (S.getEn3500Marks ? (S.getEn3500Marks(name) || {}) : {});
+      const okN = words.filter(w => marks[String((w && w.w) || '')] === 'ok').length;
+      const allOk = words.length > 0 && okN === words.length;
       // R248-3：移除卡片内「查看单词」按键，分类下全部词条直接平铺完整展示（不截断、不弹窗）
+      // R260-6.2：单词字号扩大一倍；点单词朗读；点序号弹「已掌握 / 需巩固」选择窗
       const rows = words.length
-        ? words.map((w,j)=>`<div class="en3500-row"><span class="en3500-no">${j+1}</span><span class="en3500-w">${esc(w && w.w)}</span><span class="en3500-ipa">${esc(w && w.ipa)}</span><span class="en3500-cn">${esc(w && w.cn)}</span></div>`).join('')
+        ? words.map((w,j)=>{
+            const wd = String((w && w.w) || '');
+            const mk = marks[wd] || '';
+            const cls = mk === 'ok' ? ' is-ok' : (mk === 'need' ? ' is-need' : '');
+            return `<div class="en3500-row${cls}" data-en3500-row="${esc(name)}" data-en3500-word="${esc(wd)}">`
+              + `<button type="button" class="en3500-no" data-en3500-mark="${esc(wd)}" data-en3500-cat="${esc(name)}" title="点这里标记：已掌握 / 需巩固">${j+1}</button>`
+              + `<span class="en3500-w" data-en3500-speak="${esc(wd)}" title="点击朗读">${esc(wd)}</span>`
+              + `<span class="en3500-meta"><span class="en3500-ipa">${esc(w && w.ipa)}</span><span class="en3500-cn">${esc(w && w.cn)}</span></span>`
+              + `</div>`;
+          }).join('')
         : '<div class="en3500-empty">这个分类暂时没有单词</div>';
       // R252-4：打卡按键缩小并置于分类卡片右下角
+      // R260-6.2：未全部标记「已掌握」时打卡键禁用，并提示还差几个
+      const canCheck = done || allOk;
+      const ckLabel = done ? '✅ 已打卡 · 撤销'
+        : (allOk ? '🎯 打卡 +5⭐' : '🎯 打卡 +5⭐（先全部掌握 ' + okN + '/' + words.length + '）');
+      const ckTitle = done ? '已打卡，点击撤销并扣回 5⭐'
+        : (allOk ? '本分类已全部掌握，可以打卡 +5⭐' : '还有单词没标记「已掌握」，全部标记后才能打卡');
       return `<div class="en3500-card${done?' is-checked':''}">
         <div class="en3500-card-h">
           <span class="en3500-ico">🔠</span>
@@ -27730,7 +28012,8 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         </div>
         <div class="en3500-words">${rows}</div>
         <div class="en3500-card-foot">
-          <button type="button" class="en3500-check${done?' is-done':''}" data-en3500-check="${esc(name)}" title="${done?'已打卡，点击撤销并扣回 5⭐':'完成本分类打卡 +5⭐'}">${done?'✅ 已打卡 · 撤销':'🎯 打卡 +5⭐'}</button>
+          <span class="en3500-prog">已掌握 <b>${okN}</b>/${words.length}</span>
+          <button type="button" class="en3500-check${done?' is-done':''}" data-en3500-check="${esc(name)}"${canCheck?'':' disabled'} title="${ckTitle}">${ckLabel}</button>
         </div>
       </div>`;
     }).join('');
@@ -27746,6 +28029,38 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       </div>
       <div class="en3500-summary">共 ${cats.length} 个分类 / ${totalWords} 词 · 每页展示 1 个分类</div>
     </div>`;
+  }
+  /* R260-6.2：3500 词标记弹窗 —— 点单词序号弹出，可选「已掌握 / 需巩固」。
+     选「已掌握」整行变绿、选「需巩固」整行变红；再点同一选项即取消标记。 */
+  function openEn3500Mark(cat, word){
+    const body = document.getElementById('en3500MarkBody');
+    if(!body) return;
+    const cur = (S.getEn3500Mark ? (S.getEn3500Mark(cat, word) || '') : '');
+    const catObj = en3500Cats().filter(x => x && String(x.name) === String(cat))[0] || {};
+    const w = ((catObj.words) || []).filter(x => String((x && x.w) || '') === String(word))[0] || {};
+    const ttl = document.getElementById('en3500MarkTitle');
+    if(ttl) ttl.textContent = '🏷️ 标记单词';
+    body.innerHTML =
+      '<div class="en3500-mark-word">' + esc(word) + '</div>'
+      + (w.cn ? '<div class="en3500-mark-cn">' + esc(w.cn) + '</div>' : '')
+      + '<div class="en3500-mark-acts">'
+      + '<button type="button" class="en3500-mark-btn ok' + (cur === 'ok' ? ' is-cur' : '') + '" data-en3500-set="ok">✅ 已掌握</button>'
+      + '<button type="button" class="en3500-mark-btn need' + (cur === 'need' ? ' is-cur' : '') + '" data-en3500-set="need">🔴 需巩固</button>'
+      + '</div>'
+      + '<div class="en3500-mark-tip">选「已掌握」整行变绿，选「需巩固」整行变红；<br>再次点击同一选项可取消标记。</div>';
+    body._cat = cat; body._word = word; body._cur = cur;
+    const btns = body.querySelectorAll('[data-en3500-set]');
+    Array.prototype.forEach.call(btns, function(b){
+      b.onclick = function(){
+        const want = b.getAttribute('data-en3500-set');
+        const next = (body._cur === want) ? '' : want;
+        try{ S.setEn3500Mark(body._cat, body._word, next); }catch(e){}
+        hideModal('#modalEn3500Mark');
+        refreshEn3500();
+        toast(next === 'ok' ? '✅ 已标记「已掌握」' : (next === 'need' ? '🔴 已标记「需巩固」' : '已取消标记'));
+      };
+    });
+    showModal('#modalEn3500Mark');
   }
   function refreshEn3500(){
     const box = document.getElementById('enSlotBody');
@@ -27781,11 +28096,32 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       return;
     }
     // R248-3：卡片内已无「查看单词」按键，词表直接平铺在卡片里，不再分发 data-en3500-open
+    // R260-6.2：点击单词 → 朗读；点击序号 → 打开「已掌握 / 需巩固」选择窗
+    const spk = t.closest('[data-en3500-speak]');
+    if(spk){
+      const w = spk.getAttribute('data-en3500-speak') || '';
+      if(w){ try{ speakEn(w); }catch(e){} }
+      return;
+    }
+    const mkBtn = t.closest('[data-en3500-mark]');
+    if(mkBtn){
+      openEn3500Mark(mkBtn.getAttribute('data-en3500-cat') || '', mkBtn.getAttribute('data-en3500-mark') || '');
+      return;
+    }
     const ck = t.closest('[data-en3500-check]');
     if(ck){
       const name = ck.getAttribute('data-en3500-check');
       // R248-3：打卡支持撤销；状态存于 readFlags（localStorage），刷新页面不丢失
       const done = S.isReadingRead(EN3500_KIND, name);
+      // R260-6.2：未全部标记「已掌握」不允许打卡（界面已 disabled，这里再兜一层）
+      if(!done){
+        const catObj = en3500Cats().filter(x => x && String(x.name) === String(name))[0];
+        const wlist = (catObj && Array.isArray(catObj.words)) ? catObj.words : [];
+        if(!(S.en3500AllMastered && S.en3500AllMastered(name, wlist))){
+          toast('还有单词没标记「已掌握」，全部标记后才能打卡领 ⭐');
+          return;
+        }
+      }
       let r = null;
       try{ r = done ? S.unmarkReadingRead(EN3500_KIND, name) : S.markReadingRead(EN3500_KIND, name); }
       catch(err){ r = null; }
@@ -32241,8 +32577,9 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         if(dest){
           e.preventDefault();
           const pageName = HOME_TASK_PAGE_LABELS[dest] || (t0 && t0.name) || '对应';
+          // R260-3.1：提示文字单行完整展示（不允许折行 —— 加 .cm-one-line + 弹窗加宽）
           openCustomModal('确认跳转',
-            '确定要前往「<b>' + esc(pageName) + '</b>」页面吗？'
+            '<span class="cm-one-line">确定要前往「<b>' + esc(pageName) + '</b>」页面吗？</span>'
             + '<div style="margin-top:8px;color:#5b6b85;font-size:13px">如需打卡，请点卡片左侧的圆形打卡按钮。</div>',
             ()=>{ goPage(dest); });
         }
@@ -37636,7 +37973,7 @@ function renderKMAdmin(){
     logs.forEach(a=>{ const k = String(a.wordId||''); (byWid[k] = byWid[k] || []).push(a); });
     const list = daily.filter(d => byWid[String(d.wordId)] || answered[d.wordId] !== undefined);
     if(!list.length){
-      return '<div class="xs-bank-empty">今天还没有提交过默写题目 —— 完成「词汇语法巩固」并点「✅ 统一提交」后，题目与历次作答会自动收进这里～</div>';
+      return '<div class="xs-bank-empty">今天还没有提交过默写题目 —— 完成「每日巩固」并点「✅ 统一提交」后，题目与历次作答会自动收进这里～</div>';
     }
     const okCount = list.filter(d=>answered[d.wordId]===true).length;
     const showAns = !isChild();
@@ -39687,8 +40024,86 @@ function renderKMAdmin(){
       if(el) el.hidden = (it[1] !== kind);
     });
   }
-  function renderFarmWarehousePanel(){
-    setFarmPanelEditBtns('warehouse');
+  /* ============ R260-2.2：种植园「出售 / 兑换」二次确认弹窗 ============
+     需求：在各弹窗内执行出售、兑换操作时先唤起二次弹窗 —— 填数量、看合计（金币 / 成长星），
+           点确认才真正执行，执行完给成功提示。
+     cfg：{ kind:'sell'|'buy', title, ico, name, price, priceUnit:'⭐'|'💰',
+            stock（出售时的库存）| balance（兑换时的余额）,
+            unitName（'个' / '袋' / '份'）, tip, onConfirm(qty) → true 表示已执行 }
+     说明：兑换类按「份」计价 —— 一份的价格 = price，一份到手的量由商品自身的 qty 决定
+          （例：肥料 4⭐/5 袋，兑 2 份 = 8⭐、10 袋）。 */
+  function farmTradeMax(cfg){
+    if(cfg.kind === 'sell') return Math.max(0, cfg.stock | 0);
+    const bal = cfg.balance | 0, p = Math.max(1, cfg.price | 0);
+    return Math.max(0, Math.floor(bal / p));
+  }
+  function openFarmTradeDialog(cfg){
+    const max = farmTradeMax(cfg);
+    const unit = cfg.priceUnit || '⭐';
+    const isSell = cfg.kind === 'sell';
+    if(max <= 0){
+      toast(isSell ? '没有可出售的数量' : (unit === '💰' ? '金币不足，先去攒金币吧～' : '成长星不足，先去打卡吧～'));
+      return;
+    }
+    const titleEl = document.getElementById('farmTradeTitle');
+    const body = document.getElementById('farmTradeBody');
+    const okBtn = document.getElementById('farmTradeOk');
+    if(!body || !okBtn) return;
+    if(titleEl) titleEl.textContent = cfg.title || (isSell ? '确认出售' : '确认兑换');
+    body.innerHTML =
+      '<div class="ftd-item">'
+      + '<span class="ftd-ico">' + (cfg.ico || '📦') + '</span>'
+      + '<span class="ftd-name">' + esc(cfg.name || '') + '</span>'
+      + '<span class="ftd-unit">' + esc(cfg.unitName || '') + '</span>'
+      + '</div>'
+      + '<div class="ftd-row">'
+      + '<span class="ftd-lbl">' + (isSell ? '出售数量' : '兑换数量') + '</span>'
+      + '<input type="number" id="farmTradeQty" class="ftd-qty" value="1" min="1" max="' + max + '" step="1" inputmode="numeric">'
+      + '<button type="button" class="pbtn small" id="farmTradeAll">全部</button>'
+      + '</div>'
+      + '<div class="ftd-sum" id="farmTradeSum"></div>'
+      + '<div class="ftd-tip" id="farmTradeTip">' + (cfg.tip || (isSell ? '确认后作物离开仓库，金币立即到账。' : '确认后扣除' + unit + '，物品立即到账。')) + '</div>';
+    const qtyEl = document.getElementById('farmTradeQty');
+    const sumEl = document.getElementById('farmTradeSum');
+    const allBtn = document.getElementById('farmTradeAll');
+    const readQty = ()=>{
+      let n = parseInt(qtyEl && qtyEl.value, 10);
+      if(!isFinite(n) || n < 1) n = 1;
+      if(n > max) n = max;
+      return n;
+    };
+    const paint = ()=>{
+      const n = readQty();
+      const total = Math.max(0, (cfg.price | 0)) * n;
+      if(sumEl){
+        sumEl.innerHTML = isSell
+          ? ('本次获得 <b>' + total + ' 💰</b> 金币　·　单价 ' + (cfg.price | 0) + ' 💰')
+          : ('本次消耗 <b>' + total + ' ' + unit + '</b>　·　单价 ' + (cfg.price | 0) + ' ' + unit
+             + '　·　余额 ' + (cfg.balance | 0) + ' ' + unit);
+      }
+      okBtn.disabled = (n < 1 || n > max);
+    };
+    if(qtyEl){
+      qtyEl.oninput = paint;
+      qtyEl.onchange = ()=>{ qtyEl.value = readQty(); paint(); };
+    }
+    if(allBtn) allBtn.onclick = ()=>{ if(qtyEl){ qtyEl.value = max; } paint(); };
+    paint();
+    okBtn.onclick = ()=>{
+      const n = readQty();
+      if(n < 1 || n > max){ toast('数量不正确'); return; }
+      okBtn.disabled = true;
+      let done = false;
+      try{ done = (cfg.onConfirm && cfg.onConfirm(n)) !== false; }catch(e){ done = false; }
+      if(done !== false){
+        hideModal('#modalFarmTrade');
+      } else {
+        okBtn.disabled = false;
+      }
+    };
+    showModal('#modalFarmTrade');
+  }
+  function renderFarmWarehousePanel(){    setFarmPanelEditBtns('warehouse');
     const st = S.load();
     const inv = st.inventory || {};
     const seeds = S.getState().seeds;
@@ -39729,10 +40144,23 @@ function renderKMAdmin(){
     });
     $$('#farmPanelBody [data-sell]').forEach(b => {
       b.onclick = () => {
-        const r = S.sellCrop(b.dataset.sell, parseInt(b.dataset.sellQty, 10) || 1);
-        toast(r.ok ? `卖出 ${b.dataset.sellName} +${r.coins}💰` : (r.msg || '卖出失败'));
-        if(r.ok) playZooSound('harvest');
-        renderFarm(); renderHome(); renderFarmWarehousePanel();
+        // R260-2.2：先唤起二次弹窗（填数量 + 合计金币），确认后才真正卖出
+        const cropId = b.dataset.sell;
+        const stock = parseInt(b.dataset.sellQty, 10) || 1;
+        const seed = (S.getState().seeds || []).find(x => x.crop === cropId) || {};
+        const nm = b.dataset.sellName || cropId;
+        openFarmTradeDialog({
+          kind:'sell', title:'确认出售', ico: seed.ico || '🌾', name: nm,
+          unitName:'个', price: seed.sellCoins || 0, priceUnit:'💰', stock: stock,
+          onConfirm(n){
+            const r = S.sellCrop(cropId, n);
+            if(!r.ok){ toast(r.msg || '卖出失败'); return false; }
+            toast('✅ 已卖出 ' + nm + ' ×' + n + '，获得 ' + r.coins + ' 金币');
+            try{ playZooSound('harvest'); }catch(e){}
+            renderFarm(); renderHome(); renderFarmWarehousePanel();
+            return true;
+          }
+        });
       };
     });
     const goMk = $('#farmPanelBody [data-hub-market]');
@@ -39759,25 +40187,63 @@ function renderKMAdmin(){
         <div class="mi-price">⭐ ${g.price}</div>
       </div>`).join('');
     $('#farmPanelTitle').textContent = '🛒 农场市集';
+    // R260-2.4：市集分两个卡片容器 —— 种子单独一卡；水 / 阳光 / 肥料另放一卡
     $('#farmPanelBody').innerHTML = `
       <div class="farm-hub-tip">🌱 用成长星兑换种子与工具 ｜ 当前 ⭐ ${stars}</div>
-      <div class="farm-hub-grid">${seedCards}${growthCards}</div>`;
+      <div class="farm-hub-sec" data-farm-sec="seeds">
+        <div class="farm-hub-sec-title">🌱 种子</div>
+        <div class="farm-hub-grid">${seedCards}</div>
+      </div>
+      <div class="farm-hub-sec" data-farm-sec="growth">
+        <div class="farm-hub-sec-title">💧 水 · ☀️ 阳光 · 🧪 肥料</div>
+        <div class="farm-hub-grid">${growthCards}</div>
+      </div>`;
     $$('#farmPanelBody [data-hub-seed]').forEach(b => {
       b.onclick = () => {
-        const r = S.buyShopItem(b.dataset.hubSeed, 'seed');
-        toast(r.ok ? '种子到手，去种起来！' : (r.msg || '购买失败'));
-        if(r.ok) playZooSound('plant');
-        renderFarm(); renderHome(); renderFarmMarketPanel();
+        // R260-2.2：兑换前二次确认（数量 + 合计成长星）
+        const item = seeds.find(x => x.id === b.dataset.hubSeed);
+        if(!item) return;
+        openFarmTradeDialog({
+          kind:'buy', title:'确认兑换', ico: item.ico, name: item.name,
+          unitName:'份', price: item.price, priceUnit:'⭐', balance: stars,
+          tip:'确认后扣除成长星，种子进入仓库，可到田里播种。',
+          onConfirm(n){
+            let okN = 0;
+            for(let i=0;i<n;i++){
+              const r = S.buyShopItem(item.id, 'seed');
+              if(!r.ok){ if(!okN) { toast(r.msg || '购买失败'); return false; } break; }
+              okN++;
+            }
+            toast('✅ 已兑换 ' + item.name + ' ×' + okN + '，种子已入仓库');
+            try{ playZooSound('plant'); }catch(e){}
+            renderFarm(); renderHome(); renderFarmMarketPanel();
+            return true;
+          }
+        });
       };
     });
     $$('#farmPanelBody [data-hub-growth]').forEach(b => {
       b.onclick = () => {
-        const r = S.buyShopItem(b.dataset.hubGrowth, 'growth');
-        if(r.ok){
-          const gid = b.dataset.hubGrowth;
-          toast((gid.indexOf('fert') >= 0 ? '🌱 肥料 +' : '资源 +') + (/5$/.test(gid) ? 5 : 1) + '～');
-        } else toast(r.msg || '购买失败');
-        renderFarm(); renderHome(); renderFarmMarketPanel();
+        // R260-2.2：资源兑换同样二次确认，按份计算（肥料 4⭐/5 袋等）
+        const g = growth.find(x => x.id === b.dataset.hubGrowth);
+        if(!g) return;
+        const per = g.qty | 0 || 1;
+        openFarmTradeDialog({
+          kind:'buy', title:'确认兑换', ico: g.ico === '__bag__' ? '🧪' : (g.ico || '💧'), name: g.name,
+          unitName:'份', price: g.price, priceUnit:'⭐', balance: stars,
+          tip:'每份到手 ' + per + ' 个，确认后退出弹窗并立即到账。',
+          onConfirm(n){
+            let okN = 0;
+            for(let i=0;i<n;i++){
+              const r = S.buyShopItem(g.id, 'growth');
+              if(!r.ok){ if(!okN) { toast(r.msg || '购买失败'); return false; } break; }
+              okN++;
+            }
+            toast('✅ 已兑换 ' + g.name + ' ×' + okN + ' 份，共到手 ' + (okN * per) + ' 个');
+            renderFarm(); renderHome(); renderFarmMarketPanel();
+            return true;
+          }
+        });
       };
     });
     showModal('#modalFarmPanel');
@@ -39800,10 +40266,26 @@ function renderKMAdmin(){
       <div class="farm-hub-grid">${cards || '<div class="farm-hub-empty">还没有可兑换的礼物</div>'}</div>`;
     $$('#farmPanelBody [data-hub-gift]').forEach(b => {
       b.onclick = () => {
-        const r = S.buyShopItem(b.dataset.hubGift, 'gift');
-        toast(r.ok ? '🎁 礼物已放入心愿盒～' : (r.msg || '兑换失败'));
-        if(r.ok) playZooSound('redeem');
-        renderFarm(); renderHome(); renderFarmShopGoodsPanel();
+        // R260-2.2：兑换礼物前二次确认（数量 + 合计金币）
+        const g = gifts.find(x => x.id === b.dataset.hubGift);
+        if(!g) return;
+        openFarmTradeDialog({
+          kind:'buy', title:'确认兑换', ico: g.ico, name: g.name,
+          unitName:'份', price: parseInt(g.price, 10) || 0, priceUnit:'💰', balance: coins,
+          tip:'确认后扣除金币，礼物进入心愿盒等待兑现。',
+          onConfirm(n){
+            let okN = 0;
+            for(let i=0;i<n;i++){
+              const r = S.buyShopItem(g.id, 'gift');
+              if(!r.ok){ if(!okN) { toast(r.msg || '兑换失败'); return false; } break; }
+              okN++;
+            }
+            toast('✅ 已兑换「' + g.name + '」×' + okN + '，放进心愿盒啦');
+            try{ playZooSound('redeem'); }catch(e){}
+            renderFarm(); renderHome(); renderFarmShopGoodsPanel();
+            return true;
+          }
+        });
       };
     });
     showModal('#modalFarmPanel');
@@ -39890,17 +40372,60 @@ function renderKMAdmin(){
     $('#farmPanelBody').querySelectorAll('[data-shop-area]').forEach(b=>{
       b.onclick=()=>{ farmShopArea=b.dataset.shopArea; renderShopPanel(); };
     });
+    // R260-2.2：商店各分区的兑换 / 回收同样走二次确认弹窗
     $('#farmPanelBody').querySelectorAll('[data-buy-seed]').forEach(b=>b.onclick=()=>{
-      const r=S.buyShopItem(b.dataset.buySeed,'seed'); toast(r.ok?'种子到手，去种起来！':r.msg); if(r.ok) { renderShopPanel(); renderFarm(); }
+      const s = state.seeds.find(x=>x.id===b.dataset.buySeed);
+      if(!s) return;
+      openFarmTradeDialog({ kind:'buy', title:'确认兑换', ico:s.ico, name:s.name, unitName:'份',
+        price:s.price, priceUnit:'⭐', balance: st.archive.totalStars||0,
+        tip:'确认后扣除成长星，种子进入仓库。',
+        onConfirm(n){
+          let okN=0;
+          for(let i=0;i<n;i++){ const r=S.buyShopItem(s.id,'seed'); if(!r.ok){ if(!okN){ toast(r.msg||'购买失败'); return false; } break; } okN++; }
+          toast('✅ 已兑换 ' + s.name + ' ×' + okN);
+          renderShopPanel(); renderFarm(); return true;
+        } });
     });
     $('#farmPanelBody').querySelectorAll('[data-buy-growth]').forEach(b=>b.onclick=()=>{
-      const r=S.buyShopItem(b.dataset.buyGrowth,'growth'); toast(r.ok?'资源+'+r.qty||1:r.msg); if(r.ok) { renderShopPanel(); renderFarm(); }
+      const g = state.growth.find(x=>x.id===b.dataset.buyGrowth);
+      if(!g) return;
+      const per = g.qty|0 || 1;
+      openFarmTradeDialog({ kind:'buy', title:'确认兑换', ico: g.ico==='__bag__'?'🧪':(g.ico||'💧'), name:g.name, unitName:'份',
+        price:g.price, priceUnit:'⭐', balance: st.archive.totalStars||0,
+        tip:'每份到手 ' + per + ' 个。',
+        onConfirm(n){
+          let okN=0;
+          for(let i=0;i<n;i++){ const r=S.buyShopItem(g.id,'growth'); if(!r.ok){ if(!okN){ toast(r.msg||'购买失败'); return false; } break; } okN++; }
+          toast('✅ 已兑换 ' + g.name + ' ×' + okN + ' 份，共到手 ' + (okN*per) + ' 个');
+          renderShopPanel(); renderFarm(); return true;
+        } });
     });
     $('#farmPanelBody').querySelectorAll('[data-sell]').forEach(b=>b.onclick=()=>{
-      const r=S.sellCrop(b.dataset.sell,1); toast(r.ok?`+${r.coins}💰`:r.msg); if(r.ok) { renderShopPanel(); renderFarm(); renderHome(); }
+      const cropId = b.dataset.sell;
+      const have = (st.inventory.harvested||{})[cropId]|0;
+      const s = state.seeds.find(x=>x.crop===cropId);
+      openFarmTradeDialog({ kind:'sell', title:'确认出售', ico: s?s.ico:'🌾',
+        name: s?s.name.replace('种子',''):cropId, unitName:'个',
+        price: s?s.sellCoins:0, priceUnit:'💰', stock: have,
+        onConfirm(n){
+          const r=S.sellCrop(cropId,n);
+          if(!r.ok){ toast(r.msg||'卖出失败'); return false; }
+          toast('✅ 已卖出 ×' + n + '，获得 ' + r.coins + ' 金币');
+          renderShopPanel(); renderFarm(); renderHome(); return true;
+        } });
     });
     $('#farmPanelBody').querySelectorAll('[data-buy-gift]').forEach(b=>b.onclick=()=>{
-      const r=S.buyShopItem(b.dataset.buyGift,'gift'); toast(r.ok?'礼物已放入待兑区🎁':r.msg); if(r.ok) { renderShopPanel(); renderFarm(); playZooSound('redeem'); }
+      const g = state.gifts.find(x=>x.id===b.dataset.buyGift);
+      if(!g) return;
+      openFarmTradeDialog({ kind:'buy', title:'确认兑换', ico:g.ico, name:g.name, unitName:'份',
+        price: parseInt(g.price,10)||0, priceUnit:'💰', balance: st.archive.totalCoins||0,
+        tip:'确认后扣除金币，礼物进入心愿盒。',
+        onConfirm(n){
+          let okN=0;
+          for(let i=0;i<n;i++){ const r=S.buyShopItem(g.id,'gift'); if(!r.ok){ if(!okN){ toast(r.msg||'兑换失败'); return false; } break; } okN++; }
+          toast('✅ 已兑换「' + g.name + '」×' + okN);
+          renderShopPanel(); renderFarm(); try{ playZooSound('redeem'); }catch(e){} return true;
+        } });
     });
     showModal('#modalFarmPanel');
   }
@@ -40138,6 +40663,11 @@ function renderKMAdmin(){
   // ============ 自定义弹窗 ============
   function openCustomModal(title, bodyHtml, onConfirm){
     $('#confirmText').innerHTML = `<h3 style="margin-bottom:10px;color:var(--orange-dark)">${title}</h3>${bodyHtml}`;
+    // R260-3.1：需要单行展示的提示语（首页跳转确认）→ 弹窗加宽，避免文字被挤成两行
+    try{
+      const box = $('#modalConfirm .modal-box');
+      if(box) box.classList.toggle('modal-width-fitline', /cm-one-line/.test(bodyHtml || ''));
+    }catch(e){}
     showModal('#modalConfirm');
     $('#confirmYes').onclick = ()=>{
       const ok = onConfirm && onConfirm();
@@ -44166,7 +44696,7 @@ if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
     calc:{t:'计算小超市怎么用', b:'1. 每天自动生成一练，填完点「批改」\n2. 错题会自动进错题本，可订正后移入已做本\n3. 已做本里的题不再重复抽到\n4. 中途退出会自动保存，下次回来接着写'},
     km:{t:'知识秘境怎么玩', b:'· 方向键 / 屏幕按键移动，跳过障碍到达终点\n· 撞到答题门要答对才能继续，可花星星买提示\n· 每关通关可生成电子证书\n· 错题会进秘境错题本，可在首页做错题复练'},
     farm:{t:'种植园怎么玩', b:'· 播种 → 浇水 / 晒太阳 / 施肥，三者达标才进阶\n· 成熟后收获，作物进仓库可在市集卖金币\n· 收获过的作物自动点亮「植物图鉴」'},
-    xs:{t:'学而思英语怎么用', b:'· 词汇 / 语法：点亮即打卡\n· 词汇语法巩固：全部填完点底部「统一提交」\n· 题库可新增 / 一键导入，家长模式可见\n· 答错可重做，同一题错 3 次自动显示答案'},
+    xs:{t:'学而思英语怎么用', b:'· 词汇 / 语法：点亮即打卡\n· 每日巩固：全部填完点底部「统一提交」\n· 题库可新增 / 一键导入，家长模式可见\n· 答错可重做，同一题错 3 次自动显示答案'},
     settings:{t:'设置中心说明', b:'· 修改后记得点底部「保存设置」\n· 学生 / 家长模式切换后，部分按键会显示或隐藏\n· 家长模式可设置提醒、护眼时长、单模块重置'},
     reading:{t:'大阅读怎么用', b:'· 书籍可加书签 / 批注，支持导出\n· 阅读页右上角可切夜间模式\n· 左右滑动翻页，上下滑动滚动正文'},
     math:{t:'乐读数学说明', b:'· 计算小超市：每日一练 + 打卡日历\n· 练习题：题库随机抽题，答对可打卡\n· 知识笔记：已学 / 需巩固双键打卡'},
