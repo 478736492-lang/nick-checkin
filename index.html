@@ -10014,6 +10014,20 @@ textarea.xs-adv-input-box{
   .page-settings .r265-mode-between .settings-card-row-mode{flex-wrap:wrap}
 }
 
+/* ==========================================================================
+   R266：存储体检输出框
+   放在「设置中心 → 版本与更新」弹窗里，点「🩺 存储体检」显示：
+   介质模式 / 可写入 / 已用与软上限 / 主档 / 备份 / 补丁 / 安全账本 / 镜像 / 错误码。
+   目的：iPad 上数据出问题时，家长一眼能看出是哪一层写不进，不再靠猜。
+   ========================================================================== */
+.r266-storage-out{
+  margin-top:8px;padding:10px 12px;border-radius:10px;
+  background:var(--tone-100);border:1px solid var(--tone-300);
+  font:11px/1.65 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  color:var(--tone-900);white-space:pre-wrap;word-break:break-all;
+  max-height:220px;overflow:auto;
+}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -12275,8 +12289,11 @@ textarea.xs-adv-input-box{
         </div>
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px" data-page-node-id="R85verBtnRow">
           <button class="pbtn" id="btnCheckUpdate" style="border-color:#4fa8e0;color:#4fa8e0" data-page-node-id="R85btnCheckUpd">🔄 检查更新</button>
+          <!-- R266：存储体检 —— 在 iPad 上直接看清「哪一层写不进」，不再靠猜 -->
+          <button class="pbtn" id="btnStorageCheck" style="border-color:#7cc4a0;color:#1f8a4c" data-page-node-id="R266btnStorageCheck">🩺 存储体检</button>
           <span id="updateHint" style="font-size:12px;color:var(--muted)" data-page-node-id="R85updHint">点此立即拉取最新版本</span>
         </div>
+        <pre id="storageCheckOut" class="r266-storage-out" hidden data-page-node-id="R266storageOut"></pre>
         <div class="form-warn" style="margin-top:8px" data-page-node-id="R85verTip">应用已开启离线缓存，正常情况下打开页面会自动获取最新版；若发现内容仍是旧的，点「检查更新」即可立即刷新。</div>
         <div class="form-warn" id="verDataSafe" style="margin-top:6px;border-color:#9fd8b4;color:#1f8a4c" data-page-node-id="R254verDataSafe">🛡️ 数据保护：本页更新只替换界面与功能，<b>不会清除</b>任何打卡记录、错题、种植园与自定义内容；更新前会自动做一次本地备份。<span id="verBackupInfo" style="display:block;margin-top:4px;font-weight:400"></span></div>
       </div>
@@ -12835,6 +12852,12 @@ textarea.xs-adv-input-box{
   // 刷新 / 点击版本更新后 load() 会先叠加补丁，再尝试写回主档，避免用户修改全部丢失。
   const KEY_PENDING = KEY + '_pending';
   const PENDING_BUDGET = 400 * 1024;
+  /* R266：重要数据小账本 —— 最后一个「一定写得进去」的落点。
+     iPad 配额满到连 200KB 补丁都写不下时，打卡记录就彻底没有落点；
+     这里只装体积小、最不可再生的业务字段（≈100~300KB），几乎必定成功。 */
+  const KEY_JOURNAL = KEY + '_journal';
+  const JOURNAL_BUDGET = 300 * 1024;
+  const JOURNAL_DAYS = 30;
   // R263-3.1：本次会话已经有过一次成功落库（用于放宽 flushPersistence 的安全闸）
   let _sessionPersisted = false;
   const SNAPSHOT_KEY_ALWAYS = ['tasks','settings','taskGroups','taskJump','farmOpen','rewardRules','weekPlan','calcSettings'];
@@ -12863,8 +12886,9 @@ textarea.xs-adv-input-box{
     try{ for(let i=0;i<localStorage.length;i++){ const k = localStorage.key(i); if(k) n += k.length + (_safeGet(k)||'').length; } }catch(e){}
     return n;
   }
-  // R264-2.1：iPad Safari localStorage 约 5MB，留 1MB 给主档增长；备份永不能挤掉主档
-  const SPACE_SOFT_LIMIT = 4 * 1024 * 1024;
+  // R266：iPad Safari localStorage 约 5MB。软上限从 4MB 降到 3.4MB，
+  //       给主档留出 1.6MB 增长余量 —— 宁可不写备份，也不能让主档整份写不进。
+  const SPACE_SOFT_LIMIT = 3.4 * 1024 * 1024;
   function storageUsage(){
     const keys = {};
     try{ for(let i=0;i<localStorage.length;i++){ const k = localStorage.key(i); if(k) keys[k] = (_safeGet(k)||'').length; } }catch(e){}
@@ -12928,6 +12952,18 @@ textarea.xs-adv-input-box{
       }catch(e){ try{ cb && cb(false); }catch(e2){} }
     });
   }
+  /* R266：用户主动「清空数据」时必须连镜像一起删，否则刷新一次就从镜像复活。 */
+  function _mirrorDelete(cb){
+    _mirrorOpen(function(db){
+      if(!db){ try{ cb && cb(false); }catch(e){} return; }
+      try{
+        const tx = db.transaction(MIRROR_STORE, 'readwrite');
+        tx.objectStore(MIRROR_STORE).delete(MIRROR_KEY);
+        tx.oncomplete = function(){ _mirrorLastTs = 0; try{ cb && cb(true); }catch(e){} };
+        tx.onerror = tx.onabort = function(){ try{ cb && cb(false); }catch(e){} };
+      }catch(e){ try{ cb && cb(false); }catch(e2){} }
+    });
+  }
   function _mirrorRead(cb){
     _mirrorOpen(function(db){
       if(!db){ cb(null); return; }
@@ -12947,20 +12983,46 @@ textarea.xs-adv-input-box{
       if(!rec || typeof rec.raw !== 'string' || !_rawUsable(rec.raw)){
         try{ done && done(false); }catch(e){} return;
       }
+      /* R266 修复①：严格比较，去掉旧的 +1000ms 容忍窗。
+         旧实现把「主档最后一次成功落库之后 1 秒内」的修改一律判成过期，
+         而页面刚加载完的那几秒正好在跑迁移落库 —— 用户此时点下的打卡，
+         一刷新就正好落进这个 1 秒盲区被丢弃。 */
       const localTs = _lastSavedAt();
       const localRaw = _safeGet(KEY);
       const localOk = _rawUsable(localRaw);
-      if(localOk && localTs && rec.ts <= localTs + 1000){
+      if(localOk && localTs && rec.ts && rec.ts <= localTs){
+        _mirrorLastTs = rec.ts || 0;
         try{ done && done(false); }catch(e){} return;
       }
+      /* R266 修复②：主档到底有没有被镜像覆盖，必须读回确认。
+         旧实现无条件 _touchSavedAt() —— 主档其实没写进去（配额满 / 只读），
+         却把 KEY_META.savedAt（只有几十字节，配额满时照样写得进）刷成最新，
+         于是下一次启动认为「主档已是最新」，镜像永远不再恢复：
+         用户看到的就是「第一次刷新还能回来，之后再刷新彻底没了」。 */
+      let wrote = false;
       try{
-        try{ localStorage.setItem(KEY, rec.raw); }catch(e){}
-        _loadCacheOK = false; _loadCacheRaw = null; _loadCacheSt = null;
-        load();                                  // 重新解析 + 跑迁移，旧缓存不挡镜像
-        _touchSavedAt(rec.raw.length);            // 本机时间戳刷新，避免下次启动无谓恢复
-        _mirrorLastTs = rec.ts || 0;
+        localStorage.setItem(KEY, rec.raw);
+        wrote = (_safeGet(KEY) === rec.raw);
+      }catch(e){ wrote = false; }
+      _loadCacheOK = false; _loadCacheRaw = null; _loadCacheSt = null;
+      _mirrorLastTs = rec.ts || 0;
+      if(wrote){
+        // 主档确实换成了镜像内容 → 才敢宣告「已落库」，并让旧账本作废
+        _touchSavedAt(rec.raw.length, rec.ts);
+        try{ _journalClear(); }catch(e){}
+        try{ load(); }catch(e){}
         try{ done && done(true); }catch(e){}
-      }catch(e){ try{ done && done(false); }catch(e2){} }
+        return;
+      }
+      // 主档依旧写不进：把镜像内容转存到小账本（体积受控，几乎必定成功），
+      // 让之后每一次 load() 都能把这份最新数据叠加回来。
+      try{
+        const recSt = JSON.parse(rec.raw);
+        _journalWrite(recSt, rec.ts);
+        _loadCacheOK = false; _loadCacheRaw = null; _loadCacheSt = null;
+        load();
+      }catch(e){}
+      try{ done && done(true); }catch(e){}
     });
   }
   function storageHealth(){
@@ -12975,7 +13037,13 @@ textarea.xs-adv-input-box{
       mirror: _mirrorAvailable === true,
       mirrorTs: _mirrorLastTs,
       used: _usageBytes(), softLimit: SPACE_SOFT_LIMIT,
-      savedAt: _lastSavedAt(), lastError: _saveError
+      savedAt: _lastSavedAt(), lastError: _saveError,
+      // R266：把「主档 / 备份 / 补丁 / 账本」的占用一并暴露，家长在 iPad 上一眼看到底是哪一层满了
+      mainBytes: (_safeGet(KEY)||'').length,
+      bak1Bytes: (_safeGet(KEY_BAK1)||'').length,
+      bak2Bytes: (_safeGet(KEY_BAK2)||'').length,
+      pendingBytes: (_safeGet(KEY_PENDING)||'').length,
+      journal: journalInfo()
     };
   }
   /* R265-4：事件驱动兜底刷盘。iPad Safari 的 pagehide / beforeunload 不可靠，
@@ -12983,6 +13051,7 @@ textarea.xs-adv-input-box{
      这里在冒泡阶段（所有业务处理器之后）检查内存态是否已偏离上次落库串，
      偏离就补一次 save；不建定时器，避免后台常驻与测试进程悬挂。 */
   let _autoFlushOn = false, _autoFlushAt = 0;
+  let _saveFailNotified = false;
   function startAutoFlush(){
     if(_autoFlushOn || typeof window === 'undefined' || !window.addEventListener) return true;
     _autoFlushOn = true;
@@ -12996,8 +13065,22 @@ textarea.xs-adv-input-box{
       try{ raw = JSON.stringify(st); }catch(e){ return; }
       if(raw === _loadCacheRaw) return;
       try{ save(st); }catch(e){}
+      /* R266：写入失败必须让家长看得见 —— 之前是彻底静默，
+         家长只会看到「刷新后数据没了」，却不知道本机根本没写进去。 */
+      try{
+        if(_saveError && !_saveFailNotified){
+          _saveFailNotified = true;
+          if(typeof window.__onSaveFail === 'function') window.__onSaveFail(_saveError);
+        }
+      }catch(e){}
     };
     ['click','change'].forEach(function(ev){ try{ window.addEventListener(ev, sweep, false); }catch(e){} });
+    /* R266：从后台回到前台（iOS 常直接复用页面、不重新加载）时重置节流窗口，
+       让「切回来第一次点击」一定重新比对并落盘。 */
+    try{
+      window.addEventListener('pageshow', function(){ _autoFlushAt = 0; }, false);
+      window.addEventListener('focus', function(){ _autoFlushAt = 0; }, false);
+    }catch(e){}
     return true;
   }
   // 判断一段原始串是否是「可用的存档对象」——必须能解析成非数组对象且带档案结构
@@ -13032,8 +13115,11 @@ textarea.xs-adv-input-box{
       const used = _usageBytes();
       const b1len = (_safeGet(KEY_BAK1)||'').length;
       if(used - b1len + raw.length > SPACE_SOFT_LIMIT){ _lastBakAt = now; return; }
-      const b1 = _safeGet(KEY_BAK1);
-      if(b1 && b1 !== raw) _safeSet(KEY_BAK2, b1);
+      /* R266：备份只保留一代。
+         双代整份备份（bak1 + bak2）在 iPad 5MB 配额下等于常驻两份主档，
+         把主档自己的增长空间吃光 —— 这是「打卡记录/设置写不进去」最直接的空间来源。
+         现在只滚动 bak1；bak2 仅作为旧存档的只读回退源保留，不再新写，
+         并在启动清理里（主档与 bak1 都健康时）删掉，腾出与主档等量的空间。 */
       if(_safeSet(KEY_BAK1, raw)){
         _lastBakAt = now;
         _safeSet(KEY_META, JSON.stringify({schema:SCHEMA_VERSION, savedAt:now, bytes:raw.length}));
@@ -13065,10 +13151,16 @@ textarea.xs-adv-input-box{
       const _fts = Date.now();
       try{ _mirrorWrite(raw, _fts); }catch(e){}
       // R260-1.1：刷盘同样走配额回收链，避免「关页面最后一次操作因空间不足丢失」
-      if(!_writeMain(raw).ok){ try{ _pendingWrite(st); }catch(e){} return false; }
+      if(!_writeMain(raw).ok){
+        // R266：关页面/切后台这最后一次写入最不能丢 —— 先落小账本，再尽力写补丁
+        try{ _journalWrite(st, _fts); }catch(e){}
+        try{ _pendingWrite(st); }catch(e){}
+        return false;
+      }
       _touchSavedAt(raw.length, _fts);
       _snapshotClear();   // R258-1.1：主档已整体落盘，应急设置快照作废
       _pendingClear();    // R261-5.1：主档已整体落盘，差异补丁作废
+      try{ _journalClear(); }catch(e){}   // R266：主档最新，账本作废
       _rotateBackup(raw, true);
       _loadCachePut(st, raw);
       return true;
@@ -13971,6 +14063,8 @@ textarea.xs-adv-input-box{
     st = _snapshotApply(st);
     // R261-5.1：主档写不进时留下的差异补丁在这里叠加并尝试写回主档（刷新 / 版本更新后不丢修改）
     try{ _pendingApply(st); }catch(e){}
+    // R266：补丁之外的最后一道保险 —— 小账本（只有它比主档新时才叠加）
+    try{ _journalApply(st); }catch(e){}
     // R259：迁移前拍一份「保护字段当前大小」，迁移后再比对，防止字段迁移把用户数据清零
     const _gcap = _guardCapture(st, GUARD_MIGRATION_KEYS);
     if(!Array.isArray(st.plots) || st.plots.length !== PLOT_COUNT){
@@ -14775,6 +14869,142 @@ textarea.xs-adv-input-box{
     }catch(e){}
     return true;
   }
+  /* ============ R266：重要数据小账本（KEY_JOURNAL） ============
+     为什么还要再加一层：R261 补丁 / R264 快照 / R265 镜像都要求「某个地方写得进去」。
+       ① 补丁与快照都在 localStorage 里 —— 主档把配额吃满时它们同样写不下；
+       ② IndexedDB 镜像在 iPad 隐私模式 / 「阻止所有 Cookie」/ file:// 打开时直接不可用。
+     于是真正需要保底的是「一个体积极小、几乎必定写得进」的落点。这里只装最不可再生的
+     小型业务字段（打卡记录近 30 天 / 打卡日历近 60 天 / 星星水滴 / 设置 / 开放时间 /
+     已学记录），预算 300KB，写之前先按优先级裁剪，确保体积可控。
+     铁律（对应 R259 数据保护规则 1.1~1.5）：
+       ① 只做「比主档新才叠加」—— 主档 savedAt >= 账本 __at 时账本完全不参与读取，
+          绝不会像早期 KEY_SNAPSHOT 那样变成「时间胶囊」把新数据盖回旧值；
+       ② 只装白名单字段，日志类按日期裁剪，永不影响图片 / 题库等大字段；
+       ③ 主档一旦被成功写入且体积正常，账本立刻作废，不占配额。 */
+  const JOURNAL_FLAT = ['profile','settings','tasks','archive','inventory','farmOpen',
+                        'rewardRules','weekPlan','calcSettings','plots',
+                        'kewenLearned','readFlags','calcDoneKeys','en3500Marks'];
+  let _journalRecovered = false;
+  const JOURNAL_PRIORITY = ['archive','inventory','settings','farmOpen','records','checkinLog',
+                            'calcDailyLog','profile','tasks','kewenLearned','readFlags',
+                            'calcDoneKeys','en3500Marks','plots','km','weekPlan',
+                            'rewardRules','calcSettings'];
+  function _dayCutoff(days){
+    const d = new Date(Date.now() - days*86400000);
+    const p = n=>String(n).padStart(2,'0');
+    return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate());
+  }
+  function _journalLastDays(obj, days){
+    const cut = _dayCutoff(days), out = {};
+    if(!obj || typeof obj !== 'object') return out;
+    Object.keys(obj).forEach(function(k){ if(String(k) >= cut) out[k] = obj[k]; });
+    return out;
+  }
+  function _journalPick(st){
+    const raw = {};
+    if(!st || typeof st !== 'object') return raw;
+    JournalFlat: for(let i=0;i<JOURNAL_FLAT.length;i++){
+      const k = JOURNAL_FLAT[i];
+      if(st[k] === undefined) continue JournalFlat;
+      raw[k] = st[k];
+    }
+    if(Array.isArray(st.records)){
+      const cut = _dayCutoff(JOURNAL_DAYS);
+      raw.records = st.records.filter(function(r){ return r && r.date && String(r.date) >= cut; });
+    }
+    ['checkinLog','calcDailyLog'].forEach(function(k){
+      if(st[k] && typeof st[k] === 'object' && !Array.isArray(st[k]))
+        raw[k] = _journalLastDays(st[k], JOURNAL_DAYS*2);
+    });
+    // km 只留设置 / 进度 / 星星金币，题库（questions，体积可达数百 KB）交给主档
+    if(st.km && typeof st.km === 'object' && !Array.isArray(st.km)){
+      const kk = {};
+      Object.keys(st.km).forEach(function(k){ if(k !== 'questions') kk[k] = st.km[k]; });
+      raw.km = kk;
+    }
+    return raw;
+  }
+  function _journalWrite(st, at){
+    let picked;
+    try{ picked = _journalPick(st); }catch(e){ return false; }
+    if(!picked || !Object.keys(picked).length) return false;
+    // 按优先级装箱；装不下的字段直接跳过，保证账本永远是小体积
+    const body = {}; let used = 0;
+    for(let i=0;i<JOURNAL_PRIORITY.length;i++){
+      const k = JOURNAL_PRIORITY[i];
+      if(picked[k] === undefined) continue;
+      let s;
+      try{ s = JSON.stringify(picked[k]); }catch(e){ continue; }
+      if(s === undefined || s === null) continue;
+      if(used + s.length + k.length > JOURNAL_BUDGET) continue;
+      body[k] = picked[k]; used += s.length + k.length;
+    }
+    if(!Object.keys(body).length) return false;
+    let payload;
+    try{ payload = JSON.stringify({ __at: at || Date.now(), __v: 266, body: body }); }catch(e){ return false; }
+    for(let i=0;i<4;i++){
+      if(_safeSet(KEY_JOURNAL, payload)) return true;
+      if(!_evictForQuota()) break;      // 绝不删主档：主档不在腾挪表里
+    }
+    return false;
+  }
+  function _journalClear(){ try{ localStorage.removeItem(KEY_JOURNAL); }catch(e){} }
+  function _journalRead(){
+    const raw = _safeGet(KEY_JOURNAL);
+    if(!raw) return null;
+    try{
+      const o = JSON.parse(raw);
+      if(o && typeof o === 'object' && o.body && typeof o.body === 'object' && !Array.isArray(o.body)) return o;
+    }catch(e){}
+    return null;
+  }
+  function _journalApply(st){
+    if(!st || typeof st !== 'object' || Array.isArray(st)) return false;
+    const j = _journalRead();
+    if(!j) return false;
+    /* 已有完整差异补丁时补丁才是最新真相（它是「相对主档的全部差异」），
+       账本只补充补丁装不下的部分，因此不在此处强覆盖。 */
+    if(_pendingRead()) return false;
+    const mainAt = _lastSavedAt();
+    if(mainAt && j.__at && j.__at <= mainAt + 50) return false;  // 主档已是最新，账本作废
+    const b = j.body;
+    // ① 记录类按 (date|taskId) 合并：账本更新则覆盖同一条，主档多出来的旧日期保留
+    if(Array.isArray(b.records)){
+      if(!Array.isArray(st.records)) st.records = [];
+      const idx = Object.create(null);
+      st.records.forEach(function(r){ if(r && r.date && r.taskId) idx[r.date+'|'+r.taskId] = r; });
+      b.records.forEach(function(r){
+        if(!r || !r.date || !r.taskId) return;
+        const key = r.date+'|'+r.taskId, cur = idx[key];
+        if(!cur){ st.records.push(r); idx[key] = r; return; }
+        if((r._ts||0) >= (cur._ts||0)){ Object.keys(r).forEach(function(f){ cur[f] = r[f]; }); }
+      });
+    }
+    // ② 按日期的映射类逐日覆盖（账本日期更新 → 该日以账本为准）
+    ['checkinLog','calcDailyLog'].forEach(function(k){
+      if(!b[k] || typeof b[k] !== 'object') return;
+      if(!st[k] || typeof st[k] !== 'object' || Array.isArray(st[k])) st[k] = {};
+      Object.keys(b[k]).forEach(function(d){ st[k][d] = b[k][d]; });
+    });
+    // ③ 其余白名单字段整份覆盖（账本比主档新）
+    ['profile','settings','tasks','archive','inventory','farmOpen','rewardRules','weekPlan',
+     'calcSettings','plots','kewenLearned','readFlags','calcDoneKeys','en3500Marks'].forEach(function(k){
+      if(b[k] !== undefined) st[k] = b[k];
+    });
+    // ④ km 只合并账本里有键，题库保持主档
+    if(b.km && typeof b.km === 'object'){
+      if(!st.km || typeof st.km !== 'object') st.km = {};
+      Object.keys(b.km).forEach(function(k){ st.km[k] = b.km[k]; });
+    }
+    st.__journalApplied = j.__at;
+    _journalRecovered = true;
+    return true;
+  }
+  function journalInfo(){
+    const j = _journalRead();
+    return { present:!!j, at:(j && j.__at) || 0, bytes:(_safeGet(KEY_JOURNAL)||'').length,
+             fields:(j && j.body) ? Object.keys(j.body) : [], recovered:_journalRecovered };
+  }
   /* ============ R258-1.1：设置快照（主档写不进时的兜底） ============
      现象：用户点「保存设置」提示存储空间不足，但页面里设置已经变了（内存态生效、落库失败）。
      根因：设置是塞在整份存档里一起写的，存档（含图片 dataURL）接近配额上限时，
@@ -14878,6 +15108,9 @@ textarea.xs-adv-input-box{
         if(_wr.err === 'quota') _saveError = 'quota';
         else _saveError = _wr.err || 'error';
         // R246-3：写失败时内存态仍以本次 st 为准，避免「渲染新数据、点击读回旧数据」两套真相
+        // R266：先写「小账本」——它体积可控（≤300KB），即便主档与补丁都写不下也基本能落地，
+        //       是打卡数据跨刷新存活的最后保障；随后再尽力写完整差异补丁。
+        try{ _journalWrite(st, _ts); }catch(e){}
         // R261-5.1：主档写不进 → 立刻留差异补丁，刷新 / 版本更新后能把修改捞回来
         _r256LedgerRollback(st, _r256Entry);
         try{ _pendingWrite(st); }catch(e){}
@@ -14894,6 +15127,7 @@ textarea.xs-adv-input-box{
       if(_back != null && _back !== raw){
         _saveError = 'verify';
         _r256LedgerRollback(st, _r256Entry);
+        try{ _journalWrite(st, _ts); }catch(e){}   // R266：读回不一致同样先落小账本
         try{ _pendingWrite(st); }catch(e){}   // R261-5.1：回读不一致同样留补丁
         _loadCachePut(st);
         return false;
@@ -14906,6 +15140,8 @@ textarea.xs-adv-input-box{
     // R258-1.1：主档已完整落库，之前为应急写的设置快照立刻作废（避免两份真相）
     _snapshotClear();
     _pendingClear();          // R261-5.1：主档已完整落库，差异补丁同样作废
+    // R266：主档本次已完整落库且账本时间不会比它新，小账本一并作废，不占配额
+    try{ _journalClear(); }catch(e){}
     // R264-2.1：空间吃紧时优先保住主档与业务数据，更新前副本是可重建的临时保险
     try{ if(_usageBytes() > SPACE_SOFT_LIMIT) localStorage.removeItem(KEY_PRE_UPDATE); }catch(e){}
     _persistedShape = _guardCapture(st);   // R259：记录本次落库后的保护字段大小
@@ -15813,7 +16049,17 @@ textarea.xs-adv-input-box{
     save(st);
     return st.shGushiLearned.slice();
   }
-  function resetData(){ allowUserClear(); _loadCacheOK = false; _loadCacheRaw = null; _loadCacheSt = null; localStorage.removeItem(KEY); return load(); }
+  /* R266：重置必须把「所有能复活旧数据的地方」一次清干净：
+     主档 / 差异补丁 / 设置快照 / 时间戳 / 小账本 / IndexedDB 镜像 / 备份。
+     否则下次启动 hydrateMirror 或 _journalApply 会把旧记录又搬回来，用户会以为「重置无效」。 */
+  function resetData(){
+    allowUserClear(); _loadCacheOK = false; _loadCacheRaw = null; _loadCacheSt = null;
+    [KEY, KEY_PENDING, KEY_SNAPSHOT, KEY_META, KEY_BAK1, KEY_BAK2, KEY_PRE_UPDATE, KEY_JOURNAL]
+      .forEach(function(k){ try{ localStorage.removeItem(k); }catch(e){} });
+    try{ _mirrorDelete(); }catch(e){}
+    _mirrorLastTs = 0;
+    return load();
+  }
 
   // ----- 档案重新计算 -----
   function recompute(st){
@@ -21964,8 +22210,30 @@ be 动词：am / is → was；are → were
     return list.every(w => box[String((w && w.w) || w)] === 'ok');
   }
 
+  /* R266：启动清理 —— 只删「可重建 / 已冗余」的副本，绝不碰主档与 bak1。
+     ① preupdate：更新前副本，更新成功后即为冗余，常驻几百 KB；
+     ② bak2：R266 起不再新写的第二代备份，主档与 bak1 都健康时属于纯冗余；
+     ③ 过期 settings 快照：主档比快照新时快照已无用。
+     目的：iPad 5MB 配额下把空间还给主档，减少「整份写不进」。 */
+  function bootCleanup(){
+    try{
+      const mainOk = _rawUsable(_safeGet(KEY));
+      const b1ok = _rawUsable(_safeGet(KEY_BAK1));
+      if(mainOk){ try{ localStorage.removeItem(KEY_PRE_UPDATE); }catch(e){} }
+      if(mainOk && b1ok){ try{ localStorage.removeItem(KEY_BAK2); }catch(e){} }
+      const snap = _safeGet(KEY_SNAPSHOT);
+      if(snap){
+        const lastSaved = _lastSavedAt();
+        let at = 0;
+        try{ at = JSON.parse(snap).__snapAt || 0; }catch(e){}
+        if(lastSaved && at && at <= lastSaved) _snapshotClear();
+      }
+    }catch(e){}
+    return true;
+  }
+
   window.Store = {
-    KEY, KEY_BAK1, KEY_BAK2, KEY_META, KEY_SNAPSHOT, KEY_PRE_UPDATE, SCHEMA_VERSION,
+    KEY, KEY_BAK1, KEY_BAK2, KEY_META, KEY_SNAPSHOT, KEY_PRE_UPDATE, KEY_JOURNAL, SCHEMA_VERSION,
     hasSettingsSnapshot, PROTECT_KEYS, allowUserClear, protectBeforeUpdate, hasPreUpdateBackup, dataGuardInfo, SUBJECTS, PLOT_COUNT, STAGE_NEED, todayStr, weekRange, uid,
     load, save, resetData,
     // R254-1/2：数据保护 —— 备份信息 / 强制刷盘
@@ -21974,6 +22242,8 @@ be 动词：am / is → was；are → were
     storageUsage,
     // R265-4：IndexedDB 镜像恢复 / 存储健康自检 / 事件驱动兜底刷盘
     hydrateMirror, storageHealth, startAutoFlush,
+    // R266：重要数据小账本（最后一道跨刷新保险）+ 启动清理
+    journalInfo, bootCleanup,
     // R256：打卡总览 / 星星流水 / 提醒 / 护眼 / 补卡 / 错题复练 / 断点 / 收藏 / 提示 / 图鉴 / 证书 / 暂存 / 单模块重置
     getR256, setR256, getStarLog, clearStarLog, setStarWhy,
     getRemindCfg, saveRemindCfg, getEyeCfg, saveEyeCfg,
@@ -46063,8 +46333,53 @@ if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
     }, true);
   }
 
-  function init(){
+    /* R266：存储体检 —— 把「哪一层写不进」直接摊开给家长看，
+     不再出现「改了没生效、刷新就没了」却毫无线索的情况。 */
+  function bindStorageCheck(){
+    const btn = document.getElementById('btnStorageCheck');
+    const out = document.getElementById('storageCheckOut');
+    if(!btn || !out || btn._r266Bound) return;
+    btn._r266Bound = true;
+    const kb = function(n){ return (Math.round((n||0)/102.4)/10) + ' KB'; };
+    const ts = function(t){ try{ return t ? new Date(t).toLocaleString('zh-CN',{hour12:false}) : '—'; }catch(e){ return '—'; } };
+    btn.addEventListener('click', function(){
+      let lines;
+      try{
+        const h = S.storageHealth ? S.storageHealth() : {};
+        const j = h.journal || {};
+        let inFrame = false;
+        try{ inFrame = (window.top !== window.self); }catch(e){ inFrame = true; }
+        let snapshot = '';
+        try{
+          const st = S.load();
+          const recs = (st && Array.isArray(st.records)) ? st.records.length : 0;
+          const stars = (st && st.archive && st.archive.totalStars) || 0;
+          snapshot = recs + ' 条打卡 · ' + stars + ' ⭐';
+        }catch(e){ snapshot = '读取失败'; }
+        lines = [
+          '打开方式：' + (location.protocol === 'file:' ? 'file://（系统不保存数据，请改用线上链接）' : location.protocol + '//' + location.host) + (inFrame ? '　⚠️ 在 iframe 内（Safari 会阻断第三方存储）' : ''),
+          '本次读到的存档：' + snapshot,
+          '介质模式：' + (h.mode || '未知') + (h.volatile ? '（纯内存 · 刷新即失）' : '（本机持久）'),
+          '当前可写入：' + (h.writable ? '是' : '否') + (h.warn ? '（' + h.warn + '）' : ''),
+          '已用 / 软上限：' + kb(h.used) + ' / ' + kb(h.softLimit),
+          '主档：' + kb(h.mainBytes) + '　备份：' + kb(h.bak1Bytes) + ' / ' + kb(h.bak2Bytes),
+          '差异补丁：' + kb(h.pendingBytes),
+          '安全账本：' + (j.present ? ('有 · ' + kb(j.bytes) + ' · ' + ((j.fields||[]).length) + ' 个字段') : '无'),
+          'IndexedDB 镜像：' + (h.mirror ? '可用' : '不可用') + (h.mirrorTs ? '（' + ts(h.mirrorTs) + '）' : ''),
+          '最后成功落库：' + ts(h.savedAt),
+          '最近错误码：' + (h.lastError || '无')
+        ];
+      }catch(e){ lines = ['体检失败：' + ((e && e.message) || e)]; }
+      out.hidden = false;
+      out.textContent = lines.join('\n');
+    });
+  }
+
+function init(){
     tickClock();
+    /* R266：启动第一件事是清理冗余副本，把 iPad 5MB 配额尽量还给主档，
+       再读存档 —— 这样「主档整份写不进」的概率从源头上降下来。 */
+    try{ if(S.bootCleanup) S.bootCleanup(); }catch(e){}
     // 初始模式
     const st = S.load();
     const child = (st.profile.mode||'child')==='child';
@@ -46116,16 +46431,51 @@ if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
        ② IndexedDB 镜像恢复：本机存储被禁用 / 写满时，从独立介质恢复并重渲染当前页；
        ③ 自检提示：本机介质不可写时明确告知，不再静默「改了没生效」。 */
     try{ if(S.startAutoFlush) S.startAutoFlush(); }catch(e){}
+    /* R266：写入失败必须看得见。此前 save() 失败完全静默，
+       家长只会看到「刷新后数据没了」，却不知道本机根本没写进去。 */
+    try{
+      window.__onSaveFail = function(code){
+        try{
+          const tip = (code === 'quota')
+            ? '⚠️ 本机存储已满，本次修改已存进安全副本（刷新不会丢）。去「设置 → 版本与更新 → 🩺 存储体检」可看清占用。'
+            : '⚠️ 本机写入失败（' + code + '），本次修改已存进安全副本。去「设置 → 版本与更新 → 🩺 存储体检」查看原因。';
+          toast(tip);
+        }catch(e){}
+      };
+    }catch(e){}
     try{
       if(S.hydrateMirror) S.hydrateMirror(function(restored){
         if(restored){
           try{ renderCurrentPage(); }catch(e){}
+          try{ if(typeof renderHome==='function') renderHome(); }catch(e){}
           try{ toast('✅ 已从本机安全副本恢复上次的记录'); }catch(e){}
         }
       });
     }catch(e){}
+    try{ bindStorageCheck(); }catch(e){}
+    /* R266：请求「持久化存储」，避免 iOS 在空间紧张时把本站存档当作可回收缓存清掉。 */
+    try{
+      if(navigator.storage && typeof navigator.storage.persist === 'function'){
+        navigator.storage.persist().catch(function(){});
+      }
+    }catch(e){}
+    /* R266：如果是「从本地文件」打开（file://），iOS 会禁用 localStorage 持久化、
+       IndexedDB 也不可用 —— 任何代码都救不回数据。这种情况必须明确告知改用线上链接，
+       否则用户会一直以为是「修复没生效」。 */
+    try{
+      if(location.protocol === 'file:'){
+        toast('⚠️ 当前是从本地文件打开的，iPad 不会保存这类页面的数据。请改用线上链接打开（可加到主屏幕）。');
+        setTimeout(function(){
+          try{ toast('提示：收藏线上地址后，打卡记录才会长期保存。'); }catch(e){}
+        }, 4200);
+      }
+    }catch(e){}
     try{
       const _h = S.storageHealth ? S.storageHealth() : null;
+      const _j = (_h && _h.journal) || null;
+      if(_j && _j.present && _j.recovered){
+        try{ toast('🛟 已从安全账本恢复最近的打卡记录'); }catch(e){}
+      }
       if(_h && (!_h.writable || _h.volatile) && !_h.mirror){
         try{ toast('⚠️ 本机存储不可用，改动可能无法保留，请在浏览器设置中允许本站存储数据'); }catch(e){}
       }
@@ -46145,11 +46495,13 @@ if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
   var RELOAD_FLAG = '__sw_reload_at';
   // 带节流保护：8 秒内已重载过则放弃，防止极端情况下反复刷新
   function safeReload(){
-    try{
-      var last = parseInt(localStorage.getItem(RELOAD_FLAG) || '0', 10) || 0;
-      if(Date.now() - last < 8000) return;
-      localStorage.setItem(RELOAD_FLAG, String(Date.now()));
-    }catch(e){ return; }
+    /* R266：节流标记只是「防抖」，写入失败绝不能挡住版本更新。
+       旧实现把读+写放在同一个 try 里，配额满（setItem 抛 QuotaExceededError）时直接 return，
+       于是 iPad 上明明已经下载好新版，页面却永远停在旧构建 —— 旧代码继续丢数据。 */
+    var last = 0;
+    try{ last = parseInt(localStorage.getItem(RELOAD_FLAG) || '0', 10) || 0; }catch(e){ last = 0; }
+    if(Date.now() - last < 8000) return;
+    try{ localStorage.setItem(RELOAD_FLAG, String(Date.now())); }catch(e){ /* 写不进也要继续更新 */ }
     // R259：切换版本前先落一份用户数据保护副本（更新只换页面，不动任何用户数据）
     try{ if(window.Store && window.Store.protectBeforeUpdate) window.Store.protectBeforeUpdate(); }catch(e){}
     location.reload();
