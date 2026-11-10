@@ -9519,48 +9519,91 @@ body.r256-sheet-on{overflow:hidden}
 
 /* ================= R261-2.3 种植园动态背景：斜向阳光 + 自由飞舞的飞鸟 / 蝴蝶 ================= */
 .page-farm .farm-anim-layer{position:absolute;inset:0;z-index:6;pointer-events:none;overflow:hidden}
+/* R267-5.2：丁达尔光束。原先只有一片「斜向阳光渐变」，现在是
+   5 道各自独立、上窄下宽、远端渐隐的可见光柱 + 8 颗缓慢浮游的光尘，
+   配合 screen 混合与轻微呼吸，接近阳光穿过树叶缝隙时的丁达尔效应。 */
 .farm-sunbeam{
   position:absolute;top:-26%;left:-16%;width:56%;height:155%;
-  background:linear-gradient(128deg,rgba(255,249,205,.72) 0%,rgba(255,241,168,.28) 34%,rgba(255,241,168,0) 70%);
-  transform:skewX(-16deg);mix-blend-mode:screen;opacity:.72;
+  background:linear-gradient(128deg,rgba(255,249,205,.42) 0%,rgba(255,241,168,.16) 34%,rgba(255,241,168,0) 70%);
+  transform:skewX(-16deg);mix-blend-mode:screen;opacity:.55;
   animation:farmSunShine 6.5s ease-in-out infinite alternate;
 }
-.farm-sunbeam-2{left:-6%;width:36%;opacity:.4;animation-duration:9s;animation-delay:-3s}
+.farm-sunbeam-2{left:-6%;width:36%;opacity:.32;animation-duration:9s;animation-delay:-3s}
 @keyframes farmSunShine{
-  from{opacity:.35;transform:skewX(-16deg) translateX(-2%)}
-  to{opacity:.9;transform:skewX(-16deg) translateX(4%)}
+  from{opacity:.28;transform:skewX(-16deg) translateX(-2%)}
+  to{opacity:.72;transform:skewX(-16deg) translateX(4%)}
 }
-/* R262-2.5：飞鸟改为纯 CSS 剪影 —— 双翅独立扇动 + 起伏滑翔 + 远近缩放 + 淡入淡出，
-   缓动曲线取代匀速直线；三只鸟错峰、速度与体量各异，观感更自然且与田园背景协调 */
+.farm-tyndall{position:absolute;inset:0;overflow:hidden;mix-blend-mode:screen;pointer-events:none}
+.farm-ray{
+  position:absolute;top:-30%;width:9vw;height:172%;
+  background:linear-gradient(180deg,rgba(255,250,214,0) 0%,rgba(255,248,200,.52) 13%,rgba(255,244,184,.2) 62%,rgba(255,244,184,0) 100%);
+  transform:skewX(-18deg);transform-origin:50% 0;
+  filter:blur(7px);opacity:.5;
+  -webkit-mask-image:linear-gradient(180deg,transparent 0%,#000 14%,#000 66%,transparent 100%);
+  mask-image:linear-gradient(180deg,transparent 0%,#000 14%,#000 66%,transparent 100%);
+  animation:farmRayBreathe 7s ease-in-out infinite alternate;
+}
+.farm-ray-1{left:1%;animation-delay:-1s;width:8vw}
+.farm-ray-2{left:17%;animation-delay:-3.4s;width:12vw;opacity:.4}
+.farm-ray-3{left:36%;animation-delay:-.6s;width:7vw}
+.farm-ray-4{left:54%;animation-delay:-4.8s;width:11vw;opacity:.42}
+.farm-ray-5{left:73%;animation-delay:-2.2s;width:8vw}
+@keyframes farmRayBreathe{
+  from{opacity:.26;filter:blur(10px)}
+  to{opacity:.7;filter:blur(5px)}
+}
+.farm-dust{
+  position:absolute;width:5px;height:5px;border-radius:50%;
+  background:rgba(255,250,220,.9);box-shadow:0 0 9px 3px rgba(255,246,196,.5);
+  animation:farmDustFloat 9s ease-in-out infinite alternate;
+}
+.farm-dust-1{left:8%;top:38%;animation-delay:-1s}
+.farm-dust-2{left:22%;top:62%;animation-delay:-4s;animation-duration:11s}
+.farm-dust-3{left:33%;top:27%;animation-delay:-2.5s}
+.farm-dust-4{left:47%;top:55%;animation-delay:-6s;animation-duration:12s}
+.farm-dust-5{left:59%;top:33%;animation-delay:-3s}
+.farm-dust-6{left:68%;top:68%;animation-delay:-7.5s;animation-duration:10s}
+.farm-dust-7{left:78%;top:44%;animation-delay:-5s}
+.farm-dust-8{left:88%;top:58%;animation-delay:-8s;animation-duration:13s}
+@keyframes farmDustFloat{
+  from{transform:translate3d(0,0,0);opacity:.16}
+  to{transform:translate3d(18px,-34px,0);opacity:.85}
+}
+/* R267-5.1：飞鸟由 CSS 剪影升级为「鹦鹉 ×2 + 喜鹊 ×1」内联 SVG。
+   双翅是独立 <g>，绕翅根做 -34° → +28° 的上扬/下压（贴近真实扑翼），
+   尾羽独立轻摆，身体随 farmBirdFly 起伏滑翔；喜鹊扑翼更慢并带滑翔节奏。
+   蝴蝶为多色渐变翅膀，左右翅以中线为轴做 scaleX 收放（俯视振翅时宽度变化）。 */
 .farm-fly{
   position:absolute;top:0;left:0;font-size:26px;line-height:1;opacity:.9;
   will-change:transform;filter:drop-shadow(0 2px 3px rgba(80,60,20,.22));
 }
 .farm-bird{
-  width:36px;height:18px;font-size:0;filter:drop-shadow(0 3px 4px rgba(60,80,50,.18));
+  width:66px;height:40px;font-size:0;filter:drop-shadow(0 3px 5px rgba(60,80,50,.2));
   animation:farmBirdFly 26s cubic-bezier(.42,0,.58,1) infinite;
 }
+.farm-bird svg{display:block;width:100%;height:100%;overflow:visible}
 .farm-bird .fb-wing{
-  position:absolute;top:1px;width:19px;height:12px;
-  background:linear-gradient(180deg,rgba(58,74,92,.9),rgba(38,52,68,.72));
-  animation:farmBirdFlap .46s ease-in-out infinite alternate;
+  transform-box:view-box;transform-origin:40px 24px;
+  animation:farmBirdFlap .38s cubic-bezier(.45,0,.55,1) infinite alternate;
 }
-.farm-bird .fb-wing-l{left:0;border-radius:90% 15% 70% 30%;transform-origin:100% 60%}
-.farm-bird .fb-wing-r{right:0;border-radius:15% 90% 30% 70%;transform-origin:0 60%;animation-delay:-.12s}
-.farm-bird .fb-body{
-  position:absolute;left:15px;top:6px;width:8px;height:6px;border-radius:50%;
-  background:rgba(44,58,74,.92);
+.farm-bird .fb-wing-l{animation-delay:-.04s}
+.farm-bird .fb-wing-r{animation-delay:-.1s}
+.farm-bird .fb-tail{
+  transform-box:view-box;transform-origin:32px 26px;
+  animation:farmTailSway .76s ease-in-out infinite alternate;
 }
-.farm-bird .fb-body::after{
-  content:'';position:absolute;right:-4px;top:1px;width:6px;height:3px;
-  border-radius:0 60% 60% 0;background:rgba(240,182,72,.9);
-}
+.farm-magpie .fb-wing{animation-duration:.46s;animation-timing-function:ease-in-out}
+.fb-parrot-blue{width:58px;height:35px}
 .farm-bird-1{animation-delay:-3s;animation-duration:26s}
 .farm-bird-2{animation-delay:-12s;animation-duration:31s}
 .farm-bird-3{animation-delay:-20s;animation-duration:22s}
 @keyframes farmBirdFlap{
-  from{transform:rotate(-16deg) scaleY(.72)}
-  to{transform:rotate(24deg) scaleY(1.14)}
+  from{transform:rotate(-34deg) scaleY(.68)}
+  to{transform:rotate(28deg) scaleY(1.16)}
+}
+@keyframes farmTailSway{
+  from{transform:rotate(-5deg)}
+  to{transform:rotate(6deg)}
 }
 @keyframes farmBirdFly{
   0%{transform:translate(-14vw,30vh) scale(.58);opacity:0}
@@ -9571,10 +9614,20 @@ body.r256-sheet-on{overflow:hidden}
   78%{transform:translate(92vw,20vh) scale(.7);opacity:.72}
   100%{transform:translate(120vw,27vh) scale(.55);opacity:0}
 }
-.farm-butterfly{animation:farmButterflyFly 15s ease-in-out infinite alternate}
-.farm-butterfly-1{animation-delay:-1s;font-size:23px}
-.farm-butterfly-2{animation-delay:-6s;font-size:19px;animation-duration:18s}
-.farm-butterfly-3{animation-delay:-11s;font-size:25px;animation-duration:13s}
+.farm-butterfly{width:46px;height:38px;font-size:0;animation:farmButterflyFly 15s ease-in-out infinite alternate}
+.farm-butterfly svg{display:block;width:100%;height:100%;overflow:visible}
+.farm-butterfly .bf-wing{
+  transform-box:view-box;transform-origin:24px 20px;
+  animation:farmButterflyFlap .3s ease-in-out infinite alternate;
+}
+.farm-butterfly .bf-wing-r{animation-delay:-.02s}
+.farm-butterfly-1{animation-delay:-1s;width:46px;height:38px}
+.farm-butterfly-2{animation-delay:-6s;width:36px;height:30px;animation-duration:18s}
+.farm-butterfly-3{animation-delay:-11s;width:52px;height:43px;animation-duration:13s}
+@keyframes farmButterflyFlap{
+  from{transform:scaleX(1) rotate(-3deg)}
+  to{transform:scaleX(.28) rotate(4deg)}
+}
 @keyframes farmButterflyFly{
   0%{transform:translate(8vw,66vh) rotate(-10deg)}
   25%{transform:translate(27vw,54vh) rotate(12deg)}
@@ -9583,6 +9636,9 @@ body.r256-sheet-on{overflow:hidden}
   100%{transform:translate(86vw,64vh) rotate(-12deg)}
 }
 @media (prefers-reduced-motion:reduce){ .farm-fly,.farm-sunbeam,.farm-bird .fb-wing{animation:none} }
+@media (prefers-reduced-motion:reduce){
+  .farm-ray,.farm-dust,.farm-butterfly .bf-wing,.farm-bird .fb-tail{animation:none}
+}
 
 /* ================= R261-3.1 每日巩固语法题：填写区随句子长度自适应换行 ================= */
 /* 元素选择器 + 类特异性高于旧 .xs-adv-input-box{flex:1;...}，且写在文件末尾防止被反杀 */
@@ -9903,7 +9959,9 @@ textarea.xs-adv-input-box{
 #modalMathNote button{
   background:var(--tone-300) !important;
   border-color:var(--tone-400) !important;
-  color:var(--tone-900) !important;
+  /* R267-4.1：三个主标题按键 + 板块内全部次级标题按键文字统一改白色 */
+  color:#fff !important;
+  text-shadow:0 1px 2px rgba(30,58,138,.55) !important;
 }
 /* 状态色复原（保留功能反馈，不参与统一底色） */
 .page-math .leidu-tab.active,
@@ -9947,6 +10005,51 @@ textarea.xs-adv-input-box{
   border-color:#e98331 !important;
   color:#fff !important;
 }
+
+/* ==========================================================================
+   R267-4.1 乐读数学：三个主标题按键 + 全部次级标题按键文字统一白色
+   ① 主标题 = .leidu-tab（乐读数学笔记 / 练习题 / 计算小超市）；
+      白字需要能托住的底色，故非选中态由白底改 --tone-600、选中态 --tone-800；
+   ② 次级标题按键 = 板块 / 题型筛选键、下拉标签、计算小超市页签等，
+      它们内部的 span 自带深蓝字规则，必须一并覆盖（同层级 !important 后置）；
+   ③ 状态反馈色（已完成 / 需巩固 / 禁用 / 待打卡）保持原样，不被统一白字吞掉。
+   ========================================================================== */
+.page-math .leidu-tab{
+  background:var(--tone-600) !important;
+  border-color:var(--tone-600) !important;
+  color:#fff !important;
+}
+.page-math .leidu-tab:hover{background:var(--tone-700) !important}
+.page-math .leidu-tab.active{
+  background:var(--tone-800) !important;
+  border-color:var(--tone-800) !important;
+  color:#fff !important;
+}
+.page-math .math-filter-btn .mf-label,
+.page-math .math-filter-btn .mf-value,
+.page-math .math-filter-btn .mf-caret,
+.page-math .math-sub-tag .msc-name,
+.page-math .math-sub-tag .msc-count,
+.page-math .math-type-item span,
+.page-math .calc-bank-tab,
+.page-math button span,
+.page-math button b,
+.page-math [role="button"] span{
+  color:#fff !important;
+  text-shadow:0 1px 2px rgba(30,58,138,.55);
+}
+/* 面板展开时标签底色改为深蓝，避免「白底白字」看不清 */
+.page-math .math-filter.open .math-filter-btn .mf-label{
+  background:var(--tone-700) !important;
+  color:#fff !important;
+}
+/* 状态色原样保留：这些是功能反馈，不是标题按键 */
+.page-math .math-actions .pbtn.notmastery,
+.page-math .math-actions .math-btn-need.active,
+.page-math .math-type-item.is-need{color:#c0354a !important}
+.page-math button:disabled,
+.page-math button[disabled],
+.page-math .calc-checkin:disabled{color:#5b6b85 !important}
 
 
 /* ==========================================================================
@@ -10027,6 +10130,79 @@ textarea.xs-adv-input-box{
   color:var(--tone-900);white-space:pre-wrap;word-break:break-all;
   max-height:220px;overflow:auto;
 }
+
+/* ==========================================================================
+   R267-5.3 种植园全部弹窗统一毛玻璃拟态
+   此前只有 #modalFarmSetting 在 R174-7 里享受毛玻璃；#modalFarmPanel（仓库/市集/
+   小卖部/心愿盒）与 #modalFarmTrade（出售兑换二次确认）仍是普通白底弹窗。
+   用属性选择器一次覆盖所有 modalFarm*，遮罩 / 面板 / 标题条 / 关闭键 / 按键
+   全部统一到 55% 白 + blur(22px) + 蓝色渐变头 + 内高光的口径。
+   ========================================================================== */
+[id^="modalFarm"]{
+  background:rgba(8,16,52,.42) !important;
+  -webkit-backdrop-filter:blur(12px) saturate(120%);backdrop-filter:blur(12px) saturate(120%);
+}
+[id^="modalFarm"] .modal-box{
+  background:rgba(255,255,255,.58) !important;
+  -webkit-backdrop-filter:blur(22px) saturate(165%);backdrop-filter:blur(22px) saturate(165%);
+  border:1.5px solid rgba(255,255,255,.72) !important;
+  border-radius:16px;
+  box-shadow:0 20px 56px rgba(8,16,52,.32),inset 0 1px 0 rgba(255,255,255,.75) !important;
+}
+[id^="modalFarm"] .modal-head{
+  margin:-18px -18px 12px !important;padding:12px 18px !important;
+  border-radius:14px 14px 0 0 !important;
+  background:linear-gradient(135deg,rgba(64,150,255,.5),rgba(28,95,184,.38)) !important;
+  -webkit-backdrop-filter:blur(8px) saturate(150%);backdrop-filter:blur(8px) saturate(150%);
+  color:#fff !important;text-shadow:0 1px 2px rgba(30,58,138,.35);
+}
+[id^="modalFarm"] .modal-head h3{color:#fff !important}
+[id^="modalFarm"] .modal-head .modal-x{
+  background:rgba(255,255,255,.28) !important;color:#fff !important;
+  border-color:rgba(255,255,255,.5) !important;
+}
+[id^="modalFarm"] .modal-body{
+  background:rgba(255,255,255,.28);border-radius:12px;
+}
+[id^="modalFarm"] .modal-foot{background:rgba(255,255,255,.3);border-radius:0 0 16px 16px}
+[id^="modalFarm"] .pbtn:not(.danger),
+[id^="modalFarm"] .ghost-btn{
+  background:rgba(255,255,255,.82) !important;
+  border-color:var(--tone-400) !important;color:var(--tone-800) !important;
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+}
+
+/* ==========================================================================
+   R267-5.4 右侧数据统计卡片向上偏移，贴近页面上边距
+   .farm-wh-col 原本整体 top:-12px（R264），统计卡仍被 topbar 压在下方；
+   这里改为只把统计卡自身上提 44px 并加一层浅毛玻璃，与右侧卡片流分开，
+   下面四张工具卡 / 仓库的排版不受影响。
+   ========================================================================== */
+.page-farm .farm-wh-col{top:0}
+.page-farm .farm-wh-col .farm-title-stats{
+  position:relative;top:-44px;align-self:flex-end;
+  margin:0 2px 0 auto;padding:5px 8px;
+  background:rgba(255,255,255,.42);
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,.6);border-radius:12px;
+  box-shadow:0 6px 18px rgba(30,58,138,.14);
+}
+
+/* ==========================================================================
+   R267-5.5 音乐暂停按键靠右，紧贴页面右侧边距
+   R265 起它在主题卡内用 margin-right:38px 给背景编辑键让位，视觉上悬在中间；
+   现在改为绝对定位到横幅最右侧（right:6px），背景编辑键相应左移到 right:60px，
+   两者不重叠，音乐键真正贴边。
+   ========================================================================== */
+.page-farm .farm-mine-banner > .farm-music-toggle.r265-farm-music-square{
+  position:absolute;right:6px;top:50%;margin:0;z-index:7;
+  transform:translateY(-50%);
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+}
+.page-farm .farm-mine-banner > .farm-music-toggle.r265-farm-music-square:hover{
+  transform:translateY(-50%) scale(1.06);
+}
+.page-farm .farm-mine-banner > .page-bg-btn{right:60px !important}
 
 </style>
 </head>
@@ -11114,14 +11290,82 @@ textarea.xs-adv-input-box{
           R265 按需求删除苹果树与爬动小松鼠（DOM / CSS / 动画一并移除），
           其余特效 pointer-events:none，不拦截点击、不占存档配额。 -->
     <div class="farm-anim-layer" aria-hidden="true">
+      <!-- R267-5.2 丁达尔效应：多道可见斜向光柱 + 悬浮光尘（原有两片阳光带保留作底层辉光） -->
       <div class="farm-sunbeam"></div>
       <div class="farm-sunbeam farm-sunbeam-2"></div>
-      <span class="farm-fly farm-bird farm-bird-1"><i class="fb-wing fb-wing-l"></i><i class="fb-wing fb-wing-r"></i><i class="fb-body"></i></span>
-      <span class="farm-fly farm-bird farm-bird-2"><i class="fb-wing fb-wing-l"></i><i class="fb-wing fb-wing-r"></i><i class="fb-body"></i></span>
-      <span class="farm-fly farm-bird farm-bird-3"><i class="fb-wing fb-wing-l"></i><i class="fb-wing fb-wing-r"></i><i class="fb-body"></i></span>
-      <span class="farm-fly farm-butterfly farm-butterfly-1">🦋</span>
-      <span class="farm-fly farm-butterfly farm-butterfly-2">🦋</span>
-      <span class="farm-fly farm-butterfly farm-butterfly-3">🦋</span>
+      <div class="farm-tyndall">
+        <i class="farm-ray farm-ray-1"></i><i class="farm-ray farm-ray-2"></i>
+        <i class="farm-ray farm-ray-3"></i><i class="farm-ray farm-ray-4"></i>
+        <i class="farm-ray farm-ray-5"></i>
+        <i class="farm-dust farm-dust-1"></i><i class="farm-dust farm-dust-2"></i>
+        <i class="farm-dust farm-dust-3"></i><i class="farm-dust farm-dust-4"></i>
+        <i class="farm-dust farm-dust-5"></i><i class="farm-dust farm-dust-6"></i>
+        <i class="farm-dust farm-dust-7"></i><i class="farm-dust farm-dust-8"></i>
+      </div>
+      <!-- R267-5.1：飞鸟由 CSS 剪影换成「鹦鹉 ×2 + 喜鹊 ×1」内联 SVG；
+           双翅为独立 <g>，由 farmBirdFlap 驱动展翅 / 收翅，身体随扑翼轻微起伏，
+           远近缩放与错峰飞行沿用 farmBirdFly；pointer-events 仍由父层统一关闭。 -->
+      <span class="farm-fly farm-bird farm-bird-1 fb-parrot">
+        <svg viewBox="0 0 80 48" xmlns="http://www.w3.org/2000/svg">
+          <g class="fb-tail"><path d="M32 27 C20 33 10 43 2 44 C12 39 18 31 28 24 Z" fill="#1f7a4d"/><path d="M32 28 C22 36 15 44 9 45 C18 40 24 32 31 26 Z" fill="#43b96f"/></g>
+          <g class="fb-wing fb-wing-l"><path d="M38 22 C30 8 18 2 6 4 C16 14 26 22 38 25 Z" fill="#e2573f"/><path d="M38 22 C30 10 20 5 10 6 C20 15 28 21 38 24 Z" fill="#f2a03d"/></g>
+          <ellipse cx="44" cy="27" rx="15" ry="9" fill="#3cb371"/>
+          <path d="M34 27 C38 22 50 21 56 25 C52 31 40 33 34 27 Z" fill="#2e9d60"/>
+          <circle cx="60" cy="21" r="9" fill="#f6c945"/>
+          <path d="M68 20 C74 20 76 25 69 27 C67 25 67 22 68 20 Z" fill="#3a3a3a"/>
+          <circle cx="62" cy="18" r="2" fill="#1b2b22"/><circle cx="62.6" cy="17.4" r=".7" fill="#fff"/>
+          <g class="fb-wing fb-wing-r"><path d="M40 24 C32 12 22 8 12 11 C22 20 30 26 42 28 Z" fill="#2f8fd6"/><path d="M40 24 C33 15 25 11 17 13 C25 21 32 25 41 27 Z" fill="#7cc4ef"/></g>
+        </svg>
+      </span>
+      <span class="farm-fly farm-bird farm-bird-2 fb-magpie">
+        <svg viewBox="0 0 80 48" xmlns="http://www.w3.org/2000/svg">
+          <g class="fb-tail"><path d="M30 27 C18 29 6 37 1 43 C12 40 22 33 31 25 Z" fill="#1b2b45"/><path d="M30 27 C20 31 12 38 7 42 C16 38 24 32 31 26 Z" fill="#3a76bd"/></g>
+          <g class="fb-wing fb-wing-l"><path d="M38 22 C28 9 16 5 5 7 C15 16 26 23 38 25 Z" fill="#22304a"/><path d="M35 22 C27 14 19 11 13 13 C21 20 28 23 35 24 Z" fill="#f4f7fb"/></g>
+          <ellipse cx="45" cy="27" rx="15" ry="9" fill="#f4f7fb"/>
+          <path d="M32 27 C38 21 50 20 58 24 C52 31 40 33 32 27 Z" fill="#17233a"/>
+          <circle cx="60" cy="21" r="8" fill="#17233a"/>
+          <path d="M67 21 L77 24 L67 26 Z" fill="#2b2b2b"/>
+          <circle cx="62" cy="18" r="1.8" fill="#fff"/>
+          <g class="fb-wing fb-wing-r"><path d="M40 24 C31 11 20 7 10 10 C20 19 30 26 42 28 Z" fill="#263b5c"/><path d="M40 24 C33 15 25 12 18 14 C26 21 33 25 41 27 Z" fill="#e9f1fb"/></g>
+        </svg>
+      </span>
+      <span class="farm-fly farm-bird farm-bird-3 fb-parrot fb-parrot-blue">
+        <svg viewBox="0 0 80 48" xmlns="http://www.w3.org/2000/svg">
+          <g class="fb-tail"><path d="M32 27 C20 33 10 43 2 44 C12 39 18 31 28 24 Z" fill="#2a5fa8"/><path d="M32 28 C22 36 15 44 9 45 C18 40 24 32 31 26 Z" fill="#57a8e8"/></g>
+          <g class="fb-wing fb-wing-l"><path d="M38 22 C30 8 18 2 6 4 C16 14 26 22 38 25 Z" fill="#f0b43c"/><path d="M38 22 C30 10 20 5 10 6 C20 15 28 21 38 24 Z" fill="#f7d873"/></g>
+          <ellipse cx="44" cy="27" rx="15" ry="9" fill="#3f8fd8"/>
+          <path d="M34 27 C38 22 50 21 56 25 C52 31 40 33 34 27 Z" fill="#2f77bd"/>
+          <circle cx="60" cy="21" r="9" fill="#f4f0df"/>
+          <path d="M68 20 C74 20 76 25 69 27 C67 25 67 22 68 20 Z" fill="#3a3a3a"/>
+          <circle cx="62" cy="18" r="2" fill="#1b2b22"/><circle cx="62.6" cy="17.4" r=".7" fill="#fff"/>
+          <g class="fb-wing fb-wing-r"><path d="M40 24 C32 12 22 8 12 11 C22 20 30 26 42 28 Z" fill="#2b6fbe"/><path d="M40 24 C33 15 25 11 17 13 C25 21 32 25 41 27 Z" fill="#79bdf0"/></g>
+        </svg>
+      </span>
+      <!-- R267-5.1：蝴蝶换成多色彩渐变翅膀 SVG，左右翅独立开合（俯视振翅时宽度收放） -->
+      <span class="farm-fly farm-butterfly farm-butterfly-1">
+        <svg viewBox="0 0 48 40" xmlns="http://www.w3.org/2000/svg">
+          <defs><linearGradient id="bfGradA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff9a3c"/><stop offset=".5" stop-color="#ff5f8d"/><stop offset="1" stop-color="#8a5cf6"/></linearGradient></defs>
+          <g class="bf-wing bf-wing-l"><path d="M24 20 C15 3 3 3 4 15 C5 25 16 27 24 21 Z" fill="url(#bfGradA)"/><path d="M24 21 C15 24 8 29 11 35 C15 39 21 32 24 22 Z" fill="#ffd166"/><circle cx="11" cy="13" r="2.6" fill="#fff8e1"/></g>
+          <g class="bf-wing bf-wing-r"><path d="M24 20 C33 3 45 3 44 15 C43 25 32 27 24 21 Z" fill="url(#bfGradA)"/><path d="M24 21 C33 24 40 29 37 35 C33 39 27 32 24 22 Z" fill="#ffd166"/><circle cx="37" cy="13" r="2.6" fill="#fff8e1"/></g>
+          <ellipse cx="24" cy="20" rx="2" ry="9" fill="#5b4636"/><path d="M23 12 C21 6 18 4 16 3 M25 12 C27 6 30 4 32 3" stroke="#5b4636" stroke-width="1.2" fill="none"/>
+        </svg>
+      </span>
+      <span class="farm-fly farm-butterfly farm-butterfly-2">
+        <svg viewBox="0 0 48 40" xmlns="http://www.w3.org/2000/svg">
+          <defs><linearGradient id="bfGradB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3ec6f0"/><stop offset=".5" stop-color="#4f7cf7"/><stop offset="1" stop-color="#a55cf0"/></linearGradient></defs>
+          <g class="bf-wing bf-wing-l"><path d="M24 20 C15 3 3 3 4 15 C5 25 16 27 24 21 Z" fill="url(#bfGradB)"/><path d="M24 21 C15 24 8 29 11 35 C15 39 21 32 24 22 Z" fill="#7ce0c0"/><circle cx="11" cy="13" r="2.6" fill="#e8fbff"/></g>
+          <g class="bf-wing bf-wing-r"><path d="M24 20 C33 3 45 3 44 15 C43 25 32 27 24 21 Z" fill="url(#bfGradB)"/><path d="M24 21 C33 24 40 29 37 35 C33 39 27 32 24 22 Z" fill="#7ce0c0"/><circle cx="37" cy="13" r="2.6" fill="#e8fbff"/></g>
+          <ellipse cx="24" cy="20" rx="2" ry="9" fill="#3c4a6b"/><path d="M23 12 C21 6 18 4 16 3 M25 12 C27 6 30 4 32 3" stroke="#3c4a6b" stroke-width="1.2" fill="none"/>
+        </svg>
+      </span>
+      <span class="farm-fly farm-butterfly farm-butterfly-3">
+        <svg viewBox="0 0 48 40" xmlns="http://www.w3.org/2000/svg">
+          <defs><linearGradient id="bfGradC" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe066"/><stop offset=".45" stop-color="#ff7b54"/><stop offset="1" stop-color="#3fb98a"/></linearGradient></defs>
+          <g class="bf-wing bf-wing-l"><path d="M24 20 C15 3 3 3 4 15 C5 25 16 27 24 21 Z" fill="url(#bfGradC)"/><path d="M24 21 C15 24 8 29 11 35 C15 39 21 32 24 22 Z" fill="#c78bf5"/><circle cx="11" cy="13" r="2.6" fill="#fffbe6"/></g>
+          <g class="bf-wing bf-wing-r"><path d="M24 20 C33 3 45 3 44 15 C43 25 32 27 24 21 Z" fill="url(#bfGradC)"/><path d="M24 21 C33 24 40 29 37 35 C33 39 27 32 24 22 Z" fill="#c78bf5"/><circle cx="37" cy="13" r="2.6" fill="#fffbe6"/></g>
+          <ellipse cx="24" cy="20" rx="2" ry="9" fill="#5b4636"/><path d="M23 12 C21 6 18 4 16 3 M25 12 C27 6 30 4 32 3" stroke="#5b4636" stroke-width="1.2" fill="none"/>
+        </svg>
+      </span>
       <!-- R263-2.3 ① 桃花飘舞：6 片 CSS 花瓣，各自旋转 / 左右摇摆 / 错峰下落 -->
       <span class="farm-petal farm-petal-1"></span>
       <span class="farm-petal farm-petal-2"></span>
@@ -12858,6 +13102,11 @@ textarea.xs-adv-input-box{
   const KEY_JOURNAL = KEY + '_journal';
   const JOURNAL_BUDGET = 300 * 1024;
   const JOURNAL_DAYS = 30;
+  /* R267-2.1：提醒时间的独立小副本（约 120B）。设置中心的提醒时间存在 st.r256.remind，
+     但 r256 是业务容器、不能进 SNAPSHOT_KEY_ALWAYS 白名单（铁律：快照只装设置类字段）。
+     一旦主档被旧镜像 / 旧补丁 / 版本更新回滚，提醒时间就会退回 19:30 / 20:30 默认值。
+     这里单独留一份带时间戳的极小副本，load() 只在「它比主档更新」时回填，绝不反向覆盖。 */
+  const KEY_REMIND = KEY + '_remind';
   // R263-3.1：本次会话已经有过一次成功落库（用于放宽 flushPersistence 的安全闸）
   let _sessionPersisted = false;
   const SNAPSHOT_KEY_ALWAYS = ['tasks','settings','taskGroups','taskJump','farmOpen','rewardRules','weekPlan','calcSettings'];
@@ -12867,6 +13116,14 @@ textarea.xs-adv-input-box{
   let _recoveredFrom = '';
   function _safeGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
   function _safeSet(k,v){ try{ localStorage.setItem(k,v); return true; }catch(e){ return false; } }
+  /* R267-2.1：读回独立提醒副本，带严格结构校验，任何异常都只当作「没有副本」 */
+  function _remindSidecar(){
+    try{
+      const o = JSON.parse(_safeGet(KEY_REMIND) || 'null');
+      if(o && typeof o === 'object' && !Array.isArray(o) && o.cfg && typeof o.cfg === 'object' && typeof o.at === 'number') return o;
+    }catch(e){}
+    return null;
+  }
   /* R264-2.1：主档「最后成功落库时间」必须每次写入都更新。
      旧实现只在 _rotateBackup()（20 秒节流）里写 KEY_META.savedAt，于是保存设置失败后
      写的快照 __snapAt 永远比 savedAt 新 → 过期快照判断形同虚设，旧快照反复覆盖新数据。 */
@@ -13027,16 +13284,31 @@ textarea.xs-adv-input-box{
   }
   function storageHealth(){
     const boot = (typeof window !== 'undefined' && window.__STORAGE_BOOT__) || null;
-    let writable = false;
-    try{ const t = '__ls_health__'; localStorage.setItem(t, t); localStorage.removeItem(t); writable = true; }catch(e){}
+    let writable = false, writeErr = '';
+    /* R267-3.1：探测必须「写入 + 回读」双向确认。
+       旧版只 try{setItem} 不回读，遇到把异常吞掉的包装器会假报「可写」；
+       同时把错误名留下来，才能区分「真的满了」与「被系统禁止写入」。 */
+    try{
+      const t = '__ls_health__', v = '__r267_ok__';
+      localStorage.setItem(t, v);
+      writable = (localStorage.getItem(t) === v);
+      try{ localStorage.removeItem(t); }catch(e){}
+    }catch(e){ writable = false; writeErr = String((e && (e.name || e.message)) || 'error'); }
+    const used = _usageBytes();
+    const nearLimit = used >= SPACE_SOFT_LIMIT * 0.9;
+    /* verdict 是给 UI 的唯一判据：
+       ok      —— 可写，任何「存储已满」提示都不该出现；
+       quota   —— 用量确实逼近上限且写不进，才是真·空间耗尽；
+       blocked —— 用量很小却写不进，说明是隐私模式 / 站点数据被禁 / file://，删图片无用。 */
+    const verdict = writable ? 'ok' : ((nearLimit || /quota/i.test(writeErr)) ? 'quota' : 'blocked');
     return {
       mode: boot ? boot.mode : 'native',
-      writable: writable,
+      writable: writable, writeErr: writeErr, verdict: verdict, nearLimit: nearLimit,
       volatile: !!(boot && boot.mode === 'shim'),
       warn: (boot && boot.warn) || '',
       mirror: _mirrorAvailable === true,
       mirrorTs: _mirrorLastTs,
-      used: _usageBytes(), softLimit: SPACE_SOFT_LIMIT,
+      used: used, softLimit: SPACE_SOFT_LIMIT,
       savedAt: _lastSavedAt(), lastError: _saveError,
       // R266：把「主档 / 备份 / 补丁 / 账本」的占用一并暴露，家长在 iPad 上一眼看到底是哪一层满了
       mainBytes: (_safeGet(KEY)||'').length,
@@ -13064,13 +13336,23 @@ textarea.xs-adv-input-box{
       let raw;
       try{ raw = JSON.stringify(st); }catch(e){ return; }
       if(raw === _loadCacheRaw) return;
-      try{ save(st); }catch(e){}
+      let ok = false;
+      try{ ok = save(st); }catch(e){ ok = false; }
       /* R266：写入失败必须让家长看得见 —— 之前是彻底静默，
-         家长只会看到「刷新后数据没了」，却不知道本机根本没写进去。 */
+         家长只会看到「刷新后数据没了」，却不知道本机根本没写进去。
+         R267-3.1：这里以「本次 save() 的返回值」为唯一判据。旧实现只检查全局
+         _saveError 残留码，于是上一次会话或启动迁移留下的一次 quota 会在之后
+         任意一次无关的点击/change 上被反复弹成「本机存储已满」—— 正是用户反馈的
+         「刷新或更新版本后跳出存储已满」。本次成功则清掉残留并复位提示闸门。 */
+      if(ok){
+        _saveError = '';
+        _saveFailNotified = false;
+        try{ if(typeof window.__onSaveRecovered === 'function') window.__onSaveRecovered(); }catch(e){}
+      }
       try{
         if(_saveError && !_saveFailNotified){
           _saveFailNotified = true;
-          if(typeof window.__onSaveFail === 'function') window.__onSaveFail(_saveError);
+          if(!ok && typeof window.__onSaveFail === 'function') window.__onSaveFail(_saveError);
         }
       }catch(e){}
     };
@@ -14119,6 +14401,16 @@ textarea.xs-adv-input-box{
       obj('farmNotify', {on:true, lastDate:''});
       if(typeof r.pendingAnswers !== 'object' || Array.isArray(r.pendingAnswers) || !r.pendingAnswers) r.pendingAnswers = {};
     })(st.r256);
+    /* R267-2.1：提醒时间独立副本回填 —— 只在副本时间戳比主档新时生效。
+       版本更新 / 镜像恢复 / 补丁叠加把 st.r256.remind 回滚成默认值时，
+       这里能把家长设过的时间捞回来；正常路径下两者同步，不会产生第二份真相。 */
+    try{
+      const _side = _remindSidecar();
+      const _cur = st.r256.remind || {};
+      if(_side && (Number(_side.at) || 0) > (Number(_cur.__at) || 0)){
+        st.r256.remind = Object.assign({}, _cur, _side.cfg);
+      }
+    }catch(e){}
     // R51-2：点击音效配置（导航栏/主题卡/次级主题卡/打卡），缺省回退默认档
     if(!st.clickSfx) st.clickSfx = {nav:'a', theme:'l', sub:'k', third:'h', checkin:'c'};
     // R245-5：全平台按键点击音效统一 —— 一次性把「导航 / 主题卡 / 次级主题卡」三档对齐同一预设，
@@ -14746,8 +15038,19 @@ textarea.xs-adv-input-box{
       _r256LastStars = entry.bal - entry.n;
     }catch(e){}
   }
+  /* R267-3.1：收紧「配额已满」判定。
+     旧版只要 message 里出现 quota 就当成空间耗尽，于是 iPad 隐私模式 / 站点数据被禁
+     抛出的 SecurityError（描述里常带 "quota" 字样）也被 UI 说成「本机存储已满」，
+     家长被误导去删图片。这里先排除明确的权限/介质错误，再按标准错误名与错误码判定，
+     message 只作为兜底且必须不含 security / permission 等字样。 */
   function _isQuotaErr(e){
-    return !!(e && (e.name === 'QuotaExceededError' || e.code === 22 || /quota/i.test(String((e && e.message) || ''))));
+    if(!e) return false;
+    const name = String(e.name || '');
+    if(/^(SecurityError|NotAllowedError|InvalidStateError|OperationError|ReadOnlyError|NotSupportedError)$/i.test(name)) return false;
+    if(name === 'QuotaExceededError' || name === 'NS_ERROR_DOM_QUOTA_REACHED') return true;
+    if(e.code === 22 || e.code === 1014) return true;
+    const msg = String(e.message || '');
+    return /quota|storage.*full|exceed/i.test(msg) && !/security|permission|not allowed|disabled|private/i.test(msg);
   }
   /* ============ R260-1.1：配额回收链（修复「保存设置误报存储空间不足」） ============
      根因：主档（含用户导入的图片 dataURL）一旦接近 localStorage 配额，本次「整份重写」
@@ -14888,7 +15191,7 @@ textarea.xs-adv-input-box{
   const JOURNAL_PRIORITY = ['archive','inventory','settings','farmOpen','records','checkinLog',
                             'calcDailyLog','profile','tasks','kewenLearned','readFlags',
                             'calcDoneKeys','en3500Marks','plots','km','weekPlan',
-                            'rewardRules','calcSettings'];
+                            'rewardRules','calcSettings','remindCfg'];
   function _dayCutoff(days){
     const d = new Date(Date.now() - days*86400000);
     const p = n=>String(n).padStart(2,'0');
@@ -14916,6 +15219,8 @@ textarea.xs-adv-input-box{
       if(st[k] && typeof st[k] === 'object' && !Array.isArray(st[k]))
         raw[k] = _journalLastDays(st[k], JOURNAL_DAYS*2);
     });
+    // R267-2.1：提醒时间单独抽成一个 120B 字段（r256 整体含流水，不能整份进账本）
+    if(st.r256 && st.r256.remind && typeof st.r256.remind === 'object') raw.remindCfg = st.r256.remind;
     // km 只留设置 / 进度 / 星星金币，题库（questions，体积可达数百 KB）交给主档
     if(st.km && typeof st.km === 'object' && !Array.isArray(st.km)){
       const kk = {};
@@ -14991,7 +15296,15 @@ textarea.xs-adv-input-box{
      'calcSettings','plots','kewenLearned','readFlags','calcDoneKeys','en3500Marks'].forEach(function(k){
       if(b[k] !== undefined) st[k] = b[k];
     });
-    // ④ km 只合并账本里有键，题库保持主档
+    // ④ R267-2.1：账本里的提醒时间比主档新才回填（与主档独立副本同一套时间戳口径）
+    if(b.remindCfg && typeof b.remindCfg === 'object'){
+      if(!st.r256 || typeof st.r256 !== 'object') st.r256 = {};
+      const _cur = st.r256.remind || {};
+      if((Number(b.remindCfg.__at) || 0) > (Number(_cur.__at) || 0)){
+        st.r256.remind = Object.assign({}, _cur, b.remindCfg);
+      }
+    }
+    // ⑤ km 只合并账本里有键，题库保持主档
     if(b.km && typeof b.km === 'object'){
       if(!st.km || typeof st.km !== 'object') st.km = {};
       Object.keys(b.km).forEach(function(k){ st.km[k] = b.km[k]; });
@@ -16054,7 +16367,7 @@ textarea.xs-adv-input-box{
      否则下次启动 hydrateMirror 或 _journalApply 会把旧记录又搬回来，用户会以为「重置无效」。 */
   function resetData(){
     allowUserClear(); _loadCacheOK = false; _loadCacheRaw = null; _loadCacheSt = null;
-    [KEY, KEY_PENDING, KEY_SNAPSHOT, KEY_META, KEY_BAK1, KEY_BAK2, KEY_PRE_UPDATE, KEY_JOURNAL]
+    [KEY, KEY_PENDING, KEY_SNAPSHOT, KEY_META, KEY_BAK1, KEY_BAK2, KEY_PRE_UPDATE, KEY_JOURNAL, KEY_REMIND]
       .forEach(function(k){ try{ localStorage.removeItem(k); }catch(e){} });
     try{ _mirrorDelete(); }catch(e){}
     _mirrorLastTs = 0;
@@ -20298,10 +20611,37 @@ be 动词：am / is → was；are → were
     };
     b.items.push(it); save(st); return {ok:true, item:it};
   }
+  /* R267-1.1：一键导入例句改为「一次读档 + 一次落库」。
+     旧实现对每条例句都调 xsGramBankAdd()，而它内部每次都 load() + save()，
+     于是 N 条例句 = N 次整份存档（约 240KB）JSON 序列化 + setItem + 回读 + 备份滚动。
+     语法卡例句上百条时主线程被同步阻塞数秒（实测 120 条 = 240 次写盘 / 6.1s），
+     iPad Safari 的 watchdog 会直接重载页面 —— 用户看到的正是「一键导入例句点了就跳转刷新」，
+     且重载发生在写入中途，题目看起来「没生成」。批量写入后同一批只需 1 次落库。 */
   function xsGramBankImportExamples(list){
+    const src = Array.isArray(list) ? list : [];
+    const st = load();
+    const b = _xsBankState(st);
+    // 先建一次去重索引，循环内不再重复读档 / 重建题库
+    const seen = new Set();
+    try{
+      xsGrammarPool().forEach(x=>{ seen.add(_xsBankNorm(x && x.en) + '\u0001' + _xsBankNorm(x && x.zh)); });
+    }catch(e){}
     let added = 0, skipped = 0;
-    (list || []).forEach(x=>{ const r = xsGramBankAdd(x); if(r && r.ok) added++; else skipped++; });
-    return {ok:true, added, skipped};
+    src.forEach(x=>{
+      const en = String((x && x.en) || '').trim();
+      const zh = String((x && x.zh) || '').trim();
+      const key = _xsBankNorm(en) + '\u0001' + _xsBankNorm(zh);
+      if(!en || !zh || seen.has(key)){ skipped++; return; }
+      b.items.push({
+        id: 'u_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2,7),
+        grammarId: String((x && x.grammarId) || ''),
+        title: String((x && x.title) || '').trim(),
+        en, zh, kind:'translate', fromSeed:false
+      });
+      seen.add(key); added++;
+    });
+    if(added) save(st);   // 整批只写一次
+    return {ok:true, added, skipped, total:src.length};
   }
   function xsGramBankUpdate(id, patch){
     const st = load(); const b = _xsBankState(st);
@@ -21937,8 +22277,13 @@ be 动词：am / is → was；are → were
   function getRemindCfg(){ return Object.assign({on:true, childTime:'19:30', parentTime:'20:30', lastFired:''}, _r256().remind || {}); }
   function saveRemindCfg(patch){
     const st = load();
-    st.r256.remind = Object.assign(getRemindCfg(), patch || {});
-    save(st); return getRemindCfg();
+    /* R267-2.1：配置自带时间戳，供 load() 判断哪一份更新；
+       主档与独立副本各写一次，互不阻塞 —— 任一份成功，刷新后提醒时间都还在。 */
+    const cfg = Object.assign(getRemindCfg(), patch || {}, {__at: Date.now()});
+    st.r256.remind = cfg;
+    save(st);
+    try{ _safeSet(KEY_REMIND, JSON.stringify({at: cfg.__at, cfg: cfg})); }catch(e){}
+    return getRemindCfg();
   }
 
   // ---------- 护眼模式 ----------
@@ -22233,7 +22578,7 @@ be 动词：am / is → was；are → were
   }
 
   window.Store = {
-    KEY, KEY_BAK1, KEY_BAK2, KEY_META, KEY_SNAPSHOT, KEY_PRE_UPDATE, KEY_JOURNAL, SCHEMA_VERSION,
+    KEY, KEY_BAK1, KEY_BAK2, KEY_META, KEY_SNAPSHOT, KEY_PRE_UPDATE, KEY_JOURNAL, KEY_REMIND, SCHEMA_VERSION,
     hasSettingsSnapshot, PROTECT_KEYS, allowUserClear, protectBeforeUpdate, hasPreUpdateBackup, dataGuardInfo, SUBJECTS, PLOT_COUNT, STAGE_NEED, todayStr, weekRange, uid,
     load, save, resetData,
     // R254-1/2：数据保护 —— 备份信息 / 强制刷盘
@@ -22418,22 +22763,31 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     const t=$('#toast'); t.textContent=msg; t.hidden=false;
     clearTimeout(t._t); t._t=setTimeout(()=>t.hidden=true,1800);
   };
-  // R246-3：存档写入失败（绝大多数是 localStorage 配额超限）时给一次可见提示。
-  // 此前 save() 只是把错误记进 _saveError 就返回 false，全站没有任何地方读它 ——
-  // 于是「写不进去」完全静默，表现为「改了没生效 / 某些题点编辑说数据不存在」这类难以定位的现象。
-  // 这里包一层 save：失败时提示一次（每会话最多一次，不刷屏），并把原因指向可清理的位置。
+  /* R246-3 / R267-3.1 存档写入失败提示。
+     旧版包装器是「本机储存已满」误报的总源头：
+       ① save() 返回 false 就一口咬定「本次改动没能保存」，但 R261/R265/R266 之后
+          失败时数据已经写进差异补丁 + 小账本 + IndexedDB 镜像，刷新根本不会丢；
+       ② why==='quota' 就说「存储空间已满」并让用户去删图片，却不检查真实用量 ——
+          iOS 隐私模式 / 站点数据被禁会抛同类错误，删图片毫无作用反而可能触发数据保护闸；
+       ③ 页面初始化（load() 里的字段迁移 / 镜像恢复）也会 save()，只要那一刻失败一次，
+          刷新或版本更新后就立刻弹「存储空间已满」，与用户操作完全无关；
+       ④ R266 又加了 __onSaveFail，同一次失败弹两条互相矛盾的提示。
+     现在统一为单一通道：启动阶段静默（写进 storageHealth().lastError 供体检查看），
+     页面就绪后只把「真实错误码 + 真实用量判定」交给 __onSaveFail 分级提示一次。 */
   try{
     if(S && typeof S.save === 'function' && !S.__saveGuardR246){
       const _origSave = S.save;
       S.save = function(st){
         const ok = _origSave.apply(S, arguments);
         if(!ok){
-          if(!window.__saveWarnR246){
-            window.__saveWarnR246 = true;
-            const why = (S.getSaveError && S.getSaveError && S.getSaveError()) || '';
-            try{ toast(why === 'quota'
-              ? '⚠️ 存储空间已满：本次改动没能保存，请到「设置中心」清理一些图片后重试'
-              : '⚠️ 本次改动没能保存，请刷新页面后重试'); }catch(e){}
+          const code = (S.getSaveError && S.getSaveError()) || 'error';
+          if(window.__appBooted === true){
+            try{
+              if(typeof window.__onSaveFail === 'function') window.__onSaveFail(code);
+              else if(!window.__saveWarnR246){ window.__saveWarnR246 = true; toast('⚠️ 本机写入未完成，已存入安全副本（刷新不会丢），可到「🩺 存储体检」查看原因'); }
+            }catch(e){}
+          }else if(!window.__saveWarnR246){
+            window.__saveWarnR246 = true;   // 启动/迁移阶段只记录，不打扰
           }
         }
         return ok;
@@ -23318,6 +23672,17 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
   // R131-2：点击【保存设置】→ 提交暂存草稿到 localStorage 并立即生效
   function commitSettingsNow(){
     if(!S || typeof S.commitSettings !== 'function'){ toast('⚠️ 当前环境无法保存设置'); return; }
+    /* R267-2.1：提交暂存草稿前，把提醒时间的当前 DOM 值兜底再写一次。
+       设置中心是 staging 模型，commitSettings() 会用整份草稿覆盖主档；
+       若某个平台的 time 输入事件没触发（旧版只有 onchange），草稿里仍是旧时间，
+       点「保存设置」反而会把刚设的时间冲掉。这里保证草稿一定是最新值。 */
+    try{
+      const _rc = $('#r256RemindChild'), _rp = $('#r256RemindParent');
+      const _patch = {};
+      if(_rc && /^\d{1,2}:\d{2}$/.test(String(_rc.value||'').trim())) _patch.childTime = String(_rc.value).trim();
+      if(_rp && /^\d{1,2}:\d{2}$/.test(String(_rp.value||'').trim())) _patch.parentTime = String(_rp.value).trim();
+      if(Object.keys(_patch).length) S.saveRemindCfg(_patch);
+    }catch(e){}
     const res = S.commitSettings();
     // R258-1.1 / R264-2.1：提示只跟真实结果 + 真实错误码走；'partial' 不再一口咬定「空间紧张」
     if(res === true){ toast('✅ 设置已保存并立即生效'); return; }
@@ -23331,10 +23696,12 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         : '✅ 设置已保存并立即生效');
       return;
     }
-    const why = (S.getSaveError && S.getSaveError && S.getSaveError()) || '';
+    /* R267-3.1：不再说「设置未能写入 / 请删除图片」—— 失败时数据已进
+       完整差异补丁 + 设置快照 + 小账本 + IndexedDB 镜像，刷新不会丢。 */
+    const why = (S.getSaveError && S.getSaveError()) || '';
     toast(why === 'quota'
-      ? '⚠️ 本机存储空间不足，设置未能写入：请先删除部分图片后重试'
-      : '⚠️ 设置未能写入本机存档，请重试一次');
+      ? '✅ 设置已安全暂存（本机空间接近上限，已自动腾挪；刷新不会丢，可到「🩺 存储体检」看占用）'
+      : '✅ 设置已安全暂存（本机写入未完成，刷新不会丢；可到「🩺 存储体检」看原因）');
   }
 
   // ============ 首页 ============
@@ -39214,12 +39581,30 @@ function renderKMAdmin(){
     });
     return out;
   }
+  /* R267-1.1：一键导入例句 —— 只更新题库弹窗，不做任何页面级跳转 / 重载。
+     旧实现末尾无条件 renderXueersiSummary() 会重绘整个学而思主页（含页签状态），
+     叠加「每条例句一次全量写盘」造成的长阻塞后，iPad 上表现为「点一下就跳走并刷新」。 */
   function xsGramAutoImportAll(){
-    const list = xsGramExamplePairs();
-    const r = S.xsGramBankImportExamples(list);
-    toast(r && r.ok ? ('⚡ 已导入 ' + r.added + ' 条例句' + (r.skipped ? ('，跳过 ' + r.skipped + ' 条重复') : '')) : '导入失败');
-    renderXsGramBankModal();
-    if(xsCat === 'grammar') renderXueersiSummary();
+    const ev = arguments[0];
+    if(ev && typeof ev.preventDefault === 'function'){ ev.preventDefault(); ev.stopPropagation(); }
+    try{
+      const list = xsGramExamplePairs();
+      if(!list.length){
+        toast('语法卡里还没有可导入的例句，请先在「📐 语法」页添加例句');
+        return;
+      }
+      const r = S.xsGramBankImportExamples(list);
+      if(!r || !r.ok){ toast('⚠️ 例句导入未完成，请重试一次'); return; }
+      const total = (S.xsGrammarPool() || []).length;
+      if(r.added > 0){
+        toast('⚡ 已根据例句生成 ' + r.added + ' 道语法题' + (r.skipped ? ('，跳过 ' + r.skipped + ' 条重复') : '') + '，题库共 ' + total + ' 题');
+      }else{
+        toast('例句已全部收进题库（跳过 ' + r.skipped + ' 条重复），当前共 ' + total + ' 题，无需重复生成');
+      }
+      try{ renderXsGramBankModal(); }catch(e){}
+    }catch(e){
+      try{ toast('⚠️ 例句导入失败：' + ((e && e.message) || e)); }catch(_e){}
+    }
   }
   // R252-1：语法卡例句「＋ 导入题库」手动导入（document 捕获阶段委托，局部重渲染不丢事件）
   document.addEventListener('click', (e)=>{
@@ -39410,7 +39795,9 @@ function renderKMAdmin(){
       b.onclick = ()=>{ window.xsBankSummary = window.xsBankSummary === 'summary' ? '' : 'summary'; window.xsBankEditId = ''; renderXsGramBankModal(); };
     });
     body.querySelectorAll('[data-xs-bank-act]').forEach(b=>{
-      b.onclick = ()=>{
+      b.onclick = (ev)=>{
+        // R267-1.1：显式阻止默认行为 / 冒泡，杜绝任何 form 提交、锚点跳转或全局委托触发的重载
+        if(ev && typeof ev.preventDefault === 'function'){ ev.preventDefault(); ev.stopPropagation(); }
         const act = b.getAttribute('data-xs-bank-act');
         if(act === 'add'){
           window.__xsAddKindForce = sec;
@@ -39420,7 +39807,7 @@ function renderKMAdmin(){
           return;
         }
         if(act === 'import'){
-          if(isG){ xsGramAutoImportAll(); return; }
+          if(isG){ xsGramAutoImportAll(ev); return; }
           const r = (S.xsWordBankImportAll ? S.xsWordBankImportAll() : null);
           toast(r && r.ok ? ('📥 已导入 ' + r.added + ' 个单词' + (r.skipped ? ('，跳过 ' + r.skipped + ' 个重复/缺释义') : '')) : '导入失败');
           window.xsBankPage = 0; window.xsBankSummary = '';
@@ -46274,8 +46661,25 @@ if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
     bindSw('#r256SwEye', null, on=>{ S.saveEyeCfg({on:on}); r256EyeApply(); toast(on ? '👀 护眼模式已开启（暖色 + 限时提醒）' : '护眼模式已关闭'); });
     bindSw('#r256SwWrong', null, on=>{ S.saveWrongReviewCfg({on:on}); if(on) r256MaybePushReview(true); else r256BuildReviewCard(); });
 
-    const rc = $('#r256RemindChild'); if(rc) rc.onchange = ()=>{ S.saveRemindCfg({childTime: rc.value}); toast('学生提醒时间：' + rc.value); };
-    const rp = $('#r256RemindParent'); if(rp) rp.onchange = ()=>{ S.saveRemindCfg({parentTime: rp.value}); toast('家长提醒时间：' + rp.value); };
+    /* R267-2.1：iOS Safari 的 <input type="time"> 只绑 onchange 会漏 —— 选择器里选完时间
+       未失焦 / 直接切走时 change 不触发，用户看到「设了时间」但一次都没写盘，刷新自然回默认值。
+       这里 input / change / blur 三重捕获 + 值校验 + 去重，任一平台都能立即落库；
+       store 层另有独立小副本 + 账本字段双保险，刷新 / 版本更新都不会回初始。 */
+    const bindTime = (sel, field, label)=>{
+      const el = $(sel); if(!el) return;
+      let last = String(el.value || '').trim();
+      const commit = (silent)=>{
+        const v = String(el.value || '').trim();
+        if(!/^\d{1,2}:\d{2}$/.test(v) || v === last) return;
+        last = v;
+        const patch = {}; patch[field] = v;
+        try{ S.saveRemindCfg(patch); }catch(e){ return; }
+        if(!silent) toast(label + '已保存：' + v);
+      };
+      ['input','change','blur'].forEach(ev=> el.addEventListener(ev, ()=>commit(ev === 'blur'), false));
+    };
+    bindTime('#r256RemindChild', 'childTime', '学生提醒时间');
+    bindTime('#r256RemindParent', 'parentTime', '家长提醒时间');
     const em = $('#r256EyeMin'); if(em) em.onchange = ()=>{ const n = Math.max(5, Math.min(300, parseInt(em.value,10)||45)); em.value = n; S.saveEyeCfg({dailyMin:n}); toast('每天可用 ' + n + ' 分钟'); };
     const wd = $('#r256WrongDays'); if(wd) wd.onchange = ()=>{ const n = Math.max(1, Math.min(30, parseInt(wd.value,10)||3)); wd.value = n; S.saveWrongReviewCfg({everyDays:n}); toast('每 ' + n + ' 天推送一次'); };
     const wn = $('#r256WrongNow'); if(wn) wn.onclick = ()=>{ r256MaybePushReview(true); toast('🎯 已生成一套错题复练，回首页必做区查看'); };
@@ -46360,7 +46764,11 @@ if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
           '打开方式：' + (location.protocol === 'file:' ? 'file://（系统不保存数据，请改用线上链接）' : location.protocol + '//' + location.host) + (inFrame ? '　⚠️ 在 iframe 内（Safari 会阻断第三方存储）' : ''),
           '本次读到的存档：' + snapshot,
           '介质模式：' + (h.mode || '未知') + (h.volatile ? '（纯内存 · 刷新即失）' : '（本机持久）'),
-          '当前可写入：' + (h.writable ? '是' : '否') + (h.warn ? '（' + h.warn + '）' : ''),
+          '当前可写入：' + (h.writable ? '是' : '否') + (h.warn ? '（' + h.warn + '）' : '') + (h.writeErr ? '　错误：' + h.writeErr : ''),
+          /* R267-3.1：直接给出「真满 / 被禁 / 正常」的结论，不再让家长靠猜 */
+          '存储判定：' + (h.verdict === 'ok' ? '正常（没有「存储已满」问题）'
+            : h.verdict === 'quota' ? '接近上限 · 真·空间不足'
+            : '站点存储被禁（不是空间不足，删图片无效）'),
           '已用 / 软上限：' + kb(h.used) + ' / ' + kb(h.softLimit),
           '主档：' + kb(h.mainBytes) + '　备份：' + kb(h.bak1Bytes) + ' / ' + kb(h.bak2Bytes),
           '差异补丁：' + kb(h.pendingBytes),
@@ -46436,12 +46844,29 @@ function init(){
     try{
       window.__onSaveFail = function(code){
         try{
-          const tip = (code === 'quota')
-            ? '⚠️ 本机存储已满，本次修改已存进安全副本（刷新不会丢）。去「设置 → 版本与更新 → 🩺 存储体检」可看清占用。'
-            : '⚠️ 本机写入失败（' + code + '），本次修改已存进安全副本。去「设置 → 版本与更新 → 🩺 存储体检」查看原因。';
+          /* R267-3.1：一条通道 + 真实判定 + 每会话一次去重。
+             「本机存储已满」只在「错误码是 quota 且真实用量确实逼近上限」时才说；
+             用量很小却写不进属于站点存储被禁，明确告诉用户去改浏览器设置，
+             不再误导去删图片。任何情况都如实说明数据已进安全副本，不说「没能保存」。 */
+          if(window.__saveFailToastShown) return;
+          window.__saveFailToastShown = true;
+          const h = (S.storageHealth && S.storageHealth()) || {};
+          const verdict = h.verdict || (h.writable ? 'ok' : 'blocked');
+          let tip;
+          if(code === 'quota' && verdict === 'quota'){
+            tip = '⚠️ 本机存储空间接近上限，已自动腾挪副本，本次修改存进安全账本（刷新不会丢）。可到「🩺 存储体检」看占用，必要时再清理旧图片。';
+          }else if(verdict === 'blocked' || (!h.writable && !h.nearLimit)){
+            tip = '⚠️ 浏览器当前不允许本站保存数据（隐私模式 / 站点数据被禁 / 本地文件打开）。本次修改已进安全副本，请用 Safari 打开线上链接并允许本站存储。';
+          }else if(code === 'verify'){
+            tip = '⚠️ 本次写入读回校验不一致，数据已存进安全副本（刷新不会丢）。可到「🩺 存储体检」查看原因。';
+          }else{
+            tip = '⚠️ 本机写入未完成（' + code + '），本次修改已存进安全副本（刷新不会丢）。可到「🩺 存储体检」查看原因。';
+          }
           toast(tip);
         }catch(e){}
       };
+      /* 落库恢复后允许下一次真失败再提示一次，避免「只提示一次」变成永久静默 */
+      window.__onSaveRecovered = function(){ window.__saveFailToastShown = false; };
     }catch(e){}
     try{
       if(S.hydrateMirror) S.hydrateMirror(function(restored){
@@ -46480,6 +46905,9 @@ function init(){
         try{ toast('⚠️ 本机存储不可用，改动可能无法保留，请在浏览器设置中允许本站存储数据'); }catch(e){}
       }
     }catch(e){}
+    /* R267-3.1：页面从这里才算真正就绪。启动/迁移阶段的写盘失败只记进
+       storageHealth().lastError，不再弹「本机存储已满」吓人提示。 */
+    window.__appBooted = true;
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init);
   else init();
