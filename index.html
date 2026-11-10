@@ -9957,11 +9957,11 @@ textarea.xs-adv-input-box{
 #modalMathDelType button,
 #modalMathManual button,
 #modalMathNote button{
-  background:var(--tone-300) !important;
-  border-color:var(--tone-400) !important;
-  /* R267-4.1：三个主标题按键 + 板块内全部次级标题按键文字统一改白色 */
-  color:#fff !important;
-  text-shadow:0 1px 2px rgba(30,58,138,.55) !important;
+  /* R268-1.1：按键卡片底色统一改白色，文字恢复原有深蓝色（撤回 R267 的白字深底） */
+  background:#fff !important;
+  border-color:var(--tone-300) !important;
+  color:var(--tone-900) !important;
+  text-shadow:none !important;
 }
 /* 状态色复原（保留功能反馈，不参与统一底色） */
 .page-math .leidu-tab.active,
@@ -10007,22 +10007,23 @@ textarea.xs-adv-input-box{
 }
 
 /* ==========================================================================
-   R267-4.1 乐读数学：三个主标题按键 + 全部次级标题按键文字统一白色
-   ① 主标题 = .leidu-tab（乐读数学笔记 / 练习题 / 计算小超市）；
-      白字需要能托住的底色，故非选中态由白底改 --tone-600、选中态 --tone-800；
-   ② 次级标题按键 = 板块 / 题型筛选键、下拉标签、计算小超市页签等，
-      它们内部的 span 自带深蓝字规则，必须一并覆盖（同层级 !important 后置）；
-   ③ 状态反馈色（已完成 / 需巩固 / 禁用 / 待打卡）保持原样，不被统一白字吞掉。
+   R268-1.1 乐读数学：按键卡片恢复白底 + 原有深蓝文字
+   ① 主标题 .leidu-tab（乐读数学笔记 / 练习题 / 计算小超市）白底深蓝字，
+      选中态仍用深蓝底白字做状态区分；
+   ② 次级标题按键（板块 / 题型筛选、下拉标签、计算小超市页签、板块内弹窗按键）
+      同款白底深蓝字，内部 span / b / .mf-label 等子元素一并恢复原色，
+      避免只改外壳不改字造成「白底白字」；
+   ③ 状态反馈色（已完成 / 需巩固 / 禁用 / 待打卡）保持原样。
    ========================================================================== */
 .page-math .leidu-tab{
+  background:#fff !important;
+  border-color:var(--tone-300) !important;
+  color:var(--tone-900) !important;
+}
+.page-math .leidu-tab:hover{background:var(--tone-050) !important}
+.page-math .leidu-tab.active{
   background:var(--tone-600) !important;
   border-color:var(--tone-600) !important;
-  color:#fff !important;
-}
-.page-math .leidu-tab:hover{background:var(--tone-700) !important}
-.page-math .leidu-tab.active{
-  background:var(--tone-800) !important;
-  border-color:var(--tone-800) !important;
   color:#fff !important;
 }
 .page-math .math-filter-btn .mf-label,
@@ -10035,13 +10036,17 @@ textarea.xs-adv-input-box{
 .page-math button span,
 .page-math button b,
 .page-math [role="button"] span{
-  color:#fff !important;
-  text-shadow:0 1px 2px rgba(30,58,138,.55);
+  color:var(--tone-900) !important;
+  text-shadow:none;
 }
-/* 面板展开时标签底色改为深蓝，避免「白底白字」看不清 */
+/* 筛选面板展开时标签仍是白底深蓝，避免与面板底色糊在一起 */
+.page-math .math-filter.open .math-filter-btn{
+  background:#fff !important;
+  border-color:var(--tone-300) !important;
+}
 .page-math .math-filter.open .math-filter-btn .mf-label{
-  background:var(--tone-700) !important;
-  color:#fff !important;
+  background:#fff !important;
+  color:var(--tone-900) !important;
 }
 /* 状态色原样保留：这些是功能反馈，不是标题按键 */
 .page-math .math-actions .pbtn.notmastery,
@@ -10203,6 +10208,60 @@ textarea.xs-adv-input-box{
   transform:translateY(-50%) scale(1.06);
 }
 .page-farm .farm-mine-banner > .page-bg-btn{right:60px !important}
+
+/* ==========================================================================
+   R268-3.1 设置中心「使用模式」标题单行横排
+   该行是 flex 横向条，标题所在的 .settings-card-head 未禁止折行，
+   窄屏 / 大字号下「使用模式」会被压成两行；这里锁死 nowrap 且不允许收缩。
+   ========================================================================== */
+.page-settings .r265-mode-between .settings-card-head{
+  flex:0 0 auto;flex-wrap:nowrap;white-space:nowrap;
+}
+.page-settings .r265-mode-between .settings-card-head .settings-card-title{
+  white-space:nowrap;word-break:keep-all;overflow-wrap:normal;flex:0 0 auto;
+}
+
+/* ==========================================================================
+   R268-3.2 提醒 / 护眼 / 家长管控：拆成三张独立卡片
+   与「打卡任务 / 游戏设置」等同构：卡片中间标题即点击入口，点开弹窗看详细设置项。
+   三张卡放在左侧槽位纵向排列，右侧四张工具卡布局不变。
+   ========================================================================== */
+.r261-remind-slot{
+  display:flex;flex-direction:column;gap:12px;
+  align-self:stretch;width:100%;box-sizing:border-box;
+}
+/* R268-3.2：左槽（提醒 / 护眼 / 家长管控）竖排，右列工具卡同样竖排，各占网格一列。
+   旧规则用 display:contents 让 5 张卡平铺进 2 列网格；拆成 3 张后若继续平铺，
+   会出现「家长管控 | 音乐设置」这种错位，因此两列都改回各自纵向排列。 */
+.settings-row-r261 > .settings-row-3.settings-row-3-side{
+  display:flex;flex-direction:column;gap:12px;
+  align-self:stretch;min-width:0;
+}
+.settings-row-r261 > .settings-row-3.settings-row-3-side .settings-card{
+  width:100%;height:auto;min-width:0;box-sizing:border-box;
+}
+.r261-remind-slot .r268-set-card{
+  width:100%;height:auto;align-self:stretch;box-sizing:border-box;
+  grid-column:auto;cursor:pointer;
+}
+/* 首张卡沿用旧 id（#r256SetCard）以兼容既有断言与定位，
+   但旧规则把 height 锁成 100%，在纵向 flex 槽位里会撑破，这里覆盖回自适应 */
+.r261-remind-slot #r256SetCard{height:auto;grid-row:auto;align-self:stretch}
+.r268-set-card .settings-card-title{white-space:nowrap}
+.r268-set-card .settings-card-desc{margin-top:2px}
+/* 详情弹窗：紧凑表单 */
+#modalSettingsDetail .modal-box{min-width:440px;max-width:92vw}
+.r268-modal-row{display:flex;align-items:center;gap:10px;margin:12px 0}
+.r268-modal-row .r268-modal-label{flex:1 1 auto;font-size:14px;font-weight:700;color:var(--tone-900)}
+.r268-modal-grid{display:flex;flex-wrap:wrap;gap:12px;margin:10px 0 4px}
+.r268-modal-grid label{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--tone-900)}
+.r268-modal-grid input[type="time"],
+.r268-modal-grid input[type="number"]{
+  padding:6px 10px;border:1.5px solid var(--tone-300);border-radius:10px;
+  background:#fff;color:var(--tone-900);font-size:14px;font-weight:700;
+}
+.r268-modal-tip{font-size:12px;line-height:1.6;color:#33507e;margin:6px 0 0}
+.r268-modal-quick{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
 
 </style>
 </head>
@@ -15188,7 +15247,7 @@ textarea.xs-adv-input-box{
                         'rewardRules','weekPlan','calcSettings','plots',
                         'kewenLearned','readFlags','calcDoneKeys','en3500Marks'];
   let _journalRecovered = false;
-  const JOURNAL_PRIORITY = ['archive','inventory','settings','farmOpen','records','checkinLog',
+  const JOURNAL_PRIORITY = ['archive','inventory','settings','farmOpen','records','calcBook','checkinLog',
                             'calcDailyLog','profile','tasks','kewenLearned','readFlags',
                             'calcDoneKeys','en3500Marks','plots','km','weekPlan',
                             'rewardRules','calcSettings','remindCfg'];
@@ -15214,6 +15273,16 @@ textarea.xs-adv-input-box{
     if(Array.isArray(st.records)){
       const cut = _dayCutoff(JOURNAL_DAYS);
       raw.records = st.records.filter(function(r){ return r && r.date && String(r.date) >= cut; });
+    }
+    /* R268-1.2：已做本（calcBook）也必须进账本。
+       主档一旦写不进（配额 / 介质受限），旧版只有 calcDoneKeys（key 集合）有兜底，
+       用户「已导入的题目」正文全部只存在于主档，刷新后整本消失。
+       这里按近 30 天裁剪 + 最多 400 条，保证体积可控（约 40~60KB）。 */
+    if(Array.isArray(st.calcBook)){
+      const cutB = _dayCutoff(JOURNAL_DAYS);
+      raw.calcBook = st.calcBook
+        .filter(function(x){ return x && String(x.date || '') >= cutB; })
+        .slice(-400);
     }
     ['checkinLog','calcDailyLog'].forEach(function(k){
       if(st[k] && typeof st[k] === 'object' && !Array.isArray(st[k]))
@@ -15271,7 +15340,11 @@ textarea.xs-adv-input-box{
        账本只补充补丁装不下的部分，因此不在此处强覆盖。 */
     if(_pendingRead()) return false;
     const mainAt = _lastSavedAt();
-    if(mainAt && j.__at && j.__at <= mainAt + 50) return false;  // 主档已是最新，账本作废
+    /* R268-1.2：这里原来有个 +50ms 容忍窗 —— 只要账本写入时间落在「主档最后一次成功落库」
+       之后 50 毫秒内，就判成「主档已是最新」直接作废，于是刚写进去的数据刷新后整份消失。
+       实测很容易命中：一次操作里先是迁移/设置写主档成功（打 savedAt 戳），紧接着主档被写满、
+       转存小账本，前后相差不过几毫秒。现在只比严格大小关系，账本不早于主档就必须叠加。 */
+    if(mainAt && j.__at && j.__at < mainAt) return false;  // 主档确实比账本新，账本作废
     const b = j.body;
     // ① 记录类按 (date|taskId) 合并：账本更新则覆盖同一条，主档多出来的旧日期保留
     if(Array.isArray(b.records)){
@@ -15284,6 +15357,23 @@ textarea.xs-adv-input-box{
         if(!cur){ st.records.push(r); idx[key] = r; return; }
         if((r._ts||0) >= (cur._ts||0)){ Object.keys(r).forEach(function(f){ cur[f] = r[f]; }); }
       });
+    }
+    /* R268-1.2：已做本按 (date|key) 并集合并 —— 主档里的条目一条不删，
+       账本里的新条目补进来（账本更新时同一条以账本为准）。 */
+    if(Array.isArray(b.calcBook)){
+      if(!Array.isArray(st.calcBook)) st.calcBook = [];
+      const _bookIdx = Object.create(null);
+      st.calcBook.forEach(function(x){
+        if(x) _bookIdx[String(x.date || '') + '|' + String(x.key || '')] = x;
+      });
+      b.calcBook.forEach(function(x){
+        if(!x) return;
+        const kk = String(x.date || '') + '|' + String(x.key || '');
+        const cur = _bookIdx[kk];
+        if(!cur){ st.calcBook.push(x); _bookIdx[kk] = x; return; }
+        if((Number(x.at) || 0) >= (Number(cur.at) || 0)) Object.assign(cur, x);
+      });
+      if(st.calcBook.length > 800) st.calcBook = st.calcBook.slice(-800);
     }
     // ② 按日期的映射类逐日覆盖（账本日期更新 → 该日以账本为准）
     ['checkinLog','calcDailyLog'].forEach(function(k){
@@ -15410,26 +15500,37 @@ textarea.xs-adv-input-box{
        时间戳与成功落库时的 KEY_META.savedAt 共用，hydrateMirror 才能准确判断新旧。 */
     const _ts = Date.now();
     try{ _mirrorWrite(raw, _ts); }catch(e){}
-    try{
-      localStorage.setItem(KEY, raw);
-    }catch(e){
-      // R255-5 / R260-1.1：配额不足时按优先级腾挪副本（快照 → 损坏副本 → 更新前副本 → 旧备份 → 新备份）
-      //                      每腾一级重试一次，用户数据优先于任何副本。
-      const _wr = _writeMain(raw);
-      if(!_wr.ok){
-        // R260-1.1：区分「配额不足」与「读回不一致 / 其它错误」，避免一律误报空间不足
-        if(_wr.err === 'quota') _saveError = 'quota';
-        else _saveError = _wr.err || 'error';
-        // R246-3：写失败时内存态仍以本次 st 为准，避免「渲染新数据、点击读回旧数据」两套真相
-        // R266：先写「小账本」——它体积可控（≤300KB），即便主档与补丁都写不下也基本能落地，
-        //       是打卡数据跨刷新存活的最后保障；随后再尽力写完整差异补丁。
-        try{ _journalWrite(st, _ts); }catch(e){}
-        // R261-5.1：主档写不进 → 立刻留差异补丁，刷新 / 版本更新后能把修改捞回来
-        _r256LedgerRollback(st, _r256Entry);
-        try{ _pendingWrite(st); }catch(e){}
-        _loadCachePut(st);
-        return false;
+    /* R268-2.1：一次写失败不再直接判定失败 —— iOS Safari 的 QuotaExceeded 有偶发性，
+       而且此刻可能只差几十 KB（上一代更新前副本 / 过期快照 / 旧备份占着位置）。
+       先做「深度腾挪 + 立即重试」，两轮都失败才走失败分支。
+       这样正常设备上不会再因为一次瞬时失败弹「本机写入未完成」。 */
+    let _wr = { ok:false, err:'' };
+    for(let _try = 0; _try < 2; _try++){
+      try{ localStorage.setItem(KEY, raw); _wr = { ok:true, err:'' }; break; }
+      catch(e){
+        _wr = _writeMain(raw);
+        if(_wr.ok) break;
+        if(_try === 0){
+          try{ localStorage.removeItem(KEY_PRE_UPDATE); }catch(e1){}
+          try{ localStorage.removeItem(KEY_SNAPSHOT); }catch(e2){}
+          try{ localStorage.removeItem(KEY_BAK2); }catch(e3){}
+          try{ localStorage.removeItem(KEY_JOURNAL); }catch(e4){}
+        }
       }
+    }
+    if(!_wr.ok){
+      // R260-1.1：区分「配额不足」与「读回不一致 / 其它错误」，避免一律误报空间不足
+      if(_wr.err === 'quota') _saveError = 'quota';
+      else _saveError = _wr.err || 'error';
+      // R246-3：写失败时内存态仍以本次 st 为准，避免「渲染新数据、点击读回旧数据」两套真相
+      // R266：先写「小账本」——它体积可控（≤300KB），即便主档与补丁都写不下也基本能落地，
+      //       是打卡数据跨刷新存活的最后保障；随后再尽力写完整差异补丁。
+      try{ _journalWrite(st, _ts); }catch(e){}
+      // R261-5.1：主档写不进 → 立刻留差异补丁，刷新 / 版本更新后能把修改捞回来
+      _r256LedgerRollback(st, _r256Entry);
+      try{ _pendingWrite(st); }catch(e){}
+      _loadCachePut(st);
+      return false;
     }
     // R258-1.1 / R265-4：回读校验 —— 必须与本次序列化结果**逐字节一致**。
     //   旧实现只比长度，只要旧存档与新串长度碰巧相同（或写入被某层包装器静默吞掉），
@@ -17362,6 +17463,26 @@ textarea.xs-adv-input-box{
   function calcDailyTask(st){
     return (st.tasks||[]).find(x => x && (x.readingKind==='calcDaily' || x.name==='乐读计算小超市')) || null;
   }
+  /* R268-1.4：计算小超市「今日是否已打卡」双源判断。
+     旧版只看 readFlags['calcDaily::<date>']：这个键一旦没落库（配额 / 介质受限 / 版本更新），
+     刷新或从弹窗返回后页面就退回「可作答」视图，同时把当日批改结果（✓/✗ 与答案）一并渲染，
+     用户看到的就是「返回后直接跳到已批改页面」。
+     任务记录（records 里 calcDaily 任务 completed）与打卡流水是同一事实的第二份凭证，
+     三者任一为真即算已打卡，单字段丢失不会再让页面状态翻错。 */
+  function calcDailyDone(dateStr){
+    try{
+      const st = load();
+      const d = String(dateStr || todayStr());
+      if(st.readFlags && st.readFlags['calcDaily::' + d]) return true;
+      const t = calcDailyTask(st);
+      if(t && Array.isArray(st.records)){
+        const r = st.records.find(x => x && x.date === d && x.taskId === t.id);
+        if(r && r.completed) return true;
+      }
+      if(Array.isArray(st.readLog) && st.readLog.some(x => x && x.kind === 'calcDaily' && x.date === d)) return true;
+    }catch(e){}
+    return false;
+  }
   function markCalcDaily(title){
     const st = load();
     const today = todayStr();
@@ -17383,7 +17504,16 @@ textarea.xs-adv-input-box{
     }
     recompute(st);
     save(st);
-    return {ok:true, reward:2};
+    /* R268-1.3：连续打卡必须在 store 层累加，两个入口才一致。
+       首页必做卡走 markCalcDaily，乐读页走 markCalcDaily + bumpCalcStreak；
+       旧版只有后者累加，从首页打卡后「🔥 连续打卡」永远是 0。
+       bumpCalcStreak 以 calcStreakLastDate 幂等，同一天重复调用不会多加。 */
+    let _streak = st.calcStreak || 0, _bonus = 0;
+    try{
+      const _sr = bumpCalcStreak();
+      if(_sr && typeof _sr.streak === 'number'){ _streak = _sr.streak; _bonus = _sr.bonus || 0; }
+    }catch(e){}
+    return {ok:true, reward:2, streak:_streak, bonus:_bonus};
   }
   function unmarkCalcDaily(title){
     const st = load();
@@ -17403,6 +17533,8 @@ textarea.xs-adv-input-box{
     }
     recompute(st);
     save(st);
+    /* R268-1.3：撤销打卡同样要回滚连续天数，否则「取消后重新打卡」会多算一天 */
+    try{ unbumpCalcStreak(); }catch(e){}
     return {ok:true, refund:2};
   }
   // V12.1：取消日常交流 5 条奖励 → 扣回 2⭐
@@ -22627,7 +22759,7 @@ be 动词：am / is → was；are → were
     getMathTypeImgs, getMathLectureStat, setMathLectureStatus, setMathLectureCap,
     getReading, getDailySpeaking, addUserReading, markReadingRead, unmarkReadingRead, isReadingRead, logCheckin, unlogCheckin, markSpeakingComplete, unmarkSpeakingComplete, unmarkXueersiDailyReward, refundReadingStars,
     // R232-1：计算小超市打卡（首页必做卡 ⇄ 乐读数学 今日打卡 共用）
-    markCalcDaily, unmarkCalcDaily,
+    markCalcDaily, unmarkCalcDaily, calcDailyDone,
     // R236：连续打卡奖励（每 7 天 +5⭐）；R248-4：撤销打卡时还原
     bumpCalcStreak, unbumpCalcStreak, undoCalcDailyCheckin,
     // R228：计算小超市题库（编辑 / 添加 / 删除）
@@ -22784,7 +22916,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
           if(window.__appBooted === true){
             try{
               if(typeof window.__onSaveFail === 'function') window.__onSaveFail(code);
-              else if(!window.__saveWarnR246){ window.__saveWarnR246 = true; toast('⚠️ 本机写入未完成，已存入安全副本（刷新不会丢），可到「🩺 存储体检」查看原因'); }
+              else if(!window.__saveWarnR246){ window.__saveWarnR246 = true; toast('⚠️ 本机存档暂时没写进主档，本次修改已存进安全副本（刷新不会丢），可到「🩺 存储体检」查看原因'); }
             }catch(e){}
           }else if(!window.__saveWarnR246){
             window.__saveWarnR246 = true;   // 启动/迁移阶段只记录，不打扰
@@ -23684,24 +23816,25 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       if(Object.keys(_patch).length) S.saveRemindCfg(_patch);
     }catch(e){}
     const res = S.commitSettings();
-    // R258-1.1 / R264-2.1：提示只跟真实结果 + 真实错误码走；'partial' 不再一口咬定「空间紧张」
+    /* R268-2.2：先补写一次再决定文案。
+       旧版只要 _saveError==='quota' 就弹「本机存档空间紧张、已暂缓保存」这类措辞——
+       即便这次只是瞬时写失败、设置其实已经完整生效（设置类字段 + 完整差异补丁 + 小账本都在），
+       用户也会以为没存住。现在：partial / false 都先 flushPersistence() 真正补写一次，
+       只要落点里确实有这份数据（补丁 / 小账本 / IndexedDB 镜像任一），就如实说「已保存」；
+       只有在介质完全不可写、任何兜底都不存在时，才提示去检查浏览器设置，且不再出现
+       「空间紧张 / 安全缓暂 / 写入未完成」这类吓人的措辞。 */
     if(res === true){ toast('✅ 设置已保存并立即生效'); return; }
-    if(res === 'partial'){
-      /* R264-2.1：提示必须与真实错误码一致 —— 只有真 quota 才说「空间紧张」。
-         旧版把任何一次校验不一致都写成「本机主存档空间紧张，设置已单独存好」，
-         用户既无法判断要不要删图片，也误以为只有设置被单独保存、其它修改没存住。 */
-      const why2 = (S.getSaveError && S.getSaveError()) || '';
-      toast(why2 === 'quota'
-        ? '✅ 设置已保存（本机存档空间紧张，已自动腾挪并安全暂存，刷新不会丢失）'
-        : '✅ 设置已保存并立即生效');
-      return;
-    }
-    /* R267-3.1：不再说「设置未能写入 / 请删除图片」—— 失败时数据已进
-       完整差异补丁 + 设置快照 + 小账本 + IndexedDB 镜像，刷新不会丢。 */
-    const why = (S.getSaveError && S.getSaveError()) || '';
-    toast(why === 'quota'
-      ? '✅ 设置已安全暂存（本机空间接近上限，已自动腾挪；刷新不会丢，可到「🩺 存储体检」看占用）'
-      : '✅ 设置已安全暂存（本机写入未完成，刷新不会丢；可到「🩺 存储体检」看原因）');
+    try{ if(S.flushPersistence) S.flushPersistence(); }catch(e){}
+    let landed = false;
+    try{
+      const h = (S.storageHealth && S.storageHealth()) || {};
+      landed = (Number(h.pendingBytes) > 0)
+            || !!(h.journal && h.journal.present)
+            || (h.mirror === true && Number(h.mirrorTs) > 0);
+    }catch(e){}
+    toast(landed
+      ? '✅ 设置已保存并立即生效'
+      : '⚠️ 本机存储当前不可写，设置停在本页；请用 Safari 打开线上链接并允许本站存储');
   }
 
   // ============ 首页 ============
@@ -27356,7 +27489,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
   }
   function renderCalcBasicBoard(){
     const today = _calcToday();
-    const done = window.Store.isReadingRead('calcDaily', today);
+    const done = calcDailyDone();
     const streak = calcStreak();
     const probs = genCalcProblems(_CALC_N);
     const dateLabel = today.slice(5).replace('-','-');
@@ -27539,7 +27672,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         }catch(e){ toast('加入已做本失败，请重试'); }
       });
     }
-    if(okBtn && !window.Store.isReadingRead('calcDaily', today)){
+    if(okBtn && !calcDailyDone()){
       okBtn.addEventListener('click', ()=>{
         const probs = genCalcProblems(_CALC_N);
         let correct = 0;
@@ -27557,11 +27690,11 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         }
         window.Store.logCheckin('calcBasic', _CALC_N);
         // R232-1：与首页必做卡共用 calcDaily 打卡（星级统一落在任务记录，只发一次 +2⭐）
-        if(window.Store.markCalcDaily) window.Store.markCalcDaily(today);
-        else window.Store.markReadingRead('calcDaily', today);
-        // R236：累计连续打卡天数，跨过 7 天里程碑时额外 +5⭐（幂等，不重复发放）
+        // R268-1.3：markCalcDaily 内部已 bumpCalcStreak，返回 streak / bonus，
+        // 不再另外调一次（避免里程碑 +5⭐ 的结果被第二次幂等调用吞掉）。
         let _sr = { streak: 0, bonus: 0 };
-        try { _sr = window.Store.bumpCalcStreak() || _sr; } catch(e){}
+        if(window.Store.markCalcDaily) _sr = window.Store.markCalcDaily(today) || _sr;
+        else window.Store.markReadingRead('calcDaily', today);
         // R245-1：打卡同时把当天记入打卡日历（正确题数 / 总题数，checked 标记）
         try {
           if(window.Store.recordCalcDay) window.Store.recordCalcDay(today, _g.correct, Math.max(_g.total, _CALC_N), _g.todayWrong);
@@ -31653,7 +31786,14 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   function isCalcDailyTask(t){
     return !!t && (t.readingKind === 'calcDaily' || t.name === '乐读计算小超市');
   }
-  function calcDailyDone(){ return window.Store.isReadingRead('calcDaily', _calcToday()); }
+  /* R268-1.4：打卡完成判定改双源（readFlags / 当日任务记录 / 打卡流水）。
+     旧版只看 readFlags，该键没落库时刷新或从弹窗返回后页面会退回可作答视图，
+     并把当日批改结果一起渲染出来，看起来就是「直接跳到已批改页面」。 */
+  function calcDailyDone(){
+    const S = window.Store;
+    if(S && S.calcDailyDone) return !!S.calcDailyDone(_calcToday());
+    return !!(S && S.isReadingRead && S.isReadingRead('calcDaily', _calcToday()));
+  }
   function toggleCalcDailyFromHome(){
     const today = _calcToday();
     if(calcDailyDone()){
@@ -46604,49 +46744,70 @@ if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
     r256RenderOverview();
   }
 
-  function r256MountSettingsCard(){
-    const grid = $('#settingsGrid');
-    if(!grid || $('#r256SetCard')) return;
-    const rem = S.getRemindCfg();
-    const eye = S.getEyeCfg();
-    const wr = S.getWrongReviewCfg();
-    const card = document.createElement('div');
-    card.className = 'settings-card r256-set-card';
-    card.id = 'r256SetCard';
-    card.innerHTML = '<div class="settings-card-main"><div class="settings-card-body">'
-      + '<div class="settings-card-head"><span class="settings-card-icon">🧩</span><span class="settings-card-title">提醒 · 护眼 · 家长管控</span></div>'
-      // 提醒
-      + '<div class="r256-set-row"><span class="r256-set-label">⏰ 打卡提醒</span>'
-      + '<button type="button" class="r256-sw' + (rem.on ? ' is-on' : '') + '" id="r256SwRemind" aria-pressed="' + (rem.on?'true':'false') + '"><i></i></button></div>'
-      + '<div class="r256-set-sub">到点只弹轻提示，不拦截页面；还有必做没打卡才提醒。</div>'
-      + '<div class="r256-set-grid">'
-      + '<label>学生提醒 <input type="time" id="r256RemindChild" value="' + esc(rem.childTime || '19:30') + '"></label>'
-      + '<label>家长提醒 <input type="time" id="r256RemindParent" value="' + esc(rem.parentTime || '20:30') + '"></label>'
-      + '</div>'
-      // 护眼
-      + '<div class="r256-set-row"><span class="r256-set-label">👀 护眼模式（降低蓝光）</span>'
-      + '<button type="button" class="r256-sw' + (eye.on ? ' is-on' : '') + '" id="r256SwEye" aria-pressed="' + (eye.on?'true':'false') + '"><i></i></button></div>'
-      + '<div class="r256-set-grid"><label>每天可用（分钟） <input type="number" id="r256EyeMin" min="5" max="300" step="5" value="' + (eye.dailyMin || 45) + '"></label></div>'
-      // 错题复练
-      + '<div class="r256-set-row"><span class="r256-set-label">🎯 错题复练推送</span>'
-      + '<button type="button" class="r256-sw' + (wr.on ? ' is-on' : '') + '" id="r256SwWrong" aria-pressed="' + (wr.on?'true':'false') + '"><i></i></button></div>'
-      + '<div class="r256-set-grid"><label>间隔天数 <input type="number" id="r256WrongDays" min="1" max="30" value="' + (wr.everyDays || 3) + '"></label>'
-      + '<button type="button" class="pbtn" id="r256WrongNow">立即生成一套</button></div>'
-      // 快捷入口
-      + '<div class="r256-set-quick">'
-      + '<button type="button" class="pbtn" id="r256QuickStars">⭐ 星星明细</button>'
-      + '<button type="button" class="pbtn" id="r256QuickSearch">🔍 题库检索</button>'
-      + '<button type="button" class="pbtn hidden-in-child" id="r256QuickMakeup">🩹 补卡</button>'
-      + '<button type="button" class="pbtn" id="r256QuickCodex">📖 植物图鉴</button>'
-      + '<button type="button" class="pbtn" id="r256QuickCerts">🏅 通关证书</button>'
-      + '<button type="button" class="pbtn danger hidden-in-child" id="r256QuickReset">🧹 单模块重置</button>'
-      + '</div>'
-      + '</div></div>';
-    // R261-1.1：提醒卡注入左侧加宽槽位，右侧由三张工具卡竖向排列
-    const slot = $('#r256SetCardSlot');
-    (slot || grid).appendChild(card);
-
-    const bindSw = (sel, get, set, after)=>{
+  /* R268-3.2：设置中心的「提醒 / 护眼 / 家长管控」不再平铺成一张大卡。
+     改成三张与其他设置同构的入口卡：卡片中间标题即点击入口，
+     详细开关 / 时间 / 快捷入口统一放进各自的详情弹窗（#modalSettingsDetail）。 */
+  function r268EnsureSettingsModal(){
+    let m = document.getElementById('modalSettingsDetail');
+    if(m) return m;
+    m = document.createElement('div');
+    m.className = 'modal-mask';
+    m.id = 'modalSettingsDetail';
+    m.hidden = true;
+    m.innerHTML = '<div class="modal-box">'
+      + '<div class="modal-head"><h3 id="r268ModalTitle">设置</h3><button class="modal-x" data-close>×</button></div>'
+      + '<div class="modal-body" id="r268ModalBody"></div>'
+      + '<div class="modal-foot"><button class="pbtn" data-close>完成</button></div>'
+      + '</div>';
+    document.body.appendChild(m);
+    m.addEventListener('click', (e)=>{
+      if(e.target === m || (e.target && e.target.getAttribute && e.target.getAttribute('data-close') !== null)){
+        hideModal('#modalSettingsDetail');
+      }
+    });
+    return m;
+  }
+  function r268OpenSettingsModal(kind){
+    const rem = S.getRemindCfg(), eye = S.getEyeCfg(), wr = S.getWrongReviewCfg();
+    r268EnsureSettingsModal();
+    const body = $('#r268ModalBody'), title = $('#r268ModalTitle');
+    if(!body) return;
+    if(kind === 'eye'){
+      if(title) title.textContent = '👀 护眼设置';
+      body.innerHTML = '<div class="r268-modal-row"><span class="r268-modal-label">👀 护眼模式（降低蓝光）</span>'
+        + '<button type="button" class="r256-sw' + (eye.on ? ' is-on' : '') + '" id="r256SwEye" aria-pressed="' + (eye.on?'true':'false') + '"><i></i></button></div>'
+        + '<div class="r268-modal-grid"><label>每天可用（分钟） <input type="number" id="r256EyeMin" min="5" max="300" step="5" value="' + (eye.dailyMin || 45) + '"></label></div>'
+        + '<div class="r268-modal-tip">开启后全站转暖色调；当天可用时长用完会提醒休息。</div>';
+    } else if(kind === 'parent'){
+      if(title) title.textContent = '🛡️ 家长管控';
+      body.innerHTML = '<div class="r268-modal-row"><span class="r268-modal-label">🎯 错题复练推送</span>'
+        + '<button type="button" class="r256-sw' + (wr.on ? ' is-on' : '') + '" id="r256SwWrong" aria-pressed="' + (wr.on?'true':'false') + '"><i></i></button></div>'
+        + '<div class="r268-modal-grid"><label>间隔天数 <input type="number" id="r256WrongDays" min="1" max="30" value="' + (wr.everyDays || 3) + '"></label>'
+        + '<button type="button" class="pbtn" id="r256WrongNow">立即生成一套</button></div>'
+        + '<div class="r268-modal-tip">错题复练只在家长模式显示；单模块重置会清空指定板块，请谨慎操作。</div>'
+        + '<div class="r268-modal-quick">'
+        + '<button type="button" class="pbtn" id="r256QuickStars">⭐ 星星明细</button>'
+        + '<button type="button" class="pbtn" id="r256QuickSearch">🔍 题库检索</button>'
+        + '<button type="button" class="pbtn hidden-in-child" id="r256QuickMakeup">🩹 补卡</button>'
+        + '<button type="button" class="pbtn" id="r256QuickCodex">📖 植物图鉴</button>'
+        + '<button type="button" class="pbtn" id="r256QuickCerts">🏅 通关证书</button>'
+        + '<button type="button" class="pbtn danger hidden-in-child" id="r256QuickReset">🧹 单模块重置</button>'
+        + '</div>';
+    } else {
+      if(title) title.textContent = '⏰ 打卡提醒';
+      body.innerHTML = '<div class="r268-modal-row"><span class="r268-modal-label">⏰ 打卡提醒</span>'
+        + '<button type="button" class="r256-sw' + (rem.on ? ' is-on' : '') + '" id="r256SwRemind" aria-pressed="' + (rem.on?'true':'false') + '"><i></i></button></div>'
+        + '<div class="r268-modal-tip">到点只弹轻提示，不拦截页面；还有必做没打卡才提醒。</div>'
+        + '<div class="r268-modal-grid">'
+        + '<label>学生提醒 <input type="time" id="r256RemindChild" value="' + esc(rem.childTime || '19:30') + '"></label>'
+        + '<label>家长提醒 <input type="time" id="r256RemindParent" value="' + esc(rem.parentTime || '20:30') + '"></label>'
+        + '</div>';
+    }
+    r268BindSettingsDetail(kind);
+    showModal('#modalSettingsDetail');
+  }
+  function r268BindSettingsDetail(kind){
+    const bindSw = (sel, set, after)=>{
       const b = $(sel); if(!b) return;
       b.onclick = ()=>{
         const on = !b.classList.contains('is-on');
@@ -46657,10 +46818,6 @@ if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
         toast(on ? '已开启' : '已关闭');
       };
     };
-    bindSw('#r256SwRemind', null, on=> S.saveRemindCfg({on:on}));
-    bindSw('#r256SwEye', null, on=>{ S.saveEyeCfg({on:on}); r256EyeApply(); toast(on ? '👀 护眼模式已开启（暖色 + 限时提醒）' : '护眼模式已关闭'); });
-    bindSw('#r256SwWrong', null, on=>{ S.saveWrongReviewCfg({on:on}); if(on) r256MaybePushReview(true); else r256BuildReviewCard(); });
-
     /* R267-2.1：iOS Safari 的 <input type="time"> 只绑 onchange 会漏 —— 选择器里选完时间
        未失焦 / 直接切走时 change 不触发，用户看到「设了时间」但一次都没写盘，刷新自然回默认值。
        这里 input / change / blur 三重捕获 + 值校验 + 去重，任一平台都能立即落库；
@@ -46678,19 +46835,51 @@ if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
       };
       ['input','change','blur'].forEach(ev=> el.addEventListener(ev, ()=>commit(ev === 'blur'), false));
     };
-    bindTime('#r256RemindChild', 'childTime', '学生提醒时间');
-    bindTime('#r256RemindParent', 'parentTime', '家长提醒时间');
-    const em = $('#r256EyeMin'); if(em) em.onchange = ()=>{ const n = Math.max(5, Math.min(300, parseInt(em.value,10)||45)); em.value = n; S.saveEyeCfg({dailyMin:n}); toast('每天可用 ' + n + ' 分钟'); };
-    const wd = $('#r256WrongDays'); if(wd) wd.onchange = ()=>{ const n = Math.max(1, Math.min(30, parseInt(wd.value,10)||3)); wd.value = n; S.saveWrongReviewCfg({everyDays:n}); toast('每 ' + n + ' 天推送一次'); };
-    const wn = $('#r256WrongNow'); if(wn) wn.onclick = ()=>{ r256MaybePushReview(true); toast('🎯 已生成一套错题复练，回首页必做区查看'); };
-
     const q = (sel, fn)=>{ const b = $(sel); if(b) b.onclick = fn; };
-    q('#r256QuickStars', ()=> r256RenderStarLog());
-    q('#r256QuickSearch', ()=> r256OpenSearch());
-    q('#r256QuickMakeup', ()=> r256OpenMakeup());
-    q('#r256QuickCodex', ()=> r256OpenCodex());
-    q('#r256QuickCerts', ()=> r256OpenCerts());
-    q('#r256QuickReset', ()=> r256OpenReset());
+    if(kind === 'remind'){
+      bindSw('#r256SwRemind', on=> S.saveRemindCfg({on:on}));
+      bindTime('#r256RemindChild', 'childTime', '学生提醒时间');
+      bindTime('#r256RemindParent', 'parentTime', '家长提醒时间');
+    } else if(kind === 'eye'){
+      bindSw('#r256SwEye', on=>{ S.saveEyeCfg({on:on}); r256EyeApply(); toast(on ? '👀 护眼模式已开启（暖色 + 限时提醒）' : '护眼模式已关闭'); });
+      const em = $('#r256EyeMin');
+      if(em) em.onchange = ()=>{ const n = Math.max(5, Math.min(300, parseInt(em.value,10)||45)); em.value = n; S.saveEyeCfg({dailyMin:n}); toast('每天可用 ' + n + ' 分钟'); };
+    } else {
+      bindSw('#r256SwWrong', on=>{ S.saveWrongReviewCfg({on:on}); if(on) r256MaybePushReview(true); else r256BuildReviewCard(); });
+      const wd = $('#r256WrongDays');
+      if(wd) wd.onchange = ()=>{ const n = Math.max(1, Math.min(30, parseInt(wd.value,10)||3)); wd.value = n; S.saveWrongReviewCfg({everyDays:n}); toast('每 ' + n + ' 天推送一次'); };
+      const wn = $('#r256WrongNow');
+      if(wn) wn.onclick = ()=>{ r256MaybePushReview(true); toast('🎯 已生成一套错题复练，回首页必做区查看'); };
+      q('#r256QuickStars', ()=> r256RenderStarLog());
+      q('#r256QuickSearch', ()=> r256OpenSearch());
+      q('#r256QuickMakeup', ()=> r256OpenMakeup());
+      q('#r256QuickCodex', ()=> r256OpenCodex());
+      q('#r256QuickCerts', ()=> r256OpenCerts());
+      q('#r256QuickReset', ()=> r256OpenReset());
+    }
+  }
+  function r256MountSettingsCard(){
+    const grid = $('#settingsGrid');
+    if(!grid || $('#r256SetCard')) return;
+    const slot = $('#r256SetCardSlot') || grid;
+    const defs = [
+      { id:'r256SetCard',          kind:'remind', ico:'⏰', title:'打卡提醒', desc:'学生 / 家长提醒时间 · 到点轻提示' },
+      { id:'r256SetCardEye',       kind:'eye',    ico:'👀', title:'护眼',     desc:'降低蓝光 · 每天可用时长' },
+      { id:'r256SetCardParent',    kind:'parent', ico:'🛡️', title:'家长管控', desc:'错题复练 · 星星明细 · 补卡 · 单模块重置' }
+    ];
+    defs.forEach(function(d){
+      const card = document.createElement('div');
+      card.className = 'settings-card r268-set-card';
+      card.id = d.id;
+      card.setAttribute('data-r268-open', d.kind);
+      card.innerHTML = '<div class="settings-card-main"><div class="settings-card-body">'
+        + '<div class="settings-card-head"><span class="settings-card-icon">' + d.ico + '</span>'
+        + '<span class="settings-card-title">' + d.title + '</span></div>'
+        + '<div class="settings-card-desc">' + d.desc + '</div>'
+        + '</div></div><span class="settings-card-arrow">›</span>';
+      card.addEventListener('click', function(){ r268OpenSettingsModal(d.kind); });
+      slot.appendChild(card);
+    });
   }
 
   function r256Init(){
@@ -46844,25 +47033,27 @@ function init(){
     try{
       window.__onSaveFail = function(code){
         try{
-          /* R267-3.1：一条通道 + 真实判定 + 每会话一次去重。
-             「本机存储已满」只在「错误码是 quota 且真实用量确实逼近上限」时才说；
-             用量很小却写不进属于站点存储被禁，明确告诉用户去改浏览器设置，
-             不再误导去删图片。任何情况都如实说明数据已进安全副本，不说「没能保存」。 */
+          /* R268-2.1：误报清零 —— 只有「真·空间不足」才提示。
+             ① verdict 为 ok（介质本身可写，只是这一次整份存档没写进去）→ 静默：
+                数据已进完整差异补丁 + 小账本 + IndexedDB 镜像，刷新不会丢，
+                而且 store 已自动重试过一轮，此时再提示「没写进去」纯属打扰；
+             ② quota 必须同时满足「错误码 quota + 用量确实逼近软上限」才提示；
+             ③ blocked（隐私模式 / 站点数据被禁 / file://）单独一次性说明，
+                不说「已满」，也不再让用户去删图片；
+             ④ 其余错误码（verify / error …）一律静默，详情统一去「🩺 存储体检」看。 */
           if(window.__saveFailToastShown) return;
-          window.__saveFailToastShown = true;
           const h = (S.storageHealth && S.storageHealth()) || {};
           const verdict = h.verdict || (h.writable ? 'ok' : 'blocked');
-          let tip;
-          if(code === 'quota' && verdict === 'quota'){
-            tip = '⚠️ 本机存储空间接近上限，已自动腾挪副本，本次修改存进安全账本（刷新不会丢）。可到「🩺 存储体检」看占用，必要时再清理旧图片。';
-          }else if(verdict === 'blocked' || (!h.writable && !h.nearLimit)){
-            tip = '⚠️ 浏览器当前不允许本站保存数据（隐私模式 / 站点数据被禁 / 本地文件打开）。本次修改已进安全副本，请用 Safari 打开线上链接并允许本站存储。';
-          }else if(code === 'verify'){
-            tip = '⚠️ 本次写入读回校验不一致，数据已存进安全副本（刷新不会丢）。可到「🩺 存储体检」查看原因。';
+          if(verdict === 'ok') return;
+          const soft = Number(h.softLimit) || 0;
+          const quotaReal = (code === 'quota' && verdict === 'quota' && (h.nearLimit || (soft > 0 && Number(h.used) >= soft * 0.9)));
+          if(!quotaReal && verdict !== 'blocked') return;
+          window.__saveFailToastShown = true;
+          if(quotaReal){
+            toast('⚠️ 本机存储空间接近上限，已自动腾挪副本；本次修改已存进安全副本，刷新不会丢。可到「🩺 存储体检」查看占用。');
           }else{
-            tip = '⚠️ 本机写入未完成（' + code + '），本次修改已存进安全副本（刷新不会丢）。可到「🩺 存储体检」查看原因。';
+            toast('⚠️ 浏览器当前不允许本站保存数据（隐私模式 / 站点数据被禁 / 本地文件打开）。请用 Safari 打开线上链接并允许本站存储。');
           }
-          toast(tip);
         }catch(e){}
       };
       /* 落库恢复后允许下一次真失败再提示一次，避免「只提示一次」变成永久静默 */
