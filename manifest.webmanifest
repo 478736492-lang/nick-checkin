@@ -1,0 +1,19 @@
+{
+  "name": "疯狂动物城 · 三年级学习打卡乐园",
+  "short_name": "学习打卡",
+  "description": "Nick 陪你一起打卡学习：课程表、种植园、知识秘境、成长档案全部离线可用",
+  "lang": "zh-CN",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "categories": ["education", "kids", "productivity"],
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "apple-touch-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "maskable" }
+  ]
+}
