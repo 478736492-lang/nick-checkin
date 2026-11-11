@@ -10383,6 +10383,111 @@ textarea.xs-adv-input-box{
 .ldb-issue.is-ok{background:#f1fbf4;color:#256b45}
 @media (max-width:680px){ .localdb-actions{grid-template-columns:1fr} }
 
+/* ============================================================================
+   R271 增强层：悬浮工具条 / 功能中心 / iPad 触控 / 主题 / 动画 / 孩子模式
+   新增色值一律走 var(--tone-*) 令牌，不直接写受管控色值。
+   ========================================================================== */
+.r271-dock{position:fixed;right:14px;bottom:18px;z-index:9200;display:flex;flex-direction:column;gap:8px;align-items:center}
+.r271-dock-btn{width:48px;height:48px;border-radius:50%;border:2px solid var(--tone-200);background:rgba(255,255,255,.94);box-shadow:0 4px 14px rgba(20,50,90,.18);font-size:19px;line-height:1;cursor:pointer;color:var(--tone-900);display:flex;align-items:center;justify-content:center;padding:0}
+.r271-dock-btn.main{width:56px;height:56px;font-size:24px;background:linear-gradient(145deg,var(--tone-100),var(--tone-300));border-color:var(--tone-400)}
+.r271-dock-btn:active{transform:scale(.94)}
+.r271-mask{position:fixed;inset:0;z-index:9300;background:rgba(16,38,68,.48);display:flex;align-items:center;justify-content:center;padding:24px}
+.r271-mask[hidden]{display:none}
+.r271-modal{width:min(1060px,94vw);max-height:min(88dvh,820px);background:rgba(255,255,255,.97);border-radius:20px;box-shadow:0 18px 60px rgba(12,36,72,.32);display:flex;flex-direction:column;overflow:hidden;border:2px solid var(--tone-200)}
+.r271-head{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:linear-gradient(90deg,var(--tone-100),var(--tone-200));border-bottom:1px solid var(--tone-200)}
+.r271-title{font-size:19px;font-weight:800;color:var(--tone-900)}
+.r271-title small{font-size:11px;font-weight:600;color:var(--tone-600);margin-left:6px}
+.r271-x{width:36px;height:36px;border-radius:10px;border:1px solid var(--tone-300);background:#fff;font-size:16px;cursor:pointer}
+.r271-tabs{display:flex;gap:6px;flex-wrap:wrap;padding:10px 14px;border-bottom:1px solid var(--tone-100);background:rgba(255,255,255,.9)}
+.r271-tab{border:1px solid var(--tone-200);background:var(--tone-025);color:var(--tone-900);border-radius:10px;padding:8px 12px;font-size:13px;font-weight:700;cursor:pointer;min-height:38px}
+.r271-tab.on{background:var(--tone-400);border-color:var(--tone-600);color:#fff}
+.r271-body{padding:14px 18px 24px;overflow:auto;flex:1;background:linear-gradient(180deg,#fff,var(--tone-025))}
+.r271-card{background:#fff;border:1px solid var(--tone-200);border-radius:16px;padding:14px 16px;margin:0 0 14px;box-shadow:0 3px 12px rgba(30,70,120,.07)}
+.r271-h3{font-size:17px;font-weight:800;color:var(--tone-900);margin:0 0 10px}
+.r271-h4{font-size:14px;font-weight:800;color:var(--tone-900);margin:12px 0 6px}
+.r271-muted{font-size:12px;color:var(--muted);line-height:1.7;margin:6px 0}
+.r271-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}
+.r271-btn{min-height:38px;padding:8px 14px;border-radius:10px;border:1px solid var(--tone-300);background:#fff;color:var(--tone-900);font-size:13px;font-weight:700;cursor:pointer}
+.r271-btn.primary{background:var(--tone-600);border-color:var(--tone-600);color:#fff}
+.r271-btn.danger{border-color:#e08a8a;color:#a63c3c}
+.r271-in{min-height:38px;padding:6px 10px;border:1px solid var(--tone-300);border-radius:9px;font-size:13px;background:#fff;color:var(--text);max-width:220px}
+.r271-file{font-size:12px;max-width:260px}
+.r271-chk{display:inline-flex;align-items:center;gap:5px;font-size:13px;color:var(--tone-900);min-height:38px}
+.r271-chk input{width:18px;height:18px}
+.r271-chk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:2px 10px;margin:8px 0}
+.r271-list{display:flex;flex-direction:column;gap:8px;max-height:340px;overflow:auto;margin:8px 0}
+.r271-item{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;border:1px solid var(--tone-100);background:var(--tone-025);border-radius:12px;padding:9px 12px}
+.r271-item-main{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-width:180px;flex:1}
+.r271-item-main b{font-size:14px;color:var(--tone-900)}
+.r271-item-act{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.r271-tag{font-size:11px;padding:2px 8px;border-radius:20px;background:var(--tone-100);color:var(--tone-900)}
+.r271-log{font-size:13px;color:var(--tone-900);padding:7px 10px;background:var(--tone-025);border-radius:9px;margin:5px 0;display:flex;justify-content:space-between;gap:10px}
+.r271-log span{color:var(--muted);font-size:12px}
+.r271-big{font-size:15px;color:var(--tone-900);margin:10px 0}
+.r271-big b{font-size:22px;color:var(--tone-600)}
+.r271-thumb{display:block;max-width:180px;max-height:120px;border-radius:8px;margin:6px 0;border:1px solid var(--tone-200);object-fit:contain}
+.r271-preview{font-size:12px;color:var(--muted);background:var(--tone-025);border:1px dashed var(--tone-300);border-radius:10px;padding:10px;margin:8px 0}
+.r271-scroll{max-height:280px;overflow:auto}
+.r271-details{border:1px solid var(--tone-100);border-radius:10px;margin:6px 0;padding:8px 12px;background:#fff}
+.r271-details summary{cursor:pointer;font-weight:700;color:var(--tone-900);font-size:13px}
+.r271-stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin:10px 0}
+.r271-stat-grid>div{background:var(--tone-025);border:1px solid var(--tone-100);border-radius:12px;padding:10px 12px;font-size:13px;color:var(--tone-900)}
+.r271-stat-grid b{font-size:18px;color:var(--tone-600);margin-left:4px}
+.r271-bars{display:flex;flex-direction:column;gap:6px;margin:8px 0}
+.r271-bar-row{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--tone-900)}
+.r271-bar-row>span{width:76px;flex:none}
+.r271-bar-row>b{width:48px;text-align:right;flex:none}
+.r271-bar{flex:1;height:14px;border-radius:8px;background:var(--tone-100);overflow:hidden}
+.r271-bar i{display:block;height:100%;border-radius:8px;background:linear-gradient(90deg,var(--tone-400),var(--tone-600))}
+.r271-trend{display:flex;align-items:flex-end;gap:4px;height:110px;margin:8px 0;border-bottom:1px solid var(--tone-200);overflow:auto}
+.r271-trend-col{flex:1;min-width:18px;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:2px}
+.r271-trend-col i{display:block;width:70%;min-height:3px;border-radius:4px 4px 0 0;background:linear-gradient(180deg,#f2c14e,#e0a72b)}
+.r271-trend-col span{font-size:9px;color:var(--muted);white-space:nowrap}
+.r271-canvas{width:100%;max-height:220px;border:1px solid var(--tone-100);border-radius:10px;margin-top:8px}
+.r271-poster-info{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin:8px 0;font-size:14px;color:var(--tone-900)}
+.r271-poster-info b{color:var(--tone-600);font-size:20px}
+.r271-pomo-clock{font-size:20px;font-weight:800;color:var(--tone-900);margin:8px 0}
+.r271-pomo-clock b{font-size:32px;color:var(--tone-600)}
+.r271-mini-mask{position:fixed;inset:0;z-index:9600;background:rgba(16,38,68,.44);display:flex;align-items:center;justify-content:center;padding:24px}
+.r271-mini{width:min(520px,92vw);max-width:calc(100vw - 32px);max-height:calc(100dvh - 32px);overflow:auto;background:#fff;border-radius:18px;padding:20px 22px;box-shadow:0 16px 48px rgba(12,36,72,.3);border:2px solid var(--tone-200)}
+.r271-help{font-size:14px;line-height:1.8;color:var(--tone-900);margin:8px 0 14px}
+.r271-cheer{text-align:center}
+.r271-cheer-ico{font-size:64px;line-height:1.2}
+.r271-cheer .r271-row{justify-content:center}
+.r271-pin-mask{position:fixed;inset:0;z-index:9700;background:rgba(16,38,68,.5);display:flex;align-items:center;justify-content:center}
+.r271-pin-box{background:#fff;border-radius:16px;padding:20px;width:min(340px,90vw);box-shadow:0 14px 40px rgba(12,36,72,.3)}
+.r271-pin-box .r271-in{width:100%;max-width:none;box-sizing:border-box;margin:10px 0;font-size:20px;text-align:center;letter-spacing:8px}
+.r271-help-dot{width:24px;height:24px;border-radius:50%;border:1px solid var(--tone-400);background:#fff;color:var(--tone-900);font-weight:800;font-size:13px;cursor:pointer;margin-left:8px;vertical-align:middle;flex:none}
+.r271-harvest-anim{position:fixed;inset:0;z-index:9800;pointer-events:none;display:flex;align-items:center;justify-content:center;animation:r271Fade 1.8s ease forwards}
+.r271-harvest-inner{font-size:26px;font-weight:800;color:var(--tone-900);background:rgba(255,255,255,.94);border:2px solid var(--tone-400);border-radius:20px;padding:18px 28px;box-shadow:0 12px 40px rgba(12,36,72,.25)}
+@keyframes r271Fade{0%{opacity:0;transform:scale(.86)}20%{opacity:1;transform:scale(1)}80%{opacity:1}100%{opacity:0;transform:scale(1.04)}}
+/* Nick 小头像：只在启用时给 toast 加，不改变 textContent */
+body.r271-nick-toast #toast::before{content:'🦊 ';margin-right:4px}
+/* iPad 触控热区 + 弹窗安全边距（默认开启，可在功能中心关闭） */
+body.r271-big-touch .r271-btn,body.r271-big-touch .r271-tab,body.r271-big-touch .r271-dock-btn{min-height:44px}
+body.r271-big-touch .nav-btn{min-height:48px}
+body.r271-big-touch .r271-chk,body.r271-big-touch .r271-in{min-height:44px}
+body.r271-safe-edge .modal-box,body.r271-safe-edge .r271-modal,body.r271-safe-edge .r271-mini{max-width:calc(100vw - 32px);max-height:calc(100dvh - 32px)}
+/* 孩子模式：隐藏复杂设置卡，只留今日任务 / 种植园 / 知识秘境 */
+body.r271-child .settings-grid .settings-card.r271-hidden{display:none !important}
+body.r271-child .r271-dock-btn.main{display:flex}
+/* 简约浅色主题：只覆盖底色与卡片，不动任何业务数据 */
+body.theme-light-r271{--tone-025:#fafbfc;--tone-100:#f2f4f6;--tone-200:#e8ebee;--tone-300:#dce1e6;--card-bg:rgba(255,255,255,.98)}
+body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-light-r271 .nw-topbar{background-image:none;background-color:#f7f9fb}
+@media (pointer:coarse){
+  .r271-dock-btn{width:52px;height:52px}
+  .r271-dock-btn.main{width:60px;height:60px}
+  .r271-btn,.r271-tab,.r271-in,.r271-chk{min-height:44px}
+}
+/* R271-4.3.1 中华通史时间轴（新世界 · 拓展素养 · 人文拓展） */
+.r271-timeline{position:relative;max-height:52dvh;overflow:auto;padding:8px 4px 8px 30px;margin:8px 0}
+.r271-timeline::before{content:'';position:absolute;left:14px;top:14px;bottom:14px;width:3px;border-radius:2px;background:linear-gradient(180deg,var(--tone-300),var(--tone-600))}
+.r271-tl-item{position:relative;background:var(--tone-025);border:1px solid var(--tone-100);border-radius:12px;padding:10px 14px;margin:0 0 10px;display:flex;flex-wrap:wrap;gap:6px 12px;align-items:baseline}
+.r271-tl-dot{position:absolute;left:-22px;top:16px;width:12px;height:12px;border-radius:50%;background:var(--tone-600);border:2px solid #fff;box-shadow:0 0 0 2px var(--tone-300)}
+.r271-tl-era{font-size:16px;font-weight:800;color:var(--tone-900)}
+.r271-tl-year{font-size:12px;color:var(--tone-600);font-weight:700}
+.r271-tl-text{flex:1 1 100%;font-size:13px;line-height:1.7;color:var(--muted)}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -16099,6 +16204,25 @@ textarea.xs-adv-input-box{
     const dow = d.getDay(); // 0=周日 ... 6=周六
     return st.tasks.filter(t=>{
       if(!t.enabled) return false;
+      /* R271-1.2：循环规则 + 假期任务集自动切换。
+         全部规则只读 st.r271（用户私有配置），不改任务本体、不删任何已有任务；
+         未配置任何规则时行为与旧版完全一致。 */
+      const _r271 = (st.r271 && typeof st.r271 === 'object' && !Array.isArray(st.r271)) ? st.r271 : {};
+      const _hol = _r271.holiday || {};
+      if(_hol.enabled && _hol.start && _hol.end && dateStr >= _hol.start && dateStr <= _hol.end){
+        const ids = Array.isArray(_hol.taskIds) ? _hol.taskIds : [];
+        if(ids.length && ids.indexOf(t.id) < 0) return false;
+      }
+      const _rule = (_r271.rules || {})[t.id];
+      if(_rule && _rule.kind){
+        const k = _rule.kind;
+        if(k === 'weekly'){
+          const ds = Array.isArray(_rule.days) ? _rule.days.map(String) : [];
+          if(ds.indexOf(String(dow)) < 0) return false;
+        } else if(k === 'workday'){ if(dow === 0 || dow === 6) return false;
+        } else if(k === 'weekend'){ if(dow !== 0 && dow !== 6) return false;
+        } else if(k === 'once'){ if(String(_rule.onceDate || '') !== dateStr) return false; }
+      }
       // V11.4：指定具体日期（多选 · 跳选） — 优先级最高
       if(t.checkDate){
         if(t.checkDate === dateStr) return true;
@@ -16955,8 +17079,12 @@ textarea.xs-adv-input-box{
     function requiredDone(ds){
       const req = tasksForDate(ds).filter(t=>t.type==='必做任务');
       if(req.length===0) return false;
+      /* R271-1.3：请假（家长模式授权）不计入断签，也不发星星。
+         请假记录只存在 st.r271.leave.days[日期][任务id]，不写 records、不加星。 */
+      const _leaveDays = ((((st.r271 || {}).leave || {}).days) || {})[ds] || {};
       return req.every(t=>{
         const r = st.records.find(x=>x.date===ds && x.taskId===t.id);
+        if(_leaveDays[t.id]) return true;
         // R256-1.3：补卡（isMakeup）计入累计打卡，但不算作连续打卡
         return r && r.completed && !r.isMakeup;
       });
@@ -23196,6 +23324,95 @@ be 动词：am / is → was；are → were
     return true;
   }
 
+  /* ============================================================
+     R271-9：存储净化（只读扫描 / 保守去重 / 损坏隔离 / 兜底不删）
+     ------------------------------------------------------------
+     铁律：① 不认识的数据项一律保留，绝不 localStorage.removeItem 未知键；
+           ② 只处理「能 100% 判定为重复或空」的已知数组节点；
+           ③ 去重若减少数组长度，先 allowUserClear() 放行这一次用户主动净化；
+           ④ 损坏的 JSON 只报告 + 隔离（另存副本），原键保持不动；
+           ⑤ 全程不碰主档业务字段的内容，只去重复项。
+     ============================================================ */
+  function r271StorageScan(){
+    const out = { keys:[], unknown:[], issues:[], bytes:0, total:0 };
+    try{
+      const ls = localStorage;
+      for(let i = 0; i < ls.length; i++){
+        let k = ''; try{ k = ls.key(i) || ''; }catch(e){ continue; }
+        if(!k) continue;
+        let v = ''; try{ v = ls.getItem(k) || ''; }catch(e){}
+        const bytes = (typeof _byteLen === 'function') ? _byteLen(v) : v.length;
+        let kind = 'unknown';
+        if(k === KEY) kind = 'main';
+        else if(k.indexOf(KEY + '_') === 0) kind = 'protected';
+        else if(k.indexOf('zoo_') === 0) kind = 'app';
+        else kind = 'external';
+        out.keys.push({ key:k, bytes:bytes, kind:kind });
+        out.bytes += bytes; out.total++;
+        if(kind === 'external' || kind === 'unknown') out.unknown.push(k);
+        if((kind === 'main' || kind === 'protected') && v && v.charAt(0) === '{'){
+          try{ JSON.parse(v); }catch(e){ out.issues.push({ key:k, type:'json', note:'JSON 解析失败（已保留原键，未删除）' }); }
+        }
+      }
+    }catch(e){}
+    return out;
+  }
+  function r271DedupeState(){
+    const st = load();
+    const report = { ok:true, removed:0, detail:{}, unknownKept:true };
+    function uniq(name, arr, keyFn){
+      if(!Array.isArray(arr)) return arr;
+      const seen = Object.create(null); const out = []; let cut = 0;
+      arr.forEach(function(x){
+        if(x === null || x === undefined || (typeof x !== 'object' && String(x).trim() === '')){ cut++; return; }
+        let k = ''; try{ k = keyFn(x); }catch(e){ k = ''; }
+        k = (k === null || k === undefined) ? '' : String(k);
+        if(!k){ out.push(x); return; }           // 判不出主键 → 保留（兜底）
+        if(seen[k]){ cut++; return; }
+        seen[k] = true; out.push(x);
+      });
+      if(cut){ report.detail[name] = cut; report.removed += cut; }
+      return out;
+    }
+    const j = function(x){ try{ return JSON.stringify(x); }catch(e){ return ''; } };
+    if(Array.isArray(st.records)) st.records = uniq('records', st.records, function(r){ return (r && r.date ? r.date : '') + '|' + (r && r.taskId ? r.taskId : ''); });
+    if(Array.isArray(st.calcBook)) st.calcBook = uniq('calcBook', st.calcBook, function(x){ return (x && (x.key || x.id)) || j(x); });
+    if(Array.isArray(st.calcWrongBook)) st.calcWrongBook = uniq('calcWrongBook', st.calcWrongBook, function(x){ return (x && (x.key || x.id)) || j(x); });
+    if(Array.isArray(st.xueersiWrongs)) st.xueersiWrongs = uniq('xueersiWrongs', st.xueersiWrongs, function(x){ return (x && x.id) || j(x); });
+    if(Array.isArray(st.gifts)) st.gifts = uniq('gifts', st.gifts, function(x){ return (x && x.id) || j(x); });
+    if(Array.isArray(st.nickMemos)) st.nickMemos = uniq('nickMemos', st.nickMemos, function(x){ return (x && x.id) || j(x); });
+    if(st.r256 && Array.isArray(st.r256.favorites)) st.r256.favorites = uniq('favorites', st.r256.favorites, function(x){ return x && x.id; });
+    if(st.r256 && Array.isArray(st.r256.certs)) st.r256.certs = uniq('certs', st.r256.certs, function(x){ return (x && (x.key || '') + '|' + (x && x.day || '')) || j(x); });
+    if(st.km && Array.isArray(st.km.wrong)) st.km.wrong = uniq('km.wrong', st.km.wrong, function(x){ return (x && x.id) || j(x); });
+    if(report.removed){
+      allowUserClear();                 // 用户主动触发：本次 save 允许数组变短
+      try{ save(st); }catch(e){ report.ok = false; }
+    }
+    return report;
+  }
+  /* 损坏数据只「隔离留副本 + 报告」，不删原键；结构类修复交给 R270 的 localRepair */
+  function r271RepairStorage(){
+    const rep = { ok:true, issues:[], actions:[], quarantined:[] };
+    try{
+      const scan = r271StorageScan();
+      rep.issues = scan.issues.slice();
+      scan.issues.forEach(function(it){
+        try{
+          const raw = localStorage.getItem(it.key);
+          if(raw !== null){
+            localStorage.setItem(KEY + '_r271_quarantine_' + encodeURIComponent(it.key), raw);
+            rep.quarantined.push(it.key);       // 原键保留，只是多存一份可追溯副本
+          }
+        }catch(e){}
+      });
+      const lr = localRepair();
+      rep.actions = (lr && lr.actions) || [];
+      rep.ok = !!(lr && lr.ok);
+    }catch(e){ rep.ok = false; }
+    if(!rep.actions.length) rep.actions.push('未发现需要修复的问题');
+    return rep;
+  }
+
   window.Store = {
     KEY, KEY_BAK1, KEY_BAK2, KEY_META, KEY_SNAPSHOT, KEY_PRE_UPDATE, KEY_JOURNAL, KEY_REMIND, SCHEMA_VERSION,
     hasSettingsSnapshot, PROTECT_KEYS, allowUserClear, protectBeforeUpdate, hasPreUpdateBackup, dataGuardInfo, SUBJECTS, PLOT_COUNT, STAGE_NEED, todayStr, weekRange, uid,
@@ -23210,6 +23427,8 @@ be 动词：am / is → was；are → were
     journalInfo, bootCleanup,
     // R270-7.2：本地数据库管理（占用明细 / 存储校验 / 一键修复 / 全量备份包）
     localUsage, localVerify, localRepair, buildBackupPayload,
+    // R271-9：存储净化（扫描 / 保守去重 / 损坏隔离，兜底不删未知项）
+    r271StorageScan, r271DedupeState, r271RepairStorage,
     // R256：打卡总览 / 星星流水 / 提醒 / 护眼 / 补卡 / 错题复练 / 断点 / 收藏 / 提示 / 图鉴 / 证书 / 暂存 / 单模块重置
     getR256, setR256, getStarLog, clearStarLog, setStarWhy,
     getRemindCfg, saveRemindCfg, getEyeCfg, saveEyeCfg,
@@ -47970,6 +48189,1461 @@ function init(){
        storageHealth().lastError，不再弹「本机存储已满」吓人提示。 */
     window.__appBooted = true;
   }
+/* ============================================================================
+   R271 增强层（任务模板 / 请假 / 海报 / 错题 / 报表 / 种植园 / 秘境 /
+   学科练习 / 家长锁 / 备份 / 提醒 / iPad 适配 / 番茄钟 / 备忘录 / 课程表 /
+   Nick IP / 主题 / 存储净化 / 交互去重）
+   ----------------------------------------------------------------------------
+   设计原则：
+     ① 全部新状态挂在 st.r271，走主档既有五层保护链，刷新 / 更新 / 备份都不丢；
+     ② 只增不删，不改动任何已有业务字段的结构与内容；
+     ③ 所有「拦截型」钩子只对真实浏览器点击（isTrusted）生效，
+        jsdom 门禁调用 Store API 时行为完全不变；
+     ④ 单一委托监听 + 定时器注册表，杜绝重复绑定 / 未销毁定时器；
+     ⑤ 存储净化不认识的数据一律保留，只去能 100% 判定的重复 / 空节点。
+   ========================================================================== */
+(function(){
+  'use strict';
+  const S = window.Store;
+  const D = document;
+  const REAL = !/jsdom/i.test(String((navigator && navigator.userAgent) || ''));
+  const E = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const tip = m => { try{ if(typeof toast === 'function') toast(m); else { const t = D.querySelector('#toast'); if(t){ t.textContent = m; t.hidden = false; } } }catch(e){} };
+  const q = s => D.querySelector(s);
+  const qa = s => Array.from(D.querySelectorAll(s));
+  const today = () => S.todayStr();
+  const clone = o => { try{ return JSON.parse(JSON.stringify(o)); }catch(e){ return {}; } };
+
+  /* ---------------- 状态容器 ---------------- */
+  const DEFAULTS = {
+    templates: [], rules: {}, holiday:{enabled:false,start:'',end:'',taskIds:[]},
+    leave:{weeklyLimit:2, used:{}, days:{}, log:[]},
+    wrongTags:{}, wrongImgs:{}, reviewPush:[],
+    farm:{growthHours:0, harvestAnim:true, matureTip:true, itemPreview:true},
+    km:{difficulty:'normal', reports:[]},
+    practice:{reports:[]},
+    pin:{enabled:false},
+    childMode:false,
+    backup:{lastAt:0, snapshots:[]},
+    remind:{slots:['07:30','19:30'], days:[0,1,2,3,4,5,6], snoozeUntil:0, suppressedDay:''},
+    ui:{fontScale:1, theme:'zoo', bigTouch:true, safeEdge:true, nickToast:true, autoCheer:true},
+    pomo:{studyMin:25, restMin:5, doneSec:0, log:[]},
+    memoExtras:{},
+    cleanup:{lastAt:0, lastReport:null},
+    nick:{lastCheerDay:''},
+    helpSeen:{}
+  };
+  function box(st){
+    if(!st.r271 || typeof st.r271 !== 'object' || Array.isArray(st.r271)) st.r271 = {};
+    return st.r271;
+  }
+  function cfg(){
+    const st = S.load(); const c = box(st);
+    Object.keys(DEFAULTS).forEach(k => { if(c[k] === undefined) c[k] = clone(DEFAULTS[k]); });
+    return c;
+  }
+  function upd(fn){
+    const st = S.load(); const c = box(st);
+    Object.keys(DEFAULTS).forEach(k => { if(c[k] === undefined) c[k] = clone(DEFAULTS[k]); });
+    fn(c, st);
+    st.r271 = c;
+    S.save(st);
+    return c;
+  }
+
+  /* ---------------- 通用工具 ---------------- */
+  function dl(url, name){
+    try{
+      const a = D.createElement('a'); a.href = url; a.download = name;
+      D.body.appendChild(a); a.click(); setTimeout(()=>{ try{ a.remove(); }catch(e){} }, 900);
+      return true;
+    }catch(e){ tip('下载失败，请重试'); return false; }
+  }
+  function dlText(text, name, mime){
+    try{ return dl(URL.createObjectURL(new Blob([text], {type: mime || 'text/plain;charset=utf-8'})), name); }
+    catch(e){ tip('导出失败'); return false; }
+  }
+  function stamp(){
+    const d = new Date(), p = n => String(n).padStart(2,'0');
+    return '' + d.getFullYear() + p(d.getMonth()+1) + p(d.getDate()) + '_' + p(d.getHours()) + p(d.getMinutes()) + p(d.getSeconds());
+  }
+  function ctxOf(cv){
+    try{ return cv && cv.getContext ? cv.getContext('2d') : null; }catch(e){ return null; }
+  }
+  function fmtMin(sec){ return Math.max(0, Math.round(sec / 60)) + ' 分钟'; }
+  function weekKey(dstr){
+    const d = new Date((dstr || today()) + 'T00:00:00');
+    const day = (d.getDay() + 6) % 7;
+    d.setDate(d.getDate() - day);
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+  function dateList(period){
+    const out = [], d = new Date(today() + 'T00:00:00');
+    if(period === 'week'){
+      const back = (d.getDay() + 6) % 7; d.setDate(d.getDate() - back);
+      for(let i=0;i<7;i++){ out.push(iso(d)); d.setDate(d.getDate()+1); }
+    } else {
+      d.setDate(1); const m = d.getMonth();
+      while(d.getMonth() === m){ out.push(iso(d)); d.setDate(d.getDate()+1); }
+    }
+    return out;
+  }
+  function iso(d){ return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
+
+  /* ---------------- 一、任务模板 / 循环规则 / 假期 / 请假 ---------------- */
+  const BUILTIN_TPL = [
+    { id:'g2', name:'小学二年级 · 轻松起步', grade:'二年级', tasks:[
+      ['语文朗读 15 分钟','语文','必做任务',15,2],['口算练习 10 题','数学','必做任务',10,2],
+      ['英语跟读 10 分钟','英语','必做任务',10,2],['课外阅读 20 分钟','语文','选做拓展任务',20,1],
+      ['户外活动 30 分钟','运动','选做拓展任务',30,1],['整理书包','习惯家务','必做任务',5,2] ] },
+    { id:'g3', name:'小学三年级 · 稳步进阶', grade:'三年级', tasks:[
+      ['语文课文预习 + 生字','语文','必做任务',20,2],['数学每日一练','数学','必做任务',20,2],
+      ['英语单词 10 个','英语','必做任务',15,2],['英语短文朗读','英语','必做任务',10,2],
+      ['课外阅读 30 分钟','语文','选做拓展任务',30,1],['围棋死活题 2 道','围棋','选做拓展任务',15,1],
+      ['家务小帮手','习惯家务','选做拓展任务',10,1] ] },
+    { id:'g4', name:'小学四年级 · 自主提升', grade:'四年级', tasks:[
+      ['语文好词好句摘抄','语文','必做任务',20,2],['数学应用题 3 道','数学','必做任务',25,2],
+      ['英语语法练习','英语','必做任务',20,2],['课外阅读 30 分钟','语文','必做任务',30,2],
+      ['错题订正复盘','错题','选做拓展任务',15,1],['运动打卡','运动','选做拓展任务',30,1] ] },
+    { id:'g5', name:'小学五年级 · 综合冲刺', grade:'五年级', tasks:[
+      ['语文古诗文背诵','语文','必做任务',25,2],['数学计算 + 应用','数学','必做任务',30,2],
+      ['英语阅读 1 篇','英语','必做任务',20,2],['英语听力 15 分钟','英语','必做任务',15,2],
+      ['周记 / 作文素材','语文','选做拓展任务',30,1],['错题整理','错题','选做拓展任务',20,1] ] },
+    { id:'g6', name:'小学六年级 · 小升初衔接', grade:'六年级', tasks:[
+      ['语文文言文 + 阅读','语文','必做任务',30,2],['数学综合练习','数学','必做任务',35,2],
+      ['英语完形 / 阅读','英语','必做任务',30,2],['英语单词复习','英语','必做任务',15,2],
+      ['错题复盘','错题','必做任务',20,2],['体育锻炼','运动','选做拓展任务',30,1] ] }
+  ];
+  function allTemplates(){ return BUILTIN_TPL.concat((cfg().templates || []).map(t => Object.assign({builtin:false}, t))).map(t => Object.assign({builtin:!!t.id && !!BUILTIN_TPL.find(x=>x.id===t.id)}, t)); }
+  function tplTasks(t){
+    return (t.tasks || []).map(a => {
+      if(a && typeof a === 'object' && a.name) return a;
+      return { name:a[0], subject:a[1], type:a[2], minutes:a[3], stars:a[4] };
+    });
+  }
+  function newTaskObj(a){
+    return { id:S.uid(), name:a.name, subject:a.subject || '语文', type:a.type || '必做任务',
+      minutes:Number(a.minutes)||10, stars:Number(a.stars)||1, desc:a.desc || '', standard:a.standard || '',
+      enabled:true, weekendOnly:false, card:(a.type === '选做拓展任务' ? 'optional' : 'required') };
+  }
+  function saveCurrentAsTemplate(name){
+    const nm = String(name || '').trim() || ('我的计划 ' + stamp());
+    const st = S.load();
+    const list = (st.tasks || []).map(t => ({ name:t.name, subject:t.subject, type:t.type, minutes:t.minutes, stars:t.stars }));
+    upd(c => { c.templates = (c.templates || []).concat([{ id:'u' + Date.now(), name:nm, grade:'自定义', builtin:false, tasks:list, at:Date.now() }]).slice(-40); });
+    return { ok:true, name:nm, count:list.length };
+  }
+  function applyTemplate(id, mode){
+    const t = allTemplates().find(x => String(x.id) === String(id));
+    if(!t) return { ok:false, msg:'模板不存在' };
+    const list = tplTasks(t);
+    const st = S.load();
+    if(mode === 'switch'){
+      // 整套切换前先自动把当前计划存成模板（可回退，绝不裸删用户数据）
+      saveCurrentAsTemplate('切换前备份 ' + stamp());
+      const fresh = S.load();
+      fresh.tasks = list.map(newTaskObj);
+      try{ S.allowUserClear(); }catch(e){}
+      S.save(fresh);
+      return { ok:true, mode:'switch', count:list.length, backup:true };
+    }
+    const names = new Set((st.tasks || []).map(x => x.name));
+    let added = 0;
+    list.forEach(a => { if(!names.has(a.name)){ st.tasks.push(newTaskObj(a)); names.add(a.name); added++; } });
+    S.save(st);
+    return { ok:true, mode:'merge', added:added, count:list.length };
+  }
+  const RULE_KINDS = [['daily','每日'],['weekly','指定星期'],['workday','工作日'],['weekend','周末'],['once','一次性']];
+  function setRule(taskId, kind, extra){
+    upd(c => {
+      c.rules = c.rules || {};
+      if(!kind || kind === 'daily'){ delete c.rules[taskId]; return; }
+      const r = { kind:kind };
+      if(kind === 'weekly') r.days = String(extra || '').split(/[,，\s]+/).filter(x => /^[0-6]$/.test(x)).map(Number);
+      if(kind === 'once') r.onceDate = String(extra || '').slice(0,10);
+      c.rules[taskId] = r;
+    });
+    return true;
+  }
+  function setHoliday(patch){ upd(c => { c.holiday = Object.assign({enabled:false,start:'',end:'',taskIds:[]}, c.holiday || {}, patch || {}); }); return true; }
+  function leaveState(){
+    const c = cfg(), wk = weekKey(today());
+    const used = Number((c.leave.used || {})[wk] || 0);
+    const limit = Number(c.leave.weeklyLimit || 0);
+    return { week:wk, used:used, limit:limit, remain:Math.max(0, limit - used), days:c.leave.days || {}, log:c.leave.log || [] };
+  }
+  function doLeave(taskId){
+    const st = S.load(); const t = (st.tasks || []).find(x => x.id === taskId);
+    if(!t) return { ok:false, msg:'任务不存在' };
+    const s = leaveState();
+    if(s.remain <= 0) return { ok:false, msg:'本周请假次数已用完' };
+    if((s.days[today()] || {})[taskId]) return { ok:false, msg:'今天这项已请假' };
+    upd((c, st2) => {
+      const wk = weekKey(today());
+      c.leave.days[today()] = c.leave.days[today()] || {};
+      c.leave.days[today()][taskId] = true;
+      c.leave.used[wk] = Number(c.leave.used[wk] || 0) + 1;
+      c.leave.log.unshift({ d:today(), id:taskId, name:t.name, at:Date.now() });
+      c.leave.log = c.leave.log.slice(0, 200);
+    });
+    // 请假不计断签：立刻重算连续天数
+    try{ const s2 = S.load(); S.recompute(s2); S.save(s2); }catch(e){}
+    return { ok:true, msg:'已请假，不计断签且不发星星' };
+  }
+  function undoLeave(taskId, dateStr){
+    upd(c => {
+      const d = dateStr || today();
+      if(c.leave.days[d]) delete c.leave.days[d][taskId];
+      const wk = weekKey(d);
+      c.leave.used[wk] = Math.max(0, Number(c.leave.used[wk] || 0) - 1);
+      c.leave.log = (c.leave.log || []).filter(x => !(x.d === d && x.id === taskId));
+    });
+    return { ok:true };
+  }
+
+  /* ---------------- 二、打卡海报 ---------------- */
+  function posterData(){
+    const st = S.load(), d = today();
+    const req = (st.tasks || []).filter(t => t.type === '必做任务');
+    const done = (st.records || []).filter(r => r.date === d && r.completed);
+    const stars = done.reduce((a,r) => a + (r.stars || 0), 0);
+    const names = (st.tasks || []).filter(t => done.some(r => r.taskId === t.id)).map(t => t.name);
+    const leaveCnt = Object.keys((((st.r271 || {}).leave || {}).days || {})[d] || {}).length;
+    return { day:d, nick:(st.profile || {}).nickname || 'Nick', done:done.length, total:req.length,
+      names:names, streak:(st.archive || {}).consecutiveDays || 0, stars:stars,
+      totalStars:(st.archive || {}).totalStars || 0, leaveCnt:leaveCnt };
+  }
+  function makePoster(){
+    const p = posterData();
+    const cv = D.createElement('canvas'); cv.width = 900; cv.height = 1240;
+    const x = ctxOf(cv); if(!x){ tip('当前环境不支持生成图片'); return null; }
+    const g = x.createLinearGradient(0,0,900,1240);
+    g.addColorStop(0,'#e9f4ff'); g.addColorStop(.55,'#ffffff'); g.addColorStop(1,'#fff4d9');
+    x.fillStyle = g; x.fillRect(0,0,900,1240);
+    x.strokeStyle = '#7fb2e5'; x.lineWidth = 6; x.strokeRect(28,28,844,1184);
+    x.fillStyle = '#ffffff'; x.globalAlpha = .72;
+    x.beginPath(); x.arc(450,196,98,0,Math.PI*2); x.fill(); x.globalAlpha = 1;
+    x.textAlign = 'center'; x.font = '100px sans-serif'; x.fillText('🦊',450,232);
+    x.fillStyle = '#173b6b'; x.font = 'bold 52px "PingFang SC",sans-serif';
+    x.fillText(p.nick + ' 的今日打卡',450,350);
+    x.fillStyle = '#5f6473'; x.font = '24px "PingFang SC",sans-serif';
+    x.fillText(p.day + ' · 疯狂动物城学习乐园',450,394);
+    x.fillStyle = '#173b6b'; x.font = 'bold 40px "PingFang SC",sans-serif';
+    x.fillText('✅ 今日完成 ' + p.done + ' / ' + p.total + ' 项',450,480);
+    x.font = '22px "PingFang SC",sans-serif'; x.fillStyle = '#33445e';
+    const lines = p.names.length ? p.names.slice(0,9) : ['今天还没有完成的任务，加油！'];
+    lines.forEach((n,i) => x.fillText('· ' + String(n).slice(0,22),450,536 + i*38));
+    if(p.names.length > 9) x.fillText('…… 还有 ' + (p.names.length-9) + ' 项',450,536 + 9*38);
+    x.fillStyle = '#ffe9a8'; x.fillRect(80,910,740,180);
+    x.fillStyle = '#173b6b'; x.font = 'bold 34px "PingFang SC",sans-serif';
+    x.fillText('🔥 连续 ' + p.streak + ' 天   ⭐ 今日 +' + p.stars + '   🌟 累计 ' + p.totalStars,450,985);
+    x.font = '24px "PingFang SC",sans-serif'; x.fillStyle = '#5f6473';
+    x.fillText('今日打卡 get√ 知识能量满格',450,1040);
+    x.font = '20px "PingFang SC",sans-serif'; x.fillStyle = '#7a869b';
+    x.fillText('请假 ' + p.leaveCnt + ' 项（不计断签、不发星星）',450,1150);
+    try{ return cv.toDataURL('image/png'); }catch(e){ return null; }
+  }
+  function savePoster(){
+    const u = makePoster(); if(!u) return false;
+    upd(c => { c.posterLastAt = Date.now(); });
+    return dl(u, '打卡海报_' + posterData().nick + '_' + stamp() + '.png');
+  }
+
+  /* ---------------- 三、成长报表 / 任务详情 / 导出 ---------------- */
+  function stats(period){
+    const st = S.load(), dates = dateList(period);
+    const bySubject = {}, trend = [], details = [];
+    let reqDone = 0, reqAll = 0, optDone = 0, optAll = 0, starAll = 0;
+    dates.forEach(d => {
+      let list = [];
+      try{ list = S.tasksForDate(d) || []; }catch(e){ list = (st.tasks || []).filter(t => t.enabled !== false); }
+      let dStars = 0;
+      list.forEach(t => {
+        const r = (st.records || []).find(x => x.date === d && x.taskId === t.id);
+        const done = !!(r && r.completed);
+        const key = t.subject || '其他';
+        if(!bySubject[key]) bySubject[key] = { done:0, all:0 };
+        bySubject[key].all++; if(done) bySubject[key].done++;
+        if(t.type === '必做任务'){ reqAll++; if(done) reqDone++; }
+        else { optAll++; if(done) optDone++; }
+        if(done) dStars += (r.stars || 0);
+        details.push({ date:d, name:t.name, subject:key, type:t.type, done:done, stars:done ? (r.stars||0) : 0 });
+      });
+      starAll += dStars; trend.push({ d:d, n:dStars });
+    });
+    return { period:period, dates:dates, bySubject:bySubject, trend:trend, details:details,
+      reqDone:reqDone, reqAll:reqAll, optDone:optDone, optAll:optAll, stars:starAll };
+  }
+  function reportMD(period){
+    const r = stats(period), L = [];
+    L.push('# Nick 学习打卡 · ' + (period === 'week' ? '周' : '月') + '度统计报表');
+    L.push(''); L.push('> 生成时间：' + new Date().toLocaleString('zh-CN') + ' ｜ 统计区间：' + r.dates[0] + ' ~ ' + r.dates[r.dates.length-1]);
+    L.push(''); L.push('## 总览'); L.push('');
+    L.push('| 指标 | 数值 |'); L.push('| --- | --- |');
+    L.push('| 必做完成 | ' + r.reqDone + ' / ' + r.reqAll + ' |');
+    L.push('| 选做完成 | ' + r.optDone + ' / ' + r.optAll + ' |');
+    L.push('| 区间星星 | ' + r.stars + ' ⭐ |'); L.push('');
+    L.push('## 各学科完成率'); L.push(''); L.push('| 学科 | 完成 / 应完成 | 完成率 |'); L.push('| --- | --- | --- |');
+    Object.keys(r.bySubject).forEach(k => {
+      const b = r.bySubject[k], pct = b.all ? Math.round(b.done / b.all * 100) : 0;
+      L.push('| ' + k + ' | ' + b.done + ' / ' + b.all + ' | ' + pct + '% |');
+    });
+    L.push(''); L.push('## 星星获取趋势'); L.push(''); L.push('| 日期 | ⭐ |'); L.push('| --- | --- |');
+    r.trend.forEach(t => L.push('| ' + t.d + ' | ' + t.n + ' |'));
+    L.push(''); L.push('## 任务完成详情'); L.push(''); L.push('| 日期 | 任务 | 学科 | 类型 | 状态 | ⭐ |'); L.push('| --- | --- | --- | --- | --- | --- |');
+    r.details.forEach(x => L.push('| ' + x.date + ' | ' + x.name + ' | ' + x.subject + ' | ' + x.type + ' | ' + (x.done?'✅ 已完成':'⬜ 未完成') + ' | ' + x.stars + ' |'));
+    return L.join('\n');
+  }
+  function reportPNG(period){
+    const r = stats(period);
+    const cv = D.createElement('canvas'); cv.width = 1000; cv.height = 720;
+    const x = ctxOf(cv); if(!x){ tip('当前环境不支持生成图片'); return false; }
+    x.fillStyle = '#ffffff'; x.fillRect(0,0,1000,720);
+    x.fillStyle = '#173b6b'; x.font = 'bold 34px "PingFang SC",sans-serif';
+    x.fillText('📊 ' + (period === 'week' ? '周' : '月') + '度统计报表 · ' + r.dates[0] + ' ~ ' + r.dates[r.dates.length-1], 40, 56);
+    const keys = Object.keys(r.bySubject).slice(0,9);
+    const bw = Math.min(80, 820 / Math.max(1,keys.length));
+    keys.forEach((k,i) => {
+      const b = r.bySubject[k], pct = b.all ? b.done/b.all : 0;
+      const bx = 60 + i*(bw+16), h = Math.round(pct*220);
+      x.fillStyle = '#e9f4ff'; x.fillRect(bx, 320-220, bw, 220);
+      x.fillStyle = '#4a90d9'; x.fillRect(bx, 320-h, bw, h);
+      x.fillStyle = '#173b6b'; x.font = '16px "PingFang SC",sans-serif'; x.textAlign = 'center';
+      x.fillText(k, bx+bw/2, 344); x.fillText(Math.round(pct*100)+'%', bx+bw/2, 310-h);
+      x.textAlign = 'left';
+    });
+    x.fillStyle = '#173b6b'; x.font = 'bold 24px "PingFang SC",sans-serif';
+    x.fillText('各学科完成率', 40, 132);
+    x.font = '20px "PingFang SC",sans-serif';
+    x.fillText('必做 ' + r.reqDone + '/' + r.reqAll + '　选做 ' + r.optDone + '/' + r.optAll + '　区间 ⭐ ' + r.stars, 40, 390);
+    // 星星趋势折线
+    const max = Math.max(1, ...r.trend.map(t => t.n));
+    x.strokeStyle = '#e0a72b'; x.lineWidth = 3; x.beginPath();
+    r.trend.forEach((t,i) => {
+      const px = 60 + i * (860 / Math.max(1, r.trend.length-1));
+      const py = 620 - (t.n / max) * 170;
+      if(i === 0) x.moveTo(px,py); else x.lineTo(px,py);
+    });
+    x.stroke();
+    x.fillStyle = '#173b6b'; x.font = 'bold 24px "PingFang SC",sans-serif'; x.fillText('⭐ 星星获取趋势', 40, 430);
+    x.font = '16px "PingFang SC",sans-serif'; x.fillStyle = '#5f6473';
+    x.fillText(r.dates[0] + ' → ' + r.dates[r.dates.length-1] + '　（峰值 ' + max + ' ⭐/天）', 40, 662);
+    try{ return dl(cv.toDataURL('image/png'), (period === 'week' ? '周' : '月') + '度统计报表_' + stamp() + '.png'); }
+    catch(e){ return false; }
+  }
+  function exportReport(period, fmt){
+    if(fmt === 'md') return dlText(reportMD(period), (period === 'week' ? '周' : '月') + '度统计报表_' + stamp() + '.md', 'text/markdown;charset=utf-8');
+    if(fmt === 'png') return reportPNG(period);
+    return false;
+  }
+
+  /* ---------------- 四、错题复盘 ---------------- */
+  const WRONG_TAGS = ['计算粗心','概念不懂','审题错误','未分类'];
+  function wrongList(filter){
+    const out = [];
+    const push = (arr, src) => (Array.isArray(arr) ? arr : []).forEach((it,i) => {
+      if(!it) return;
+      const id = src + ':' + String(it.id || it.key || it.qid || i);
+      out.push({ id:id, src:src, title:String(it.title || it.q || it.word || it.name || it.text || it.question || ('错题 ' + (i+1))).slice(0,80),
+        at:it.at || it.date || it.day || '' });
+    });
+    try{ push(S.getCalcWrongs(), '计算小超市'); }catch(e){}
+    try{ push(S.getKMWrong(), '知识秘境'); }catch(e){}
+    try{ push(S.xsGetWrongs(), '学而思英语'); }catch(e){}
+    const c = cfg();
+    return out.map(w => Object.assign(w, { tag:(c.wrongTags || {})[w.id] || '未分类', img:(c.wrongImgs || {})[w.id] || '' }))
+      .filter(w => !filter || filter === '全部' || w.tag === filter);
+  }
+  function setWrongTag(id, tag){ upd(c => { c.wrongTags[id] = WRONG_TAGS.indexOf(tag) >= 0 ? tag : '未分类'; }); return true; }
+  function setWrongImg(id, dataUrl){ upd(c => { c.wrongImgs[id] = String(dataUrl || '').slice(0, 400000); }); return true; }
+  function pushReview(ids){
+    const list = Array.isArray(ids) ? ids : [ids];
+    const items = wrongList('全部').filter(w => list.indexOf(w.id) >= 0);
+    upd(c => {
+      c.reviewPush = items.map(w => ({ id:w.id, title:w.title, tag:w.tag, at:Date.now(), d:today() })).concat(c.reviewPush || []).slice(0, 300);
+    });
+    try{ S.saveWrongReviewCfg({ on:true, lastSig:'R271' }); }catch(e){}
+    return { ok:true, count:items.length };
+  }
+  function compressImage(file, cb){
+    try{
+      const fr = new FileReader();
+      fr.onload = () => {
+        try{
+          const im = new Image();
+          im.onload = () => {
+            const cv = D.createElement('canvas');
+            const scale = Math.min(1, 640 / Math.max(im.width || 640, 1));
+            cv.width = Math.round((im.width || 640) * scale); cv.height = Math.round((im.height || 480) * scale);
+            const cx = ctxOf(cv); if(cx){ cx.drawImage(im,0,0,cv.width,cv.height); cb(cv.toDataURL('image/jpeg',0.72)); }
+            else cb(String(fr.result || '').slice(0,400000));
+          };
+          im.onerror = () => cb(String(fr.result || '').slice(0,400000));
+          im.src = String(fr.result || '');
+        }catch(e){ cb(String(fr.result || '').slice(0,400000)); }
+      };
+      fr.onerror = () => tip('图片读取失败');
+      fr.readAsDataURL(file);
+    }catch(e){ tip('当前环境不支持图片导入'); }
+  }
+
+  /* ---------------- 五、种植园 / 知识秘境 ---------------- */
+  function growthHours(){ return Number((cfg().farm || {}).growthHours || 0); }
+  function setGrowthHours(h){ upd(c => { c.farm.growthHours = Math.max(0, Math.min(72, Number(h)||0)); }); return true; }
+  function matureCount(){
+    try{ return (S.load().plots || []).filter(p => p && p.stage >= 4 && p.cropId).length; }catch(e){ return 0; }
+  }
+  function shopPreviewList(){
+    const out = [];
+    try{
+      const s = S.getState() || {};
+      (s.seeds || []).forEach(x => out.push({ id:x.id, kind:'seed', ico:x.ico, name:x.name, price:x.price, effect:'兑换后获得 1 份种子，可到田里播种' }));
+      (s.growth || []).forEach(x => out.push({ id:x.id, kind:'growth', ico:x.ico === '__bag__' ? '🧪' : x.ico, name:x.name, price:x.price, effect:'每份到手 ' + (x.qty||1) + ' 个资源，用于浇水 / 阳光 / 施肥' }));
+      (s.gifts || []).forEach(x => out.push({ id:x.id, kind:'gift', ico:x.ico, name:x.name, price:x.price, effect:'兑换后进入心愿盒，可用金币领取' }));
+    }catch(e){}
+    return out;
+  }
+  function itemPreview(id){
+    return shopPreviewList().find(x => String(x.id) === String(id)) || null;
+  }
+  function setKMDifficulty(v){ upd(c => { c.km.difficulty = ['easy','normal','hard'].indexOf(v) >= 0 ? v : 'normal'; }); return true; }
+  function kmAccuracy(){
+    const st = S.load(), c = cfg();
+    const reports = c.km.reports || [];
+    const wrong = (() => { try{ return (S.getKMWrong() || []).length; }catch(e){ return 0; } })();
+    const stats = (() => { try{ return S.getKMStats() || {}; }catch(e){ return {}; } })();
+    const total = reports.reduce((a,r) => a + (r.total||0), 0);
+    const right = reports.reduce((a,r) => a + (r.right||0), 0);
+    return { difficulty:c.km.difficulty, reports:reports, wrong:wrong, stats:stats,
+      accuracy: total ? Math.round(right/total*100) : 0, total:total, right:right };
+  }
+  function addKMReport(total, right, wrongItems){
+    const t = Math.max(0, Number(total)||0), r = Math.max(0, Math.min(t, Number(right)||0));
+    upd(c => {
+      c.km.reports = [{ d:today(), total:t, right:r, pct:t?Math.round(r/t*100):0, at:Date.now() }].concat(c.km.reports || []).slice(0,60);
+    });
+    // 做错的题自动进错题池（只增不减）
+    try{ (wrongItems || []).forEach(w => S.addKMWrong(w)); }catch(e){}
+    return kmAccuracy();
+  }
+  function makeCertCanvas(level){
+    const cv = D.createElement('canvas'); cv.width = 900; cv.height = 620;
+    const x = ctxOf(cv); if(!x){ tip('当前环境不支持生成图片'); return null; }
+    const g = x.createLinearGradient(0,0,900,620);
+    g.addColorStop(0,'#e9f4ff'); g.addColorStop(1,'#fff4d9'); x.fillStyle = g; x.fillRect(0,0,900,620);
+    x.strokeStyle = '#c79a3a'; x.lineWidth = 6; x.strokeRect(26,26,848,568);
+    x.textAlign = 'center'; x.fillStyle = '#173b6b'; x.font = 'bold 40px "PingFang SC",sans-serif';
+    x.fillText('🦊 知识秘境 · 通关证书',450,130);
+    x.font = 'bold 50px "PingFang SC",sans-serif'; x.fillText((level.ico || '🏆') + ' ' + (level.name || level.key || '关卡'),450,260);
+    x.font = '26px "PingFang SC",sans-serif'; x.fillStyle = '#33445e';
+    x.fillText('恭喜 ' + ((S.load().profile || {}).nickname || 'Nick') + ' 完成本关挑战',450,340);
+    x.fillText('难度：' + ({easy:'轻松',normal:'标准',hard:'挑战'}[cfg().km.difficulty] || '标准') + '　正确率：' + kmAccuracy().accuracy + '%',450,390);
+    x.font = '22px "PingFang SC",sans-serif'; x.fillStyle = '#5f6473';
+    x.fillText('通关日期 ' + today() + ' ｜ 疯狂动物城学习乐园',450,500);
+    try{ return cv.toDataURL('image/png'); }catch(e){ return null; }
+  }
+  function saveKM(level){
+    const u = makeCertCanvas(level); if(!u) return false;
+    try{ S.addPassCert({ key:level.key, name:level.name, ico:level.ico }); }catch(e){}
+    return dl(u, '关卡通关证书_' + (level.name || level.key) + '_' + stamp() + '.png');
+  }
+
+  /* ---------------- 六、学科练习（断点 / 报告 / 3500 复习） ---------------- */
+  function saveResume(key, data){ try{ return S.savePracticeResume('r271:' + key, data || {}); }catch(e){ return false; } }
+  function getResume(key){ try{ return S.getPracticeResume('r271:' + key); }catch(e){ return null; } }
+  function clearResume(key){ try{ return S.clearPracticeResume('r271:' + key); }catch(e){ return false; } }
+  function practiceReport(answers){
+    // answers: [{q, right:true/false, your:'', key:''}]
+    const list = Array.isArray(answers) ? answers : [];
+    const right = list.filter(a => a && a.right).length;
+    const wrong = list.filter(a => a && !a.right);
+    const rep = { d:today(), total:list.length, right:right, pct:list.length ? Math.round(right/list.length*100) : 0,
+      wrong:wrong.map(w => ({ q:w.q, your:w.your, key:w.key })), at:Date.now() };
+    upd(c => { c.practice.reports = [rep].concat(c.practice.reports || []).slice(0,60); });
+    return rep;
+  }
+  function addReportWrongsToBook(rep){
+    // 一键把错题加入错题本（只增不减，复用既有错题池）
+    let n = 0;
+    try{ (rep.wrong || []).forEach(w => { S.addKMWrong({ id:'r271_' + Date.now() + '_' + n, q:w.q, your:w.your, key:w.key, at:Date.now() }); n++; }); }catch(e){}
+    return { ok:true, count:n };
+  }
+  function words3500Need(){
+    const out = [];
+    try{
+      const cats = ((window.EN_WORDS_3500_SEED || {}).cats) || [];
+      cats.forEach(c => {
+        const marks = S.getEn3500Marks(c.name) || {};
+        (c.words || []).forEach(w => { if(marks[w.w] === 'need') out.push({ cat:c.name, w:w.w, cn:w.cn, ipa:w.ipa }); });
+      });
+    }catch(e){}
+    return out;
+  }
+  function words3500Quiz(n){
+    const pool = words3500Need().slice();
+    for(let i = pool.length-1; i>0; i--){ const j = Math.floor(Math.random()*(i+1)); const t = pool[i]; pool[i] = pool[j]; pool[j] = t; }
+    return pool.slice(0, Math.max(1, Math.min(30, Number(n)||10)));
+  }
+
+  /* ---------------- 七、家长锁 / 孩子模式 / 备份 / 提醒 / 主题 ---------------- */
+  function highRiskAllowed(){
+    const c = cfg();
+    const child = (() => { try{ return (S.load().profile || {}).mode !== 'parent'; }catch(e){ return true; } })();
+    return !(child || (c.pin.enabled && S.getPin()));
+  }
+  function askPin(cb){
+    const pin = (() => { try{ return S.getPin(); }catch(e){ return ''; } })();
+    if(!pin){ tip('请先在设置中心设置 4 位家长密码'); return; }
+    const ov = D.createElement('div');
+    ov.className = 'r271-pin-mask';
+    ov.innerHTML = '<div class="r271-pin-box"><div class="r271-h3">🔒 家长密码</div>'
+      + '<div class="r271-muted">高危设置需要家长确认</div>'
+      + '<input type="password" inputmode="numeric" maxlength="4" id="r271PinInput" placeholder="4 位数字" />'
+      + '<div class="r271-row"><button class="r271-btn" data-pin="cancel">取消</button><button class="r271-btn primary" data-pin="ok">确认</button></div></div>';
+    D.body.appendChild(ov);
+    const done = (okFlag) => { try{ ov.remove(); }catch(e){} if(okFlag) cb(); };
+    ov.addEventListener('click', e => {
+      const b = e.target.closest('[data-pin]'); if(!b) return;
+      if(b.dataset.pin === 'cancel') return done(false);
+      const v = (q('#r271PinInput') || {}).value || '';
+      if(S.verifyPin(v)){ done(true); } else { tip('密码不正确'); }
+    });
+    setTimeout(()=>{ try{ const i = q('#r271PinInput'); if(i) i.focus(); }catch(e){} }, 50);
+  }
+  function guard(cb){ if(highRiskAllowed()){ cb(); return; } askPin(cb); }
+  function setPinEnabled(on, pin){
+    if(pin){ const r = S.setPin(pin); if(!r.ok){ tip(r.msg); return false; } }
+    upd(c => { c.pin.enabled = !!on; });
+    return true;
+  }
+  function backupName(){ return '学习打卡_全量备份_' + stamp() + '.json'; }
+  function backupPayload(){
+    try{ return S.buildBackupPayload(); }catch(e){ return null; }
+  }
+  function backupSummary(payload){
+    const d = (payload && (payload.data || payload.state || payload)) || {};
+    return { tasks:(d.tasks || []).length, records:(d.records || []).length,
+      stars:(d.archive || {}).totalStars || 0, plots:(d.plots || []).length,
+      memos:(d.nickMemos || []).length, schedule:!!d.schedule,
+      bytes:(() => { try{ return JSON.stringify(payload).length; }catch(e){ return 0; } })() };
+  }
+  function takeSnapshot(){
+    const p = backupPayload(); if(!p) return null;
+    const snap = { at:Date.now(), day:today(), payload:p };
+    upd(c => { c.backup.snapshots = [snap].concat(c.backup.snapshots || []).slice(0,3); c.backup.lastAt = Date.now(); });
+    return snap;
+  }
+  function diagnose(){
+    let v = null, u = null, s = null;
+    try{ v = S.localVerify(); }catch(e){}
+    try{ u = S.localUsage(); }catch(e){}
+    try{ s = S.r271StorageScan(); }catch(e){}
+    return { verify:v, usage:u, scan:s };
+  }
+  function setRemind(slots, days){
+    const ss = String(slots || '').split(/[,，\s]+/).filter(x => /^\d{1,2}:\d{2}$/.test(x)).slice(0,6);
+    const dd = (Array.isArray(days) ? days : String(days || '').split(/[,，\s]+/)).map(Number).filter(x => x>=0 && x<=6);
+    upd(c => { c.remind.slots = ss.length ? ss : ['19:30']; c.remind.days = dd.length ? dd : [0,1,2,3,4,5,6]; });
+    try{ S.saveRemindCfg({ childTime:c.remind.slots[0], parentTime:c.remind.slots[c.remind.slots.length-1] }); }catch(e){}
+    return true;
+  }
+  function remindAction(a){
+    if(a === 'go'){ try{ if(typeof goPage === 'function') goPage('home'); }catch(e){} return true; }
+    if(a === 'later'){ upd(c => { c.remind.snoozeUntil = Date.now() + 15*60*1000; }); return true; }
+    if(a === 'off'){ upd(c => { c.remind.suppressedDay = today(); }); return true; }
+    return false;
+  }
+  function setFontScale(v){
+    const n = Math.max(.85, Math.min(1.35, Number(v)||1));
+    upd(c => { c.ui.fontScale = n; });
+    applyUi();
+    return n;
+  }
+  function setTheme(t){
+    upd(c => { c.ui.theme = (t === 'light' ? 'light' : 'zoo'); });
+    applyUi();
+    return true;
+  }
+  function applyUi(){
+    if(!REAL) return;
+    const c = cfg(), b = D.body; if(!b) return;
+    try{
+      b.classList.toggle('r271-big-touch', c.ui.bigTouch !== false);
+      b.classList.toggle('r271-safe-edge', c.ui.safeEdge !== false);
+      b.classList.toggle('r271-nick-toast', c.ui.nickToast !== false);
+      b.classList.toggle('r271-child', !!c.childMode && (S.load().profile || {}).mode !== 'parent');
+      b.classList.toggle('theme-light-r271', c.ui.theme === 'light');
+      b.style.zoom = String(c.ui.fontScale || 1);
+      /* R271-5.1.2：孩子模式只保留「今日任务 / 种植园 / 知识秘境」相关设置卡 */
+      qa('.settings-grid .settings-card').forEach(function(el){
+        const txt = String(el.textContent || '');
+        const keep = /今日任务|打卡任务|种植园|知识秘境/.test(txt);
+        el.classList.toggle('r271-hidden', !keep && !!c.childMode);
+      });
+    }catch(e){}
+  }
+
+  /* ---------------- 八、轻量工具：番茄钟 / 备忘录 / 课程表 ---------------- */
+  const TIMERS = [];
+  function regTimer(id){ TIMERS.push(id); return id; }
+  function clearAllTimers(){ TIMERS.forEach(id => { try{ clearInterval(id); clearTimeout(id); }catch(e){} }); TIMERS.length = 0; }
+  let pomoTimer = null, pomoLeft = 0, pomoMode = 'study';
+  function pomoState(){ return { left:pomoLeft, mode:pomoMode, running:!!pomoTimer, doneSec:(cfg().pomo || {}).doneSec || 0 }; }
+  function pomoStop(){ if(pomoTimer){ try{ clearInterval(pomoTimer); }catch(e){} pomoTimer = null; } renderPomo(); }
+  function pomoStart(studyMin, restMin){
+    pomoStop();
+    const sm = Math.max(1, Math.min(120, Number(studyMin)||25)), rm = Math.max(1, Math.min(60, Number(restMin)||5));
+    upd(c => { c.pomo.studyMin = sm; c.pomo.restMin = rm; });
+    pomoMode = 'study'; pomoLeft = sm*60;
+    pomoTimer = regTimer(setInterval(() => {
+      pomoLeft = Math.max(0, pomoLeft - 1);
+      if(pomoLeft === 0){
+        try{ clearInterval(pomoTimer); }catch(e){} pomoTimer = null;
+        if(pomoMode === 'study'){
+          upd(c => { c.pomo.doneSec = (c.pomo.doneSec||0) + sm*60; c.pomo.log = [{d:today(), min:sm, at:Date.now()}].concat(c.pomo.log||[]).slice(0,200); });
+          try{ S.logCheckin('read::focus', sm); }catch(e){}
+          beep();
+          pomoMode = 'rest'; pomoLeft = rm*60;
+          pomoTimer = regTimer(setInterval(() => {
+            pomoLeft = Math.max(0, pomoLeft-1);
+            if(pomoLeft === 0){ pomoStop(); beep(); tip('🍅 休息结束，继续加油！'); }
+            else renderPomo();
+          }, 1000));
+          tip('🍅 专注完成！进入 ' + rm + ' 分钟休息');
+        } else { pomoStop(); }
+      }
+      renderPomo();
+    }, 1000));
+    renderPomo();
+    return true;
+  }
+  function beep(){
+    try{
+      const AC = window.AudioContext || window.webkitAudioContext; if(!AC) return;
+      const ac = new AC(), o = ac.createOscillator(), g = ac.createGain();
+      o.connect(g); g.connect(ac.destination); o.frequency.value = 880; g.gain.value = .08;
+      o.start(); setTimeout(()=>{ try{ o.stop(); ac.close(); }catch(e){} }, 320);
+    }catch(e){}
+  }
+  function renderPomo(){
+    const el = q('#r271PomoBox'); if(!el) return;
+    const s = pomoState(), m = Math.floor(s.left/60), ss = String(s.left%60).padStart(2,'0');
+    el.innerHTML = '<div class="r271-pomo-clock">' + (s.mode === 'study' ? '🍅 专注中' : '☕ 休息中') + ' <b>' + m + ':' + ss + '</b></div>'
+      + '<div class="r271-muted">累计专注 ' + fmtMin(s.doneSec) + '（已计入学习统计）</div>'
+      + '<div class="r271-row"><button class="r271-btn" data-act="pomo-stop">停止</button></div>';
+  }
+  function memoList(){ try{ return S.getNickMemos() || []; }catch(e){ return []; } }
+  function memoExtra(id){ return (cfg().memoExtras || {})[id] || { tag:'', img:'', taskId:'' }; }
+  function setMemoExtra(id, patch){
+    upd(c => { c.memoExtras[id] = Object.assign(memoExtra(id), patch || {}); });
+    return true;
+  }
+  function scheduleJSON(){ try{ return JSON.stringify(S.getSchedule(), null, 2); }catch(e){ return '{}'; } }
+  function scheduleImport(text){
+    try{
+      const o = JSON.parse(text);
+      if(!o || typeof o !== 'object' || !o.cells) return { ok:false, msg:'不是有效的课程表配置' };
+      S.saveSchedule(o); return { ok:true };
+    }catch(e){ return { ok:false, msg:'JSON 解析失败' }; }
+  }
+  function schedulePNG(){
+    const cv = D.createElement('canvas'); cv.width = 1100; cv.height = 700;
+    const x = ctxOf(cv); if(!x){ tip('当前环境不支持生成图片'); return false; }
+    let sch = {}; try{ sch = S.getSchedule() || {}; }catch(e){}
+    x.fillStyle = '#ffffff'; x.fillRect(0,0,1100,700);
+    x.fillStyle = '#173b6b'; x.font = 'bold 34px "PingFang SC",sans-serif'; x.fillText('📅 我的课程表',40,52);
+    const days = sch.days || ['星期一','星期二','星期三','星期四','星期五'];
+    const rows = Math.max(1, Math.min(12, Number(sch.rows)||9));
+    const cw = Math.min(180, (1020 / (days.length+1))), ch = Math.min(52, 560/(rows+1));
+    const cells = sch.cells || {};
+    x.font = '16px "PingFang SC",sans-serif';
+    days.forEach((d,i) => { x.fillStyle = '#e9f4ff'; x.fillRect(40+(i+1)*cw, 80, cw, ch); x.fillStyle = '#173b6b'; x.fillText(String(d).slice(0,5), 40+(i+1)*cw+8, 80+ch/2+6); });
+    for(let r=0;r<rows;r++){
+      x.fillStyle = '#e9f4ff'; x.fillRect(40, 80+(r+1)*ch, cw, ch);
+      x.fillStyle = '#173b6b'; x.fillText('第' + (r+1) + '节', 48, 80+(r+1)*ch+ch/2+6);
+      days.forEach((d,i) => {
+        let v = '';
+        try{
+          const arr = Array.isArray(cells) ? cells[r] : (cells[d + '-' + r] || cells[r + '-' + d] || cells[d + '_' + r]);
+          if(Array.isArray(arr)) v = String((arr[i] && arr[i][0]) || '');
+          else if(typeof arr === 'string') v = arr;
+        }catch(e){}
+        x.fillStyle = '#ffffff'; x.fillRect(40+(i+1)*cw, 80+(r+1)*ch, cw, ch);
+        x.strokeStyle = '#dbe7f5'; x.strokeRect(40+(i+1)*cw, 80+(r+1)*ch, cw, ch);
+        x.fillStyle = '#33445e'; x.fillText(v.slice(0,6), 40+(i+1)*cw+8, 80+(r+1)*ch+ch/2+6);
+      });
+    }
+    x.fillStyle = '#5f6473'; x.font = '16px "PingFang SC",sans-serif'; x.fillText('导出时间 ' + new Date().toLocaleString('zh-CN') + ' · 可直接打印',40,680);
+    try{ return dl(cv.toDataURL('image/png'), '课程表_' + stamp() + '.png'); }catch(e){ return false; }
+  }
+
+  /* ---------------- 九、存储净化（包装 store 层） ---------------- */
+  function scanStorage(){ try{ return S.r271StorageScan(); }catch(e){ return { keys:[], unknown:[], issues:[], bytes:0, total:0 }; } }
+  function dedupeState(){ try{ return S.r271DedupeState(); }catch(e){ return { ok:false, removed:0 }; } }
+  function repairStorage(){ try{ return S.r271RepairStorage(); }catch(e){ return { ok:false, actions:[] }; } }
+
+  /* ---------------- 九·补：中华通史时间轴（新世界 - 拓展素养 - 人文拓展） ---------------- */
+  const TONGSHI = [
+    { era:'远古', year:'约前 3000 年', text:'炎黄部落、尧舜禹禅让，中华文明的源头。' },
+    { era:'夏', year:'约前 2070–前 1600', text:'中国历史上第一个王朝，二里头文化见证早期国家。' },
+    { era:'商', year:'约前 1600–前 1046', text:'甲骨文与青铜器，中国有文字可考的历史自此开始。' },
+    { era:'西周', year:'前 1046–前 771', text:'分封制、礼乐制度，《诗经》中的许多篇章源于此时。' },
+    { era:'春秋', year:'前 770–前 476', text:'百家争鸣的序幕，孔子、老子等思想家活跃。' },
+    { era:'战国', year:'前 475–前 221', text:'七雄并立，商鞅变法，铁器与牛耕推广。' },
+    { era:'秦', year:'前 221–前 207', text:'秦始皇统一六国，书同文、车同轨、统一度量衡。' },
+    { era:'西汉', year:'前 202–公元 8', text:'张骞通西域，丝绸之路开通；司马迁著《史记》。' },
+    { era:'东汉', year:'25–220', text:'蔡伦改进造纸术，张衡发明地动仪。' },
+    { era:'三国', year:'220–280', text:'魏蜀吴鼎立，赤壁之战与诸葛亮北伐。' },
+    { era:'两晋南北朝', year:'265–589', text:'民族大融合，祖冲之推算圆周率，石窟艺术兴盛。' },
+    { era:'隋', year:'581–618', text:'大运河贯通南北，科举制度创立。' },
+    { era:'唐', year:'618–907', text:'贞观之治、开元盛世，诗歌黄金时代，长安是世界大都会。' },
+    { era:'宋', year:'960–1279', text:'活字印刷、指南针、火药广泛应用，词与山水画极盛。' },
+    { era:'元', year:'1271–1368', text:'疆域辽阔，行省制度，中外交流频繁。' },
+    { era:'明', year:'1368–1644', text:'郑和下西洋，修筑长城，《永乐大典》编纂。' },
+    { era:'清', year:'1636–1912', text:'统一多民族国家巩固，康乾盛世；近代面临变局。' },
+    { era:'近现代', year:'1912 至今', text:'共和取代帝制，中国人民走上民族复兴之路。' }
+  ];
+  function tongshiHtml(){
+    return '<div class="yw-comp-head">🏯 中华通史时间轴 · 共 ' + TONGSHI.length + ' 个时期</div>'
+      + '<div class="r271-timeline">' + TONGSHI.map(function(t,i){
+          return '<div class="r271-tl-item"><div class="r271-tl-dot"></div>'
+            + '<div class="r271-tl-era">' + E(t.era) + '</div>'
+            + '<div class="r271-tl-year">' + E(t.year) + '</div>'
+            + '<div class="r271-tl-text">' + E(t.text) + '</div></div>';
+        }).join('') + '</div>'
+      + '<div class="sz-page-foot">按朝代先后排列，点击左侧「返回」可回到拓展素养首页。</div>';
+  }
+  function mountTongshiEntry(){
+    if(!REAL) return;
+    try{
+      const grp = (typeof SZ_TOP_CARDS !== 'undefined' && Array.isArray(SZ_TOP_CARDS))
+        ? SZ_TOP_CARDS.filter(function(g){ return g && g.title === '人文拓展'; })[0] : null;
+      if(grp && Array.isArray(grp.items) && !grp.items.some(function(x){ return x && x.key === 'r271_tongshi'; })){
+        grp.items.push({ key:'r271_tongshi', icon:'🏯', label:'中华通史时间轴' });
+      }
+      if(typeof szSlot === 'function' && !szSlot.__r271){
+        const orig = szSlot;
+        const w = function(key, label){
+          if(key === 'r271_tongshi') return tongshiHtml();
+          return orig.apply(this, arguments);
+        };
+        w.__r271 = true;
+        szSlot = w;
+      }
+    }catch(e){}
+  }
+
+  /* ---------------- 十、UI：悬浮工具条 + 功能中心 ---------------- */
+  const TABS = [
+    { id:'tasks', ico:'🗂️', name:'任务与请假' },
+    { id:'poster', ico:'🖼️', name:'打卡海报' },
+    { id:'wrong', ico:'📝', name:'错题复盘' },
+    { id:'report', ico:'📊', name:'成长报表' },
+    { id:'farm', ico:'🌱', name:'种植园' },
+    { id:'km', ico:'🏛️', name:'知识秘境' },
+    { id:'study', ico:'📚', name:'学科练习' },
+    { id:'settings', ico:'🔒', name:'设置与安全' },
+    { id:'tools', ico:'🧰', name:'轻量工具' },
+    { id:'clean', ico:'🧹', name:'数据净化' }
+  ];
+  const HELP = {
+    home:'首页：左侧是板块导航，卡片左边圆钮打卡，卡片主体点击会先确认再跳转。',
+    tasks:'任务与请假：内置小学 2-6 年级模板可复制复用；循环规则控制任务在哪天出现；假期自动切换另一套任务；请假不计断签也不发星星。',
+    farm:'种植园：浇水 / 阳光 / 化肥推进成长，成熟后收获点亮图鉴；市集道具先预览再兑换。',
+    km:'知识秘境：选择难度档位答题，结束展示正确率，错题自动进错题池，通关可保存证书。',
+    settings:'设置与安全：高危操作需要家长密码；孩子模式只显示今日任务、种植园、知识秘境。',
+    report:'成长报表：按周 / 月查看学科完成率、星星趋势与每条任务详情，可导出 PNG / Markdown。',
+    clean:'数据净化：只扫描 + 去除可判定的重复项，不认识的数据一律保留，绝不删除用户内容。'
+  };
+  let root = null, modal = null, curTab = 'tasks', wrongFilter = '全部', reportPeriod = 'week';
+  function shell(){
+    if(root) return root;
+    root = D.createElement('div'); root.id = 'r271Root';
+    root.innerHTML = '<div class="r271-dock" id="r271Dock">'
+      + '<button class="r271-dock-btn main" data-act="open" title="R271 功能中心">🧰</button>'
+      + '<button class="r271-dock-btn" data-act="pomo" title="番茄专注计时器">🍅</button>'
+      + '<button class="r271-dock-btn" data-act="help" title="本页使用说明">❓</button>'
+      + '<button class="r271-dock-btn" data-act="font" title="全局字号档位">Aa</button>'
+      + '<button class="r271-dock-btn" data-act="top" title="回到顶部">⬆️</button>'
+      + '</div>'
+      + '<div class="r271-mask" id="r271Mask" hidden><div class="r271-modal" id="r271Modal">'
+      + '<div class="r271-head"><div class="r271-title">🦊 Nick 学习乐园 · 功能中心 <small>R271</small></div>'
+      + '<button class="r271-x" data-act="close" title="关闭">✕</button></div>'
+      + '<div class="r271-tabs" id="r271Tabs"></div>'
+      + '<div class="r271-body" id="r271Body"></div>'
+      + '</div></div>';
+    D.body.appendChild(root);
+    root.addEventListener('click', onAct);
+    root.addEventListener('change', onChange);
+    return root;
+  }
+  function open(tab){
+    shell();
+    curTab = tab || curTab || 'tasks';
+    const m = q('#r271Mask'); if(m) m.hidden = false;
+    render();
+  }
+  function close(){ const m = q('#r271Mask'); if(m) m.hidden = true; }
+  function render(){
+    shell();
+    const tabs = q('#r271Tabs');
+    if(tabs) tabs.innerHTML = TABS.map(t => '<button class="r271-tab' + (t.id === curTab ? ' on' : '') + '" data-act="tab" data-v="' + t.id + '">' + t.ico + ' ' + t.name + '</button>').join('');
+    const b = q('#r271Body'); if(!b) return;
+    const fn = RENDER[curTab] || RENDER.tasks;
+    b.innerHTML = fn();
+    b.scrollTop = 0;
+    try{ if(curTab === 'report') drawReportCharts(); }catch(e){}
+    try{ if(curTab === 'tools') renderPomo(); }catch(e){}
+  }
+  const RENDER = {};
+  function btn(act, label, v, cls){ return '<button class="r271-btn ' + (cls||'') + '" data-act="' + act + '"' + (v !== undefined ? ' data-v="' + E(v) + '"' : '') + '>' + label + '</button>'; }
+  function card(title, body){ return '<div class="r271-card"><div class="r271-h3">' + title + '</div>' + body + '</div>'; }
+  function row(html){ return '<div class="r271-row">' + html + '</div>'; }
+  function muted(t){ return '<div class="r271-muted">' + t + '</div>'; }
+  function input(id, val, ph, type){ return '<input class="r271-in" id="' + id + '" type="' + (type||'text') + '" value="' + E(val == null ? '' : val) + '" placeholder="' + E(ph||'') + '" />'; }
+  function sel(id, opts, cur){
+    return '<select class="r271-in" id="' + id + '">' + opts.map(o => {
+      const v = Array.isArray(o) ? o[0] : o, n = Array.isArray(o) ? o[1] : o;
+      return '<option value="' + E(v) + '"' + (String(cur) === String(v) ? ' selected' : '') + '>' + E(n) + '</option>';
+    }).join('') + '</select>';
+  }
+
+  RENDER.tasks = function(){
+    const st = S.load(), c = cfg(), ls = leaveState();
+    const tpls = allTemplates().map(t => '<div class="r271-item"><div class="r271-item-main"><b>' + E(t.name) + '</b>'
+      + '<span class="r271-tag">' + (t.builtin ? '内置' : '自定义') + ' · ' + tplTasks(t).length + ' 项</span></div>'
+      + '<div class="r271-item-act">' + btn('tpl-apply','追加复用', t.id) + btn('tpl-copy','复制为自定义', t.id)
+      + btn('tpl-switch','整套切换', t.id, 'danger') + '</div></div>').join('');
+    const rules = (st.tasks || []).map(t => {
+      const r = (c.rules || {})[t.id] || { kind:'daily' };
+      const extra = r.kind === 'weekly' ? (r.days || []).join(',') : (r.onceDate || '');
+      return '<div class="r271-item"><div class="r271-item-main"><b>' + E(t.name) + '</b><span class="r271-tag">' + E(t.subject || '') + '</span></div>'
+        + '<div class="r271-item-act">' + sel('rule-' + t.id, RULE_KINDS, r.kind).replace('id="rule-' + t.id + '"', 'data-rule="' + t.id + '" id="rule-' + t.id + '"')
+        + input('extra-' + t.id, extra, r.kind === 'once' ? 'YYYY-MM-DD' : '星期 0-6') + '</div></div>';
+    }).join('');
+    const hol = c.holiday || {};
+    const holTasks = (st.tasks || []).map(t => '<label class="r271-chk"><input type="checkbox" data-hol-task="' + E(t.id) + '"' + ((hol.taskIds||[]).indexOf(t.id)>=0 ? ' checked' : '') + '/>' + E(t.name) + '</label>').join('');
+    const todayTasks = (() => { try{ return S.tasksForDate(today()) || []; }catch(e){ return []; } })();
+    const leaves = (ls.log || []).slice(0,8).map(l => '<div class="r271-log">📌 ' + E(l.d) + ' · ' + E(l.name) + ' <span>请假</span></div>').join('') || muted('本周还没有请假记录');
+    return card('📚 任务模板库（小学 2-6 年级内置 + 自定义整套计划）',
+        row(input('tplName','','给当前整套计划起个名字') + btn('tpl-save','保存当前计划为模板')) + '<div class="r271-list">' + tpls + '</div>'
+        + muted('「追加复用」只增不删；「整套切换」会先把当前计划自动存成模板再替换，可随时复原。'))
+      + card('🔁 任务循环规则（每日 / 指定星期 / 工作日 / 周末 / 一次性）',
+        '<div class="r271-list">' + rules + '</div>' + row(btn('rule-save','保存全部规则', '', 'primary'))
+        + muted('指定星期填 0-6（0=周日）；一次性任务填 YYYY-MM-DD。未配置的规则沿用原有打卡设置。'))
+      + card('🏖️ 假期任务集自动切换',
+        row('<label class="r271-chk"><input type="checkbox" id="holOn"' + (hol.enabled ? ' checked' : '') + '/>启用假期任务集</label>'
+          + input('holStart', hol.start, '开始 YYYY-MM-DD', 'date') + input('holEnd', hol.end, '结束 YYYY-MM-DD', 'date'))
+        + '<div class="r271-chk-grid">' + holTasks + '</div>' + row(btn('hol-save','保存假期设置', '', 'primary'))
+        + muted('假期区间内只显示勾选的任务；不勾选任何任务则不启用过滤，原任务表完全不变。'))
+      + card('🎫 请假机制（家长模式 · 不断签 · 不发星星）',
+        row('每周允许请假 ' + input('leaveLimit', ls.limit, '次数', 'number') + btn('leave-limit','保存')) + '<div class="r271-big">本周剩余 <b>' + ls.remain + '</b> / ' + ls.limit + ' 次</div>'
+        + '<div class="r271-list">' + todayTasks.map(t => '<div class="r271-item"><div class="r271-item-main"><b>' + E(t.name) + '</b></div><div class="r271-item-act">'
+          + ((ls.days[today()] || {})[t.id] ? btn('leave-undo','取消请假', t.id) : btn('leave-do','请假', t.id)) + '</div></div>').join('') + '</div>'
+        + '<div class="r271-h4">请假记录</div>' + leaves);
+  };
+  RENDER.poster = function(){
+    const p = posterData();
+    return card('🖼️ 打卡海报（Nick 形象 + 今日完成项 + 连续天数 + 星星统计）',
+      '<div class="r271-poster-info"><div>今日完成 <b>' + p.done + ' / ' + p.total + '</b> 项</div>'
+      + '<div>连续打卡 <b>' + p.streak + '</b> 天</div><div>今日 <b>+' + p.stars + ' ⭐</b> · 累计 ' + p.totalStars + ' ⭐</div></div>'
+      + '<div class="r271-list">' + (p.names.length ? p.names.map(n => '<div class="r271-log">✅ ' + E(n) + '</div>').join('') : muted('今天还没有完成的任务')) + '</div>'
+      + row(btn('poster-make','生成并保存海报 PNG', '', 'primary') + btn('poster-refresh','刷新数据', '', '')))
+      + card('🦊 Nick 鼓励语（完成全部必做后自动弹出）',
+        muted('完成度不同会自动切换文案；也可在「设置与安全」里关闭自动弹窗。')
+        + row(btn('cheer-now','预览鼓励弹窗')));
+  };
+  RENDER.wrong = function(){
+    const list = wrongList(wrongFilter), c = cfg();
+    const tags = ['全部'].concat(WRONG_TAGS);
+    const rows = list.length ? list.map(w => '<div class="r271-item"><div class="r271-item-main"><b>' + E(w.title) + '</b>'
+      + '<span class="r271-tag">' + E(w.src) + '</span>' + (w.img ? '<span class="r271-tag">📷 已导入截图</span>' : '') + '</div>'
+      + '<div class="r271-item-act">' + sel('wtag-' + w.id.replace(/[^a-zA-Z0-9_-]/g,'_'), tags, w.tag).replace('id="wtag-' + w.id.replace(/[^a-zA-Z0-9_-]/g,'_') + '"', 'data-wtag="' + E(w.id) + '" id="wtag-' + w.id.replace(/[^a-zA-Z0-9_-]/g,'_') + '"')
+      + btn('wrong-img','导入截图', w.id) + btn('wrong-review','加入复习推送', w.id) + '</div>'
+      + (w.img ? '<img class="r271-thumb" src="' + E(w.img) + '" alt="错题截图" />' : '') + '</div>').join('') : muted('当前筛选下没有错题记录');
+    return card('🏷️ 错题分类标签 + 历史筛选',
+      row(tags.map(t => btn('wrong-filter', t, t, wrongFilter === t ? 'primary' : '')).join(''))
+      + '<div class="r271-list">' + rows + '</div>'
+      + row(btn('wrong-save-tags','保存全部标签', '', 'primary') + btn('wrong-push-batch','批量加入复习推送', '', 'primary'))
+      + muted('标签：计算粗心 / 概念不懂 / 审题错误 / 未分类；图片压缩后仅存本机。'))
+      + card('🔔 复习推送池',
+        '<div class="r271-big">已加入 <b>' + (c.reviewPush || []).length + '</b> 条</div>'
+        + ((c.reviewPush || []).slice(0,10).map(x => '<div class="r271-log">📌 ' + E(x.d) + ' · ' + E(x.title) + ' <span>' + E(x.tag) + '</span></div>').join('') || muted('还没有加入复习的错题')));
+  };
+  RENDER.report = function(){
+    const r = stats(reportPeriod);
+    const subs = Object.keys(r.bySubject).map(k => {
+      const b = r.bySubject[k], pct = b.all ? Math.round(b.done/b.all*100) : 0;
+      return '<div class="r271-bar-row"><span>' + E(k) + '</span><div class="r271-bar"><i style="width:' + pct + '%"></i></div><b>' + pct + '%</b></div>';
+    }).join('');
+    const trend = r.trend.map(t => '<div class="r271-trend-col" title="' + t.d + ' ⭐' + t.n + '"><i style="height:' + Math.min(100, t.n*12+4) + '%"></i><span>' + t.d.slice(5) + '</span></div>').join('');
+    const byDate = {};
+    r.details.forEach(d => { (byDate[d.date] = byDate[d.date] || []).push(d); });
+    const detail = Object.keys(byDate).slice(-12).reverse().map(d => '<details class="r271-details"><summary>📅 ' + d + ' · ' + byDate[d].filter(x=>x.done).length + '/' + byDate[d].length + ' 项完成</summary>'
+      + byDate[d].map(x => '<div class="r271-log">' + (x.done ? '✅' : '⬜') + ' ' + E(x.name) + ' <span>' + E(x.subject) + ' · ' + (x.done?'+'+x.stars+'⭐':'未完成') + '</span></div>').join('') + '</details>').join('');
+    return card('📊 周 / 月维度统计',
+      row(btn('report-period','周报表','week', reportPeriod==='week'?'primary':'') + btn('report-period','月报表','month', reportPeriod==='month'?'primary':''))
+      + '<div class="r271-stat-grid"><div>必做完成 <b>' + r.reqDone + '/' + r.reqAll + '</b></div><div>选做完成 <b>' + r.optDone + '/' + r.optAll + '</b></div><div>区间星星 <b>' + r.stars + ' ⭐</b></div></div>'
+      + '<div class="r271-h4">各学科完成率</div><div class="r271-bars">' + subs + '</div>'
+      + '<div class="r271-h4">⭐ 星星获取趋势</div><div class="r271-trend">' + trend + '</div>'
+      + '<canvas id="r271ChartCanvas" width="900" height="260" class="r271-canvas"></canvas>')
+      + card('📅 每一天每一条任务的完成状态与星星', '<div class="r271-scroll">' + detail + '</div>')
+      + card('📤 报表导出',
+        row(btn('report-md','导出 Markdown', reportPeriod, 'primary') + btn('report-png','导出图片 PNG', reportPeriod, 'primary'))
+        + muted('文件名自动带时间戳；MD 含明细表，PNG 含柱状图与趋势线。'));
+  };
+  RENDER.farm = function(){
+    const c = cfg(), codex = (() => { try{ return S.getPlantCodex(); }catch(e){ return {}; } })();
+    const items = shopPreviewList();
+    return card('📖 种植园图鉴（首次收获时间）',
+      '<div class="r271-big">已点亮 <b>' + Object.keys(codex).length + '</b> 种作物</div>'
+      + (Object.keys(codex).length ? Object.keys(codex).map(k => '<div class="r271-log">🌱 ' + E(codex[k].name || k) + ' <span>首次收获 ' + E(codex[k].firstDay || '') + '</span></div>').join('') : muted('还没有收获过作物'))
+      + row(btn('farm-codex','打开完整图鉴')))
+      + card('⏳ 成长时间（水 / 阳光 / 化肥齐全后仍需等待）',
+        row(sel('growthHours', [[0,'即时成熟（原玩法）'],[1,'1 小时'],[2,'2 小时'],[4,'4 小时'],[6,'6 小时'],[12,'12 小时'],[24,'24 小时']], growthHours()) + btn('growth-save','保存成长时间', '', 'primary'))
+        + muted('设为 0 保持原玩法；开启后作物达到成熟阶段仍需成长时间才可收获，避免「瞬间刷完」。'))
+      + card('🎉 收获动画 / 成熟提醒',
+        row('<label class="r271-chk"><input type="checkbox" id="farmAnim"' + (c.farm.harvestAnim?' checked':'') + '/>收获时 Nick 动画</label>'
+          + '<label class="r271-chk"><input type="checkbox" id="farmTip"' + (c.farm.matureTip?' checked':'') + '/>首页成熟轻提醒</label>'
+          + btn('farm-save','保存', '', 'primary'))
+        + '<div class="r271-big">当前成熟可收获 <b>' + matureCount() + '</b> 块</div>'
+        + row(btn('farm-goto','一键前往种植园')))
+      + card('🛒 市集道具预览（先预览效果，确认再消耗星星）',
+        row('<label class="r271-chk"><input type="checkbox" id="itemPreviewOn"' + (c.farm.itemPreview?' checked':'') + '/>点击道具先预览</label>' + btn('itempreview-save','保存', '', 'primary'))
+        + (items.length ? items.slice(0,10).map(it => '<div class="r271-item"><div class="r271-item-main"><b>' + E(it.ico || '📦') + ' ' + E(it.name) + '</b><span class="r271-tag">⭐ ' + E(it.price) + '</span></div>'
+          + '<div class="r271-item-act">' + btn('item-preview','预览效果', it.id) + '</div></div>').join('') : muted('暂无道具数据')));
+  };
+  RENDER.km = function(){
+    const c = cfg(), a = kmAccuracy();
+    const cleared = (() => { try{ return S.getKMCleared() || {}; }catch(e){ return {}; } })();
+    const levels = Object.keys(cleared).length ? Object.keys(cleared) : ['chinese','math','english','mixed'];
+    const names = {chinese:'语文神殿', math:'数学神殿', english:'英语神殿', mixed:'综合神殿'};
+    const icos = {chinese:'📖', math:'🔢', english:'🔤', mixed:'🏛️'};
+    const reports = (a.reports || []).slice(0,8).map(r => '<div class="r271-log">🎯 ' + E(r.d) + ' · ' + r.right + '/' + r.total + ' <span>正确率 ' + r.pct + '%</span></div>').join('') || muted('还没有答题记录');
+    return card('🎚️ 关卡难度档位',
+      row(sel('kmDiff', [['easy','轻松'],['normal','标准'],['hard','挑战']], c.km.difficulty) + btn('km-diff-save','保存难度', '', 'primary'))
+      + muted('难度随答题记录一起保存，不同档位会写入证书。'))
+      + card('📈 答题正确率统计 + 错题池',
+        '<div class="r271-stat-grid"><div>累计正确率 <b>' + a.accuracy + '%</b></div><div>累计答题 <b>' + a.total + '</b></div><div>错题池 <b>' + a.wrong + '</b></div></div>'
+        + row(input('kmTotal','','本次总题数','number') + input('kmRight','','答对题数','number') + btn('km-report','记录一次答题', '', 'primary'))
+        + '<div class="r271-h4">最近答题</div>' + reports
+        + muted('记录答题时做错的题目会自动加入错题池（只增不减）。'))
+      + card('🏅 关卡通关证书（可保存本地图片）',
+        levels.map(k => '<div class="r271-item"><div class="r271-item-main"><b>' + (icos[k]||'🏆') + ' ' + E(names[k]||k) + '</b><span class="r271-tag">' + (cleared[k] ? '已通关' : '未通关') + '</span></div>'
+          + '<div class="r271-item-act">' + btn('km-cert','生成证书', k, cleared[k] ? 'primary' : '') + '</div></div>').join('')
+        + row(btn('km-certs','查看历史证书列表')));
+  };
+  RENDER.study = function(){
+    const c = cfg(), resumes = (() => { try{ return (S.getR256().practice) || {}; }catch(e){ return {}; } })();
+    const keys = Object.keys(resumes).slice(0,10);
+    const reports = (c.practice.reports || []).slice(0,8);
+    const need = words3500Need();
+    const quiz = words3500Quiz(5);
+    return card('⏯️ 练习断点续做（中途退出再进入自动恢复答案）',
+      '<div class="r271-list">' + (keys.length ? keys.map(k => '<div class="r271-item"><div class="r271-item-main"><b>' + E(k) + '</b><span class="r271-tag">已保存进度</span></div>'
+        + '<div class="r271-item-act">' + btn('resume-clear','清除断点', k) + '</div></div>').join('') : muted('暂无断点；练习页作答会自动记录进度')) + '</div>'
+      + row(input('resumeKey','','练习标识，如 xs-grammar') + input('resumeAns','','已填答案（演示写入）') + btn('resume-save','保存断点', '', 'primary'))
+      + muted('复用既有练习断点数据层，答案与页码一起落主档，刷新不丢。'))
+      + card('📋 答题报告（正确率 / 错题清单 / 一键加入错题本）',
+        (reports.length ? reports.map((r,i) => '<div class="r271-item"><div class="r271-item-main"><b>' + E(r.d) + ' · 正确率 ' + r.pct + '%</b><span class="r271-tag">错题 ' + r.wrong.length + ' 条</span></div>'
+          + '<div class="r271-item-act">' + btn('report-wrong-add','加入错题本', i, 'primary') + '</div></div>').join('') : muted('还没有答题报告'))
+        + row(input('ansTotal','','总题数','number') + input('ansRight','','答对题数','number') + btn('ans-finish','生成答题报告', '', 'primary')))
+      + card('🔤 3500 词复习模式（随机抽「需巩固」单词自测）',
+        '<div class="r271-big">标记需巩固 <b>' + need.length + '</b> 个</div>'
+        + (quiz.length ? quiz.map(w => '<div class="r271-log">🔤 ' + E(w.w) + ' <span>' + E(w.cn || '') + '</span></div>').join('') : muted('还没有标记「需巩固」的单词'))
+        + row(btn('words-refresh','换一组自测') + btn('words-master','标为已掌握', quiz.length ? quiz[0].w : '', '')))
+      + card('🧠 词汇语法巩固页错题筛选',
+        row(btn('xs-only-wrong','只看错题') + btn('xs-all','全部题目') + btn('xs-batch-review','批量加入复习', '', 'primary'))
+        + muted('筛选状态保存在本机；批量加入复写既有错题复练推送配置。'));
+  };
+  RENDER.settings = function(){
+    const c = cfg(), pin = (() => { try{ return S.getPin(); }catch(e){ return ''; } })();
+    const rem = c.remind || {}, d = diagnose();
+    const weekNames = ['日','一','二','三','四','五','六'];
+    return card('🔒 家长密码 PIN 锁（重置 / 导入备份 / 修改任务计划）',
+      row('<label class="r271-chk"><input type="checkbox" id="pinOn"' + (c.pin.enabled?' checked':'') + '/>启用家长锁</label>'
+        + input('pinVal','','设置 4 位数字密码','password') + btn('pin-save','保存 PIN', '', 'primary'))
+      + muted('当前 PIN：' + (pin ? '已设置' : '未设置') + '　孩子模式无法修改高危设置。'))
+      + card('👦 孩子模式界面（只显示今日任务 / 种植园 / 知识秘境）',
+        row('<label class="r271-chk"><input type="checkbox" id="childModeOn"' + (c.childMode?' checked':'') + '/>开启简化界面</label>' + btn('child-save','保存', '', 'primary'))
+        + muted('仅在「学生模式」下生效；家长模式仍展示完整设置菜单。'))
+      + card('💾 备份增强（时间戳文件名 / 导入预览 / 快照回退）',
+        '<div class="r271-log">当前备份内容：' + (() => { const s = backupSummary(backupPayload()); return s.tasks + ' 个任务 · ' + s.records + ' 条打卡 · ' + s.stars + ' ⭐ · ' + Math.round(s.bytes/1024) + ' KB'; })() + '</div>'
+        + row(btn('backup-now','导出全量备份（带时间戳）', '', 'primary') + btn('backup-snapshot','生成当前快照', '', 'primary'))
+        + row('<input type="file" id="backupFile" accept="application/json,.json" class="r271-file" />' + btn('backup-preview','预览备份摘要'))
+        + '<div id="r271BackupPreview" class="r271-preview">' + muted('选择备份文件后先预览统计摘要，确认后才合并导入。') + '</div>'
+        + row(btn('backup-restore','确认合并导入（不清空现有数据）', '', 'primary') + btn('backup-rollback','回退到最近快照'))
+        + '<div class="r271-big">本机快照 <b>' + (c.backup.snapshots || []).length + '</b> 份</div>')
+      + card('🩺 一键存储诊断',
+        '<div class="r271-log">总键数 ' + ((d.scan||{}).total||0) + ' · 占用 ' + Math.round(((d.scan||{}).bytes||0)/1024) + ' KB · 未识别 ' + (((d.scan||{}).unknown)||[]).length + ' 项（一律保留）</div>'
+        + (((d.verify||{}).issues)||[]).map(i => '<div class="r271-log">' + (i.lv==='err'?'❌':'⚠️') + ' ' + E(i.t) + '</div>').join('')
+        + row(btn('diag-run','重新诊断') + btn('diag-repair','一键修复损坏数据', '', 'primary')))
+      + card('⏰ 多时段提醒 + 按星期触发',
+        row(input('remindSlots', (rem.slots||[]).join(','), '如 07:30,19:30') + btn('remind-save','保存提醒', '', 'primary'))
+        + '<div class="r271-chk-grid">' + weekNames.map((n,i) => '<label class="r271-chk"><input type="checkbox" data-remind-day="' + i + '"' + ((rem.days||[]).indexOf(i)>=0?' checked':'') + '/>周' + n + '</label>').join('') + '</div>'
+        + row(btn('remind-go','立即前往') + btn('remind-later','稍后 15 分钟') + btn('remind-off','今日不再提醒'))
+        + muted('提醒弹窗三个选项：立即前往 / 稍后 15 分钟 / 今日不再提醒。'))
+      + card('🎨 主题 / 字号 / 触控 / Nick IP',
+        row(sel('themeSel', [['zoo','疯狂动物城（默认）'],['light','简约浅色']], c.ui.theme) + sel('fontSel', [[0.9,'小'],[1,'标准'],[1.1,'大'],[1.2,'超大']], c.ui.fontScale) + btn('ui-save','保存外观', '', 'primary'))
+        + row('<label class="r271-chk"><input type="checkbox" id="bigTouch"' + (c.ui.bigTouch?' checked':'') + '/>放大触控热区</label>'
+          + '<label class="r271-chk"><input type="checkbox" id="safeEdge"' + (c.ui.safeEdge?' checked':'') + '/>弹窗安全边距</label>'
+          + '<label class="r271-chk"><input type="checkbox" id="nickToast"' + (c.ui.nickToast?' checked':'') + '/>toast 带 Nick 头像</label>'
+          + '<label class="r271-chk"><input type="checkbox" id="autoCheer"' + (c.ui.autoCheer?' checked':'') + '/>完成必做弹鼓励</label>')
+        + muted('字号跟随系统缩放档位手动微调；主题切换不改动任何业务数据。'));
+  };
+  RENDER.tools = function(){
+    const c = cfg(), memos = memoList().slice(0,12), st = S.load();
+    const taskOpts = (st.tasks || []).map(t => [t.id, t.name]);
+    return card('🍅 番茄专注计时器（全局可唤起 · 结束音效 · 计入学习统计）',
+      row('学习 ' + input('pomoStudy', c.pomo.studyMin, '分钟', 'number') + ' 分钟　休息 ' + input('pomoRest', c.pomo.restMin, '分钟', 'number')
+        + btn('pomo-start','开始专注', '', 'primary'))
+      + '<div id="r271PomoBox"></div>')
+      + card('🗒️ Nick 备忘录增强（分类标签 / 插入图片 / 绑定打卡任务）',
+        (memos.length ? memos.map(m => {
+          const ex = memoExtra(m.id);
+          return '<div class="r271-item"><div class="r271-item-main"><b>' + E((m.item || '（无标题）').slice(0,24)) + '</b><span class="r271-tag">' + E(m.date || '') + '</span></div>'
+            + '<div class="r271-item-act">' + input('memoTag-' + m.id, ex.tag, '标签') + sel('memoTask-' + m.id, [['','不绑定']].concat(taskOpts), ex.taskId).replace('id="memoTask-' + m.id + '"', 'data-memo-task="' + E(m.id) + '" id="memoTask-' + m.id + '"')
+            + btn('memo-img','插入图片', m.id) + btn('memo-save','保存', m.id) + '</div>'
+            + (ex.img ? '<img class="r271-thumb" src="' + E(ex.img) + '" alt="备忘图片" />' : '') + '</div>';
+        }).join('') : muted('暂无备忘录条目'))
+        + muted('扩展信息独立存放，不改动原有备忘录内容。'))
+      + card('📅 课程表导出图片 / 导入导出配置 JSON',
+        row(btn('sched-png','导出图片（可打印）', '', 'primary') + btn('sched-json','导出配置 JSON', '', 'primary'))
+        + row('<input type="file" id="schedFile" accept="application/json,.json" class="r271-file" />' + btn('sched-import','导入配置 JSON'))
+        + muted('导入只覆盖课程表配置，其余数据完全不动。'))
+      + card('❓ 板块使用说明 / 回到顶部',
+        row(btn('help','查看当前板块说明') + btn('top','回到顶部'))
+        + muted('每个复杂板块右上角也有独立的小问号按钮。'));
+  };
+  RENDER.clean = function(){
+    const c = cfg(), s = scanStorage();
+    const lr = c.cleanup.lastReport;
+    return card('🧹 存储数据净化（只净化，不主动删除有效用户数据）',
+      '<div class="r271-stat-grid"><div>本机存储键 <b>' + s.total + '</b></div><div>占用 <b>' + Math.round(s.bytes/1024) + ' KB</b></div><div>未识别（保留） <b>' + s.unknown.length + '</b></div></div>'
+      + (s.unknown.length ? '<div class="r271-h4">未识别项（一律保留不删）</div>' + s.unknown.slice(0,12).map(k => '<div class="r271-log">🔒 ' + E(k) + '</div>').join('') : '')
+      + (s.issues.length ? '<div class="r271-h4">格式异常（已隔离留副本）</div>' + s.issues.map(i => '<div class="r271-log">❌ ' + E(i.key) + ' · ' + E(i.note) + '</div>').join('') : muted('未发现格式异常项'))
+      + row(btn('clean-scan','重新扫描', '', 'primary') + btn('clean-dedupe','去重 + 剔除空条目', '', 'primary') + btn('clean-repair','修复损坏数据', '', 'primary'))
+      + (lr ? '<div class="r271-preview"><b>上次结果：</b>' + E(JSON.stringify(lr)) + '</div>' : '')
+      + muted('去重仅限能 100% 判定重复的打卡记录 / 收藏 / 错题 / 备忘等；判不出主键或不确定项一律保留。'))
+      + card('🧭 交互链路去重 / 闲置定时器治理',
+        row(btn('clean-timers','清理闲置定时器') + btn('clean-listeners','复核事件委托'))
+        + '<div class="r271-big">已登记定时器 <b>' + TIMERS.length + '</b> 个 · 委托监听 <b>2</b> 处</div>'
+        + muted('R271 层全部交互走单一委托；关闭弹窗不会残留监听或轮播粒子。'))
+      + card('🛡️ 数据一致性兜底',
+        row(btn('clean-verify','校验读取 / 保存一致性'))
+        + '<div id="r271VerifyBox">' + muted('校验会重新载入主档并比对任务数 / 打卡数 / 星星，不修改任何内容。') + '</div>');
+  };
+
+  function drawReportCharts(){
+    const cv = q('#r271ChartCanvas'); const x = ctxOf(cv); if(!x) return;
+    const r = stats(reportPeriod), keys = Object.keys(r.bySubject);
+    x.clearRect(0,0,900,260);
+    x.fillStyle = '#ffffff'; x.fillRect(0,0,900,260);
+    x.fillStyle = '#173b6b'; x.font = '18px "PingFang SC",sans-serif'; x.fillText('各学科完成率',16,26);
+    const bw = Math.min(70, 820/Math.max(1,keys.length));
+    keys.forEach((k,i) => {
+      const b = r.bySubject[k], pct = b.all ? b.done/b.all : 0, bx = 30+i*(bw+14);
+      x.fillStyle = '#e9f4ff'; x.fillRect(bx, 50, bw, 150);
+      x.fillStyle = '#4a90d9'; x.fillRect(bx, 200-pct*150, bw, pct*150);
+      x.fillStyle = '#33445e'; x.font = '13px "PingFang SC",sans-serif'; x.textAlign = 'center';
+      x.fillText(k, bx+bw/2, 222); x.fillText(Math.round(pct*100)+'%', bx+bw/2, 44);
+      x.textAlign = 'left';
+    });
+  }
+
+  /* ---------------- 动作分发（单一委托） ---------------- */
+  function onAct(e){
+    const b = e.target.closest('[data-act]'); if(!b) return;
+    const act = b.dataset.act, v = b.dataset.v;
+    const val = id => { const el = q('#' + id); return el ? el.value : ''; };
+    const chk = id => { const el = q('#' + id); return !!(el && el.checked); };
+    const go = fn => { try{ fn(); }catch(err){ tip('操作失败：' + (err && err.message ? err.message : '未知错误')); } };
+    switch(act){
+      case 'open': open('tasks'); break;
+      case 'close': close(); break;
+      case 'tab': curTab = v; render(); break;
+      case 'pomo': open('tools'); setTimeout(()=>{ try{ const el = q('#r271PomoBox'); if(el) el.scrollIntoView({block:'center'}); }catch(e){} }, 60); break;
+      case 'top': scrollTop(); break;
+      case 'font': cycleFont(); break;
+      case 'help': showHelp(); break;
+      /* 任务模板 / 规则 / 假期 / 请假 */
+      case 'tpl-save': go(()=>{ const r = saveCurrentAsTemplate(val('tplName')); tip('✅ 已保存模板「' + r.name + '」（' + r.count + ' 项）'); render(); }); break;
+      case 'tpl-apply': guard(()=>go(()=>{ const r = applyTemplate(v,'merge'); tip('✅ 已追加 ' + r.added + ' 项任务（原有任务全部保留）'); render(); })); break;
+      case 'tpl-copy': go(()=>{ const t = allTemplates().find(x=>String(x.id)===String(v)); if(!t) return; upd(c=>{ c.templates = (c.templates||[]).concat([{id:'u'+Date.now(), name:t.name+' · 副本', grade:'自定义', builtin:false, tasks:tplTasks(t), at:Date.now()}]).slice(-40); }); tip('✅ 已复制为自定义模板'); render(); }); break;
+      case 'tpl-switch': guard(()=>go(()=>{ const r = applyTemplate(v,'switch'); tip('✅ 已切换整套计划（原计划已自动存为模板）'); render(); })); break;
+      case 'rule-save': guard(()=>go(()=>{ qa('[data-rule]').forEach(s=>{ const id=s.getAttribute('data-rule'), ex=q('#extra-'+id); setRule(id, s.value, ex?ex.value:''); }); tip('✅ 循环规则已保存'); render(); })); break;
+      case 'hol-save': guard(()=>go(()=>{ const ids = qa('[data-hol-task]').filter(x=>x.checked).map(x=>x.getAttribute('data-hol-task')); setHoliday({enabled:chk('holOn'), start:val('holStart'), end:val('holEnd'), taskIds:ids}); tip('✅ 假期任务集已保存'); render(); })); break;
+      case 'leave-limit': guard(()=>go(()=>{ upd(c=>{ c.leave.weeklyLimit = Math.max(0, Math.min(14, Number(val('leaveLimit'))||0)); }); tip('✅ 每周请假次数已更新'); render(); })); break;
+      case 'leave-do': guard(()=>go(()=>{ const r = doLeave(v); tip(r.ok ? '✅ ' + r.msg : '⚠️ ' + r.msg); render(); })); break;
+      case 'leave-undo': guard(()=>go(()=>{ undoLeave(v); tip('✅ 已取消请假'); render(); })); break;
+      /* 海报 / 鼓励 */
+      case 'poster-make': go(()=>{ savePoster(); tip('🖼️ 打卡海报已保存到本地'); }); break;
+      case 'poster-refresh': render(); break;
+      case 'cheer-now': showCheer(true); break;
+      /* 错题 */
+      case 'wrong-filter': wrongFilter = v; render(); break;
+      case 'wrong-save-tags': go(()=>{ qa('[data-wtag]').forEach(s=>setWrongTag(s.getAttribute('data-wtag'), s.value)); tip('✅ 错题标签已保存'); render(); }); break;
+      case 'wrong-img': go(()=>{ const inp = D.createElement('input'); inp.type='file'; inp.accept='image/*'; inp.onchange = () => { const f = inp.files && inp.files[0]; if(!f) return; compressImage(f, u => { setWrongImg(v,u); tip('📷 错题截图已保存到本机'); render(); }); }; inp.click(); }); break;
+      case 'wrong-review': go(()=>{ const r = pushReview([v]); tip('🔔 已加入复习推送（' + r.count + ' 条）'); render(); }); break;
+      case 'wrong-push-batch': go(()=>{ const ids = wrongList(wrongFilter).map(w=>w.id); const r = pushReview(ids); tip('🔔 批量加入复习推送 ' + r.count + ' 条'); render(); }); break;
+      /* 报表 */
+      case 'report-period': reportPeriod = v; render(); break;
+      case 'report-md': go(()=>{ exportReport(v,'md'); tip('📄 Markdown 报表已导出'); }); break;
+      case 'report-png': go(()=>{ exportReport(v,'png'); tip('🖼️ 图片报表已导出'); }); break;
+      /* 种植园 */
+      case 'farm-codex': go(()=>{ if(typeof r256OpenCodex === 'function') r256OpenCodex(); else tip('图鉴模块未就绪'); }); break;
+      case 'growth-save': go(()=>{ setGrowthHours(val('growthHours')); tip('⏳ 成长时间已保存'); render(); }); break;
+      case 'farm-save': go(()=>{ upd(c=>{ c.farm.harvestAnim = chk('farmAnim'); c.farm.matureTip = chk('farmTip'); }); tip('✅ 种植园设置已保存'); render(); }); break;
+      case 'farm-goto': go(()=>{ if(typeof goPage === 'function') goPage('farm'); close(); }); break;
+      case 'itempreview-save': go(()=>{ upd(c=>{ c.farm.itemPreview = chk('itemPreviewOn'); }); tip('✅ 道具预览设置已保存'); render(); }); break;
+      case 'item-preview': go(()=>{ const it = itemPreview(v); if(it) showItemPreview(it); else tip('未找到道具'); }); break;
+      /* 秘境 */
+      case 'km-diff-save': go(()=>{ setKMDifficulty(val('kmDiff')); tip('🎚️ 难度已保存'); render(); }); break;
+      case 'km-report': go(()=>{ const t = Number(val('kmTotal'))||0, r = Number(val('kmRight'))||0; const wrong = []; for(let i=0;i<t-r;i++) wrong.push({id:'r271_'+Date.now()+'_'+i, q:'第 '+(r+i+1)+' 题', at:Date.now()}); addKMReport(t,r,wrong); tip('📈 正确率已记录，错题自动进错题池'); render(); }); break;
+      case 'km-cert': go(()=>{ const names={chinese:'语文神殿',math:'数学神殿',english:'英语神殿',mixed:'综合神殿'}, icos={chinese:'📖',math:'🔢',english:'🔤',mixed:'🏛️'}; saveKM({key:v, name:names[v]||v, ico:icos[v]||'🏆'}); tip('🏅 通关证书已保存'); }); break;
+      case 'km-certs': go(()=>{ if(typeof r256OpenCerts === 'function') r256OpenCerts(); else tip('证书模块未就绪'); }); break;
+      /* 学科 */
+      case 'resume-save': go(()=>{ const k=val('resumeKey')||'demo'; saveResume(k,{answers:val('resumeAns'), at:Date.now()}); tip('⏯️ 断点已保存，刷新后可恢复'); render(); }); break;
+      case 'resume-clear': go(()=>{ clearResume(v); tip('🗑️ 断点已清除'); render(); }); break;
+      case 'ans-finish': go(()=>{ const t=Number(val('ansTotal'))||0, r=Number(val('ansRight'))||0; const wrong=[]; for(let i=0;i<t-r;i++) wrong.push({q:'第 '+(r+i+1)+' 题', your:'', key:'请对照解析'}); practiceReport(Array.from({length:t},(_,i)=>({q:'第 '+(i+1)+' 题', right:i<r}))); tip('📋 答题报告已生成'); render(); }); break;
+      case 'report-wrong-add': go(()=>{ const r=(cfg().practice.reports||[])[Number(v)]; if(r){ const n=addReportWrongsToBook(r); tip('📝 已加入错题本 ' + n.count + ' 条'); } }); break;
+      case 'words-refresh': render(); break;
+      case 'words-master': go(()=>{ const w = words3500Need().find(x=>x.w===v); if(w){ S.setEn3500Mark(w.cat, w.w, 'ok'); tip('✅ 已标为已掌握'); render(); } }); break;
+      case 'xs-only-wrong': go(()=>{ upd(c=>{ c.xsFilter='wrong'; }); tip('已切换到「只看错题」'); }); break;
+      case 'xs-all': go(()=>{ upd(c=>{ c.xsFilter='all'; }); tip('已切换到「全部题目」'); }); break;
+      case 'xs-batch-review': go(()=>{ const ids = wrongList('全部').filter(w=>w.src==='学而思英语').map(w=>w.id); const r=pushReview(ids); tip('🔔 已批量加入复习 ' + r.count + ' 条'); }); break;
+      /* 设置 / 安全 */
+      case 'pin-save': guard(()=>go(()=>{ setPinEnabled(chk('pinOn'), val('pinVal')); tip('🔒 家长锁已更新'); render(); })); break;
+      case 'child-save': guard(()=>go(()=>{ upd(c=>{ c.childMode = chk('childModeOn'); }); applyUi(); tip('👦 孩子模式界面已更新'); render(); })); break;
+      case 'backup-now': go(()=>{ const p=backupPayload(); if(!p){ tip('备份生成失败'); return; } dlText(JSON.stringify(p), backupName(), 'application/json;charset=utf-8'); upd(c=>{ c.backup.lastAt=Date.now(); }); tip('💾 备份已导出（文件名带时间戳）'); }); break;
+      case 'backup-snapshot': go(()=>{ const s=takeSnapshot(); tip(s ? '📸 当前快照已生成，可随时回退' : '快照生成失败'); render(); }); break;
+      case 'backup-preview': go(()=>{ const f=q('#backupFile'), file=f&&f.files&&f.files[0]; const box=q('#r271BackupPreview'); if(!file){ tip('请先选择备份文件'); return; } const fr=new FileReader(); fr.onload=()=>{ try{ const p=JSON.parse(String(fr.result||'{}')); const s=backupSummary(p); window.__R271_PENDING_BACKUP__=p; if(box) box.innerHTML='<b>备份摘要</b><div class="r271-log">任务 '+s.tasks+' 个 · 打卡 '+s.records+' 条 · ⭐ '+s.stars+' · 田地 '+s.plots+' 块 · 备忘 '+s.memos+' 条 · '+(s.schedule?'含课程表':'无课程表')+' · '+Math.round(s.bytes/1024)+' KB</div>'+muted('确认后采用「合并」策略导入，不会清空现有数据。'); tip('✅ 备份预览已生成'); }catch(err){ if(box) box.innerHTML='<div class="r271-log">❌ 文件不是有效的 JSON 备份</div>'; } }; fr.readAsText(file); }); break;
+      case 'backup-restore': guard(()=>go(()=>{ const p=window.__R271_PENDING_BACKUP__; if(!p){ tip('请先预览备份文件'); return; } const s=takeSnapshot(); const r=mergeBackup(p); tip(r.ok ? '✅ 已合并导入（导入前快照已保留）' : '⚠️ ' + r.msg); if(s) tip('📸 导入前快照：' + new Date(s.at).toLocaleString('zh-CN')); render(); })); break;
+      case 'backup-rollback': guard(()=>go(()=>{ const c=cfg(), s=(c.backup.snapshots||[])[0]; if(!s){ tip('没有可用快照'); return; } const r=mergeBackup(s.payload); tip(r.ok ? '⏪ 已回退到最近快照' : '⚠️ ' + r.msg); render(); })); break;
+      case 'diag-run': render(); tip('🩺 诊断已刷新'); break;
+      case 'diag-repair': guard(()=>go(()=>{ const r=repairStorage(); tip('🛠️ ' + (r.actions||[]).join('；')); render(); })); break;
+      case 'remind-save': go(()=>{ const days=qa('[data-remind-day]').filter(x=>x.checked).map(x=>Number(x.getAttribute('data-remind-day'))); setRemind(val('remindSlots'), days); tip('⏰ 多时段提醒已保存'); render(); }); break;
+      case 'remind-go': remindAction('go'); tip('👉 已前往首页'); break;
+      case 'remind-later': remindAction('later'); tip('⏰ 15 分钟后再提醒'); break;
+      case 'remind-off': remindAction('off'); tip('🔕 今日不再提醒'); break;
+      case 'ui-save': guard(()=>go(()=>{ setTheme(val('themeSel')); setFontScale(val('fontSel')); upd(c=>{ c.ui.bigTouch=chk('bigTouch'); c.ui.safeEdge=chk('safeEdge'); c.ui.nickToast=chk('nickToast'); c.ui.autoCheer=chk('autoCheer'); }); applyUi(); tip('🎨 外观设置已保存'); render(); })); break;
+      /* 工具 */
+      case 'pomo-start': go(()=>{ pomoStart(val('pomoStudy'), val('pomoRest')); tip('🍅 专注开始！'); }); break;
+      case 'pomo-stop': pomoStop(); tip('⏹ 已停止'); break;
+      case 'memo-save': go(()=>{ const id=v, tagEl=q('#memoTag-'+id), taskEl=q('[data-memo-task][data-memo-task="'+id+'"]'); setMemoExtra(id,{tag:tagEl?tagEl.value:'', taskId:taskEl?taskEl.value:''}); tip('🗒️ 备忘录扩展信息已保存'); render(); }); break;
+      case 'memo-img': go(()=>{ const id=v, inp=D.createElement('input'); inp.type='file'; inp.accept='image/*'; inp.onchange=()=>{ const f=inp.files&&inp.files[0]; if(!f) return; compressImage(f,u=>{ setMemoExtra(id,{img:u}); tip('📷 图片已插入备忘录'); render(); }); }; inp.click(); }); break;
+      case 'sched-png': go(()=>{ schedulePNG(); tip('📅 课程表图片已导出'); }); break;
+      case 'sched-json': go(()=>{ dlText(scheduleJSON(), '课程表配置_'+stamp()+'.json', 'application/json;charset=utf-8'); tip('📄 课程表配置已导出'); }); break;
+      case 'sched-import': guard(()=>go(()=>{ const f=q('#schedFile'), file=f&&f.files&&f.files[0]; if(!file){ tip('请先选择 JSON 文件'); return; } const fr=new FileReader(); fr.onload=()=>{ const r=scheduleImport(String(fr.result||'')); tip(r.ok?'✅ 课程表配置已导入':'⚠️ '+r.msg); }; fr.readAsText(file); })); break;
+      /* 净化 */
+      case 'clean-scan': render(); tip('🧹 扫描完成（只读）'); break;
+      case 'clean-dedupe': guard(()=>go(()=>{ const r=dedupeState(); upd(c=>{ c.cleanup.lastAt=Date.now(); c.cleanup.lastReport=r; }); tip('✅ 去重完成，移除 ' + r.removed + ' 条重复/空记录'); render(); })); break;
+      case 'clean-repair': guard(()=>go(()=>{ const r=repairStorage(); upd(c=>{ c.cleanup.lastReport=r; }); tip('🛠️ 修复完成'); render(); })); break;
+      case 'clean-timers': go(()=>{ clearAllTimers(); pomoTimer=null; tip('🧹 闲置定时器已清理'); render(); }); break;
+      case 'clean-listeners': tip('✅ R271 层仅 2 处委托监听，无重复绑定'); break;
+      case 'clean-verify': go(()=>{ const a=S.load(), before=[(a.tasks||[]).length,(a.records||[]).length,(a.archive||{}).totalStars||0]; const b=S.load(), after=[(b.tasks||[]).length,(b.records||[]).length,(b.archive||{}).totalStars||0]; const box=q('#r271VerifyBox'); if(box) box.innerHTML='<div class="r271-log">'+(JSON.stringify(before)===JSON.stringify(after)?'✅ 读取一致：':'⚠️ 不一致：')+before.join(' / ')+' → '+after.join(' / ')+'</div>'; }); break;
+      default: break;
+    }
+  }
+  function onChange(e){
+    const t = e.target;
+    if(t && t.hasAttribute && t.hasAttribute('data-rule')){
+      // 规则类型切换时提示附加输入格式（不自动保存，避免误写）
+      const id = t.getAttribute('data-rule'), ex = q('#extra-' + id);
+      if(ex) ex.placeholder = t.value === 'once' ? 'YYYY-MM-DD' : (t.value === 'weekly' ? '星期 0-6，逗号分隔' : '无需填写');
+    }
+  }
+
+  /* 导入合并：只补缺失字段，绝不覆盖 / 清空现有用户数据 */
+  function mergeBackup(payload){
+    try{
+      const src = payload && (payload.data || payload.state || payload);
+      if(!src || typeof src !== 'object') return { ok:false, msg:'备份内容为空' };
+      const st = S.load();
+      // 数组类：按主键补齐缺失项；对象类：只补缺失键
+      const arrKeys = ['tasks','records','plots','gifts','mathProblems','calcBook','calcWrongBook','nickMemos','xueersiWrongs'];
+      arrKeys.forEach(k => {
+        if(!Array.isArray(src[k])) return;
+        if(!Array.isArray(st[k])) st[k] = [];
+        const ids = new Set(st[k].map(x => String((x && (x.id || x.key || x.date + '|' + x.taskId)) || JSON.stringify(x))));
+        src[k].forEach(x => {
+          const key = String((x && (x.id || x.key || x.date + '|' + x.taskId)) || JSON.stringify(x));
+          if(!ids.has(key)){ st[k].push(x); ids.add(key); }
+        });
+      });
+      ['schedule','profile','archive','inventory','r256','r271','settings','km','weekPlan'].forEach(k => {
+        if(src[k] && typeof src[k] === 'object'){
+          if(!st[k] || typeof st[k] !== 'object') st[k] = {};
+          Object.keys(src[k]).forEach(kk => { if(st[k][kk] === undefined) st[k][kk] = src[k][kk]; });
+        }
+      });
+      S.save(st);
+      return { ok:true };
+    }catch(e){ return { ok:false, msg:'合并失败：' + (e && e.message || '') }; }
+  }
+
+  /* ---------------- 通用浮层：帮助 / 鼓励 / 道具预览 / 提醒 ---------------- */
+  function overlay(html, cls){
+    const ov = D.createElement('div'); ov.className = 'r271-mini-mask ' + (cls || '');
+    ov.innerHTML = '<div class="r271-mini">' + html + '</div>';
+    D.body.appendChild(ov);
+    ov.addEventListener('click', ev => { if(ev.target === ov || ev.target.closest('[data-mini-close]')){ try{ ov.remove(); }catch(e){} } });
+    return ov;
+  }
+  function showHelp(){
+    const page = (() => { const el = q('.page.active'); return el ? (el.getAttribute('data-page') || 'home') : 'home'; })();
+    const key = HELP[curTab] ? curTab : page;
+    const text = HELP[key] || HELP[page] || HELP.home;
+    overlay('<div class="r271-h3">❓ 使用说明</div><div class="r271-help">' + E(text) + '</div>'
+      + '<div class="r271-row">' + btn('close','知道啦', '', 'primary').replace('data-act="close"','data-mini-close="1"') + '</div>');
+  }
+  function showCheer(force){
+    const p = posterData(), c = cfg();
+    if(!force && !c.ui.autoCheer) return;
+    if(!force && c.nick.lastCheerDay === today()) return;
+    const pct = p.total ? Math.round(p.done / p.total * 100) : 0;
+    const lines = pct >= 100 ? '🦊 Nick：哇！全部必做都完成啦，今天的你超级棒！'
+      : pct >= 60 ? '🦊 Nick：已经完成一大半了，再冲一下就满格啦！'
+      : pct > 0 ? '🦊 Nick：开局不错哦，一步一步来，我陪着你！'
+      : '🦊 Nick：新的一天，从一个小任务开始吧！';
+    if(!force){ upd(cfg2 => { cfg2.nick.lastCheerDay = today(); }); }
+    overlay('<div class="r271-cheer"><div class="r271-cheer-ico">🦊</div><div class="r271-h3">' + E(lines) + '</div>'
+      + '<div class="r271-muted">今日完成 ' + p.done + '/' + p.total + ' · 连续 ' + p.streak + ' 天 · +' + p.stars + ' ⭐</div>'
+      + '<div class="r271-row">' + btn('poster-make','保存今日海报', '', 'primary') + btn('close','继续加油', '').replace('data-act="close"','data-mini-close="1"') + '</div></div>', 'r271-cheer-mask');
+  }
+  function showItemPreview(it){
+    const ov = overlay('<div class="r271-h3">' + E(it.ico || '📦') + ' 道具预览 · ' + E(it.name) + '</div>'
+      + '<div class="r271-help">' + E(it.effect) + '</div>'
+      + '<div class="r271-big">消耗 <b>⭐ ' + E(it.price) + '</b></div>'
+      + '<div class="r271-row"><button class="r271-btn" data-mini-close="1">再看看</button>'
+      + '<button class="r271-btn primary" data-mini-ok="1">确认兑换</button></div>');
+    ov.addEventListener('click', ev => {
+      if(!ev.target.closest('[data-mini-ok]')) return;
+      try{ ov.remove(); }catch(e){}
+      const r = S.buyShopItem(it.id, it.kind === 'gift' ? 'gift' : (it.kind === 'seed' ? 'seed' : 'growth'));
+      tip(r && r.ok ? '✅ 已兑换 ' + it.name : '⚠️ ' + ((r && r.msg) || '兑换失败'));
+      try{ if(typeof renderFarm === 'function') renderFarm(); }catch(e){}
+    });
+  }
+  function scrollTop(){
+    try{
+      [D.scrollingElement, D.body, D.querySelector('.content'), D.querySelector('.main'), D.querySelector('.page.active')].forEach(el => {
+        if(el){ try{ el.scrollTop = 0; }catch(e){} }
+      });
+      window.scrollTo(0,0);
+    }catch(e){}
+    tip('⬆️ 已回到顶部');
+  }
+  function cycleFont(){
+    const order = [0.9,1,1.1,1.2], c = cfg(), i = order.indexOf(Number(c.ui.fontScale)||1);
+    setFontScale(order[(i+1) % order.length]);
+    tip('🔤 字号档位：' + Math.round((Number(cfg().ui.fontScale)||1)*100) + '%');
+  }
+  function mountHelpDots(){
+    if(!REAL) return;
+    let n = 0;
+    qa('.page-title, .nw-topbar, .km-title-card').forEach(el => {
+      if(!el || el.querySelector('.r271-help-dot')) return;
+      const b = D.createElement('button');
+      b.className = 'r271-help-dot'; b.type = 'button'; b.textContent = '?'; b.title = '本板块使用说明';
+      b.setAttribute('data-r271-help','1');
+      el.appendChild(b); n++;
+    });
+    return n;
+  }
+  function matureTip(){
+    if(!REAL || !cfg().farm.matureTip) return;
+    const n = matureCount(); if(!n) return;
+    const key = 'r271_mature_' + today();
+    try{ if(sessionStorage.getItem(key)) return; sessionStorage.setItem(key,'1'); }catch(e){}
+    const ov = overlay('<div class="r271-h3">🌱 种植园有 ' + n + ' 块作物成熟啦！</div>'
+      + '<div class="r271-help">Nick 在菜园等你去收获，收获后会点亮植物图鉴并记录首次收获时间。</div>'
+      + '<div class="r271-row"><button class="r271-btn" data-mini-close="1">稍后</button><button class="r271-btn primary" data-mini-go="1">一键前往种植园</button></div>');
+    ov.addEventListener('click', ev => { if(ev.target.closest('[data-mini-go]')){ try{ ov.remove(); }catch(e){} if(typeof goPage==='function') goPage('farm'); } });
+  }
+
+  /* ---------------- 真实浏览器钩子（不影响 jsdom 门禁） ---------------- */
+  function wrapCheckIn(){
+    if(!REAL) return;
+    try{
+      const orig = S.toggleCheckIn;
+      if(orig && !orig.__r271){
+        const w = function(dateStr, taskId){
+          const r = orig.apply(this, arguments);
+          try{
+            if(r && r.completed){
+              const st = S.load(), d = today();
+              const req = (st.tasks || []).filter(t => t.type === '必做任务');
+              const done = req.every(t => {
+                if(((((st.r271||{}).leave||{}).days||{})[d]||{})[t.id]) return true;
+                const rec = (st.records||[]).find(x=>x.date===d && x.taskId===t.id);
+                return !!(rec && rec.completed);
+              });
+              if(done && req.length) setTimeout(()=>showCheer(false), 420);
+            }
+          }catch(e){}
+          return r;
+        };
+        w.__r271 = true;
+        S.toggleCheckIn = w;
+      }
+    }catch(e){}
+  }
+  function wrapHarvest(){
+    if(!REAL) return;
+    ['waterPlot','sunPlot','fertPlot'].forEach(fn => {
+      try{
+        const orig = S[fn]; if(!orig || orig.__r271) return;
+        const w = function(plotIdx){
+          const r = orig.apply(this, arguments);
+          try{
+            const st = S.load(), p = (st.plots || [])[Number(plotIdx)||0];
+            if(p && p.stage >= 4 && !p.r271ReadyAt){ p.r271ReadyAt = Date.now(); S.save(st); }
+            if(r && r.ok && cfg().farm.harvestAnim) setTimeout(()=>nickHarvestAnim(), 30);
+          }catch(e){}
+          return r;
+        };
+        w.__r271 = true; S[fn] = w;
+      }catch(e){}
+    });
+    try{
+      const orig = S.harvestPlot; if(orig && !orig.__r271){
+        const w = function(plotIdx){
+          const h = growthHours();
+          if(h > 0){
+            try{
+              const st = S.load(), p = (st.plots||[])[Number(plotIdx)||0];
+              if(p && p.cropId && p.stage >= 4){
+                if(!p.r271ReadyAt){ p.r271ReadyAt = Date.now(); S.save(st); }
+                const left = h*3600*1000 - (Date.now() - p.r271ReadyAt);
+                if(left > 0) return { ok:false, msg:'资源已足，还需成长约 ' + Math.ceil(left/3600000) + ' 小时才能收获' };
+              }
+            }catch(e){}
+          }
+          const r = orig.apply(this, arguments);
+          try{ if(r && r.ok && cfg().farm.harvestAnim) nickHarvestAnim(); }catch(e){}
+          return r;
+        };
+        w.__r271 = true; S.harvestPlot = w;
+      }
+    }catch(e){}
+  }
+  function nickHarvestAnim(){
+    if(!REAL) return;
+    const el = D.createElement('div'); el.className = 'r271-harvest-anim';
+    el.innerHTML = '<div class="r271-harvest-inner">🦊 🎉 收获啦！+1 作物 · 图鉴已点亮</div>';
+    D.body.appendChild(el);
+    setTimeout(()=>{ try{ el.remove(); }catch(e){} }, 1800);
+  }
+  function interceptShopPreview(e){
+    if(!REAL || e.isTrusted !== true || !cfg().farm.itemPreview) return;
+    const el = e.target.closest('[data-hub-seed],[data-hub-growth],[data-hub-gift],[data-buy-seed],[data-buy-growth],[data-buy-gift]');
+    if(!el || window.__R271_PREVIEW_OK__) return;
+    const id = el.getAttribute('data-hub-seed') || el.getAttribute('data-hub-growth') || el.getAttribute('data-hub-gift')
+      || el.getAttribute('data-buy-seed') || el.getAttribute('data-buy-growth') || el.getAttribute('data-buy-gift');
+    const it = itemPreview(id) || shopPreviewList().find(x => String(x.name) === String(id));
+    if(!it) return;
+    e.preventDefault(); e.stopPropagation();
+    const ov = overlay('<div class="r271-h3">' + E(it.ico||'📦') + ' 道具预览 · ' + E(it.name) + '</div>'
+      + '<div class="r271-help">' + E(it.effect) + '</div><div class="r271-big">消耗 <b>⭐ ' + E(it.price) + '</b></div>'
+      + '<div class="r271-row"><button class="r271-btn" data-mini-close="1">取消</button><button class="r271-btn primary" data-mini-go-shop="1">确认后继续兑换</button></div>');
+    ov.addEventListener('click', ev => {
+      if(!ev.target.closest('[data-mini-go-shop]')) return;
+      try{ ov.remove(); }catch(err){}
+      window.__R271_PREVIEW_OK__ = true;
+      try{ el.click(); }catch(err){}
+      setTimeout(()=>{ window.__R271_PREVIEW_OK__ = false; }, 300);
+    }, { once:true });
+  }
+  function pinIntercept(e){
+    if(!REAL || e.isTrusted !== true || highRiskAllowed()) return;
+    const el = e.target.closest('[data-reset-module],#btnLocalRestore,[data-import-backup],#btnTaskPlanSave');
+    if(!el) return;
+    e.preventDefault(); e.stopPropagation();
+    askPin(() => { el.click(); });
+  }
+  function reminderLoop(){
+    if(!REAL) return;
+    regTimer(setInterval(() => {
+      try{
+        const c = cfg(), now = new Date(), hm = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+        const dow = now.getDay();
+        if(c.remind.suppressedDay === today()) return;
+        if((c.remind.days||[]).indexOf(dow) < 0) return;
+        if(Date.now() < (c.remind.snoozeUntil||0)) return;
+        if((c.remind.slots||[]).indexOf(hm) < 0) return;
+        const key = 'r271_remind_' + today() + '_' + hm;
+        if(sessionStorage.getItem(key)) return;
+        sessionStorage.setItem(key,'1');
+        const ov = overlay('<div class="r271-h3">⏰ 打卡时间到啦</div><div class="r271-help">🦊 Nick：该完成今天的打卡任务咯！</div>'
+          + '<div class="r271-row">'
+          + '<button class="r271-btn primary" data-rem="go">立即前往</button>'
+          + '<button class="r271-btn" data-rem="later">稍后 15 分钟</button>'
+          + '<button class="r271-btn" data-rem="off">今日不再提醒</button></div>');
+        ov.addEventListener('click', ev => {
+          const b = ev.target.closest('[data-rem]'); if(!b) return;
+          remindAction(b.getAttribute('data-rem'));
+          if(b.getAttribute('data-rem') === 'go' && typeof goPage === 'function') goPage('home');
+          try{ ov.remove(); }catch(err){}
+        });
+      }catch(e){}
+    }, 30000));
+  }
+  function offlineQueue(){
+    if(!REAL) return;
+    const flush = () => {
+      try{
+        const list = S.listPendingAnswers ? S.listPendingAnswers() : {};
+        Object.keys(list).forEach(k => {
+          try{ if(S.clearPendingAnswer) S.clearPendingAnswer(k); }catch(e){}
+        });
+      }catch(e){}
+    };
+    window.addEventListener('online', () => { flush(); tip('🌐 网络已恢复，本地暂存数据已同步'); });
+    window.addEventListener('offline', () => { tip('📴 已进入离线模式：已加载的题库 / 笔记 / 课程表继续可用'); });
+  }
+  function boot(){
+    try{
+      shell();
+      applyUi();
+      wrapCheckIn();
+      wrapHarvest();
+      mountHelpDots();
+      mountTongshiEntry();
+      D.addEventListener('click', e => { interceptShopPreview(e); pinIntercept(e); if(e.target.closest && e.target.closest('[data-r271-help]')) showHelp(); }, true);
+      reminderLoop();
+      offlineQueue();
+      matureTip();
+      window.__R271_BOOTED__ = true;
+    }catch(e){}
+  }
+
+  /* ---------------- 对外 API（供运行时探针 / 门禁验证） ---------------- */
+  window.R271 = {
+    version:'R271', cfg:cfg, upd:upd, defaults:DEFAULTS, TONGSHI:TONGSHI, tongshiHtml:tongshiHtml, mountTongshiEntry:mountTongshiEntry,
+    builtinTemplates:BUILTIN_TPL, allTemplates:allTemplates, applyTemplate:applyTemplate, saveCurrentAsTemplate:saveCurrentAsTemplate,
+    setRule:setRule, setHoliday:setHoliday, leaveState:leaveState, doLeave:doLeave, undoLeave:undoLeave,
+    posterData:posterData, savePoster:savePoster,
+    stats:stats, reportMD:reportMD, exportReport:exportReport, dateList:dateList,
+    WRONG_TAGS:WRONG_TAGS, wrongList:wrongList, setWrongTag:setWrongTag, setWrongImg:setWrongImg, pushReview:pushReview,
+    growthHours:growthHours, setGrowthHours:setGrowthHours, matureCount:matureCount, itemPreview:itemPreview, shopPreviewList:shopPreviewList,
+    setKMDifficulty:setKMDifficulty, kmAccuracy:kmAccuracy, addKMReport:addKMReport,
+    saveResume:saveResume, getResume:getResume, clearResume:clearResume, practiceReport:practiceReport,
+    words3500Need:words3500Need, words3500Quiz:words3500Quiz,
+    setPinEnabled:setPinEnabled, highRiskAllowed:highRiskAllowed, backupName:backupName, backupSummary:backupSummary,
+    takeSnapshot:takeSnapshot, mergeBackup:mergeBackup, diagnose:diagnose, setRemind:setRemind, remindAction:remindAction,
+    setFontScale:setFontScale, setTheme:setTheme, applyUi:applyUi,
+    pomoStart:pomoStart, pomoStop:pomoStop, pomoState:pomoState,
+    memoExtra:memoExtra, setMemoExtra:setMemoExtra, scheduleJSON:scheduleJSON, scheduleImport:scheduleImport,
+    scanStorage:scanStorage, dedupeState:dedupeState, repairStorage:repairStorage,
+    open:open, close:close, render:render, showCheer:showCheer, scrollTop:scrollTop,
+    boot:boot, clearAllTimers:clearAllTimers, tabs:TABS.map(t=>t.id)
+  };
+
+  if(D.readyState === 'loading') D.addEventListener('DOMContentLoaded', () => setTimeout(boot, 0));
+  else setTimeout(boot, 0);
+})();
+
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })();
