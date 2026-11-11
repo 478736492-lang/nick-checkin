@@ -37,6 +37,14 @@
   window.__STORAGE_BOOT__={mode:'shim',writable:true,warn:'blocked'};
 })();</script>
 <title>疯狂动物城 · 三年级学习打卡乐园</title>
+<!-- R272-7：标准 PWA manifest + iPad「添加到主屏幕」配置。
+     桌面启动模式是独立存储沙盒，Safari ITP 的存储驱逐策略会大幅放宽；
+     manifest / apple-touch-icon 与用户业务数据库完全无关，静态更新不触碰 IndexedDB。 -->
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#ffffff">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
 <style>
 /* ============================================================
    疯狂动物城 · 三年级学习乐园 · 样式
@@ -10488,6 +10496,24 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
 .r271-tl-year{font-size:12px;color:var(--tone-600);font-weight:700}
 .r271-tl-text{flex:1 1 100%;font-size:13px;line-height:1.7;color:var(--muted)}
 
+/* ==================== R272：设置中心 · 持久化数据库状态区 ====================
+   复用 R270 的 .localdb-* 视觉令牌，只补一块状态网格；
+   原有页面界面 / 文字 / 交互表现保持不变，用户无感。 */
+.r272-pwa-tip{margin:0 0 8px}
+.r272-pwa-tip:empty{display:none}
+.r272-stat{
+  display:flex;flex-direction:column;gap:3px;
+  margin:0 0 10px;padding:8px 10px;border-radius:10px;
+  background:var(--tone-100);border:1px solid var(--tone-200);
+}
+.r272-stat .ldb-row{font-size:11.5px}
+.r272-stat .ldb-k{min-width:96px}
+.r272-stat .ldb-meter{margin:4px 0 2px}
+#r272DbCard .localdb-report{margin-top:10px}
+#r272DbCard .pbtn[data-r272-act="restore"],
+#r272DbCard .pbtn[data-r272-act="repair"],
+#r272DbCard .pbtn[data-r272-act="rollback"]{white-space:nowrap}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -13352,6 +13378,780 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
 <script src="./assets/seed_en_tenses_seed.js"></script>
 <!-- R251-3：语文专区·作文专项「专项知识」（源自 表现手法、修辞手法、表达方式.docx） -->
 <script src="./assets/seed_yw_zhuanxiang_seed.js"></script>
+<!-- R272-1：统一持久化数据层必须先于 store.js 加载；它只提供异步事务能力，
+     不改变 S.load() / S.save() 的同步调用语义，也不触碰任何页面 UI。 -->
+<script>
+/* ============================================================================
+   R272 · 统一持久化数据层（根治 iPad Safari 数据丢失）
+   ----------------------------------------------------------------------------
+   设计铁律：
+     ① 主存储 = IndexedDB「nick_checkin_main_db」；localStorage 只留轻量标记 +
+        一份同步桥梁快照（store.js 的 KEY），不再作为唯一真相。
+     ② 上层业务（打卡 / 种植园 / 题库 / 设置 / 笔记 / 课程表）完全不改动原有
+        S.load() / S.save() 同步调用语义 —— 本层用「同步内存态 + 异步事务落库」桥接。
+     ③ 三重本地备份：① IDB 主表 main ② localStorage 桥梁快照 ③ IDB snapshots 历史表。
+     ④ 读取优先级：IndexedDB → localStorage 快照 → 历史备份快照；
+        任意一层损坏自动从其它层恢复，脏数据隔离到 quarantine，不阻塞页面加载。
+     ⑤ 所有写入走异步事务、返回成功标记、失败自动重试最多 3 次；仍失败则降级写
+        localStorage 多重快照并回调提示，内存内修改绝不丢弃。
+     ⑥ 版本更新 / 静态资源更新只换页面代码，禁止触碰任何用户业务数据表；
+        升级前后做数据哈希 / 规模校验，异常自动回滚上一份快照并写日志。
+     ⑦ 内置固定素材、系统默认模板单独放 builtin 表，不与用户可修改业务数据混表。
+     ⑧ 浏览器不支持 IndexedDB 时自动降级为 localStorage + 多重快照，原保护逻辑全保留。
+   ========================================================================== */
+(function(){
+  'use strict';
+  var W = (typeof window !== 'undefined') ? window : this;
+
+  /* ----------------------------- 常量 ----------------------------- */
+  var DB_NAME  = 'nick_checkin_main_db';
+  var DB_VER   = 1;
+  var ST_MAIN  = 'main';        // 用户业务主表（唯一主档）
+  var ST_SNAP  = 'snapshots';   // 历史快照（保留最近 10 份）
+  var ST_CHUNK = 'chunks';      // 大体积数据分片
+  var ST_LOG   = 'logs';        // 调试日志（仅自检面板可见）
+  var ST_BUILTIN = 'builtin';   // 内置固定素材 / 默认模板（与业务数据隔离）
+  var ST_QUAR  = 'quarantine';  // 脏数据隔离区
+  var STORES   = [ST_MAIN, ST_SNAP, ST_CHUNK, ST_LOG, ST_BUILTIN, ST_QUAR];
+  var MAIN_KEY = 'state';
+  var MAX_SNAPSHOTS = 10;
+  var CHUNK_SIZE = 256 * 1024;  // 单分片 256KB，规避 Safari 单条存储上限
+  var MAX_RETRY  = 3;
+  var BOOT_TIMEOUT = 1600;      // 启动屏障硬超时：IDB 再慢也不白屏
+  var HEARTBEAT_MS = 4 * 60 * 1000;
+
+  var LS_KEY    = 'zoo_checkin_v3';             // 与 store.js 同源的同步桥梁快照
+  var LS_META   = 'zoo_checkin_v3_meta';        // 最后落库时间戳
+  var LS_MARK   = 'nick_checkin_r272_mark';     // 轻量标记（持久化桶 / 版本 / 迁移完成）
+  var LS_MIRROR = 'nick_checkin_r272_degraded'; // 降级模式主副本
+  var LS_MIRROR_B = [LS_MIRROR + '_b1', LS_MIRROR + '_b2', LS_MIRROR + '_b3'];
+  var LS_PRE    = 'nick_checkin_r272_preupdate';// 版本升级前保护副本（轻量标记 + 快照 id）
+
+  /* ----------------------------- 状态 ----------------------------- */
+  var _db = null, _opening = null, _available = null;
+  var _degraded = false, _persisted = false, _migrated = false;
+  var _primaryRaw = null, _primaryTs = 0;
+  var _recoveredFrom = '';
+  var _lastWrite = null;
+  var _ready = false, _queue = [];
+  var _logsCache = [];
+  var _heartbeatTimer = null, _bootTimer = null;
+  var _preUpdate = null;
+  var _lastWrittenRaw = null, _lastWrittenAt = 0;
+
+  /* ----------------------------- 工具 ----------------------------- */
+  function _now(){ return Date.now(); }
+  function _lsGet(k){ try{ return W.localStorage.getItem(k); }catch(e){ return null; } }
+  function _lsSet(k,v){ try{ W.localStorage.setItem(k,v); return true; }catch(e){ return false; } }
+  function _lsDel(k){ try{ W.localStorage.removeItem(k); }catch(e){} }
+  function _lsMetaTs(){
+    try{ var m = JSON.parse(_lsGet(LS_META) || 'null'); return (m && m.savedAt) || 0; }catch(e){ return 0; }
+  }
+  function _lsSetMeta(ts, bytes){
+    _lsSet(LS_META, JSON.stringify({schema:254, savedAt:ts||_now(), bytes:bytes||0, engine:'nick_checkin_main_db'}));
+  }
+  /* 采样哈希：完整遍历 MB 级字符串会拖慢每次保存，按 1/1024 采样 + 长度 + 首尾，
+     足够识别「被覆盖 / 被截断 / 被回滚」，且 O(n/1024)。 */
+  function hash(raw){
+    var h1 = 0x811c9dc5, h2 = 0x9e3779b9, i, c, n = raw ? raw.length : 0;
+    h2 = (h2 ^ n) >>> 0;
+    for(i = 0; i < n; i += 1024){
+      c = raw.charCodeAt(i);
+      h1 = ((h1 ^ c) * 0x01000193) >>> 0;
+      h2 = ((h2 + c * (i + 1)) ^ (h2 >>> 7)) >>> 0;
+    }
+    if(n){ c = raw.charCodeAt(n - 1); h1 = ((h1 ^ c) * 0x01000193) >>> 0; }
+    return ('00000000' + h1.toString(16)).slice(-8) + ('00000000' + h2.toString(16)).slice(-8);
+  }
+  /* JSON 完整性校验：解析 + 结构 + 关键业务字段，脏数据一律不采纳 */
+  function jsonOk(raw){
+    if(!raw || typeof raw !== 'string' || raw.length < 20) return false;
+    try{
+      var o = JSON.parse(raw);
+      if(!o || typeof o !== 'object' || Array.isArray(o)) return false;
+      return !!(o.tasks || o.records || o.archive || o.readFlags || o.plots);
+    }catch(e){ return false; }
+  }
+  function _shape(raw){
+    try{
+      var o = JSON.parse(raw);
+      return {
+        records: (o.records && o.records.length) || 0,
+        tasks:   (o.tasks && o.tasks.length) || 0,
+        stars:   ((o.archive && o.archive.totalStars) || 0),
+        plots:   (o.plots && o.plots.length) || 0,
+        wrong:   ((o.calcWrongBook && o.calcWrongBook.length) || 0) + ((o.wrongBook && o.wrongBook.length) || 0),
+        notes:   ((o.mathProblems && o.mathProblems.length) || 0),
+        flags:   o.readFlags ? Object.keys(o.readFlags).length : 0
+      };
+    }catch(e){ return null; }
+  }
+  function _shapeLess(a, b){
+    if(!a || !b) return false;
+    var keys = ['records','tasks','stars','plots','wrong','notes','flags'];
+    for(var i=0;i<keys.length;i++){ if(a[keys[i]] < b[keys[i]]) return true; }
+    return false;
+  }
+  function _idbFactory(){
+    try{
+      if(typeof indexedDB !== 'undefined' && indexedDB) return indexedDB;
+      if(W && W.indexedDB) return W.indexedDB;
+    }catch(e){}
+    return null;
+  }
+
+  /* ----------------------------- 日志（仅自检面板可见） ----------------------------- */
+  function log(ev, detail){
+    var rec = { at:_now(), ev:String(ev||''), detail:detail || null };
+    _logsCache.push(rec);
+    if(_logsCache.length > 300) _logsCache.shift();
+    try{
+      _open().then(function(db){
+        if(!db) return;
+        try{
+          var t = db.transaction([ST_LOG], 'readwrite');
+          t.objectStore(ST_LOG).put(rec);
+        }catch(e){}
+      }).catch(function(){});
+    }catch(e){}
+  }
+  function logs(limit){
+    var arr = _logsCache.slice();
+    return _getAll(ST_LOG).then(function(rows){
+      try{ rows = rows || []; }catch(e){ rows = []; }
+      var all = rows.concat(arr);
+      all.sort(function(a,b){ return (a.at||0) - (b.at||0); });
+      /* 去重（同一条可能已在 IDB 又在内存缓存里） */
+      var seen = {}, out = [];
+      for(var i=0;i<all.length;i++){
+        var k = all[i].at + '|' + all[i].ev;
+        if(seen[k]) continue; seen[k] = 1; out.push(all[i]);
+      }
+      return out.slice(-(limit || 80));
+    }).catch(function(){ return arr.slice(-(limit || 80)); });
+  }
+
+  /* ----------------------------- IndexedDB 基础设施 ----------------------------- */
+  function _open(){
+    if(_db) return Promise.resolve(_db);
+    if(_opening) return _opening;
+    var f = _idbFactory();
+    if(!f){ _available = false; _degraded = true; return Promise.resolve(null); }
+    _opening = new Promise(function(resolve){
+      var req;
+      try{ req = f.open(DB_NAME, DB_VER); }
+      catch(e){ _available = false; _degraded = true; _opening = null; resolve(null); return; }
+      req.onupgradeneeded = function(){
+        try{
+          var db = req.result;
+          if(!db || !db.objectStoreNames) return;
+          /* 业务主表 / 分片 / 隔离区：keyPath=k；快照 / 日志：自增 id。
+             builtin 表只放系统默认模板，永不写入用户业务数据。 */
+          if(!db.objectStoreNames.contains(ST_MAIN))    db.createObjectStore(ST_MAIN,    {keyPath:'k'});
+          if(!db.objectStoreNames.contains(ST_CHUNK))   db.createObjectStore(ST_CHUNK,   {keyPath:'k'});
+          if(!db.objectStoreNames.contains(ST_QUAR))    db.createObjectStore(ST_QUAR,    {keyPath:'k'});
+          if(!db.objectStoreNames.contains(ST_BUILTIN)) db.createObjectStore(ST_BUILTIN, {keyPath:'k'});
+          if(!db.objectStoreNames.contains(ST_SNAP))    db.createObjectStore(ST_SNAP,    {keyPath:'id', autoIncrement:true});
+          if(!db.objectStoreNames.contains(ST_LOG))     db.createObjectStore(ST_LOG,     {keyPath:'id', autoIncrement:true});
+        }catch(e){}
+      };
+      req.onsuccess = function(){
+        _db = req.result || null; _available = !!_db; _opening = null;
+        if(_db){
+          try{ _db.onversionchange = function(){ try{ _db.close(); }catch(e){} _db = null; }; }catch(e){}
+        }
+        resolve(_db);
+      };
+      req.onerror = function(){ _available = false; _degraded = true; _opening = null; resolve(null); };
+      req.onblocked = function(){ _available = false; _degraded = true; _opening = null; resolve(null); };
+    });
+    return _opening;
+  }
+  function _get(store, key){
+    return _open().then(function(db){
+      if(!db) return null;
+      return new Promise(function(resolve){
+        try{
+          var r = db.transaction([store], 'readonly').objectStore(store).get(key);
+          r.onsuccess = function(){ resolve(r.result || null); };
+          r.onerror = function(){ resolve(null); };
+        }catch(e){ resolve(null); }
+      });
+    }).catch(function(){ return null; });
+  }
+  function _getAll(store){
+    return _open().then(function(db){
+      if(!db) return [];
+      return new Promise(function(resolve){
+        try{
+          var r = db.transaction([store], 'readonly').objectStore(store).getAll();
+          r.onsuccess = function(){ resolve(r.result || []); };
+          r.onerror = function(){ resolve([]); };
+        }catch(e){ resolve([]); }
+      });
+    }).catch(function(){ return []; });
+  }
+  function _tx(stores, mode, actions){
+    return _open().then(function(db){
+      if(!db) return Promise.reject(new Error('idb-unavailable'));
+      return new Promise(function(resolve, reject){
+        var t;
+        try{ t = db.transaction(stores, mode); }
+        catch(e){ reject(e); return; }
+        t.oncomplete = function(){ resolve(true); };
+        t.onabort = function(){ reject(t.error || new Error('tx-abort')); };
+        t.onerror = function(){ /* 交由 onabort 统一处理 */ };
+        try{ actions(t); }
+        catch(e){ try{ t.abort(); }catch(e2){} reject(e); }
+      });
+    });
+  }
+  /* 轻量附属写入（日志 / ITP 交互标记 / 心跳 / 隔离区）绝不能产生未捕获的
+     Promise rejection：jsdom 回归 / 不支持 IDB 的旧运行时会直接崩进程。 */
+  function _put(store, value){
+    return _tx([store], 'readwrite', function(t){ t.objectStore(store).put(value); })
+      .catch(function(){ return false; });
+  }
+
+  /* ----------------------------- 分片 ----------------------------- */
+  function _chunkPlan(raw){
+    if(!raw || raw.length <= CHUNK_SIZE) return null;
+    var parts = [], n = Math.ceil(raw.length / CHUNK_SIZE);
+    for(var i=0;i<n;i++) parts.push(raw.slice(i * CHUNK_SIZE, (i + 1) * CHUNK_SIZE));
+    return parts;
+  }
+  function _readChunks(rec){
+    var ids = rec.chunkIds || [];
+    return _open().then(function(db){
+      if(!db) return null;
+      return new Promise(function(resolve){
+        try{
+          var t = db.transaction([ST_CHUNK], 'readonly'), os = t.objectStore(ST_CHUNK), parts = [], got = 0, bad = false;
+          if(!ids.length){ resolve(''); return; }
+          ids.forEach(function(id, idx){
+            var r = os.get(id);
+            r.onsuccess = function(){
+              if(!r.result || typeof r.result.part !== 'string') bad = true;
+              else parts[idx] = r.result.part;
+              got++;
+              if(got === ids.length) resolve(bad ? null : parts.join(''));
+            };
+            r.onerror = function(){ bad = true; got++; if(got === ids.length) resolve(null); };
+          });
+        }catch(e){ resolve(null); }
+      });
+    }).catch(function(){ return null; });
+  }
+  function _quarantine(raw, why){
+    try{
+      _put(ST_QUAR, { k:'q_' + _now(), at:_now(), why:String(why||''), raw:String(raw||'').slice(0, 2 * 1024 * 1024) });
+    }catch(e){}
+    log('quarantine', { why:String(why||'') });
+  }
+
+  /* ----------------------------- 主库读取 ----------------------------- */
+  function read(){
+    return _get(ST_MAIN, MAIN_KEY).then(function(rec){
+      if(!rec) return null;
+      if(rec.chunked){
+        return _readChunks(rec).then(function(raw){
+          if(!raw || raw.length !== rec.size || hash(raw) !== rec.hash){
+            _quarantine(raw || '', 'chunk-verify-failed');
+            return null;
+          }
+          return { raw:raw, ts:rec.ts || 0, hash:rec.hash, chunked:true };
+        });
+      }
+      if(typeof rec.raw !== 'string' || !jsonOk(rec.raw)){
+        _quarantine(rec.raw, 'main-json-invalid');
+        return null;
+      }
+      if(rec.hash && hash(rec.raw) !== rec.hash){
+        /* 哈希不符：仍以 JSON 完整性为准，只记录日志，不轻易丢弃可读数据 */
+        log('hash-mismatch', { expected:rec.hash, actual:hash(rec.raw) });
+      }
+      return { raw:rec.raw, ts:rec.ts || 0, hash:rec.hash || hash(rec.raw), chunked:false };
+    });
+  }
+
+  /* ----------------------------- 降级写入 ----------------------------- */
+  function _degradeWrite(raw, ts){
+    var ok = _lsSet(LS_MIRROR, raw);
+    /* 降级模式同样保留多重快照，绝不只有一份 */
+    try{
+      var b = _lsGet(LS_MIRROR_B[0]);
+      if(b && b !== raw) _lsSet(LS_MIRROR_B[1], b);
+      _lsSet(LS_MIRROR_B[0], raw);
+      _lsSet(LS_MIRROR_B[2], JSON.stringify({ at:ts, bytes:raw.length, hash:hash(raw) }));
+    }catch(e){}
+    _degraded = true;
+    return Promise.resolve({ ok:ok, mode:'localStorage+multi-snapshot' });
+  }
+  function _degradeRead(){
+    var list = [LS_MIRROR].concat(LS_MIRROR_B.slice(0,2));
+    for(var i=0;i<list.length;i++){
+      var r = _lsGet(list[i]);
+      if(jsonOk(r)) return { raw:r, ts:_lsMetaTs(), src:'degraded-localStorage' };
+    }
+    return null;
+  }
+
+  /* ----------------------------- 主库写入（事务 + 3 次重试） ----------------------------- */
+  function write(raw, ts, opt){
+    opt = opt || {};
+    if(!raw || typeof raw !== 'string') return Promise.resolve({ ok:false, code:'empty' });
+    /* 同步更新内存真相：上层 S.load() 立刻能读到，界面表现不变 */
+    _primaryRaw = raw;
+    _primaryTs = ts || _now();
+    if(!jsonOk(raw)) _quarantine(raw, 'write-json-invalid');
+    /* R272-10.10：迁移 / 初始化阶段会对同一份串连续 save()，去重避免重复事务写入。
+       只要上一份完全相同且刚写过，就复用那次事务结果，不额外发起一次 IDB 事务。 */
+    if(opt.dedup !== false && raw === _lastWrittenRaw && (_now() - _lastWrittenAt) < 400 && _lastWrite){
+      return _lastWrite;
+    }
+    _lastWrittenRaw = raw; _lastWrittenAt = _now();
+
+    var parts = _chunkPlan(raw), h = hash(raw), stamps = _primaryTs, attempt = 0;
+    /* R272-6.2：浏览器根本不支持 IndexedDB（或已确认不可用）时直接降级，
+       不要把 3 次事务重试浪费在必然失败的环境上，也不要误报写入失败。 */
+    if(!_idbFactory() || _available === false){
+      var d = _degradeWrite(raw, stamps);
+      _lastWrite = d.then(function(x){ return { ok:x.ok, code:'degraded', retries:0, degraded:x }; });
+      return _lastWrite;
+    }
+    function once(){
+      attempt++;
+      return _tx(parts ? [ST_MAIN, ST_CHUNK] : [ST_MAIN], 'readwrite', function(t){
+        var ids = [];
+        if(parts){
+          var cs = t.objectStore(ST_CHUNK);
+          parts.forEach(function(part, i){
+            var id = 'c_' + stamps + '_' + i;
+            ids.push(id);
+            cs.put({ k:id, at:stamps, part:part }, id);
+          });
+        }
+        t.objectStore(ST_MAIN).put({
+          k:MAIN_KEY, ts:stamps, hash:h, size:raw.length, ver:'R272',
+          chunked:!!parts, chunkIds:ids,
+          /* 分片记录不重复存整份原文，规避 Safari 单条上限 */
+          raw:parts ? '' : raw
+        }, MAIN_KEY);
+      });
+    }
+    function loop(){
+      return once().then(function(){
+        log('write', { bytes:raw.length, retries:attempt - 1, chunked:!!parts, reason:opt.reason || 'save' });
+        return { ok:true, code:'', retries:attempt - 1, ts:stamps, hash:h };
+      }).catch(function(err){
+        if(attempt < MAX_RETRY) return loop();
+        /* 3 次仍失败：绝不弹「空间已满」误报，降级保留内存修改 + 回调一次性提示 */
+        return _degradeWrite(raw, stamps).then(function(d){
+          log('write-fatal', { error:String((err && err.message) || err), retries:attempt, degraded:d.ok });
+          if(opt.onFatal) { try{ opt.onFatal(err); }catch(e){} }
+          return { ok:false, code:'idb-failed', retries:attempt, degraded:d.ok, error:String((err && err.message) || err) };
+        });
+      });
+    }
+    _lastWrite = loop();
+    return _lastWrite;
+  }
+  function persistWait(){ return _lastWrite || Promise.resolve({ ok:true, code:'idle' }); }
+
+  /* ----------------------------- 历史快照（保留最近 10 份） ----------------------------- */
+  function snapshot(raw, reason){
+    var r = raw || _primaryRaw;
+    if(!jsonOk(r)) return Promise.resolve({ ok:false, code:'invalid-raw' });
+    var rec = { at:_now(), reason:String(reason || 'manual'), bytes:r.length, hash:hash(r), raw:r, shape:_shape(r) };
+    return _tx([ST_SNAP], 'readwrite', function(t){ t.objectStore(ST_SNAP).put(rec); })
+      .then(function(){ return _trimSnapshots().then(function(){ log('snapshot', { reason:rec.reason, bytes:rec.bytes }); return { ok:true, at:rec.at }; }); })
+      .catch(function(e){
+        /* 快照表写不进也要留一份 localStorage 兜底，不阻塞主流程 */
+        _lsSet(LS_MIRROR_B[2], JSON.stringify({ at:rec.at, reason:rec.reason, raw:r.slice(0, 900 * 1024) }));
+        return { ok:false, code:'snapshot-failed', error:String((e && e.message) || e) };
+      });
+  }
+  function _trimSnapshots(){
+    return _getAll(ST_SNAP).then(function(rows){
+      if(!rows || rows.length <= MAX_SNAPSHOTS) return true;
+      rows.sort(function(a,b){ return (a.at||0) - (b.at||0); });
+      var drop = rows.slice(0, rows.length - MAX_SNAPSHOTS).map(function(x){ return x.id; });
+      if(!drop.length) return true;
+      return _tx([ST_SNAP], 'readwrite', function(t){
+        var os = t.objectStore(ST_SNAP);
+        drop.forEach(function(id){ os.delete(id); });
+      }).then(function(){ return true; }).catch(function(){ return false; });
+    });
+  }
+  function listSnapshots(){
+    return _getAll(ST_SNAP).then(function(rows){
+      return (rows || []).sort(function(a,b){ return (b.at||0) - (a.at||0); }).map(function(x){
+        return { id:x.id, at:x.at, atText:new Date(x.at||0).toLocaleString('zh-CN'), reason:x.reason, bytes:x.bytes, hash:x.hash, shape:x.shape };
+      });
+    }).catch(function(){ return []; });
+  }
+  function restoreSnapshot(id){
+    return _get(ST_SNAP, id).then(function(rec){
+      if(!rec || !jsonOk(rec.raw)) return { ok:false, code:'snapshot-invalid' };
+      _primaryRaw = rec.raw; _primaryTs = _now();
+      _lsSet(LS_KEY, rec.raw); _lsSetMeta(_primaryTs, rec.raw.length);
+      log('restore-snapshot', { id:id, bytes:rec.raw.length });
+      return write(rec.raw, _primaryTs, { reason:'restore-snapshot' }).then(function(w){
+        return { ok:true, raw:rec.raw, write:w };
+      });
+    }).catch(function(e){ return { ok:false, error:String((e && e.message) || e) }; });
+  }
+
+  /* ----------------------------- 版本更新隔离 / 哈希校验 / 自动回滚 ----------------------------- */
+  function preUpdateGuard(raw){
+    var r = raw || _primaryRaw;
+    if(!jsonOk(r)) return Promise.resolve({ ok:false, code:'invalid-raw' });
+    _preUpdate = { at:_now(), hash:hash(r), shape:_shape(r), bytes:r.length };
+    try{ _lsSet(LS_PRE, JSON.stringify(_preUpdate)); }catch(e){}
+    log('version-pre', _preUpdate);
+    /* 升级前必落一份完整历史快照，升级后可一键回退 */
+    return snapshot(r, 'pre-update').then(function(s){
+      return { ok:true, hash:_preUpdate.hash, shape:_preUpdate.shape, snapshot:s };
+    });
+  }
+  function postUpdateVerify(raw){
+    var r = raw || _primaryRaw;
+    if(!_preUpdate){
+      try{ _preUpdate = JSON.parse(_lsGet(LS_PRE) || 'null'); }catch(e){ _preUpdate = null; }
+    }
+    if(!_preUpdate || !jsonOk(r)) return Promise.resolve({ ok:true, rolledBack:false, reason:'no-guard' });
+    var before = _preUpdate.shape, after = _shape(r);
+    var lost = _shapeLess(after, before);
+    var sameHash = hash(r) === _preUpdate.hash;
+    if(!lost && !sameHash){
+      /* 哈希不同但关键业务规模没有减少（用户正常操作 / 迁移补字段）→ 视为合法，只记日志 */
+      log('version-post', { hashBefore:_preUpdate.hash, hashAfter:hash(r), lost:false });
+      _preUpdate = null; _lsDel(LS_PRE);
+      return Promise.resolve({ ok:true, rolledBack:false, reason:'hash-changed-but-no-loss' });
+    }
+    if(!lost){
+      log('version-post', { hash:_preUpdate.hash, lost:false });
+      _preUpdate = null; _lsDel(LS_PRE);
+      return Promise.resolve({ ok:true, rolledBack:false, reason:'identical' });
+    }
+    /* 检测到业务数据被版本逻辑篡改 / 清空 → 自动回滚最近一份历史快照并写日志 */
+    log('version-rollback', { before:before, after:after, hashBefore:_preUpdate.hash });
+    return listSnapshots().then(function(rows){
+      var cand = (rows || []).filter(function(x){ return x.reason === 'pre-update' || x.reason === 'manual'; })[0];
+      if(!cand) return { ok:false, rolledBack:false, reason:'no-snapshot' };
+      return restoreSnapshot(cand.id).then(function(res){
+        log('version-rollback-done', { id:cand.id, ok:res.ok });
+        _preUpdate = null; _lsDel(LS_PRE);
+        return { ok:res.ok, rolledBack:!!res.ok, raw:res.raw || null, reason:'auto-rollback' };
+      });
+    });
+  }
+
+  /* ----------------------------- 自检 / 诊断 ----------------------------- */
+  function estimate(){
+    var out = { persisted:_persisted, engine:_degraded ? 'localStorage+multi-snapshot' : DB_NAME, usage:0, quota:0, persistedBucket:_persisted };
+    try{
+      if(W.navigator && W.navigator.storage && W.navigator.storage.estimate){
+        return W.navigator.storage.estimate().then(function(e){
+          out.usage = (e && e.usage) || 0; out.quota = (e && e.quota) || 0;
+          return out;
+        }).catch(function(){ return out; });
+      }
+    }catch(e){}
+    return Promise.resolve(out);
+  }
+  function selfCheck(){
+    var rep = { ok:true, engine:_degraded ? 'degraded' : DB_NAME, persisted:_persisted,
+                tables:{}, issues:[], actions:[], snapshots:0, logs:0, main:null };
+    return Promise.all([_getAll(ST_MAIN), _getAll(ST_SNAP), _getAll(ST_CHUNK), _getAll(ST_LOG), _getAll(ST_BUILTIN), _getAll(ST_QUAR)])
+      .then(function(all){
+        rep.tables[ST_MAIN] = (all[0]||[]).length;
+        rep.tables[ST_SNAP] = (all[1]||[]).length;
+        rep.tables[ST_CHUNK] = (all[2]||[]).length;
+        rep.tables[ST_LOG] = (all[3]||[]).length;
+        rep.tables[ST_BUILTIN] = (all[4]||[]).length;
+        rep.tables[ST_QUAR] = (all[5]||[]).length;
+        rep.snapshots = rep.tables[ST_SNAP]; rep.logs = rep.tables[ST_LOG];
+        return read();
+      }).then(function(rec){
+        if(rec){ rep.main = { ts:rec.ts, bytes:rec.raw.length, hash:rec.hash, chunked:!!rec.chunked, valid:jsonOk(rec.raw) }; }
+        if(!rec){
+          rep.issues.push({ lv:'err', t:'IndexedDB 主表无可用业务数据' });
+          /* 严重损坏：优先从历史快照恢复 */
+          return listSnapshots().then(function(rows){
+            var c = (rows||[])[0];
+            if(!c) return rep;
+            return restoreSnapshot(c.id).then(function(r){
+              if(r.ok){ rep.actions.push('已从历史快照 ' + c.id + ' 恢复主表'); rep.ok = false; }
+              else rep.actions.push('历史快照恢复失败，请手动导入备份');
+              return rep;
+            });
+          });
+        }
+        if(!jsonOk(rec.raw)){
+          rep.issues.push({ lv:'err', t:'主表 JSON 损坏，已隔离到 quarantine' });
+          _quarantine(rec.raw, 'selfcheck-json-invalid'); rep.ok = false;
+        }
+        var sh = _shape(rec.raw);
+        if(sh){
+          if(!sh.tasks) { rep.issues.push({ lv:'warn', t:'打卡任务列表为空，载入时会自动补默认结构' }); rep.actions.push('字段缺失由 load() 只补不覆盖'); }
+          if(!Array.isArray(JSON.parse(rec.raw).records)) rep.issues.push({ lv:'warn', t:'打卡记录字段异常，载入时自动补 []' });
+        }
+        /* localStorage 同步桥梁快照校验 */
+        var ls = _lsGet(LS_KEY);
+        if(!jsonOk(ls)){
+          rep.issues.push({ lv:'warn', t:'localStorage 桥梁快照缺失 / 损坏' });
+          _lsSet(LS_KEY, rec.raw); _lsSetMeta(rec.ts, rec.raw.length);
+          rep.actions.push('已用 IndexedDB 主表重建 localStorage 桥梁快照');
+          rep.ok = false;
+        }
+        /* 历史快照条数上限 */
+        if(rep.snapshots > MAX_SNAPSHOTS){
+          rep.actions.push('历史快照超过 ' + MAX_SNAPSHOTS + ' 份，已裁剪');
+          _trimSnapshots(); rep.ok = false;
+        }
+        if(rep.tables[ST_QUAR] > 0) rep.issues.push({ lv:'warn', t:'隔离区存在 ' + rep.tables[ST_QUAR] + ' 条脏数据（不影响页面加载）' });
+        if(!rep.actions.length) rep.actions.push('全部数据表校验通过，未发现需要修复的问题');
+        log('selfcheck', { ok:rep.ok, issues:rep.issues.length, actions:rep.actions.length });
+        return rep;
+      }).catch(function(e){
+        rep.ok = false; rep.issues.push({ lv:'err', t:'自检异常：' + String((e && e.message) || e) });
+        return rep;
+      });
+  }
+
+  /* ----------------------------- 完整备份导出 / 合并导入 / 一键回退 ----------------------------- */
+  function exportAll(){
+    return Promise.all([read(), listSnapshots(), logs(200), estimate()]).then(function(a){
+      var rec = a[0], data = null;
+      if(rec && jsonOk(rec.raw)){ try{ data = JSON.parse(rec.raw); }catch(e){} }
+      return {
+        __app:'nick-checkin', __r272:true, __engine:DB_NAME, __schema:254,
+        __at:_now(), __atText:new Date().toISOString(),
+        data:data || null,
+        r272:{
+          main:rec ? { ts:rec.ts, hash:rec.hash, bytes:rec.raw.length } : null,
+          snapshots:(a[1] || []).map(function(x){ return { at:x.at, reason:x.reason, bytes:x.bytes, hash:x.hash }; }),
+          logs:a[2] || [], estimate:a[3] || null
+        }
+      };
+    });
+  }
+  function beforeImport(){
+    var r = _primaryRaw || _lsGet(LS_KEY);
+    if(!jsonOk(r)) return Promise.resolve({ ok:false, code:'no-current-state' });
+    return snapshot(r, 'pre-import').then(function(s){
+      return listSnapshots().then(function(rows){
+        var id = (rows && rows.length) ? rows[0].id : null;
+        log('import-before', { rollbackId:id });
+        return { ok:true, rollbackId:id, snapshot:s };
+      });
+    });
+  }
+  function rollback(id){
+    if(!id) return Promise.resolve({ ok:false, code:'no-rollback-id' });
+    return restoreSnapshot(id).then(function(r){
+      log('import-rollback', { id:id, ok:r.ok });
+      return r;
+    });
+  }
+
+  /* ----------------------------- 启动：持久化权限 / 迁移 / 恢复 ----------------------------- */
+  function _requestPersist(){
+    try{
+      var st = W.navigator && W.navigator.storage;
+      if(st && typeof st.persist === 'function'){
+        return Promise.resolve(st.persist()).then(function(granted){
+          _persisted = !!granted;
+          _lsSet(LS_MARK, JSON.stringify({ engine:DB_NAME, persisted:_persisted, at:_now(), ver:'R272' }));
+          log('persist', { granted:_persisted });
+          return _persisted;
+        }).catch(function(){ return false; });
+      }
+      if(st && typeof st.persisted === 'function'){
+        return Promise.resolve(st.persisted()).then(function(p){ _persisted = !!p; return _persisted; }).catch(function(){ return false; });
+      }
+    }catch(e){}
+    return Promise.resolve(false);
+  }
+  function _latestSnapshot(){
+    return _getAll(ST_SNAP).then(function(rows){
+      if(!rows || !rows.length) return null;
+      rows.sort(function(a,b){ return (b.at||0) - (a.at||0); });
+      for(var i=0;i<rows.length;i++){
+        if(jsonOk(rows[i].raw)) return { src:'snapshot', raw:rows[i].raw, ts:rows[i].at || 0, id:rows[i].id };
+      }
+      return null;
+    }).catch(function(){ return null; });
+  }
+  function _hydrate(){
+    return _open().then(function(db){
+      if(!db){
+        _degraded = true;
+        var d = _degradeRead();
+        if(d){ _primaryRaw = d.raw; _primaryTs = d.ts; }
+        log('boot', { mode:'degraded', reason:'indexeddb-unavailable' });
+        return;
+      }
+      return read().then(function(rec){
+        var candidates = [];
+        if(rec && jsonOk(rec.raw)) candidates.push({ src:'indexeddb', raw:rec.raw, ts:rec.ts || 0 });
+        else if(rec) _quarantine(rec.raw, 'boot-main-unusable');
+        var ls = _lsGet(LS_KEY);
+        if(jsonOk(ls)) candidates.push({ src:'localStorage', raw:ls, ts:_lsMetaTs() });
+        else if(ls) _quarantine(ls, 'boot-localstorage-unusable');
+        return _latestSnapshot().then(function(sn){
+          if(sn) candidates.push(sn);
+          /* 读取优先级：IndexedDB → localStorage 快照 → 历史备份快照。
+             时间 newest-wins 只在「确实有证据表明另一层更新」时生效，避免旧镜像回滚新数据。 */
+          candidates.sort(function(a,b){ return (b.ts||0) - (a.ts||0); });
+          var chosen = null;
+          for(var i=0;i<candidates.length;i++){ if(jsonOk(candidates[i].raw)){ chosen = candidates[i]; break; } }
+          if(!chosen){
+            log('boot', { mode:'empty', reason:'no-usable-layer' });
+            return;
+          }
+          _primaryRaw = chosen.raw; _primaryTs = chosen.ts || _now();
+          var tasks = [];
+          /* ① 首次运行新版：把 localStorage 旧存量完整迁移进 IndexedDB（旧快照保留一段时间，不删除） */
+          if(chosen.src !== 'indexeddb'){
+            _migrated = true;
+            tasks.push(write(chosen.raw, _now(), { reason:'migrate-legacy' }).then(function(w){
+              log('migrate', { from:chosen.src, bytes:chosen.raw.length, ok:w.ok });
+              /* 迁移后额外留一份历史快照，作为平滑过渡兜底 */
+              return snapshot(chosen.raw, 'legacy-migration');
+            }));
+          }
+          /* ② localStorage 桥梁快照缺失 / 损坏 / 落后 → 用主库恢复，保证同步 load() 首屏就拿到真实数据 */
+          if(!jsonOk(ls) || (chosen.src === 'indexeddb' && (chosen.ts||0) > _lsMetaTs())){
+            _lsSet(LS_KEY, chosen.raw);
+            _lsSetMeta(_now(), chosen.raw.length);
+            _recoveredFrom = chosen.src;
+            log('restore', { from:chosen.src, bytes:chosen.raw.length, target:'localStorage-bridge' });
+            try{ if(W.Store && W.Store.r272Invalidate) W.Store.r272Invalidate(); }catch(e){}
+          }
+          return Promise.all(tasks).then(function(){ /* 迁移完成，不清理任何旧快照 */ });
+        });
+      });
+    }).catch(function(e){
+      _degraded = true;
+      log('boot-error', { error:String((e && e.message) || e) });
+      var d = _degradeRead();
+      if(d){ _primaryRaw = d.raw; _primaryTs = d.ts; }
+    });
+  }
+  function boot(){
+    if(_bootTimer) return Promise.resolve(false);
+    _bootTimer = setTimeout(_finish, BOOT_TIMEOUT);
+    var p = Promise.resolve()
+      .then(function(){ return _requestPersist(); })
+      .then(function(){ return _hydrate(); })
+      .then(function(){ return postUpdateVerify(_primaryRaw); })
+      .then(function(v){
+        if(v && v.rolledBack && v.raw){
+          _primaryRaw = v.raw;
+          _lsSet(LS_KEY, v.raw); _lsSetMeta(_now(), v.raw.length);
+          try{ if(W.Store && W.Store.r272Invalidate) W.Store.r272Invalidate(); }catch(e){}
+        }
+        _bindInteraction();
+        _startHeartbeat();
+        log('ready', { engine:_degraded ? 'degraded' : DB_NAME, bytes:(_primaryRaw||'').length });
+        clearTimeout(_bootTimer); _bootTimer = null; _finish();
+        return true;
+      }).catch(function(e){
+        log('boot-fatal', { error:String((e && e.message) || e) });
+        clearTimeout(_bootTimer); _bootTimer = null; _finish();
+        return false;
+      });
+    return p;
+  }
+  function _finish(){
+    if(_ready) return;
+    _ready = true;
+    var q = _queue.slice(); _queue = [];
+    q.forEach(function(fn){ try{ fn(); }catch(e){} });
+  }
+  function whenReady(cb){
+    if(_ready){ try{ cb(); }catch(e){} return; }
+    _queue.push(cb);
+  }
+
+  /* ----------------------------- Safari ITP 规避 ----------------------------- */
+  /* ① 页面每次打开执行一次轻量「用户交互标记」：首次真实 pointer/touch/click 时
+        向主库写一个极小记录（不是用户业务数据），向浏览器表明站点有持续使用。
+     ② 后台静默定期触发表头更新，避免 7 天无写入被 ITP 判定为可驱逐。 */
+  function _bindInteraction(){
+    if(!W.document || !W.document.addEventListener) return;
+    var fired = false;
+    var mark = function(){
+      if(fired) return; fired = true;
+      try{
+        _put(ST_MAIN, { k:'interaction', at:_now(), ua:String((W.navigator && W.navigator.userAgent) || '').slice(0,120) });
+        log('itp-interaction', { at:_now() });
+        _requestPersist();
+      }catch(e){}
+      ['pointerdown','touchstart','click','keydown'].forEach(function(ev){
+        try{ W.document.removeEventListener(ev, mark, true); }catch(e){}
+      });
+    };
+    ['pointerdown','touchstart','click','keydown'].forEach(function(ev){
+      try{ W.document.addEventListener(ev, mark, true); }catch(e){}
+    });
+    /* 无交互也要留一个会话标记（不冒充用户交互，仅供诊断） */
+    try{ _put(ST_MAIN, { k:'session', at:_now(), ver:'R272' }); }catch(e){}
+  }
+  function _startHeartbeat(){
+    if(_heartbeatTimer) return;
+    try{
+      _heartbeatTimer = setInterval(function(){
+        try{
+          _put(ST_MAIN, { k:'heartbeat', at:_now(), ver:'R272' });
+          /* 轻量表头更新：只写几十字节，不触碰 MAIN_KEY 用户业务表 */
+        }catch(e){}
+        /* 页面卸载时把未落地变更写入主库（beforeunload 由 store.flushPersistence 兜底） */
+      }, HEARTBEAT_MS);
+    }catch(e){}
+  }
+
+  /* ----------------------------- 对外 API ----------------------------- */
+  var API = {
+    version:'R272',
+    DB_NAME:DB_NAME, DB_VER:DB_VER, STORES:STORES.slice(), MAIN_KEY:MAIN_KEY,
+    MAX_SNAPSHOTS:MAX_SNAPSHOTS, CHUNK_SIZE:CHUNK_SIZE, MAX_RETRY:MAX_RETRY,
+    /* 同步桥梁：store.js 的 load() 借此优先读 IndexedDB 主库 */
+    recoveredRaw:function(){
+      if(!_primaryRaw || !jsonOk(_primaryRaw)) return null;
+      /* 另一个标签页写了更新的 localStorage 时让位，避免覆盖 */
+      var lt = _lsMetaTs();
+      if(lt && lt > _primaryTs + 1500) return null;
+      return _primaryRaw;
+    },
+    primaryTs:function(){ return _primaryTs; },
+    recoveredFrom:function(){ return _recoveredFrom; },
+    isDegraded:function(){ return _degraded; },
+    isPersisted:function(){ return _persisted; },
+    isMigrated:function(){ return _migrated; },
+    info:function(){
+      return { engine:_degraded ? 'localStorage+multi-snapshot' : DB_NAME, persisted:_persisted,
+               degraded:_degraded, migrated:_migrated, recoveredFrom:_recoveredFrom,
+               bytes:(_primaryRaw||'').length, ts:_primaryTs, ready:_ready, storeCount:STORES.length };
+    },
+    hash:hash, jsonOk:jsonOk,
+    open:_open, read:read, write:write, persistWait:persistWait,
+    snapshot:snapshot, listSnapshots:listSnapshots, restoreSnapshot:restoreSnapshot,
+    preUpdateGuard:preUpdateGuard, postUpdateVerify:postUpdateVerify,
+    selfCheck:selfCheck, estimate:estimate, logs:logs, log:log,
+    exportAll:exportAll, beforeImport:beforeImport, rollback:rollback,
+    boot:boot, whenReady:whenReady,
+    interactionMark:_bindInteraction, heartbeat:_startHeartbeat
+  };
+  W.R272P = API;
+
+  /* 启动屏障：app.js 的 init() 会等 whenReady，但硬超时 1.6 秒保证不白屏 */
+  if(W.document) boot();
+})();
+
+</script>
 <script>
 /* ============================================================
    疯狂动物城 · 三年级学习乐园
@@ -13658,6 +14458,16 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
   }
   // 读取主存档；损坏则依次回退 bak1 / bak2（绝不直接新建空档）
   function _readMainRaw(){
+    /* R272-1.6：读取优先级 ① IndexedDB 主库 nick_checkin_main_db ② localStorage 同步桥梁快照
+       ③ 双代备份 ④ 历史备份快照。主库由 r272_persistence.js 在启动屏障里完成迁移 / 恢复，
+       这里只是把「主库最新确认态」同步暴露给原有 load()，上层调用语义完全不变。 */
+    try{
+      const _P = (typeof window !== 'undefined') ? window.R272P : null;
+      if(_P && typeof _P.recoveredRaw === 'function'){
+        const _r = _P.recoveredRaw();
+        if(_rawUsable(_r)) return {raw:_r, from:'nick_checkin_main_db'};
+      }
+    }catch(e){}
     const main = _safeGet(KEY);
     if(_rawUsable(main)) return {raw:main, from:KEY};
     for(const k of [KEY_BAK1, KEY_BAK2]){
@@ -13719,8 +14529,13 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
   function flushPersistence(){
     try{
       // R261-5.1：暂存态下草稿才是最新内存态 —— 优先刷草稿，避免把旧缓存写回覆盖新修改
-      const st = (_staging && _staged) ? _staged : (_loadCacheSt || _staged);
+      let st = (_staging && _staged) ? _staged : (_loadCacheSt || _staged);
       if(!st) return false;
+      /* R272-5.2：暂存态下「未保存的设置修改」绝不写入持久化数据库。
+         旧实现直接把 _staged 草稿整份刷盘，等于绕过「保存设置才生效」全局规则；
+         这里先回退到进入设置中心时的设置基线值，业务数据（打卡 / ⭐ / 题库 / 笔记 /
+         导入图片等）仍取草稿最新态即时落库，两者互不干扰。 */
+      if(_staging){ try{ st = _settingsRollback(st); }catch(e){} }
       // 安全闸：本次会话从未成功读到 / 写过存档时，绝不把内存里的默认空档刷进主档
       // （数据保护第一原则：宁可少写一次，也不能覆盖 iPad 上已有的打卡记录）
       // R263-3.1：只要本次会话有过成功落库，就允许刷盘；
@@ -13731,6 +14546,15 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
       // R265-4：版本更新 / 关页面前同样留一份 IndexedDB 镜像（pagehide 在 iPad 上不一定触发）
       const _fts = Date.now();
       try{ _mirrorWrite(raw, _fts); }catch(e){}
+      /* R272-5.3：页面卸载（beforeunload / pagehide）时，只要内存里还有未落地变更，
+         就强制触发一次完整持久化写入：主库事务 + 一份历史快照，确保最后一次操作不丢。 */
+      try{
+        const _P = (typeof window !== 'undefined') ? window.R272P : null;
+        if(_P && typeof _P.write === 'function'){
+          _P.write(raw, _fts, { reason:'beforeunload', dedup:false }).catch(function(){});
+          if(typeof _P.snapshot === 'function') _P.snapshot(raw, 'beforeunload').catch(function(){});
+        }
+      }catch(e){}
       // R260-1.1：刷盘同样走配额回收链，避免「关页面最后一次操作因空间不足丢失」
       if(!_writeMain(raw).ok){
         // R266：关页面/切后台这最后一次写入最不能丢 —— 先落小账本，再尽力写补丁
@@ -14567,6 +15391,17 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
       // 已有旧副本先删，避免新旧两份同时占空间（这份副本自身体量也可能逼近配额）
       try{ localStorage.removeItem(KEY_PRE_UPDATE); }catch(e){}
       const ok = _safeSet(KEY_PRE_UPDATE, raw);
+      /* R272-2.3 / 2.4：版本升级前先读取全部用户数据快照并写入升级前哈希标记；
+         升级完成后由主库 postUpdateVerify 做哈希 / 规模校验，发现业务数据被篡改会自动
+         回滚上一份快照并写日志。静态资源更新只换页面代码，绝不动 IndexedDB 用户表。 */
+      try{
+        const _P = (typeof window !== 'undefined') ? window.R272P : null;
+        if(_P && typeof _P.preUpdateGuard === 'function'){
+          let _full = '';
+          try{ _full = JSON.stringify(st); }catch(e){}
+          if(_full) _P.preUpdateGuard(_full).catch(function(){});
+        }
+      }catch(e){}
       return ok;
     }catch(e){ return false; }
   }
@@ -15868,6 +16703,19 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
        时间戳与成功落库时的 KEY_META.savedAt 共用，hydrateMirror 才能准确判断新旧。 */
     const _ts = Date.now();
     try{ _mirrorWrite(raw, _ts); }catch(e){}
+    /* R272-1.3 / 1.7：同一份状态同时写入 IndexedDB 主库（异步事务 + 最多 3 次重试）。
+       localStorage 从此只承担「同步桥梁快照」角色，主库才是唯一真相；
+       任意一层损坏都能从另一层恢复。save() 仍同步返回，上层业务无需改动调用逻辑。 */
+    try{
+      const _P = (typeof window !== 'undefined') ? window.R272P : null;
+      if(_P && typeof _P.write === 'function'){
+        _P.write(raw, _ts, { reason:'save', onFatal:function(){
+          /* 事务 3 次仍失败：内存修改已保留、降级快照已落盘，只做一次分级提示，
+             绝不把 Safari 误报当成「存储空间已满」。 */
+          try{ if(typeof window !== 'undefined' && window.__r272WriteFail) window.__r272WriteFail(); }catch(e){}
+        }}).catch(function(){});   /* 异步写绝不产生未捕获 rejection（jsdom / 旧运行时安全） */
+      }
+    }catch(e){}
     /* R268-2.1：一次写失败不再直接判定失败 —— iOS Safari 的 QuotaExceeded 有偶发性，
        而且此刻可能只差几十 KB（上一代更新前副本 / 过期快照 / 旧备份占着位置）。
        先做「深度腾挪 + 立即重试」，两轮都失败才走失败分支。
@@ -16194,6 +17042,74 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
       __atText: new Date().toISOString(),
       data: st
     };
+  }
+
+  /* ==========================================================================
+     R272：统一持久化数据层桥接 API（IndexedDB 主库 nick_checkin_main_db）
+     全部为薄封装：持久化层未加载（jsdom 门禁 / file:// 旧版 / 不支持 IndexedDB）
+     时自动降级到原有 localStorage + 多重快照保护链，绝不抛异常、绝不改变上层调用。
+     ========================================================================== */
+  function _r272P(){ try{ return (typeof window !== 'undefined') ? (window.R272P || null) : null; }catch(e){ return null; } }
+  function r272Invalidate(){ _loadCacheOK = false; _loadCacheRaw = null; _loadCacheSt = null; }
+  /* R272-5.2：判断设置中心暂存态里是否存在「未保存的设置修改」，供 beforeunload 提示 */
+  function hasUnsavedSettings(){
+    if(!_staging || !_staged || !_stagedBase) return false;
+    try{
+      for(const k of SETTINGS_DRAFT_KEYS){
+        if(JSON.stringify(_staged[k]) !== JSON.stringify(_stagedBase[k])) return true;
+      }
+      for(const p of SETTINGS_DRAFT_PATHS){
+        const a = p[0], b = p[1];
+        if(JSON.stringify((_staged[a] || {})[b]) !== JSON.stringify((_stagedBase[a] || {})[b])) return true;
+      }
+    }catch(e){ return false; }
+    return false;
+  }
+  function r272Info(){
+    const P = _r272P();
+    const local = { engine:'localStorage+multi-snapshot', persisted:false, degraded:true, migrated:false,
+                    recoveredFrom:'', bytes:(function(){ try{ return (_safeGet(KEY)||'').length; }catch(e){ return 0; } })(),
+                    ts:_lastSavedAt(), ready:true, storeCount:0, note:'当前环境未加载 R272 持久化层（已自动降级）' };
+    if(!P) return local;
+    try{ return P.info(); }catch(e){ return local; }
+  }
+  function r272Estimate(){ const P=_r272P(); if(!P) return Promise.resolve({usage:0,quota:0,persisted:false,engine:'localStorage'}); try{ return P.estimate(); }catch(e){ return Promise.resolve({usage:0,quota:0,persisted:false}); } }
+  function r272Snapshot(reason){ const P=_r272P(); if(!P) return Promise.resolve({ok:false,code:'degraded'}); try{ return P.snapshot(_safeGet(KEY), reason||'manual'); }catch(e){ return Promise.resolve({ok:false,code:'exception'}); } }
+  function r272ListSnapshots(){ const P=_r272P(); if(!P) return Promise.resolve([]); try{ return P.listSnapshots(); }catch(e){ return Promise.resolve([]); } }
+  function r272Restore(id){ const P=_r272P(); if(!P) return Promise.resolve({ok:false,code:'degraded'}); try{ return P.restoreSnapshot(id).then(function(r){ if(r && r.ok) r272Invalidate(); return r; }); }catch(e){ return Promise.resolve({ok:false,code:'exception'}); } }
+  function r272SelfCheck(){
+    const P=_r272P();
+    if(!P){ const v=localVerify(); return Promise.resolve({ok:v.ok,engine:'localStorage+multi-snapshot',tables:{},issues:v.issues||[],actions:[],snapshots:0,logs:0,main:null}); }
+    try{ return P.selfCheck().then(function(r){ r272Invalidate(); return r; }); }
+    catch(e){ return Promise.resolve({ok:false,issues:[{lv:'err',t:String((e&&e.message)||e)}],actions:[],tables:{}}); }
+  }
+  function r272Logs(n){ const P=_r272P(); if(!P) return Promise.resolve([]); try{ return P.logs(n||80); }catch(e){ return Promise.resolve([]); } }
+  function r272Export(){ const P=_r272P(); if(!P) return Promise.resolve(buildBackupPayload()); try{ return P.exportAll(); }catch(e){ return Promise.resolve(buildBackupPayload()); } }
+  function r272BeforeImport(){
+    const P=_r272P();
+    /* R272-4.2：导入前自动生成当前快照；降级环境仍保留原有安全副本 */
+    try{ _safeSet('zoo_checkin_v3_restore_safety', JSON.stringify(buildBackupPayload())); }catch(e){}
+    if(!P) return Promise.resolve({ok:true,rollbackId:null,degraded:true});
+    try{ return P.beforeImport(); }catch(e){ return Promise.resolve({ok:true,rollbackId:null,degraded:true}); }
+  }
+  function r272Rollback(id){
+    const P=_r272P();
+    if(!P || !id){
+      try{
+        const b = _safeGet('zoo_checkin_v3_restore_safety');
+        if(b){ const o=JSON.parse(b); const st=(o && o.data) ? o.data : o;
+               if(st && typeof st === 'object'){ save(st); r272Invalidate(); return Promise.resolve({ok:true,raw:JSON.stringify(st)}); } }
+      }catch(e){}
+      return Promise.resolve({ok:false,code:'no-rollback'});
+    }
+    try{ return P.rollback(id).then(function(r){ r272Invalidate(); return r; }); }catch(e){ return Promise.resolve({ok:false}); }
+  }
+  function r272PersistWait(){ const P=_r272P(); if(!P) return Promise.resolve({ok:true,code:'localStorage'}); try{ return P.persistWait(); }catch(e){ return Promise.resolve({ok:true,code:'fallback'}); } }
+  function r272Repair(){
+    const P=_r272P(); const base=localRepair();
+    if(!P) return Promise.resolve({ok:base.ok, actions:base.actions, report:null});
+    try{ return P.selfCheck().then(function(r){ r272Invalidate(); return {ok:base.ok && r.ok, actions:base.actions.concat(r.actions||[]), report:r}; }); }
+    catch(e){ return Promise.resolve({ok:base.ok, actions:base.actions, report:null}); }
   }
 
   // ----- 任务相关 -----
@@ -23414,6 +24330,10 @@ be 动词：am / is → was；are → were
   }
 
   window.Store = {
+    // R272：统一持久化数据层（IndexedDB 主库 / 三重备份 / 事务重试 / 快照 / 自检 / 调试日志）
+    r272Info, r272Estimate, r272Snapshot, r272ListSnapshots, r272Restore, r272SelfCheck,
+    r272Logs, r272Export, r272BeforeImport, r272Rollback, r272PersistWait, r272Repair,
+    r272Invalidate, hasUnsavedSettings,
     KEY, KEY_BAK1, KEY_BAK2, KEY_META, KEY_SNAPSHOT, KEY_PRE_UPDATE, KEY_JOURNAL, KEY_REMIND, SCHEMA_VERSION,
     hasSettingsSnapshot, PROTECT_KEYS, allowUserClear, protectBeforeUpdate, hasPreUpdateBackup, dataGuardInfo, SUBJECTS, PLOT_COUNT, STAGE_NEED, todayStr, weekRange, uid,
     load, save, resetData,
@@ -49640,20 +50560,289 @@ function init(){
     boot:boot, clearAllTimers:clearAllTimers, tabs:TABS.map(t=>t.id)
   };
 
-  if(D.readyState === 'loading') D.addEventListener('DOMContentLoaded', () => setTimeout(boot, 0));
-  else setTimeout(boot, 0);
+  /* R272：R271 增强层同样等主库 hydration 完成再挂载，避免读取到尚未恢复的空档。 */
+  function r271BootGate(){
+    const _P = window.R272P;
+    const run = () => setTimeout(boot, 0);
+    if(_P && typeof _P.whenReady === 'function') _P.whenReady(run);
+    else run();
+  }
+  if(D.readyState === 'loading') D.addEventListener('DOMContentLoaded', r271BootGate);
+  else r271BootGate();
 })();
 
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init);
-  else init();
+  /* ==========================================================================
+     R272 增强层：设置中心 → 数据同步 →「持久化数据库」卡片
+     · 主库 IndexedDB nick_checkin_main_db 的状态 / 占用 / 配额 / 持久化桶
+     · 手动快照、历史快照恢复、完整备份导出、合并导入（导入前快照 + 出错回退）
+     · 一键数据自检（校验全部数据表 + 输出报告 + 严重损坏优先从快照恢复）
+     · 调试日志（仅本自检面板可见）
+     控件全部动态注入，复用既有 .localdb-* 视觉，原有界面 / 文字 / 交互表现不变。
+     R272P 未加载的环境（jsdom 回归 / 旧运行时）不注入，保持原 DOM 完全一致。
+     ========================================================================== */
+  (function(){
+    'use strict';
+    const R = window.R272P;
+    let _rollbackId = null, _failShown = false;
+    /* R272-1.8：主库事务 3 次仍失败时只提示一次，绝不误报「存储空间已满」，
+       内存修改与降级快照都还在，用户操作不会丢。 */
+    window.__r272WriteFail = function(){
+      if(_failShown) return; _failShown = true;
+      try{ toast('⚠️ 本机数据库写入未完成；修改已保留在本页与安全副本中，请稍后重试保存'); }catch(e){}
+    };
+    if(!R) return;
+    function el(id){ return document.getElementById(id); }
+    function report(html, tone){
+      const box = el('r272Report'); if(!box) return;
+      box.hidden = false;
+      box.className = 'localdb-report' + (tone ? (' is-' + tone) : '');
+      box.innerHTML = html;
+    }
+    function line(t){ return '<div class="ldb-line">' + t + '</div>'; }
+    function mount(){
+      const body = el('settingsSyncBody');
+      if(!body || el('r272DbCard')) return;
+      const card = document.createElement('div');
+      card.className = 'set-card localdb-card';
+      card.id = 'r272DbCard';
+      card.setAttribute('data-r272-card', '1');
+      const acts = [
+        ['btnR272Snapshot','snapshot','📸','一键手动快照备份','立即把当前完整状态写入主库历史快照表'],
+        ['btnR272List','list','🗂️','历史快照（最近 10 份）','列出可恢复快照，点击任一即可回退'],
+        ['btnR272Export','export','⬇️','导出完整备份 JSON','文件名自带时间戳，含主库与快照摘要'],
+        ['btnR272Import','import','⬆️','导入合并备份','只补不删；导入前自动留当前快照，出错可一键回退'],
+        ['btnR272SelfCheck','selfcheck','🩺','一键数据自检','校验全部数据表、输出自检报告、严重损坏优先恢复'],
+        ['btnR272Logs','logs','📜','调试日志','仅在此面板可见：读写 / 版本更新 / 恢复快照事件']
+      ];
+      card.innerHTML = '<div class="set-card-title">🛡️ 持久化数据库（R272）</div>'
+        + '<div class="form-warn">主存储已切换为 <b>IndexedDB 主库</b>，localStorage 仅保留轻量标记与同步桥梁快照；'
+        + '每次保存同时写主库事务与桥梁快照，并按需留存历史快照。任意一层损坏会自动从其它层恢复，'
+        + '版本更新 / 页面刷新只换静态页面代码，<b>绝不覆盖或清空用户业务数据表</b>。</div>'
+        + '<div class="r272-pwa-tip" id="r272PwaTip"></div>'
+        + '<div class="r272-stat" id="r272Stat">正在读取存储状态…</div>'
+        + '<div class="localdb-actions">' + acts.map(function(a){
+            return '<button type="button" class="pbtn localdb-btn" id="' + a[0] + '" data-r272-act="' + a[1] + '">'
+              + '<i>' + a[2] + '</i><b>' + a[3] + '</b><span>' + a[4] + '</span></button>';
+          }).join('') + '</div>'
+        + '<input type="file" id="r272ImportFile" accept=".json,application/json" hidden>'
+        + '<div class="localdb-report" id="r272Report" hidden></div>';
+      body.appendChild(card);
+      refresh();
+    }
+    function refresh(){
+      const box = el('r272Stat'); if(!box) return;
+      /* R272-7：引导把站点添加到 iPad 桌面。桌面启动是独立存储沙盒，
+         Safari ITP 的 7 天无写入驱逐策略会大幅放宽，是 iPad 数据丢失最有效的兜底。 */
+      const tip = el('r272PwaTip');
+      if(tip){
+        try{
+          const nav = window.navigator || {};
+          const ua = String(nav.userAgent || '');
+          const isIOS = /iPad|iPhone|iPod/.test(ua) || (ua.indexOf('Macintosh') >= 0 && nav.maxTouchPoints > 1);
+          const standalone = !!nav.standalone || !!(window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
+          tip.innerHTML = standalone
+            ? '<div class="ldb-issue is-ok">✅ 当前已从桌面图标以独立模式启动，存储驱逐策略已放宽。</div>'
+            : (isIOS ? '<div class="ldb-issue is-warn">📲 建议在 iPad Safari 点「分享 → 添加到主屏幕」后从桌面图标启动：独立存储沙盒不会按标签页被系统驱逐，本机数据更稳。</div>' : '');
+        }catch(e){}
+      }
+      Promise.all([
+        Promise.resolve(S.r272Info ? S.r272Info() : {}),
+        S.r272Estimate ? S.r272Estimate() : Promise.resolve({})
+      ]).then(function(a){
+        const info = a[0] || {}, est = a[1] || {};
+        const pct = est.quota ? Math.min(100, Math.round((est.usage || 0) / est.quota * 100)) : 0;
+        box.innerHTML = '<div class="ldb-row"><span class="ldb-k">存储引擎</span><span class="ldb-v" style="min-width:auto;text-align:left">'
+          + esc(String(info.engine || '—')) + '</span></div>'
+          + '<div class="ldb-row"><span class="ldb-k">持久化模式</span><span class="ldb-v" style="min-width:auto;text-align:left">'
+          + (info.persisted ? '✅ 已获持久化存储权限（持久化桶）' : '普通模式（浏览器可按需驱逐）') + '</span></div>'
+          + '<div class="ldb-row"><span class="ldb-k">主档体积</span><span class="ldb-v" style="min-width:auto;text-align:left">'
+          + localDbFmtBytes(info.bytes || 0) + '　·　占用 / 配额 ' + localDbFmtBytes(est.usage || 0) + ' / ' + localDbFmtBytes(est.quota || 0) + '</span></div>'
+          + '<div class="ldb-meter"><i style="width:' + Math.max(2, pct) + '%"></i></div>'
+          + (info.degraded ? '<div class="ldb-issue is-warn">当前环境不支持 IndexedDB，已自动降级为 localStorage + 多重快照备份，原有保护逻辑全部保留。</div>' : '')
+          + (info.recoveredFrom ? '<div class="ldb-issue is-ok">本次启动已从 ' + esc(String(info.recoveredFrom)) + ' 自动恢复用户数据。</div>' : '');
+      }).catch(function(){ /* 状态读取失败不阻塞弹窗 */ });
+    }
+    function download(name, text){
+      const blob = new Blob([text], { type:'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob); a.download = name;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(function(){ try{ URL.revokeObjectURL(a.href); }catch(e){} }, 5000);
+    }
+    function stampName(prefix){
+      const d = new Date(), p = n => String(n).padStart(2,'0');
+      return prefix + d.getFullYear() + p(d.getMonth()+1) + p(d.getDate()) + '-' + p(d.getHours()) + p(d.getMinutes()) + p(d.getSeconds()) + '.json';
+    }
+    function listHtml(rows){
+      if(!rows || !rows.length) return line('暂无历史快照；点「一键手动快照备份」即可创建第一份。');
+      return '<div class="ldb-table">' + rows.map(function(x){
+        return '<div class="ldb-row"><span class="ldb-k">' + esc(String(x.atText || x.at)) + '</span>'
+          + '<span class="ldb-v" style="min-width:auto;text-align:left;flex:1">' + esc(String(x.reason)) + '　·　' + localDbFmtBytes(x.bytes || 0) + '</span>'
+          + '<button type="button" class="pbtn" data-r272-act="restore" data-r272-id="' + esc(String(x.id)) + '" style="padding:2px 8px;font-size:11px">恢复</button></div>';
+      }).join('') + '</div>';
+    }
+    function afterStateChange(){
+      try{ localDbRefreshAll(); }catch(e){}
+      refresh();
+    }
+
+    document.addEventListener('click', function(e){
+      const t = e.target && e.target.closest ? e.target.closest('[data-r272-act]') : null;
+      if(!t) return;
+      const act = t.getAttribute('data-r272-act');
+      if(act === 'snapshot'){
+        /* R272-5.1：等事务确认成功再返回成功提示 */
+        S.r272Snapshot('manual').then(function(r){
+          if(r && r.ok){ report('<b>✅ 快照已写入主库</b>' + line('已按「保留最近 10 份」自动裁剪历史快照。') + line('存储引擎：' + esc(String(R.DB_NAME))), 'ok'); refresh(); }
+          else report('<b>⚠️ 快照写入未完成</b>' + line(esc(String((r && (r.code || r.error)) || '未知原因')) + '；当前数据仍保留在主档与本地副本中。'), 'warn');
+        });
+      } else if(act === 'list'){
+        S.r272ListSnapshots().then(function(rows){
+          report('<b>🗂️ 历史快照（最近 10 份）</b>' + listHtml(rows)
+            + line('恢复采用整份回写，恢复前会先把当前状态另存为一份新快照。'), 'ok');
+        });
+      } else if(act === 'restore'){
+        const id = t.getAttribute('data-r272-id');
+        if(!window.confirm('确定把本机数据恢复到这份快照吗？\n当前状态会自动另存一份新快照，可再次恢复回来。')) return;
+        S.r272Snapshot('pre-restore').then(function(){ return S.r272Restore(id); }).then(function(r){
+          if(r && r.ok){ afterStateChange(); report('<b>✅ 已从快照恢复</b>' + line('主库、localStorage 桥梁快照与页面状态已同步。'), 'ok'); }
+          else report('<b>⚠️ 恢复未完成</b>' + line(esc(String((r && (r.code || r.error)) || '未知原因'))), 'bad');
+        });
+      } else if(act === 'export'){
+        /* R272-5.1 / 4.2：先等待最近一次写事务确认，再导出，保证备份是最新态 */
+        S.r272PersistWait().then(function(){ return S.r272Export(); }).then(function(obj){
+          const txt = JSON.stringify(obj, null, 2);
+          const name = stampName('学习打卡-完整备份-');
+          download(name, txt);
+          report('<b>✅ 完整备份已导出</b>' + line('文件：' + esc(name) + '　·　' + localDbFmtBytes(txt.length))
+            + line('包含主库全量业务数据、历史快照摘要与调试日志；文件名自带时间戳。'), 'ok');
+        }).catch(function(err){ report('<b>⚠️ 导出失败</b>' + line(esc(String((err && err.message) || err))), 'bad'); });
+      } else if(act === 'import'){
+        const f = el('r272ImportFile'); if(f) f.click();
+      } else if(act === 'selfcheck'){
+        S.r272SelfCheck().then(function(rep){
+          const issues = (rep.issues || []).map(function(i){
+            return '<div class="ldb-issue ' + (i.lv === 'err' ? 'is-err' : 'is-warn') + '">' + (i.lv === 'err' ? '❌ ' : '⚠️ ') + esc(i.t) + '</div>';
+          }).join('') || '<div class="ldb-issue is-ok">✅ 未发现结构性问题</div>';
+          const acts = (rep.actions || []).map(function(x){ return line('· ' + esc(x)); }).join('');
+          const tables = Object.keys(rep.tables || {}).map(function(k){ return k + ':' + rep.tables[k]; }).join('　');
+          report('<b>🩺 数据自检报告' + (rep.ok ? '（通过）' : '（已处理）') + '</b>' + issues
+            + line('存储引擎：' + esc(String(rep.engine || R.DB_NAME)) + '　·　' + esc(tables))
+            + line('历史快照 ' + (rep.snapshots | 0) + ' 份　·　调试日志 ' + (rep.logs | 0) + ' 条')
+            + acts
+            + '<div style="margin-top:6px"><button type="button" class="pbtn" data-r272-act="repair" style="padding:3px 10px;font-size:11px">🛠️ 一键修复字段 / 隔离脏数据</button>'
+            + (rep.ok ? '' : '　<button type="button" class="pbtn" data-r272-act="list" style="padding:3px 10px;font-size:11px">从历史快照恢复</button>') + '</div>', rep.ok ? 'ok' : 'warn');
+          refresh();
+        });
+      } else if(act === 'repair'){
+        S.r272Repair().then(function(r){
+          afterStateChange();
+          report('<b>🛠️ 修复已执行</b>' + (r.actions || []).map(function(x){ return line('· ' + esc(x)); }).join('')
+            + line('只补结构、只从备份回退，绝不删除任何用户自建内容。'), r.ok ? 'ok' : 'warn');
+        });
+      } else if(act === 'rollback'){
+        S.r272Rollback(_rollbackId).then(function(r){
+          afterStateChange();
+          report('<b>' + (r && r.ok ? '✅ 已回退到导入前状态' : '⚠️ 回退未完成') + '</b>'
+            + line('主库与页面状态已同步；原有数据保护规则继续生效。'), r && r.ok ? 'ok' : 'warn');
+        });
+      } else if(act === 'logs'){
+        S.r272Logs(80).then(function(rows){
+          const html = (rows || []).slice().reverse().map(function(x){
+            return '<div class="ldb-row"><span class="ldb-k">' + esc(new Date(x.at || 0).toLocaleString('zh-CN')) + '</span>'
+              + '<span class="ldb-v" style="min-width:auto;text-align:left;flex:1">' + esc(String(x.ev)) + ' '
+              + esc(x.detail ? JSON.stringify(x.detail).slice(0, 160) : '') + '</span></div>';
+          }).join('');
+          report('<b>📜 调试日志（仅本面板可见 · 最近 80 条）</b>'
+            + (html || line('暂无事件')) + line('记录每一次读写、版本更新、恢复快照与迁移事件。'), 'ok');
+        });
+      }
+    });
+
+    /* 文件选择框是动态注入的，用 change 事件委托绑定，避免 mount 前取不到节点 */
+    document.addEventListener('change', function(e){
+      if(!e.target || e.target.id !== 'r272ImportFile') return;
+      const fileInput = e.target;
+      const f = fileInput.files && fileInput.files[0];
+      fileInput.value = '';
+      if(!f) return;
+      const reader = new FileReader();
+      reader.onload = function(){
+        let obj = null;
+        try{ obj = JSON.parse(String(reader.result || '')); }
+        catch(err){ report('<b>⚠️ 备份文件无法解析</b>' + line('请确认选的是本平台导出的 JSON 备份。'), 'bad'); return; }
+        const incoming = (obj && obj.data && typeof obj.data === 'object') ? obj.data : obj;
+        if(!incoming || typeof incoming !== 'object' || (!incoming.tasks && !incoming.records && !incoming.archive)){
+          report('<b>⚠️ 备份内容不符</b>' + line('文件里没有可识别的打卡任务 / 记录 / 档案数据。'), 'bad'); return;
+        }
+        const sum = '打卡任务 ' + ((incoming.tasks || []).length | 0) + ' 项　·　打卡记录 '
+          + ((incoming.records || []).length | 0) + ' 条　·　累计 ⭐ '
+          + (((incoming.archive || {}).totalStars) | 0) + '　·　田地 ' + ((incoming.plots || []).length | 0) + ' 块';
+        if(!window.confirm('备份预览：\n' + sum + '\n\n采用合并策略：只补不删，不会清空当前数据。\n导入前会自动生成当前快照，出错可一键回退。是否继续？')) return;
+        /* R272-4.2：导入前自动生成当前快照，出错一键回退 */
+        S.r272BeforeImport().then(function(pre){
+          _rollbackId = (pre && pre.rollbackId) || null;
+          try{
+            const merged = mergeStoreData(S.load(), incoming);
+            const ok = S.save(merged);
+            /* R272-5.1：等事务确认成功再返回操作成功提示 */
+            return S.r272PersistWait().then(function(w){
+              afterStateChange();
+              report('<b>' + (ok && (!w || w.ok !== false) ? '✅ 已合并导入' : '⚠️ 已合并，主库事务未完成') + '</b>'
+                + line('导入策略：同一条目以备份为准，本地独有内容全部保留，没有清空任何数据。')
+                + line('导入前快照已留存' + (_rollbackId ? '（编号 ' + esc(String(_rollbackId)) + '）' : '') + '，如需回退可点下方按钮。')
+                + '<div style="margin-top:6px"><button type="button" class="pbtn" data-r272-act="rollback" style="padding:3px 10px;font-size:11px">↩️ 一键回退到导入前</button></div>',
+                ok ? 'ok' : 'warn');
+            });
+          }catch(err){
+            return S.r272Rollback(_rollbackId).then(function(){ afterStateChange();
+              report('<b>⚠️ 导入失败，已自动回退</b>' + line(esc(String((err && err.message) || err))), 'bad'); });
+          }
+        }).catch(function(err){ report('<b>⚠️ 导入流程异常</b>' + line(esc(String((err && err.message) || err))), 'bad'); });
+      };
+      reader.onerror = function(){ report('<b>⚠️ 读取文件失败</b>', 'bad'); };
+      reader.readAsText(f);
+    });
+
+    /* R272-5.2：未保存的设置修改在刷新 / 关闭页面时提示，且绝不写入持久化数据库 */
+    window.addEventListener('beforeunload', function(e){
+      try{
+        if(S.hasUnsavedSettings && S.hasUnsavedSettings()){
+          const msg = '设置中心存在未保存的修改，离开页面后这些修改不会写入本机数据库。';
+          e.preventDefault(); e.returnValue = msg; return msg;
+        }
+      }catch(err){}
+    });
+    if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function(){ setTimeout(mount, 0); });
+    else setTimeout(mount, 0);
+  })();
+
+  /* R272-1.5 / 2.5：启动屏障 —— 等 IndexedDB 主库完成旧存量迁移 / 损坏恢复再初始化页面，
+     避免 Safari 驱逐 localStorage 后首屏短暂渲染「空档」。持久化层带 1.6 秒硬超时，
+     IDB 不可用时自动降级且绝不白屏。所有原有界面、文字、交互表现保持不变，用户无感。 */
+  function r272BootInit(){
+    const _P = window.R272P;
+    if(_P && typeof _P.whenReady === 'function') _P.whenReady(function(){ try{ init(); }catch(e){} });
+    else init();
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', r272BootInit);
+  else r272BootInit();
 })();
 </script>
 
 <!-- R69：完全离线支持 —— 注册 Service Worker，把整个应用缓存到设备本地，断网也能用
      R70：启动即检测新版 —— sw.js 携带构建指纹，内容变化时浏览器自动重装并把新 index.html
-          预缓存到本地，装好后页面自动重载一次，iPad 上打开即可见最新版本（无需开两次） -->
+          预缓存到本地，装好后页面自动重载一次，iPad 上打开即可见最新版本（无需开两次）
+     R272-2.5：静态资源缓存（Cache Storage）与用户业务数据库（IndexedDB nick_checkin_main_db）
+          两套完全隔离。版本更新 / SW 重装 / clearCaches 只替换页面静态代码与内置素材；
+          静态资源更新绝不触碰 IndexedDB 用户数据表，只读用户数据、绝不覆盖写入、
+          绝不删除任何用户业务表；升级前后由持久化层做哈希校验，发现篡改自动回滚
+          上一份快照并写日志。 -->
 <script>
 (function(){
+  /* R272-2.4：版本更新代码只读取用户数据，禁止覆盖写入默认配置覆盖用户修改。
+     这里唯一允许触碰用户数据的动作是 protectBeforeUpdate()（写保护副本 + 哈希标记），
+     绝没有任何 localStorage.removeItem / clear / IndexedDB.deleteDatabase 之类操作。 */
   if(!('serviceWorker' in navigator)) return;
   var RELOAD_FLAG = '__sw_reload_at';
   // 带节流保护：8 秒内已重载过则放弃，防止极端情况下反复刷新
