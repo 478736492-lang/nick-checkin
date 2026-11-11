@@ -1,5 +1,14 @@
 /* R69：学习打卡站 Service Worker —— 完全离线支持
- * 目标：把站点缓存到设备本地，之后断网 / 无网络也能正常打开使用，数据仍存 localStorage。
+ * 目标：把站点静态资源缓存到设备本地，之后断网 / 无网络也能正常打开使用。
+ * R272-2.5 存储隔离铁律：用户业务数据的主存储已切换为 IndexedDB「nick_checkin_main_db」，
+ *   localStorage 只保留少量轻量标记 + 一份同步桥梁快照。本 SW 只负责「静态资源缓存」
+ *   （Cache Storage），与「用户业务数据库」两套完全隔离：
+ *     · install / activate / fetch / message 里没有任何 indexedDB 读写、删除数据库、
+ *       覆盖默认配置、清理用户数据表之类的操作；
+ *     · 版本更新只替换 index.html / 样式 / 内置素材，不会覆盖、清空、重置用户业务数据；
+ *     · 静态资源更新绝不触碰 IndexedDB 用户数据表，升级前后的哈希校验与自动回滚
+ *       由页面侧 r272_persistence.js 负责，SW 不参与。
+ *   iPad Safari 的 ITP 驱逐问题也由此规避：PWA 桌面启动是独立存储沙盒，驱逐策略大幅放宽。
  * R132 起 Web 部署改为「小 HTML + 外置图片」架构（build_standalone.js --ghpages）：
  *   · index.html 约 3.4MB（gzip 后约 1MB，纯代码与教材种子数据），首屏立即可渲染；
  *   · 27 张背景/贴图在 ./assets/ 下按内容寻址，仅在对应板块渲染时才下载，
@@ -41,18 +50,23 @@ var PRECACHE = ['./', './index.html'];
 var NAV_TIMEOUT = 2500;      // R119.1：有缓存时的快速回退窗口（原 6000ms 偏长）
 var HARD_TIMEOUT = 30000;    // R119.1：无缓存且网络长时间无响应时的兜底，避免无限转圈
 var PRECACHE_TIMEOUT = 25000; // R119.1：预缓存最多占用这么久，超时就先激活 SW
-/* R70：构建指纹。部署脚本会把 5a3dd587d07d 替换为当期 index.html 的 sha256 前 12 位。
+/* R70：构建指纹。部署脚本会把 193402a77731 替换为当期 index.html 的 sha256 前 12 位。
  * 作用：只在站点内容真的变化时，sw.js 本身才变化，从而触发浏览器 SW 更新流程
  * （install → 重新预缓存新 index.html → installed → 页面自动重载到新版）。 */
-var BUILD = '5a3dd587d07d';
+var BUILD = '193402a77731';
 /* R244-6：缓存名绑定构建指纹 —— 版本更新时 activate 会清掉上一版缓存，
  * 避免外置种子脚本停留在旧内容（表现为百科等板块数据「被清零」）。 */
 var CACHE_NAME = 'zoo-checkin-v1-' + BUILD;
-/* R93：版本号与版本更新时间。部署脚本会把 R271 替换为当期轮次号（如 R93）、
- * 2026-11-11 15:42 替换为本次部署时间（北京时间，格式 YYYY-MM-DD HH:mm）。
+/* R272-2.5：静态资源缓存 ↔ 用户业务数据库隔离契约。
+   本 SW 全域禁止 indexedDB / localStorage 用户数据操作；唯一允许的缓存写删对象是
+   Cache Storage 里的静态 shell 与内置素材。USER_DATA_TOUCH_FORBIDDEN 供静态门禁校验。 */
+var USER_DATA_TOUCH_FORBIDDEN = true;
+var USER_DB_NAME_ISOLATED = 'nick_checkin_main_db';
+/* R93：版本号与版本更新时间。部署脚本会把 R272 替换为当期轮次号（如 R93）、
+ * 2026-11-11 18:41 替换为本次部署时间（北京时间，格式 YYYY-MM-DD HH:mm）。
  * 用途：「设置中心 → 版本与更新」显示「当前版本 + 更新时间」，点「检查更新」后即为最新读数。 */
-var APP_VERSION = 'R271';
-var BUILD_TIME = '2026-11-11 15:42';
+var APP_VERSION = 'R272';
+var BUILD_TIME = '2026-11-11 18:41';
 
 self.addEventListener('install', function (e) {
   self.skipWaiting();
@@ -72,6 +86,8 @@ self.addEventListener('install', function (e) {
 });
 
 self.addEventListener('activate', function (e) {
+  /* R272-2.5：这里只清理「上一版静态资源缓存」，绝不删除任何 IndexedDB 数据库 /
+     用户业务数据表 / localStorage 用户键。静态缓存换版与用户数据是完全独立的两套。 */
   e.waitUntil(
     caches.keys().then(function (names) {
       return Promise.all(names.map(function (n) {
@@ -84,6 +100,7 @@ self.addEventListener('activate', function (e) {
 });
 
 // 页面发来 SKIP_WAITING 时立即接管（配合「立即更新」按钮）
+// R272-2.5：消息通道只接受 SKIP_WAITING，不接受也不执行任何数据读写 / 清理指令。
 self.addEventListener('message', function (e) {
   if (e.data && e.data.type === 'SKIP_WAITING') self.skipWaiting();
 });
