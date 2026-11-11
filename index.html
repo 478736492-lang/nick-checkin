@@ -9476,20 +9476,26 @@ body.r256-sheet-on{overflow:hidden}
 .task-jump-block .tjb-page select{flex:1;min-width:0}
 .task-jump-block.is-off{opacity:.75}
 
-/* ================= R262-1.1 设置中心：全部设置卡片统一等宽 ================= */
-/* display:contents 让「提醒卡 + 三张工具卡」四张卡直接参与同一个 2 列网格，
-   列宽与上方 .settings-grid 的 repeat(2,1fr) 完全一致，卡片高度也拉齐 */
-.settings-row-r261{
-  grid-column:1/-1;display:grid;
+/* ================= R269-1 设置中心：全部卡片统一尺寸 =================
+   R268 之前这里是「左列一张被拉高的提醒卡 + 右列四张短卡」的嵌套网格，
+   只要左列卡片数量变化，高度就会被 stretch 拉得和右列总高一样，尺寸永远对不齐。
+   R269 起取消嵌套：所有设置卡（含合并后的入口卡）都是 #settingsGrid 的直接网格项，
+   由 grid-auto-rows 统一行高，卡片本体 height:100%，因此每张卡宽高完全一致。 */
+.settings-grid{
   grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:14px;align-items:stretch;
+  grid-auto-rows:minmax(96px,auto);
+  align-items:stretch;
 }
-.r261-remind-slot,
-.settings-row-3.settings-row-3-side{display:contents}
-.r261-remind-slot #r256SetCard{width:100%;height:100%;grid-column:auto;box-sizing:border-box}
-.settings-row-3.settings-row-3-side .settings-card{width:100%;height:100%;min-width:0;box-sizing:border-box}
-@media (max-width:900px){
-  .settings-row-r261{grid-template-columns:1fr}
+.settings-grid > .settings-card,
+#r256SetCardSlot > .settings-card{
+  width:100%;height:100%;min-height:96px;min-width:0;box-sizing:border-box;
+  align-self:stretch;
+}
+/* 合并后的「打卡提醒 / 护眼 / 家长管控」入口卡独占整行，高度与其它卡一致 */
+#r256SetCardSlot{grid-column:1/-1;min-width:0}
+@media (max-width:680px){
+  .settings-grid{grid-template-columns:1fr}
+  #r256SetCardSlot{grid-column:1/-1}
 }
 
 /* ================= R261-2.1 出售 / 兑换二次弹窗：数量改为滑动选择 ================= */
@@ -9774,28 +9780,11 @@ textarea.xs-adv-input-box{
 }
 
 /* ==========================================================================
-   R263-1.2 右列四卡竖排：音乐设置 → 数据同步 → 分类导出文件 → 版本与更新
-   提醒卡稳定占左列并拉齐高度；右列四张卡等宽等高，
-   特别保证「数据同步」与「版本与更新」尺寸完全一致。
+   R263-1.2 右列四卡竖排 → R269-1 起取消嵌套网格
+   音乐设置 → 数据同步 → 分类导出文件 → 版本与更新 现在直接参与 #settingsGrid
+   的 2 列网格，与「打卡任务 / 游戏设置」尺寸完全一致，故原有的
+   .settings-row-r261 / #settingsRow3 定位规则整体移除。
    ========================================================================== */
-.settings-row-r261 #r256SetCard{grid-column:1;grid-row:1 / span 4;align-self:stretch}
-.settings-row-r261 #cardMusicSettings{grid-column:2;grid-row:1}
-.settings-row-r261 #cardSyncSettings{grid-column:2;grid-row:2}
-.settings-row-r261 #cardExportSettings{grid-column:2;grid-row:3}
-.settings-row-r261 #cardVersionSettings{grid-column:2;grid-row:4}
-.settings-row-r261 #cardMusicSettings,
-.settings-row-r261 #cardSyncSettings,
-.settings-row-r261 #cardExportSettings,
-.settings-row-r261 #cardVersionSettings{
-  min-height:92px;max-height:none;height:100%;box-sizing:border-box;
-}
-@media (max-width:900px){
-  .settings-row-r261 #r256SetCard{grid-column:1;grid-row:1}
-  .settings-row-r261 #cardMusicSettings{grid-column:1;grid-row:2}
-  .settings-row-r261 #cardSyncSettings{grid-column:1;grid-row:3}
-  .settings-row-r261 #cardExportSettings{grid-column:1;grid-row:4}
-  .settings-row-r261 #cardVersionSettings{grid-column:1;grid-row:5}
-}
 
 /* ==========================================================================
    R263-2.3 种植园三组动态特效（纯 CSS / emoji，不占存档配额）
@@ -10178,15 +10167,18 @@ textarea.xs-adv-input-box{
 }
 
 /* ==========================================================================
-   R267-5.4 右侧数据统计卡片向上偏移，贴近页面上边距
-   .farm-wh-col 原本整体 top:-12px（R264），统计卡仍被 topbar 压在下方；
-   这里改为只把统计卡自身上提 44px 并加一层浅毛玻璃，与右侧卡片流分开，
-   下面四张工具卡 / 仓库的排版不受影响。
+   R269-3 右侧数据统计卡片（R267-5.4 的「上提 44px 贴顶」已撤回）
+   学生模式下主题卡背景贴图较矮，上提后整条统计卡会越出贴图上沿；
+   现在只把 .farm-wh-col 归零，统计卡自身回到正常文档流。
    ========================================================================== */
 .page-farm .farm-wh-col{top:0}
+/* R269-3：统计卡（⭐ / 💰 / ☀️ / 💧 / 肥料）回到正常文档流。
+   R267-5.4 曾把它上提 44px「贴顶」，学生模式下主题卡背景贴图较矮，
+   上提后整条统计卡会溢出到背景图外面（压住贴图上沿 / 越出卡片边界）。
+   这里去掉负偏移，只保留 2px 微调，卡片完整落在贴图下沿之内。 */
 .page-farm .farm-wh-col .farm-title-stats{
-  position:relative;top:-44px;align-self:flex-end;
-  margin:0 2px 0 auto;padding:5px 8px;
+  position:relative;top:0;align-self:flex-end;
+  margin:2px 2px 0 auto;padding:5px 8px;
   background:rgba(255,255,255,.42);
   -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
   border:1px solid rgba(255,255,255,.6);border-radius:12px;
@@ -10222,38 +10214,29 @@ textarea.xs-adv-input-box{
 }
 
 /* ==========================================================================
-   R268-3.2 提醒 / 护眼 / 家长管控：拆成三张独立卡片
-   与「打卡任务 / 游戏设置」等同构：卡片中间标题即点击入口，点开弹窗看详细设置项。
-   三张卡放在左侧槽位纵向排列，右侧四张工具卡布局不变。
+   R269-1 打卡提醒 / 护眼 / 家长管控 合并为一张入口卡 + 三段式详情弹窗
+   卡片本身就是唯一的点击入口（中间标题即入口，与其它设置卡同构），
+   点开后在 #modalSettingsDetail 内分三段展示全部详细设置项。
    ========================================================================== */
-.r261-remind-slot{
-  display:flex;flex-direction:column;gap:12px;
-  align-self:stretch;width:100%;box-sizing:border-box;
+#r256SetCardSlot{display:block;width:100%;box-sizing:border-box}
+.r268-set-card{cursor:pointer;width:100%;box-sizing:border-box}
+.r268-set-card .settings-card-title{white-space:nowrap;word-break:keep-all}
+.r268-set-card .settings-card-desc{margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:680px){
+  .r268-set-card .settings-card-title{white-space:normal;word-break:keep-all}
+  .r268-set-card .settings-card-desc{white-space:normal;overflow:visible}
 }
-/* R268-3.2：左槽（提醒 / 护眼 / 家长管控）竖排，右列工具卡同样竖排，各占网格一列。
-   旧规则用 display:contents 让 5 张卡平铺进 2 列网格；拆成 3 张后若继续平铺，
-   会出现「家长管控 | 音乐设置」这种错位，因此两列都改回各自纵向排列。 */
-.settings-row-r261 > .settings-row-3.settings-row-3-side{
-  display:flex;flex-direction:column;gap:12px;
-  align-self:stretch;min-width:0;
-}
-.settings-row-r261 > .settings-row-3.settings-row-3-side .settings-card{
-  width:100%;height:auto;min-width:0;box-sizing:border-box;
-}
-.r261-remind-slot .r268-set-card{
-  width:100%;height:auto;align-self:stretch;box-sizing:border-box;
-  grid-column:auto;cursor:pointer;
-}
-/* 首张卡沿用旧 id（#r256SetCard）以兼容既有断言与定位，
-   但旧规则把 height 锁成 100%，在纵向 flex 槽位里会撑破，这里覆盖回自适应 */
-.r261-remind-slot #r256SetCard{height:auto;grid-row:auto;align-self:stretch}
-.r268-set-card .settings-card-title{white-space:nowrap}
-.r268-set-card .settings-card-desc{margin-top:2px}
-/* 详情弹窗：紧凑表单 */
-#modalSettingsDetail .modal-box{min-width:440px;max-width:92vw}
-.r268-modal-row{display:flex;align-items:center;gap:10px;margin:12px 0}
+/* 详情弹窗：三段式分组 + 紧凑表单 */
+#modalSettingsDetail .modal-box{min-width:440px;max-width:92vw;max-height:86vh;display:flex;flex-direction:column}
+#modalSettingsDetail .modal-body{overflow-y:auto;-webkit-overflow-scrolling:touch}
+.r269-sec{border:1px solid var(--tone-200,#cfe3ff);border-radius:14px;padding:10px 12px;margin:10px 0;background:#fff}
+.r269-sec:first-child{margin-top:2px}
+.r269-sec-head{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:800;color:var(--tone-900)}
+.r269-sec-head .r269-sec-ico{font-size:16px;line-height:1}
+.r269-sec-body{margin-top:2px}
+.r268-modal-row{display:flex;align-items:center;gap:10px;margin:10px 0 6px}
 .r268-modal-row .r268-modal-label{flex:1 1 auto;font-size:14px;font-weight:700;color:var(--tone-900)}
-.r268-modal-grid{display:flex;flex-wrap:wrap;gap:12px;margin:10px 0 4px}
+.r268-modal-grid{display:flex;flex-wrap:wrap;gap:12px;margin:8px 0 4px}
 .r268-modal-grid label{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--tone-900)}
 .r268-modal-grid input[type="time"],
 .r268-modal-grid input[type="number"]{
@@ -10261,7 +10244,7 @@ textarea.xs-adv-input-box{
   background:#fff;color:var(--tone-900);font-size:14px;font-weight:700;
 }
 .r268-modal-tip{font-size:12px;line-height:1.6;color:#33507e;margin:6px 0 0}
-.r268-modal-quick{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.r268-modal-quick{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 
 </style>
 </head>
@@ -10571,12 +10554,12 @@ textarea.xs-adv-input-box{
         <span class="settings-card-arrow" data-page-node-id="R85cardGameArrow">›</span>
       </div>
 
-      <!-- R261-1.1：提醒卡片（左，加宽） + 数据同步 / 分类导出文件 / 版本与更新（右，自上而下竖排）。
-           提醒卡片由 app.js 的 r256MountSettingsCard() 注入到 #r256SetCardSlot。 -->
-      <div class="settings-row-r261">
+      <!-- R269-1：提醒 / 护眼 / 家长管控 三张卡合并为一张入口卡（跨两列整行），
+           点击卡片即唤起详情弹窗，弹窗内分三段展示全部详细设置项。
+           其余设置卡全部平铺进同一个 2 列网格，宽高完全一致。
+           入口卡由 app.js 的 r256MountSettingsCard() 注入到 #r256SetCardSlot。 -->
       <div class="r261-remind-slot" id="r256SetCardSlot"></div>
-      <div class="settings-row-3 settings-row-3-side" id="settingsRow3">
-      <!-- R263-1.2 ①：音乐设置移到提醒卡右侧右列首位 -->
+      <!-- R263-1.2 ①：音乐设置紧随合并卡 -->
       <!-- 3) 音乐设置 -->
       <div class="settings-card" id="cardMusicSettings" data-page-node-id="R85cardMusic">
         <div class="settings-card-main" data-page-node-id="R85cardMusicMain">
@@ -10631,8 +10614,6 @@ textarea.xs-adv-input-box{
         </div>
         <span class="settings-card-arrow" data-page-node-id="R85cardVerArrow">›</span>
       </div>
-      </div><!-- /#settingsRow3 -->
-      </div><!-- /.settings-row-r261 -->
     </div>
 
     <!-- 设置中心详情面板（点击卡片后展开/弹窗的占位容器，实际弹窗见下方 modal） -->
@@ -15179,7 +15160,16 @@ textarea.xs-adv-input-box{
     }
     // 本次状态里与主档不同的字段覆盖进去（新值优先）
     Object.keys(st).forEach(function(k){
-      if(k === '__pendingApplied' || k === '__settingsSnapshot') return;
+      if(k === '__pendingApplied' || k === '__settingsSnapshot' || k === '__xsUserContent') return;
+      /* R269-2：整份英语内容 200KB+，直接进补丁会把 400KB 预算吃光、把打卡记录挤出去。
+         这里只留「用户新增 / 改过」的差值（通常几 KB），由 _pendingApply 并集回填。 */
+      if(k === 'xueersiContent'){
+        try{
+          const d = _xsUserDelta(st);
+          if(d && Object.keys(d).length) patch.__xsUserContent = d;
+        }catch(e){}
+        return;
+      }
       let s;
       try{ s = JSON.stringify(st[k]); }catch(e){ return; }
       if(s === undefined) return;
@@ -15190,9 +15180,12 @@ textarea.xs-adv-input-box{
     });
     // 预算裁剪：设置类白名单字段优先，超大图片字段（主档本就有）不进补丁
     const out = {}; let used = 0;
+    /* R269-2：题库（xueersiWordBank / xsGramBank）必须排在普通字段之前，
+       它们体积小、不可再生；排在最后常被打卡记录 / 图片字段挤掉。 */
+    const PATCH_KEY_EARLY = ['xueersiWordBank','xsGramBank'];
     const keys = Object.keys(patch).sort(function(a,b){
-      const pa = SNAPSHOT_KEY_ALWAYS.indexOf(a) >= 0 ? 0 : 1;
-      const pb = SNAPSHOT_KEY_ALWAYS.indexOf(b) >= 0 ? 0 : 1;
+      const pa = SNAPSHOT_KEY_ALWAYS.indexOf(a) >= 0 ? 0 : (PATCH_KEY_EARLY.indexOf(a) >= 0 ? 1 : 2);
+      const pb = SNAPSHOT_KEY_ALWAYS.indexOf(b) >= 0 ? 0 : (PATCH_KEY_EARLY.indexOf(b) >= 0 ? 1 : 2);
       return pa - pb;
     });
     keys.forEach(function(k){
@@ -15222,7 +15215,11 @@ textarea.xs-adv-input-box{
   function _pendingApply(st){
     const p = _pendingRead();
     if(!p || !st || typeof st !== 'object') return false;
-    Object.keys(p.patch).forEach(function(k){ st[k] = p.patch[k]; });
+    Object.keys(p.patch).forEach(function(k){
+      /* R269-2：英语内容以「差值」存放，不能整份覆盖（否则会把主档里内置词条清空） */
+      if(k === '__xsUserContent'){ try{ _journalMergeContent(st, p.patch[k]); }catch(e){} return; }
+      st[k] = p.patch[k];
+    });
     st.__pendingApplied = p.__at;
     // 叠加后立刻把完整状态写回主档；成功即清补丁（下次不会重复叠加）
     try{
@@ -15247,7 +15244,8 @@ textarea.xs-adv-input-box{
                         'rewardRules','weekPlan','calcSettings','plots',
                         'kewenLearned','readFlags','calcDoneKeys','en3500Marks'];
   let _journalRecovered = false;
-  const JOURNAL_PRIORITY = ['archive','inventory','settings','farmOpen','records','calcBook','checkinLog',
+  const JOURNAL_PRIORITY = ['archive','inventory','settings','xsBank','xsGramBank','xsUserContent',
+                            'farmOpen','records','calcBook','checkinLog',
                             'calcDailyLog','profile','tasks','kewenLearned','readFlags',
                             'calcDoneKeys','en3500Marks','plots','km','weekPlan',
                             'rewardRules','calcSettings','remindCfg'];
@@ -15261,6 +15259,91 @@ textarea.xs-adv-input-box{
     if(!obj || typeof obj !== 'object') return out;
     Object.keys(obj).forEach(function(k){ if(String(k) >= cut) out[k] = obj[k]; });
     return out;
+  }
+  /* R269-2：英语题库 / 用户新增词条的「不可再生」部分。
+     为什么单独抽出来：xueersiContent 整份 200KB+（含 900 多个内置词 + 88 条语法），
+     小账本预算只有 300KB，整份塞进去会把打卡记录全挤掉；而用户真正在乎的只是
+     「自己新增 / 改过」的那几十条。这里只抽与内置默认值不同的条目（差值），
+     题库（xsGramBank / xueersiWordBank）的 items / edits / deleted 也一并抽出来。 */
+  let _xsDefCache = null;
+  function _xsDefaultMap(){
+    if(_xsDefCache) return _xsDefCache;
+    const m = { words:{}, grammar:{}, stories:{}, sentences:{} };
+    try{
+      const sets = {
+        words: xsDefaultWords(), grammar: xsDefaultGrammar(),
+        stories: xsDefaultStories(), sentences: xsDefaultSentences()
+      };
+      Object.keys(m).forEach(function(k){
+        (sets[k] || []).forEach(function(it){
+          if(it && it.id != null){ try{ m[k][String(it.id)] = JSON.stringify(it); }catch(e){} }
+        });
+      });
+    }catch(e){}
+    _xsDefCache = m;
+    return m;
+  }
+  function _xsUserDelta(st){
+    const c = (st && st.xueersiContent) || null;
+    if(!c || typeof c !== 'object') return null;
+    const def = _xsDefaultMap();
+    const out = {}; let n = 0;
+    Object.keys(def).forEach(function(k){
+      const list = Array.isArray(c[k]) ? c[k] : [];
+      const keep = [];
+      list.forEach(function(it){
+        if(!it) return;
+        let s = '';
+        try{ s = JSON.stringify(it); }catch(e){ return; }
+        const id = String(it.id == null ? '' : it.id);
+        if(def[k][id] !== undefined && def[k][id] === s) return;   // 与内置默认完全一致 → 无需备份
+        keep.push(it);
+      });
+      if(keep.length){ out[k] = keep; n += keep.length; }
+    });
+    return n ? out : null;
+  }
+  function _journalMergeContent(st, src){
+    if(!src || typeof src !== 'object') return false;
+    const c = st.xueersiContent = (st.xueersiContent && typeof st.xueersiContent === 'object') ? st.xueersiContent : {};
+    ['words','grammar','stories','sentences'].forEach(function(k){
+      const add = Array.isArray(src[k]) ? src[k] : [];
+      if(!add.length) return;
+      if(!Array.isArray(c[k])) c[k] = [];
+      const seen = Object.create(null);
+      c[k].forEach(function(x){ if(x && x.id != null) seen[String(x.id)] = 1; });
+      add.forEach(function(x){
+        if(!x || x.id == null) return;
+        const id = String(x.id);
+        if(seen[id]) return;
+        c[k].push(x); seen[id] = 1;
+      });
+    });
+    return true;
+  }
+  /* 题库合并：只做并集，绝不删除主档已有题目（deleted 标记只进不退） */
+  function _journalMergeBank(st, key, src){
+    if(!src || typeof src !== 'object') return false;
+    const cur = st[key] = (st[key] && typeof st[key] === 'object') ? st[key] : {};
+    if(!Array.isArray(cur.items)) cur.items = [];
+    if(!cur.edits || typeof cur.edits !== 'object') cur.edits = {};
+    if(!cur.deleted || typeof cur.deleted !== 'object') cur.deleted = {};
+    const idx = Object.create(null);
+    cur.items.forEach(function(x){ if(x && x.id != null) idx[String(x.id)] = x; });
+    (Array.isArray(src.items) ? src.items : []).forEach(function(x){
+      if(!x || x.id == null) return;
+      const id = String(x.id);
+      if(idx[id]) return;
+      cur.items.push(x); idx[id] = x;
+    });
+    if(src.edits && typeof src.edits === 'object'){
+      Object.keys(src.edits).forEach(function(k){ if(cur.edits[k] === undefined) cur.edits[k] = src.edits[k]; });
+    }
+    if(src.deleted && typeof src.deleted === 'object'){
+      Object.keys(src.deleted).forEach(function(k){ if(src.deleted[k]) cur.deleted[k] = true; });
+    }
+    if(cur.items.length > 1500) cur.items = cur.items.slice(-1500);
+    return true;
   }
   function _journalPick(st){
     const raw = {};
@@ -15290,6 +15373,22 @@ textarea.xs-adv-input-box{
     });
     // R267-2.1：提醒时间单独抽成一个 120B 字段（r256 整体含流水，不能整份进账本）
     if(st.r256 && st.r256.remind && typeof st.r256.remind === 'object') raw.remindCfg = st.r256.remind;
+    /* R269-2：学而思英语「每日巩固 · 题库」必须进小账本。
+       一键导入词汇 / 语法题写的是 st.xueersiWordBank.items 与 st.xsGramBank.items，
+       旧账本白名单里没有它们 —— 主档一旦写不进（iPad Safari 配额满 / 介质受限），
+       整份题库就只剩在主档里，刷新 / 版本更新后题目全部消失。
+       这里只抽用户自己沉淀的部分（items / edits / deleted），seed 由词汇板块现算，不占体积。 */
+    ['xueersiWordBank','xsGramBank'].forEach(function(k){
+      const b = st[k];
+      if(!b || typeof b !== 'object') return;
+      const o = {};
+      if(Array.isArray(b.items) && b.items.length) o.items = b.items.slice(-1200);
+      if(b.edits && typeof b.edits === 'object' && Object.keys(b.edits).length) o.edits = b.edits;
+      if(b.deleted && typeof b.deleted === 'object' && Object.keys(b.deleted).length) o.deleted = b.deleted;
+      if(Object.keys(o).length) raw[k === 'xueersiWordBank' ? 'xsBank' : 'xsGramBank'] = o;
+    });
+    // 用户新增 / 改过的英语词条与语法卡（与内置默认值比对后的差值，通常只有几 KB）
+    try{ const ud = _xsUserDelta(st); if(ud) raw.xsUserContent = ud; }catch(e){}
     // km 只留设置 / 进度 / 星星金币，题库（questions，体积可达数百 KB）交给主档
     if(st.km && typeof st.km === 'object' && !Array.isArray(st.km)){
       const kk = {};
@@ -15346,6 +15445,11 @@ textarea.xs-adv-input-box{
        转存小账本，前后相差不过几毫秒。现在只比严格大小关系，账本不早于主档就必须叠加。 */
     if(mainAt && j.__at && j.__at < mainAt) return false;  // 主档确实比账本新，账本作废
     const b = j.body;
+    /* R269-2：题库 / 用户新增英语内容先并集回填 —— 这两类只增不减，
+       无论主档旧到什么程度都必须把账本里多出来的题目补回去。 */
+    try{ if(b.xsBank) _journalMergeBank(st, 'xueersiWordBank', b.xsBank); }catch(e){}
+    try{ if(b.xsGramBank) _journalMergeBank(st, 'xsGramBank', b.xsGramBank); }catch(e){}
+    try{ if(b.xsUserContent) _journalMergeContent(st, b.xsUserContent); }catch(e){}
     // ① 记录类按 (date|taskId) 合并：账本更新则覆盖同一条，主档多出来的旧日期保留
     if(Array.isArray(b.records)){
       if(!Array.isArray(st.records)) st.records = [];
@@ -20690,19 +20794,32 @@ be 动词：am / is → was；are → were
   }
   function xsWordBankGet(id){ return xsWordPool().find(x => String(x.id) === String(id)) || null; }
   // 「📥 一键导入词汇」：把「词汇」板块里题库还没有的单词收进题库（逻辑与语法「⚡ 一键导入例句」一致）
+  /* R269-2：与 R267-1.1 的例句导入同源问题 —— 旧实现对每个单词都调
+     xsWordBankAdd()，而它内部每次都 load() + save()，N 个单词 = N 次整份存档
+     （约 240KB）序列化 + setItem + 回读 + 备份滚动。词表上百条时主线程被同步阻塞数秒，
+     iPad Safari watchdog 直接重载页面；而重载正好发生在写入中途，用户看到的就是
+     「点了导入、页面刷新、数据没了」。现在一次读档、一次落库。 */
   function xsWordBankImportAll(){
     const st = load();
     const words = (st.xueersiContent && st.xueersiContent.words) || [];
-    const pool = xsWordPool();
-    const exist = new Set(pool.map(x=>_xsBankNorm(x.en)));
-    let added = 0, skipped = 0;
+    const b = _xsWordBankState(st);
+    const exist = new Set();
+    try{ xsWordPool().forEach(x => exist.add(_xsBankNorm(x && x.en))); }catch(e){}
+    let added = 0, skipped = 0, seq = 0;
+    const stamp = Date.now().toString(36);
     words.forEach(w=>{
       const en = String(w.en || '').trim();
       const zh = String(w.wordZh || w.zh || '').trim();
       if(!en || !zh || exist.has(_xsBankNorm(en))){ skipped++; return; }
-      const r = xsWordBankAdd({ en, zh, phonetic: w.phonetic || '' });
-      if(r && r.ok){ added++; exist.add(_xsBankNorm(en)); } else skipped++;
+      const it = {
+        id: 'uw_' + stamp + '_' + (seq++) + Math.random().toString(36).slice(2,5),
+        wordId: String(w.id || ''), en, phonetic: String(w.phonetic || ''), zh, fromSeed: false
+      };
+      b.items.push(it);
+      exist.add(_xsBankNorm(en));
+      added++;
     });
+    if(added) save(st);
     return { ok:true, added, skipped };
   }
   // ===== R253-3：巩固打卡历次作答记录（正确 / 错误全量留痕，供「已默写」弹窗归集）=====
@@ -46744,9 +46861,11 @@ if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
     r256RenderOverview();
   }
 
-  /* R268-3.2：设置中心的「提醒 / 护眼 / 家长管控」不再平铺成一张大卡。
-     改成三张与其他设置同构的入口卡：卡片中间标题即点击入口，
-     详细开关 / 时间 / 快捷入口统一放进各自的详情弹窗（#modalSettingsDetail）。 */
+  /* R269-1：设置中心的「打卡提醒 / 护眼 / 家长管控」三张卡合并成一张入口卡。
+     卡片中间标题就是唯一点击入口（与「打卡任务 / 游戏设置」同构），
+     点开后在 #modalSettingsDetail 里分三段展示全部详细设置项：
+     ① 打卡提醒（开关 + 学生 / 家长时间）② 护眼（开关 + 每天可用分钟）
+     ③ 家长管控（错题复练开关 + 间隔天数 + 立即生成 + 六个快捷入口）。 */
   function r268EnsureSettingsModal(){
     let m = document.getElementById('modalSettingsDetail');
     if(m) return m;
@@ -46767,45 +46886,65 @@ if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
     });
     return m;
   }
+  /* kind 参数保留以兼容既有调用：'all' / 'remind' / 'eye' / 'parent' 都渲染同一份三段式内容，
+     差别只在打开后是否把某一段滚到视野内。 */
   function r268OpenSettingsModal(kind){
     const rem = S.getRemindCfg(), eye = S.getEyeCfg(), wr = S.getWrongReviewCfg();
     r268EnsureSettingsModal();
     const body = $('#r268ModalBody'), title = $('#r268ModalTitle');
     if(!body) return;
-    if(kind === 'eye'){
-      if(title) title.textContent = '👀 护眼设置';
-      body.innerHTML = '<div class="r268-modal-row"><span class="r268-modal-label">👀 护眼模式（降低蓝光）</span>'
-        + '<button type="button" class="r256-sw' + (eye.on ? ' is-on' : '') + '" id="r256SwEye" aria-pressed="' + (eye.on?'true':'false') + '"><i></i></button></div>'
-        + '<div class="r268-modal-grid"><label>每天可用（分钟） <input type="number" id="r256EyeMin" min="5" max="300" step="5" value="' + (eye.dailyMin || 45) + '"></label></div>'
-        + '<div class="r268-modal-tip">开启后全站转暖色调；当天可用时长用完会提醒休息。</div>';
-    } else if(kind === 'parent'){
-      if(title) title.textContent = '🛡️ 家长管控';
-      body.innerHTML = '<div class="r268-modal-row"><span class="r268-modal-label">🎯 错题复练推送</span>'
-        + '<button type="button" class="r256-sw' + (wr.on ? ' is-on' : '') + '" id="r256SwWrong" aria-pressed="' + (wr.on?'true':'false') + '"><i></i></button></div>'
-        + '<div class="r268-modal-grid"><label>间隔天数 <input type="number" id="r256WrongDays" min="1" max="30" value="' + (wr.everyDays || 3) + '"></label>'
-        + '<button type="button" class="pbtn" id="r256WrongNow">立即生成一套</button></div>'
-        + '<div class="r268-modal-tip">错题复练只在家长模式显示；单模块重置会清空指定板块，请谨慎操作。</div>'
-        + '<div class="r268-modal-quick">'
-        + '<button type="button" class="pbtn" id="r256QuickStars">⭐ 星星明细</button>'
-        + '<button type="button" class="pbtn" id="r256QuickSearch">🔍 题库检索</button>'
-        + '<button type="button" class="pbtn hidden-in-child" id="r256QuickMakeup">🩹 补卡</button>'
-        + '<button type="button" class="pbtn" id="r256QuickCodex">📖 植物图鉴</button>'
-        + '<button type="button" class="pbtn" id="r256QuickCerts">🏅 通关证书</button>'
-        + '<button type="button" class="pbtn danger hidden-in-child" id="r256QuickReset">🧹 单模块重置</button>'
-        + '</div>';
-    } else {
-      if(title) title.textContent = '⏰ 打卡提醒';
-      body.innerHTML = '<div class="r268-modal-row"><span class="r268-modal-label">⏰ 打卡提醒</span>'
-        + '<button type="button" class="r256-sw' + (rem.on ? ' is-on' : '') + '" id="r256SwRemind" aria-pressed="' + (rem.on?'true':'false') + '"><i></i></button></div>'
-        + '<div class="r268-modal-tip">到点只弹轻提示，不拦截页面；还有必做没打卡才提醒。</div>'
-        + '<div class="r268-modal-grid">'
-        + '<label>学生提醒 <input type="time" id="r256RemindChild" value="' + esc(rem.childTime || '19:30') + '"></label>'
-        + '<label>家长提醒 <input type="time" id="r256RemindParent" value="' + esc(rem.parentTime || '20:30') + '"></label>'
-        + '</div>';
-    }
-    r268BindSettingsDetail(kind);
+    if(title) title.textContent = '⚙️ 打卡提醒 · 护眼 · 家长管控';
+    body.innerHTML =
+        '<div class="r269-sec" id="r269SecRemind">'
+      +   '<div class="r269-sec-head"><span class="r269-sec-ico">⏰</span>打卡提醒</div>'
+      +   '<div class="r269-sec-body">'
+      +     '<div class="r268-modal-row"><span class="r268-modal-label">⏰ 开启打卡提醒</span>'
+      +       '<button type="button" class="r256-sw' + (rem.on ? ' is-on' : '') + '" id="r256SwRemind" aria-pressed="' + (rem.on?'true':'false') + '"><i></i></button></div>'
+      +     '<div class="r268-modal-grid">'
+      +       '<label>学生提醒 <input type="time" id="r256RemindChild" value="' + esc(rem.childTime || '19:30') + '"></label>'
+      +       '<label>家长提醒 <input type="time" id="r256RemindParent" value="' + esc(rem.parentTime || '20:30') + '"></label>'
+      +     '</div>'
+      +     '<div class="r268-modal-tip">到点只弹轻提示，不拦截页面；还有必做没打卡才提醒。</div>'
+      +   '</div>'
+      + '</div>'
+      + '<div class="r269-sec" id="r269SecEye">'
+      +   '<div class="r269-sec-head"><span class="r269-sec-ico">👀</span>护眼</div>'
+      +   '<div class="r269-sec-body">'
+      +     '<div class="r268-modal-row"><span class="r268-modal-label">👀 护眼模式（降低蓝光）</span>'
+      +       '<button type="button" class="r256-sw' + (eye.on ? ' is-on' : '') + '" id="r256SwEye" aria-pressed="' + (eye.on?'true':'false') + '"><i></i></button></div>'
+      +     '<div class="r268-modal-grid"><label>每天可用（分钟） <input type="number" id="r256EyeMin" min="5" max="300" step="5" value="' + (eye.dailyMin || 45) + '"></label></div>'
+      +     '<div class="r268-modal-tip">开启后全站转暖色调；当天可用时长用完会提醒休息。</div>'
+      +   '</div>'
+      + '</div>'
+      + '<div class="r269-sec" id="r269SecParent">'
+      +   '<div class="r269-sec-head"><span class="r269-sec-ico">🛡️</span>家长管控</div>'
+      +   '<div class="r269-sec-body">'
+      +     '<div class="r268-modal-row"><span class="r268-modal-label">🎯 错题复练推送</span>'
+      +       '<button type="button" class="r256-sw' + (wr.on ? ' is-on' : '') + '" id="r256SwWrong" aria-pressed="' + (wr.on?'true':'false') + '"><i></i></button></div>'
+      +     '<div class="r268-modal-grid"><label>间隔天数 <input type="number" id="r256WrongDays" min="1" max="30" value="' + (wr.everyDays || 3) + '"></label>'
+      +       '<button type="button" class="pbtn" id="r256WrongNow">立即生成一套</button></div>'
+      +     '<div class="r268-modal-tip">错题复练只在家长模式显示；单模块重置会清空指定板块，请谨慎操作。</div>'
+      +     '<div class="r268-modal-quick">'
+      +       '<button type="button" class="pbtn" id="r256QuickStars">⭐ 星星明细</button>'
+      +       '<button type="button" class="pbtn" id="r256QuickSearch">🔍 题库检索</button>'
+      +       '<button type="button" class="pbtn hidden-in-child" id="r256QuickMakeup">🩹 补卡</button>'
+      +       '<button type="button" class="pbtn" id="r256QuickCodex">📖 植物图鉴</button>'
+      +       '<button type="button" class="pbtn" id="r256QuickCerts">🏅 通关证书</button>'
+      +       '<button type="button" class="pbtn danger hidden-in-child" id="r256QuickReset">🧹 单模块重置</button>'
+      +     '</div>'
+      +   '</div>'
+      + '</div>';
+    r268BindSettingsDetail('all');
     showModal('#modalSettingsDetail');
+    /* 从「护眼 / 家长管控」入口跳进来时，把对应那一段滚到视野内（内容同源，不另开弹窗） */
+    if(kind === 'eye' || kind === 'parent'){
+      try{
+        const sec = document.getElementById(kind === 'eye' ? 'r269SecEye' : 'r269SecParent');
+        if(sec && sec.scrollIntoView) sec.scrollIntoView({ block:'start' });
+      }catch(e){}
+    }
   }
+  /* 三段式弹窗：不管从哪张卡进来，所有控件一次性绑好（kind 仅用于兼容旧调用） */
   function r268BindSettingsDetail(kind){
     const bindSw = (sel, set, after)=>{
       const b = $(sel); if(!b) return;
@@ -46836,50 +46975,43 @@ if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
       ['input','change','blur'].forEach(ev=> el.addEventListener(ev, ()=>commit(ev === 'blur'), false));
     };
     const q = (sel, fn)=>{ const b = $(sel); if(b) b.onclick = fn; };
-    if(kind === 'remind'){
-      bindSw('#r256SwRemind', on=> S.saveRemindCfg({on:on}));
-      bindTime('#r256RemindChild', 'childTime', '学生提醒时间');
-      bindTime('#r256RemindParent', 'parentTime', '家长提醒时间');
-    } else if(kind === 'eye'){
-      bindSw('#r256SwEye', on=>{ S.saveEyeCfg({on:on}); r256EyeApply(); toast(on ? '👀 护眼模式已开启（暖色 + 限时提醒）' : '护眼模式已关闭'); });
-      const em = $('#r256EyeMin');
-      if(em) em.onchange = ()=>{ const n = Math.max(5, Math.min(300, parseInt(em.value,10)||45)); em.value = n; S.saveEyeCfg({dailyMin:n}); toast('每天可用 ' + n + ' 分钟'); };
-    } else {
-      bindSw('#r256SwWrong', on=>{ S.saveWrongReviewCfg({on:on}); if(on) r256MaybePushReview(true); else r256BuildReviewCard(); });
-      const wd = $('#r256WrongDays');
-      if(wd) wd.onchange = ()=>{ const n = Math.max(1, Math.min(30, parseInt(wd.value,10)||3)); wd.value = n; S.saveWrongReviewCfg({everyDays:n}); toast('每 ' + n + ' 天推送一次'); };
-      const wn = $('#r256WrongNow');
-      if(wn) wn.onclick = ()=>{ r256MaybePushReview(true); toast('🎯 已生成一套错题复练，回首页必做区查看'); };
-      q('#r256QuickStars', ()=> r256RenderStarLog());
-      q('#r256QuickSearch', ()=> r256OpenSearch());
-      q('#r256QuickMakeup', ()=> r256OpenMakeup());
-      q('#r256QuickCodex', ()=> r256OpenCodex());
-      q('#r256QuickCerts', ()=> r256OpenCerts());
-      q('#r256QuickReset', ()=> r256OpenReset());
-    }
+    /* ① 打卡提醒 */
+    bindSw('#r256SwRemind', on=> S.saveRemindCfg({on:on}));
+    bindTime('#r256RemindChild', 'childTime', '学生提醒时间');
+    bindTime('#r256RemindParent', 'parentTime', '家长提醒时间');
+    /* ② 护眼 */
+    bindSw('#r256SwEye', on=>{ S.saveEyeCfg({on:on}); r256EyeApply(); toast(on ? '👀 护眼模式已开启（暖色 + 限时提醒）' : '护眼模式已关闭'); });
+    const em = $('#r256EyeMin');
+    if(em) em.onchange = ()=>{ const n = Math.max(5, Math.min(300, parseInt(em.value,10)||45)); em.value = n; S.saveEyeCfg({dailyMin:n}); toast('每天可用 ' + n + ' 分钟'); };
+    /* ③ 家长管控 */
+    bindSw('#r256SwWrong', on=>{ S.saveWrongReviewCfg({on:on}); if(on) r256MaybePushReview(true); else r256BuildReviewCard(); });
+    const wd = $('#r256WrongDays');
+    if(wd) wd.onchange = ()=>{ const n = Math.max(1, Math.min(30, parseInt(wd.value,10)||3)); wd.value = n; S.saveWrongReviewCfg({everyDays:n}); toast('每 ' + n + ' 天推送一次'); };
+    const wn = $('#r256WrongNow');
+    if(wn) wn.onclick = ()=>{ r256MaybePushReview(true); toast('🎯 已生成一套错题复练，回首页必做区查看'); };
+    q('#r256QuickStars', ()=> r256RenderStarLog());
+    q('#r256QuickSearch', ()=> r256OpenSearch());
+    q('#r256QuickMakeup', ()=> r256OpenMakeup());
+    q('#r256QuickCodex', ()=> r256OpenCodex());
+    q('#r256QuickCerts', ()=> r256OpenCerts());
+    q('#r256QuickReset', ()=> r256OpenReset());
   }
   function r256MountSettingsCard(){
     const grid = $('#settingsGrid');
     if(!grid || $('#r256SetCard')) return;
     const slot = $('#r256SetCardSlot') || grid;
-    const defs = [
-      { id:'r256SetCard',          kind:'remind', ico:'⏰', title:'打卡提醒', desc:'学生 / 家长提醒时间 · 到点轻提示' },
-      { id:'r256SetCardEye',       kind:'eye',    ico:'👀', title:'护眼',     desc:'降低蓝光 · 每天可用时长' },
-      { id:'r256SetCardParent',    kind:'parent', ico:'🛡️', title:'家长管控', desc:'错题复练 · 星星明细 · 补卡 · 单模块重置' }
-    ];
-    defs.forEach(function(d){
-      const card = document.createElement('div');
-      card.className = 'settings-card r268-set-card';
-      card.id = d.id;
-      card.setAttribute('data-r268-open', d.kind);
-      card.innerHTML = '<div class="settings-card-main"><div class="settings-card-body">'
-        + '<div class="settings-card-head"><span class="settings-card-icon">' + d.ico + '</span>'
-        + '<span class="settings-card-title">' + d.title + '</span></div>'
-        + '<div class="settings-card-desc">' + d.desc + '</div>'
-        + '</div></div><span class="settings-card-arrow">›</span>';
-      card.addEventListener('click', function(){ r268OpenSettingsModal(d.kind); });
-      slot.appendChild(card);
-    });
+    /* R269-1：三卡合一 —— 整行只有一张入口卡，点标题即弹窗 */
+    const card = document.createElement('div');
+    card.className = 'settings-card r268-set-card';
+    card.id = 'r256SetCard';
+    card.setAttribute('data-r268-open', 'all');
+    card.innerHTML = '<div class="settings-card-main"><div class="settings-card-body">'
+      + '<div class="settings-card-head"><span class="settings-card-icon">⚙️</span>'
+      + '<span class="settings-card-title">打卡提醒 · 护眼 · 家长管控</span></div>'
+      + '<div class="settings-card-desc">提醒时间 · 护眼时长 · 错题复练 · 星星明细 · 补卡 · 单模块重置</div>'
+      + '</div></div><span class="settings-card-arrow">›</span>';
+    card.addEventListener('click', function(){ r268OpenSettingsModal('all'); });
+    slot.appendChild(card);
   }
 
   function r256Init(){
@@ -47064,7 +47196,10 @@ function init(){
         if(restored){
           try{ renderCurrentPage(); }catch(e){}
           try{ if(typeof renderHome==='function') renderHome(); }catch(e){}
-          try{ toast('✅ 已从本机安全副本恢复上次的记录'); }catch(e){}
+          /* R269-2：正常启动路径上不再弹「已从安全副本恢复…」这类提示文字。
+             这条提示只在介质异常、主档写不进时才会出现，属于「自动兜底」而不是
+             需要用户处理的事件；每次都弹反而让人以为数据又丢了一次。
+             数据已经回填并重新渲染，用户看到的就是正确内容，无需额外文字。 */
         }
       });
     }catch(e){}
@@ -47088,10 +47223,10 @@ function init(){
     }catch(e){}
     try{
       const _h = S.storageHealth ? S.storageHealth() : null;
-      const _j = (_h && _h.journal) || null;
-      if(_j && _j.present && _j.recovered){
-        try{ toast('🛟 已从安全账本恢复最近的打卡记录'); }catch(e){}
-      }
+      /* R269-2：小账本 / 镜像的自动兜底恢复属于「后台自动完成」的动作，不再弹
+         「已从账本恢复最近打卡」这类文字 —— 数据已经原样回来了，
+         每次刷新都提示一次，用户反而会以为又丢了一次数据。
+         只有「存储彻底不可用、改动留不住」这种需要用户处理的情况才提示。 */
       if(_h && (!_h.writable || _h.volatile) && !_h.mirror){
         try{ toast('⚠️ 本机存储不可用，改动可能无法保留，请在浏览器设置中允许本站存储数据'); }catch(e){}
       }
