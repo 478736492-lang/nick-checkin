@@ -9394,16 +9394,14 @@ body.r256-sheet-on{overflow:hidden}
 .page-title .r256-help-btn{position:absolute;right:12px;top:50%;transform:translateY(-50%);margin-left:0}
 
 /* ============================================================
-   R257-8.1 大阅读 · 文学小常识（内容预留卡）
+   R273-6 文学小常识
+   R273-6.1 大阅读原预留卡已删除，旧 .reading-lore / .lore-empty 样式同步移除；
+   现只保留「好词好句每日卡」与「收录书屋详情」两处用到的样式。
    ============================================================ */
-.reading-lore .lore-list{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;min-height:96px}
-.lore-empty{
-  grid-column:1/-1;display:flex;align-items:center;justify-content:center;gap:8px;
-  min-height:96px;border:1.5px dashed var(--tone-200);border-radius:12px;
-  background:var(--tone-025);color:var(--muted);font-size:13px;font-weight:600;
-}
-.lore-empty-ico{font-size:20px;filter:grayscale(.15)}
-@media (max-width:820px){ .reading-lore .lore-list{grid-template-columns:1fr} }
+/* 词条内容含换行（年龄称谓 / 代称 / 交友称谓 等分组条目），按行原样呈现 */
+.lore-body{white-space:pre-line}
+/* 每日文学小常识卡：与每日成语卡、好词卡同宽同构，仅左侧强调色区分 */
+.reading-item.is-lore-daily{border-left:3px solid var(--tone-300)}
 
 /* ============================================================
    R257-11.1 打卡总览 · 年月滑动选择
@@ -10399,6 +10397,17 @@ textarea.xs-adv-input-box{
 .r271-dock-btn{width:48px;height:48px;border-radius:50%;border:2px solid var(--tone-200);background:rgba(255,255,255,.94);box-shadow:0 4px 14px rgba(20,50,90,.18);font-size:19px;line-height:1;cursor:pointer;color:var(--tone-900);display:flex;align-items:center;justify-content:center;padding:0}
 .r271-dock-btn.main{width:56px;height:56px;font-size:24px;background:linear-gradient(145deg,var(--tone-100),var(--tone-300));border-color:var(--tone-400)}
 .r271-dock-btn:active{transform:scale(.94)}
+/* R273-2.1 右下角快捷键：列表插在五个功能键与快捷键按钮之间，自上而下展开 */
+.r271-dock-shortcut{font-size:18px;background:linear-gradient(145deg,var(--tone-100),var(--tone-300));border-color:var(--tone-400)}
+.r271-dock-shortcut.on{box-shadow:0 0 0 3px var(--tone-300),0 4px 14px rgba(20,50,90,.18)}
+.r271-dock-menu{width:190px;max-width:calc(100vw - 28px);box-sizing:border-box;padding:8px;border-radius:14px;border:2px solid var(--tone-200);background:var(--tone-025);box-shadow:0 8px 26px rgba(20,50,90,.2);display:flex;flex-direction:column;gap:4px}
+.r271-dock-menu[hidden]{display:none}
+.r271-dock-menu-head{padding:2px 6px 6px;font-size:11.5px;font-weight:800;color:var(--tone-600);border-bottom:1px solid var(--tone-200);margin-bottom:2px}
+.r271-dock-menu-item{display:flex;align-items:center;gap:8px;width:100%;min-height:40px;box-sizing:border-box;padding:5px 8px;border:1px solid var(--tone-200);border-radius:10px;background:var(--tone-100);color:var(--tone-900);font-size:12.5px;font-weight:700;text-align:left;cursor:pointer}
+.r271-dock-menu-item:active{transform:scale(.98)}
+.r271-dock-menu-ico{flex:0 0 24px;height:24px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--tone-200);font-size:13px;line-height:1}
+.r271-dock-menu-label{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.r271-dock-menu-no{flex:0 0 auto;font-size:10.5px;color:var(--tone-600)}
 .r271-mask{position:fixed;inset:0;z-index:9300;background:rgba(16,38,68,.48);display:flex;align-items:center;justify-content:center;padding:24px}
 .r271-mask[hidden]{display:none}
 .r271-modal{width:min(1060px,94vw);max-height:min(88dvh,820px);background:rgba(255,255,255,.97);border-radius:20px;box-shadow:0 18px 60px rgba(12,36,72,.32);display:flex;flex-direction:column;overflow:hidden;border:2px solid var(--tone-200)}
@@ -10487,14 +10496,7 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
   .r271-dock-btn.main{width:60px;height:60px}
   .r271-btn,.r271-tab,.r271-in,.r271-chk{min-height:44px}
 }
-/* R271-4.3.1 中华通史时间轴（新世界 · 拓展素养 · 人文拓展） */
-.r271-timeline{position:relative;max-height:52dvh;overflow:auto;padding:8px 4px 8px 30px;margin:8px 0}
-.r271-timeline::before{content:'';position:absolute;left:14px;top:14px;bottom:14px;width:3px;border-radius:2px;background:linear-gradient(180deg,var(--tone-300),var(--tone-600))}
-.r271-tl-item{position:relative;background:var(--tone-025);border:1px solid var(--tone-100);border-radius:12px;padding:10px 14px;margin:0 0 10px;display:flex;flex-wrap:wrap;gap:6px 12px;align-items:baseline}
-.r271-tl-dot{position:absolute;left:-22px;top:16px;width:12px;height:12px;border-radius:50%;background:var(--tone-600);border:2px solid #fff;box-shadow:0 0 0 2px var(--tone-300)}
-.r271-tl-era{font-size:16px;font-weight:800;color:var(--tone-900)}
-.r271-tl-year{font-size:12px;color:var(--tone-600);font-weight:700}
-.r271-tl-text{flex:1 1 100%;font-size:13px;line-height:1.7;color:var(--muted)}
+/* R273-3.1：中华通史时间轴样式已随入口一并移除。 */
 
 /* ==================== R272：设置中心 · 持久化数据库状态区 ====================
    复用 R270 的 .localdb-* 视觉令牌，只补一块状态网格；
@@ -11508,16 +11510,8 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
       </div>
     </div>
 
-    <!-- R257-8.1：文学小常识（新增第 4 张卡片，内容预留，后续补充） -->
-    <div class="reading-area reading-lore" id="cnLoreCard" data-page-node-id="R257cnLoreCard">
-      <div class="reading-area-head" data-page-node-id="R257cnLoreHead">📖 文学小常识</div>
-      <div class="lore-list" id="cnLoreList" data-page-node-id="R257cnLoreList">
-        <div class="lore-empty" data-page-node-id="R257cnLoreEmpty">
-          <span class="lore-empty-ico">🪶</span>
-          <span class="lore-empty-txt">内容正在整理中，后续补充～</span>
-        </div>
-      </div>
-    </div>
+    <!-- R273-6.1：大阅读中原「文学小常识」预留卡已按需求删除，卡片整体迁移至
+         「好词好句」栏（每日成语与好词之间）与「收录书屋 · 文学小常识」入口。 -->
 
     <!-- 英语：日常交流 / 英语短文 两栏并列 -->
     <div class="reading-area reading-en">
@@ -11541,12 +11535,14 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
         <!-- R59-5：「📥 收录今日」按键已移除 —— 收录统一由每日 23:30 定时自动归档完成 -->
         <!-- R61-3：归档状态标记文字已按需求删除 -->
       </div>
-      <div class="bs-page-intro" data-page-node-id="CXfmIhyvSrGBLLreL5IfAK">好词好句 · 古诗词鉴赏 · 优秀作文 · 成语学习 · 日常交流 · 英语短文 —— 全部内容按主题分类，点主题栏切换，分页浏览（每日 23:30 自动收录当日打卡内容）</div>
-      <!-- R57-2：主题栏 —— 按主题分类切换（好词好句 / 古诗词鉴赏 / 优秀作文 / 日常交流 / 英语短文） -->
+      <div class="bs-page-intro" data-page-node-id="CXfmIhyvSrGBLLreL5IfAK">好词好句 · 文学小常识 · 古诗词鉴赏 · 优秀作文 · 成语学习 · 日常交流 · 英语短文 —— 全部内容按主题分类，点主题栏切换，分页浏览（每日 23:30 自动收录当日打卡内容）</div>
+      <!-- R57-2：主题栏 —— 按主题分类切换（好词好句 / 文学小常识 / 古诗词鉴赏 / 优秀作文 / 日常交流 / 英语短文） -->
       <div class="bs-tabs" id="bsTabs" data-page-node-id="bsR57tabs0001"></div>
       <!-- R57-2：主题内容区 —— 单主题展示 + 分页（各主题独立页码，每页 8 条） -->
       <div class="bs-body" id="bsBodyAll" data-page-node-id="pgPE2iOSPrLn3CwNmDeJ8Y">
         <div class="bs-theme-body" id="bsColWords" hidden data-page-node-id="bsR57body0001"></div>
+        <!-- R273-6.3：文学小常识详情（298 条全量，分页浏览） -->
+        <div class="bs-theme-body" id="bsColLore" hidden data-page-node-id="R273bsLoreBody"></div>
         <div class="bs-theme-body" id="bsColPoem" hidden data-page-node-id="bsR57body0002"></div>
         <div class="bs-theme-body" id="bsColEssay" hidden data-page-node-id="bsR57body0003"></div>
         <div class="bs-theme-body" id="bsColSpeak" hidden data-page-node-id="bsR57body0004"></div>
@@ -13344,6 +13340,8 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
 <script src="./assets/seed_en_grammar_data.js"></script>
 <!-- 需求③：大阅读扩展种子数据（先于 store.js 加载，store.js 的 getReading 优先读取 window.READING_SEED_V15） -->
 <script src="./assets/seed_reading_seed_v15.js"></script>
+<!-- R273-6：文学小常识 298 条（好词好句每日卡 + 收录书屋文学小常识详情页读取 window.WENXUE_CHANGSHI_SEED） -->
+<script src="./assets/seed_wenxue_changshi_seed.js"></script>
 <!-- 需求⑥：新世界·拓展素养种子数据（先于 app.js 加载，szSlot 读取 window.SUZHI_SEED） -->
 <script src="./assets/seed_suzhi_seed.js"></script>
 <!-- 百科大讲堂种子数据（先于 store.js 加载，baikeLib 读取 window.BAIKE_SEED） -->
@@ -13438,6 +13436,16 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
   var _heartbeatTimer = null, _bootTimer = null;
   var _preUpdate = null;
   var _lastWrittenRaw = null, _lastWrittenAt = 0;
+  /* R273-1.1：事务排队 / 状态标记。修复「保存成功却弹本机数据库写入未完成」误报：
+     ① 所有主表写入串行排队，杜绝并发写互相踩踏、快照竞争耗尽重试；
+     ② 去重只复用「上一次成功」的事务，失败结果不再被复用；
+     ③ 写成功后复位 degraded 并回调 onRecover，让误报闸门可回撤；
+     ④ onFatal 延后到队列排空后裁决，若后续写已成功 / Safari 误报 / 安全副本完好
+        则不提示，只有确实写入受阻才谨慎提示。 */
+  var _writeSeq = 0, _lastSuccessSeq = 0, _lastWriteOk = true;
+  var _writeTail = Promise.resolve(true);
+  var _snapTail = Promise.resolve(true);
+  var _fatalPending = 0;
 
   /* ----------------------------- 工具 ----------------------------- */
   function _now(){ return Date.now(); }
@@ -13498,6 +13506,53 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
       if(W && W.indexedDB) return W.indexedDB;
     }catch(e){}
     return null;
+  }
+  /* ---------------- R273-1.1 事务排队 / 错误分类 / 退避 ---------------- */
+  function _enqueueWrite(fn){
+    var p = _writeTail.then(function(){ return fn(); }, function(){ return fn(); });
+    /* 链尾永不 reject，保证一次失败不会让后续排队事务全部短路 */
+    _writeTail = p.then(function(){ return true; }, function(){ return true; });
+    return p;
+  }
+  function _enqueueSnap(fn){
+    var p = _snapTail.then(function(){ return fn(); }, function(){ return fn(); });
+    _snapTail = p.then(function(){ return true; }, function(){ return true; });
+    return p;
+  }
+  function _delay(ms){
+    return new Promise(function(res){ try{ setTimeout(res, ms); }catch(e){ res(); } });
+  }
+  /* 区分：真实空间耗尽 / Safari 误报（禁止写入）/ 事务超时 / 事务冲突 / 未知。
+     blocked 与 timeout 属于「不该弹窗打扰用户」的软错误，只降级 + 记日志。 */
+  function _errClass(err){
+    var n = String((err && (err.name || '')) + ' ' + String((err && (err.message || '')) || err || '')).toLowerCase();
+    if(/quotaexceeded|quota|ns_error_dom_quota_reached|storage_full|disk_full/.test(n)) return 'quota';
+    if(/securityerror|invalidstateerror|notallowederror|blocked|unknownerror|idb-unavailable/.test(n)) return 'blocked';
+    if(/timeout|timedout|timed_out|slow/.test(n)) return 'timeout';
+    if(/abort|conflict|busy|locked|transactioninactiveerror|constraint/.test(n)) return 'conflict';
+    return 'unknown';
+  }
+  function _backoff(attempt){ return _delay(attempt <= 1 ? 30 : (attempt === 2 ? 90 : 180)); }
+  /* 延后裁决：队列排空 + 一小段宽限期后再判断是否真的需要提示。
+     只要期间有任何一次写成功（_lastSuccessSeq 前进），就判定为误报并静默。 */
+  function _scheduleFatal(seq, err, d, opt){
+    var cls = _errClass(err);
+    _fatalPending++;
+    return _delay(260).then(function(){
+      _fatalPending--;
+      var superseded = _lastSuccessSeq > seq;
+      var soft = (cls === 'blocked' || cls === 'timeout');
+      log(superseded ? 'write-fatal-superseded' : (soft ? 'write-soft-failure' : 'write-fatal'),
+        { seq:seq, cls:cls, superseded:superseded, safety:d && d.ok, retries:MAX_RETRY });
+      if(superseded || soft) return { shown:false, reason:superseded ? 'superseded-by-later-success' : ('soft-' + cls) };
+      /* 安全副本（store.js 主档 + 降级镜像）是否确实还在，决定提示口径 */
+      var bridgeOk = jsonOk(_lsGet(LS_KEY));
+      var safetyOk = !!(d && d.ok) || bridgeOk;
+      if(opt.onFatal){
+        try{ opt.onFatal({ cls:cls, seq:seq, safety:safetyOk, error:String((err && err.message) || err) }); }catch(e){}
+      }
+      return { shown:true, cls:cls, safety:safetyOk };
+    }).catch(function(){ _fatalPending--; return { shown:false, reason:'exception' }; });
   }
 
   /* ----------------------------- 日志（仅自检面板可见） ----------------------------- */
@@ -13602,7 +13657,13 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
         t.onabort = function(){ reject(t.error || new Error('tx-abort')); };
         t.onerror = function(){ /* 交由 onabort 统一处理 */ };
         try{ actions(t); }
-        catch(e){ try{ t.abort(); }catch(e2){} reject(e); }
+        catch(e){
+          /* R273-1.1：不让 t.abort() 触发的 onabort 覆盖真实异常，
+             否则 write-fatal 日志只会记到泛化的 'tx-abort'，无法区分冲突 / 配额 / 误报。 */
+          try{ t.abort(); }catch(e2){}
+          if(t.onabort) t.onabort = null;
+          reject(e);
+        }
       });
     });
   }
@@ -13671,11 +13732,11 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
         log('hash-mismatch', { expected:rec.hash, actual:hash(rec.raw) });
       }
       return { raw:rec.raw, ts:rec.ts || 0, hash:rec.hash || hash(rec.raw), chunked:false };
-    });
+    }).catch(function(){ return null; });
   }
 
   /* ----------------------------- 降级写入 ----------------------------- */
-  function _degradeWrite(raw, ts){
+  function _degradeWrite(raw, ts, sole){
     var ok = _lsSet(LS_MIRROR, raw);
     /* 降级模式同样保留多重快照，绝不只有一份 */
     try{
@@ -13684,7 +13745,9 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
       _lsSet(LS_MIRROR_B[0], raw);
       _lsSet(LS_MIRROR_B[2], JSON.stringify({ at:ts, bytes:raw.length, hash:hash(raw) }));
     }catch(e){}
-    _degraded = true;
+    /* R273-1.1：只有「确实把 localStorage 当唯一存储」时才标 degraded。
+       一次瞬时事务失败后的兜底快照不该让自检面板长期误报引擎已降级。 */
+    if(sole) _degraded = true;
     return Promise.resolve({ ok:ok, mode:'localStorage+multi-snapshot' });
   }
   function _degradeRead(){
@@ -13696,7 +13759,7 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
     return null;
   }
 
-  /* ----------------------------- 主库写入（事务 + 3 次重试） ----------------------------- */
+  /* ----------------------------- 主库写入（排队事务 + 3 次退避重试） ----------------------------- */
   function write(raw, ts, opt){
     opt = opt || {};
     if(!raw || typeof raw !== 'string') return Promise.resolve({ ok:false, code:'empty' });
@@ -13704,72 +13767,103 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
     _primaryRaw = raw;
     _primaryTs = ts || _now();
     if(!jsonOk(raw)) _quarantine(raw, 'write-json-invalid');
-    /* R272-10.10：迁移 / 初始化阶段会对同一份串连续 save()，去重避免重复事务写入。
-       只要上一份完全相同且刚写过，就复用那次事务结果，不额外发起一次 IDB 事务。 */
-    if(opt.dedup !== false && raw === _lastWrittenRaw && (_now() - _lastWrittenAt) < 400 && _lastWrite){
+    /* R273-1.1：去重只复用「上一次成功」的事务结果。失败结果必须重新发起事务，
+       否则「请稍后重试保存」在 400ms 内被吞掉，且状态标记永远停在失败。 */
+    if(opt.dedup !== false && _lastWriteOk && raw === _lastWrittenRaw
+       && (_now() - _lastWrittenAt) < 400 && _lastWrite){
       return _lastWrite;
     }
     _lastWrittenRaw = raw; _lastWrittenAt = _now();
+    var seq = ++_writeSeq;
+    var parts = _chunkPlan(raw), h = hash(raw), stamps = _primaryTs;
 
-    var parts = _chunkPlan(raw), h = hash(raw), stamps = _primaryTs, attempt = 0;
-    /* R272-6.2：浏览器根本不支持 IndexedDB（或已确认不可用）时直接降级，
-       不要把 3 次事务重试浪费在必然失败的环境上，也不要误报写入失败。 */
-    if(!_idbFactory() || _available === false){
-      var d = _degradeWrite(raw, stamps);
-      _lastWrite = d.then(function(x){ return { ok:x.ok, code:'degraded', retries:0, degraded:x }; });
-      return _lastWrite;
-    }
-    function once(){
-      attempt++;
-      return _tx(parts ? [ST_MAIN, ST_CHUNK] : [ST_MAIN], 'readwrite', function(t){
-        var ids = [];
-        if(parts){
-          var cs = t.objectStore(ST_CHUNK);
-          parts.forEach(function(part, i){
-            var id = 'c_' + stamps + '_' + i;
-            ids.push(id);
-            cs.put({ k:id, at:stamps, part:part }, id);
-          });
-        }
-        t.objectStore(ST_MAIN).put({
-          k:MAIN_KEY, ts:stamps, hash:h, size:raw.length, ver:'R272',
-          chunked:!!parts, chunkIds:ids,
-          /* 分片记录不重复存整份原文，规避 Safari 单条上限 */
-          raw:parts ? '' : raw
-        }, MAIN_KEY);
-      });
-    }
-    function loop(){
-      return once().then(function(){
-        log('write', { bytes:raw.length, retries:attempt - 1, chunked:!!parts, reason:opt.reason || 'save' });
-        return { ok:true, code:'', retries:attempt - 1, ts:stamps, hash:h };
-      }).catch(function(err){
-        if(attempt < MAX_RETRY) return loop();
-        /* 3 次仍失败：绝不弹「空间已满」误报，降级保留内存修改 + 回调一次性提示 */
-        return _degradeWrite(raw, stamps).then(function(d){
-          log('write-fatal', { error:String((err && err.message) || err), retries:attempt, degraded:d.ok });
-          if(opt.onFatal) { try{ opt.onFatal(err); }catch(e){} }
-          return { ok:false, code:'idb-failed', retries:attempt, degraded:d.ok, error:String((err && err.message) || err) };
+    /* R273-1.1：整段事务（含 3 次重试）串行排队，杜绝并发写互相覆盖、
+       快照 / 日志 / 心跳与主表争抢事务导致 abort 耗尽重试次数。 */
+    return _enqueueWrite(function(){
+      var attempt = 0;
+      /* R272-6.2：浏览器根本不支持 IndexedDB（或已确认不可用）时直接降级。
+         降级本身就是可用的安全存储，绝不能当成写入失败弹提示。 */
+      if(!_idbFactory() || _available === false){
+        return _degradeWrite(raw, stamps, true).then(function(x){
+          _lastWriteOk = !!x.ok;
+          if(x.ok) _lastSuccessSeq = seq;
+          if(x.ok && opt.onRecover){ try{ opt.onRecover(); }catch(e){} }
+          return { ok:x.ok, code:'degraded', retries:0, degraded:x, seq:seq };
         });
-      });
-    }
-    _lastWrite = loop();
-    return _lastWrite;
+      }
+      function once(){
+        attempt++;
+        return _tx(parts ? [ST_MAIN, ST_CHUNK] : [ST_MAIN], 'readwrite', function(t){
+          var ids = [];
+          if(parts){
+            var cs = t.objectStore(ST_CHUNK);
+            parts.forEach(function(part, i){
+              var id = 'c_' + stamps + '_' + i;
+              ids.push(id);
+              cs.put({ k:id, at:stamps, part:part }, id);
+            });
+          }
+          t.objectStore(ST_MAIN).put({
+            k:MAIN_KEY, ts:stamps, hash:h, size:raw.length, ver:'R272',
+            chunked:!!parts, chunkIds:ids,
+            /* 分片记录不重复存整份原文，规避 Safari 单条上限 */
+            raw:parts ? '' : raw
+          }, MAIN_KEY);
+        });
+      }
+      var _retryDelay = 0;
+      function loop(){
+        /* 事务冲突 / 超时先退避再重试，避免 Safari 偶发 abort 连撞 3 次被当硬失败 */
+        var lead = _retryDelay ? _backoff(attempt) : Promise.resolve();
+        _retryDelay = 0;
+        return lead.then(once).then(function(){
+          _lastWriteOk = true; _lastSuccessSeq = seq; _degraded = false;
+          log('write', { bytes:raw.length, retries:attempt - 1, chunked:!!parts,
+                         reason:opt.reason || 'save', seq:seq });
+          /* 写成功立即回撤误报闸门，后续无需再显示「写入未完成」 */
+          if(opt.onRecover){ try{ opt.onRecover(); }catch(e){} }
+          return { ok:true, code:'', retries:attempt - 1, ts:stamps, hash:h, seq:seq };
+        }).catch(function(err){
+          var c = _errClass(err);
+          if(c === 'conflict' || c === 'timeout') _retryDelay = 1;
+          if(attempt < MAX_RETRY) return loop();
+          return _degradeWrite(raw, stamps, false).then(function(d){
+            _lastWriteOk = false;
+            _lastWrittenRaw = null;   /* 强制下一次保存重新发起事务 */
+            log('write-retries-exhausted', { seq:seq, cls:_errClass(err),
+                 error:String((err && err.message) || err), degraded:d.ok });
+            /* 提示延后到队列排空后裁决：后续写成功 / Safari 误报 / 安全副本完好都不打扰用户 */
+            _scheduleFatal(seq, err, d, opt);
+            return { ok:false, code:'idb-failed', retries:attempt, degraded:d.ok, seq:seq,
+                     error:String((err && err.message) || err) };
+          });
+        });
+      }
+      return loop();
+    }).then(function(res){
+      _lastWrite = Promise.resolve(res);
+      return res;
+    });
   }
   function persistWait(){ return _lastWrite || Promise.resolve({ ok:true, code:'idle' }); }
+  /* 供 UI / 探针做防御性二次确认：最近一次完成的写入是否成功 */
+  function writeHealthy(){ return _lastWriteOk === true && _fatalPending === 0; }
 
   /* ----------------------------- 历史快照（保留最近 10 份） ----------------------------- */
   function snapshot(raw, reason){
     var r = raw || _primaryRaw;
     if(!jsonOk(r)) return Promise.resolve({ ok:false, code:'invalid-raw' });
     var rec = { at:_now(), reason:String(reason || 'manual'), bytes:r.length, hash:hash(r), raw:r, shape:_shape(r) };
-    return _tx([ST_SNAP], 'readwrite', function(t){ t.objectStore(ST_SNAP).put(rec); })
-      .then(function(){ return _trimSnapshots().then(function(){ log('snapshot', { reason:rec.reason, bytes:rec.bytes }); return { ok:true, at:rec.at }; }); })
-      .catch(function(e){
-        /* 快照表写不进也要留一份 localStorage 兜底，不阻塞主流程 */
-        _lsSet(LS_MIRROR_B[2], JSON.stringify({ at:rec.at, reason:rec.reason, raw:r.slice(0, 900 * 1024) }));
-        return { ok:false, code:'snapshot-failed', error:String((e && e.message) || e) };
-      });
+    /* R273-1.1：快照写入与裁剪串行排队，杜绝「快照竞争」把主表事务撞成 abort。
+       快照失败只降级留兜底，绝不参与写入失败提示判定。 */
+    return _enqueueSnap(function(){
+      return _tx([ST_SNAP], 'readwrite', function(t){ t.objectStore(ST_SNAP).put(rec); })
+        .then(function(){ return _trimSnapshots().then(function(){ log('snapshot', { reason:rec.reason, bytes:rec.bytes }); return { ok:true, at:rec.at }; }); });
+    }).catch(function(e){
+      /* 快照表写不进也要留一份 localStorage 兜底，不阻塞主流程 */
+      _lsSet(LS_MIRROR_B[2], JSON.stringify({ at:rec.at, reason:rec.reason, raw:r.slice(0, 900 * 1024) }));
+      return { ok:false, code:'snapshot-failed', error:String((e && e.message) || e) };
+    });
   }
   function _trimSnapshots(){
     return _getAll(ST_SNAP).then(function(rows){
@@ -13812,7 +13906,7 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
     /* 升级前必落一份完整历史快照，升级后可一键回退 */
     return snapshot(r, 'pre-update').then(function(s){
       return { ok:true, hash:_preUpdate.hash, shape:_preUpdate.shape, snapshot:s };
-    });
+    }).catch(function(e){ return { ok:false, code:'guard-failed', error:String((e && e.message) || e) }; });
   }
   function postUpdateVerify(raw){
     var r = raw || _primaryRaw;
@@ -13935,6 +14029,10 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
           logs:a[2] || [], estimate:a[3] || null
         }
       };
+    }).catch(function(){
+      /* R273-1.1：任何一条附属 Promise 未来抛错都不允许变成未捕获 rejection */
+      return { __app:'nick-checkin', __r272:true, __engine:DB_NAME, __schema:254,
+               __at:_now(), __atText:new Date().toISOString(), data:null, r272:{ main:null, snapshots:[], logs:[], estimate:null } };
     });
   }
   function beforeImport(){
@@ -13946,14 +14044,14 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
         log('import-before', { rollbackId:id });
         return { ok:true, rollbackId:id, snapshot:s };
       });
-    });
+    }).catch(function(e){ return { ok:false, code:'import-before-failed', error:String((e && e.message) || e) }; });
   }
   function rollback(id){
     if(!id) return Promise.resolve({ ok:false, code:'no-rollback-id' });
     return restoreSnapshot(id).then(function(r){
       log('import-rollback', { id:id, ok:r.ok });
       return r;
-    });
+    }).catch(function(e){ return { ok:false, code:'rollback-failed', error:String((e && e.message) || e) }; });
   }
 
   /* ----------------------------- 启动：持久化权限 / 迁移 / 恢复 ----------------------------- */
@@ -14137,6 +14235,9 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
                bytes:(_primaryRaw||'').length, ts:_primaryTs, ready:_ready, storeCount:STORES.length };
     },
     hash:hash, jsonOk:jsonOk,
+    /* R273-1.1 写入健康度 / 错误分类：供 UI 与自检面板区分真实阻塞与误报 */
+    writeHealthy:writeHealthy, errClass:_errClass,
+    writeQueueDepth:function(){ return _fatalPending; },
     open:_open, read:read, write:write, persistWait:persistWait,
     snapshot:snapshot, listSnapshots:listSnapshots, restoreSnapshot:restoreSnapshot,
     preUpdateGuard:preUpdateGuard, postUpdateVerify:postUpdateVerify,
@@ -14189,6 +14290,30 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
      一旦主档被旧镜像 / 旧补丁 / 版本更新回滚，提醒时间就会退回 19:30 / 20:30 默认值。
      这里单独留一份带时间戳的极小副本，load() 只在「它比主档更新」时回填，绝不反向覆盖。 */
   const KEY_REMIND = KEY + '_remind';
+  /* R273-4.1：开放时间配置的独立小副本（带时间戳，约 200B）。
+     种植园 st.farmOpen 与知识秘境 st.km.settings.open 在设置暂存模型里属于「被回滚字段」，
+     版本更新 / 镜像恢复 / 补丁叠加都可能把已提交的配置退回默认值。
+     这里只在「保存设置」真正提交（或非暂存态直接修改）时写一份，load() 仅在副本
+     比主档的 __openTimeAt 更新时回填，绝不反向覆盖用户的其它修改，也不进任何快照白名单。 */
+  const KEY_OPENTIME = KEY + '_opentime';
+  function _openTimeSidecar(){
+    try{
+      const o = JSON.parse(_safeGet(KEY_OPENTIME) || 'null');
+      if(o && typeof o === 'object' && !Array.isArray(o) && typeof o.at === 'number') return o;
+    }catch(e){}
+    return null;
+  }
+  function _writeOpenTimeSidecar(st){
+    try{
+      const at = Date.now();
+      const farmOpen = (st.farmOpen && typeof st.farmOpen === 'object') ? JSON.parse(JSON.stringify(st.farmOpen)) : null;
+      const kmOpen = (st.km && st.km.settings && st.km.settings.open && typeof st.km.settings.open === 'object')
+        ? JSON.parse(JSON.stringify(st.km.settings.open)) : null;
+      st.__openTimeAt = at;
+      _safeSet(KEY_OPENTIME, JSON.stringify({ at:at, farmOpen:farmOpen, kmOpen:kmOpen }));
+      return true;
+    }catch(e){ return false; }
+  }
   // R263-3.1：本次会话已经有过一次成功落库（用于放宽 flushPersistence 的安全闸）
   let _sessionPersisted = false;
   const SNAPSHOT_KEY_ALWAYS = ['tasks','settings','taskGroups','taskJump','farmOpen','rewardRules','weekPlan','calcSettings'];
@@ -14405,6 +14530,9 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
      这里在冒泡阶段（所有业务处理器之后）检查内存态是否已偏离上次落库串，
      偏离就补一次 save；不建定时器，避免后台常驻与测试进程悬挂。 */
   let _autoFlushOn = false, _autoFlushAt = 0;
+  /* R273-5.1：sweep 真正做全量 JSON.stringify 的窗口放宽到 260ms，
+     减少每次点击链路上的同步序列化开销；120ms 的原有保护窗口保持不变。 */
+  let _autoFlushSweepAt = 0;
   let _saveFailNotified = false;
   function startAutoFlush(){
     if(_autoFlushOn || typeof window === 'undefined' || !window.addEventListener) return true;
@@ -14413,6 +14541,10 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
       const now = Date.now();
       if(now - _autoFlushAt < 120) return;
       _autoFlushAt = now;
+      /* R273-5.1：连续快速点击时只保留一次全量序列化比对，避免每次点击都同步
+         stringify 几 MB 主档造成可感知的卡顿；pageshow / focus 会复位窗口。 */
+      if(now - _autoFlushSweepAt < 260) return;
+      _autoFlushSweepAt = now;
       const st = (_staging && _staged) ? _staged : _loadCacheSt;
       if(!st || typeof st !== 'object') return;
       let raw;
@@ -14442,19 +14574,27 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
     /* R266：从后台回到前台（iOS 常直接复用页面、不重新加载）时重置节流窗口，
        让「切回来第一次点击」一定重新比对并落盘。 */
     try{
-      window.addEventListener('pageshow', function(){ _autoFlushAt = 0; }, false);
-      window.addEventListener('focus', function(){ _autoFlushAt = 0; }, false);
+      window.addEventListener('pageshow', function(){ _autoFlushAt = 0; _autoFlushSweepAt = 0; }, false);
+      window.addEventListener('focus', function(){ _autoFlushAt = 0; _autoFlushSweepAt = 0; }, false);
     }catch(e){}
     return true;
   }
   // 判断一段原始串是否是「可用的存档对象」——必须能解析成非数组对象且带档案结构
+  /* R273-5.1：单值 memo —— _readMainRaw() 在每次 load() 的缓存判断之前都会调用本函数，
+     全站一次点击可能 load() 十几次，等于把几 MB 的主档反复 JSON.parse。
+     原始串不变时直接复用上次结论；_readMainRaw 读取的是同一份存储，命中率接近 100%。 */
+  let _rawMemoRaw = null, _rawMemoOk = false;
   function _rawUsable(raw){
     if(!raw) return false;
+    if(raw === _rawMemoRaw) return _rawMemoOk;
+    let ok = false;
     try{
       const o = JSON.parse(raw);
-      if(!o || typeof o !== 'object' || Array.isArray(o)) return false;
-      return !!(o.archive || o.records || o.tasks || o.readFlags);
-    }catch(e){ return false; }
+      if(!o || typeof o !== 'object' || Array.isArray(o)) ok = false;
+      else ok = !!(o.archive || o.records || o.tasks || o.readFlags);
+    }catch(e){ ok = false; }
+    _rawMemoRaw = raw; _rawMemoOk = ok;
+    return ok;
   }
   // 读取主存档；损坏则依次回退 bak1 / bak2（绝不直接新建空档）
   function _readMainRaw(){
@@ -15546,6 +15686,19 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
       const _cur = st.r256.remind || {};
       if(_side && (Number(_side.at) || 0) > (Number(_cur.__at) || 0)){
         st.r256.remind = Object.assign({}, _cur, _side.cfg);
+      }
+    }catch(e){}
+    /* R273-4.1：已提交的开放时间配置回填 —— 只在副本时间戳比主档新时生效，
+       这样刷新页面 / 版本更新 / 旧镜像回滚都不会让家长设过的开放时间失效。 */
+    try{
+      const _ot = _openTimeSidecar();
+      if(_ot && (Number(_ot.at) || 0) > (Number(st.__openTimeAt) || 0)){
+        if(_ot.farmOpen && typeof _ot.farmOpen === 'object') st.farmOpen = JSON.parse(JSON.stringify(_ot.farmOpen));
+        if(_ot.kmOpen && typeof _ot.kmOpen === 'object'){
+          st.km = st.km || {}; st.km.settings = st.km.settings || {};
+          st.km.settings.open = JSON.parse(JSON.stringify(_ot.kmOpen));
+        }
+        st.__openTimeAt = _ot.at;
       }
     }catch(e){}
     // R51-2：点击音效配置（导航栏/主题卡/次级主题卡/打卡），缺省回退默认档
@@ -16709,11 +16862,18 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
     try{
       const _P = (typeof window !== 'undefined') ? window.R272P : null;
       if(_P && typeof _P.write === 'function'){
-        _P.write(raw, _ts, { reason:'save', onFatal:function(){
-          /* 事务 3 次仍失败：内存修改已保留、降级快照已落盘，只做一次分级提示，
-             绝不把 Safari 误报当成「存储空间已满」。 */
-          try{ if(typeof window !== 'undefined' && window.__r272WriteFail) window.__r272WriteFail(); }catch(e){}
-        }}).catch(function(){});   /* 异步写绝不产生未捕获 rejection（jsdom / 旧运行时安全） */
+        _P.write(raw, _ts, {
+          reason:'save',
+          /* R273-1.1：写事务确认成功 → 立刻回撤误报闸门，正常保存流程绝不弹提示 */
+          onRecover:function(){
+            try{ if(typeof window !== 'undefined' && window.__r272WriteOK) window.__r272WriteOK(); }catch(e){}
+          },
+          /* 只有持久化层在「队列排空且后续无成功写入」后仍判定真实受阻才会回调；
+             分类信息（quota / conflict / blocked / timeout）一并交给 UI 做分级提示。 */
+          onFatal:function(info){
+            try{ if(typeof window !== 'undefined' && window.__r272WriteFail) window.__r272WriteFail(info || {}); }catch(e){}
+          }
+        }).catch(function(){});   /* 异步写绝不产生未捕获 rejection（jsdom / 旧运行时安全） */
       }
     }catch(e){}
     /* R268-2.1：一次写失败不再直接判定失败 —— iOS Safari 的 QuotaExceeded 有偶发性，
@@ -16798,7 +16958,9 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
   // 设置类「顶层字段」：白名单 + 种植园排版 / 音乐设置（均在设置中心弹窗内编辑）
   const SETTINGS_DRAFT_KEYS = SNAPSHOT_KEY_ALWAYS.concat(['farmLayout', 'music']);
   // 设置类「嵌套字段」：提醒 / 护眼 / 错题复练 / 知识秘境设置与开放日（r256 里也有业务数据，不能整份回退）
-  const SETTINGS_DRAFT_PATHS = [['r256','remind'], ['r256','eye'], ['r256','wrongReview'], ['km','settings'], ['km','open']];
+  /* R273-4.1：移除无效的 ['km','open'] —— 真实路径是 st.km.settings.open，
+     旧路径会在暂存落库时 delete 掉 st.km.open（老存档可能残留该字段），造成配置漂移。 */
+  const SETTINGS_DRAFT_PATHS = [['r256','remind'], ['r256','eye'], ['r256','wrongReview'], ['km','settings']];
   function _settingsRollback(st){
     if(!_stagedBase) return st;
     let out;
@@ -16826,11 +16988,17 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
     if(!o || typeof o !== 'object') return '';
     const out = {};
     SNAPSHOT_KEY_ALWAYS.forEach(function(k){ if(o[k] !== undefined) out[k] = o[k]; });
+    /* R273-4.1：知识秘境开放时间不在 SNAPSHOT_KEY_ALWAYS 里，必须一并纳入校验指纹，
+       否则 commit 的主档读回校验会「通过」但开放时间其实没落库。 */
+    try{ out.__kmOpen = (o.km && o.km.settings && o.km.settings.open) || null; }catch(e){}
     try{ return JSON.stringify(out); }catch(e){ return ''; }
   }
   function commitSettings(){
     if(!_staging || !_staged) return true; // 未进入暂存态：幂等无操作
     const draft = _staged;
+    /* R273-4.1：提交前先落一份带时间戳的开放时间独立副本，
+       刷新 / 版本更新后 load() 会用它修复被回滚的 st.farmOpen / st.km.settings.open。 */
+    try{ _writeOpenTimeSidecar(draft); }catch(e){}
     const wantSig = _settingsSig(draft);
     _staging = false;                      // 先退出暂存态，使 save() 真正写入 localStorage
     _saveError = '';                       // R257-5.1：清掉上一次的旧错误码，避免误报「存储空间不足」
@@ -16895,6 +17063,7 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
     m[KEY_SNAPSHOT] = '设置快照';
     m[KEY_PRE_UPDATE] = '版本更新前副本';
     m[KEY_REMIND] = '提醒时间副本';
+    m[KEY_OPENTIME] = '开放时间配置副本';
     m[KEY_META] = '落库时间戳';
     return m;
   })();
@@ -17983,6 +18152,8 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
     allowUserClear(); _loadCacheOK = false; _loadCacheRaw = null; _loadCacheSt = null;
     [KEY, KEY_PENDING, KEY_SNAPSHOT, KEY_META, KEY_BAK1, KEY_BAK2, KEY_PRE_UPDATE, KEY_JOURNAL, KEY_REMIND]
       .forEach(function(k){ try{ localStorage.removeItem(k); }catch(e){} });
+    /* R273-4.1：重置也要清掉开放时间独立副本，否则会把旧配置复活回来 */
+    try{ localStorage.removeItem(KEY_OPENTIME); }catch(e){}
     try{ _mirrorDelete(); }catch(e){}
     _mirrorLastTs = 0;
     return load();
@@ -19860,6 +20031,8 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
       if(patch.bgmByLevel!==undefined) merged.bgmByLevel = Object.assign({}, merged.bgmByLevel, patch.bgmByLevel);
       km.settings = merged;
     }
+    /* R273-4.1：非暂存态下开放时间改动同步独立副本；暂存态由 commitSettings() 统一提交 */
+    if(!_staging){ try{ _writeOpenTimeSidecar(st); }catch(e){} }
     save(st); return getKMSettings();
   }
   function getKMState(){
@@ -19920,6 +20093,8 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
   function farmSaveOpen(patch){
     const st = load();
     st.farmOpen = Object.assign({}, getFarmOpenConfig(), patch || {});
+    /* R273-4.1：非暂存态（从种植园弹窗直接改）也同步独立副本，避免刷新后配置漂移 */
+    if(!_staging){ try{ _writeOpenTimeSidecar(st); }catch(e){} }
     save(st);
     return getFarmOpenConfig();
   }
@@ -24514,6 +24689,11 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
    ============================================================ */
 (function(){
   const S = window.Store;
+  /* R273-5.1：全平台定时器统一登记表。
+     所有常驻 setInterval 必须登记，R271 的「清理闲置定时器」可一次停掉，
+     避免 r256Init 里两个匿名 interval 成为永远清不掉的孤儿定时器 / 后台空转。 */
+  const APP_TIMERS = [];
+  function regAppTimer(id){ APP_TIMERS.push(id); return id; }
   const $ = s=>document.querySelector(s);
   const $$ = s=>Array.from(document.querySelectorAll(s));
   const isChild = ()=> { try { return (S.load().profile.mode || 'child') === 'child'; } catch(e){ return true; } };
@@ -25442,6 +25622,46 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       if(_rc && /^\d{1,2}:\d{2}$/.test(String(_rc.value||'').trim())) _patch.childTime = String(_rc.value).trim();
       if(_rp && /^\d{1,2}:\d{2}$/.test(String(_rp.value||'').trim())) _patch.parentTime = String(_rp.value).trim();
       if(Object.keys(_patch).length) S.saveRemindCfg(_patch);
+    }catch(e){}
+    /* R273-4.1：开放时间 / 知识秘境设置的 DOM 值兜底采集。
+       iPad Safari 的 time / checkbox 控件点击「保存设置」时可能尚未触发 change，
+       只靠 onchange 会让刚填的时段被草稿里的旧值覆盖，表现为「保存不生效」。
+       只有对应弹窗确实被打开过（init 标记）才采集，避免隐藏弹窗的默认 false 反噬配置。 */
+    try{
+      const _v = id => { const el = document.getElementById(id); return el ? String(el.value || '').trim() : ''; };
+      const _c = id => { const el = document.getElementById(id); return el ? !!el.checked : null; };
+      if(window.__r273FarmOpenInit){
+        const fp = {};
+        const wd = _c('farmOpenWeekend'), ho = _c('farmOpenHoliday'), wkd = _c('farmOpenWeekday');
+        if(wkd !== null) fp.weekday = wkd;
+        if(wd !== null) fp.weekend = wd;
+        if(ho !== null) fp.holiday = ho;
+        const s = _v('farmOpenWdStart'), e = _v('farmOpenWdEnd');
+        if(/^\d{1,2}:\d{2}$/.test(s)) fp.weekdayStart = s;
+        if(/^\d{1,2}:\d{2}$/.test(e)) fp.weekdayEnd = e;
+        if(Object.keys(fp).length) S.farmSaveOpen(fp);
+      }
+      if(window.__r273KMOpenInit || window.__r273KMSettingOpened){
+        const kp = {};
+        const kw = _c('kmOpenWeekend'), kh = _c('kmOpenHoliday');
+        if(kw !== null) kp.weekend = kw;
+        if(kh !== null) kp.holiday = kh;
+        const knum = id => { const n = parseFloat(_v(id)); return isFinite(n) ? n : undefined; };
+        const patch = { open:kp };
+        const r = knum('kmRetries'), f = knum('kmFogMs'), p = knum('kmPerLevel');
+        const rc = knum('kmRewardCorrect'), rl = knum('kmRewardClear');
+        if(r !== undefined) patch.retries = r;
+        if(f !== undefined) patch.fogMs = f;
+        if(p !== undefined) patch.perLevel = p;
+        if(_v('kmHintsOn')) patch.hintsOn = (_v('kmHintsOn') === '1');
+        if(rc !== undefined || rl !== undefined){
+          const sr = {};
+          if(rc !== undefined) sr.correct = rc;
+          if(rl !== undefined) sr.clear = rl;
+          patch.starReward = sr;
+        }
+        S.saveKMSettings(patch);
+      }
     }catch(e){}
     const res = S.commitSettings();
     /* R268-2.2：先补写一次再决定文案。
@@ -37731,6 +37951,34 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       '<div class="ri-body">'+body+'</div>'+
     '</div>';
     col.insertAdjacentHTML('afterbegin', card);
+    // R273-6.2：文学小常识卡紧随「每日成语」卡之后、好词卡之前
+    injectDailyLoreCard();
+  }
+  /* R273-6.2：文学小常识每日卡 —— 位置固定在「每日成语」与「好词」之间。
+     打卡完全复用好词好句机制：data-ri-checkin="cnWords::<词条>"，
+     即同一 readFlags 键、同一 +1⭐ 规则、同一撤销扣回逻辑，不新增任何存储字段。 */
+  function dailyLoreItem(){
+    const seed = (window.WENXUE_CHANGSHI_SEED || []).filter(x => x && x.t && x.c);
+    if(!seed.length) return null;
+    const n = Math.floor(Date.now()/86400000) % seed.length;
+    return seed[n] || seed[0];
+  }
+  function injectDailyLoreCard(){
+    const col = document.getElementById('cnColWords');
+    if(!col) return;
+    const x = dailyLoreItem();
+    if(!x) return;
+    const isChecked = S.isReadingRead('cnWords', x.t);
+    const card = '<div class="reading-item is-lore-daily '+(isChecked?'is-checked':'')+'">'+
+      '<div class="ri-head-row">'+
+        '<div class="ri-title">📖 '+esc(x.t)+' <span class="ri-meta" style="background:#e8f0fe;color:#1e3a8a;margin-left:4px">文学小常识</span></div>'+
+        '<button class="ri-checkin-btn '+(isChecked?'checked':'')+'" data-ri-checkin="cnWords::'+esc(x.t)+'" title="'+(isChecked?'已打卡（点击取消）':'点击打卡')+'"></button>'+
+      '</div>'+
+      '<div class="ri-body lore-body">'+esc(x.c)+'</div>'+
+    '</div>';
+    const cy = col.querySelector('.is-cydaily');
+    if(cy) cy.insertAdjacentHTML('afterend', card);
+    else col.insertAdjacentHTML('afterbegin', card);
   }
   function renderReading(){
     // R9-REQ2：重置英语短文朗读状态机（每篇独立 idle/playing/paused）
@@ -37767,6 +38015,8 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   // R53-6：收录书屋 = 大阅读主视图 —— 主题按钮切换展示对应阅读内容（内容分页见 fillCol）
   const BS_TABS = [
     {key:'cnWords',label:'✨ 好词好句'},
+    // R273-6.3：文学小常识入口 —— 固定排在「好词好句」与「古诗词鉴赏」之间
+    {key:'cnLore',label:'📖 文学小常识'},
     {key:'cnPoem',label:'📜 古诗词鉴赏'},
     {key:'cnEssay',label:'📝 优秀作文'},
     {key:'enSpeaking',label:'💬 日常交流'},
@@ -37778,6 +38028,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   let _bsOpen = false;
   const BS_COLS = [
     {key:'cnWords',    sel:'#bsColWords'},
+    {key:'cnLore',     sel:'#bsColLore'},
     {key:'cnPoem',     sel:'#bsColPoem'},
     {key:'cnEssay',    sel:'#bsColEssay'},
     {key:'enSpeaking', sel:'#bsColSpeak'},
@@ -37787,6 +38038,17 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   // R57-2：收录书屋显示「所有大阅读各主题的内容」—— 不再只筛 user/archived，改为该主题全量内容
   //        （用户自建 / 23:30 自动归档 / 系统内置 全部纳入，按主题栏分类 + 分页浏览）
   function bsItemsOf(kind){
+    // R273-6.3：文学小常识 —— 直接读取 298 条内置词条，做成可翻页的详情内容
+    if(kind === 'cnLore'){
+      return (window.WENXUE_CHANGSHI_SEED || [])
+        .filter(x => x && x.t && x.c)
+        .map((x, i) => ({
+          title: (i + 1) + '. ' + x.t,
+          body: x.c,
+          meta: '文学小常识',
+          source: 'sys'
+        }));
+    }
     if(kind === 'cnChengyu'){
       const list = (window.CHENGYU_SEED || []).filter(x => x && x.word);
       return list.map(x => ({
@@ -37832,7 +38094,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   }
   // R57-2：收录书屋各主题独立页码
   // R59-5：每页条数按主题配置 —— 好词好句 6 / 古诗词鉴赏 4 / 优秀作文 2 / 日常交流 2 / 英语短文 2
-  const BS_PER_PAGE = { cnWords:6, cnPoem:4, cnEssay:2, enSpeaking:2, enPassage:2, cnChengyu:4 };
+  const BS_PER_PAGE = { cnWords:6, cnLore:6, cnPoem:4, cnEssay:2, enSpeaking:2, enPassage:2, cnChengyu:4 };
   let _bsTab = 'cnWords';
   let _bsPage = {};
   function renderBookstoreAll(){
@@ -39084,7 +39346,14 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         if(ctx) ctx.setTransform(dpr,0,0,dpr,0,0);
       }
       resize();
-      const onResize=()=>resize(); window.addEventListener('resize', onResize);
+      /* R273-5.1：视口变化用 rAF 合并成每帧一次，避免拖动窗口 / 旋转 iPad 时
+         反复重设 canvas 尺寸与变换矩阵造成掉帧、按键反馈变钝。 */
+      let _rsRaf = 0;
+      const onResize=()=>{
+        if(_rsRaf) return;
+        _rsRaf = (window.requestAnimationFrame || function(cb){ return setTimeout(cb, 16); })(function(){ _rsRaf = 0; resize(); });
+      };
+      window.addEventListener('resize', onResize, { passive:true });
 
       const groundY=()=> H-groundH;
       // 物理常量（受 settings 速度/跳跃手感影响）
@@ -46015,6 +46284,7 @@ function renderKMAdmin(){
     renderKMOpenDates(); renderKMOpenStatus(); syncKMLockBadge();
   }
   function initKMOpenSetting(){
+    window.__r273KMOpenInit = true;   /* R273-4.1：标记弹窗已初始化，保存时兜底采集 DOM 值 */
     const s = S.getKMSettings(); const o = s.open || {};
     const weekend = document.getElementById('kmOpenWeekend');
     const holiday = document.getElementById('kmOpenHoliday');
@@ -46322,6 +46592,7 @@ function renderKMAdmin(){
   }
 
   function openKMSetting(){
+    window.__r273KMSettingOpened = true;   /* R273-4.1：标记难度/奖励字段可被兜底采集 */
     const s = S.getKMSettings();
     const setVal = (id, v)=>{ const el = document.getElementById(id); if(el) el.value = v; };
     const setChk = (id, v)=>{ const el = document.getElementById(id); if(el) el.checked = !!v; };
@@ -46334,24 +46605,12 @@ function renderKMAdmin(){
     setVal('kmRewardClear', (s.starReward && s.starReward.clear != null) ? s.starReward.clear : 10);
     // R121-1：游戏开放日期（周末 / 法定节假日开关 + 自定义开放日列表）
     initKMOpenSetting();
-    const saveBtn = document.getElementById('btnKMSettingSave');
-    if(saveBtn && !saveBtn._bound){
-      saveBtn._bound = true;
-      saveBtn.onclick = ()=>{
-        const num = (id)=>{ const el = document.getElementById(id); return el ? parseFloat(el.value) : undefined; };
-        const patch = {
-          retries: num('kmRetries'), fogMs: num('kmFogMs'), hintsOn: (document.getElementById('kmHintsOn') || {}).value === '1',
-          perLevel: num('kmPerLevel'),
-          starReward: { correct: num('kmRewardCorrect'), clear: num('kmRewardClear') },
-          // R121-1：两个开放规则开关（自定义开放日列表在增删时已即时落库，此处仅同步开关状态）；已删卡片（默认模式/操作手感/文案主题色）沿用已存值
-          open: { weekend: !!(document.getElementById('kmOpenWeekend') || {}).checked, holiday: !!(document.getElementById('kmOpenHoliday') || {}).checked }
-        };
-        S.saveKMSettings(patch);
-        syncKMLockBadge();
-        toast('✓ 知识秘境设置已保存');
-        showModal('#modalGameSettings');
-      };
-    }
+    /* R273-4.1：修复「保存不生效」—— 原实现把本弹窗的收集逻辑挂在
+       btnKMSettingSave.onclick 上，并用 saveBtn._bound 做幂等标记；但同一个按钮带
+       data-commit-settings，ensureSettingsSaveButtons() 已先把 _bound 置 true，
+       导致这里的 onclick 永远不会被赋值，难度 / 奖励 / 开放日开关全部进不了草稿。
+       现统一由 commitSettingsNow() 在点「保存设置」时采集 DOM 值再提交，
+       避免两套监听抢同一标记，也避免 addEventListener 先于 onclick 造成草稿被旧值覆盖。 */
     // R217-2：题库管理 / 主题色 / 各关卡音乐 / 数据管理 已合并进本弹窗，打开时即时渲染
     try { renderKMAdmin(); } catch(e){}
     showModal('#modalKMSetting');
@@ -46394,6 +46653,7 @@ function renderKMAdmin(){
     renderFarmOpenDates(); renderFarmOpenStatus(); syncFarmLockBadge();
   }
   function initFarmOpenSetting(){
+    window.__r273FarmOpenInit = true;   /* R273-4.1：标记弹窗已初始化，保存时兜底采集 DOM 值 */
     const cfg = S.getFarmOpenConfig();
     const wd = document.getElementById('farmOpenWeekday');
     const we = document.getElementById('farmOpenWeekend');
@@ -46542,8 +46802,11 @@ function renderKMAdmin(){
     // R133-4：将【保存设置】按钮移至各设置子页面（弹窗）底部 —— 绑定 [data-commit-settings] 调用 commitSettingsNow
     // （原「每张卡片角标 pill + 页面底部全局 sticky 条」已移除，见 R133-4 说明）
     function ensureSettingsSaveButtons(){
+      /* R273-4.1 / 5.1：改用独立幂等标记 __commitSettingsBound，不再沿用被其它功能
+         复用的 _bound（原实现会让知识秘境保存按钮的收集逻辑永久失效，也会让动态按钮
+         被捕获委托误跳过）。 */
       document.querySelectorAll('[data-commit-settings]').forEach(function(btn){
-        if(btn._bound) return; btn._bound = true;
+        if(btn.__commitSettingsBound) return; btn.__commitSettingsBound = true;
         btn.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); commitSettingsNow(); });
       });
       // R270-6.2：动态生成的设置弹窗（如三合一设置面板）里的【保存设置】——
@@ -46552,7 +46815,7 @@ function renderKMAdmin(){
         document._commitSettingsDelegated = true;
         document.addEventListener('click', function(e){
           const t = e.target && e.target.closest ? e.target.closest('[data-commit-settings]') : null;
-          if(!t || t._bound) return;
+          if(!t || t.__commitSettingsBound) return;
           e.preventDefault(); e.stopPropagation();
           commitSettingsNow();
         }, true);
@@ -47330,7 +47593,7 @@ function renderKMAdmin(){
       if(sep<0) return;
       const kind = raw.slice(0, sep);
       const title = raw.slice(sep+2);
-      const KIND_LABEL = {cnWords:'好词好句',cnPoem:'古诗词鉴赏',cnEssay:'优秀作文',enPassage:'英语短文',enSpeaking:'英语日常交流',cnChengyu:'成语学习'};
+      const KIND_LABEL = {cnWords:'好词好句',cnLore:'文学小常识',cnPoem:'古诗词鉴赏',cnEssay:'优秀作文',enPassage:'英语短文',enSpeaking:'英语日常交流',cnChengyu:'成语学习'};
       const kindLabel = KIND_LABEL[kind] || kind;
       if(S.isReadingRead(kind, title)){
         const r = S.unmarkReadingRead(kind, title);
@@ -48568,7 +48831,7 @@ if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
   function r256EyeStart(){
     r256EyeApply();
     if(_r256EyeTimer) clearInterval(_r256EyeTimer);
-    _r256EyeTimer = setInterval(r256EyeTick, 60000);
+    _r256EyeTimer = regAppTimer(setInterval(r256EyeTick, 60000));
   }
 
   /* ============================================================
@@ -48918,11 +49181,15 @@ if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
       renderHome.__r256Wrapped = true;
     }
     // 提醒：每 30 秒检查一次（只在页面可见时）
-    setInterval(()=>{ try{ if(!document.hidden) r256ReminderTick(); }catch(e){} }, 30000);
+    /* R273-5.1：登记进统一表 + 幂等，避免重复 init 叠加常驻定时器 */
+    if(!window.__r256TimersBound){
+      window.__r256TimersBound = true;
+      regAppTimer(setInterval(()=>{ try{ if(!document.hidden) r256ReminderTick(); }catch(e){} }, 30000));
+      regAppTimer(setInterval(()=>{ try{ if(!document.hidden) r256FarmScan(); }catch(e){} }, 600000));
+    }
     setTimeout(()=>{ try{ r256ReminderTick(); }catch(e){} }, 4000);
     // 种植园状态：进入首页 / 每 10 分钟检查
     setTimeout(()=>{ try{ r256FarmScan(); }catch(e){} }, 6000);
-    setInterval(()=>{ try{ if(!document.hidden) r256FarmScan(); }catch(e){} }, 600000);
     // 点击导航到档案页时刷新总览（月份可能跨月）
     document.addEventListener('click', (e)=>{
       const nb = e.target.closest('.nav-btn[data-page]');   // 只认左侧导航键，避免页面内点击误触发
@@ -49705,8 +49972,12 @@ function init(){
 
   /* ---------------- 八、轻量工具：番茄钟 / 备忘录 / 课程表 ---------------- */
   const TIMERS = [];
-  function regTimer(id){ TIMERS.push(id); return id; }
-  function clearAllTimers(){ TIMERS.forEach(id => { try{ clearInterval(id); clearTimeout(id); }catch(e){} }); TIMERS.length = 0; }
+  function regTimer(id){ TIMERS.push(id); regAppTimer(id); return id; }
+  /* R273-5.1：清理范围扩展到全平台登记表，r256 的常驻 interval 也一并治理 */
+  function clearAllTimers(){
+    APP_TIMERS.forEach(id => { try{ clearInterval(id); clearTimeout(id); }catch(e){} });
+    APP_TIMERS.length = 0; TIMERS.length = 0;
+  }
   let pomoTimer = null, pomoLeft = 0, pomoMode = 'study';
   function pomoState(){ return { left:pomoLeft, mode:pomoMode, running:!!pomoTimer, doneSec:(cfg().pomo || {}).doneSec || 0 }; }
   function pomoStop(){ if(pomoTimer){ try{ clearInterval(pomoTimer); }catch(e){} pomoTimer = null; } renderPomo(); }
@@ -49802,56 +50073,8 @@ function init(){
   function dedupeState(){ try{ return S.r271DedupeState(); }catch(e){ return { ok:false, removed:0 }; } }
   function repairStorage(){ try{ return S.r271RepairStorage(); }catch(e){ return { ok:false, actions:[] }; } }
 
-  /* ---------------- 九·补：中华通史时间轴（新世界 - 拓展素养 - 人文拓展） ---------------- */
-  const TONGSHI = [
-    { era:'远古', year:'约前 3000 年', text:'炎黄部落、尧舜禹禅让，中华文明的源头。' },
-    { era:'夏', year:'约前 2070–前 1600', text:'中国历史上第一个王朝，二里头文化见证早期国家。' },
-    { era:'商', year:'约前 1600–前 1046', text:'甲骨文与青铜器，中国有文字可考的历史自此开始。' },
-    { era:'西周', year:'前 1046–前 771', text:'分封制、礼乐制度，《诗经》中的许多篇章源于此时。' },
-    { era:'春秋', year:'前 770–前 476', text:'百家争鸣的序幕，孔子、老子等思想家活跃。' },
-    { era:'战国', year:'前 475–前 221', text:'七雄并立，商鞅变法，铁器与牛耕推广。' },
-    { era:'秦', year:'前 221–前 207', text:'秦始皇统一六国，书同文、车同轨、统一度量衡。' },
-    { era:'西汉', year:'前 202–公元 8', text:'张骞通西域，丝绸之路开通；司马迁著《史记》。' },
-    { era:'东汉', year:'25–220', text:'蔡伦改进造纸术，张衡发明地动仪。' },
-    { era:'三国', year:'220–280', text:'魏蜀吴鼎立，赤壁之战与诸葛亮北伐。' },
-    { era:'两晋南北朝', year:'265–589', text:'民族大融合，祖冲之推算圆周率，石窟艺术兴盛。' },
-    { era:'隋', year:'581–618', text:'大运河贯通南北，科举制度创立。' },
-    { era:'唐', year:'618–907', text:'贞观之治、开元盛世，诗歌黄金时代，长安是世界大都会。' },
-    { era:'宋', year:'960–1279', text:'活字印刷、指南针、火药广泛应用，词与山水画极盛。' },
-    { era:'元', year:'1271–1368', text:'疆域辽阔，行省制度，中外交流频繁。' },
-    { era:'明', year:'1368–1644', text:'郑和下西洋，修筑长城，《永乐大典》编纂。' },
-    { era:'清', year:'1636–1912', text:'统一多民族国家巩固，康乾盛世；近代面临变局。' },
-    { era:'近现代', year:'1912 至今', text:'共和取代帝制，中国人民走上民族复兴之路。' }
-  ];
-  function tongshiHtml(){
-    return '<div class="yw-comp-head">🏯 中华通史时间轴 · 共 ' + TONGSHI.length + ' 个时期</div>'
-      + '<div class="r271-timeline">' + TONGSHI.map(function(t,i){
-          return '<div class="r271-tl-item"><div class="r271-tl-dot"></div>'
-            + '<div class="r271-tl-era">' + E(t.era) + '</div>'
-            + '<div class="r271-tl-year">' + E(t.year) + '</div>'
-            + '<div class="r271-tl-text">' + E(t.text) + '</div></div>';
-        }).join('') + '</div>'
-      + '<div class="sz-page-foot">按朝代先后排列，点击左侧「返回」可回到拓展素养首页。</div>';
-  }
-  function mountTongshiEntry(){
-    if(!REAL) return;
-    try{
-      const grp = (typeof SZ_TOP_CARDS !== 'undefined' && Array.isArray(SZ_TOP_CARDS))
-        ? SZ_TOP_CARDS.filter(function(g){ return g && g.title === '人文拓展'; })[0] : null;
-      if(grp && Array.isArray(grp.items) && !grp.items.some(function(x){ return x && x.key === 'r271_tongshi'; })){
-        grp.items.push({ key:'r271_tongshi', icon:'🏯', label:'中华通史时间轴' });
-      }
-      if(typeof szSlot === 'function' && !szSlot.__r271){
-        const orig = szSlot;
-        const w = function(key, label){
-          if(key === 'r271_tongshi') return tongshiHtml();
-          return orig.apply(this, arguments);
-        };
-        w.__r271 = true;
-        szSlot = w;
-      }
-    }catch(e){}
-  }
+  /* R273-3.1：中华通史时间轴入口及全部关联内容已移除。
+     人文拓展栏目恢复为原有的「红色上海 / 华夏五千年」两项，szSlot 不再被包装。 */
 
   /* ---------------- 十、UI：悬浮工具条 + 功能中心 ---------------- */
   const TABS = [
@@ -49876,6 +50099,23 @@ function init(){
     clean:'数据净化：只扫描 + 去除可判定的重复项，不认识的数据一律保留，绝不删除用户内容。'
   };
   let root = null, modal = null, curTab = 'tasks', wrongFilter = '全部', reportPeriod = 'week';
+  /* R273-2.1 右下角快捷键：与五个功能按键一一对应，列表数据为唯一真相，
+     展开顺序自上而下 = 原 dock 五个按钮的原有顺序。 */
+  const DOCK_SHORTCUTS = [
+    { act:'open', ico:'🧰', label:'功能中心' },
+    { act:'pomo', ico:'🍅', label:'番茄专注计时器' },
+    { act:'help', ico:'❓', label:'本页使用说明' },
+    { act:'font', ico:'Aa', label:'全局字号档位' },
+    { act:'top',  ico:'⬆️', label:'回到顶部' }
+  ];
+  let dockMenuOpen = false;
+  function toggleDockShortcuts(force){
+    dockMenuOpen = (force === undefined) ? !dockMenuOpen : !!force;
+    const m = q('#r271DockMenu');
+    if(m){ m.hidden = !dockMenuOpen; m.setAttribute('aria-expanded', String(dockMenuOpen)); }
+    const t = q('#r271DockShortcutBtn');
+    if(t){ t.classList.toggle('on', dockMenuOpen); t.setAttribute('aria-expanded', String(dockMenuOpen)); }
+  }
   function shell(){
     if(root) return root;
     root = D.createElement('div'); root.id = 'r271Root';
@@ -49885,6 +50125,18 @@ function init(){
       + '<button class="r271-dock-btn" data-act="help" title="本页使用说明">❓</button>'
       + '<button class="r271-dock-btn" data-act="font" title="全局字号档位">Aa</button>'
       + '<button class="r271-dock-btn" data-act="top" title="回到顶部">⬆️</button>'
+      /* R273-2.1：快捷键列表插在五个按键之后、快捷键按钮之前；
+         dock 底部锚定，展开时整列自然向上生长，列表自上而下展示，不遮挡任何页面内容。 */
+      + '<div class="r271-dock-menu" id="r271DockMenu" hidden aria-expanded="false">'
+      + '<div class="r271-dock-menu-head">快捷键 · 选择功能</div>'
+      + DOCK_SHORTCUTS.map(function(x,i){
+          return '<button class="r271-dock-menu-item" data-act="shortcut-go" data-v="' + E(x.act) + '" title="' + E(x.label) + '">'
+            + '<span class="r271-dock-menu-ico">' + E(x.ico) + '</span>'
+            + '<span class="r271-dock-menu-label">' + E(x.label) + '</span>'
+            + '<span class="r271-dock-menu-no">' + (i + 1) + '</span></button>';
+        }).join('')
+      + '</div>'
+      + '<button class="r271-dock-btn r271-dock-shortcut" id="r271DockShortcutBtn" data-act="shortcuts" title="快捷键" aria-expanded="false">⚡</button>'
       + '</div>'
       + '<div class="r271-mask" id="r271Mask" hidden><div class="r271-modal" id="r271Modal">'
       + '<div class="r271-head"><div class="r271-title">🦊 Nick 学习乐园 · 功能中心 <small>R271</small></div>'
@@ -50178,7 +50430,17 @@ function init(){
     const val = id => { const el = q('#' + id); return el ? el.value : ''; };
     const chk = id => { const el = q('#' + id); return !!(el && el.checked); };
     const go = fn => { try{ fn(); }catch(err){ tip('操作失败：' + (err && err.message ? err.message : '未知错误')); } };
+    /* R273-2.1：任何其它操作都会自动收起快捷键列表，避免遮挡 */
+    if(act !== 'shortcuts' && dockMenuOpen) toggleDockShortcuts(false);
     switch(act){
+      /* R273-2.1 快捷键：展开后直接复用原五个按钮的既有委托，行为与点击原键完全一致 */
+      case 'shortcuts': toggleDockShortcuts(); break;
+      case 'shortcut-go': {
+        if(!DOCK_SHORTCUTS.some(x => x.act === v)) return;
+        const target = root && root.querySelector('.r271-dock-btn[data-act="' + v + '"]');
+        if(target) target.click();
+        break;
+      }
       case 'open': open('tasks'); break;
       case 'close': close(); break;
       case 'tab': curTab = v; render(); break;
@@ -50523,13 +50785,14 @@ function init(){
     window.addEventListener('offline', () => { tip('📴 已进入离线模式：已加载的题库 / 笔记 / 课程表继续可用'); });
   }
   function boot(){
+    /* R273-5.1：boot 幂等，防止 window.R271.boot 被重复调用时叠加全局捕获委托 */
+    if(window.__R271_BOOTED__) return;
     try{
       shell();
       applyUi();
       wrapCheckIn();
       wrapHarvest();
       mountHelpDots();
-      mountTongshiEntry();
       D.addEventListener('click', e => { interceptShopPreview(e); pinIntercept(e); if(e.target.closest && e.target.closest('[data-r271-help]')) showHelp(); }, true);
       reminderLoop();
       offlineQueue();
@@ -50540,7 +50803,7 @@ function init(){
 
   /* ---------------- 对外 API（供运行时探针 / 门禁验证） ---------------- */
   window.R271 = {
-    version:'R271', cfg:cfg, upd:upd, defaults:DEFAULTS, TONGSHI:TONGSHI, tongshiHtml:tongshiHtml, mountTongshiEntry:mountTongshiEntry,
+    version:'R271', cfg:cfg, upd:upd, defaults:DEFAULTS,
     builtinTemplates:BUILTIN_TPL, allTemplates:allTemplates, applyTemplate:applyTemplate, saveCurrentAsTemplate:saveCurrentAsTemplate,
     setRule:setRule, setHoliday:setHoliday, leaveState:leaveState, doLeave:doLeave, undoLeave:undoLeave,
     posterData:posterData, savePoster:savePoster,
@@ -50584,11 +50847,25 @@ function init(){
     'use strict';
     const R = window.R272P;
     let _rollbackId = null, _failShown = false;
-    /* R272-1.8：主库事务 3 次仍失败时只提示一次，绝不误报「存储空间已满」，
-       内存修改与降级快照都还在，用户操作不会丢。 */
-    window.__r272WriteFail = function(){
+    /* R273-1.1：区分「真实写入事务阻塞 / 写入超时 / 事务冲突 / 快照竞争 / Safari 误报」，
+       绝不误报「存储空间已满」。持久化层已做排队 + 退避重试 + 队列排空后裁决，
+       这里再做一次防御性确认：只要最近一次写事务成功，或属于软错误，就静默不打扰。
+       确实受阻时才谨慎提示，内存修改与多重安全副本始终保留，用户操作不会丢。 */
+    window.__r272WriteOK = function(){
+      /* 写事务确认成功 → 回撤一次性闸门，后续真实故障仍可再次提示 */
+      _failShown = false;
+    };
+    window.__r272WriteFail = function(info){
+      info = info || {};
+      try{
+        const P = window.R272P;
+        if(P && typeof P.writeHealthy === 'function' && P.writeHealthy()) return;
+      }catch(e){}
+      /* Safari 禁止写入 / 事务超时属软错误：只降级留副本，不弹窗 */
+      if(info.cls === 'blocked' || info.cls === 'timeout') return;
       if(_failShown) return; _failShown = true;
-      try{ toast('⚠️ 本机数据库写入未完成；修改已保留在本页与安全副本中，请稍后重试保存'); }catch(e){}
+      const head = (info.cls === 'quota') ? '本机存储空间不足' : '本机数据库写入未完成';
+      try{ toast('⚠️ ' + head + '；修改已保留在本页与安全副本中，请稍后重试保存'); }catch(e){}
     };
     if(!R) return;
     function el(id){ return document.getElementById(id); }
