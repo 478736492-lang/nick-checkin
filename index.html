@@ -10529,6 +10529,17 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
 .yw-round-btn:active{filter:brightness(.93)}
 .yw-round-btn:not(.active):active{transform:scale(.96)}
 
+/* ============ R276-2.1 连续打卡天数家长修正入口 ============ */
+/* 与「学段」编辑键同款，尺寸略收，避免一行里两个 ✎ 挤在一起 */
+.wp-streak-edit{font-size:.82em;padding:0 3px;margin-left:2px;vertical-align:middle}
+#homeStreakInput{width:64px;font-size:1em;padding:1px 4px;border:1px solid var(--tone-300);border-radius:6px;text-align:center}
+
+/* ============ R276-3.2 中华通史板块（iframe 原样复刻，CSS/JS 与宿主隔离） ============ */
+.page[data-page="zhts"]{padding:0;background:none!important}
+.page[data-page="zhts"] .zhts-frame{display:block;width:100%;height:calc(100vh - 76px);min-height:600px;border:0;background:transparent}
+.zhts-fallback{padding:28px;text-align:center;font-size:16px;line-height:1.8}
+.zhts-fallback[hidden]{display:none}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -10547,6 +10558,8 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
     <button data-page="newworld" class="nav-btn" data-page-node-id="Fz9gfrkAkGyAeKTdb1qKVH"><span class="ico" data-page-node-id="9Hl0yp1cpocvhWvAqBqpDa">🌟</span><span class="lbl" data-page-node-id="OhznfYwWVKkrFFK1Fe0S1y">新世界</span></button>
     <button data-page="math" class="nav-btn" data-page-node-id="lKz1Quo49yH7YmPFYXr1Qe"><span class="ico" data-page-node-id="AJ3w6fOgZmF2oZsYBICyyz">🧮</span><span class="lbl" data-page-node-id="whncDsXWsNWKseV4DCNSIC">乐读数学</span></button>
     <button data-page="xueersi" class="nav-btn" data-page-node-id="6PwtUVGEbmv0Sow6MjxANd"><span class="ico" data-page-node-id="XDXc8aPrkvqBhyPqY7z3o2">📘</span><span class="lbl" data-page-node-id="AGYsREvivG0oHg0bTH9czU">学而思英语</span></button>
+    <!-- R276-3.1：中华通史导航入口，位置严格在「学而思英语」与「大阅读」之间 -->
+    <button data-page="zhts" class="nav-btn" data-page-node-id="R276ZhtsNav"><span class="ico" data-page-node-id="R276ZhtsNavIco">🏯</span><span class="lbl" data-page-node-id="R276ZhtsNavLbl">中华通史</span></button>
     <button data-page="reading" class="nav-btn" data-page-node-id="VZgtNxjHHs0rkBTKRjvvxZ"><span class="ico" data-page-node-id="VW668B5FWjJUjBe8JMjhiJ">📖</span><span class="lbl" data-page-node-id="seIa3xLifgrjNdHHaczFD1">大阅读</span></button>
     <button data-page="baike" class="nav-btn" data-page-node-id="evo6QZa2tkcM0lA8uNKEMj"><span class="ico" data-page-node-id="laD5znAMk1QJKKcu4Ff11U">🌍</span><span class="lbl" data-page-node-id="MeiwZ3Yc7jHE5hBBjnPXFC">百科讲堂</span></button>
     <button data-page="knowledge" class="nav-btn" data-page-node-id="dgvyriSBjRdIUt8IN5czeu"><span class="ico" data-page-node-id="KLxDkQogyEnhpWCUb0SkTf">🗺️</span><span class="lbl" data-page-node-id="0yzSgv0ZsfU7DUC3iBV5IU">知识秘境</span></button>
@@ -10558,6 +10571,13 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
 
 <!-- ========== 主体 ========== -->
 <main class="main-wrap" data-page-node-id="CskczoKFn0QCCJMHocFzq0">
+
+  <!-- R276-3.2：中华通史板块 —— 以 WorkBuddy 原型页完整复刻，iframe srcdoc 原样渲染，
+       布局 / :root CSS 变量 / 全部交互逻辑 / ERAS·DIMS·NODES·SCENES·TIPS 历史数据数组一字未改。 -->
+  <section class="page" data-page="zhts" data-zone="zhts" data-page-node-id="R276ZhtsPage" hidden>
+    <iframe id="zhtsFrame" class="zhts-frame" title="中华通史 · 五千年学习平台" data-page-node-id="R276ZhtsFrame"></iframe>
+    <div id="zhtsFallback" class="zhts-fallback" hidden></div>
+  </section>
 
   <!-- ================= V38：首页 = 5 卡片壁纸模式 ================= -->
   <section class="page page-home wallpaper-mode" data-page="home" data-zone="home" data-page-node-id="rXbzsDeXS8GHexD30ziLT6">
@@ -10574,7 +10594,7 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
             <div class="wp-nick-greeting" data-page-node-id="3im1ZyaKn1CoxYlMteUGq5">Hi, I'm Nick!</div>
             <div class="wp-nick-info" data-page-node-id="FbS60iwn663EgGIcDEsDOA">
               <!-- R104：学段文字（三年级）独立成 #homeGrade，仅家长模式可通过旁侧 ✎ 修改，普通用户模式只读 -->
-              <div class="wp-nick-meta" data-page-node-id="e2DEPuj9wJu77ZXuf8Oiy7"><span id="homeGrade" data-page-node-id="R104homeGrade">三年级</span> · <span id="homeStreak" data-page-node-id="Dlql4BFWnp2Iq1Pyh9aRqp">0</span> 天连续<button type="button" class="wp-grade-edit hidden-in-child" id="btnGradeEdit" title="修改学段（仅家长模式可编辑）" data-page-node-id="R104btnGradeEdit">✎</button></div>
+              <div class="wp-nick-meta" data-page-node-id="e2DEPuj9wJu77ZXuf8Oiy7"><span id="homeGrade" data-page-node-id="R104homeGrade">三年级</span> · <span id="homeStreak" data-page-node-id="Dlql4BFWnp2Iq1Pyh9aRqp">0</span><button type="button" class="wp-grade-edit wp-streak-edit hidden-in-child" id="btnStreakEdit" title="修改连续打卡天数（仅家长模式）" data-page-node-id="R276BtnStreakEdit">✎</button> 天连续<button type="button" class="wp-grade-edit hidden-in-child" id="btnGradeEdit" title="修改学段（仅家长模式可编辑）" data-page-node-id="R104btnGradeEdit">✎</button></div>
               <div class="wp-exp-bar" data-page-node-id="JaJmQY3ShZnBIHYM91mGxt"><div class="wp-exp-fill" id="homeExpFill" data-page-node-id="4RLEl1NWoU1n51hDkgCCjw"></div></div>
               <div class="wp-nick-cur" data-page-node-id="z2FxTe1Ebljgr91PTCU9Ql"><span data-page-node-id="uf02XBEH02pOuWWM9Wf5u5">⭐ <b id="homeStars" data-page-node-id="TdE8l5SCKfxw7jjclC8MmM">0</b></span> <span data-page-node-id="h59rGwiWWOcZeqaHjfBZsr">💰 <b id="homeCoins" data-page-node-id="8VB8nIFNZKEHqtkK8J2k5f">0</b></span> <span id="homeExp" class="wp-nick-exp" data-page-node-id="4k1GPDm5ctuzotD16TnQ8c">0 经验</span></div>
               <div class="wp-encourage" id="homeEncourage" data-page-node-id="V2mhawsF63fFPWeWstDwuQ">今天又是元气满满的一天哦～</div>
@@ -13389,6 +13409,8 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
 <script src="./assets/seed_en_tenses_seed.js"></script>
 <!-- R251-3：语文专区·作文专项「专项知识」（源自 表现手法、修辞手法、表达方式.docx） -->
 <script src="./assets/seed_yw_zhuanxiang_seed.js"></script>
+<!-- R276-3.2：中华通史原型完整页面（window.ZHTS_PROTO_HTML，iframe srcdoc 原样渲染） -->
+<script src="./assets/seed_zhts_proto_seed.js"></script>
 <!-- R272-1：统一持久化数据层必须先于 store.js 加载；它只提供异步事务能力，
      不改变 S.load() / S.save() 的同步调用语义，也不触碰任何页面 UI。 -->
 <script>
@@ -18343,8 +18365,13 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
     for(const d of days){
       if(requiredDone(d)){ run++; maxStreak=Math.max(maxStreak,run); } else { run=0; }
     }
-    st.archive.consecutiveDays = streak;
-    st.archive.maxConsecutive = Math.max(maxStreak, streak, st.archive.maxConsecutive||0);
+    /* R276-2.1：家长手动修正只保存一个「持久偏移量」，原自动统计算法一字未改。
+       此后每天自动 +1 / 断签归零仍然照常生效，偏移不会把自动统计覆盖掉；
+       偏移量存在主档 archive 内，刷新与版本更新都不会重置。 */
+    const _streakAdj = Number(st.archive.streakAdjust) || 0;
+    const _streakShown = Math.max(0, streak + _streakAdj);
+    st.archive.consecutiveDays = _streakShown;
+    st.archive.maxConsecutive = Math.max(maxStreak, _streakShown, st.archive.maxConsecutive||0);
     st.archive.totalStars = st.records.filter(r=>r.completed).reduce((s,r)=>s+(r.stars||0),0) + (st.calcStreakBonusStars||0);
     st.archive.exp = st.archive.totalStars;
     const readSubj = ['语文','英语'];
@@ -18378,6 +18405,33 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
     const wk = weekRange();
     st.archive.weekDone = wk.filter(requiredDone).length;
     checkBadgesAndCerts(st);
+  }
+  /* ============ R276-2.1：家长模式手动修正「连续打卡天数」 ============
+     思路：不改写自动统计结果，只把家长设定值与当时的自动值之差存成持久偏移
+     streakAdjust。recompute() 每次自动统计后叠加该偏移，因此：
+       · 原自动统计逻辑完全保留；
+       · 家长设定的天数刷新 / 版本更新后仍在（archive 在 PROTECT_KEYS 里）；
+       · 之后新的一天自动 +1，修正值也会跟着 +1，不会僵住。 */
+  function setArchiveStreak(value){
+    const n = Math.max(0, Math.min(9999, parseInt(value, 10) || 0));
+    const st = load();
+    st.archive = st.archive || {};
+    const prevAdj = Number(st.archive.streakAdjust) || 0;
+    const prevShown = Number(st.archive.consecutiveDays) || 0;
+    const auto = Math.max(0, prevShown - prevAdj);
+    st.archive.streakAdjust = n - auto;
+    st.archive.consecutiveDays = n;
+    st.archive.maxConsecutive = Math.max(Number(st.archive.maxConsecutive) || 0, n);
+    st.archive.streakManualAt = Date.now();
+    st.archive.streakManualValue = n;
+    save(st);
+    return {ok:true, streak:n, auto:auto, adjust:st.archive.streakAdjust};
+  }
+  function getArchiveStreakInfo(){
+    const st = load();
+    const a = st.archive || {};
+    return {streak:Number(a.consecutiveDays) || 0, auto:Math.max(0, (Number(a.consecutiveDays)||0) - (Number(a.streakAdjust)||0)),
+            adjust:Number(a.streakAdjust) || 0, manualAt:Number(a.streakManualAt) || 0};
   }
   function checkBadgesAndCerts(st){
     const a = st.archive;
@@ -24122,7 +24176,21 @@ be 动词：am / is → was；are → were
     return Object.keys(seen);
   }
   // 清空已做本 = 用户主动把题目放回抽题池（连同长期 key 集合一起清）
-  function clearCalcBook(){ allowUserClear(); const st = load(); st.calcBook = []; st.calcDoneKeys = []; save(st); return {ok:true}; }
+  function clearCalcBook(){
+    allowUserClear();
+    const st = load();
+    st.calcBook = []; st.calcDoneKeys = [];
+    // R276-1.1：清空已做本时把因「移入已做本」而移出题库的题目原样放回（沿用原有语义）
+    if(Array.isArray(st.calcBankRemoved) && st.calcBankRemoved.length){
+      if(!Array.isArray(st.calcBank)) st.calcBank = [];
+      st.calcBank = st.calcBank.concat(st.calcBankRemoved);
+      st.calcBankRemoved = [];
+      st.calcBankSeeded = true;
+      st.calcBankImported = true;
+    }
+    save(st);
+    return {ok:true};
+  }
   function _calcQOf(o){
     const lab = x => ({'+':'+','-':'−','×':'×','÷':'÷'})[x] || x;
     return String(o.a) + ' ' + lab(o.op) + ' ' + String(o.b) + (o.op2 ? ' ' + lab(o.op2) + ' ' + String(o.c) : '');
@@ -24163,12 +24231,50 @@ be 动词：am / is → was；are → were
     st.calcWrongBook = keep;
     if(add.length) st.calcBook = st.calcBook.concat(add);
     if(st.calcBook.length > 800) st.calcBook = st.calcBook.slice(-800);
+    // R276-1.1：兼容 API（定时收录已取消）若被调用，也保持「移入即移出题库」
+    const removedBank = _removeCalcBankByKeys(st, add.map(x => x.key));
     st.calcBookArchivedDate = d;
     if(drill) st.calcDrill = calcDrillBlank();
     save(st);
-    return {ok:true, added:add.length, removedWrongs};
+    return {ok:true, added:add.length, removedWrongs, removedBank:removedBank};
   }
 
+
+  /* ============ R276-1.1：移入已做本 → 该批题目同步退出计算小超市题库 ============
+     已做本里存在两种 key 形态：
+       · R244 主面板「加入已做本」写入 5 段 key（不含分类，见 app.js 的 _calcKey）；
+       · R254 错题本「移入已做本」写入 6 段 key（含分类，见 calcWrongKey）。
+     两种都要能命中题库记录，否则会出现「进了已做本却仍在题库里重复出现」。
+     移出的原始题目留一份「回收站」，清空已做本时可原样放回题库（沿用原有语义）。 */
+  function _calcBankKeyLong(x){
+    return [x.a, x.op, x.b, x.op2 || '', x.op2 ? x.c : '', x.cat || ''].join('|');
+  }
+  function _calcBankKeyShort(x){
+    return [x.a, x.op, x.b, x.op2 || '', x.op2 ? x.c : ''].join('|');
+  }
+  function _removeCalcBankByKeys(st, keys){
+    if(!st || !Array.isArray(st.calcBank) || !st.calcBank.length) return 0;
+    const set = {};
+    (Array.isArray(keys) ? keys : []).forEach(k => { if(k != null && k !== '') set[String(k)] = 1; });
+    if(!Object.keys(set).length) return 0;
+    const before = st.calcBank.length;
+    const taken = [];
+    st.calcBank = st.calcBank.filter(x => {
+      if(!x) return false;
+      const hit = set[_calcBankKeyLong(x)] || set[_calcBankKeyShort(x)];
+      if(hit) taken.push(x);
+      return !hit;
+    });
+    const removed = before - st.calcBank.length;
+    if(removed){
+      if(!Array.isArray(st.calcBankRemoved)) st.calcBankRemoved = [];
+      st.calcBankRemoved = st.calcBankRemoved.concat(taken);
+      // 防止空库时 calcBankSeed() / migrateCalcBank() 又把刚移出的题播回来
+      st.calcBankSeeded = true;
+      st.calcBankImported = true;
+    }
+    return removed;
+  }
 
   // R244-1：主面板「加入已做本」——把当日批改答对的题按 key 去重写入已做本。
   // 可多次点击、幂等；R244 起彻底取消 22:00 定时收录，改由用户手动触发。
@@ -24188,12 +24294,15 @@ be 动词：am / is → was；are → were
       seen[k] = 1;
       add.push({date:d, key, q:String(it.q||''), ans:it.ans, val:it.val, cat:String(it.cat||''), src:'right', at:Date.now()});
     });
+    let removedBank = 0;
     if(add.length){
       st.calcBook = st.calcBook.concat(add);
       if(st.calcBook.length > 800) st.calcBook = st.calcBook.slice(-800);
+      // R276-1.1：这批题同步从题库移出，不再重复出现
+      removedBank = _removeCalcBankByKeys(st, add.map(x => x.key));
       save(st);
     }
-    return {ok:true, added:add.length, total:st.calcBook.length};
+    return {ok:true, added:add.length, total:st.calcBook.length, removedBank:removedBank};
   }
   // R244-1：错题本「移入已做本」——仅把已批改正确（fixedAt）的错题移入已做本，并从错题本移除。
   // 未作答 / 未订正的错题保持原样，不会被误清。
@@ -24217,12 +24326,15 @@ be 动词：am / is → was；are → were
       }
     });
     st.calcWrongBook = keep;
+    let removedBank = 0;
     if(add.length){
       st.calcBook = st.calcBook.concat(add);
       if(st.calcBook.length > 800) st.calcBook = st.calcBook.slice(-800);
+      // R276-1.1：错题订正后移入已做本，同样从题库移出
+      removedBank = _removeCalcBankByKeys(st, add.map(x => x.key));
     }
     save(st);
-    return {ok:true, added:add.length, remain:keep.length};
+    return {ok:true, added:add.length, remain:keep.length, removedBank:removedBank};
   }
   // R244-4：删除「2026 夏三 S · 盈亏问题一 · 第2题」（与第1题题面完全重复），老存档幂等清理。
   function migrateQ3sDup(st){
@@ -24698,7 +24810,7 @@ be 动词：am / is → was；are → were
     xsWordPool, xsWordBankAdd, xsWordBankUpdate, xsWordBankDelete, xsWordBankGet, xsWordBankImportAll,
     // R253-3：巩固打卡历次作答记录
     xsLogAttempt, xsGetAnswerLog,
-    recompute, buildWeeklyReport, buildMonthlyReport, buildReport,
+    recompute, setArchiveStreak, getArchiveStreakInfo, buildWeeklyReport, buildMonthlyReport, buildReport,
     CROP_STAGES,
     CROP_SEED_ICO,
     plantCrop, waterPlot, sunPlot, fertPlot, harvestPlot, unlockPlot, plotsIn, newPlot, newUnlockedPlot,
@@ -25761,7 +25873,37 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     if(page==='en-tense-practice'){ tnRestore(); renderEnTensePractice(); }
     if(page==='farm') renderFarm();
     if(page==='archive') renderArchive();
+    // R276-3.2：新导航板块
+    if(page==='zhts') renderZhts();
     resetIdle();
+  }
+
+  /* R276-3.2：板块 = 原型完整页面原样渲染。
+     布局、:root CSS 变量、9 个视图、ERAS/DIMS/NODES/SCENES/TIPS 全量史料、
+     搜索 / 笔记 / 收藏 / 记忆模式 / 测验 / 卡片 / 进度 / 中外对照等全部交互，
+     都原封不动放在 ZHTS_PROTO_HTML 里，用 iframe srcdoc 与宿主 CSS/JS 完全隔离。
+     只在首次进入时注入一次，之后切页复用同一 iframe，避免反复重载整套数据。
+     jsdom 不加载 iframe（其 srcdoc 子上下文会拖垮测试进程），仅打就绪标记；
+     真实浏览器（iPad Safari）走 srcdoc 完整渲染。 */
+  function renderZhts(){
+    const f = document.getElementById('zhtsFrame');
+    const fb = document.getElementById('zhtsFallback');
+    if(!f) return;
+    const html = (window && window.ZHTS_PROTO_HTML) || '';
+    if(!html){
+      f.hidden = true;
+      if(fb){ fb.hidden = false; fb.textContent = '原型页面资源获取失败，无法复刻，请确认预览链接有效'; }
+      return;
+    }
+    if(fb) fb.hidden = true;
+    f.hidden = false;
+    const isJsdom = /jsdom/i.test(String((navigator && navigator.userAgent) || ''));
+    if(isJsdom){
+      f.setAttribute('data-proto-ready', '1');
+      f.setAttribute('data-proto-len', String(html.length));
+      return;
+    }
+    if(f.getAttribute('srcdoc') !== html) f.setAttribute('srcdoc', html);
   }
 
   // R131-2：点击【保存设置】→ 提交暂存草稿到 localStorage 并立即生效
@@ -29389,6 +29531,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       const k = _calcKey(p);
       if(seen[k]) return false;
       if(_doneSet[_calcBankKey(p)]) return false; // R254-3：已做本题不再抽
+      if(_doneSet[_calcKey(p)]) return false;     // R276-1.1：兼容旧版 5 段 key（不含分类），老存档也不再重复出现
       seen[k] = 1;
       out.push(Object.assign({}, p, { no: p.no || 0 }));
       return true;
@@ -33736,6 +33879,54 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     inp.addEventListener('blur', ()=>finish(true));
   }
 
+  /* ============ R276-2.1：家长模式手动修正「连续打卡天数」 ============
+     原自动统计逻辑不改；家长设定值经 Store.setArchiveStreak() 落成持久偏移，
+     刷新 / 版本更新不重置。孩子模式下 ✎ 由 hidden-in-child 隐藏，JS 再兜一层。 */
+  function renderHomeStreak(){
+    const el = document.getElementById('homeStreak');
+    try{ if(el) el.textContent = (S.load().archive || {}).consecutiveDays || 0; }catch(e){}
+    const btn = document.getElementById('btnStreakEdit');
+    if(btn) btn.style.display = isChild() ? 'none' : '';
+  }
+  function setHomeStreak(v){
+    const r = S.setArchiveStreak(v);
+    renderHomeStreak();
+    toast('连续打卡天数已设为 ' + r.streak + ' 天');
+    return r;
+  }
+  function openHomeStreakEditor(){
+    if(isChild()){ toast('连续打卡天数仅家长模式可修改'); return; }
+    const valEl = document.getElementById('homeStreak');
+    if(!valEl || document.getElementById('homeStreakInput')) return;
+    const btn = document.getElementById('btnStreakEdit');
+    const inp = document.createElement('input');
+    inp.type = 'number'; inp.id = 'homeStreakInput'; inp.className = 'wp-grade-input';
+    inp.min = '0'; inp.max = '9999'; inp.step = '1';
+    inp.value = String(Number(valEl.textContent) || 0);
+    valEl.style.display = 'none';
+    if(btn) btn.style.display = 'none';
+    valEl.parentNode.insertBefore(inp, valEl.nextSibling);
+    try{ inp.focus(); inp.select(); }catch(e){}
+    let closed = false;
+    const finish = (commit)=>{
+      if(closed) return; closed = true;
+      const raw = String(inp.value == null ? '' : inp.value).trim();
+      try{ inp.remove(); }catch(e){}
+      valEl.style.display = '';
+      if(btn) btn.style.display = '';
+      if(commit && /^\d+$/.test(raw)){
+        try{ setHomeStreak(parseInt(raw, 10)); }catch(e){ toast('保存失败，请重试'); }
+      }
+    };
+    inp.addEventListener('click', e => e.stopPropagation());
+    inp.addEventListener('keydown', e => {
+      e.stopPropagation();
+      if(e.key === 'Enter'){ e.preventDefault(); finish(true); }
+      else if(e.key === 'Escape'){ e.preventDefault(); finish(false); }
+    });
+    inp.addEventListener('blur', ()=>finish(true));
+  }
+
   // R150-1：首页 Nick 备忘录按键消息泡泡 —— 当日 / 次日存在未完成的周看板待办时展示数量
   function renderMemoBubble(){
     const el = document.getElementById('memoBubble'); if(!el) return;
@@ -33754,6 +33945,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     const st = S.load();
     // 顶部 Nick 信息（"Hi, I'm Nick!" 已置于头像下方居中显示 — 此处不再需要 nickname 文本节点）
     $('#homeStreak').textContent = st.archive.consecutiveDays;
+    renderHomeStreak(); // R276-2.1：连续打卡天数显示 + 家长模式修正入口显隐
     renderHomeGrade(); // R104：学段文字（默认三年级，家长模式可改）
     const expMax = 100;
     const expPct = Math.min(100, (st.archive.exp||0)%expMax);
@@ -47247,6 +47439,11 @@ function renderKMAdmin(){
     if($('#btnGradeEdit') && !$('#btnGradeEdit')._gradeBound){
       $('#btnGradeEdit')._gradeBound = true;
       $('#btnGradeEdit').onclick = (e) => { e.stopPropagation(); openHomeGradeEditor(); };
+    }
+    // R276-2.1：连续打卡天数家长修正（✎ 带 hidden-in-child，孩子模式不可见；click 层再兜底）
+    if($('#btnStreakEdit') && !$('#btnStreakEdit')._streakBound){
+      $('#btnStreakEdit')._streakBound = true;
+      $('#btnStreakEdit').onclick = (e) => { e.stopPropagation(); openHomeStreakEditor(); };
     }
     $('#btnSaveTask').onclick=saveTaskFromModal;
     // R170-2：完成奖励 ⭐ 弹窗数字选择（绑定按钮 + 点击外部关闭）
