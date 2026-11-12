@@ -10525,6 +10525,9 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
 #r272DbCard .pbtn[data-r272-act="restore"],
 #r272DbCard .pbtn[data-r272-act="repair"],
 #r272DbCard .pbtn[data-r272-act="rollback"]{white-space:nowrap}
+/* R275-1.3：新世界专区内部圆钮的即时按压反馈（不含受管控色值，纯滤镜 / 形变） */
+.yw-round-btn:active{filter:brightness(.93)}
+.yw-round-btn:not(.active):active{transform:scale(.96)}
 
 </style>
 </head>
@@ -13491,14 +13494,28 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
     if(n){ c = raw.charCodeAt(n - 1); h1 = ((h1 ^ c) * 0x01000193) >>> 0; }
     return ('00000000' + h1.toString(16)).slice(-8) + ('00000000' + h2.toString(16)).slice(-8);
   }
-  /* JSON 完整性校验：解析 + 结构 + 关键业务字段，脏数据一律不采纳 */
+  /* JSON 完整性校验：解析 + 结构 + 关键业务字段，脏数据一律不采纳。
+     R275-1：两槽 memo —— recoveredRaw() 在 store.load() 里被调用，全站一次点击
+     可能 load() 几十到几百次（拓展素养 300 篇逐篇判打卡就是 300 次）。此前每次
+     都把几 MB 的 _primaryRaw 整份 JSON.parse 一遍，实测单个按键 700ms+，正是
+     「新世界 / 乐读数学按键反应慢」的总根因。字符串不可变，同一引用可安全复用
+     上次结论；两槽可同时容纳主档与桥梁快照，避免交替调用时抖动。 */
+  var _jsonOkMemo = [{raw:null, ok:false}, {raw:null, ok:false}];
   function jsonOk(raw){
     if(!raw || typeof raw !== 'string' || raw.length < 20) return false;
+    var i, o, ok = false;
+    for(i=0;i<_jsonOkMemo.length;i++){
+      if(_jsonOkMemo[i].raw === raw) return _jsonOkMemo[i].ok;
+    }
     try{
-      var o = JSON.parse(raw);
-      if(!o || typeof o !== 'object' || Array.isArray(o)) return false;
-      return !!(o.tasks || o.records || o.archive || o.readFlags || o.plots);
-    }catch(e){ return false; }
+      o = JSON.parse(raw);
+      if(o && typeof o === 'object' && !Array.isArray(o)){
+        ok = !!(o.tasks || o.records || o.archive || o.readFlags || o.plots);
+      }
+    }catch(e){ ok = false; }
+    _jsonOkMemo.shift();
+    _jsonOkMemo.push({raw:raw, ok:ok});
+    return ok;
   }
   function _shape(raw){
     try{
@@ -33619,6 +33636,16 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   // 现在：本次点击只同步渲染「目标页」；其余子页在首次进入时于空闲帧预热一次。
   // V109 已删除的 newworld-science 保持不渲染（不进映射表）。
   let _nwWarmDone = false;
+  /* R275-1.2：真实浏览器把「其余 6 页」拆成一次空闲帧只渲染一页，
+     避免首次点击后紧接着同步跑完 6 个大页面把主线程占满（表现就是「点了没反应」）。
+     jsdom / 回归环境保持原来的同步批处理，确保既有断言在 150ms 后仍能查到各子页 DOM。 */
+  const _NW_REAL = !/jsdom/i.test(String((navigator && navigator.userAgent) || ''));
+  function _nwIdleStep(fn){
+    if(typeof window.requestIdleCallback === 'function'){
+      try{ window.requestIdleCallback(()=>{ try{ fn(); }catch(e){} }, {timeout:1200}); return; }catch(e){}
+    }
+    setTimeout(()=>{ try{ fn(); }catch(e){} }, 48);
+  }
   const NW_RENDERERS = {
     'newworld':            renderNewWorld,
     'newworld-yuwen':      renderYuwenPage,
@@ -33637,13 +33664,20 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     try{ NW_RENDERERS[target](); }catch(e){}
     if(!_nwWarmDone){
       _nwWarmDone = true;
-      // 空闲帧一次性补齐其余页面；不阻塞本次点击的首屏响应，之后各页自身交互仍会刷新。
-      setTimeout(()=>{
-        Object.keys(NW_RENDERERS).forEach(k=>{
-          if(k === target) return;
-          try{ NW_RENDERERS[k](); }catch(e){}
-        });
-      }, 0);
+      const rest = Object.keys(NW_RENDERERS).filter(k => k !== target);
+      if(!_NW_REAL){
+        setTimeout(()=>{
+          rest.forEach(k=>{ try{ NW_RENDERERS[k](); }catch(e){} });
+        }, 0);
+        return;
+      }
+      const step = ()=>{
+        const k = rest.shift();
+        if(!k) return;
+        try{ NW_RENDERERS[k](); }catch(e){}
+        if(rest.length) _nwIdleStep(step);
+      };
+      _nwIdleStep(step);
     }
   }
 
@@ -38088,11 +38122,13 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       '</div>'+
       '<div class="ri-body">'+body+'</div>'+
     '</div>';
-    col.insertAdjacentHTML('afterbegin', card);
-    // R273-6.2：文学小常识卡紧随「每日成语」卡之后、好词卡之前
+    /* R275-3：四张内容卡自上而下为 好词 → 好句 → 每日成语 → 文学小常识。
+       两张「每日」卡一律追加到列尾，不再插到列首。 */
+    col.insertAdjacentHTML('beforeend', card);
+    // R275-3：文学小常识卡紧跟「每日成语」卡之后（即整列最后一张）
     injectDailyLoreCard();
   }
-  /* R273-6.2：文学小常识每日卡 —— 位置固定在「每日成语」与「好词」之间。
+  /* R273-6.2：文学小常识每日卡 —— R275-3 起位置固定在「每日成语」之后、整列末尾。
      打卡完全复用好词好句机制：data-ri-checkin="cnWords::<词条>"，
      即同一 readFlags 键、同一 +1⭐ 规则、同一撤销扣回逻辑，不新增任何存储字段。 */
   function dailyLoreItem(){
@@ -38116,7 +38152,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     '</div>';
     const cy = col.querySelector('.is-cydaily');
     if(cy) cy.insertAdjacentHTML('afterend', card);
-    else col.insertAdjacentHTML('afterbegin', card);
+    else col.insertAdjacentHTML('beforeend', card);
   }
   function renderReading(){
     // R9-REQ2：重置英语短文朗读状态机（每篇独立 idle/playing/paused）
@@ -38139,7 +38175,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     fillCol('#enColSpeak',   colContent('enSpeaking',1, 4), 'enSpeaking','en', true);
     fillCol('#enColPassage', colContent('enPassage', 1, 3, 2), 'enPassage', 'en');
     fillCol('#cnColWords',   cnWordsItems, 'cnWords', 'cn');
-    // R209-2：好词好句栏顶部每日展示 1 个成语打卡卡（排版与好词好句其它主题卡一致）
+    // R275-3：好词好句栏底部追加「每日成语 + 文学小常识」两张每日卡（不再置顶）
     injectDailyChengyuCard();
     // R57-2：古诗词鉴赏每日只显示一首（每日轮换，offset=5 与其它栏错开）
     fillCol('#cnColPoem',    colContent('cnPoem', 1, 5, 2), 'cnPoem', 'cn');
@@ -49431,13 +49467,12 @@ function init(){
     }
     // R256：新功能挂载（打卡总览 / 提醒 / 护眼 / 题库检索 / 朗读控制条 / 阅读增强 / 图鉴 / 证书 …）
     try{ r256Init(); }catch(e){ try{ console.warn('[R256] init failed', e); }catch(_e){} }
-    // R259：恢复上次停留的页面（只恢复可安全直达的板块，设置中心/游戏页除外）
-    try{
-      const _lp = _uiMem('lastPage');
-      const _SAFE = ['home','today','farm','math','xueersi','reading','baike','knowledge','archive','memonick',
-                     'newworld','newworld-yuwen','newworld-math','newworld-english','newworld-suzhi'];
-      if(_lp && _lp !== 'home' && _SAFE.indexOf(_lp) >= 0) goPage(_lp);
-    }catch(e){}
+    /* R275-2：刷新页面 / 版本更新后一律回到首页展示。
+       R259 的「恢复上次停留页」会让刷新、SW 自动更新重载、手动检查更新重载之后
+       仍停在深层二级页。现在启动时直接清掉该标记并显式切回首页；goPage 仍会
+       记录浏览状态（供其它逻辑读取），但启动恢复不再消费它。 */
+    try{ _uiMem('lastPage', 'home'); }catch(e){}
+    try{ goPage('home'); }catch(e){}
     /* R265-4：存储兜底挂载（iPad 刷新 / 版本更新后数据丢失的最终闭环）
        ① 事件驱动刷盘：补上只改内存、没显式 save() 的 UI 路径，且不依赖 pagehide；
        ② IndexedDB 镜像恢复：本机存储被禁用 / 写满时，从独立介质恢复并重渲染当前页；
@@ -51303,6 +51338,8 @@ function init(){
     try{ localStorage.setItem(RELOAD_FLAG, String(Date.now())); }catch(e){ /* 写不进也要继续更新 */ }
     // R259：切换版本前先落一份用户数据保护副本（更新只换页面，不动任何用户数据）
     try{ if(window.Store && window.Store.protectBeforeUpdate) window.Store.protectBeforeUpdate(); }catch(e){}
+    // R275-2：版本更新重载后统一回到首页，不让旧浏览位置把用户带回深层二级页
+    try{ localStorage.setItem('ui_mem_lastPage', 'home'); }catch(e){}
     location.reload();
   }
   window.addEventListener('load', function(){
@@ -51389,6 +51426,8 @@ function init(){
         // R259：更新前保护 —— ①单独留一份受保护字段副本 ②强制把内存态刷回主档；然后才 reload
         try{ if(window.Store && window.Store.protectBeforeUpdate) window.Store.protectBeforeUpdate(); }catch(e){}
         try{ if(window.Store && window.Store.flushPersistence) window.Store.flushPersistence(); }catch(e){}
+        // R275-2：手动「检查更新」重载后同样回到首页
+        try{ localStorage.setItem('ui_mem_lastPage', 'home'); }catch(e){}
         location.reload();
       };
       var clearCaches = function(){
