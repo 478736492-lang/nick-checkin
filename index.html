@@ -10393,7 +10393,7 @@ textarea.xs-adv-input-box{
    R271 增强层：悬浮工具条 / 功能中心 / iPad 触控 / 主题 / 动画 / 孩子模式
    新增色值一律走 var(--tone-*) 令牌，不直接写受管控色值。
    ========================================================================== */
-.r271-dock{position:fixed;right:14px;bottom:18px;z-index:9200;display:flex;flex-direction:column;gap:8px;align-items:center}
+.r271-dock{position:fixed;right:14px;bottom:18px;z-index:9200;display:flex;flex-direction:column;gap:8px;align-items:flex-end}
 .r271-dock-btn{width:48px;height:48px;border-radius:50%;border:2px solid var(--tone-200);background:rgba(255,255,255,.94);box-shadow:0 4px 14px rgba(20,50,90,.18);font-size:19px;line-height:1;cursor:pointer;color:var(--tone-900);display:flex;align-items:center;justify-content:center;padding:0}
 .r271-dock-btn.main{width:56px;height:56px;font-size:24px;background:linear-gradient(145deg,var(--tone-100),var(--tone-300));border-color:var(--tone-400)}
 .r271-dock-btn:active{transform:scale(.94)}
@@ -10408,6 +10408,16 @@ textarea.xs-adv-input-box{
 .r271-dock-menu-ico{flex:0 0 24px;height:24px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--tone-200);font-size:13px;line-height:1}
 .r271-dock-menu-label{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .r271-dock-menu-no{flex:0 0 auto;font-size:10.5px;color:var(--tone-600)}
+/* R274-2.1：右下角快捷键重做 —— 五个功能键不再常驻，收进 ⚡ 上方的托盘，点开才逐个出现 */
+.r271-dock-tray{display:flex;flex-direction:column;gap:8px;align-items:flex-end;transform-origin:bottom right;animation:r274TrayIn .16s ease-out}
+.r271-dock-tray[hidden]{display:none}
+.r271-dock-pill{display:flex;align-items:center;gap:8px;min-height:46px;min-width:132px;box-sizing:border-box;padding:0 12px 0 8px;border-radius:23px;border:2px solid var(--tone-300);background:rgba(255,255,255,.96);box-shadow:0 6px 18px rgba(20,50,90,.18);color:var(--tone-900);font-size:13.5px;font-weight:800;cursor:pointer;transition:transform .12s ease,box-shadow .12s ease;text-align:left}
+.r271-dock-pill:active{transform:scale(.96)}
+.r271-dock-pill:focus-visible{outline:2px solid var(--tone-600);outline-offset:2px}
+.r271-dock-pill-ico{flex:0 0 28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:linear-gradient(145deg,var(--tone-100),var(--tone-300));font-size:15px;line-height:1}
+.r271-dock-pill-lab{flex:1 1 auto;white-space:nowrap}
+@keyframes r274TrayIn{from{opacity:0;transform:translateY(6px) scale(.96)}to{opacity:1;transform:none}}
+@media (pointer:coarse){.r271-dock-pill{min-height:50px;min-width:146px;font-size:14.5px}}
 .r271-mask{position:fixed;inset:0;z-index:9300;background:rgba(16,38,68,.48);display:flex;align-items:center;justify-content:center;padding:24px}
 .r271-mask[hidden]{display:none}
 .r271-modal{width:min(1060px,94vw);max-height:min(88dvh,820px);background:rgba(255,255,255,.97);border-radius:20px;box-shadow:0 18px 60px rgba(12,36,72,.32);display:flex;flex-direction:column;overflow:hidden;border:2px solid var(--tone-200)}
@@ -13427,6 +13437,7 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
 
   /* ----------------------------- 状态 ----------------------------- */
   var _db = null, _opening = null, _available = null;
+  var _openRetry = 0;
   var _degraded = false, _persisted = false, _migrated = false;
   var _primaryRaw = null, _primaryTs = 0;
   var _recoveredFrom = '';
@@ -13446,6 +13457,15 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
   var _writeTail = Promise.resolve(true);
   var _snapTail = Promise.resolve(true);
   var _fatalPending = 0;
+  /* R274-1.1：启动期 / 版本更新期绝对静默。
+     刷新与版本更新时，页面会在「主库尚未打开、旧连接尚未释放、迁移回放」阶段
+     发起若干次内部写入；这些写即使真的失败，用户的数据也已经完整躺在
+     localStorage 桥梁快照里（store.save 同步写成功才会走到这里），
+     此时弹「数据库写入未完成」纯属误报，而且每次刷新都会重来一遍。
+     因此：① 启动屏障完成前一律只记日志；② 有任何可信安全副本时不打扰用户；
+     ③ 真正需要提示时也只对「用户交互之后」的写失败提示。 */
+  var _booted = false, _bootedAt = 0;
+  var _bridgeSafeRaw = null, _bridgeSafeAt = 0;
 
   /* ----------------------------- 工具 ----------------------------- */
   function _now(){ return Date.now(); }
@@ -13537,17 +13557,29 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
      只要期间有任何一次写成功（_lastSuccessSeq 前进），就判定为误报并静默。 */
   function _scheduleFatal(seq, err, d, opt){
     var cls = _errClass(err);
+    /* 这次失败发生时是否仍处于启动屏障内：启动期的内部写失败一律静默 */
+    var wasBooting = !_booted;
     _fatalPending++;
     return _delay(260).then(function(){
       _fatalPending--;
       var superseded = _lastSuccessSeq > seq;
       var soft = (cls === 'blocked' || cls === 'timeout');
-      log(superseded ? 'write-fatal-superseded' : (soft ? 'write-soft-failure' : 'write-fatal'),
-        { seq:seq, cls:cls, superseded:superseded, safety:d && d.ok, retries:MAX_RETRY });
-      if(superseded || soft) return { shown:false, reason:superseded ? 'superseded-by-later-success' : ('soft-' + cls) };
-      /* 安全副本（store.js 主档 + 降级镜像）是否确实还在，决定提示口径 */
+      /* 安全副本判定：降级镜像写成功 / localStorage 桥梁快照完好 /
+         刚刚由 store.save() 明确标记过同一份内容已安全落地，三者任一成立，
+         用户的数据就没有丢，没有必要用「写入未完成」打扰他。 */
       var bridgeOk = jsonOk(_lsGet(LS_KEY));
-      var safetyOk = !!(d && d.ok) || bridgeOk;
+      var markedSafe = !!(_bridgeSafeRaw && _primaryRaw && _bridgeSafeRaw === _primaryRaw
+                          && (_now() - _bridgeSafeAt) < 120000);
+      var safetyOk = !!(d && d.ok) || bridgeOk || markedSafe;
+      var silent = '';
+      if(superseded) silent = 'superseded-by-later-success';
+      else if(wasBooting) silent = 'boot-phase-silent';
+      else if(safetyOk) silent = 'safety-copy-intact';
+      else if(soft) silent = 'soft-' + cls;
+      log(silent ? 'write-silent' : 'write-fatal',
+        { seq:seq, cls:cls, silent:silent || 'no', safety:safetyOk, booted:_booted,
+          superseded:superseded, degraded:!!(d && d.ok) });
+      if(silent) return { shown:false, reason:silent };
       if(opt.onFatal){
         try{ opt.onFatal({ cls:cls, seq:seq, safety:safetyOk, error:String((err && err.message) || err) }); }catch(e){}
       }
@@ -13617,8 +13649,20 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
         }
         resolve(_db);
       };
-      req.onerror = function(){ _available = false; _degraded = true; _opening = null; resolve(null); };
-      req.onblocked = function(){ _available = false; _degraded = true; _opening = null; resolve(null); };
+      /* R274-1.1：启动瞬间旧标签页 / 旧 SW 可能还没释放连接，onblocked / onerror
+         往往是「暂时性」的。直接判定不可用会让整页退化到 localStorage 镜像，
+         之后每次保存都走降级链。这里先退避 300ms 重开一次，仍失败才真正降级。 */
+      function _failOpen(){
+        _opening = null;
+        if(_openRetry < 1){
+          _openRetry++;
+          try{ setTimeout(function(){ resolve(_open()); }, 300); }catch(e){ resolve(null); }
+          return;
+        }
+        _available = false; _degraded = true; resolve(null);
+      }
+      req.onerror = function(){ _failOpen(); };
+      req.onblocked = function(){ _failOpen(); };
     });
     return _opening;
   }
@@ -13737,6 +13781,16 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
 
   /* ----------------------------- 降级写入 ----------------------------- */
   function _degradeWrite(raw, ts, sole){
+    /* R274-1.1：store.save() 已经把同一份内容同步写进桥梁快照（LS_KEY）。
+       既然数据逐字节就在那儿，就不该再挤一份 MB 级镜像去撞配额，
+       更不该因为镜像写不进就把这次保存判定为失败。
+       注意：真正「没有 IndexedDB」的降级模式（sole=true）仍要补齐
+       主副本 + 3 份快照，保证多重兜底链完整，不能省。 */
+    try{
+      if(!sole && _lsGet(LS_KEY) === raw){
+        return Promise.resolve({ ok:true, mode:'bridge-snapshot' });
+      }
+    }catch(e){}
     var ok = _lsSet(LS_MIRROR, raw);
     /* 降级模式同样保留多重快照，绝不只有一份 */
     try{
@@ -14166,9 +14220,19 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
   function _finish(){
     if(_ready) return;
     _ready = true;
+    _booted = true; _bootedAt = _now();
     var q = _queue.slice(); _queue = [];
     q.forEach(function(fn){ try{ fn(); }catch(e){} });
   }
+  /* R274-1.1：store.save() 同步写成功桥梁快照后调用，明确「这份内容已经安全落地」。
+     之后即使 IndexedDB 事务因 Safari 偶发原因失败，也不会再弹「写入未完成」。 */
+  function markBridgeSafe(raw){
+    if(typeof raw === 'string' && raw === _primaryRaw){
+      _bridgeSafeRaw = raw; _bridgeSafeAt = _now();
+    }
+    return true;
+  }
+  function isBooted(){ return _booted; }
   function whenReady(cb){
     if(_ready){ try{ cb(); }catch(e){} return; }
     _queue.push(cb);
@@ -14237,6 +14301,7 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
     hash:hash, jsonOk:jsonOk,
     /* R273-1.1 写入健康度 / 错误分类：供 UI 与自检面板区分真实阻塞与误报 */
     writeHealthy:writeHealthy, errClass:_errClass,
+    markBridgeSafe:markBridgeSafe, isBooted:isBooted, bootedAt:function(){ return _bootedAt; },
     writeQueueDepth:function(){ return _fatalPending; },
     open:_open, read:read, write:write, persistWait:persistWait,
     snapshot:snapshot, listSnapshots:listSnapshots, restoreSnapshot:restoreSnapshot,
@@ -14321,8 +14386,12 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
   const SCHEMA_VERSION = 254;
   let _lastBakAt = 0;
   let _recoveredFrom = '';
+  /* R274-4.1：占用统计缓存（避免每次保存都把全部值读一遍）。
+     任何一次写入 / 删除都必须立刻失效，否则「刚写满就查占用」会读到旧值。 */
+  let _usageCache = { at:0, v:0 };
+  function _usageInvalidate(){ _usageCache = { at:0, v:0 }; }
   function _safeGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
-  function _safeSet(k,v){ try{ localStorage.setItem(k,v); return true; }catch(e){ return false; } }
+  function _safeSet(k,v){ try{ localStorage.setItem(k,v); _usageInvalidate(); return true; }catch(e){ return false; } }
   /* R267-2.1：读回独立提醒副本，带严格结构校验，任何异常都只当作「没有副本」 */
   function _remindSidecar(){
     try{
@@ -14345,9 +14414,12 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
       _safeSet(KEY_META, JSON.stringify(m));
     }catch(e){}
   }
-  function _usageBytes(){
+  function _usageBytes(force){
+    const now = Date.now();
+    if(!force && now - _usageCache.at < 900) return _usageCache.v;
     let n = 0;
     try{ for(let i=0;i<localStorage.length;i++){ const k = localStorage.key(i); if(k) n += k.length + (_safeGet(k)||'').length; } }catch(e){}
+    _usageCache = { at:now, v:n };
     return n;
   }
   // R266：iPad Safari localStorage 约 5MB。软上限从 4MB 降到 3.4MB，
@@ -14356,7 +14428,7 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
   function storageUsage(){
     const keys = {};
     try{ for(let i=0;i<localStorage.length;i++){ const k = localStorage.key(i); if(k) keys[k] = (_safeGet(k)||'').length; } }catch(e){}
-    return { used:_usageBytes(), softLimit:SPACE_SOFT_LIMIT, savedAt:_lastSavedAt(), keys:keys };
+    return { used:_usageBytes(true), softLimit:SPACE_SOFT_LIMIT, savedAt:_lastSavedAt(), keys:keys };
   }
   /* ============ R265-4：第二持久化介质 —— IndexedDB 全量镜像 ============
      iPad Safari 上有两种 localStorage 根本靠不住的情况：
@@ -14404,14 +14476,19 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
     req.onblocked = function(){ _mirrorFlushQueue(null); };
     req.onsuccess = function(){ _mirrorAvailable = true; _mirrorDb = req.result || null; _mirrorFlushQueue(_mirrorDb); };
   }
+  let _mirrorLastRaw = null, _mirrorLastAt = 0;
   function _mirrorWrite(raw, ts, cb){
     if(!raw){ try{ cb && cb(false); }catch(e){} return; }
+    /* R274-4.1：内容与上一次镜像完全相同就跳过 —— 连续点击同一处（翻页 / 开关）
+       会反复把 3MB 结构化克隆进 IndexedDB，实测量级 20~40ms/次。 */
+    const now = Date.now();
+    if(raw === _mirrorLastRaw && now - _mirrorLastAt < 3000){ try{ cb && cb(true); }catch(e){} return; }
     _mirrorOpen(function(db){
       if(!db){ try{ cb && cb(false); }catch(e){} return; }
       try{
         const tx = db.transaction(MIRROR_STORE, 'readwrite');
         tx.objectStore(MIRROR_STORE).put({ raw:raw, ts:ts || Date.now() }, MIRROR_KEY);
-        tx.oncomplete = function(){ _mirrorLastTs = ts || _mirrorLastTs; try{ cb && cb(true); }catch(e){} };
+        tx.oncomplete = function(){ _mirrorLastTs = ts || _mirrorLastTs; _mirrorLastRaw = raw; _mirrorLastAt = Date.now(); try{ cb && cb(true); }catch(e){} };
         tx.onerror = tx.onabort = function(){ try{ cb && cb(false); }catch(e){} };
       }catch(e){ try{ cb && cb(false); }catch(e2){} }
     });
@@ -14501,7 +14578,8 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
       writable = (localStorage.getItem(t) === v);
       try{ localStorage.removeItem(t); }catch(e){}
     }catch(e){ writable = false; writeErr = String((e && (e.name || e.message)) || 'error'); }
-    const used = _usageBytes();
+    /* 体检 / 健康检查必须读实时占用（外部可能直接往 localStorage 写），不吃缓存 */
+    const used = _usageBytes(true);
     const nearLimit = used >= SPACE_SOFT_LIMIT * 0.9;
     /* verdict 是给 UI 的唯一判据：
        ok      —— 可写，任何「存储已满」提示都不该出现；
@@ -14617,26 +14695,35 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
     return {raw:main, from:KEY};
   }
   // 滚动备份：raw 为刚写入主存档的完整串；20 秒节流，避免每次点击都重复写 MB 级数据
+  let _bakHasDataCache = null;   // R274-4.1：备份是否含真实数据的缓存，避免每次保存都解析 MB 级串
+  function _bakHasData(){
+    if(_bakHasDataCache !== null) return _bakHasDataCache;
+    try{
+      const b = JSON.parse(_safeGet(KEY_BAK1) || 'null');
+      _bakHasDataCache = !!(b && ((b.records && b.records.length) || (b.archive && b.archive.totalStars)
+                     || (b.readFlags && Object.keys(b.readFlags).length) || (b.calcWrongBook && b.calcWrongBook.length)));
+    }catch(e){ _bakHasDataCache = false; }
+    return _bakHasDataCache;
+  }
   function _rotateBackup(raw, force){
     if(!raw) return;
     try{
       const now = Date.now();
+      /* R274-4.1：先判节流，再决定要不要解析 MB 级字符串。
+         旧实现每次 save() 都 JSON.parse(bak1) + JSON.parse(raw) 两次 3MB 级解析，
+         iPad 上单次 30~60ms，是「点按键反应慢」最直接的来源之一。 */
+      if(!force && now - _lastBakAt < 20000 && _bakHasData()) return;
       /* R270-7.1：备份档必须始终是「一份可信的完整用户状态」。
          旧实现 20 秒节流 + 首启写过空档，可能让 bak1 长期停在「空档 / 很旧的一代」，
          主档一旦损坏，修复只能回退到空档 → 用户数据全丢。
          这里补一条硬约束：现备份缺失或明显是空档，而本次有数据 → 立刻覆盖，不等节流。 */
-      let _bakEmpty = true;
-      try{
-        const _b = JSON.parse(_safeGet(KEY_BAK1) || 'null');
-        _bakEmpty = !_b || !((_b.records && _b.records.length) || (_b.archive && _b.archive.totalStars)
-                     || (_b.readFlags && Object.keys(_b.readFlags).length) || (_b.calcWrongBook && _b.calcWrongBook.length));
-      }catch(e){ _bakEmpty = true; }
       let _rawHasData = true;
       try{
         const _n = JSON.parse(raw);
         _rawHasData = !!((_n.records && _n.records.length) || (_n.archive && _n.archive.totalStars)
                      || (_n.readFlags && Object.keys(_n.readFlags).length) || (_n.calcWrongBook && _n.calcWrongBook.length));
       }catch(e){ _rawHasData = false; }
+      const _bakEmpty = !_bakHasData();
       const _mustBak = _bakEmpty && _rawHasData;
       if(!force && !_mustBak && now - _lastBakAt < 20000) return;
       /* R264-2.1：备份只是附加保险，绝不能反过来把主档挤出配额。
@@ -14652,6 +14739,7 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
          现在只滚动 bak1；bak2 仅作为旧存档的只读回退源保留，不再新写，
          并在启动清理里（主档与 bak1 都健康时）删掉，腾出与主档等量的空间。 */
       if(_safeSet(KEY_BAK1, raw)){
+        _bakHasDataCache = _rawHasData;
         _lastBakAt = now;
         _safeSet(KEY_META, JSON.stringify({schema:SCHEMA_VERSION, savedAt:now, bytes:raw.length}));
       }
@@ -16894,6 +16982,8 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
         }
       }
     }
+    /* R274-4.2：主档 / 腾挪都可能改变占用，下一次统计重新扫描一次即可 */
+    _usageInvalidate();
     if(!_wr.ok){
       // R260-1.1：区分「配额不足」与「读回不一致 / 其它错误」，避免一律误报空间不足
       // R270-7.3：再细分「真实空间耗尽」与「浏览器禁止写入」—— 后者删图片一点用都没有，
@@ -16927,6 +17017,12 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
       }
     }catch(e){ /* 读不到（隐私模式/受限）时不推翻已返回成功的写入 */ }
     _saveError = '';
+    /* R274-1.1：主档同步写成功 → 明确告诉持久化层「这份内容已经安全落地」。
+       IndexedDB 事务即便因 Safari 偶发原因失败，也不会再弹「写入未完成」。 */
+    try{
+      const _P2 = (typeof window !== 'undefined') ? window.R272P : null;
+      if(_P2 && typeof _P2.markBridgeSafe === 'function') _P2.markBridgeSafe(raw);
+    }catch(e){}
     _sessionPersisted = true; // R263-3.1：本次会话已有可信落库，pagehide 刷盘安全闸放行
     _loadCachePut(st, raw);   // R246-3：写成功后同步缓存，下一次 load() 无需再解析
     _touchSavedAt(raw.length, _ts); // R264-2.1 / R265-4：每次成功落库都记时间，与镜像同源时间戳
@@ -17049,6 +17145,48 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
   }
   function discardSettings(){ _staging = false; _staged = null; _stagedBase = null; }
   function isStaging(){ return _staging; }
+
+  /* ==================== R274-3.1：开放时间「即时生效」写入器 ====================
+     种植园 st.farmOpen 与知识秘境 st.km.settings.open 属于「家长点完就该生效」的
+     配置，不属于【保存设置】的暂存契约。旧实现走普通 save()：
+       ① 暂存态下 save() 会把这两个字段按 _stagedBase 回退 → 本次修改被丢弃；
+       ② 紧随其后的 commitSettings() 用旧草稿整份覆盖主档 → 旧值又写回磁盘。
+     两者叠加，就是「开放时间怎么设都不生效、刷新就回到默认」的真正原因。
+     现在统一走这里：先同步写入实时态 / 草稿 / 基线，再在「暂时退出暂存态」的
+     保护下真正落库，并同步独立副本。其它未保存的设置仍被正常挡在门外。 */
+  function _commitOpenTime(kind, patch){
+    const target = (_staging && _staged) ? _staged : load();
+    const apply = function(o){
+      if(!o || typeof o !== 'object') return;
+      if(kind === 'farm'){
+        o.farmOpen = Object.assign({}, farmDefaultOpen(),
+          (o.farmOpen && typeof o.farmOpen === 'object') ? o.farmOpen : {}, patch || {});
+      }else{
+        o.km = o.km || {};
+        o.km.settings = o.km.settings || {};
+        o.km.settings.open = Object.assign({}, o.km.settings.open || {}, patch || {});
+      }
+    };
+    apply(target);
+    /* 基线必须同步，否则暂存态回滚与随后的 commitSettings 都会把新值抹掉 */
+    if(_stagedBase) apply(_stagedBase);
+    try{ _writeOpenTimeSidecar(target); }catch(e){}
+    let ok = false;
+    if(_staging){
+      const was = _staging;
+      _staging = false;                                  // 绕过暂存回退，直接写盘
+      try{ ok = save(_settingsRollback(target)); }catch(e){ ok = false; }
+      _staging = was;
+    }else{
+      try{ ok = save(target); }catch(e){ ok = false; }
+    }
+    if(!ok){
+      /* 落库失败也不丢：留完整差异补丁，刷新后由 load() 的补丁链捞回 */
+      try{ _pendingWrite(target); }catch(e){}
+    }
+    return ok;
+  }
+  function saveKMOpenNow(patch){ _commitOpenTime('km', patch); return getKMSettings(); }
 
   /* ==================== R270-7.2：本地数据库管理（占用 / 校验 / 修复 / 备份） ====================
      全部只读或「先备份再修」，任何修复动作都不会清空现有用户数据。
@@ -20031,7 +20169,10 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
       if(patch.bgmByLevel!==undefined) merged.bgmByLevel = Object.assign({}, merged.bgmByLevel, patch.bgmByLevel);
       km.settings = merged;
     }
-    /* R273-4.1：非暂存态下开放时间改动同步独立副本；暂存态由 commitSettings() 统一提交 */
+    /* R274-3.1：开放时间立即生效（暂存态下也真正落库），其余字段照旧走暂存契约 */
+    const _openOnly = !!(patch && patch.open && Object.keys(patch).length === 1);
+    if(patch && patch.open) _commitOpenTime('km', km.settings.open);
+    if(_openOnly) return getKMSettings();
     if(!_staging){ try{ _writeOpenTimeSidecar(st); }catch(e){} }
     save(st); return getKMSettings();
   }
@@ -20091,11 +20232,8 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
     return cfg;
   }
   function farmSaveOpen(patch){
-    const st = load();
-    st.farmOpen = Object.assign({}, getFarmOpenConfig(), patch || {});
-    /* R273-4.1：非暂存态（从种植园弹窗直接改）也同步独立副本，避免刷新后配置漂移 */
-    if(!_staging){ try{ _writeOpenTimeSidecar(st); }catch(e){} }
-    save(st);
+    /* R274-3.1：改走「即时生效」写入器 —— 暂存态下也不再被回滚 / 被提交覆盖 */
+    _commitOpenTime('farm', patch);
     return getFarmOpenConfig();
   }
   function farmHmToMin(hm){
@@ -24594,7 +24732,7 @@ be 动词：am / is → was；are → were
     // R121-1：游戏开放日期（周末 + 法定节假日默认规则，支持自定义开放日）
     isKMOpen, getKMOpenInfo, kmIsHoliday, kmIsWeekend,
     // R124：种植园 游戏开放时间（工作日时段窗 + 周末/节假日 + 自定义开放日/时段）
-    isFarmOpen, getFarmOpenInfo, getFarmOpenConfig, farmSaveOpen,
+    isFarmOpen, getFarmOpenInfo, getFarmOpenConfig, farmSaveOpen, saveKMOpenNow,
     // V55-Req6：收录书屋
     archiveReadingToday, isReadingArchivedToday, deleteUserReading,
     // V60-R7：收录书屋 - 全板块当日所有内容聚合
@@ -46280,7 +46418,11 @@ function renderKMAdmin(){
   }
   function setKMOpenPatch(patch){
     const cur = S.getKMSettings();
-    S.saveKMSettings({ open: Object.assign({}, cur.open || {}, patch) });
+    /* R274-3.1：开放时间必须「点完即生效」，走专用即时写入器，
+       避免在设置中心暂存态下被回滚、或随后被 commitSettings 用旧草稿覆盖。 */
+    const open = Object.assign({}, cur.open || {}, patch);
+    if(typeof S.saveKMOpenNow === 'function') S.saveKMOpenNow(open);
+    else S.saveKMSettings({ open: open });
     renderKMOpenDates(); renderKMOpenStatus(); syncKMLockBadge();
   }
   function initKMOpenSetting(){
@@ -50099,15 +50241,18 @@ function init(){
     clean:'数据净化：只扫描 + 去除可判定的重复项，不认识的数据一律保留，绝不删除用户内容。'
   };
   let root = null, modal = null, curTab = 'tasks', wrongFilter = '全部', reportPeriod = 'week';
-  /* R273-2.1 右下角快捷键：与五个功能按键一一对应，列表数据为唯一真相，
-     展开顺序自上而下 = 原 dock 五个按钮的原有顺序。 */
+  /* R274-2.1 右下角快捷键（重做）：
+     默认只显示一枚 ⚡，原来常驻的五个功能按键收起隐藏；
+     点击 ⚡ 后它上方的托盘展开，五个按键以「图标 + 名称」逐个出现，点任一键
+     执行原动作并自动收起。不做弹窗、不铺遮罩，避免遮挡页面内容。 */
   const DOCK_SHORTCUTS = [
     { act:'open', ico:'🧰', label:'功能中心' },
-    { act:'pomo', ico:'🍅', label:'番茄专注计时器' },
-    { act:'help', ico:'❓', label:'本页使用说明' },
-    { act:'font', ico:'Aa', label:'全局字号档位' },
+    { act:'pomo', ico:'🍅', label:'番茄专注' },
+    { act:'help', ico:'❓', label:'使用说明' },
+    { act:'font', ico:'Aa', label:'字号档位' },
     { act:'top',  ico:'⬆️', label:'回到顶部' }
   ];
+  const DOCK_ACTS = DOCK_SHORTCUTS.map(function(x){ return x.act; });
   let dockMenuOpen = false;
   function toggleDockShortcuts(force){
     dockMenuOpen = (force === undefined) ? !dockMenuOpen : !!force;
@@ -50115,25 +50260,19 @@ function init(){
     if(m){ m.hidden = !dockMenuOpen; m.setAttribute('aria-expanded', String(dockMenuOpen)); }
     const t = q('#r271DockShortcutBtn');
     if(t){ t.classList.toggle('on', dockMenuOpen); t.setAttribute('aria-expanded', String(dockMenuOpen)); }
+    const d = q('#r271Dock');
+    if(d) d.classList.toggle('is-open', dockMenuOpen);
   }
   function shell(){
     if(root) return root;
     root = D.createElement('div'); root.id = 'r271Root';
     root.innerHTML = '<div class="r271-dock" id="r271Dock">'
-      + '<button class="r271-dock-btn main" data-act="open" title="R271 功能中心">🧰</button>'
-      + '<button class="r271-dock-btn" data-act="pomo" title="番茄专注计时器">🍅</button>'
-      + '<button class="r271-dock-btn" data-act="help" title="本页使用说明">❓</button>'
-      + '<button class="r271-dock-btn" data-act="font" title="全局字号档位">Aa</button>'
-      + '<button class="r271-dock-btn" data-act="top" title="回到顶部">⬆️</button>'
-      /* R273-2.1：快捷键列表插在五个按键之后、快捷键按钮之前；
-         dock 底部锚定，展开时整列自然向上生长，列表自上而下展示，不遮挡任何页面内容。 */
-      + '<div class="r271-dock-menu" id="r271DockMenu" hidden aria-expanded="false">'
-      + '<div class="r271-dock-menu-head">快捷键 · 选择功能</div>'
-      + DOCK_SHORTCUTS.map(function(x,i){
-          return '<button class="r271-dock-menu-item" data-act="shortcut-go" data-v="' + E(x.act) + '" title="' + E(x.label) + '">'
-            + '<span class="r271-dock-menu-ico">' + E(x.ico) + '</span>'
-            + '<span class="r271-dock-menu-label">' + E(x.label) + '</span>'
-            + '<span class="r271-dock-menu-no">' + (i + 1) + '</span></button>';
+      /* 五个功能按键不再常驻：收进托盘，点 ⚡ 才展开 */
+      + '<div class="r271-dock-tray" id="r271DockMenu" hidden aria-expanded="false">'
+      + DOCK_SHORTCUTS.map(function(x){
+          return '<button class="r271-dock-pill" data-act="' + E(x.act) + '" title="' + E(x.label) + '">'
+            + '<span class="r271-dock-pill-ico">' + E(x.ico) + '</span>'
+            + '<span class="r271-dock-pill-lab">' + E(x.label) + '</span></button>';
         }).join('')
       + '</div>'
       + '<button class="r271-dock-btn r271-dock-shortcut" id="r271DockShortcutBtn" data-act="shortcuts" title="快捷键" aria-expanded="false">⚡</button>'
@@ -50846,10 +50985,34 @@ function init(){
   (function(){
     'use strict';
     const R = window.R272P;
-    let _rollbackId = null, _failShown = false;
-    /* R273-1.1：区分「真实写入事务阻塞 / 写入超时 / 事务冲突 / 快照竞争 / Safari 误报」，
+    let _rollbackId = null, _failShown = false, _userActed = false;
+    /* R274-1.1：只有「用户真的操作过」之后的写失败才值得提示。
+       刷新 / 版本更新时页面自己跑的内部写入（迁移回放、镜像校准、心跳）
+       就算失败，数据也已经完整在桥梁快照里，不该弹窗吓人。 */
+    try{
+      if(typeof document !== 'undefined' && document.addEventListener){
+        ['pointerdown','touchstart','keydown','click'].forEach(function(ev){
+          document.addEventListener(ev, function(){ _userActed = true; }, true);
+        });
+      }
+    }catch(e){}
+    const FAIL_TIP_KEY = 'nick_checkin_writefail_at';
+    const FAIL_TIP_GAP = 30 * 60 * 1000;   // 跨刷新 / 跨版本更新 30 分钟内最多提示一次
+    function _lastFailTipAt(){
+      let v = 0;
+      try{ v = Number(sessionStorage.getItem(FAIL_TIP_KEY) || 0) || 0; }catch(e){}
+      if(!v){ try{ v = Number(localStorage.getItem(FAIL_TIP_KEY) || 0) || 0; }catch(e){} }
+      return v;
+    }
+    function _markFailTip(){
+      const now = Date.now();
+      try{ sessionStorage.setItem(FAIL_TIP_KEY, String(now)); }catch(e){}
+      try{ localStorage.setItem(FAIL_TIP_KEY, String(now)); }catch(e){}
+    }
+    /* R273-1.1 / R274-1.1：区分「真实写入事务阻塞 / 写入超时 / 事务冲突 / Safari 误报」，
        绝不误报「存储空间已满」。持久化层已做排队 + 退避重试 + 队列排空后裁决，
-       这里再做一次防御性确认：只要最近一次写事务成功，或属于软错误，就静默不打扰。
+       这里再做一次防御性确认：只要最近一次写事务成功、属于软错误、仍在启动期、
+       数据已有安全副本、页面不可见、用户没操作过、或 30 分钟内已提示过，就静默放过。
        确实受阻时才谨慎提示，内存修改与多重安全副本始终保留，用户操作不会丢。 */
     window.__r272WriteOK = function(){
       /* 写事务确认成功 → 回撤一次性闸门，后续真实故障仍可再次提示 */
@@ -50860,10 +51023,17 @@ function init(){
       try{
         const P = window.R272P;
         if(P && typeof P.writeHealthy === 'function' && P.writeHealthy()) return;
+        if(P && typeof P.isBooted === 'function' && !P.isBooted()) return;
       }catch(e){}
       /* Safari 禁止写入 / 事务超时属软错误：只降级留副本，不弹窗 */
       if(info.cls === 'blocked' || info.cls === 'timeout') return;
-      if(_failShown) return; _failShown = true;
+      /* 数据确实已经安全落地（降级镜像 / 桥梁快照 / 主档）：没有任何理由打扰用户 */
+      if(info.safety === true) return;
+      if(!_userActed) return;
+      try{ if(document.visibilityState && document.visibilityState !== 'visible') return; }catch(e){}
+      if(_failShown) return;
+      if(Date.now() - _lastFailTipAt() < FAIL_TIP_GAP) return;
+      _failShown = true; _markFailTip();
       const head = (info.cls === 'quota') ? '本机存储空间不足' : '本机数据库写入未完成';
       try{ toast('⚠️ ' + head + '；修改已保留在本页与安全副本中，请稍后重试保存'); }catch(e){}
     };
