@@ -24065,9 +24065,20 @@ be 动词：am / is → was；are → were
   }
   function saveCalcDrill(items, score){
     const st = load();
+    const _today = todayStr();
+    // R280-1.2：主面板「批改」会在打卡串联里再次执行，若整份覆盖当日快照，
+    // 会把错题本「已订正」留下的 fixAt 标记冲掉（导致订正后仍无法打卡）。
+    // 故按题面 key 继承当天快照里既有的 fixAt（只增不减，不覆盖用户订正记录）。
+    const _prev = (st.calcDrill && st.calcDrill.date === _today && Array.isArray(st.calcDrill.items)) ? st.calcDrill.items : [];
+    const _fixMap = {};
+    _prev.forEach(it=>{ if(it && it.key!=null && it.fixAt) _fixMap[String(it.key)] = it.fixAt; });
+    const _list = (Array.isArray(items) ? items : []).slice(0, 30).map(it=>{
+      if(it && it.key!=null && !it.fixAt && _fixMap[String(it.key)]) return Object.assign({}, it, { fixAt: _fixMap[String(it.key)] });
+      return it;
+    });
     st.calcDrill = {
-      date: todayStr(),
-      items: (Array.isArray(items) ? items : []).slice(0, 30),
+      date: _today,
+      items: _list,
       checkedAt: Date.now(),
       score: Number(score) || 0
     };
@@ -29622,7 +29633,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     const btn = board.querySelector('[data-calc-checkin]');
     if(!btn) return;
     const g = _calcGate();
-    btn.disabled = !g.can;
+    // R280-1.2：「今日打卡」改为常驻可点（点后先弹确认，再串联批改→加入已做本→打卡）
     btn.classList.toggle('is-ready', !!g.can);
     const score = board.querySelector('[data-calc-score]');
     if(score) score.textContent = _calcGateText(g);
@@ -29713,7 +29724,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
           <span class="calc-score" data-calc-score>${_calcGateText(gate)}</span>
           <button class="calc-check" type="button" data-calc-check>批改</button>
           <button class="calc-addbook" type="button" data-calc-addbook title="把本次批改答对的题移入已做本">📒 加入已做本</button>
-          <button class="calc-checkin${gate.can ? ' is-ready' : ''}" type="button" data-calc-checkin${gate.can ? '' : ' disabled'}>今日打卡</button>
+          <button class="calc-checkin${gate.can ? ' is-ready' : ''}" type="button" data-calc-checkin>今日打卡</button>
         </div>
         <div class="calc-tip">全部答对就能打卡；答错的题会收进「📕 错题本」，去错题本重新作答并点「批改」判对后，今日打卡同样解锁～</div>`;
     }
@@ -29785,8 +29796,9 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       const right = items.filter(x => x.ok === true).length;
       try{ window.Store.saveCalcDrill(items, right); }catch(e){}
     };
-    if(checkBtn){
-      checkBtn.addEventListener('click', ()=>{
+    // R280-1.2：把三条动作拆成具名流程，供「今日打卡」确认后依次串联
+    //   批改 doCheck → 加入已做本 doAddBook → 今日打卡 doCheckin（原有判分/收录/奖励逻辑原样复用）
+    const doCheck = ()=>{
         const probs = genCalcProblems(_CALC_N);
         let correct = 0;
         board.querySelectorAll('.calc-ans').forEach(inp=>{
@@ -29823,24 +29835,24 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
             try{ window.Store.bumpCalcStreak(); }catch(e){}
           }
         }catch(e){}
-      });
-    }
+    };
+    if(checkBtn) checkBtn.addEventListener('click', doCheck);
     // R244-1：「加入已做本」——把本次批改答对的题手动收进已做本（取代 22:00 定时收录）
     const addBookBtn = board.querySelector('[data-calc-addbook]');
-    if(addBookBtn){
-      addBookBtn.addEventListener('click', ()=>{
+    const doAddBook = (opts)=>{
         try{
           persistDrill();
           const snap = window.Store.getCalcDrill ? window.Store.getCalcDrill() : {items:[]};
           const r = window.Store.addCalcBookRight(snap.items || [], today);
-          toast(r.added ? ('📒 已把 ' + r.added + ' 道答对的题加入已做本') : '还没有答对的题，先点「批改」吧～');
+          if(!(opts && opts.silent)){
+            toast(r.added ? ('📒 已把 ' + r.added + ' 道答对的题加入已做本') : '还没有答对的题，先点「批改」吧～');
+          }
           const bk = board.querySelector('[data-calc-book]');
           if(bk) bk.textContent = '📒 已做本（今日 ' + _calcBookTodayCount() + '）';
-        }catch(e){ toast('加入已做本失败，请重试'); }
-      });
-    }
-    if(okBtn && !calcDailyDone()){
-      okBtn.addEventListener('click', ()=>{
+        }catch(e){ if(!(opts && opts.silent)) toast('加入已做本失败，请重试'); }
+    };
+    if(addBookBtn) addBookBtn.addEventListener('click', ()=> doAddBook({}));
+    const doCheckin = ()=>{
         const probs = genCalcProblems(_CALC_N);
         let correct = 0;
         board.querySelectorAll('.calc-ans').forEach(inp=>{
@@ -29870,6 +29882,19 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         playCheckinSound();
         toast('🎉 计算小超市今日打卡完成！' + (_sr.bonus > 0 ? ' 连续打卡 ' + _sr.streak + ' 天，额外 +' + _sr.bonus + '⭐' : ''));
         rerender();
+    };
+    // R280-1.2：今日打卡先弹确认窗口 —— 点「确定」才依次执行 批改 → 加入已做本 → 今日打卡；点「取消」不做任何操作
+    if(okBtn && !calcDailyDone()){
+      okBtn.addEventListener('click', ()=>{
+        const runAll = ()=>{ doCheck(); doAddBook({ silent: true }); doCheckin(); };
+        if(typeof openCustomModal === 'function'){
+          openCustomModal('确认今日打卡',
+            '将依次为你完成：<b>① 批改本次计算题</b> → <b>② 把答对的题加入已做本</b> → <b>③ 今日打卡</b>。'
+            + '<div style="margin-top:8px;color:#5b6b85;font-size:13px">全部答对（或错题已全部订正）才能打卡成功；点「取消」不做任何操作。</div>',
+            ()=>{ runAll(); return true; });
+        }else{
+          runAll();
+        }
       });
     }
     // R237-1：失焦即把作答写入快照（不改判分则保留上一次批改结果）
