@@ -33881,7 +33881,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
 
   /* ============ R276-2.1：家长模式手动修正「连续打卡天数」 ============
      原自动统计逻辑不改；家长设定值经 Store.setArchiveStreak() 落成持久偏移，
-     刷新 / 版本更新不重置。孩子模式下 ✎ 由 hidden-in-child 隐藏，JS 再兜一层。 */
+     刷新 / 版本更新不重置。学生模式下 ✎ 由 hidden-in-child 隐藏，JS 再兜一层。 */
   function renderHomeStreak(){
     const el = document.getElementById('homeStreak');
     try{ if(el) el.textContent = (S.load().archive || {}).consecutiveDays || 0; }catch(e){}
@@ -47440,7 +47440,7 @@ function renderKMAdmin(){
       $('#btnGradeEdit')._gradeBound = true;
       $('#btnGradeEdit').onclick = (e) => { e.stopPropagation(); openHomeGradeEditor(); };
     }
-    // R276-2.1：连续打卡天数家长修正（✎ 带 hidden-in-child，孩子模式不可见；click 层再兜底）
+    // R276-2.1：连续打卡天数家长修正（✎ 带 hidden-in-child，学生模式不可见；click 层再兜底）
     if($('#btnStreakEdit') && !$('#btnStreakEdit')._streakBound){
       $('#btnStreakEdit')._streakBound = true;
       $('#btnStreakEdit').onclick = (e) => { e.stopPropagation(); openHomeStreakEditor(); };
