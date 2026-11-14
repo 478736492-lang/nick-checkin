@@ -29836,7 +29836,20 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
           }
         }catch(e){}
     };
-    if(checkBtn) checkBtn.addEventListener('click', doCheck);
+    // R281-1.1：三个按键各自弹出独立确认弹窗 —— 只有点「确定」才执行对应动作，点「取消」不触发任何动作
+    const _r281Ask = (title, body, run)=>{
+      if(typeof openCustomModal === 'function'){
+        openCustomModal(title, body, ()=>{ run(); return true; });
+      }else{
+        run();
+      }
+    };
+    if(checkBtn) checkBtn.addEventListener('click', ()=>{
+      _r281Ask('确认批改本次计算题',
+        '将按你填写的答案逐题判分：<b>答对的标 ✓</b>，<b>答错的标 ✗</b> 并自动收进「📕 错题本」。'
+        + '<div style="margin-top:8px;color:#5b6b85;font-size:13px">点「取消」不做任何操作，已填的答案会保留。</div>',
+        doCheck);
+    });
     // R244-1：「加入已做本」——把本次批改答对的题手动收进已做本（取代 22:00 定时收录）
     const addBookBtn = board.querySelector('[data-calc-addbook]');
     const doAddBook = (opts)=>{
@@ -29851,7 +29864,12 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
           if(bk) bk.textContent = '📒 已做本（今日 ' + _calcBookTodayCount() + '）';
         }catch(e){ if(!(opts && opts.silent)) toast('加入已做本失败，请重试'); }
     };
-    if(addBookBtn) addBookBtn.addEventListener('click', ()=> doAddBook({}));
+    if(addBookBtn) addBookBtn.addEventListener('click', ()=>{
+      _r281Ask('确认加入已做本',
+        '将把本次批改中<b>答对的题目</b>移入「📒 已做本」，并按原规则从题库中移出。'
+        + '<div style="margin-top:8px;color:#5b6b85;font-size:13px">点「取消」不做任何操作。若还没有批改过，会提示先点「批改」。</div>',
+        ()=> doAddBook({}));
+    });
     const doCheckin = ()=>{
         const probs = genCalcProblems(_CALC_N);
         let correct = 0;
