@@ -63,10 +63,10 @@ var CACHE_NAME = 'zoo-checkin-v1-' + BUILD;
 var USER_DATA_TOUCH_FORBIDDEN = true;
 var USER_DB_NAME_ISOLATED = 'nick_checkin_main_db';
 /* R93：版本号与版本更新时间。部署脚本会把 R282 替换为当期轮次号（如 R93）、
- * 2026-11-14 14:30 替换为本次部署时间（北京时间，格式 YYYY-MM-DD HH:mm）。
+ * 2026-11-14 15:06 替换为本次部署时间（北京时间，格式 YYYY-MM-DD HH:mm）。
  * 用途：「设置中心 → 版本与更新」显示「当前版本 + 更新时间」，点「检查更新」后即为最新读数。 */
 var APP_VERSION = 'R282';
-var BUILD_TIME = '2026-11-14 14:30';
+var BUILD_TIME = '2026-11-14 15:06';
 
 self.addEventListener('install', function (e) {
   self.skipWaiting();
