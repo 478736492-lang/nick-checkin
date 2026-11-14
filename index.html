@@ -29901,18 +29901,10 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         toast('🎉 计算小超市今日打卡完成！' + (_sr.bonus > 0 ? ' 连续打卡 ' + _sr.streak + ' 天，额外 +' + _sr.bonus + '⭐' : ''));
         rerender();
     };
-    // R280-1.2：今日打卡先弹确认窗口 —— 点「确定」才依次执行 批改 → 加入已做本 → 今日打卡；点「取消」不做任何操作
+    // R284-3.1：今日打卡改为单一打卡功能 —— 移除「批改→加入已做本→打卡」一次性多任务设定，点击直接执行打卡
     if(okBtn && !calcDailyDone()){
       okBtn.addEventListener('click', ()=>{
-        const runAll = ()=>{ doCheck(); doAddBook({ silent: true }); doCheckin(); };
-        if(typeof openCustomModal === 'function'){
-          openCustomModal('确认今日打卡',
-            '将依次为你完成：<b>① 批改本次计算题</b> → <b>② 把答对的题加入已做本</b> → <b>③ 今日打卡</b>。'
-            + '<div style="margin-top:8px;color:#5b6b85;font-size:13px">全部答对（或错题已全部订正）才能打卡成功；点「取消」不做任何操作。</div>',
-            ()=>{ runAll(); return true; });
-        }else{
-          runAll();
-        }
+        doCheckin();
       });
     }
     // R237-1：失焦即把作答写入快照（不改判分则保留上一次批改结果）
