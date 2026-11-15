@@ -7923,7 +7923,13 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 .navcal-today .navcal-l.is-fest{ color:rgba(255,255,255,.92); }
 .navcal-blank{ background:transparent; border-color:transparent; }
 .navcal-weekend{ color:#c0392b; }
-.navcal-holiday{ background:var(--tone-050); }
+/* R286-4.1：法定节假日日期卡片底色设为浅红色 */
+.navcal-holiday{ background:#ffe3e3; border-color:#f3b7b7; }
+.navcal-holiday .navcal-d{ color:#c0392b; }
+/* R286-4.1：调班（周末上班）日 —— 还原为正常工作日配色并标注「班」 */
+.navcal-makeup{ color:var(--tone-900); }
+.navcal-tag-makeup{ color:#1e6fd0; }
+.navcal-swatch-makeup{ background:#ffe3e3; border:1px solid #f3b7b7; }
 .navcal-today{
   background:linear-gradient(135deg,var(--tone-400),var(--tone-600));
   border-color:var(--tone-700); color:#fff; font-weight:900;
@@ -7940,7 +7946,7 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 }
 .navcal-legend-swatch{ display:inline-block; width:12px; height:12px; border-radius:3px; vertical-align:middle; }
 .navcal-swatch-today{ background:var(--tone-500); }
-.navcal-swatch-hol{ background:var(--tone-050); border:1px solid #e2453a; }
+.navcal-swatch-hol{ background:#ffe3e3; border:1px solid #f3b7b7; }
 /* R218-3①：图例新增「节日 / 节气」色标 */
 .navcal-swatch-fest{ background:#fff; border:1px solid #e2453a; }
 .navcal-swatch-term{ background:#fff; border:1px solid var(--tone-600); }
@@ -20138,6 +20144,21 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
     const wd = new Date(d + 'T00:00:00').getDay();
     return wd === 0 || wd === 6;
   }
+  // R286-4.1：调班（补班 / 上班）日期 —— 国务院办公厅通知公布的「周末上班」日；
+  // 落在此类日期视为需上班，日历标注「班」，不应按休息日处理。
+  const KM_MAKEUP_DATES = {
+    2025: ['2025-01-26','2025-02-08','2025-04-27','2025-09-28','2025-10-11'],
+    2026: ['2026-01-04','2026-02-14','2026-02-28','2026-05-09','2026-09-20','2026-10-10']
+  };
+  function kmMakeupYear(y){
+    const r = KM_MAKEUP_DATES[y];
+    return Array.isArray(r) ? r : [];
+  }
+  function kmIsMakeup(dateStr){
+    const d = dateStr || todayStr();
+    const y = parseInt(d.slice(0,4), 10);
+    return kmMakeupYear(y).indexOf(d) >= 0;
+  }
   function kmDefaultSettings(){
     return {
       // R121-1：游戏开放日期（默认规则 = 周末 + 法定节假日；dates 为家长自定义追加的开放日）
@@ -24870,7 +24891,7 @@ be 动词：am / is → was；are → were
     markKMCleared, getKMCleared, addKMWrong, getKMWrong, clearKMWrong, resetKMProgress, getKMStats,
     getKMProgress, saveKMProgress,
     // R121-1：游戏开放日期（周末 + 法定节假日默认规则，支持自定义开放日）
-    isKMOpen, getKMOpenInfo, kmIsHoliday, kmIsWeekend,
+    isKMOpen, getKMOpenInfo, kmIsHoliday, kmIsWeekend, kmIsMakeup,
     // R124：种植园 游戏开放时间（工作日时段窗 + 周末/节假日 + 自定义开放日/时段）
     isFarmOpen, getFarmOpenInfo, getFarmOpenConfig, farmSaveOpen, saveKMOpenNow,
     // V55-Req6：收录书屋
@@ -43890,13 +43911,41 @@ function renderKMAdmin(){
   // R150-5：系统默认不播放任何按键音效；仅当用户在设置中心主动开启 soundOn 后才发声
   // R217-5：按槽位去抖——同一槽位 80ms 内只真正播放一次，彻底杜绝「单次点击重复播放 / 多次触发」音效
   let _sfxLastPlay = {};
-  function playClickSfx(slot){ if(!isSoundOn()) return; const _n=Date.now(); if(_sfxLastPlay[slot] && _n-_sfxLastPlay[slot]<80) return; _sfxLastPlay[slot]=_n; try{ const id=getClickSfx(slot); const p=SFX_PRESETS[id]; if(p&&p.play) p.play(); }catch(e){} }
+  // R286-5.1：修复按键音效偶发失效 —— 若 AudioContext 处于 suspended（自动播放策略挂起），
+  // 必须等待 resume() 完成、状态变为 running 后再调度振荡器，否则在挂起态下调度的声音会被吞掉。
+  function playClickSfx(slot){ if(!isSoundOn()) return; const _n=Date.now(); if(_sfxLastPlay[slot] && _n-_sfxLastPlay[slot]<80) return; _sfxLastPlay[slot]=_n; try{ const ctx=getAudio(); if(!ctx) return; const run=()=>{ try{ const id=getClickSfx(slot); const p=SFX_PRESETS[id]; if(p&&p.play) p.play(); }catch(e){} }; if(ctx.state==='running'){ run(); } else if(ctx.resume){ const pr=ctx.resume(); (pr&&pr.then?pr:Promise.resolve()).then(run).catch(run); } else { run(); } }catch(e){} }
   // 在「任务设置」里保存某槽位音效选择
   function setClickSfxConfig(slot, id){
     const st = (window.Store&&window.Store.load)?window.Store.load():null; if(!st) return;
     st.clickSfx = st.clickSfx || defaultClickSfx(); st.clickSfx[slot] = id;
     if(window.Store&&window.Store.save) window.Store.save(st);
   }
+  // R286-5.1：全局首次用户手势（pointerdown / keydown / touchstart）即解锁 AudioContext，
+  // 保证后续任意一次点击音效都已有 running 状态的上下文可调度，从源头消除「偶发不出声」。
+  (function(){
+    let _unlocked = false;
+    function _unlockAudio(){
+      if(_unlocked) return; _unlocked = true;
+      try{
+        const c = getAudio();
+        if(c && c.state === 'suspended' && c.resume){ c.resume().catch(()=>{}); }
+      }catch(e){}
+      try{
+        if(typeof document !== 'undefined' && document.removeEventListener){
+          document.removeEventListener('pointerdown', _unlockAudio);
+          document.removeEventListener('keydown', _unlockAudio);
+          document.removeEventListener('touchstart', _unlockAudio);
+        }
+      }catch(e){}
+    }
+    try{
+      if(typeof document !== 'undefined' && document.addEventListener){
+        document.addEventListener('pointerdown', _unlockAudio, {passive:true});
+        document.addEventListener('keydown', _unlockAudio, {passive:true});
+        document.addEventListener('touchstart', _unlockAudio, {passive:true});
+      }
+    }catch(e){}
+  })();
   // 全局点击音效分发（导航栏 / 主题卡 / 次级主题卡 / 三级主题卡 / 打卡），注册一次
   // R133-2：单次物理点击去重 —— 同一事件对象只触发一个音效，杜绝「单个按键叠加多个音效」的重复播放
   // R246-2：按卡片层级判定槽位（见 sfxSlotOf），四档差异化发声
@@ -46897,8 +46946,10 @@ function renderKMAdmin(){
       if(dow===0||dow===6) cls.push('navcal-weekend');
       if(_navCalY===tY && _navCalM===tM && d===tD) cls.push('navcal-today');
       let hol = false; try{ hol = !!(window.Store && window.Store.kmIsHoliday && window.Store.kmIsHoliday(iso)); }catch(e){}
+      let make = false; try{ make = !!(window.Store && window.Store.kmIsMakeup && window.Store.kmIsMakeup(iso)); }catch(e){}
       if(hol) cls.push('navcal-holiday');
-      const tag = hol ? '<span class="navcal-tag">休</span>' : '';
+      if(make) cls.push('navcal-makeup');
+      const tag = hol ? '<span class="navcal-tag">休</span>' : (make ? '<span class="navcal-tag navcal-tag-makeup">班</span>' : '');
       const sub = navCalCellSub(_navCalY, _navCalM, d);
       const subHtml = sub.text ? '<span class="'+sub.cls+'">'+sub.text+'</span>' : '<span class="navcal-l navcal-l-empty"></span>';
       html += '<div class="'+cls.join(' ')+'"><span class="navcal-d">'+d+'</span>'+subHtml+tag+'</div>';
@@ -46907,6 +46958,13 @@ function renderKMAdmin(){
   }
   function navCalGoToday(){
     const t = new Date(); _navCalY = t.getFullYear(); _navCalM = t.getMonth()+1; navCalRender();
+  }
+  // R286-4.1：上一月 / 下一月左右切换（保留「点年 月」滚轮选择原有方式）
+  function navCalStep(delta){
+    let m = _navCalM + delta, y = _navCalY;
+    if(m < 1){ m = 12; y--; } else if(m > 12){ m = 1; y++; }
+    if(y < 1900){ y = 1900; m = 1; } else if(y > 2049){ y = 2049; m = 12; }
+    _navCalY = y; _navCalM = m; navCalRender();
   }
 
   /* ---- R218-3②：年月滑选弹窗（年 / 月两个纵向滚轮，scroll-snap 吸附 + 点行直选 + 停止滑动 140ms 取居中行）---- */
@@ -46983,13 +47041,20 @@ function renderKMAdmin(){
     if(body && !body._navCalBuilt){
       body._navCalBuilt = true;
       body.innerHTML = '<div class="navcal-bar">'
+        + '<button type="button" class="navcal-nav" id="navCalPrev" title="上一月">‹</button>'
         + '<button type="button" class="navcal-title" id="navCalTitle" title="点击选择年份 / 月份"></button>'
+        + '<button type="button" class="navcal-nav" id="navCalNext" title="下一月">›</button>'
         + '</div>'
         + '<div class="navcal-grid" id="navCalGrid"></div>'
         + '<div class="navcal-legend"><span class="navcal-legend-swatch navcal-swatch-today"></span> 今天　'
-        + '<span class="navcal-legend-swatch navcal-swatch-hol"></span> 法定节假日　'
+        + '<span class="navcal-legend-swatch navcal-swatch-hol"></span> 法定节假日（浅红）　'
+        + '<span class="navcal-legend-swatch navcal-swatch-makeup"></span> 调班（班）　'
         + '<span class="navcal-legend-swatch navcal-swatch-fest"></span> 节日　'
         + '<span class="navcal-legend-swatch navcal-swatch-term"></span> 节气　·　点「年 月」可上下滑动选择 · 日期下方显示农历</div>';
+      const prevBtn = document.getElementById('navCalPrev');
+      if(prevBtn) prevBtn.onclick = ()=> navCalStep(-1);
+      const nextBtn = document.getElementById('navCalNext');
+      if(nextBtn) nextBtn.onclick = ()=> navCalStep(1);
       const titleBtn = document.getElementById('navCalTitle');
       if(titleBtn) titleBtn.onclick = ()=> navCalOpenPick();
     }
