@@ -44013,6 +44013,11 @@ function renderKMAdmin(){
     }catch(e){}
   }
   window.playCheckinSound = playCheckinSound;
+  /* R293-2.1 中华通史（iframe）按键音效 —— 与学而思英语板块完全同源、同槽位、同预设。
+     学而思英语板块内的按键（页签 / 工具键 / 普通按钮）在 sfxSlotOf 里统一归入 'third' 槽位
+     （默认预设 h「木鱼嗒」），用户在「设置中心 · 点击音效」里更换第三级按键音后，
+     中华通史内所有按键音同步变化；静音总开关、AudioContext 解锁与去抖全部复用宿主同一份实现。 */
+  window.xsClickSfx = function(){ try{ playClickSfx('third'); }catch(e){} };
   /* 捕获阶段统一分发：任何打卡键（含「撤销打卡」）的真人点击都先响这一声，
      处理器随后自己调用的 playCheckinSound 被 120ms 合并窗口吸收，不会双响。 */
   try{
