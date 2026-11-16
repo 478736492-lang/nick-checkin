@@ -10563,6 +10563,19 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
 .bs-haoci-group .bs-haoci-word{margin-top:8px}
 .bs-haoci-w{font-weight:800;color:var(--tone-950);font-size:13.5px}
 
+/* ============ R296-3 大阅读：【好词使用】独立卡片（三卡下方横排，子卡一行 3 个） ============ */
+.haoci-use-card{margin:12px 18px 18px;padding:12px 14px 14px;border:1px solid var(--tone-200);border-radius:16px;background:var(--tone-050);box-shadow:0 6px 18px rgba(30,58,138,.08)}
+.haoci-use-card>.reading-col-head{margin:0 0 10px;display:flex;align-items:center;gap:8px}
+.haoci-use-hint{font-size:11.5px;font-weight:600;color:var(--tone-700);background:var(--tone-100);border-radius:999px;padding:2px 9px}
+.haoci-use-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.haoci-use-item{min-width:0;padding:10px 12px;border:1px solid var(--tone-200);border-radius:12px;background:#fff}
+.haoci-use-item .hu-w{font-size:13.5px;font-weight:800;color:var(--tone-950);line-height:1.4}
+.haoci-use-item .hu-def,.haoci-use-item .hu-ex{margin-top:6px;padding:7px 10px;border-radius:10px;border:1px solid var(--tone-200);font-size:12.5px;line-height:1.65;color:var(--tone-950)}
+.haoci-use-item .hu-def{background:var(--tone-050)}
+.haoci-use-item .hu-ex{background:var(--tone-100)}
+.haoci-use-item .hu-def b,.haoci-use-item .hu-ex b{color:var(--tone-700)}
+@media (max-width:1100px){ .haoci-use-grid{grid-template-columns:repeat(2,minmax(0,1fr))} }
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -11564,6 +11577,12 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
           <div class="reading-col-list" id="cnColEssay" data-page-node-id="UpqHqBYMlMq8oxJHmYonsl8"></div>
         </div>
       </div>
+      <!-- R296-3.2/3.3：【好词使用】独立卡 —— 好词的释义与例句，紧跟三张语文卡下方（每日文学之前），
+           横向排布，内部子卡片一行 3 个（内容从好词好句卡迁出，好词好句恢复原分组展示） -->
+      <div class="haoci-use-card" id="haociUseCard" data-page-node-id="R296haociUseCard">
+        <div class="reading-col-head" data-page-node-id="R296haociUseHead">✨ 好词使用 <span class="haoci-use-hint">释义 · 例句</span></div>
+        <div class="haoci-use-grid" id="haociUseGrid" data-page-node-id="R296haociUseGrid"></div>
+      </div>
       <!-- R295-2.2/2.3：【每日文学】独立卡 —— 每日成语 + 文学小常识横向排布，位于三张语文卡下方 -->
       <div class="daily-lit-card" id="dailyLitCard">
         <div class="reading-col-head">📖 每日文学</div>
@@ -11598,12 +11617,14 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
         <!-- R59-5：「📥 收录今日」按键已移除 —— 收录统一由每日 23:30 定时自动归档完成 -->
         <!-- R61-3：归档状态标记文字已按需求删除 -->
       </div>
-      <div class="bs-page-intro" data-page-node-id="CXfmIhyvSrGBLLreL5IfAK">好词好句 · 文学小常识 · 古诗词鉴赏 · 优秀作文 · 成语学习 · 日常交流 · 英语短文 —— 全部内容按主题分类，点主题栏切换，分页浏览（每日 23:30 自动收录当日打卡内容）</div>
+      <div class="bs-page-intro" data-page-node-id="CXfmIhyvSrGBLLreL5IfAK">好词好句 · 好词使用 · 文学小常识 · 每日文学 · 古诗词鉴赏 · 优秀作文 · 成语学习 · 日常交流 · 英语短文 —— 全部内容按主题分类，点主题栏切换，分页浏览（每日 23:30 自动收录当日打卡内容）</div>
       <!-- R57-2：主题栏 —— 按主题分类切换（好词好句 / 文学小常识 / 古诗词鉴赏 / 优秀作文 / 日常交流 / 英语短文） -->
       <div class="bs-tabs" id="bsTabs" data-page-node-id="bsR57tabs0001"></div>
       <!-- R57-2：主题内容区 —— 单主题展示 + 分页（各主题独立页码，每页 8 条） -->
       <div class="bs-body" id="bsBodyAll" data-page-node-id="pgPE2iOSPrLn3CwNmDeJ8Y">
         <div class="bs-theme-body" id="bsColWords" hidden data-page-node-id="bsR57body0001"></div>
+        <!-- R296-3.4：好词使用（释义 + 例句）同步进入收录书屋 -->
+        <div class="bs-theme-body" id="bsColWordUse" hidden data-page-node-id="bsR296wordUse"></div>
         <!-- R273-6.3：文学小常识详情（298 条全量，分页浏览） -->
         <div class="bs-theme-body" id="bsColLore" hidden data-page-node-id="R273bsLoreBody"></div>
         <div class="bs-theme-body" id="bsColPoem" hidden data-page-node-id="bsR57body0002"></div>
@@ -12564,6 +12585,12 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
         <div class="peg-title" data-page-node-id="qvi7DFg2FE8XoWu8fHvNM5">🛒 农场市集（种子 / 水 / 阳光 / 肥料）</div>
         <div id="farmSetMarketList" class="peg-shop-list" data-page-node-id="R83farmMarketList"></div>
       </div>
+      <!-- R296-1：作物兑换金币（成熟卖出回收价；家长可改，卖出结算读同一份配置） -->
+      <div class="parent-edit-group" data-page-node-id="R296farmSellGrp">
+        <div class="peg-title" data-page-node-id="R296farmSellTitle">💰 作物兑换金币（成熟卖出回收价）</div>
+        <div id="farmSetSellList" class="peg-shop-list" data-page-node-id="R296farmSellList"></div>
+        <div class="farm-cur-hint" data-page-node-id="R296farmSellHint">修改后即时生效：种植园「仓库 → 卖」与卖出结算都按这里的金币数计价。</div>
+      </div>
       <div class="parent-edit-group" data-page-node-id="R83farmShopGrp">
         <div class="peg-title" data-page-node-id="hELnK9ByzhZNtuMmiYPKhe">🎁 云上小卖部（礼物）</div>
         <div id="farmSetShopList" class="peg-shop-list" data-page-node-id="R83farmShopList"></div>
@@ -13442,6 +13469,830 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
 <script src="./assets/seed_yw_zhuanxiang_seed.js"></script>
 <!-- R276-3.2：中华通史原型完整页面（window.ZHTS_PROTO_HTML，iframe srcdoc 原样渲染） -->
 <script src="./assets/seed_zhts_proto_seed.js"></script>
+<!-- R296-4：由《打卡任务.xlsx》解析生成的打卡任务清单（必须先于 store.js 加载） -->
+<script>
+/* R296-4：由《打卡任务.xlsx》精确解析生成的打卡任务清单。
+   三张日程表：27-2 号（跨月 27→2）/ 3-16 号 / 17-30 号；
+   每条任务带「按时段时间 + 按星期 + 按日期段」三元信息，首页按当天日期自动筛出当天任务。
+   本文件只提供静态数据，不改写任何存档；落库逻辑见 store.js r296ImportPlan()。 */
+window.R296_TASK_PLAN = {
+ "version": "R296",
+ "source": "打卡任务.xlsx",
+ "ranges": [
+  {
+   "key": "d27_2",
+   "from": 27,
+   "to": 2
+  },
+  {
+   "key": "d3_16",
+   "from": 3,
+   "to": 16
+  },
+  {
+   "key": "d17_30",
+   "from": 17,
+   "to": 30
+  }
+ ],
+ "tasks": [
+  {
+   "id": "r296_01",
+   "name": "写作",
+   "subject": "语文",
+   "time": "09:00-09:30",
+   "minutes": 30,
+   "plan": [
+    {
+     "from": 3,
+     "to": 16,
+     "days": [
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": "r296_02",
+   "name": "复述",
+   "subject": "语文",
+   "time": "09:00-09:30",
+   "minutes": 30,
+   "plan": [
+    {
+     "from": 27,
+     "to": 2,
+     "days": [
+      6
+     ]
+    },
+    {
+     "from": 17,
+     "to": 30,
+     "days": [
+      6
+     ]
+    }
+   ]
+  },
+  {
+   "id": "r296_03",
+   "name": "好句仿写",
+   "subject": "语文",
+   "time": "09:00-09:30",
+   "minutes": 30,
+   "plan": [
+    {
+     "from": 3,
+     "to": 16,
+     "days": [
+      0,
+      2,
+      3,
+      5,
+      6
+     ]
+    }
+   ]
+  },
+  {
+   "id": "r296_04",
+   "name": "好词好句",
+   "subject": "语文",
+   "time": "09:00-09:30",
+   "minutes": 30,
+   "plan": [
+    {
+     "from": 3,
+     "to": 16,
+     "days": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ]
+    }
+   ]
+  },
+  {
+   "id": "r296_05",
+   "name": "语文作文  阅读",
+   "subject": "语文",
+   "time": "09:00-09:30",
+   "minutes": 30,
+   "plan": [
+    {
+     "from": 27,
+     "to": 2,
+     "days": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ]
+    },
+    {
+     "from": 17,
+     "to": 30,
+     "days": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ]
+    }
+   ]
+  },
+  {
+   "id": "r296_06",
+   "name": "阅读理解",
+   "subject": "语文",
+   "time": "09:00-09:30",
+   "minutes": 30,
+   "plan": [
+    {
+     "from": 3,
+     "to": 16,
+     "days": [
+      1,
+      3,
+      5
+     ]
+    }
+   ]
+  },
+  {
+   "id": "r296_07",
+   "name": "拼音句型",
+   "subject": "语文",
+   "time": "09:45-10:30",
+   "minutes": 45,
+   "plan": [
+    {
+     "from": 27,
+     "to": 2,
+     "days": [
+      2
+     ]
+    },
+    {
+     "from": 17,
+     "to": 30,
+     "days": [
+      2
+     ]
+    }
+   ]
+  },
+  {
+   "id": "r296_08",
+   "name": "阅读练习",
+   "subject": "语文",
+   "time": "09:45-10:30",
+   "minutes": 45,
+   "plan": [
+    {
+     "from": 27,
+     "to": 2,
+     "days": [
+      1,
+      3,
+      4,
+      5
+     ]
+    },
+    {
+     "from": 17,
+     "to": 30,
+     "days": [
+      1,
+      3,
+      4,
+      5
+     ]
+    }
+   ]
+  },
+  {
+   "id": "r296_09",
+   "name": "看图写话",
+   "subject": "语文",
+   "time": "10:45-11:30",
+   "minutes": 45,
+   "plan": [
+    {
+     "from": 27,
+     "to": 2,
+     "days": [
+      1,
+      3,
+      5
+     ]
+    },
+    {
+     "from": 17,
+     "to": 30,
+     "days": [
+      1,
+      3,
+      5
+     ]
+    }
+   ]
+  },
+  {
+   "id": "r296_10",
+   "name": "诗词背默",
+   "subject": "语文",
+   "time": "10:45-11:30",
+   "minutes": 45,
+   "plan": [
+    {
+     "from": 27,
+     "to": 2,
+     "days": [
+      2,
+      4,
+      6
+     ]
+    },
+    {
+     "from": 17,
+     "to": 30,
+     "days": [
+      2,
+      4,
+      6
+     ]
+    }
+   ]
+  },
+  {
+   "id": "r296_11",
+   "name": "围棋",
+   "subject": "围棋",
+   "time": "13:30-14:15",
+   "minutes": 45,
+   "plan": [
+    {
+     "from": 27,
+     "to": 2,
+     "days": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ]
+    },
+    {
+     "from": 17,
+     "to": 30,
+     "days": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ]
+    }
+   ]
+  },
+  {
+   "id": "r296_12",
+   "name": "乐读习题",
+   "subject": "数学",
+   "time": "14:30-15:00",
+   "minutes": 30,
+   "plan": [
+    {
+     "from": 3,
+     "to": 16,
+     "days": [
+      1,
+      3,
+      5
+     ]
+    }
+   ]
+  },
+  {
+   "id": "r296_13",
+   "name": "乐读学以致用",
+   "subject": "数学",
+   "time": "14:30-15:00",
+   "minutes": 30,
+   "plan": [
+    {
+     "from": 3,
+     "to": 16,
+     "days": [
+      4
+     ]
+    }
+   ]
+  },
+  {
+   "id": "r296_14",
+   "name": "乐读计算",
+   "subject": "数学",
+   "time": "14:30-15:00",
+   "minutes": 30,
+   "plan": [
+    {
+     "from": 27,
+     "to": 2,
+     "days": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ]
+    },
+    {
+     "from": 17,
+     "to": 30,
+     "days": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ]
+    }
+   ]
+  },
+  {
+   "id": "r296_15",
+   "name": "乐读计算小超市",
+   "subject": "数学",
+   "time": "14:30-15:00",
+   "minutes": 30,
+   "plan": [
+    {
+     "from": 3,
+     "to": 16,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    }
+   ]
+  },
+  {
+   "id": "r296_16",
+   "name": "一课一练",
+   "subject": "学习",
+   "time": "15:15-16:00",
+   "minutes": 45,
+   "plan": [
+    {
+     "from": 27,
+     "to": 2,
+     "days": [
+      2,
+      4
+     ]
+    },
+    {
+     "from": 17,
+     "to": 30,
+     "days": [
+      1,
+      3,
+      5
+     ]
+    }
+   ]
+  },
+  {
+   "id": "r296_17",
+   "name": "三年级预习",
+   "subject": "学习",
+   "time": "15:15-16:00",
+   "minutes": 45,
+   "plan": [
+    {
+     "from": 27,
+     "to": 2,
+     "days": [
+      1,
+      3,
+      5
+     ]
+    },
+    {
+     "from": 17,
+     "to": 30,
+     "days": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ]
+    }
+   ]
+  },
+  {
+   "id": "r296_18",
+   "name": "周周练选题",
+   "subject": "英语",
+   "time": "16:30-17:15",
+   "minutes": 45,
+   "plan": [
+    {
+     "from": 3,
+     "to": 16,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      5,
+      6
+     ]
+    }
+   ]
+  },
+  {
+   "id": "r296_19",
+   "name": "学而思作业",
+   "subject": "英语",
+   "time": "16:30-17:15",
+   "minutes": 45,
+   "plan": [
+    {
+     "from": 27,
+     "to": 2,
+     "days": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "from": 3,
+     "to": 16,
+     "days": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ]
+    },
+    {
+     "from": 17,
+     "to": 30,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    }
+   ]
+  },
+  {
+   "id": "r296_20",
+   "name": "学而思词汇语法",
+   "subject": "英语",
+   "time": "16:30-17:15",
+   "minutes": 45,
+   "plan": [
+    {
+     "from": 3,
+     "to": 16,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    }
+   ]
+  },
+  {
+   "id": "r296_21",
+   "name": "阅读理解",
+   "subject": "英语",
+   "time": "16:30-17:15",
+   "minutes": 45,
+   "plan": [
+    {
+     "from": 3,
+     "to": 16,
+     "days": [
+      2,
+      4,
+      6
+     ]
+    }
+   ]
+  },
+  {
+   "id": "r296_22",
+   "name": "KET",
+   "subject": "英语",
+   "time": "19:45-20:30",
+   "minutes": 45,
+   "plan": [
+    {
+     "from": 27,
+     "to": 2,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "from": 17,
+     "to": 30,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    }
+   ]
+  },
+  {
+   "id": "r296_23",
+   "name": "学而思词句默写",
+   "subject": "英语",
+   "time": "20:30-20:45",
+   "minutes": 15,
+   "plan": [
+    {
+     "from": 27,
+     "to": 2,
+     "days": [
+      0,
+      2,
+      4
+     ]
+    }
+   ]
+  },
+  {
+   "id": "r296_24",
+   "name": "英语阅读100篇",
+   "subject": "阅读",
+   "time": "21:00-21:30",
+   "minutes": 30,
+   "plan": [
+    {
+     "from": 27,
+     "to": 2,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ]
+    },
+    {
+     "from": 17,
+     "to": 30,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ]
+    },
+    {
+     "from": 3,
+     "to": 16,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    }
+   ]
+  },
+  {
+   "id": "r296_25",
+   "name": "图书馆书",
+   "subject": "阅读",
+   "time": "21:30-22:00",
+   "minutes": 30,
+   "plan": [
+    {
+     "from": 27,
+     "to": 2,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "from": 3,
+     "to": 16,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "from": 17,
+     "to": 30,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    }
+   ]
+  }
+ ],
+ "weekPlan": {
+  "rows": 11,
+  "rowsData": [
+   {
+    "time": "09:00-09:30",
+    "cat": "语文",
+    "cells": {
+     "1": "语文作文  阅读",
+     "2": "语文作文  阅读",
+     "3": "语文作文  阅读",
+     "4": "语文作文  阅读",
+     "5": "语文作文  阅读",
+     "6": "复述"
+    }
+   },
+   {
+    "time": "09:45-10:30",
+    "cat": "语文",
+    "cells": {
+     "1": "阅读练习",
+     "2": "拼音句型",
+     "3": "阅读练习",
+     "4": "阅读练习",
+     "5": "阅读练习"
+    }
+   },
+   {
+    "time": "10:45-11:30",
+    "cat": "语文",
+    "cells": {
+     "1": "看图写话",
+     "3": "看图写话",
+     "5": "看图写话",
+     "2": "诗词背默",
+     "4": "诗词背默",
+     "6": "诗词背默"
+    }
+   },
+   {
+    "time": "13:30-14:15",
+    "cat": "围棋",
+    "cells": {
+     "1": "围棋",
+     "2": "围棋",
+     "3": "围棋",
+     "4": "围棋",
+     "5": "围棋"
+    }
+   },
+   {
+    "time": "14:30-15:00",
+    "cat": "数学",
+    "cells": {
+     "1": "乐读计算",
+     "2": "乐读计算",
+     "3": "乐读计算",
+     "4": "乐读计算",
+     "5": "乐读计算"
+    }
+   },
+   {
+    "time": "15:15-16:00",
+    "cat": "学习",
+    "cells": {
+     "1": "三年级预习",
+     "3": "三年级预习",
+     "5": "三年级预习",
+     "2": "一课一练",
+     "4": "一课一练"
+    }
+   },
+   {
+    "time": "16:30-17:15",
+    "cat": "英语",
+    "cells": {
+     "1": "学而思作业",
+     "2": "学而思作业",
+     "3": "学而思作业",
+     "4": "学而思作业",
+     "5": "学而思作业",
+     "6": "学而思作业"
+    }
+   },
+   {
+    "time": "19:45-20:30",
+    "cat": "英语",
+    "cells": {
+     "1": "KET",
+     "2": "KET",
+     "3": "KET",
+     "4": "KET",
+     "5": "KET",
+     "6": "KET",
+     "0": "KET"
+    }
+   },
+   {
+    "time": "20:30-20:45",
+    "cat": "英语",
+    "cells": {
+     "2": "学而思词句默写",
+     "4": "学而思词句默写",
+     "0": "学而思词句默写"
+    }
+   },
+   {
+    "time": "21:00-21:30",
+    "cat": "英语",
+    "cells": {
+     "1": "英语阅读100篇",
+     "2": "英语阅读100篇",
+     "3": "英语阅读100篇",
+     "4": "英语阅读100篇",
+     "5": "英语阅读100篇",
+     "6": "复述",
+     "0": "英语阅读100篇"
+    }
+   },
+   {
+    "time": "21:30-22:00",
+    "cat": "阅读",
+    "cells": {
+     "1": "图书馆书",
+     "2": "图书馆书",
+     "3": "图书馆书",
+     "4": "图书馆书",
+     "5": "图书馆书",
+     "6": "图书馆书",
+     "0": "图书馆书"
+    }
+   }
+  ]
+ }
+};
+
+</script>
 <!-- R272-1：统一持久化数据层必须先于 store.js 加载；它只提供异步事务能力，
      不改变 S.load() / S.save() 的同步调用语义，也不触碰任何页面 UI。 -->
 <script>
@@ -13878,9 +14729,18 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
     var list = [LS_MIRROR].concat(LS_MIRROR_B.slice(0,2));
     for(var i=0;i<list.length;i++){
       var r = _lsGet(list[i]);
-      if(jsonOk(r)) return { raw:r, ts:_lsMetaTs(), src:'degraded-localStorage' };
+      if(jsonOk(r)) return { raw:r, ts:_mirrorTs(), src:'degraded-localStorage' };
     }
     return null;
+  }
+  /* R296-2.2【刷新丢打卡根因】：降级副本必须带自己的写入时间戳。
+     旧实现把「桥梁快照 z00_checkin_v3_meta.savedAt」当成镜像时间，
+     于是镜像明明落后（IndexedDB / 降级写是异步的，用户点完打卡立刻刷新时还没写完），
+     却被标记成最新，recoveredRaw() 的「桥梁更新就让位」判断永远不成立，
+     刷新后 load() 读到的是打卡前的旧副本 → 打卡记录、星星、当天记录全部消失。
+     镜像自己的时间存在 LS_MIRROR_B[2] 的 { at } 里，这里单独取出来比较。 */
+  function _mirrorTs(){
+    try{ var m = JSON.parse(_lsGet(LS_MIRROR_B[2]) || 'null'); return (m && m.at) || 0; }catch(e){ return 0; }
   }
 
   /* ----------------------------- 主库写入（排队事务 + 3 次退避重试） ----------------------------- */
@@ -14206,13 +15066,41 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
       return null;
     }).catch(function(){ return null; });
   }
+  /* R296-2.2：降级 / 启动异常时统一裁决「镜像 vs 桥梁快照」谁更新。
+     规则：时间戳大者胜；相同则优先桥梁（store.save 同步写入，内容必然不旧于镜像）。
+     结果写回 _primaryRaw/_primaryTs，并把落选一方补齐，避免下次启动又读到旧副本。 */
+  function _recoverDegraded(){
+    var d = _degradeRead();
+    var bridge = _lsGet(LS_KEY);
+    var bts = _lsMetaTs();
+    var mts = d ? (d.ts || 0) : 0;
+    if(jsonOk(bridge) && (!d || bts >= mts)){
+      _primaryRaw = bridge;
+      _primaryTs = bts || _now();
+      _recoveredFrom = d ? 'localStorage-bridge' : '';
+      if(d && bts > mts){
+        _degradeWrite(bridge, _primaryTs, true);
+        log('restore', { from:'localStorage-bridge', bytes:bridge.length, target:'degraded-mirror' });
+      }
+      return;
+    }
+    if(d){
+      _primaryRaw = d.raw; _primaryTs = mts || _now();
+      if(mts > bts){
+        _lsSet(LS_KEY, d.raw);
+        _lsSetMeta(_primaryTs, d.raw.length);
+        _recoveredFrom = 'degraded';
+        log('restore', { from:'degraded', bytes:d.raw.length, target:'localStorage-bridge' });
+      }
+    }
+  }
   function _hydrate(){
     return _open().then(function(db){
       if(!db){
         _degraded = true;
-        var d = _degradeRead();
-        if(d){ _primaryRaw = d.raw; _primaryTs = d.ts; }
-        log('boot', { mode:'degraded', reason:'indexeddb-unavailable' });
+        /* R296-2.2：降级模式同样要比时间戳，绝不能让「还没写完的旧镜像」压过桥梁快照。 */
+        _recoverDegraded();
+        log('boot', { mode:'degraded', reason:'indexeddb-unavailable', pick:_recoveredFrom || 'mirror' });
         return;
       }
       return read().then(function(rec){
@@ -14258,8 +15146,8 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
     }).catch(function(e){
       _degraded = true;
       log('boot-error', { error:String((e && e.message) || e) });
-      var d = _degradeRead();
-      if(d){ _primaryRaw = d.raw; _primaryTs = d.ts; }
+      /* R296-2.2：启动异常同样走「镜像 vs 桥梁」时间戳裁决，不无条件采信镜像 */
+      try{ _recoverDegraded(); }catch(_e){}
     });
   }
   function boot(){
@@ -14353,9 +15241,13 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
     /* 同步桥梁：store.js 的 load() 借此优先读 IndexedDB 主库 */
     recoveredRaw:function(){
       if(!_primaryRaw || !jsonOk(_primaryRaw)) return null;
-      /* 另一个标签页写了更新的 localStorage 时让位，避免覆盖 */
+      /* R296-2.2：只要桥梁快照的 savedAt 比镜像更新，就让位给 localStorage。
+         旧实现留 1500ms 容差，用户「点完打卡马上刷新」时差往往不到 1.5 秒，
+         结果读到的是还没写完的旧镜像 → 打卡记录 / 星星当场消失。
+         同一台设备同一时钟，时间戳由 store.save() 用同一个 _ts 写入两层，
+         因此这里不需要容差；相等时仍用镜像（内容一致）。 */
       var lt = _lsMetaTs();
-      if(lt && lt > _primaryTs + 1500) return null;
+      if(lt && lt > _primaryTs) return null;
       return _primaryRaw;
     },
     primaryTs:function(){ return _primaryTs; },
@@ -14753,7 +15645,18 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
       const _P = (typeof window !== 'undefined') ? window.R272P : null;
       if(_P && typeof _P.recoveredRaw === 'function'){
         const _r = _P.recoveredRaw();
-        if(_rawUsable(_r)) return {raw:_r, from:'nick_checkin_main_db'};
+        if(_rawUsable(_r)){
+          /* R296-2.2：IndexedDB / 降级镜像都是异步写的，用户「点完打卡立刻刷新」时
+             镜像可能还是上一份状态，而桥梁快照（localStorage 主键）是同步写好的。
+             桥梁 savedAt 更新 → 以桥梁为准，否则刷新后打卡记录会退回上一次写入前。 */
+          const _lt = _lastSavedAt();
+          const _pt = (typeof _P.primaryTs === 'function') ? (Number(_P.primaryTs()) || 0) : 0;
+          if(_lt && (!_pt || _lt > _pt)){
+            const _bridge = _safeGet(KEY);
+            if(_rawUsable(_bridge)) return {raw:_bridge, from:KEY};
+          }
+          return {raw:_r, from:'nick_checkin_main_db'};
+        }
       }
     }catch(e){}
     const main = _safeGet(KEY);
@@ -15446,14 +16349,64 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
     }));
   }
 
-  // v10.2：种子/水/阳光均用 stars（任务打卡产出）购买
+  /* R296-4：《打卡任务.xlsx》导入 —— 三张日程表（27-2 / 3-16 / 17-30）× 星期 × 时间段。
+     数据来自 r296_task_seed.js 的 window.R296_TASK_PLAN（构建期由 Excel 精确解析生成）。
+     每条任务带 plan:[{from,to,days:[0..6]}]，tasksForDate 按「当天日号落在哪个日期段 + 是否该星期」筛选，
+     从而实现「按打卡时间对应日期导入展示」。 */
+  function r296Plan(){
+    const p = (typeof window !== 'undefined') ? window.R296_TASK_PLAN : null;
+    return (p && Array.isArray(p.tasks)) ? p : null;
+  }
+  function r296ImportedTasks(){
+    const plan = r296Plan();
+    if(!plan) return [];
+    return plan.tasks.map(t=>{
+      const ranges = (t.plan||[]).map(p=>({from:Number(p.from),to:Number(p.to),days:(p.days||[]).map(Number)}));
+      return {
+        id: t.id, name: t.name, subject: t.subject, type:'必做任务', stars:2,
+        minutes: Number(t.minutes)||20,
+        desc: '来自《打卡任务》清单' + (t.time ? (' · ' + t.time) : ''),
+        standard: '按清单要求完成并打卡',
+        enabled: true, weekendOnly: false, card:'required',
+        time: t.time || '', plan: ranges, _r296: true
+      };
+    });
+  }
+  // R296-4.3：一周打卡计划（表头星期 + 左列时间段 + 单元格任务名），来自同一份 Excel 解析结果
+  function r296WeekPlanSeed(){
+    const plan = r296Plan();
+    const wp = plan && plan.weekPlan;
+    if(!wp || !Array.isArray(wp.rowsData) || !wp.rowsData.length) return null;
+    const rows = wp.rowsData.length;
+    const out = weekPlanSeed();
+    out.rows = rows;
+    out.times = wp.rowsData.map(r=>String(r.time||''));
+    out.cats  = wp.rowsData.map(r=>String(r.cat||''));
+    out.timeColors = new Array(rows).fill('#ffffff');
+    out.catColors  = new Array(rows).fill('#ffffff');
+    out.cells = {}; out.merges = [];
+    wp.rowsData.forEach((r, ri)=>{
+      const cs = r.cells || {};
+      Object.keys(cs).forEach(k=>{
+        /* 种子里用的是 JS getDay() 口径（0=周日,1=周一…6=周六）；
+           表格列顺序是 周一…周日（c=0..6），故 周日 落到第 7 列。 */
+        const dow = Number(k);
+        if(!(dow >= 0 && dow <= 6)) return;
+        const ci = (dow === 0) ? 6 : dow - 1;
+        out.cells[ri + '-' + ci] = { t: String(cs[k]||''), c:'#ffffff' };
+      });
+    });
+    return out;
+  }
+  // R296-1：作物兑换（卖出回收）金币价改为 玉米2 / 土豆2 / 胡萝卜2 / 水稻4 / 草莓6 / 西瓜8
+  const CROP_SELL_DEFAULT = {s_corn:2, s_potato:2, s_carrot:2, s_rice:4, s_strawberry:6, s_watermelon:8};
   const seedShop = ()=>[
-    {id:'s_corn',     name:'玉米种子',   ico:'🌽',desc:'生长快',     price:3,  crop:'corn',     sellCoins:8},
-    {id:'s_potato',   name:'土豆种子',   ico:'🥔',desc:'生长快',     price:3,  crop:'potato',   sellCoins:8},
-    {id:'s_carrot',   name:'胡萝卜种子', ico:'🥕',desc:'生长快',     price:4,  crop:'carrot',   sellCoins:10},
-    {id:'s_rice',     name:'水稻种子',   ico:'🌾',desc:'生长中',     price:5,  crop:'rice',     sellCoins:14},
-    {id:'s_strawberry',name:'草莓种子',  ico:'🍓',desc:'生长中',     price:8,  crop:'strawberry',sellCoins:22},
-    {id:'s_watermelon',name:'西瓜种子',  ico:'🍉',desc:'生长慢',     price:12, crop:'watermelon',sellCoins:36}
+    {id:'s_corn',     name:'玉米种子',   ico:'🌽',desc:'生长快',     price:3,  crop:'corn',     sellCoins:CROP_SELL_DEFAULT.s_corn},
+    {id:'s_potato',   name:'土豆种子',   ico:'🥔',desc:'生长快',     price:3,  crop:'potato',   sellCoins:CROP_SELL_DEFAULT.s_potato},
+    {id:'s_carrot',   name:'胡萝卜种子', ico:'🥕',desc:'生长快',     price:4,  crop:'carrot',   sellCoins:CROP_SELL_DEFAULT.s_carrot},
+    {id:'s_rice',     name:'水稻种子',   ico:'🌾',desc:'生长中',     price:5,  crop:'rice',     sellCoins:CROP_SELL_DEFAULT.s_rice},
+    {id:'s_strawberry',name:'草莓种子',  ico:'🍓',desc:'生长中',     price:8,  crop:'strawberry',sellCoins:CROP_SELL_DEFAULT.s_strawberry},
+    {id:'s_watermelon',name:'西瓜种子',  ico:'🍉',desc:'生长慢',     price:12, crop:'watermelon',sellCoins:CROP_SELL_DEFAULT.s_watermelon}
   ];
   const growthShop = ()=>[
     // R261-2.4：水的标识文字改为「壶 / 桶」——1 壶浇 1 次，1 桶 = 5 壶浇 5 次
@@ -16357,6 +17310,35 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
       st._r295ReqV1 = true;
       save(st);
     }
+    /* R296-4.1/4.2/4.3：一次性把上一版导入的必做任务（r295_*）清掉，改按《打卡任务.xlsx》
+       三张日程表（27-2 / 3-16 / 17-30）重新导入：每条任务带时间段 + 星期 + 日期段，
+       首页「更任务」按当天日期自动出当天该做的项；同时把同一份解析结果写入首页「一周打卡计划」。
+       ⚠️ 只替换任务清单与一周计划，st.records（历史打卡）、学习内容、自定义配置一律不删不覆盖；
+          旧任务仅保留 id/name/subject 轻量快照，供历史记录回显名称。 */
+    if(!st._r296TaskV1){
+      const _isOld = t => !!(t && (t._r295 === true || /^r295_/.test(String(t.id||'')) || t._r296 === true));
+      const _old = (st.tasks||[]).filter(_isOld);
+      st.r296TaskBackup = { at: Date.now(), tasks: _old.map(t=>({id:t.id, name:t.name, subject:t.subject, type:t.type})) };
+      st.tasks = (st.tasks||[]).filter(t=>! _isOld(t)).concat(r296ImportedTasks());
+      /* R296-2.2：更新当天已经用旧清单打过卡的项目，按「同名 + 同科目」把 record 的 taskId
+         映射到新任务上 —— 只动「今天」的 taskId 指针，不改条数、不改历史日期、不改星星；
+         否则用户更新完会看到「今天明明打过卡了，却全变回未打卡」。 */
+      try{
+        const _today = todayStr();
+        const _newTasks = st.tasks.filter(t=>t && t._r296);
+        (st.r296TaskBackup.tasks || []).forEach(old=>{
+          const nt = _newTasks.find(t=>t.name === old.name && t.subject === old.subject);
+          if(!nt) return;
+          (st.records||[]).forEach(r=>{
+            if(r && r.date === _today && r.taskId === old.id && r.completed){ r.taskId = nt.id; r._r296Remap = 1; }
+          });
+        });
+      }catch(e){}
+      const _wp = r296WeekPlanSeed();
+      if(_wp) st.weekPlan = _wp;
+      st._r296TaskV1 = true;
+      save(st);
+    }
     // R16-3：首页标语迁移（仅当用户仍沿用旧默认标语时升级为新标语；家长自定义过的标语保持不动）
     (function(){
       const oldZh = '不要烦，不要烦，工作永远做不完';
@@ -16500,6 +17482,18 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
     if(st.__schema !== SCHEMA_VERSION) st.__schema = SCHEMA_VERSION;
     // R259：迁移闸 —— 任何被迁移逻辑清零的保护字段，在这里立刻从备份回填
     _guardRestore(st, _gcap);
+    /* R296-2.1：一次性清空「计算小超市」错题本（用户明确要求只清这一项）。
+       必须放在迁移闸之后：错题本在 GUARD_MIGRATION_KEYS 里，先清会被防清零回填救回来。
+       只清 calcWrongBook，其余用户私有数据（打卡记录 / 星星 / 学习内容 / 自定义配置）一律不动；
+       用 _r296WrongCleared 标记保证只执行一次，此后新产生的错题正常累积。 */
+    if(st._r296WrongCleared !== 1){
+      const _wbN = Array.isArray(st.calcWrongBook) ? st.calcWrongBook.length : 0;
+      st.calcWrongBook = [];
+      st._r296WrongCleared = 1;
+      st._r296WrongClearedAt = Date.now();
+      st._r296WrongClearedN = _wbN;
+      try{ const _rawWb = JSON.stringify(st); if(_safeSet(KEY, _rawWb)){ _loadCachePut(st, _rawWb); } }catch(e){}
+    }
     _persistedShape = _guardCapture(st);
     _loadCachePut(st);   // R246-3：解析 + 迁移完成后写入缓存
     // R254-1：若本次是从备份救回来的，立即回写主存档，保证下次打开读的是完整数据
@@ -17589,6 +18583,23 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
         return false;
       }
       // V11.4：按周循环（多选 · 单选/全不选）
+      /* R296-4.2：按《打卡任务》日程表的「日期段 + 星期」筛选 ——
+         plan 形如 [{from:27,to:2,days:[1,2,3,4,5]}, {from:3,to:16,days:[1]}]
+         from>to 表示跨月（27,28,29,30,31,1,2）；不在任何日期段内则当天不展示。 */
+      if(Array.isArray(t.plan) && t.plan.length){
+        const dom = d.getDate();
+        for(let i=0;i<t.plan.length;i++){
+          const p = t.plan[i] || {};
+          const from = Number(p.from), to = Number(p.to);
+          if(!(from >= 1 && to >= 1)) continue;
+          const inRange = (from <= to) ? (dom >= from && dom <= to) : (dom >= from || dom <= to);
+          if(!inRange) continue;
+          const ds = Array.isArray(p.days) ? p.days.map(Number) : [];
+          if(!ds.length) return true;
+          if(ds.indexOf(dow) >= 0) return true;
+        }
+        return false;
+      }
       if(t.daysOfWeek && t.daysOfWeek.length){
         return t.daysOfWeek.indexOf(String(dow)) >= 0;
       }
@@ -19005,6 +20016,15 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
     if(_sync('seeds', st.shop.seeds, seedShop())) dirty = true;
     if(_sync('growth', st.shop.growth, growthShop())) dirty = true;
     if(_sync('gifts', st.shop.gifts, giftShop())) dirty = true;
+    // R296-1：作物回收金币价一次性切换到新版配置（玉米/土豆/胡萝卜 2、水稻 4、草莓 6、西瓜 8）。
+    // 仅执行一次：之后家长在「设置中心 → 种植园设置 → 作物兑换金币」改过的价格不会被再次覆盖。
+    if(st.shop._r296Sell !== 1){
+      (st.shop.seeds||[]).forEach(s=>{
+        if(s && CROP_SELL_DEFAULT[s.id] != null) s.sellCoins = CROP_SELL_DEFAULT[s.id];
+      });
+      st.shop._r296Sell = 1;
+      dirty = true;
+    }
     if(dirty) save(st);
     return st.shop;
   }
@@ -19056,6 +20076,28 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
     st.shop = {seeds: seedShop(), growth: growthShop(), gifts: giftShop()};
     save(st);
     return st.shop;
+  }
+  // R296-1：作物兑换金币价（成熟后卖出回收价）——读整表 / 按种子 id 单改
+  function getCropSellPrices(){
+    const s = ensureShop();
+    const out = {};
+    (s.seeds||[]).forEach(x=>{ if(x && x.id) out[x.id] = parseInt(x.sellCoins)||0; });
+    return out;
+  }
+  function setCropSellPrice(seedId, coins){
+    if(!seedId) return {ok:false, msg:'缺少种子 ID'};
+    const v = Math.max(0, parseInt(coins)||0);
+    const r = updateShopItem('seed', seedId, {sellCoins: v});
+    if(r && r.ok) return {ok:true, coins:v};
+    return r || {ok:false};
+  }
+  function resetCropSellPrices(){
+    const s = ensureShop();
+    (s.seeds||[]).forEach(x=>{
+      if(x && CROP_SELL_DEFAULT[x.id] != null) x.sellCoins = CROP_SELL_DEFAULT[x.id];
+    });
+    const st = load(); st.shop = s; save(st);
+    return getCropSellPrices();
   }
   function getState(){
     const s = ensureShop();
@@ -25010,6 +26052,7 @@ be 动词：am / is → was；are → were
     getSectionTitleTexts, setSectionTitleText, getSectionTitleStyles, setSectionTitleStyle,
     getFarmLayout, setFarmLayout,
     getShop, getShopItems, addShopItem, removeShopItem, updateShopItem, resetShop,
+    getCropSellPrices, setCropSellPrice, resetCropSellPrices,
     getProfileAvatar, setProfileAvatar, clearProfileAvatar,
     // V35：壁纸模式 — 任务卡片归属 + 首页横幅配置
     defaultTaskCard, getTaskCard, setTaskCard, getTasksByCard,
@@ -38509,6 +39552,40 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     if(box) box.hidden = false;
     injectDailyChengyuCard();
   }
+  /* R296-3.2/3.3：【好词使用】独立卡 —— 把好词的释义 / 例句从「好词好句」迁出，
+     放在好词好句、古诗词鉴赏、优秀作文三张卡下方；内部子卡片一行 3 个。
+     数据仍取同一份好词分组（当日轮换结果与好词好句卡完全一致），只做展示层拆词，不改任何存档。 */
+  function haociUseListOf(groups){
+    const out = [], seen = {};
+    (groups||[]).forEach(it=>{
+      if(!it || it.meta !== '好词') return;
+      haociWordsOf(it.body).forEach(w=>{
+        if(!w || seen[w]) return;
+        seen[w] = 1;
+        const dt = haociDetailOf(w);
+        out.push({ w: w, m: (dt && dt.m) || '', e: (dt && dt.e) || '' });
+      });
+    });
+    return out;
+  }
+  function renderHaociUseCard(sysWords){
+    const grid = document.getElementById('haociUseGrid');
+    if(!grid) return;
+    const src = (sysWords && sysWords.length)
+      ? sysWords
+      : (S.getReading('cnWords')||[]).filter(x=>x && x.source!=='user' && x.meta==='好词');
+    const list = haociUseListOf(dailyRotate(src, 1, 0));
+    if(!list.length){
+      grid.innerHTML = '<div class="col-empty">今日暂无好词～</div>';
+      return;
+    }
+    grid.innerHTML = list.map(x=>`
+      <div class="haoci-use-item">
+        <div class="hu-w">✨ ${esc(x.w)}</div>
+        ${x.m?'<div class="hu-def"><b>释义：</b>'+esc(x.m)+'</div>':''}
+        ${x.e?'<div class="hu-ex"><b>例句：</b>'+esc(x.e)+'</div>':''}
+      </div>`).join('');
+  }
   function renderReading(){
     // R9-REQ2：重置英语短文朗读状态机（每篇独立 idle/playing/paused）
     _passagePlayingTitle = null;
@@ -38521,27 +39598,19 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     const userW = allWords.filter(x=>x.source==='user');
     const sysWords = allWords.filter(x=>x.source!=='user' && x.meta==='好词');
     const sysSent  = allWords.filter(x=>x.source!=='user' && x.meta==='好句');
-    // R295-2.1：好词按「每个词语单独展示」拆分，每组词语逐词成卡；原分组数据本身不改动
-    const rawWordItems = [
+    // R296-3.1：好词好句恢复 R295 之前的分组展示（一组好词 = 一张卡，原文整段展示）。
+    // 逐词释义 / 例句已迁出到下方独立卡【好词使用】，不再拆散好词好句本身。
+    const cnWordsItems = [
       ...userW.filter(x=>x.meta==='好词'), ...dailyRotate(sysWords, 1, 0),
       ...userW.filter(x=>x.meta==='好句'), ...dailyRotate(sysSent, 1, 1)
     ];
-    const cnWordsItems = [];
-    rawWordItems.forEach(it=>{
-      if(it && it.meta==='好词' && it.body && it.source!=='user'){
-        const words = haociWordsOf(it.body);
-        if(words.length){
-          words.forEach(w=>cnWordsItems.push({title:w, body:'', meta:'好词', source:it.source, _haociWord:true}));
-          return;
-        }
-      }
-      cnWordsItems.push(it);
-    });
     // V19-5：日常交流 = 每日 1 个主题对话（6-7 句）
     // R56-6：主视图恢复三栏并列（语文 3 栏 + 英语 2 栏），归档内容不在此展示
     fillCol('#enColSpeak',   colContent('enSpeaking',1, 4), 'enSpeaking','en', true);
     fillCol('#enColPassage', colContent('enPassage', 1, 3, 2), 'enPassage', 'en');
     fillCol('#cnColWords',   cnWordsItems, 'cnWords', 'cn');
+    // R296-3.2/3.3：好词使用（释义 + 例句）独立卡
+    renderHaociUseCard(sysWords);
     // R295-2.3：每日成语 + 文学小常识从好词栏移出，落到三张语文卡下方的「每日文学」横排卡片
     renderDailyLitCard();
     // R57-2：古诗词鉴赏每日只显示一首（每日轮换，offset=5 与其它栏错开）
@@ -38556,6 +39625,8 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   // R53-6：收录书屋 = 大阅读主视图 —— 主题按钮切换展示对应阅读内容（内容分页见 fillCol）
   const BS_TABS = [
     {key:'cnWords',label:'✨ 好词好句'},
+    // R296-3.4：好词使用（释义 + 例句）同步进入收录书屋
+    {key:'cnWordUse',label:'✨ 好词使用'},
     // R273-6.3：文学小常识入口 —— 固定排在「好词好句」与「古诗词鉴赏」之间
     {key:'cnLore',label:'📖 文学小常识'},
     {key:'cnPoem',label:'📜 古诗词鉴赏'},
@@ -38571,6 +39642,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   let _bsOpen = false;
   const BS_COLS = [
     {key:'cnWords',    sel:'#bsColWords'},
+    {key:'cnWordUse',  sel:'#bsColWordUse'},
     {key:'cnLore',     sel:'#bsColLore'},
     {key:'cnPoem',     sel:'#bsColPoem'},
     {key:'cnEssay',    sel:'#bsColEssay'},
@@ -38601,6 +39673,11 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       if(lore) out.push({title:lore.t, meta:'文学小常识', source:'sys', body:lore.c});
       return out;
     }
+    if(kind === 'cnWordUse'){
+      // R296-3.4：全量好词（内置）逐词展开，附释义与例句
+      const groups = (S.getReading('cnWords')||[]).filter(x=>x && x.source!=='user' && x.meta==='好词');
+      return haociUseListOf(groups).map(x=>({ title:x.w, meaning:x.m, example:x.e, meta:'好词使用', source:'sys' }));
+    }
     if(kind === 'cnChengyu'){
       const list = (window.CHENGYU_SEED || []).filter(x => x && x.word);
       return list.map(x => ({
@@ -38629,18 +39706,13 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       return '<div class="bs-lit-item"><div class="ri-title">'+esc(it.title||'')+' <span class="ri-meta">'+esc(it.meta||'')+'</span></div>'+
         '<div class="ri-body">'+esc(it.body||'')+'</div></div>';
     }
-    // R295-2.1：收录书屋好词好句也按「一词一卡 + 释义 + 例句」展示，原分组数据不删
-    if(kind==='cnWords' && it && it.meta==='好词' && it.body && it.source!=='user'){
-      const words = haociWordsOf(it.body);
-      if(words.length){
-        return '<div class="bs-item bs-haoci-group"><div class="ri-title">'+esc(it.title||'好词积累')+' <span class="ri-meta" style="background:'+tagBg+'">'+tagTxt+'</span></div>'+
-          words.map(w=>{
-            const dt = haociDetailOf(w);
-            return '<div class="bs-haoci-word"><div class="ri-body"><div class="bs-haoci-w">✨ '+esc(w)+'</div>'+
-              (dt&&dt.m?'<div class="haoci-def"><b>释义：</b>'+esc(dt.m)+'</div>':'')+
-              (dt&&dt.e?'<div class="haoci-ex"><b>例句：</b>'+esc(dt.e)+'</div>':'')+'</div></div>';
-          }).join('')+'</div>';
-      }
+    // R296-3.4：收录书屋「好词使用」条目 —— 词语 + 释义 + 例句
+    if(kind==='cnWordUse'){
+      return '<div class="bs-item bs-haoci-word">'+
+        '<div class="ri-title">✨ '+esc(it.title||'')+' <span class="ri-meta" style="background:'+tagBg+'">'+tagTxt+'</span></div>'+
+        (it.meaning?'<div class="haoci-def"><b>释义：</b>'+esc(it.meaning)+'</div>':'')+
+        (it.example?'<div class="haoci-ex"><b>例句：</b>'+esc(it.example)+'</div>':'')+
+      '</div>';
     }
     // 日常交流：完整展开主题 + 对话（复用主视图气泡渲染，保证内容一致）
     if(kind==='enSpeaking' && it.lines){
@@ -38664,7 +39736,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   }
   // R57-2：收录书屋各主题独立页码
   // R59-5：每页条数按主题配置 —— 好词好句 6 / 古诗词鉴赏 4 / 优秀作文 2 / 日常交流 2 / 英语短文 2
-  const BS_PER_PAGE = { cnWords:6, cnLore:6, cnPoem:4, cnEssay:2, dailyLit:2, enSpeaking:2, enPassage:2, cnChengyu:4 };
+  const BS_PER_PAGE = { cnWords:6, cnWordUse:9, cnLore:6, cnPoem:4, cnEssay:2, dailyLit:2, enSpeaking:2, enPassage:2, cnChengyu:4 };
   let _bsTab = 'cnWords';
   let _bsPage = {};
   function renderBookstoreAll(){
@@ -38779,20 +39851,6 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     return items.map(it => {
       const enCls = scope==='en'?'ri-en':'';
       const userTag = it.source==='user'?'<span class="ri-meta" style="background:#ffd24d;color:#14335f">👤 我的</span>':'';
-      // R295-2.1：好词逐词卡 —— 一词一卡，附释义 + 例句；打卡键按词条独立（沿用 cnWords 机制）
-      if(kind==='cnWords' && it && it._haociWord){
-        const w = it.title || '';
-        const dt = haociDetailOf(w);
-        const on = S.isReadingRead('cnWords', w);
-        const def = dt && dt.m ? '<div class="haoci-def"><b>释义：</b>'+esc(dt.m)+'</div>' : '';
-        const ex  = dt && dt.e ? '<div class="haoci-ex"><b>例句：</b>'+esc(dt.e)+'</div>' : '';
-        const tag = it.source==='user' ? '<span class="ri-meta" style="background:#ffd24d;color:#14335f">👤 我的</span>' : '';
-        return '<div class="reading-item is-haoci-word '+(on?'is-checked':'')+'">'+
-          '<div class="ri-head-row"><div class="ri-title">✨ '+esc(w)+' '+tag+'</div>'+
-          '<button class="ri-checkin-btn '+(on?'checked':'')+'" data-ri-checkin="cnWords::'+esc(w)+'" title="'+(on?'已打卡（点击取消）':'点击打卡')+'"></button></div>'+
-          '<div class="ri-meta">好词</div>'+(def||'<div class="haoci-def">释义：自定义词语</div>')+ex+
-        '</div>';
-      }
       // R204：古诗词鉴赏 —— 正文按句分行，并补「诗词大意 / 创作背景 / 赏析」三段
       const isPoem = kind === 'cnPoem';
       const analysisHtml = isPoem
@@ -40915,6 +41973,8 @@ function renderKMAdmin(){
     // 渲染农场市集（种子+工具）/ 云上小卖部（礼物）列表
     renderShopEditor('farmSetMarketList', ['seed','growth']);
     renderShopEditor('farmSetShopList',   ['gift']);
+    // R296-1：作物兑换金币（成熟卖出回收价）
+    renderCropSellEditor('farmSetSellList');
     // R124：游戏开放时间（工作日时段窗 + 周末/节假日 + 自定义开放日）
     initFarmOpenSetting();
     renderFarmCurrency(); // R150-7：打开种植园设置时回填货币数值
@@ -40950,6 +42010,7 @@ function renderKMAdmin(){
     }
     bindShopList('farmSetMarketList');
     bindShopList('farmSetShopList');
+    bindCropSellEditor('farmSetSellList');
     // R150-7：货币（星星/水滴/阳光/金币）增减 + 一键清零（仅家长模式）
     if(!_farmCurBound){
       _farmCurBound = true;
@@ -41077,6 +42138,51 @@ function renderKMAdmin(){
       </div>`;
     }).join('');
     c.innerHTML = sections;
+  }
+  // R296-1：作物兑换金币（成熟卖出回收价）编辑器 —— 家长可在设置中心逐项改价
+  function renderCropSellEditor(containerId){
+    const c = $('#'+containerId);
+    if(!c) return;
+    const seeds = S.getShopItems('seed') || [];
+    const def = {s_corn:2, s_potato:2, s_carrot:2, s_rice:4, s_strawberry:6, s_watermelon:8};
+    c.innerHTML = `<div class="peg-shop-section">
+      <div class="peg-shop-section-title">🌾 成熟作物（金币 / 个）
+        <button class="peg-btn" data-r296-sell-reset="1">↺ 恢复默认价</button>
+      </div>
+      <div class="peg-shop-rows">
+        ${seeds.map(it=>`
+          <div class="peg-shop-row" data-id="${esc(it.id)}">
+            <span class="peg-shop-ico">${_shopIcoHtml(it.ico)}</span>
+            <span class="peg-shop-name">${esc(String(it.name||'').replace(/种子$/,''))}</span>
+            <span class="peg-shop-price">💰 <input type="number" min="0" step="1" value="${parseInt(it.sellCoins)||0}" data-r296-sell-input="${esc(it.id)}" style="width:54px"></span>
+            <span class="peg-shop-def" style="color:var(--muted);font-size:12px">默认 ${def[it.id]!=null?def[it.id]:'-'}</span>
+          </div>`).join('')}
+      </div>
+    </div>`;
+  }
+  function bindCropSellEditor(containerId){
+    const c = $('#'+containerId);
+    if(!c || c._sellBound) return;
+    c._sellBound = true;
+    c.addEventListener('change', e=>{
+      const p = e.target.closest('[data-r296-sell-input]');
+      if(!p) return;
+      const id = p.dataset.r296SellInput;
+      const v = Math.max(0, parseInt(p.value)||0);
+      const r = S.setCropSellPrice(id, v);
+      if(!r || !r.ok){ toast('保存失败，请重试'); return; }
+      p.value = String(v);
+      renderFarm();
+      toast('✓ 兑换价已更新：' + v + ' 金币');
+    });
+    c.addEventListener('click', e=>{
+      const b = e.target.closest('[data-r296-sell-reset]');
+      if(!b) return;
+      S.resetCropSellPrices();
+      renderCropSellEditor(containerId);
+      renderFarm();
+      toast('↺ 已恢复默认兑换价');
+    });
   }
   function handleParentEditBgFile(sectionId, file){
     if(!file) return;
