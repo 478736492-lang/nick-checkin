@@ -10546,6 +10546,23 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
 .zhts-fallback{padding:28px;text-align:center;font-size:16px;line-height:1.8}
 .zhts-fallback[hidden]{display:none}
 
+/* ============ R295-2 大阅读：好词逐词详解 + 【每日文学】独立横排卡片 ============ */
+.daily-lit-card{margin:12px 18px 18px;padding:12px 14px 14px;border:1px solid var(--tone-200);border-radius:16px;background:var(--tone-050);box-shadow:0 6px 18px rgba(30,58,138,.08)}
+.daily-lit-card>.reading-col-head{margin:0 0 10px}
+.dl-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.dl-item{min-width:0}
+.dl-item .reading-item{margin:0;height:100%}
+.dl-item .ri-body,.bs-lit-item .ri-body{font-size:13px;line-height:1.7;white-space:pre-line}
+.dl-item .ri-meta,.reading-item.is-haoci-word .ri-meta{display:inline-block;border-radius:999px;padding:2px 8px;font-size:11px;font-weight:700;background:var(--tone-100);color:var(--tone-800)}
+.reading-item.is-haoci-word .ri-title{color:var(--tone-950)}
+.haoci-def,.haoci-ex{margin-top:6px;padding:7px 10px;border-radius:10px;background:var(--tone-050);border:1px solid var(--tone-200);font-size:12.5px;line-height:1.65;color:var(--tone-950)}
+.haoci-ex{background:var(--tone-100)}
+.haoci-def b,.haoci-ex b{color:var(--tone-700)}
+#bsColDailyLit:not([hidden]){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.bs-lit-item,.bs-haoci-word{padding:10px 12px;border:1px solid var(--tone-200);border-radius:12px;background:var(--tone-050)}
+.bs-haoci-group .bs-haoci-word{margin-top:8px}
+.bs-haoci-w{font-weight:800;color:var(--tone-950);font-size:13.5px}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -11547,10 +11564,17 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
           <div class="reading-col-list" id="cnColEssay" data-page-node-id="UpqHqBYMlMq8oxJHmYonsl8"></div>
         </div>
       </div>
+      <!-- R295-2.2/2.3：【每日文学】独立卡 —— 每日成语 + 文学小常识横向排布，位于三张语文卡下方 -->
+      <div class="daily-lit-card" id="dailyLitCard">
+        <div class="reading-col-head">📖 每日文学</div>
+        <div class="dl-grid">
+          <div class="dl-item" id="dailyLitChengyu"></div>
+          <div class="dl-item" id="dailyLitLore"></div>
+        </div>
+      </div>
     </div>
 
-    <!-- R273-6.1：大阅读中原「文学小常识」预留卡已按需求删除，卡片整体迁移至
-         「好词好句」栏（每日成语与好词之间）与「收录书屋 · 文学小常识」入口。 -->
+    <!-- R295-2.2：原「每日成语 / 文学小常识」已从好词好句卡迁出，统一收进上方【每日文学】卡。 -->
 
     <!-- 英语：日常交流 / 英语短文 两栏并列 -->
     <div class="reading-area reading-en">
@@ -11584,6 +11608,7 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
         <div class="bs-theme-body" id="bsColLore" hidden data-page-node-id="R273bsLoreBody"></div>
         <div class="bs-theme-body" id="bsColPoem" hidden data-page-node-id="bsR57body0002"></div>
         <div class="bs-theme-body" id="bsColEssay" hidden data-page-node-id="bsR57body0003"></div>
+        <div class="bs-theme-body" id="bsColDailyLit" hidden data-page-node-id="bsR295dailyLit"></div>
         <div class="bs-theme-body" id="bsColSpeak" hidden data-page-node-id="bsR57body0004"></div>
         <div class="bs-theme-body" id="bsColPassage" hidden data-page-node-id="bsR57body0005"></div>
         <div class="bs-theme-body" id="bsColChengyu" hidden data-page-node-id="bsR57body0006"></div>
@@ -15374,6 +15399,52 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
     {id:uid(),name:'乐于助人',subject:'文明小标兵',type:'选做拓展任务',stars:2,minutes:5,desc:'主动帮助他人',standard:'主动帮助同学或家人',enabled:true,weekendOnly:false}
     // V39：删除选做中的「错题订正复盘」（错题卡片不再显示）
   ];
+  // R295-3.2：来自《打卡任务.xlsx》的必做任务清单（24 项周计划 + 6 项学而思作业）
+  const R295_REQ_TASKS = [
+    {name:"语文作文",subject:"语文",minutes:30,days:['1','2','3','4','5']},
+    {name:"阅读",subject:"阅读",minutes:30,days:['1','2','3','4','5']},
+    {name:"复述",subject:"语文",minutes:15,days:['6']},
+    {name:"阅读练习",subject:"语文",minutes:20,days:['1','3','4','5']},
+    {name:"拼音句型",subject:"语文",minutes:15,days:['2']},
+    {name:"看图写话",subject:"语文",minutes:25,days:['1','3','5']},
+    {name:"诗词背默",subject:"语文",minutes:15,days:['2','4','6']},
+    {name:"围棋",subject:"围棋",minutes:40,days:['1','2','3','4','5']},
+    {name:"乐读计算",subject:"数学",minutes:30,days:['1','2','3','4','5']},
+    {name:"三年级预习",subject:"语文",minutes:20,days:['1','2','3','4','5']},
+    {name:"一课一练",subject:"数学",minutes:20,days:['1','2','3','4','5']},
+    {name:"学而思作业",subject:"英语",minutes:25,days:['1','2','3','4','5','6','0']},
+    {name:"KET",subject:"英语",minutes:45,days:['1','2','3','4','5','6','0']},
+    {name:"学而思词句默写",subject:"英语",minutes:10,days:['2','4','0']},
+    {name:"英语阅读100篇",subject:"阅读",minutes:30,days:['1','2','3','4','5','6','0']},
+    {name:"图书馆书",subject:"阅读",minutes:30,days:['1','2','3','4','5','6','0']},
+    {name:"乐读计算小超市",subject:"数学",minutes:12,days:['1','2','3','4','5','6','0']},
+    {name:"乐读习题",subject:"数学",minutes:20,days:['1','3','5']},
+    {name:"乐读学以致用",subject:"数学",minutes:20,days:['4']},
+    {name:"周周练选题",subject:"英语",minutes:20,days:['1','2','3','5','6','0']},
+    {name:"学而思词汇语法",subject:"英语",minutes:20,days:['1','2','3','4','5','6','0']},
+    {name:"阅读理解",subject:"英语",minutes:20,days:['1','2','3','4','5','6']},
+    {name:"好词好句",subject:"语文",minutes:15,days:['1','2','3','4','5']},
+    {name:"好句仿写",subject:"语文",minutes:20,days:['2','3','5','6','0']},
+    {name:"写作",subject:"语文",minutes:30,days:['1']},
+    {name:"百词斩",subject:"英语",minutes:15,days:['1','2','3','4','5','6','0']},
+    {name:"语法题",subject:"英语",minutes:15,days:['1','2','3','4','5','6']},
+    {name:"RAZ",subject:"英语",minutes:20,days:['1','2','3','4','5','6']},
+    {name:"听力（春天单词）",subject:"英语",minutes:15,days:['1','2','3','4','5','6']},
+    {name:"听力Plus-KET对话",subject:"英语",minutes:15,days:['0']},
+    {name:"作文",subject:"英语",minutes:30,days:['0']},
+  ];
+  function r295NewTasks(){
+    const ALL = ['0','1','2','3','4','5','6'];
+    return R295_REQ_TASKS.map((x,i)=>({
+      id:'r295_' + String(i+1).padStart(2,'0'),
+      name:x.name, subject:x.subject, type:'必做任务', stars:2,
+      minutes:Number(x.minutes)||20,
+      desc:'来自《打卡任务》清单', standard:'按清单要求完成并打卡',
+      enabled:true, weekendOnly:false,
+      daysOfWeek:(x.days && x.days.length) ? x.days.slice() : ALL,
+      card:'required', _r295:true
+    }));
+  }
 
   // v10.2：种子/水/阳光均用 stars（任务打卡产出）购买
   const seedShop = ()=>[
@@ -16262,8 +16333,28 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
       if((st.tasks||[]).length !== before) save(st);
     }
     // R13-Req4：作息任务迁移（老数据补齐「10:00前睡觉」，已存在则跳过）
-    if(Array.isArray(st.tasks) && !st.tasks.some(t=>t && t.subject==='作息')){
+    // R295：新清单已整体替换必做任务，此后的老迁移不得再把作息任务塞回来
+    if(!st._r295ReqV1 && Array.isArray(st.tasks) && !st.tasks.some(t=>t && t.subject==='作息')){
       st.tasks.push({id:uid(),name:'10:00前睡觉',subject:'作息',type:'必做任务',stars:2,minutes:0,desc:'每晚10点前上床睡觉',standard:'10:00前熄灯入睡',enabled:true,weekendOnly:false});
+      save(st);
+    }
+    // R295-3.1/3.2/3.3：一次性把旧必做任务替换为《打卡任务.xlsx》清单（31 项，每项 2⭐）。
+    // 只替换 st.tasks 中的必做项；st.records（历史打卡）、学习内容、自定义配置一律不删不覆盖。
+    // 旧必做任务仅留一份轻量快照在 r295ReqBackup，供历史记录回显名称使用。
+    if(!st._r295ReqV1){
+      const oldReq = (st.tasks||[]).filter(t=>t && t.type==='必做任务');
+      st.r295ReqBackup = {
+        at: Date.now(),
+        tasks: oldReq.map(t=>({id:t.id, name:t.name, subject:t.subject, type:t.type}))
+      };
+      // 运动 / 作息 / 家务 / 围棋原有任务改为选做保留（不是清单里的必做项，但功能与历史记录不能丢）
+      st.tasks = (st.tasks||[]).map(t=>{
+        if(t && t.type==='必做任务' && (t.subject==='运动'||t.subject==='作息'||t.subject==='家务小帮手'||t.subject==='围棋')){
+          return Object.assign({}, t, {type:'选做拓展任务', card:'optional', _r295Kept:true});
+        }
+        return t;
+      }).filter(t=>!t || t.type!=='必做任务').concat(r295NewTasks());
+      st._r295ReqV1 = true;
       save(st);
     }
     // R16-3：首页标语迁移（仅当用户仍沿用旧默认标语时升级为新标语；家长自定义过的标语保持不动）
@@ -38346,18 +38437,33 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     const sys = all.filter(x=>x.source!=='user');
     return [...user, ...dailyRotate(sys, win, offset, everyN)];
   }
-  // R209-2：好词好句栏每日展示 1 个成语打卡卡（每日轮换，布局复用 .reading-item，与好词好句其它主题卡一致）
+  // R295-2.1：好词逐词详解查询（194 词内置详解；自定义词回退成语库；均无则只显示原词）
+  function haociDetailOf(word){
+    const list = window.HAOCI_DETAIL_SEED || [];
+    let d = null;
+    for(let i=0;i<list.length;i++){ if(list[i] && list[i].w === word){ d = list[i]; break; } }
+    if(!d){
+      const cy = window.CHENGYU_SEED || [];
+      for(let i=0;i<cy.length;i++){ if(cy[i] && cy[i].word === word){ d = {w:word, m:cy[i].meaning||'', e:cy[i].example||''}; break; } }
+    }
+    return d;
+  }
+  function haociWordsOf(body){
+    return String(body||'').split(/[、，,；;。]/).map(s=>String(s).trim()).filter(Boolean);
+  }
+  // R209-2：好词好句栏每日展示 1 个成语打卡卡（R295 起迁入「每日文学」独立卡）
   function dailyChengyuItem(){
     const seed = (window.CHENGYU_SEED || []).filter(x => x && x.word);
     if(!seed.length) return null;
     const n = Math.floor(Date.now()/86400000) % seed.length;
     return seed[n] || seed[0];
   }
+  // R295-2.2/2.3：每日成语 + 文学小常识迁入「每日文学」独立卡（横向两栏，位于三张语文卡下方）
   function injectDailyChengyuCard(){
-    const col = document.getElementById('cnColWords');
+    const col = document.getElementById('dailyLitChengyu');
     if(!col) return;
     const x = dailyChengyuItem();
-    if(!x) return;
+    if(!x){ col.innerHTML = '<div class="col-empty">今日暂无成语内容～</div>'; injectDailyLoreCard(); return; }
     const isChecked = S.isReadingRead('cnWords', x.word);
     const parts = [];
     if(x.meaning) parts.push('【释义】'+x.meaning);
@@ -38366,18 +38472,15 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     const body = parts.map(p=>esc(p)).join('<br>');
     const card = '<div class="reading-item is-cydaily '+(isChecked?'is-checked':'')+'">'+
       '<div class="ri-head-row">'+
-        '<div class="ri-title">🀄 '+esc(x.word)+' <span class="ri-meta" style="background:#dbeafe;color:#1e3a8a;margin-left:4px">每日成语</span></div>'+
+        '<div class="ri-title">🀄 '+esc(x.word)+' <span class="ri-meta">每日成语</span></div>'+
         '<button class="ri-checkin-btn '+(isChecked?'checked':'')+'" data-ri-checkin="cnWords::'+esc(x.word)+'" title="'+(isChecked?'已打卡（点击取消）':'点击打卡')+'"></button>'+
       '</div>'+
       '<div class="ri-body">'+body+'</div>'+
     '</div>';
-    /* R275-3：四张内容卡自上而下为 好词 → 好句 → 每日成语 → 文学小常识。
-       两张「每日」卡一律追加到列尾，不再插到列首。 */
-    col.insertAdjacentHTML('beforeend', card);
-    // R275-3：文学小常识卡紧跟「每日成语」卡之后（即整列最后一张）
+    col.innerHTML = card;
     injectDailyLoreCard();
   }
-  /* R273-6.2：文学小常识每日卡 —— R275-3 起位置固定在「每日成语」之后、整列末尾。
+  /* R273-6.2 / R295-2.2：文学小常识每日卡，位置改为「每日文学」右栏。
      打卡完全复用好词好句机制：data-ri-checkin="cnWords::<词条>"，
      即同一 readFlags 键、同一 +1⭐ 规则、同一撤销扣回逻辑，不新增任何存储字段。 */
   function dailyLoreItem(){
@@ -38387,21 +38490,24 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     return seed[n] || seed[0];
   }
   function injectDailyLoreCard(){
-    const col = document.getElementById('cnColWords');
+    const col = document.getElementById('dailyLitLore');
     if(!col) return;
     const x = dailyLoreItem();
-    if(!x) return;
+    if(!x){ col.innerHTML = '<div class="col-empty">今日暂无文学小常识～</div>'; return; }
     const isChecked = S.isReadingRead('cnWords', x.t);
     const card = '<div class="reading-item is-lore-daily '+(isChecked?'is-checked':'')+'">'+
       '<div class="ri-head-row">'+
-        '<div class="ri-title">📖 '+esc(x.t)+' <span class="ri-meta" style="background:#e8f0fe;color:#1e3a8a;margin-left:4px">文学小常识</span></div>'+
+        '<div class="ri-title">📖 '+esc(x.t)+' <span class="ri-meta">文学小常识</span></div>'+
         '<button class="ri-checkin-btn '+(isChecked?'checked':'')+'" data-ri-checkin="cnWords::'+esc(x.t)+'" title="'+(isChecked?'已打卡（点击取消）':'点击打卡')+'"></button>'+
       '</div>'+
       '<div class="ri-body lore-body">'+esc(x.c)+'</div>'+
     '</div>';
-    const cy = col.querySelector('.is-cydaily');
-    if(cy) cy.insertAdjacentHTML('afterend', card);
-    else col.insertAdjacentHTML('beforeend', card);
+    col.innerHTML = card;
+  }
+  function renderDailyLitCard(){
+    const box = document.getElementById('dailyLitCard');
+    if(box) box.hidden = false;
+    injectDailyChengyuCard();
   }
   function renderReading(){
     // R9-REQ2：重置英语短文朗读状态机（每篇独立 idle/playing/paused）
@@ -38415,17 +38521,29 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     const userW = allWords.filter(x=>x.source==='user');
     const sysWords = allWords.filter(x=>x.source!=='user' && x.meta==='好词');
     const sysSent  = allWords.filter(x=>x.source!=='user' && x.meta==='好句');
-    const cnWordsItems = [
+    // R295-2.1：好词按「每个词语单独展示」拆分，每组词语逐词成卡；原分组数据本身不改动
+    const rawWordItems = [
       ...userW.filter(x=>x.meta==='好词'), ...dailyRotate(sysWords, 1, 0),
       ...userW.filter(x=>x.meta==='好句'), ...dailyRotate(sysSent, 1, 1)
     ];
+    const cnWordsItems = [];
+    rawWordItems.forEach(it=>{
+      if(it && it.meta==='好词' && it.body && it.source!=='user'){
+        const words = haociWordsOf(it.body);
+        if(words.length){
+          words.forEach(w=>cnWordsItems.push({title:w, body:'', meta:'好词', source:it.source, _haociWord:true}));
+          return;
+        }
+      }
+      cnWordsItems.push(it);
+    });
     // V19-5：日常交流 = 每日 1 个主题对话（6-7 句）
     // R56-6：主视图恢复三栏并列（语文 3 栏 + 英语 2 栏），归档内容不在此展示
     fillCol('#enColSpeak',   colContent('enSpeaking',1, 4), 'enSpeaking','en', true);
     fillCol('#enColPassage', colContent('enPassage', 1, 3, 2), 'enPassage', 'en');
     fillCol('#cnColWords',   cnWordsItems, 'cnWords', 'cn');
-    // R275-3：好词好句栏底部追加「每日成语 + 文学小常识」两张每日卡（不再置顶）
-    injectDailyChengyuCard();
+    // R295-2.3：每日成语 + 文学小常识从好词栏移出，落到三张语文卡下方的「每日文学」横排卡片
+    renderDailyLitCard();
     // R57-2：古诗词鉴赏每日只显示一首（每日轮换，offset=5 与其它栏错开）
     fillCol('#cnColPoem',    colContent('cnPoem', 1, 5, 2), 'cnPoem', 'cn');
     fillCol('#cnColEssay',   colContent('cnEssay',   1, 2, 2), 'cnEssay',   'cn');
@@ -38442,6 +38560,8 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     {key:'cnLore',label:'📖 文学小常识'},
     {key:'cnPoem',label:'📜 古诗词鉴赏'},
     {key:'cnEssay',label:'📝 优秀作文'},
+    // R295-2.4：收录书屋同步新增「每日文学」入口（每日成语 + 文学小常识横向并排）
+    {key:'dailyLit',label:'📖 每日文学'},
     {key:'enSpeaking',label:'💬 日常交流'},
     {key:'enPassage',label:'📖 英语短文'},
     {key:'cnChengyu',label:'🀄 成语学习'}
@@ -38454,6 +38574,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     {key:'cnLore',     sel:'#bsColLore'},
     {key:'cnPoem',     sel:'#bsColPoem'},
     {key:'cnEssay',    sel:'#bsColEssay'},
+    {key:'dailyLit',   sel:'#bsColDailyLit'},
     {key:'enSpeaking', sel:'#bsColSpeak'},
     {key:'enPassage',  sel:'#bsColPassage'},
     {key:'cnChengyu', sel:'#bsColChengyu'}
@@ -38471,6 +38592,14 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
           meta: '文学小常识',
           source: 'sys'
         }));
+    }
+    // R295-2.4：收录书屋「每日文学」= 今日成语 + 今日文学小常识，横向两张卡
+    if(kind === 'dailyLit'){
+      const cy = dailyChengyuItem(), lore = dailyLoreItem(), out = [];
+      if(cy) out.push({title:cy.word, meta:'每日成语', source:'sys',
+        body:[cy.meaning?('【释义】'+cy.meaning):'', cy.codex?('【典故】'+cy.codex):'', cy.example?('【例句】'+cy.example):''].filter(Boolean).join('\n')});
+      if(lore) out.push({title:lore.t, meta:'文学小常识', source:'sys', body:lore.c});
+      return out;
     }
     if(kind === 'cnChengyu'){
       const list = (window.CHENGYU_SEED || []).filter(x => x && x.word);
@@ -38495,6 +38624,24 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     const tagTxt = it.source==='user' ? '👤 我的'
       : (it.source==='archived' ? '📥 已收录' : '📚 文库');
     const dateHtml = it.archivedAt ? `<span class="bs-item-date">📅 ${esc(it.archivedAt)}</span>` : '';
+    // R295-2.4：收录书屋「每日文学」条目横向并排（与主视图同一份每日数据）
+    if(kind==='dailyLit'){
+      return '<div class="bs-lit-item"><div class="ri-title">'+esc(it.title||'')+' <span class="ri-meta">'+esc(it.meta||'')+'</span></div>'+
+        '<div class="ri-body">'+esc(it.body||'')+'</div></div>';
+    }
+    // R295-2.1：收录书屋好词好句也按「一词一卡 + 释义 + 例句」展示，原分组数据不删
+    if(kind==='cnWords' && it && it.meta==='好词' && it.body && it.source!=='user'){
+      const words = haociWordsOf(it.body);
+      if(words.length){
+        return '<div class="bs-item bs-haoci-group"><div class="ri-title">'+esc(it.title||'好词积累')+' <span class="ri-meta" style="background:'+tagBg+'">'+tagTxt+'</span></div>'+
+          words.map(w=>{
+            const dt = haociDetailOf(w);
+            return '<div class="bs-haoci-word"><div class="ri-body"><div class="bs-haoci-w">✨ '+esc(w)+'</div>'+
+              (dt&&dt.m?'<div class="haoci-def"><b>释义：</b>'+esc(dt.m)+'</div>':'')+
+              (dt&&dt.e?'<div class="haoci-ex"><b>例句：</b>'+esc(dt.e)+'</div>':'')+'</div></div>';
+          }).join('')+'</div>';
+      }
+    }
     // 日常交流：完整展开主题 + 对话（复用主视图气泡渲染，保证内容一致）
     if(kind==='enSpeaking' && it.lines){
       return `<div class="bs-item bs-item-speak">
@@ -38517,7 +38664,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   }
   // R57-2：收录书屋各主题独立页码
   // R59-5：每页条数按主题配置 —— 好词好句 6 / 古诗词鉴赏 4 / 优秀作文 2 / 日常交流 2 / 英语短文 2
-  const BS_PER_PAGE = { cnWords:6, cnLore:6, cnPoem:4, cnEssay:2, enSpeaking:2, enPassage:2, cnChengyu:4 };
+  const BS_PER_PAGE = { cnWords:6, cnLore:6, cnPoem:4, cnEssay:2, dailyLit:2, enSpeaking:2, enPassage:2, cnChengyu:4 };
   let _bsTab = 'cnWords';
   let _bsPage = {};
   function renderBookstoreAll(){
@@ -38599,7 +38746,8 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     renderBookstoreAll();
   }
   // R53-6：收录书屋主题内容分页（每类独立页码；每日轮换窗口内容通常单页，超出后自动分页）
-  const RD_PER_PAGE = { cnWords:6, cnPoem:6, cnEssay:6, enPassage:4, enSpeaking:2 };
+  // R295-2.1：好词拆成逐词卡后单日可达 8 词 + 1 好句，分页放大到 12 以免好句被挤到下一页
+  const RD_PER_PAGE = { cnWords:12, cnPoem:6, cnEssay:6, enPassage:4, enSpeaking:2 };
   let _rdPage = {};
   function fillCol(sel, items, kind, scope, isSpeak){
     const el = document.querySelector(sel);
@@ -38631,6 +38779,20 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     return items.map(it => {
       const enCls = scope==='en'?'ri-en':'';
       const userTag = it.source==='user'?'<span class="ri-meta" style="background:#ffd24d;color:#14335f">👤 我的</span>':'';
+      // R295-2.1：好词逐词卡 —— 一词一卡，附释义 + 例句；打卡键按词条独立（沿用 cnWords 机制）
+      if(kind==='cnWords' && it && it._haociWord){
+        const w = it.title || '';
+        const dt = haociDetailOf(w);
+        const on = S.isReadingRead('cnWords', w);
+        const def = dt && dt.m ? '<div class="haoci-def"><b>释义：</b>'+esc(dt.m)+'</div>' : '';
+        const ex  = dt && dt.e ? '<div class="haoci-ex"><b>例句：</b>'+esc(dt.e)+'</div>' : '';
+        const tag = it.source==='user' ? '<span class="ri-meta" style="background:#ffd24d;color:#14335f">👤 我的</span>' : '';
+        return '<div class="reading-item is-haoci-word '+(on?'is-checked':'')+'">'+
+          '<div class="ri-head-row"><div class="ri-title">✨ '+esc(w)+' '+tag+'</div>'+
+          '<button class="ri-checkin-btn '+(on?'checked':'')+'" data-ri-checkin="cnWords::'+esc(w)+'" title="'+(on?'已打卡（点击取消）':'点击打卡')+'"></button></div>'+
+          '<div class="ri-meta">好词</div>'+(def||'<div class="haoci-def">释义：自定义词语</div>')+ex+
+        '</div>';
+      }
       // R204：古诗词鉴赏 —— 正文按句分行，并补「诗词大意 / 创作背景 / 赏析」三段
       const isPoem = kind === 'cnPoem';
       const analysisHtml = isPoem
@@ -48392,7 +48554,9 @@ if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
     // 历史任务（任务表里已删除，但当天有记录）也要能看到
     (st.records || []).forEach(r=>{
       if(r.date !== ds || !r.completed || known[r.taskId]) return;
-      const t = (st.tasks||[]).find(x=>x.id===r.taskId);
+      // R295：旧必做任务被清单替换后，历史记录靠轻量快照回显原任务名（记录本身一条不删）
+      const bk = (st.r295ReqBackup && st.r295ReqBackup.tasks) || [];
+      const t = (st.tasks||[]).find(x=>x.id===r.taskId) || bk.find(x=>x.id===r.taskId);
       list.push({id:r.taskId, name:(t && t.name) || '历史任务', subject:(t && t.subject) || '',
                  required:false, done:true,
                  kind: r.isMakeup ? 'makeup' : ((r.count||0) > 0 ? 'active' : 'auto'), stars:r.stars||0});
