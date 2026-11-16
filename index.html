@@ -43949,10 +43949,15 @@ function renderKMAdmin(){
   // 全局点击音效分发（导航栏 / 主题卡 / 次级主题卡 / 三级主题卡 / 打卡），注册一次
   // R133-2：单次物理点击去重 —— 同一事件对象只触发一个音效，杜绝「单个按键叠加多个音效」的重复播放
   // R246-2：按卡片层级判定槽位（见 sfxSlotOf），四档差异化发声
+  /* R292-1.1 全平台「打卡按键」唯一选择器清单 —— 打卡音效与音效去重只认这一份。
+     新增任何打卡键只需在此登记一次：① 捕获阶段自动播统一打卡音效（打卡 / 撤销都发声）；
+     ② 自动从通用点击音效里剔除，杜绝「一次打卡响两个不同音效」。 */
+  const CHECKIN_SFX_SEL = '[data-check],[data-checkin],[data-baike-checkin],[data-calc-check],[data-calc-checkin],[data-ri-checkin],[data-suzhi-checkin],[data-sc-checkin],[data-zx-checkin],[data-kw-checkin],[data-kwqa-checkin],[data-nw-think-checkin],[data-bs-checkin-sec],[data-en3500-check],[data-kp-check],[data-xs-check-card],[data-xs-note-check],[data-sfx-checkin],.ri-checkin-btn,.kw-checkin,.checkin-btn,.kp-check-btn';
   function sfxSlotOf(t){
-    // 打卡类：各自 handler 已调用 playCheckinSound（已路由到 playClickSfx('checkin')），此处跳过避免重复
+    // 打卡类：统一走 playCheckinSound（下方捕获阶段分发），此处跳过避免重复
     // R155-1：补齐「新世界」各子页内部打卡键选择器，杜绝「内部按键音效重复触发（双音效）」
-    if(t.closest('[data-checkin], .ri-checkin-btn, [data-ri-checkin], .kw-checkin, .checkin-btn, [data-kw-checkin], .math-btn-mastery, .math-btn-need, [data-sfx-checkin], [data-bs-checkin-sec], [data-kw-learn-toggle], [data-sh-learn], [data-suzhi-checkin], [data-en-oxford-theme], [data-en-essay-done], [data-kp-card], .sc-card, .sh-poem-card, .sz-grid-card[data-sz-card]')) return null;
+    // R292-1.1：打卡键清单收敛为 CHECKIN_SFX_SEL 单一来源
+    if(t.closest(CHECKIN_SFX_SEL)) return null;
     // ① 导航键（含「返回」键）：R241-5 起返回键也必须发声，此前它不在任何分支里 → 真正的返回点击一声都没有
     if(t.closest('.nav-btn[data-page], [data-go], [data-nw-back], .br-back, [data-sfx="nav"]')) return 'nav';
     // ② 显式层级标注优先（便于后续逐个页面精调，不必改分发逻辑）
@@ -43982,8 +43987,47 @@ function renderKMAdmin(){
     const slot = sfxSlotOf(t);
     if(slot) playClickSfx(slot);
   }
-  function playCheckinSound(){ try{ playClickSfx('checkin'); }catch(e){} }
+  /* ================= R292-1.1 全平台打卡音效统一 =================
+     此前各板块各自调用 playCheckinSound，但：① 有的打卡键没调（依赖通用点击音效，听起来跟别处不一样）；
+     ② 撤销打卡基本不发声；③ playClickSfx 的 80ms 槽位去抖会在连点时吞掉声音。
+     现统一为：全平台只有这一份打卡音效，打卡成功与取消打卡复用同一音效，由捕获阶段统一分发，
+     不再依赖各模块 handler 是否记得调用。 */
+  let _checkinSfxAt = 0;
+  function playCheckinSound(){
+    try{
+      if(!isSoundOn()) return;
+      const n = Date.now();
+      /* 同一次点击里「捕获分发」与「handler 自身调用」会先后各来一次，120ms 内合并为一声；
+         不同次点击间隔远大于此值，不影响连续打卡。 */
+      if(_checkinSfxAt && n - _checkinSfxAt < 120) return;
+      _checkinSfxAt = n;
+      const ctx = getAudio(); if(!ctx) return;
+      const fire = () => { try{ const id = getClickSfx('checkin'); const p = SFX_PRESETS[id]; if(p && p.play) p.play(); }catch(e){} };
+      if(ctx.state === 'running'){ fire(); return; }
+      if(ctx.resume){
+        const pr = ctx.resume();
+        (pr && pr.then ? pr : Promise.resolve())
+          .then(()=>{ if(ctx.state === 'running') fire(); else setTimeout(fire, 120); })
+          .catch(()=>{ setTimeout(fire, 120); });
+      } else { fire(); }
+    }catch(e){}
+  }
   window.playCheckinSound = playCheckinSound;
+  /* 捕获阶段统一分发：任何打卡键（含「撤销打卡」）的真人点击都先响这一声，
+     处理器随后自己调用的 playCheckinSound 被 120ms 合并窗口吸收，不会双响。 */
+  try{
+    if(typeof document !== 'undefined' && document.addEventListener){
+      document.addEventListener('click', function(e){
+        try{
+          if(!e || e.isTrusted === false) return;
+          const t = e.target; if(!t || !t.closest) return;
+          if(t.closest('[disabled],[aria-disabled="true"]')) return;
+          if(!t.closest(CHECKIN_SFX_SEL)) return;
+          playCheckinSound();
+        }catch(_){}
+      }, true);
+    }
+  }catch(e){}
 
   /* ============================================================
      R42-1：英语朗读恢复「最初版本的男音」—— 男声优先选声（Alex/Daniel/David/Guy…），
