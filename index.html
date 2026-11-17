@@ -10597,6 +10597,22 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
 .haoci-use-item .hu-def b,.haoci-use-item .hu-ex b{color:var(--tone-700)}
 @media (max-width:1100px){ .haoci-use-grid{grid-template-columns:repeat(2,minmax(0,1fr))} }
 
+/* ============ R300-1 好词使用：全量词语（分页）+ 逐词打卡 ============ */
+/* 头部右侧的「共 194 个词语」胶囊，与左侧「释义 · 例句」并列，不抢标题 */
+.haoci-use-count{font-size:11.5px;font-weight:700;color:var(--tone-700);background:var(--tone-100);border:1px solid var(--tone-200);border-radius:999px;padding:2px 9px;white-space:nowrap}
+.haoci-use-count:empty{display:none}
+/* 每张卡：标题行（词 + 打卡键）+ 释义块 + 例句块，打卡键与大阅读其余卡同一枚 .ri-checkin-btn */
+.haoci-use-item{display:flex;flex-direction:column;gap:0;position:relative;transition:background .18s,border-color .18s,box-shadow .18s}
+.haoci-use-item .hu-head{display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0}
+.haoci-use-item .hu-head .hu-w{flex:1 1 auto;min-width:0}
+.haoci-use-item .hu-head .ri-checkin-btn{flex:0 0 auto;margin-left:auto}
+/* 已打卡：与 .reading-item.is-checked 同一暖色态，卡片不位移、不跳动 */
+.haoci-use-item.is-checked{background:linear-gradient(135deg,#fffbf5,#fff5e6);border-color:#ffd9a8;box-shadow:0 2px 8px rgba(255,179,94,.18)}
+.haoci-use-item.is-checked .hu-w{color:var(--tone-800)}
+/* 分页条：与阅读栏同款 .yw-pager，仅补上内边距 */
+.haoci-use-pager{margin-top:12px}
+.haoci-use-pager .yw-pager{margin:0}
+
 /* ============ R297-2 每日成语 / 文学小常识移回「好词好句」卡内（好句内容下方） ============ */
 /* 该卡在语文三栏的窄列里，原来的两列横排会挤，这里改为列内单列上下排布 */
 .daily-lit-inline{margin-top:12px;padding-top:10px;border-top:1px dashed var(--tone-200)}
@@ -11660,8 +11676,10 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
       <!-- R296-3.2/3.3：【好词使用】独立卡 —— 好词的释义与例句，紧跟三张语文卡下方，
            横向排布，内部子卡片一行 3 个（内容从好词好句卡迁出，好词好句恢复原分组展示） -->
       <div class="haoci-use-card" id="haociUseCard" data-page-node-id="R296haociUseCard">
-        <div class="reading-col-head" data-page-node-id="R296haociUseHead">✨ 好词使用 <span class="haoci-use-hint">释义 · 例句</span></div>
+        <div class="reading-col-head" data-page-node-id="R296haociUseHead">✨ 好词使用 <span class="haoci-use-hint">释义 · 例句</span><span class="haoci-use-count" id="haociUseCount"></span></div>
         <div class="haoci-use-grid" id="haociUseGrid" data-page-node-id="R296haociUseGrid"></div>
+        <!-- R300-1.1：好词全覆盖后分页展示（12 个/页），分页条与其余阅读栏同款 .yw-pager -->
+        <div class="haoci-use-pager" id="haociUsePager"></div>
       </div>
     </div>
     </div><!-- /#rdPanelCn -->
@@ -18081,6 +18099,8 @@ window.R298_TASK_PLAN = {
     'calcBook','calcDoneKeys','calcDailyLog','calcDrill','calcWrongBook','calcBank',
     'calcStreak','calcStreakLastDate','calcStreakRewardWeeks','calcStreakBonusStars',
     'readFlags','readLog','xueersiWrongs','xueersiDailyResults','xueersiAnswerLog',
+    // R300-2：阅读面板「当日全部完成」奖励记录（按天只增，属打卡记录类）
+    'readingPanelDone',
     'xueersiChecked','xueersiCheckin','baikeViewed','baikeFlags','baikeCounts','lastBaikeDate',
     'plots','inventory','gifts','shop','km'
   ];
@@ -18106,6 +18126,13 @@ window.R298_TASK_PLAN = {
   let _clearAll = false;        // 用户主动清空：本次 save 不做回填
   let _persistedShape = null;   // 上一次成功落库时各保护字段的「大小」
   function allowUserClear(){ _clearAll = true; return true; }
+  /* R300：一次性放行「合法删到空」的字段。
+     写盘闸原本把「字段由非空变空」一律当作数据被清空并回填；
+     但用户撤销最后一条打卡时 readFlags / readLog 会合法地变空（例如新设备上首次打卡后就取消），
+     结果出现「⭐扣回了、卡片还是已打卡」的错位。取消类操作在 save 前声明一次即可放行，
+     其余任何路径的清空仍照旧拦截。 */
+  let _shrinkAllow = {};
+  function allowShrinkOnce(keys){ (Array.isArray(keys) ? keys : [keys]).forEach(function(k){ if(k) _shrinkAllow[k] = 1; }); return true; }
   function _shapeOf(v){
     if(v == null) return 0;
     if(Array.isArray(v)) return v.length;
@@ -18142,9 +18169,11 @@ window.R298_TASK_PLAN = {
   }
   function _guardBeforeSave(st){
     const allowAll = _clearAll; _clearAll = false;   // 一次用户操作只放行一次
+    const allowShrink = _shrinkAllow; _shrinkAllow = {};   // R300：一次性放行合法删空
     if(allowAll || !_persistedShape || !st || typeof st !== 'object') return st;
     const bad = [];
     GUARD_WIPE_KEYS.forEach(function(k){
+      if(allowShrink[k]) return;
       if((_persistedShape[k] || 0) > 0 && _shapeOf(st[k]) === 0) bad.push(k);
     });
     if(bad.length) _restoreFromBackup(st, bad);
@@ -20373,6 +20402,8 @@ window.R298_TASK_PLAN = {
       st.archive = st.archive || {};
       st.archive.totalStars = Math.max(0, (st.archive.totalStars||0) - 1);
       st.archive.exp = Math.max(0, (st.archive.exp||0) - 1);
+      // R300：删到 readFlags 为空属合法操作，放行一次写盘闸
+      try{ allowShrinkOnce(['readFlags']); }catch(e){}
     }
     save(st);
     return st.mathExerciseBank.slice();
@@ -20402,6 +20433,8 @@ window.R298_TASK_PLAN = {
     st.archive = st.archive || {};
     st.archive.totalStars = Math.max(0, (st.archive.totalStars||0) - 1);
     st.archive.exp = Math.max(0, (st.archive.exp||0) - 1);
+    // R300：撤销最后一条标记时 readFlags 会合法变空，放行一次写盘闸
+    try{ allowShrinkOnce(['readFlags']); }catch(e){}
     save(st);
     return {ok:true, refund:1};
   }
@@ -21822,7 +21855,8 @@ window.R298_TASK_PLAN = {
   // V12.1：通用阅读取消（按类型回退 ⭐：cnEssay/enPassage=3⭐, cnPoem=2⭐, cnWords/cnSentence=1⭐）
   function refundReadingStars(kind){
     // R248-4：撤销打卡统一按 kind 扣回（en3500cat 5⭐ / mathExercise 1⭐ / 阅读类 3·2·1⭐）
-    const map = {cnEssay:3, enPassage:2, cnPoem:2, cnWords:1, cnSentence:1, enSpeaking:0, en3500cat:5, mathExercise:1};
+    // R300-1.2：cnWordUse（好词使用逐词）与 cnWords 同为 +1⭐，取消时同样扣回 1⭐
+    const map = {cnEssay:3, enPassage:2, cnPoem:2, cnWords:1, cnSentence:1, cnWordUse:1, enSpeaking:0, en3500cat:5, mathExercise:1};
     return map[kind] || 0;
   }
   // v10 兼容旧调用（保留）
@@ -22066,6 +22100,8 @@ window.R298_TASK_PLAN = {
     else if(kind==='enPassage'){ reward=2; rewardLabel='英语短文 +2⭐'; }
     else if(kind==='cnWords' || kind==='cnSentence'){ reward=1; rewardLabel='好词好句 +1⭐'; }
     else if(kind==='cnPoem'){ reward=2; rewardLabel='古诗词鉴赏 +2⭐'; }
+    // R300-1.2：【好词使用】逐词打卡 —— 与「好词好句」卡完全同规则（+1⭐ / 可撤销 / 可扣回）
+    else if(kind==='cnWordUse'){ reward=1; rewardLabel='好词使用 +1⭐'; }
     // R59-1：人文拓展 / 综合素养 每篇 +1⭐
     else if(SUZHI_UNLOCK_KINDS.indexOf(kind) >= 0){ reward=1; rewardLabel='拓展素养 +1⭐'; }
     // R228：计算小超市每日全对并完成打卡 +2⭐
@@ -22182,6 +22218,9 @@ window.R298_TASK_PLAN = {
       if(r){ r.completed = false; r.stars = 0; r.actualMinutes = 0; }
     }
     recompute(st);
+    // R300：撤销今日计算打卡后 readFlags / readLog 可能整体为空，放行一次写盘闸，
+    // 否则会被「疑似清空」保护回填，出现「⭐扣回了、打卡圆圈还是亮的」
+    try{ allowShrinkOnce(['readFlags','readLog']); }catch(e){}
     save(st);
     /* R268-1.3：撤销打卡同样要回滚连续天数，否则「取消后重新打卡」会多算一天 */
     try{ unbumpCalcStreak(); }catch(e){}
@@ -22197,6 +22236,46 @@ window.R298_TASK_PLAN = {
     st.archive.exp = Math.max(0, (st.archive.exp||0) - 2);
     save(st);
     return {ok:true, refund:2};
+  }
+  /* R300-2：阅读面板「当日全部打卡完成」奖励
+     cn = 语文阅读面板（好词好句 / 古诗词鉴赏 / 优秀作文，含卡内每日成语·文学小常识）→ +5⭐
+     en = 英语阅读面板（日常交流 / 英语短文）→ +3⭐
+     单独落在 readingPanelDone['<panel>::<日期>']，与逐条 readFlags 互不影响；
+     取消任一张卡导致「未集齐」时按同额扣回，绝不重复发放。 */
+  const READING_PANEL_BONUS = { cn:5, en:3 };
+  function readingPanelStarOf(panel){ return READING_PANEL_BONUS[String(panel||'')] || 0; }
+  function isReadingPanelComplete(panel){
+    const st = load();
+    const k = String(panel||'') + '::' + todayStr();
+    return !!(st.readingPanelDone && st.readingPanelDone[k]);
+  }
+  function markReadingPanelComplete(panel){
+    const stars = readingPanelStarOf(panel);
+    if(!stars) return {ok:false, msg:'未知面板'};
+    const st = load();
+    const key = String(panel) + '::' + todayStr();
+    if(st.readingPanelDone && st.readingPanelDone[key]) return {ok:false, already:true, stars};
+    st.readingPanelDone = st.readingPanelDone || {};
+    st.readingPanelDone[key] = true;
+    st.archive = st.archive || {};
+    st.archive.totalStars = (st.archive.totalStars||0) + stars;
+    st.archive.exp = (st.archive.exp||0) + stars;
+    save(st);
+    return {ok:true, stars};
+  }
+  function unmarkReadingPanelComplete(panel){
+    const stars = readingPanelStarOf(panel);
+    const st = load();
+    const key = String(panel||'') + '::' + todayStr();
+    if(!st.readingPanelDone || !st.readingPanelDone[key]) return {ok:false, msg:'今日未达成'};
+    delete st.readingPanelDone[key];
+    if(stars > 0){
+      st.archive = st.archive || {};
+      st.archive.totalStars = Math.max(0, (st.archive.totalStars||0) - stars);
+      st.archive.exp = Math.max(0, (st.archive.exp||0) - stars);
+    }
+    save(st);
+    return {ok:true, refund:stars};
   }
   // V12.1：取消英语每日 10 题全对奖励 → 扣回 2⭐
   function unmarkXueersiDailyReward(){
@@ -22258,6 +22337,9 @@ window.R298_TASK_PLAN = {
       st.archive.totalStars = Math.max(0, (st.archive.totalStars||0) - refund);
       st.archive.exp = Math.max(0, (st.archive.exp||0) - refund);
     }
+    // R300：撤销最后一条打卡时 readFlags / readLog 会合法变空，放行一次写盘闸，
+    // 否则会被「疑似清空」保护回填，出现「⭐扣回了、卡片仍显示已打卡」的错位
+    try{ allowShrinkOnce(['readFlags','readLog']); }catch(e){}
     save(st);
     return {ok:true, refund, kind};
   }
@@ -27633,6 +27715,8 @@ be 动词：am / is → was；are → were
     // R232-2/3：题型讲义（外置图片；R242 已删除本地 PDF 上传/展示）
     getMathTypeImgs, getMathLectureStat, setMathLectureStatus, setMathLectureCap,
     getReading, getDailySpeaking, addUserReading, markReadingRead, unmarkReadingRead, isReadingRead, logCheckin, unlogCheckin, markSpeakingComplete, unmarkSpeakingComplete, unmarkXueersiDailyReward, refundReadingStars,
+    // R300-2：阅读面板当日全部打卡完成（语文 +5⭐ / 英语 +3⭐）
+    markReadingPanelComplete, unmarkReadingPanelComplete, isReadingPanelComplete, readingPanelStarOf,
     // R232-1：计算小超市打卡（首页必做卡 ⇄ 乐读数学 今日打卡 共用）
     markCalcDaily, unmarkCalcDaily, calcDailyDone,
     // R236：连续打卡奖励（每 7 天 +5⭐）；R248-4：撤销打卡时还原
@@ -27838,6 +27922,24 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     if(!_audioCtx){ try { _audioCtx = new Audio(); } catch(e){ return null; } }
     if(_audioCtx.state === 'suspended'){ _audioCtx.resume().catch(()=>{}); }
     return _audioCtx;
+  }
+  /* R300-3：全平台单一 AudioContext + 统一唤醒。
+     旧实现里 playCongrats / playZooSound 各自 new 一个 AudioContext，iPad Safari 上限约 4 个，
+     一旦超出新建直接失败；且挂起态（尚未被用户手势解锁）下调度的振荡器会被浏览器吞掉 ——
+     这正是「打卡音效偶发失效」的两个根因。现全部复用 getAudio() 的同一个上下文，
+     并等 resume() 落地、状态变成 running 之后再派发音符。 */
+  function withAudioReady(fn){
+    try{
+      const ctx = getAudio(); if(!ctx) return;
+      const run = ()=>{ try{ fn(ctx); }catch(e){} };
+      if(ctx.state === 'running'){ run(); return; }
+      if(ctx.resume){
+        const pr = ctx.resume();
+        (pr && pr.then ? pr : Promise.resolve())
+          .then(()=>{ if(ctx.state === 'running') run(); else setTimeout(run, 120); })
+          .catch(()=>{ setTimeout(run, 120); });
+      } else { run(); }
+    }catch(e){}
   }
   // 短音效：harvest（收获）、redeem（兑换）、click（轻响）、pop（小气泡）
   function playZooSound(kind){
@@ -41264,7 +41366,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     const card = '<div class="reading-item is-cydaily '+(isChecked?'is-checked':'')+'">'+
       '<div class="ri-head-row">'+
         '<div class="ri-title">🀄 '+esc(x.word)+' <span class="ri-meta">每日成语</span></div>'+
-        '<button class="ri-checkin-btn '+(isChecked?'checked':'')+'" data-ri-checkin="cnWords::'+esc(x.word)+'" title="'+(isChecked?'已打卡（点击取消）':'点击打卡')+'"></button>'+
+        '<button class="ri-checkin-btn '+(isChecked?'checked':'')+'" data-ri-checkin="cnWords::'+esc(x.word)+'" data-ri-label="每日成语" title="'+(isChecked?'已打卡（点击取消）':'点击打卡')+'"></button>'+
       '</div>'+
       '<div class="ri-body">'+body+'</div>'+
     '</div>';
@@ -41289,7 +41391,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     const card = '<div class="reading-item is-lore-daily '+(isChecked?'is-checked':'')+'">'+
       '<div class="ri-head-row">'+
         '<div class="ri-title">📖 '+esc(x.t)+' <span class="ri-meta">文学小常识</span></div>'+
-        '<button class="ri-checkin-btn '+(isChecked?'checked':'')+'" data-ri-checkin="cnWords::'+esc(x.t)+'" title="'+(isChecked?'已打卡（点击取消）':'点击打卡')+'"></button>'+
+        '<button class="ri-checkin-btn '+(isChecked?'checked':'')+'" data-ri-checkin="cnWords::'+esc(x.t)+'" data-ri-label="文学小常识" title="'+(isChecked?'已打卡（点击取消）':'点击打卡')+'"></button>'+
       '</div>'+
       '<div class="ri-body lore-body">'+esc(x.c)+'</div>'+
     '</div>';
@@ -41337,23 +41439,58 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     });
     return out;
   }
+  /* R300-1.1：【好词使用】改为覆盖「好词好句」板块的全部词语 —— 不再只取当日轮换的 1 组，
+     而是把全部好词组按「组顺序 + 组内顺序」去重铺开（当前 194 个词，与内置详解 1:1 对应），
+     12 个/页分页展示，词条一字不改、不新增/删除任何好词数据。
+     R300-1.2：每张卡补上打卡键（data-ri-checkin="cnWordUse::<词>"），与大阅读其余卡片同机制：
+     同一 readFlags 存储、打卡 +1⭐、再点取消并按同额扣回、同样的 toast 与打卡音效、同样的 🐰 已打卡态。
+     打卡状态按词条记录，翻页/刷新/换设备（同一存档）都不丢。 */
+  const HU_PER_PAGE = 12;
+  let _huPage = 0;
+  function huUseItemHtml(x){
+    const checked = !!(S.isReadingRead && S.isReadingRead('cnWordUse', x.w));
+    const key = 'cnWordUse::' + x.w;
+    return '<div class="haoci-use-item'+(checked?' is-checked':'')+'" data-hu-word="'+esc(x.w)+'">'
+      + '<div class="hu-head">'
+      +   '<div class="hu-w">✨ '+esc(x.w)+'</div>'
+      +   '<button type="button" class="ri-checkin-btn '+(checked?'checked':'')+'"'
+      +     ' data-ri-checkin="'+esc(key)+'" data-ri-label="好词使用"'
+      +     ' title="'+(checked?'已打卡（点击取消）':'点击打卡')+'"></button>'
+      + '</div>'
+      + (x.m?'<div class="hu-def"><b>释义：</b>'+esc(x.m)+'</div>':'')
+      + (x.e?'<div class="hu-ex"><b>例句：</b>'+esc(x.e)+'</div>':'')
+      + '</div>';
+  }
   function renderHaociUseCard(sysWords){
     const grid = document.getElementById('haociUseGrid');
     if(!grid) return;
     const src = (sysWords && sysWords.length)
       ? sysWords
       : (S.getReading('cnWords')||[]).filter(x=>x && x.source!=='user' && x.meta==='好词');
-    const list = haociUseListOf(dailyRotate(src, 1, 0));
+    const list = haociUseListOf(src);          // R300-1.1：全量好词（不 dailyRotate）
+    const cntEl = document.getElementById('haociUseCount');
+    if(cntEl) cntEl.textContent = list.length ? ('共 '+list.length+' 个词语') : '';
     if(!list.length){
-      grid.innerHTML = '<div class="col-empty">今日暂无好词～</div>';
+      grid.innerHTML = '<div class="col-empty">暂无好词～</div>';
+      const p0 = document.getElementById('haociUsePager'); if(p0) p0.innerHTML = '';
       return;
     }
-    grid.innerHTML = list.map(x=>`
-      <div class="haoci-use-item">
-        <div class="hu-w">✨ ${esc(x.w)}</div>
-        ${x.m?'<div class="hu-def"><b>释义：</b>'+esc(x.m)+'</div>':''}
-        ${x.e?'<div class="hu-ex"><b>例句：</b>'+esc(x.e)+'</div>':''}
-      </div>`).join('');
+    const pages = Math.max(1, Math.ceil(list.length / HU_PER_PAGE));
+    if(_huPage >= pages) _huPage = 0;
+    if(_huPage < 0) _huPage = 0;
+    const slice = list.slice(_huPage*HU_PER_PAGE, _huPage*HU_PER_PAGE + HU_PER_PAGE);
+    grid.innerHTML = slice.map(huUseItemHtml).join('');
+    const pager = document.getElementById('haociUsePager');
+    if(pager){
+      pager.innerHTML = ywPager(_huPage, pages, '共 '+list.length+' 个词语');
+      pager.querySelectorAll('[data-yw-page-step]').forEach(b=>{
+        b.addEventListener('click', ()=>{
+          const step = parseInt(b.getAttribute('data-yw-page-step'),10) || 0;
+          _huPage = Math.max(0, Math.min(pages-1, _huPage + step));
+          renderHaociUseCard();
+        });
+      });
+    }
   }
   function renderReading(){
     // R9-REQ2：重置英语短文朗读状态机（每篇独立 idle/playing/paused）
@@ -41393,6 +41530,49 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     // r298EqualizeCnCols();
     // V56-Req8：渲染整合后的「收录书屋」收藏夹（语文 3 类 + 英语 2 类）
     renderBookstoreAll();
+    // R300-2：静默核对一次语文 / 英语阅读面板的完成度（补齐跨设备/上次未结算的奖励，不弹提示）
+    try{ checkReadingPanelAllDone(true); }catch(e){}
+  }
+  /* R300-2：阅读面板「当日全部打卡完成」奖励
+     语文阅读面板 = 好词好句（含卡内每日成语 / 文学小常识）+ 古诗词鉴赏 + 优秀作文 → 全部打卡 +5⭐
+     英语阅读面板 = 日常交流 + 英语短文 → 全部打卡 +3⭐
+     只统计两张面板里当日的阅读卡（好词使用是「全量词库工具卡」，不参与完成度判定），
+     集齐即发、缺一张即按同额扣回，奖励按天记录在 readingPanelDone，刷新/重进不会重复发放。 */
+  function checkReadingPanelAllDone(silent){
+    const PANELS = { cn:['cnColWords','cnColPoem','cnColEssay'], en:['enColSpeak','enColPassage'] };
+    let changed = false;
+    Object.keys(PANELS).forEach(panel=>{
+      let total = 0, done = 0;
+      PANELS[panel].forEach(id=>{
+        const col = document.getElementById(id);
+        if(!col) return;
+        col.querySelectorAll('[data-ri-checkin]').forEach(b=>{
+          const raw = b.getAttribute('data-ri-checkin') || '';
+          const i = raw.indexOf('::');
+          if(i < 0) return;
+          total++;
+          if(S.isReadingRead(raw.slice(0,i), raw.slice(i+2))) done++;
+        });
+      });
+      if(!total) return;
+      if(done === total){
+        const r = S.markReadingPanelComplete(panel);
+        if(r && r.ok){
+          changed = true;
+          if(!silent){
+            toast((panel==='cn' ? '🎉 语文阅读今日全部完成 +' : '🎉 英语阅读今日全部完成 +') + r.stars + '⭐');
+            try{ playCheckinSound(); }catch(_){ }
+          }
+        }
+      } else {
+        const r = S.unmarkReadingPanelComplete(panel);
+        if(r && r.ok){
+          changed = true;
+          if(!silent) toast('已取消「' + (panel==='cn' ? '语文' : '英语') + '阅读全部完成」奖励 −' + r.refund + '⭐');
+        }
+      }
+    });
+    if(changed && typeof renderHome === 'function') renderHome();
   }
   /* R298-4.4：把语文三张卡（.reading-col）拉到同一高度，以当日内容最高的一张为基准。
      CSS grid 已用 align-items:stretch 做主对齐；这里再用内联 min-height 兜底，
@@ -46745,10 +46925,8 @@ function renderKMAdmin(){
   // v4 真实感声音合成（Web Audio + 双振荡器 + 噪点 → 模拟鸡/狗/牛/鸟/风/叮咚）
   function playZooSound(kind){
     try{
-      const AC = window.AudioContext || window.webkitAudioContext;
-      if(!AC) return;
-      if(!playZooSound._ctx) playZooSound._ctx = new AC();
-      const ctx = playZooSound._ctx;
+      // R300-3：统一走全平台共用 AudioContext（原实现自建 playZooSound._ctx，与打卡音各占一个上下文）
+      const ctx = getAudio(); if(!ctx) return;
       if(ctx.state === 'suspended'){ try{ ctx.resume(); }catch(e){} }
       const now = ctx.currentTime;
       const out = ctx.createGain();
@@ -46830,27 +47008,25 @@ function renderKMAdmin(){
 
   // V15-T2：所有打卡成功播放「恭喜你完成打卡」欢快上行琶音（C5-E5-G5-C6）
   function playCongrats(){
-    try{
-      const AC = window.AudioContext || window.webkitAudioContext;
-      if(!AC) return;
-      if(!playCongrats._ctx) playCongrats._ctx = new AC();
-      const ctx = playCongrats._ctx;
-      if(ctx.state === 'suspended'){ try{ ctx.resume(); }catch(e){} }
-      const now = ctx.currentTime;
-      const notes = [523.25, 659.25, 783.99, 1046.50];
-      notes.forEach((freq, i) => {
-        const t = now + i * 0.07;
-        const o = ctx.createOscillator();
-        const g = ctx.createGain();
-        o.type = 'triangle';
-        o.frequency.setValueAtTime(freq, t);
-        g.gain.setValueAtTime(0.0001, t);
-        g.gain.exponentialRampToValueAtTime(0.25, t + 0.01);
-        g.gain.exponentialRampToValueAtTime(0.0001, t + 0.28);
-        o.connect(g); g.connect(ctx.destination);
-        o.start(t); o.stop(t + 0.32);
-      });
-    }catch(e){}
+    // R300-3：改走全平台共用的 AudioContext（不再自建 playCongrats._ctx），并等 resume 完成后派发
+    withAudioReady(function(ctx){
+      try{
+        const now = ctx.currentTime;
+        const notes = [523.25, 659.25, 783.99, 1046.50];
+        notes.forEach((freq, i) => {
+          const t = now + i * 0.07;
+          const o = ctx.createOscillator();
+          const g = ctx.createGain();
+          o.type = 'triangle';
+          o.frequency.setValueAtTime(freq, t);
+          g.gain.setValueAtTime(0.0001, t);
+          g.gain.exponentialRampToValueAtTime(0.25, t + 0.01);
+          g.gain.exponentialRampToValueAtTime(0.0001, t + 0.28);
+          o.connect(g); g.connect(ctx.destination);
+          o.start(t); o.stop(t + 0.32);
+        });
+      }catch(e){}
+    });
   }
   window.playCongrats = playCongrats;
   // V96：统一所有板块「打卡键」音效（单一入口 → 8-bit 上行琶音），便于日后统一调整
@@ -46960,6 +47136,10 @@ function renderKMAdmin(){
   function getClickSfx(slot){ const st=(window.Store&&window.Store.load)?window.Store.load():null; const cfg=(st&&st.clickSfx)||defaultClickSfx(); return cfg[slot] || defaultClickSfx()[slot] || 'f'; }
   // 播放某槽位音效
   function isSoundOn(){ try{ const st=(window.Store&&window.Store.load)?window.Store.load():null; return !!(st && st.soundOn); }catch(e){ return false; } }
+  /* R300-3：打卡音效独立开关（默认开启）—— 「打卡成功 / 取消打卡」是学习平台的核心反馈音，
+     不应因为总开关默认关闭（R150-5 针对的是按键点击音）而整体失声；
+     用户在设置中心显式关掉 checkinSfxOn 时才静音。 */
+  function isCheckinSfxOn(){ try{ const st=(window.Store&&window.Store.load)?window.Store.load():null; if(!st) return false; return st.checkinSfxOn !== false; }catch(e){ return false; } }
   // R150-5：系统默认不播放任何按键音效；仅当用户在设置中心主动开启 soundOn 后才发声
   // R217-5：按槽位去抖——同一槽位 80ms 内只真正播放一次，彻底杜绝「单次点击重复播放 / 多次触发」音效
   let _sfxLastPlay = {};
@@ -47047,7 +47227,8 @@ function renderKMAdmin(){
   let _checkinSfxAt = 0;
   function playCheckinSound(){
     try{
-      if(!isSoundOn()) return;
+      // R300-3：打卡音效走独立开关（默认开），不再因总开关默认关闭而整体失声
+      if(!isCheckinSfxOn()) return;
       const n = Date.now();
       /* 同一次点击里「捕获分发」与「handler 自身调用」会先后各来一次，120ms 内合并为一声；
          不同次点击间隔远大于此值，不影响连续打卡。 */
@@ -48599,6 +48780,8 @@ function renderKMAdmin(){
     const opts = Object.keys(SFX_PRESETS).map(k=>`<option value="${k}">${esc(SFX_PRESETS[k].group||'经典')} · ${esc(SFX_PRESETS[k].label)}</option>`).join('');
     const cfg = (S.load().clickSfx) || defaultClickSfx();
     const soundOn = !!((S.load().soundOn));
+    // R300-3：打卡音效独立开关（默认开启，见 isCheckinSfxOn）
+    const checkinOn = (S.load().checkinSfxOn !== false);
     box.innerHTML = `
       <div class="sfx-set-title">🔊 点击音效设置</div>
       <div class="sfx-set-hint">系统默认不发声；开启下方开关后，可分别为不同操作设置音效（点「试听」预览）</div>
@@ -48606,11 +48789,15 @@ function renderKMAdmin(){
         <span class="sfx-row-label">🔔 按键音效总开关</span>
         <label class="sfx-switch"><input type="checkbox" id="sfxMasterOn" ${soundOn?'checked':''}/> <span class="sfx-switch-txt">${soundOn?'已开启':'已关闭'}</span></label>
       </div>
+      <div class="sfx-row sfx-master-row">
+        <span class="sfx-row-label">🎯 打卡音效（成功 / 取消同一音）</span>
+        <label class="sfx-switch"><input type="checkbox" id="sfxCheckinOn" ${checkinOn?'checked':''}/> <span class="sfx-switch-txt">${checkinOn?'已开启':'已关闭'}</span></label>
+      </div>
       ${slots.map(([slot,label])=>`
         <div class="sfx-row">
           <span class="sfx-row-label">${label}</span>
-          <select class="sfx-sel" data-sfx-slot="${slot}" ${soundOn?'':'disabled'}>${opts}</select>
-          <button class="pbtn sfx-preview" data-sfx-preview="${slot}" ${soundOn?'':'disabled'}>▶ 试听</button>
+          <select class="sfx-sel" data-sfx-slot="${slot}" ${(slot==='checkin' ? (soundOn||checkinOn) : soundOn)?'':'disabled'}>${opts}</select>
+          <button class="pbtn sfx-preview" data-sfx-preview="${slot}" ${(slot==='checkin' ? (soundOn||checkinOn) : soundOn)?'':'disabled'}>▶ 试听</button>
         </div>`).join('')}
     `;
     const master = box.querySelector('#sfxMasterOn');
@@ -48618,8 +48805,29 @@ function renderKMAdmin(){
       master.onchange = ()=>{
         const st = S.load(); st.soundOn = !!master.checked; save(st);
         const txt = box.querySelector('.sfx-switch-txt'); if(txt) txt.textContent = master.checked?'已开启':'已关闭';
-        box.querySelectorAll('.sfx-sel,.sfx-preview').forEach(el=>{ el.disabled = !master.checked; });
+        const ck = box.querySelector('#sfxCheckinOn');
+        const ckOn = !!(ck && ck.checked);
+        box.querySelectorAll('.sfx-sel,.sfx-preview').forEach(el=>{
+          const isCk = el.getAttribute('data-sfx-slot')==='checkin' || el.getAttribute('data-sfx-preview')==='checkin';
+          el.disabled = isCk ? !(master.checked || ckOn) : !master.checked;
+        });
         if(master.checked) playClickSfx('nav'); // 开启时给一声反馈
+      };
+    }
+    // R300-3：打卡音效独立开关 —— 关闭后「打卡成功 / 取消打卡」都不再发声，其余音效不受影响
+    const ckBox = box.querySelector('#sfxCheckinOn');
+    if(ckBox){
+      ckBox.onchange = ()=>{
+        const st = S.load(); st.checkinSfxOn = !!ckBox.checked; save(st);
+        const wrap = ckBox.closest('.sfx-switch');
+        const txt = wrap ? wrap.querySelector('.sfx-switch-txt') : null;
+        if(txt) txt.textContent = ckBox.checked ? '已开启' : '已关闭';
+        const m = box.querySelector('#sfxMasterOn');
+        box.querySelectorAll('.sfx-sel,.sfx-preview').forEach(el=>{
+          const isCk = el.getAttribute('data-sfx-slot')==='checkin' || el.getAttribute('data-sfx-preview')==='checkin';
+          if(isCk) el.disabled = !(ckBox.checked || (m && m.checked));
+        });
+        if(ckBox.checked) playCheckinSound();
       };
     }
     box.querySelectorAll('.sfx-sel').forEach(sel=>{
@@ -51179,7 +51387,8 @@ function renderKMAdmin(){
       let btn = e.target.closest('[data-ri-checkin]');
       if(!btn){
         // R27-2-3：整卡点击打卡（非圆钮区域；英语短文朗读卡除外，避免与朗读冲突）
-        const item = e.target.closest('.reading-item');
+        // R300-1.2：好词使用卡（.haoci-use-item）同样支持整卡点击打卡，交互与大阅读其余卡一致
+        const item = e.target.closest('.reading-item, .haoci-use-item');
         if(item && !item.hasAttribute('data-ri-passage')){
           const ib = item.querySelector('[data-ri-checkin]');
           if(ib){ e.preventDefault(); e.stopPropagation(); ib.click(); return; }
@@ -51192,15 +51401,17 @@ function renderKMAdmin(){
       if(sep<0) return;
       const kind = raw.slice(0, sep);
       const title = raw.slice(sep+2);
-      const KIND_LABEL = {cnWords:'好词好句',cnLore:'文学小常识',cnPoem:'古诗词鉴赏',cnEssay:'优秀作文',enPassage:'英语短文',enSpeaking:'英语日常交流',cnChengyu:'成语学习'};
-      const kindLabel = KIND_LABEL[kind] || kind;
+      const KIND_LABEL = {cnWords:'好词好句',cnWordUse:'好词使用',cnLore:'文学小常识',cnPoem:'古诗词鉴赏',cnEssay:'优秀作文',enPassage:'英语短文',enSpeaking:'英语日常交流',cnChengyu:'成语学习'};
+      // R300-1.2：卡片自带 data-ri-label 时优先用它（每日成语 / 文学小常识虽复用 cnWords 键，提示语仍准确）
+      const kindLabel = btn.getAttribute('data-ri-label') || KIND_LABEL[kind] || kind;
       if(S.isReadingRead(kind, title)){
         const r = S.unmarkReadingRead(kind, title);
         if(r && r.ok){
           const m = r.refund>0 ? `（已扣回 ${r.refund}⭐）` : '';
+          // R300-3：取消打卡与打卡成功播同一个音效（120ms 合并窗口会吸收捕获阶段那一声，不会双响）
+          try{ playCheckinSound(); }catch(_){ }
           toast('已取消打卡·' + kindLabel + m);
         }
-        renderReading();
       } else {
         const r = S.markReadingRead(kind, title);
         if(r && r.ok){
@@ -51209,10 +51420,12 @@ function renderKMAdmin(){
           try{ playCheckinSound(); }catch(_){ }
           toast('✅已打卡' + starTxt);
         }
-        renderReading();
       }
       // V17-2：英语日常交流全部打卡 → 额外奖励 +2⭐（取消时若未集齐则扣回）
       if(kind === 'enSpeaking') checkSpeakingAllDone();
+      // R300-2：面板完成度在重渲染之前判定，庆祝提示才不会被页面内的静默核对吞掉
+      checkReadingPanelAllDone();
+      renderReading();
     };
     // V17-2：日常交流全部打卡判定（集齐则 +2⭐，否则扣回已发奖励）
     function checkSpeakingAllDone(){
@@ -51233,7 +51446,8 @@ function renderKMAdmin(){
       }
     }
     // R60-3：补上 cnColPoem —— 此前漏绑「古诗词鉴赏」列，导致该栏打卡键点击无反应（打卡失效）
-    ['cnColWords','cnColPoem','cnColEssay','enColSpeak','enColPassage'].forEach(id=>{
+    // R300-1.2：补上 haociUseGrid —— 好词使用每张卡新增打卡键，与大阅读其余卡片同一套委托
+    ['cnColWords','cnColPoem','cnColEssay','enColSpeak','enColPassage','haociUseGrid'].forEach(id=>{
       const el = document.getElementById(id);
       if(el && !el._riCheckinBound){ el._riCheckinBound = true; el.addEventListener('click', onRiCheckin); }
     });
