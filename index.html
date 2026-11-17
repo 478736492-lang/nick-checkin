@@ -8532,6 +8532,25 @@ mark.ktxs-tag:hover{ background:var(--tone-200); }
 .ct-rowcol-tools button:hover{ border-color:var(--tone-400); }
 .sched-editing .wp-week-table thead th{ cursor:pointer; }
 
+/* ============ R299-4 一周打卡计划：分类并组合并居中 + 分类配色协调 ============ */
+/* 分类格纵向合并后，格内按键撑满整组高度并居中；分类文字竖排居中，视觉上像一条分类色带 */
+.wp-week-table td.wp-cat-td{ background:var(--tone-050); vertical-align:middle; }
+.wp-week-table td.wp-cat-merged{ vertical-align:middle; }
+/* 合并后的分类格：底色由 td 自身铺满整组高度（不依赖按键撑高），按键只负责承载文字与点击，
+   在色带里垂直居中；这样 Safari / Chrome 下都不会出现「色带里浮着一个小方块」 */
+.wp-week-table td.wp-cat-merged .kb-cell{ height:auto; min-height:34px; align-items:center; justify-content:center;
+  text-align:center; font-size:13.5px; font-weight:900; letter-spacing:.08em; white-space:normal; line-height:1.45;
+  border-color:transparent; box-shadow:none; }
+.wp-week-table .wp-cat-cell{ justify-content:center; text-align:center; }
+/* 内容方格：分类浅底 + 深色字，文字居中不换行过挤 */
+.wp-week-table .wp-day-cell{ font-weight:700; letter-spacing:.01em; }
+/* 时间列：中性白底，深蓝字，与分类色带形成层次，不抢分类色 */
+.wp-week-table .wp-time-cell{ color:var(--tone-950); background:var(--tone-025); }
+/* 首行：时间/分类深蓝底白字（JS 内联优先，这里兜底不覆盖自定义色） */
+.wp-week-table thead th.wp-head-cell{ font-size:14px; font-weight:900; letter-spacing:.06em; }
+.wp-week-table thead th.wp-head-cell[data-c="0"],
+.wp-week-table thead th.wp-head-cell[data-c="1"]{ border-bottom:2px solid rgba(255,255,255,.45); }
+
 /* ============================================================
    R245-5 / R245-4：全平台按键点击反馈 + 打卡头像效果恢复
    ============================================================ */
@@ -10564,7 +10583,9 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
 .bs-haoci-w{font-weight:800;color:var(--tone-950);font-size:13.5px}
 
 /* ============ R296-3 大阅读：【好词使用】独立卡片（三卡下方横排，子卡一行 3 个） ============ */
-.haoci-use-card{margin:12px 18px 18px;padding:12px 14px 14px;border:1px solid var(--tone-200);border-radius:16px;background:var(--tone-050);box-shadow:0 6px 18px rgba(30,58,138,.08)}
+/* R299-2：外边距与三卡区（.reading-cols）对齐 —— 原来左右各多缩进 18px，视觉上比上方卡片更靠内；
+   现改为 margin:12px 0 0，左右完全贴齐 .reading-area 的内容边（14px 内边距），底部由 .reading-area 收口。 */
+.haoci-use-card{margin:12px 0 0;padding:12px 14px 14px;border:1px solid var(--tone-200);border-radius:16px;background:var(--tone-050);box-shadow:0 6px 18px rgba(30,58,138,.08)}
 .haoci-use-card>.reading-col-head{margin:0 0 10px;display:flex;align-items:center;gap:8px}
 .haoci-use-hint{font-size:11.5px;font-weight:600;color:var(--tone-700);background:var(--tone-100);border-radius:999px;padding:2px 9px}
 .haoci-use-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
@@ -10594,22 +10615,24 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
 .calc-total-days{display:inline-flex;align-items:center;gap:3px;padding:4px 10px;border-radius:10px;background:var(--tone-100);color:var(--tone-700);font-size:12px;font-weight:800;white-space:nowrap}
 .calc-total-days b{font-size:15px;color:var(--tone-700)}
 
-/* ============ R298-4.4 语文三卡统一高度：以当日最高卡为基准 ============ */
-/* v5 原本 align-items:stretch，被 R206/R253 的 start 反杀；此处用高特异性 + !important 恢复 */
-.page-reading #rdPanelCn .reading-cols{ align-items:stretch!important; }
-.page-reading #rdPanelCn .reading-cols>.reading-col{ height:auto!important; align-self:stretch!important; }
+/* ============ R299-1 语文三卡不再强制等高 ============ */
+/* R298-4.4 曾把三卡拉平（当时成语/常识在卡外）；R299 起成语/常识回到「好词好句」卡内，
+   该栏本身最高，继续等高会把古诗词/优秀作文拉出大片空白，故恢复按内容自适应。 */
+.page-reading #rdPanelCn .reading-cols{ align-items:start; }
+.page-reading #rdPanelCn .reading-cols>.reading-col{ height:auto; align-self:start; }
 
-/* ============ R298-4.2 每日成语 / 文学小常识：好句内容卡下方全宽两卡并列，互不遮挡 ============ */
-/* 静态节点已从 #cnColWords 移出，故不受窄列 .daily-lit-inline .dl-grid{1fr} 反杀 */
-.page-reading #rdPanelCn .daily-lit-inline{
-  margin:0 0 12px; padding:0; border:0;
+/* ============ R299-1 每日成语 / 文学小常识：回到「好词好句」卡内纵排 ============ */
+/* 顺序：好词 → 好句 → 每日成语 → 文学小常识；卡内窄列，一律单列上下排布 */
+.page-reading #rdPanelCn #cnColWords .daily-lit-inline{
+  margin:2px 0 0; padding:10px 0 0;
+  border:0; border-top:1px dashed var(--tone-200);
   display:block;
 }
-.page-reading #rdPanelCn .daily-lit-inline .dl-grid{
-  display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px;
+.page-reading #rdPanelCn #cnColWords .daily-lit-inline .dl-grid{
+  display:grid; grid-template-columns:1fr; gap:8px;
 }
-.page-reading #rdPanelCn .daily-lit-inline .dl-item{min-width:0}
-.page-reading #rdPanelCn .daily-lit-inline .dl-item .reading-item{height:100%;margin:0}
+.page-reading #rdPanelCn #cnColWords .daily-lit-inline .dl-item{ min-width:0; }
+.page-reading #rdPanelCn #cnColWords .daily-lit-inline .dl-item .reading-item{ margin:0; height:auto; }
 
 /* ============ R298-4.1 语文 / 英语阅读面板切换按键 ============ */
 .rd-panel-btn{
@@ -11630,15 +11653,10 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
           <div class="reading-col-list" id="cnColEssay" data-page-node-id="UpqHqBYMlMq8oxJHmYonsl8"></div>
         </div>
       </div>
-      <!-- R298-4.2：【每日成语 / 文学小常识】移到「好句内容卡」下方，全宽两卡并列展示。
-           静态节点（不在 #cnColWords 内，不会被 fillCol 的 innerHTML 重写冲掉），
-           由 injectDailyChengyuCard() / injectDailyLoreCard() 填充内容。原【每日文学】卡外壳与标题已删除。 -->
-      <div class="daily-lit-inline" id="dailyLitInline">
-        <div class="dl-grid">
-          <div class="dl-item" id="dailyLitChengyu"></div>
-          <div class="dl-item" id="dailyLitLore"></div>
-        </div>
-      </div>
+      <!-- R299-1：【每日成语 / 文学小常识】移回「好词好句」卡片内部，与好词、好句自上而下依次排列。
+           该节点不再写在静态 HTML 里 —— fillCol('#cnColWords') 会用 innerHTML 重写整栏，
+           故由 renderDailyLitInline() 在 fillCol 之后动态挂到 #cnColWords 末尾（分页器之前），
+           内容仍由 injectDailyChengyuCard() / injectDailyLoreCard() 填充。 -->
       <!-- R296-3.2/3.3：【好词使用】独立卡 —— 好词的释义与例句，紧跟三张语文卡下方，
            横向排布，内部子卡片一行 3 个（内容从好词好句卡迁出，好词好句恢复原分组展示） -->
       <div class="haoci-use-card" id="haociUseCard" data-page-node-id="R296haociUseCard">
@@ -17693,8 +17711,8 @@ window.R298_TASK_PLAN = {
     {id:uid(),name:'学而思作业',subject:'英语',type:'必做任务',minutes:25,desc:'学而思英语',standard:'独立完成',enabled:true,weekendOnly:false},
     {id:uid(),name:'KET学习',subject:'英语',type:'必做任务',minutes:20,desc:'KET词汇/口语练习',standard:'听说读写综合',enabled:true,weekendOnly:false},
     // 阅读（必做）R131：英语阅读 / 语文阅读，有效阅读时长 20 分钟，打卡得 2⭐
-    {id:uid(),name:'英语阅读',subject:'阅读',type:'必做任务',minutes:20,desc:'有效阅读时长 20 分钟',standard:'专注阅读、不中断',enabled:true,weekendOnly:false},
-    {id:uid(),name:'语文阅读',subject:'阅读',type:'必做任务',minutes:20,desc:'有效阅读时长 20 分钟',standard:'专注阅读、不中断',enabled:true,weekendOnly:false},
+    // R299-3：按家长要求，首页「阅读」必做卡内不再保留「英语阅读 / 语文阅读」两项，
+    //         种子已删除；存量存档由下方 _r299ReadTask 一次性迁移清掉（历史打卡记录保留）。
     // 作息（必做）R13-Req4：10:00前睡觉，打卡得 2⭐，连续 7 日点亮「时间管理大师」徽章
     {id:uid(),name:'10:00前睡觉',subject:'作息',type:'必做任务',stars:2,minutes:0,desc:'每晚10点前上床睡觉',standard:'10:00前熄灯入睡',enabled:true,weekendOnly:false},
     // 运动
@@ -18693,23 +18711,10 @@ window.R298_TASK_PLAN = {
       });
       if(_civilAdded) save(st);
     }
-    // R131：阅读打卡任务补种（英语阅读 / 语文阅读，老存档升级时补齐；按「学科+任务名」判重，不重复添加）
-    if(Array.isArray(st.tasks)){
-      const READING_SEED = [
-        {name:'英语阅读', desc:'有效阅读时长 20 分钟', standard:'专注阅读、不中断'},
-        {name:'语文阅读', desc:'有效阅读时长 20 分钟', standard:'专注阅读、不中断'}
-      ];
-      let _readingAdded = false;
-      READING_SEED.forEach(s=>{
-        const has = st.tasks.some(t=> t && t.subject==='阅读' && t.name===s.name);
-        if(!has){
-          st.tasks.push({id:uid(), name:s.name, subject:'阅读', type:'必做任务',
-                         minutes:20, desc:s.desc, standard:s.standard, enabled:true, weekendOnly:false});
-          _readingAdded = true;
-        }
-      });
-      if(_readingAdded) save(st);
-    }
+    /* R299-3：原 R131 的「英语阅读 / 语文阅读」补种逻辑已整块删除。
+       原先它会在每次 load() 时按「学科+任务名」把这两条补回任务列表，
+       与 R299「首页阅读卡内移除这两项」的要求直接冲突（删了会复活）。
+       存量存档里已存在的这两条，统一由下方 _r299ReadTask 一次性迁移清掉。 */
     if(!st.cloud) st.cloud = {enabled:false,envId:'',syncAt:0};
     if(!st.ocr) st.ocr = {kind:'cloudfunction',url:''};
     // V17-5：各版块背景图（家长模式可上传/编辑/清除）
@@ -19075,6 +19080,24 @@ window.R298_TASK_PLAN = {
       st._r298CalcResetAt = Date.now();
       st._r298CalcBackCount = Array.isArray(st.calcBank) ? st.calcBank.length : 0;
       try{ const _rawC = JSON.stringify(st); if(_safeSet(KEY, _rawC)){ _loadCachePut(st, _rawC); } }catch(e){}
+    }
+    /* R299-3：首页「阅读」必做卡内移除「英语阅读 / 语文阅读」两项（R131 引入的默认任务）。
+       ⚠️ 数据边界：只删「任务定义」（tasks 里 subject=阅读 且 名称恰为这两条 且 type=必做任务），
+          st.records 历史打卡一条都不删 —— 已经打过卡的日期照旧计入星星账本与统计，
+          只是任务列表里不再出现这两项。用户自建的选做同名任务不受影响（type 不同不匹配）。
+       必须放在迁移闸之后（tasks 在 GUARD_MIGRATION_KEYS 内），用 _r299ReadTask 保证只跑一次。 */
+    if(st._r299ReadTask !== 1 && Array.isArray(st.tasks)){
+      const _rmReadNames = { '英语阅读':1, '语文阅读':1 };
+      const _beforeReadTasks = (st.tasks||[]).length;
+      st.tasks = (st.tasks||[]).filter(t=> !(
+        t && t.subject === '阅读' && t.type === '必做任务' &&
+        _rmReadNames[String(t.name||'')] === 1
+      ));
+      st._r299ReadTask = 1;
+      st._r299ReadTaskAt = Date.now();
+      st._r299ReadTaskN = _beforeReadTasks - st.tasks.length;
+      st._r299ReadTaskKept = (st.records||[]).length;
+      try{ const _rawR = JSON.stringify(st); if(_safeSet(KEY, _rawR)){ _loadCachePut(st, _rawR); } }catch(e){}
     }
     _persistedShape = _guardCapture(st);
     _loadCachePut(st);   // R246-3：解析 + 迁移完成后写入缓存
@@ -29222,6 +29245,34 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     if(a){ if(!ignore || a.r!==ignore.r || a.c!==ignore.c) return false; }
     return true;
   }
+  // R299-4：一周打卡计划的分类主题色 —— 语文 / 数学 / 英语 / 阅读 各一色，
+  //         其余自定义分类按备选色循环（deep = 深色文字 / 分类格底，fill = 分类格底，soft = 内容格底）
+  const WP_CAT_THEME = {
+    '语文': { deep:'#b5455c', fill:'#fde6ea', soft:'#fff4f6' },
+    '数学': { deep:'#1c5fb8', fill:'#dcecfe', soft:'#eef7ff' },
+    '英语': { deep:'#2a7a5d', fill:'#dcf3e8', soft:'#f0fbf5' },
+    '阅读': { deep:'#96681a', fill:'#fbeccd', soft:'#fff8ea' }
+  };
+  const WP_CAT_THEME_ALT = [
+    { deep:'#5b4aa8', fill:'#e9e4fb', soft:'#f5f2fe' },
+    { deep:'#2a6f7d', fill:'#ddf1f5', soft:'#f0fafc' },
+    { deep:'#8a4b8f', fill:'#f5e2f6', soft:'#fcf2fd' },
+    { deep:'#4a6b2f', fill:'#e8f3d9', soft:'#f6fbef' }
+  ];
+  // 分类格纵向合并组：从第 r 行起、相邻同名分类覆盖的行数（无分类返回 1）
+  function wpCatSpanOf(wp, r){
+    const cat = String(((wp.cats||[])[r]) || '').trim();
+    if(!cat) return 1;
+    const rows = wp.rows || 6;
+    let n = 1;
+    while(r + n < rows && String(((wp.cats||[])[r+n]) || '').trim() === cat) n++;
+    return n;
+  }
+  // R299-4：首行（表头）默认配色 —— 时间/分类 深蓝底白字，星期列统一浅蓝底深蓝字
+  function wpHeadDefaultOf(i){
+    if(i === 0 || i === 1) return { bg:'#1c5fb8', fg:'#ffffff' };
+    return { bg:'#e3eefb', fg:'#16306b' };
+  }
   function renderWeekPlan(){
     const mount = wpEl('weekPlanMount');
     if(!mount) return;
@@ -29229,6 +29280,29 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     const rows = wp.rows || 6;
     const days = ((wp.days && wp.days.length) ? wp.days : WEEKPLAN_DAYS).map(normSchedDay);
     const covered = wpCoveredSet(wp);
+    /* R299-4：先把「相邻同分类」归并成组 —— 同一分类连续若干行只保留一个分类格并纵向合并居中，
+       同时确定每个分类的主题色（表头 / 分类列 / 内容方格统一用同一个分类色）。 */
+    const catGroups = [];          // [{r, len, cat, theme}]
+    for(let r=0;r<rows;r++){
+      const cat = String(wp.cats[r] || '').trim();
+      if(!cat) continue;
+      const prev = catGroups[catGroups.length-1];
+      if(prev && prev.cat === cat && prev.r + prev.len === r) prev.len++;
+      else catGroups.push({ r:r, len:1, cat:cat });
+    }
+    const catThemeMap = {}; let _altI = 0;
+    catGroups.forEach(g=>{
+      if(catThemeMap[g.cat]) return;
+      catThemeMap[g.cat] = WP_CAT_THEME[g.cat] || WP_CAT_THEME_ALT[_altI++ % WP_CAT_THEME_ALT.length];
+    });
+    catGroups.forEach(g=>{ g.theme = catThemeMap[g.cat]; });
+    const catAnchorAt = {};        // 组首行 → 组
+    const catSkipRow = {};         // 被并组覆盖、不再输出分类格的行
+    const catThemeOfRow = {};      // 每行所属分类的主题色（用于内容方格底色）
+    catGroups.forEach(g=>{
+      catAnchorAt[g.r] = g;
+      for(let i=0;i<g.len;i++){ catThemeOfRow[g.r+i] = g.theme; if(i>0) catSkipRow[g.r+i] = 1; }
+    });
     let head = '<tr><th class="sn-th sn-th-sky wp-time-head">时间</th><th class="sn-th sn-th-sky wp-cat-head">分类</th>'
       + days.map((d,i)=>`<th class="sn-th ${i===1||i===3||i===5?'sn-th-violet':'sn-th-sky'}">${esc(d)}</th>`).join('') + '</tr>';
     let body = '';
@@ -29237,15 +29311,29 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       const catTxt = wp.cats[r] || '';
       body += '<tr>';
       body += `<td><button type="button" class="kb-cell wp-time-cell${timeTxt?'':' sn-cell-empty'}" data-wp-kind="time" data-r="${r}" style="background:${(wp.timeColors&&wp.timeColors[r])||'#ffffff'}">${timeTxt?esc(timeTxt):''}</button></td>`;
-      body += `<td><button type="button" class="kb-cell wp-cat-cell${catTxt?'':' sn-cell-empty'}" data-wp-kind="cat" data-r="${r}" style="background:${(wp.catColors&&wp.catColors[r])||'#ffffff'}">${catTxt?esc(catTxt):''}</button></td>`;
+      if(!catSkipRow[r]){
+        const g = catAnchorAt[r];
+        const th = catThemeOfRow[r] || null;
+        const rawCol = (wp.catColors && wp.catColors[r]) || '';
+        const hasOwn = rawCol && rawCol.toLowerCase() !== '#ffffff';   // 家长自定义色优先，用户数据不动
+        const bgc = hasOwn ? rawCol : (th ? th.fill : '#ffffff');
+        const fg = (!hasOwn && th) ? (';color:'+th.deep+';font-weight:800') : '';
+        const rs = (g && g.len > 1) ? (' rowspan="' + g.len + '"') : '';
+        body += `<td${rs} class="wp-cat-td${(g&&g.len>1)?' wp-cat-merged':''}" style="background:${bgc}">`
+          + `<button type="button" class="kb-cell wp-cat-cell${catTxt?'':' sn-cell-empty'}" data-wp-kind="cat" data-r="${r}" data-span="${g?g.len:1}" style="background:${bgc}${fg}">${catTxt?esc(catTxt):''}</button></td>`;
+      }
       for(let c=0;c<days.length;c++){
         if(covered[r+'-'+c]) continue;
         const a = wpIsAnchor(wp, r, c);
         const cell = wp.cells[r+'-'+c] || {};
         const txt = cell.t || '';
-        const bg = cell.c || '#ffffff';
+        const rawBg = cell.c || '';
+        const hasOwnBg = rawBg && rawBg.toLowerCase() !== '#ffffff';
+        const th = catThemeOfRow[r] || null;
+        const bg = hasOwnBg ? rawBg : (th ? th.soft : '#ffffff');
+        const fg = (!hasOwnBg && th && txt) ? (';color:'+th.deep) : '';
         const span = a ? ` colspan="${a.cs}" rowspan="${a.rs}"` : '';
-        body += `<td${span}><button type="button" class="kb-cell wp-day-cell${txt?'':' sn-cell-empty'}" data-wp-kind="day" data-r="${r}" data-c="${c}" style="background:${bg}">${txt?esc(txt):''}</button></td>`;
+        body += `<td${span}><button type="button" class="kb-cell wp-day-cell${txt?'':' sn-cell-empty'}" data-wp-kind="day" data-r="${r}" data-c="${c}" style="background:${bg}${fg}">${txt?esc(txt):''}</button></td>`;
       }
       body += '</tr>';
     }
@@ -29262,7 +29350,12 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     headCells.forEach((th,i)=>{
       const h = (wp.head && wp.head[i]) || {t: th.textContent, c:'#ffffff'};
       th.textContent = h.t || '';
-      th.style.background = h.c || '#ffffff';
+      /* R299-4：首行同样按分类体系统一配色 —— 家长自定义过颜色（非 #ffffff）时原样保留 */
+      const _rawC = h.c || '';
+      const _def = wpHeadDefaultOf(i);
+      const _own = _rawC && _rawC.toLowerCase() !== '#ffffff';
+      th.style.background = _own ? _rawC : _def.bg;
+      th.style.color = _own ? '' : _def.fg;
       th.setAttribute('data-wp-kind','head');
       th.setAttribute('data-c', String(i));
       th.classList.add('wp-head-cell');
@@ -29451,7 +29544,11 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     const wp = S.getWeekPlan();
     const col = (wpEl('weekCellColor').value||'#ffffff').trim();
     if(wpCellKind==='time'){ wp.times[wpCellR] = t; wp.timeColors[wpCellR] = col; }
-    else if(wpCellKind==='cat'){ wp.cats[wpCellR] = t; wp.catColors[wpCellR] = col; }
+    else if(wpCellKind==='cat'){
+      // R299-4：分类格是纵向合并的，编辑时同组各行一起改，避免合并后被拆散
+      const _n = wpCatSpanOf(wp, wpCellR);
+      for(let i=0;i<_n;i++){ wp.cats[wpCellR+i] = t; wp.catColors[wpCellR+i] = col; }
+    }
     else if(wpCellKind==='head'){ wp.head[wpCellC] = {t, c:col}; }
     else { const key = wpCellR+'-'+wpCellC; if(t){ wp.cells[key] = {t, c:col}; } else { delete wp.cells[key]; } }
     S.saveWeekPlan(wp);
@@ -29461,7 +29558,10 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
   function clearWeekCell(){
     const wp = S.getWeekPlan();
     if(wpCellKind==='time'){ wp.times[wpCellR]=''; wp.timeColors[wpCellR]='#ffffff'; }
-    else if(wpCellKind==='cat'){ wp.cats[wpCellR]=''; wp.catColors[wpCellR]='#ffffff'; }
+    else if(wpCellKind==='cat'){
+      const _cn = wpCatSpanOf(wp, wpCellR);   // R299-4：清空同样作用于整组合并行
+      for(let i=0;i<_cn;i++){ wp.cats[wpCellR+i]=''; wp.catColors[wpCellR+i]='#ffffff'; }
+    }
     else if(wpCellKind==='head'){ wp.head[wpCellC]={t:'', c:'#ffffff'}; }
     else { delete wp.cells[wpCellR+'-'+wpCellC]; }
     S.saveWeekPlan(wp);
@@ -41195,13 +41295,28 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     '</div>';
     col.innerHTML = card;
   }
-  /* R298-4.2：删除【每日文学】卡外壳与标题，每日成语 / 文学小常识移到「好句内容卡」下方
-     作为全宽两卡并列展示。节点是 index.html 中的静态 #dailyLitInline（不在 #cnColWords 内，
-     不会被 fillCol 的 innerHTML 重写冲掉），本函数只负责填充内容。
+  /* R299-1：【每日成语 / 文学小常识】移回「好词好句」卡片内部，与好词、好句自上而下依次排列。
+     fillCol('#cnColWords') 会用 innerHTML 重写整栏，所以这个容器不能在静态 HTML 里写死，
+     也不能在 fillCol 之前插入 —— 由本函数在 fillCol 之后动态创建并挂到 #cnColWords 末尾
+     （分页器 .yw-pager 之前，避免被挤到分页按钮下方），重复渲染时复用同一节点。
      内容生成仍走 injectDailyChengyuCard() / injectDailyLoreCard()，打卡键
      data-ri-checkin="cnWords::<词条>" 与 +1⭐ 规则完全不变，不新增存储字段。 */
   function renderDailyLitInline(){
-    if(!document.getElementById('dailyLitInline')) return;
+    const host = document.getElementById('cnColWords');
+    if(!host) return;
+    let box = document.getElementById('dailyLitInline');
+    if(!box){
+      box = document.createElement('div');
+      box.id = 'dailyLitInline';
+      box.className = 'daily-lit-inline';
+      box.innerHTML = '<div class="dl-grid">'
+        + '<div class="dl-item" id="dailyLitChengyu"></div>'
+        + '<div class="dl-item" id="dailyLitLore"></div>'
+        + '</div>';
+    }
+    const pager = host.querySelector('.yw-pager');
+    if(pager) host.insertBefore(box, pager);
+    else host.appendChild(box);
     injectDailyChengyuCard();
   }
   // 兼容旧调用名（收录书屋等历史代码引用）：映射到新位置
@@ -41265,7 +41380,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     fillCol('#cnColWords',   cnWordsItems, 'cnWords', 'cn');
     // R296-3.2/3.3：好词使用（释义 + 例句）独立卡
     renderHaociUseCard(sysWords);
-    // R297-2：每日成语 + 文学小常识移回好词好句卡（好句内容下方），必须在 fillCol('#cnColWords') 之后挂载
+    // R299-1：每日成语 + 文学小常识挂在好词好句卡内（好词 → 好句 → 成语 → 常识），必须在 fillCol('#cnColWords') 之后挂载
     renderDailyLitInline();
     // R57-2：古诗词鉴赏每日只显示一首（每日轮换，offset=5 与其它栏错开）
     fillCol('#cnColPoem',    colContent('cnPoem', 1, 5, 2), 'cnPoem', 'cn');
@@ -41273,8 +41388,9 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     // 需求⑤：每次渲染后重新为英语短文卡绑定点击朗读（卡片为新元素，_ppBound 去重）
     const _enPC = document.getElementById('enColPassage');
     if(_enPC){ bindPassagePause(_enPC); _refreshPassageCards(); }
-    // R298-4.4：好词好句 / 古诗词鉴赏 / 优秀作文三张卡统一高度（以当日最高卡为基准）
-    r298EqualizeCnCols();
+    // R299-1：成语/常识已回到「好词好句」卡内，该栏本就最高，三卡等高会把另两栏拉出大片空白，
+    // 故不再执行 R298-4.4 的等高处理（函数保留，供历史调用/断言引用）。
+    // r298EqualizeCnCols();
     // V56-Req8：渲染整合后的「收录书屋」收藏夹（语文 3 类 + 英语 2 类）
     renderBookstoreAll();
   }
