@@ -10584,6 +10584,46 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
 /* ============ R297-1 必做任务卡：时间段 · 星期标签 ============ */
 .task-date-label{white-space:nowrap}
 
+/* ============ R298-1.1 万年历：上海中小学寒暑假标注 ============ */
+.navcal-school-holiday{ background:var(--tone-100); border-color:var(--tone-300); }
+.navcal-tag-school{ color:var(--tone-700); font-size:9px; }
+.navcal-today .navcal-tag-school{ color:#fff; }
+.navcal-swatch-school{ background:var(--tone-100); border:1px solid var(--tone-300); }
+
+/* ============ R298-3.2 计算小超市：已打卡天数统计（连续打卡左侧） ============ */
+.calc-total-days{display:inline-flex;align-items:center;gap:3px;padding:4px 10px;border-radius:10px;background:var(--tone-100);color:var(--tone-700);font-size:12px;font-weight:800;white-space:nowrap}
+.calc-total-days b{font-size:15px;color:var(--tone-700)}
+
+/* ============ R298-4.4 语文三卡统一高度：以当日最高卡为基准 ============ */
+/* v5 原本 align-items:stretch，被 R206/R253 的 start 反杀；此处用高特异性 + !important 恢复 */
+.page-reading #rdPanelCn .reading-cols{ align-items:stretch!important; }
+.page-reading #rdPanelCn .reading-cols>.reading-col{ height:auto!important; align-self:stretch!important; }
+
+/* ============ R298-4.2 每日成语 / 文学小常识：好句内容卡下方全宽两卡并列，互不遮挡 ============ */
+/* 静态节点已从 #cnColWords 移出，故不受窄列 .daily-lit-inline .dl-grid{1fr} 反杀 */
+.page-reading #rdPanelCn .daily-lit-inline{
+  margin:0 0 12px; padding:0; border:0;
+  display:block;
+}
+.page-reading #rdPanelCn .daily-lit-inline .dl-grid{
+  display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px;
+}
+.page-reading #rdPanelCn .daily-lit-inline .dl-item{min-width:0}
+.page-reading #rdPanelCn .daily-lit-inline .dl-item .reading-item{height:100%;margin:0}
+
+/* ============ R298-4.1 语文 / 英语阅读面板切换按键 ============ */
+.rd-panel-btn{
+  background:#fff; border:1px solid var(--tone-300); color:var(--tone-700);
+  padding:8px 15px; border-radius:20px; font-size:14px; font-weight:800; cursor:pointer;
+  box-shadow:0 2px 5px rgba(30,58,138,.08); transition:.15s;
+}
+.rd-panel-btn:hover{ transform:translateY(-1px); border-color:var(--tone-500); }
+.rd-panel-btn.is-active{
+  background:linear-gradient(135deg,var(--tone-500),var(--tone-700));
+  color:#fff; border-color:var(--tone-700); box-shadow:0 3px 9px rgba(30,58,138,.22);
+}
+.rd-panel[hidden]{ display:none!important; }
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -11561,12 +11601,17 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
     <div class="page-title" data-page-node-id="xJsIGaFSq9b0WBJspufwPo"><h2 data-page-node-id="p9agOICDSmhdCi6BeZS35u"></h2></div><div class="page-content">
     <!-- R56-6：回退 R53-6 —— 收录书屋退回为独立页面（点按钮切换），主视图恢复「语文三栏 + 英语两栏」并列 -->
     <div class="reading-bs-bar" data-page-node-id="8oC8cVF52ObGALl22uflj2">
+      <!-- R298-4.1：收录书屋左侧新增「语文阅读 / 英语阅读」按键，原内容卡分别迁入对应面板 -->
+      <button class="rd-panel-btn is-active" id="rdTabCn" data-rd-tab="cn" type="button">📖 语文阅读</button>
+      <button class="rd-panel-btn" id="rdTabEn" data-rd-tab="en" type="button">🌐 英语阅读</button>
       <button class="bs-main-btn" id="bsMainToggle" data-page-node-id="ZFEhv0eT1vHraLOzEJQET1">📚 收录书屋</button>
       <span class="bs-main-hint" data-page-node-id="4kJiSyiT0q0MszABg2nIrq">语文 / 英语阅读每日轮换 · 点「收录书屋」查看全部收藏</span>
       <!-- R59-5：「📥 收录今日」按键已移除 —— 收录统一由每日 23:30 定时自动归档完成 -->
       <!-- R61-3：归档状态标记文字已按需求删除 -->
     </div>
 
+    <!-- R298-4.1：语文阅读面板（由原页面内容卡整体迁入） -->
+    <div class="rd-panel" id="rdPanelCn">
     <!-- 语文：好词好句 / 古诗词鉴赏 / 优秀作文 三栏并列 -->
     <div class="reading-area reading-cn">
       <!-- R58-1：栏目内「＋新增」已移除；语文阅读后的新增键仅家长模式可见 -->
@@ -11585,18 +11630,26 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
           <div class="reading-col-list" id="cnColEssay" data-page-node-id="UpqHqBYMlMq8oxJHmYonsl8"></div>
         </div>
       </div>
-      <!-- R296-3.2/3.3：【好词使用】独立卡 —— 好词的释义与例句，紧跟三张语文卡下方（每日文学之前），
+      <!-- R298-4.2：【每日成语 / 文学小常识】移到「好句内容卡」下方，全宽两卡并列展示。
+           静态节点（不在 #cnColWords 内，不会被 fillCol 的 innerHTML 重写冲掉），
+           由 injectDailyChengyuCard() / injectDailyLoreCard() 填充内容。原【每日文学】卡外壳与标题已删除。 -->
+      <div class="daily-lit-inline" id="dailyLitInline">
+        <div class="dl-grid">
+          <div class="dl-item" id="dailyLitChengyu"></div>
+          <div class="dl-item" id="dailyLitLore"></div>
+        </div>
+      </div>
+      <!-- R296-3.2/3.3：【好词使用】独立卡 —— 好词的释义与例句，紧跟三张语文卡下方，
            横向排布，内部子卡片一行 3 个（内容从好词好句卡迁出，好词好句恢复原分组展示） -->
       <div class="haoci-use-card" id="haociUseCard" data-page-node-id="R296haociUseCard">
         <div class="reading-col-head" data-page-node-id="R296haociUseHead">✨ 好词使用 <span class="haoci-use-hint">释义 · 例句</span></div>
         <div class="haoci-use-grid" id="haociUseGrid" data-page-node-id="R296haociUseGrid"></div>
       </div>
     </div>
+    </div><!-- /#rdPanelCn -->
 
-    <!-- R297-2：【每日成语 / 文学小常识】已移回上方「好词好句」卡内、好句内容分组下方，
-         由 renderDailyLitInline() 在 #cnColWords 末尾动态挂载（该列表每次渲染会重写 innerHTML，
-         所以不能用静态节点）。原独立【每日文学】卡外壳已移除。 -->
-
+    <!-- R298-4.1：英语阅读面板（由原页面内容卡整体迁入） -->
+    <div class="rd-panel" id="rdPanelEn" hidden>
     <!-- 英语：日常交流 / 英语短文 两栏并列 -->
     <div class="reading-area reading-en">
       <div class="reading-area-head">🌐 英语阅读 <button class="pbtn small hidden-in-child" data-reading-add="en" data-page-node-id="r58AddEn001">＋ 新增</button></div>
@@ -11611,6 +11664,7 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
         </div>
       </div>
     </div>
+    </div><!-- /#rdPanelEn -->
 
     <!-- R56-6：收录书屋独立页面（默认隐藏；点顶部「📚 收录书屋」按钮切换显示，5 类收藏夹并列） -->
     <div class="bookstore-page" id="bsMerged" hidden data-page-node-id="ACM7qq5UTMprgv3pRfUlzH">
@@ -11619,7 +11673,7 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
         <!-- R59-5：「📥 收录今日」按键已移除 —— 收录统一由每日 23:30 定时自动归档完成 -->
         <!-- R61-3：归档状态标记文字已按需求删除 -->
       </div>
-      <div class="bs-page-intro" data-page-node-id="CXfmIhyvSrGBLLreL5IfAK">好词好句 · 好词使用 · 文学小常识 · 每日文学 · 古诗词鉴赏 · 优秀作文 · 成语学习 · 日常交流 · 英语短文 —— 全部内容按主题分类，点主题栏切换，分页浏览（每日 23:30 自动收录当日打卡内容）</div>
+      <div class="bs-page-intro" data-page-node-id="CXfmIhyvSrGBLLreL5IfAK">好词好句 · 好词使用 · 文学小常识 · 古诗词鉴赏 · 优秀作文 · 成语学习 · 日常交流 · 英语短文 —— 全部内容按主题分类，点主题栏切换，分页浏览（每日 23:30 自动收录当日打卡内容）</div>
       <!-- R57-2：主题栏 —— 按主题分类切换（好词好句 / 文学小常识 / 古诗词鉴赏 / 优秀作文 / 日常交流 / 英语短文） -->
       <div class="bs-tabs" id="bsTabs" data-page-node-id="bsR57tabs0001"></div>
       <!-- R57-2：主题内容区 —— 单主题展示 + 分页（各主题独立页码，每页 8 条） -->
@@ -11631,7 +11685,6 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
         <div class="bs-theme-body" id="bsColLore" hidden data-page-node-id="R273bsLoreBody"></div>
         <div class="bs-theme-body" id="bsColPoem" hidden data-page-node-id="bsR57body0002"></div>
         <div class="bs-theme-body" id="bsColEssay" hidden data-page-node-id="bsR57body0003"></div>
-        <div class="bs-theme-body" id="bsColDailyLit" hidden data-page-node-id="bsR295dailyLit"></div>
         <div class="bs-theme-body" id="bsColSpeak" hidden data-page-node-id="bsR57body0004"></div>
         <div class="bs-theme-body" id="bsColPassage" hidden data-page-node-id="bsR57body0005"></div>
         <div class="bs-theme-body" id="bsColChengyu" hidden data-page-node-id="bsR57body0006"></div>
@@ -15044,6 +15097,611 @@ window.R297_TASK_PLAN = {
 };
 
 </script>
+<script>
+/* R298-2：必做任务清单 —— 由《打卡任务.xlsx》唯一的 3-16 工作表精确解析生成。
+   该表 A 列为科目、B~H 为周一至周日，无时间列 → 每条任务 time 留空，按星期循环。 */
+window.R298_TASK_PLAN = {
+ "version": "R298",
+ "source": "打卡任务.xlsx",
+ "sheet": "3-16",
+ "generatedAt": "2026-11-17",
+ "note": "该表本身无时间列；按星期一至星期日 + 科目 + 任务名导入，time 一律留空不虚构",
+ "subjects": [
+  "语文",
+  "数学",
+  "英语",
+  "学习",
+  "阅读",
+  "围棋"
+ ],
+ "tasks": [
+  {
+   "id": "r298_语文_1",
+   "name": "写作",
+   "subject": "语文",
+   "time": "",
+   "minutes": 25,
+   "days": [
+    1
+   ],
+   "daysOfWeek": [
+    "1"
+   ],
+   "plan": [
+    {
+     "from": 1,
+     "to": 31,
+     "days": [
+      1
+     ],
+     "time": ""
+    }
+   ]
+  },
+  {
+   "id": "r298_语文_2",
+   "name": "好句仿写",
+   "subject": "语文",
+   "time": "",
+   "minutes": 25,
+   "days": [
+    0,
+    2,
+    3,
+    5,
+    6
+   ],
+   "daysOfWeek": [
+    "0",
+    "2",
+    "3",
+    "5",
+    "6"
+   ],
+   "plan": [
+    {
+     "from": 1,
+     "to": 31,
+     "days": [
+      0,
+      2,
+      3,
+      5,
+      6
+     ],
+     "time": ""
+    }
+   ]
+  },
+  {
+   "id": "r298_语文_3",
+   "name": "好词好句",
+   "subject": "语文",
+   "time": "",
+   "minutes": 25,
+   "days": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "daysOfWeek": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5"
+   ],
+   "plan": [
+    {
+     "from": 1,
+     "to": 31,
+     "days": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "time": ""
+    }
+   ]
+  },
+  {
+   "id": "r298_语文_4",
+   "name": "阅读理解",
+   "subject": "语文",
+   "time": "",
+   "minutes": 25,
+   "days": [
+    1,
+    3,
+    5
+   ],
+   "daysOfWeek": [
+    "1",
+    "3",
+    "5"
+   ],
+   "plan": [
+    {
+     "from": 1,
+     "to": 31,
+     "days": [
+      1,
+      3,
+      5
+     ],
+     "time": ""
+    }
+   ]
+  },
+  {
+   "id": "r298_数学_1",
+   "name": "乐读习题",
+   "subject": "数学",
+   "time": "",
+   "minutes": 20,
+   "days": [
+    1,
+    3,
+    5
+   ],
+   "daysOfWeek": [
+    "1",
+    "3",
+    "5"
+   ],
+   "plan": [
+    {
+     "from": 1,
+     "to": 31,
+     "days": [
+      1,
+      3,
+      5
+     ],
+     "time": ""
+    }
+   ]
+  },
+  {
+   "id": "r298_数学_2",
+   "name": "乐读学以致用",
+   "subject": "数学",
+   "time": "",
+   "minutes": 20,
+   "days": [
+    4
+   ],
+   "daysOfWeek": [
+    "4"
+   ],
+   "plan": [
+    {
+     "from": 1,
+     "to": 31,
+     "days": [
+      4
+     ],
+     "time": ""
+    }
+   ]
+  },
+  {
+   "id": "r298_数学_3",
+   "name": "乐读计算小超市",
+   "subject": "数学",
+   "time": "",
+   "minutes": 20,
+   "days": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "daysOfWeek": [
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6"
+   ],
+   "plan": [
+    {
+     "from": 1,
+     "to": 31,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "time": ""
+    }
+   ]
+  },
+  {
+   "id": "r298_英语_1",
+   "name": "周周练选题",
+   "subject": "英语",
+   "time": "",
+   "minutes": 25,
+   "days": [
+    0,
+    1,
+    2,
+    3,
+    5,
+    6
+   ],
+   "daysOfWeek": [
+    "0",
+    "1",
+    "2",
+    "3",
+    "5",
+    "6"
+   ],
+   "plan": [
+    {
+     "from": 1,
+     "to": 31,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      5,
+      6
+     ],
+     "time": ""
+    }
+   ]
+  },
+  {
+   "id": "r298_英语_2",
+   "name": "学而思作业",
+   "subject": "英语",
+   "time": "",
+   "minutes": 25,
+   "days": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "daysOfWeek": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5"
+   ],
+   "plan": [
+    {
+     "from": 1,
+     "to": 31,
+     "days": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "time": ""
+    }
+   ]
+  },
+  {
+   "id": "r298_英语_3",
+   "name": "学而思词汇语法",
+   "subject": "英语",
+   "time": "",
+   "minutes": 25,
+   "days": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "daysOfWeek": [
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6"
+   ],
+   "plan": [
+    {
+     "from": 1,
+     "to": 31,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "time": ""
+    }
+   ]
+  },
+  {
+   "id": "r298_英语_4",
+   "name": "阅读理解",
+   "subject": "英语",
+   "time": "",
+   "minutes": 25,
+   "days": [
+    2,
+    4,
+    6
+   ],
+   "daysOfWeek": [
+    "2",
+    "4",
+    "6"
+   ],
+   "plan": [
+    {
+     "from": 1,
+     "to": 31,
+     "days": [
+      2,
+      4,
+      6
+     ],
+     "time": ""
+    }
+   ]
+  },
+  {
+   "id": "r298_阅读_1",
+   "name": "图书馆书",
+   "subject": "阅读",
+   "time": "",
+   "minutes": 25,
+   "days": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "daysOfWeek": [
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6"
+   ],
+   "plan": [
+    {
+     "from": 1,
+     "to": 31,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "time": ""
+    }
+   ]
+  },
+  {
+   "id": "r298_阅读_2",
+   "name": "英语阅读100篇",
+   "subject": "阅读",
+   "time": "",
+   "minutes": 25,
+   "days": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "daysOfWeek": [
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6"
+   ],
+   "plan": [
+    {
+     "from": 1,
+     "to": 31,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "time": ""
+    }
+   ]
+  }
+ ],
+ "weekPlan": {
+  "rows": 13,
+  "rowsData": [
+   {
+    "time": "",
+    "cat": "语文",
+    "cells": {
+     "1": "写作"
+    }
+   },
+   {
+    "time": "",
+    "cat": "语文",
+    "cells": {
+     "0": "好句仿写",
+     "2": "好句仿写",
+     "3": "好句仿写",
+     "5": "好句仿写",
+     "6": "好句仿写"
+    }
+   },
+   {
+    "time": "",
+    "cat": "语文",
+    "cells": {
+     "1": "好词好句",
+     "2": "好词好句",
+     "3": "好词好句",
+     "4": "好词好句",
+     "5": "好词好句"
+    }
+   },
+   {
+    "time": "",
+    "cat": "语文",
+    "cells": {
+     "1": "阅读理解",
+     "3": "阅读理解",
+     "5": "阅读理解"
+    }
+   },
+   {
+    "time": "",
+    "cat": "数学",
+    "cells": {
+     "1": "乐读习题",
+     "3": "乐读习题",
+     "5": "乐读习题"
+    }
+   },
+   {
+    "time": "",
+    "cat": "数学",
+    "cells": {
+     "4": "乐读学以致用"
+    }
+   },
+   {
+    "time": "",
+    "cat": "数学",
+    "cells": {
+     "0": "乐读计算小超市",
+     "1": "乐读计算小超市",
+     "2": "乐读计算小超市",
+     "3": "乐读计算小超市",
+     "4": "乐读计算小超市",
+     "5": "乐读计算小超市",
+     "6": "乐读计算小超市"
+    }
+   },
+   {
+    "time": "",
+    "cat": "英语",
+    "cells": {
+     "0": "周周练选题",
+     "1": "周周练选题",
+     "2": "周周练选题",
+     "3": "周周练选题",
+     "5": "周周练选题",
+     "6": "周周练选题"
+    }
+   },
+   {
+    "time": "",
+    "cat": "英语",
+    "cells": {
+     "1": "学而思作业",
+     "2": "学而思作业",
+     "3": "学而思作业",
+     "4": "学而思作业",
+     "5": "学而思作业"
+    }
+   },
+   {
+    "time": "",
+    "cat": "英语",
+    "cells": {
+     "0": "学而思词汇语法",
+     "1": "学而思词汇语法",
+     "2": "学而思词汇语法",
+     "3": "学而思词汇语法",
+     "4": "学而思词汇语法",
+     "5": "学而思词汇语法",
+     "6": "学而思词汇语法"
+    }
+   },
+   {
+    "time": "",
+    "cat": "英语",
+    "cells": {
+     "2": "阅读理解",
+     "4": "阅读理解",
+     "6": "阅读理解"
+    }
+   },
+   {
+    "time": "",
+    "cat": "阅读",
+    "cells": {
+     "0": "图书馆书",
+     "1": "图书馆书",
+     "2": "图书馆书",
+     "3": "图书馆书",
+     "4": "图书馆书",
+     "5": "图书馆书",
+     "6": "图书馆书"
+    }
+   },
+   {
+    "time": "",
+    "cat": "阅读",
+    "cells": {
+     "0": "英语阅读100篇",
+     "1": "英语阅读100篇",
+     "2": "英语阅读100篇",
+     "3": "英语阅读100篇",
+     "4": "英语阅读100篇",
+     "5": "英语阅读100篇",
+     "6": "英语阅读100篇"
+    }
+   }
+  ]
+ }
+};
+
+</script>
 <!-- R272-1：统一持久化数据层必须先于 store.js 加载；它只提供异步事务能力，
      不改变 S.load() / S.save() 的同步调用语义，也不触碰任何页面 UI。 -->
 <script>
@@ -17141,6 +17799,54 @@ window.R297_TASK_PLAN = {
     if(!m) return 99999;
     return (Number(m[1]) * 60) + Number(m[2]);
   }
+  /* R298-2：更新后的《打卡任务.xlsx》只剩一张「3-16」工作表（A 列科目 / B~H 周一至周日，
+     无时间列）→ 13 条任务按星期循环，`time` 留空；源数据表 3-16 本身不设日期段，
+     故 plan 用 1~31 覆盖整月，仅靠 days 控制星期。 */
+  function r298Plan(){
+    const p = (typeof window !== 'undefined') ? window.R298_TASK_PLAN : null;
+    return (p && Array.isArray(p.tasks) && p.tasks.length) ? p : null;
+  }
+  function r298ImportedTasks(){
+    const plan = r298Plan();
+    if(!plan) return [];
+    return plan.tasks.map(t=>{
+      const days = (t.days||[]).map(Number);
+      return {
+        id: t.id, name: t.name, subject: t.subject, type:'必做任务', stars:2,
+        minutes: Number(t.minutes)||20,
+        desc: '按《打卡任务》3-16 周计划 · ' + t.subject,
+        standard: '按清单要求完成并打卡',
+        enabled: true, weekendOnly: false, card:'required',
+        time: '', daysOfWeek: days.map(String),
+        plan: [{from:1, to:31, days:days, time:''}],
+        _r298: true,
+        readingKind: /乐读计算/.test(String(t.name||'')) ? 'calcDaily' : ''
+      };
+    });
+  }
+  function r298WeekPlanSeed(){
+    const plan = r298Plan();
+    const wp = plan && plan.weekPlan;
+    if(!wp || !Array.isArray(wp.rowsData) || !wp.rowsData.length) return null;
+    const rows = wp.rowsData.length;
+    const out = weekPlanSeed();
+    out.rows = rows;
+    out.times = wp.rowsData.map(r=>String(r.time||''));
+    out.cats  = wp.rowsData.map(r=>String(r.cat||''));
+    out.timeColors = new Array(rows).fill('#ffffff');
+    out.catColors  = new Array(rows).fill('#ffffff');
+    out.cells = {}; out.merges = [];
+    wp.rowsData.forEach((r, ri)=>{
+      const cs = r.cells || {};
+      Object.keys(cs).forEach(k=>{
+        const dow = Number(k);                 // 种子用 getDay() 口径（0=周日）
+        if(!(dow >= 0 && dow <= 6)) return;
+        const ci = (dow === 0) ? 6 : dow - 1; // 表格列顺序 周一…周日
+        out.cells[ri + '-' + ci] = { t: String(cs[k]||''), c:'#ffffff' };
+      });
+    });
+    return out;
+  }
   function r296Plan(){
     const p = (typeof window !== 'undefined') ? window.R296_TASK_PLAN : null;
     return (p && Array.isArray(p.tasks)) ? p : null;
@@ -18156,6 +18862,33 @@ window.R297_TASK_PLAN = {
       st._r297TaskV2 = true;
       save(st);
     }
+    /* R298-2：更新后的《打卡任务.xlsx》只有「3-16」一张表（13 条、按星期循环、无时间段）。
+       先清原有导入任务（r295~r298 来源），换成新清单；一周计划同步为 13 行 × 60 格。
+       ⚠️ 与 R297 同口径：历史打卡记录、星星账本、用户自建任务、其余私有数据一律保留，
+       只清「今天及以后」的必做勾选，避免换清单后旧勾选挂到不存在的任务上。 */
+    if(!st._r298TaskV3 && r298Plan()){
+      const _today298 = todayStr();
+      const _isOld = t => !!(t && (t._r295 === true || t._r296 === true || t._r297 === true || t._r298 === true ||
+        /^r29[5678]_/.test(String(t.id||''))));
+      const _oldReq = (st.tasks||[]).filter(t=>t && t.type === '必做任务' && _isOld(t));
+      st.r298TaskBackup = { at: Date.now(), tasks: _oldReq.map(t=>({id:t.id, name:t.name, subject:t.subject, type:t.type})) };
+      const _ids = {};
+      _oldReq.forEach(t=>{ _ids[t.id] = 1; });
+      r298ImportedTasks().forEach(t=>{ _ids[t.id] = 1; });
+      const _before = (st.records||[]).length;
+      st.records = (st.records||[]).filter(r=>{
+        if(!r) return false;
+        if(String(r.date||'') < _today298) return true;   // 历史一条不删
+        return !_ids[r.taskId];
+      });
+      st._r298ClearedN = _before - st.records.length;
+      st._r298ClearedAt = Date.now();
+      st.tasks = (st.tasks||[]).filter(t=>! _isOld(t)).concat(r298ImportedTasks());
+      const _wp298 = r298WeekPlanSeed();
+      if(_wp298) st.weekPlan = _wp298;
+      st._r298TaskV3 = true;
+      save(st);
+    }
     // R16-3：首页标语迁移（仅当用户仍沿用旧默认标语时升级为新标语；家长自定义过的标语保持不动）
     (function(){
       const oldZh = '不要烦，不要烦，工作永远做不完';
@@ -18310,6 +19043,38 @@ window.R297_TASK_PLAN = {
       st._r296WrongClearedAt = Date.now();
       st._r296WrongClearedN = _wbN;
       try{ const _rawWb = JSON.stringify(st); if(_safeSet(KEY, _rawWb)){ _loadCachePut(st, _rawWb); } }catch(e){}
+    }
+    /* R298-3.1：计算小超市「重新统计」—— 一次性把已做本题目放回题库，并清空
+       连续打卡 / 已做本 / 错题本 / 打卡日历（含当日批改快照与 calcDaily 打卡标记）。
+       ⚠️ 只动计算小超市这四项，星星账本 / 其他学科打卡 / 用户自建内容一律保留。
+       必须放在迁移闸之后（这些键在 GUARD_MIGRATION_KEYS 内），用 _r298CalcReset 保证只跑一次。 */
+    if(st._r298CalcReset !== 1){
+      const _qkey = q => JSON.stringify([q && q.a, q && q.op, q && q.b, q && q.op2, q && q.c, q && q.cat]);
+      const _seen = {};
+      const _bank = [];
+      /* 先记下重置前的播种/导入状态：若题库本来为空（首次运行、种子还没就绪），
+         必须原样保留旧标记，绝不能强行置 true —— 否则 calcBankSeed()/migrateCalcBank()
+         会以为 1250 题早已导入而永久跳过播种，题库从此一直是空的。 */
+      const _prevSeeded = !!st.calcBankSeeded, _prevImported = !!st.calcBankImported;
+      (Array.isArray(st.calcBank) ? st.calcBank : []).concat(Array.isArray(st.calcBankRemoved) ? st.calcBankRemoved : [])
+        .forEach(q=>{ const k = _qkey(q); if(!_seen[k]){ _seen[k] = 1; _bank.push(q); } });
+      st.calcBank = _bank;
+      st.calcBankRemoved = [];
+      if(_bank.length){ st.calcBankSeeded = true; st.calcBankImported = true; }
+      else { st.calcBankSeeded = _prevSeeded; st.calcBankImported = _prevImported; }
+      st.calcBook = []; st.calcDoneKeys = []; st.calcBookArchivedDate = '';
+      st.calcWrongBook = [];
+      st.calcDailyLog = {};
+      st.calcStreak = 0; st.calcStreakLastDate = '';
+      st.calcStreakRewardWeeks = 0; st.calcStreakBonusStars = 0;
+      st.calcDrill = {date:'', items:[], checkedAt:0, score:0};
+      if(st.readFlags && typeof st.readFlags === 'object'){
+        Object.keys(st.readFlags).forEach(k=>{ if(/^calcDaily::/.test(k)) delete st.readFlags[k]; });
+      }
+      st._r298CalcReset = 1;
+      st._r298CalcResetAt = Date.now();
+      st._r298CalcBackCount = Array.isArray(st.calcBank) ? st.calcBank.length : 0;
+      try{ const _rawC = JSON.stringify(st); if(_safeSet(KEY, _rawC)){ _loadCachePut(st, _rawC); } }catch(e){}
     }
     _persistedShape = _guardCapture(st);
     _loadCachePut(st);   // R246-3：解析 + 迁移完成后写入缓存
@@ -22083,7 +22848,9 @@ window.R297_TASK_PLAN = {
   // 这里存「起止区间」而非逐日枚举，便于维护；YYYY-MM-DD 可直接做字典序比较。
   const KM_HOLIDAY_RANGES = {
     2025: [['2025-01-01','2025-01-01'],['2025-01-28','2025-02-04'],['2025-04-04','2025-04-06'],['2025-05-01','2025-05-05'],['2025-05-31','2025-06-02'],['2025-10-01','2025-10-08']],
-    2026: [['2026-01-01','2026-01-03'],['2026-02-15','2026-02-23'],['2026-04-04','2026-04-06'],['2026-05-01','2026-05-05'],['2026-06-19','2026-06-21'],['2026-09-25','2026-09-27'],['2026-10-01','2026-10-07']]
+    2026: [['2026-01-01','2026-01-03'],['2026-02-15','2026-02-23'],['2026-04-04','2026-04-06'],['2026-05-01','2026-05-05'],['2026-06-19','2026-06-21'],['2026-09-25','2026-09-27'],['2026-10-01','2026-10-07']],
+    /* R298-1.1：国务院办公厅《关于2027年部分节假日安排的通知》（国办发明电〔2026〕10号，2026-11-05 发布） */
+    2027: [['2027-01-01','2027-01-03'],['2027-02-05','2027-02-13'],['2027-04-03','2027-04-05'],['2027-05-01','2027-05-05'],['2027-06-09','2027-06-09'],['2027-09-15','2027-09-15'],['2027-10-01','2027-10-07']]
   };
   function kmHolidayYear(y){
     const r = KM_HOLIDAY_RANGES[y];
@@ -22107,7 +22874,9 @@ window.R297_TASK_PLAN = {
   // 落在此类日期视为需上班，日历标注「班」，不应按休息日处理。
   const KM_MAKEUP_DATES = {
     2025: ['2025-01-26','2025-02-08','2025-04-27','2025-09-28','2025-10-11'],
-    2026: ['2026-01-04','2026-02-14','2026-02-28','2026-05-09','2026-09-20','2026-10-10']
+    2026: ['2026-01-04','2026-02-14','2026-02-28','2026-05-09','2026-09-20','2026-10-10'],
+    /* R298-1.1：2027 年国务院通知公布的调休上班日（1/31、2/14、5/8、9/26、10/9） */
+    2027: ['2027-01-31','2027-02-14','2027-05-08','2027-09-26','2027-10-09']
   };
   function kmMakeupYear(y){
     const r = KM_MAKEUP_DATES[y];
@@ -22117,6 +22886,22 @@ window.R297_TASK_PLAN = {
     const d = dateStr || todayStr();
     const y = parseInt(d.slice(0,4), 10);
     return kmMakeupYear(y).indexOf(d) >= 0;
+  }
+  /* R298-1.1：上海市教委《上海市中小学2026学年校历》（沪教委基〔2026〕14号）公布的
+     寒暑假区间。与法定节假日分开存：法定假期在万年历标「休」，校历假期标「寒假 / 暑假」。
+     只用于日历展示标注，不写进 KM_HOLIDAY_RANGES（避免把整个寒假当成法定假日影响秘境开放）。 */
+  const KM_SCHOOL_HOLIDAYS = [
+    {label:'暑假', from:'2026-07-01', to:'2026-08-31'},
+    {label:'寒假', from:'2027-01-23', to:'2027-02-21'},
+    {label:'暑假', from:'2027-07-01', to:'2027-08-31'}
+  ];
+  function kmSchoolHolidayLabel(dateStr){
+    const d = String(dateStr || todayStr());
+    for(let i=0;i<KM_SCHOOL_HOLIDAYS.length;i++){
+      const h = KM_SCHOOL_HOLIDAYS[i];
+      if(d >= h.from && d <= h.to) return h.label;
+    }
+    return '';
   }
   function kmDefaultSettings(){
     return {
@@ -26098,6 +26883,12 @@ be 动词：am / is → was；are → were
     save(st);
     return { ok:true, date:d, day: st.calcDailyLog[d], first: !hasFirst };
   }
+  /* R298-3.2：累计已打卡天数（只数真正点过「今日打卡」或批改全对自动打卡的日期）。
+     R298-3.1 重置后从 0 重新统计。 */
+  function getCalcCheckedDays(){
+    const log = getCalcDailyLog();
+    return Object.keys(log).filter(k=>!!(log[k] && log[k].checked)).length;
+  }
   function getCalcDailyLog(){
     const st = load();
     const o = calcDailyLogMap(st);
@@ -26793,7 +27584,7 @@ be 动词：am / is → was；are → were
     addPassCert, getPassCerts,
     stashPendingAnswer, listPendingAnswers, clearPendingAnswer,
     resetModuleProgress,
-    tasksForDate, getRecord, toggleCheckIn, makeupDay, saveWrong,
+    tasksForDate, getRecord, toggleCheckIn, makeupDay, saveWrong, r298Plan, r298ImportedTasks, r298WeekPlanSeed,
     addTask, updateTask, deleteTask,
     // R253-2：首页任务卡跳转独立配置
     TASK_JUMP_PAGES, getTaskJump, setTaskJump,
@@ -26833,7 +27624,7 @@ be 动词：am / is → was；are → were
     // R244-1：手动加入已做本（取消 22:00 定时收录）
     addCalcBookRight, moveFixedWrongsToCalcBook,
     // R245-1：每日打卡记录（打卡日历）
-    recordCalcDay, getCalcDailyLog, markCalcDayChecked, unmarkCalcDayChecked, clearCalcDailyLog,
+    recordCalcDay, getCalcDailyLog, getCalcCheckedDays, markCalcDayChecked, unmarkCalcDayChecked, clearCalcDailyLog,
     getSuzhiProgress, setSuzhiProgressIfEmpty,
     addGoRecord, deleteGoRecord, getWeekGoCount, clearWeekGoRecords, getGoStars, setGoStars,
     getMaoStars, setMaoStars, maoPoemCheckedList, isMaoPoemChecked, checkMaoPoem, uncheckMaoPoem,
@@ -26850,7 +27641,7 @@ be 动词：am / is → was；are → were
     markKMCleared, getKMCleared, addKMWrong, getKMWrong, clearKMWrong, resetKMProgress, getKMStats,
     getKMProgress, saveKMProgress,
     // R121-1：游戏开放日期（周末 + 法定节假日默认规则，支持自定义开放日）
-    isKMOpen, getKMOpenInfo, kmIsHoliday, kmIsWeekend, kmIsMakeup,
+    isKMOpen, getKMOpenInfo, kmIsHoliday, kmIsWeekend, kmIsMakeup, kmSchoolHolidayLabel,
     // R124：种植园 游戏开放时间（工作日时段窗 + 周末/节假日 + 自定义开放日/时段）
     isFarmOpen, getFarmOpenInfo, getFarmOpenConfig, farmSaveOpen, saveKMOpenNow,
     // V55-Req6：收录书屋
@@ -31650,11 +32441,13 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     const today = _calcToday();
     const done = calcDailyDone();
     const streak = calcStreak();
+    let checkedDays = 0; try{ checkedDays = (window.Store && window.Store.getCalcCheckedDays) ? window.Store.getCalcCheckedDays() : 0; }catch(e){}
     const probs = genCalcProblems(_CALC_N);
     const dateLabel = today.slice(5).replace('-','-');
-    // R257-4.1：每日一练说明 / 连续打卡统计 / 打卡日历 —— 同一行排布，整组靠左
+    // R257-4.1 / R298-3.2：每日一练说明 / 已打卡天数 / 连续打卡统计 / 打卡日历 —— 同一行排布，整组靠左
     const streakLine = `<div class="calc-stat-row">
       <div class="calc-daily-hint">每日一练 · ${dateLabel}</div>
+      <div class="calc-total-days">✅ 已打卡天数 <b>${checkedDays}</b> 天</div>
       <div class="calc-streak">🔥 连续打卡 <b>${streak}</b> 天</div>
       <button type="button" class="calc-cal-btn" data-calc-cal title="打开打卡日历：按年月查看每天 正确题数 / 总题数">📅 打卡日历</button>
     </div>`;
@@ -40402,26 +41195,13 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     '</div>';
     col.innerHTML = card;
   }
-  /* R297-2：每日成语 / 文学小常识移回「好词好句」卡内、好句内容分组下方。
-     #cnColWords 每次渲染由 fillCol() 整段重写 innerHTML，静态子节点会被冲掉，
-     所以本函数在 fillCol 之后把两张卡动态挂到该列表末尾（= 好句内容下方）。
+  /* R298-4.2：删除【每日文学】卡外壳与标题，每日成语 / 文学小常识移到「好句内容卡」下方
+     作为全宽两卡并列展示。节点是 index.html 中的静态 #dailyLitInline（不在 #cnColWords 内，
+     不会被 fillCol 的 innerHTML 重写冲掉），本函数只负责填充内容。
      内容生成仍走 injectDailyChengyuCard() / injectDailyLoreCard()，打卡键
      data-ri-checkin="cnWords::<词条>" 与 +1⭐ 规则完全不变，不新增存储字段。 */
   function renderDailyLitInline(){
-    const col = document.getElementById('cnColWords');
-    if(!col) return;
-    const old = document.getElementById('dailyLitInline');
-    if(old && old.parentNode) old.parentNode.removeChild(old);
-    const wrap = document.createElement('div');
-    wrap.className = 'daily-lit-inline';
-    wrap.id = 'dailyLitInline';
-    wrap.innerHTML =
-      '<div class="dli-head">📖 每日文学</div>' +
-      '<div class="dl-grid">' +
-        '<div class="dl-item" id="dailyLitChengyu"></div>' +
-        '<div class="dl-item" id="dailyLitLore"></div>' +
-      '</div>';
-    col.appendChild(wrap);
+    if(!document.getElementById('dailyLitInline')) return;
     injectDailyChengyuCard();
   }
   // 兼容旧调用名（收录书屋等历史代码引用）：映射到新位置
@@ -40493,8 +41273,24 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     // 需求⑤：每次渲染后重新为英语短文卡绑定点击朗读（卡片为新元素，_ppBound 去重）
     const _enPC = document.getElementById('enColPassage');
     if(_enPC){ bindPassagePause(_enPC); _refreshPassageCards(); }
+    // R298-4.4：好词好句 / 古诗词鉴赏 / 优秀作文三张卡统一高度（以当日最高卡为基准）
+    r298EqualizeCnCols();
     // V56-Req8：渲染整合后的「收录书屋」收藏夹（语文 3 类 + 英语 2 类）
     renderBookstoreAll();
+  }
+  /* R298-4.4：把语文三张卡（.reading-col）拉到同一高度，以当日内容最高的一张为基准。
+     CSS grid 已用 align-items:stretch 做主对齐；这里再用内联 min-height 兜底，
+     兼容老规则 height:auto / align-items:start 的反杀。jsdom 下 offsetHeight 恒为 0，
+     此时跳过（不写死 0），不影响任何断言与真实浏览器表现。 */
+  function r298EqualizeCnCols(){
+    const wrap = document.querySelector('#rdPanelCn .reading-cols');
+    if(!wrap) return;
+    const cols = Array.prototype.slice.call(wrap.querySelectorAll(':scope > .reading-col'));
+    if(cols.length < 3) return;
+    cols.forEach(c=>{ c.style.minHeight = ''; });
+    let mx = 0;
+    cols.forEach(c=>{ const h = c.offsetHeight || 0; if(h > mx) mx = h; });
+    if(mx > 0) cols.forEach(c=>{ c.style.minHeight = mx + 'px'; });
   }
   // R53-6：收录书屋 = 大阅读主视图 —— 主题按钮切换展示对应阅读内容（内容分页见 fillCol）
   const BS_TABS = [
@@ -40506,7 +41302,6 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     {key:'cnPoem',label:'📜 古诗词鉴赏'},
     {key:'cnEssay',label:'📝 优秀作文'},
     // R295-2.4：收录书屋同步新增「每日文学」入口（每日成语 + 文学小常识横向并排）
-    {key:'dailyLit',label:'📖 每日文学'},
     {key:'enSpeaking',label:'💬 日常交流'},
     {key:'enPassage',label:'📖 英语短文'},
     {key:'cnChengyu',label:'🀄 成语学习'}
@@ -40514,13 +41309,13 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   // R56-6：回退 R53-6 —— 收录书屋不再是主视图，改回「点按钮切换显示」的独立页面；
   //        主视图恢复「语文三栏 + 英语两栏」并列（reading-cn / reading-en）。
   let _bsOpen = false;
+  let _rdTab = 'cn';   // R298-4.1：今日阅读默认展示「语文阅读」面板
   const BS_COLS = [
     {key:'cnWords',    sel:'#bsColWords'},
     {key:'cnWordUse',  sel:'#bsColWordUse'},
     {key:'cnLore',     sel:'#bsColLore'},
     {key:'cnPoem',     sel:'#bsColPoem'},
     {key:'cnEssay',    sel:'#bsColEssay'},
-    {key:'dailyLit',   sel:'#bsColDailyLit'},
     {key:'enSpeaking', sel:'#bsColSpeak'},
     {key:'enPassage',  sel:'#bsColPassage'},
     {key:'cnChengyu', sel:'#bsColChengyu'}
@@ -40538,14 +41333,6 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
           meta: '文学小常识',
           source: 'sys'
         }));
-    }
-    // R295-2.4：收录书屋「每日文学」= 今日成语 + 今日文学小常识，横向两张卡
-    if(kind === 'dailyLit'){
-      const cy = dailyChengyuItem(), lore = dailyLoreItem(), out = [];
-      if(cy) out.push({title:cy.word, meta:'每日成语', source:'sys',
-        body:[cy.meaning?('【释义】'+cy.meaning):'', cy.codex?('【典故】'+cy.codex):'', cy.example?('【例句】'+cy.example):''].filter(Boolean).join('\n')});
-      if(lore) out.push({title:lore.t, meta:'文学小常识', source:'sys', body:lore.c});
-      return out;
     }
     if(kind === 'cnWordUse'){
       // R296-3.4：全量好词（内置）逐词展开，附释义与例句
@@ -40575,11 +41362,6 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     const tagTxt = it.source==='user' ? '👤 我的'
       : (it.source==='archived' ? '📥 已收录' : '📚 文库');
     const dateHtml = it.archivedAt ? `<span class="bs-item-date">📅 ${esc(it.archivedAt)}</span>` : '';
-    // R295-2.4：收录书屋「每日文学」条目横向并排（与主视图同一份每日数据）
-    if(kind==='dailyLit'){
-      return '<div class="bs-lit-item"><div class="ri-title">'+esc(it.title||'')+' <span class="ri-meta">'+esc(it.meta||'')+'</span></div>'+
-        '<div class="ri-body">'+esc(it.body||'')+'</div></div>';
-    }
     // R296-3.4：收录书屋「好词使用」条目 —— 词语 + 释义 + 例句
     if(kind==='cnWordUse'){
       return '<div class="bs-item bs-haoci-word">'+
@@ -40610,18 +41392,24 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   }
   // R57-2：收录书屋各主题独立页码
   // R59-5：每页条数按主题配置 —— 好词好句 6 / 古诗词鉴赏 4 / 优秀作文 2 / 日常交流 2 / 英语短文 2
-  const BS_PER_PAGE = { cnWords:6, cnWordUse:9, cnLore:6, cnPoem:4, cnEssay:2, dailyLit:2, enSpeaking:2, enPassage:2, cnChengyu:4 };
+  const BS_PER_PAGE = { cnWords:6, cnWordUse:9, cnLore:6, cnPoem:4, cnEssay:2, enSpeaking:2, enPassage:2, cnChengyu:4 };
   let _bsTab = 'cnWords';
   let _bsPage = {};
   function renderBookstoreAll(){
     const page = document.getElementById('bsMerged');
     if(!page) return;
-    // 主视图（语文/英语阅读区）与收录书屋互斥显示
-    const cnArea = document.querySelector('.reading-area.reading-cn');
-    const enArea = document.querySelector('.reading-area.reading-en');
-    if(cnArea) cnArea.hidden = _bsOpen;
-    if(enArea) enArea.hidden = _bsOpen;
+    // R298-4.1：语文阅读 / 英语阅读两个面板与收录书屋三者互斥显示
+    const cnPanel = document.getElementById('rdPanelCn');
+    const enPanel = document.getElementById('rdPanelEn');
+    if(cnPanel) cnPanel.hidden = !!_bsOpen || _rdTab !== 'cn';
+    if(enPanel) enPanel.hidden = !!_bsOpen || _rdTab !== 'en';
     page.hidden = !_bsOpen;
+    ['cn','en'].forEach(k=>{
+      /* R298-4.1 修正：'en'.toUpperCase() 得到 'EN'，会拼成不存在的 rdTabEN；
+         改为首字母大写（cn→rdTabCn / en→rdTabEn），英语阅读键才会高亮。 */
+      const b = document.getElementById('rdTab' + k.charAt(0).toUpperCase() + k.slice(1));
+      if(b) b.classList.toggle('is-active', !_bsOpen && _rdTab === k);
+    });
     const btn = document.getElementById('bsMainToggle');
     if(btn){
       btn.classList.toggle('active', _bsOpen);
@@ -40677,9 +41465,15 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         <button class="yw-page-btn" data-bs-page-step="1" ${page>=total-1?'disabled':''}>下一页 ›</button>
       </div>`;
   }
-  // V57-R4 / R56-6：点顶部「📚 收录书屋」按钮 → 在「今日阅读三栏」与「收录书屋」之间切换
+  // V57-R4 / R56-6：点顶部「📚 收录书屋」按钮 → 在「今日阅读」与「收录书屋」之间切换
   function openBookstorePage(){
     _bsOpen = !_bsOpen;
+    renderBookstoreAll();
+  }
+  // R298-4.1：点「语文阅读 / 英语阅读」→ 切到对应面板并自动退出收录书屋
+  function rdSwitchPanel(kind){
+    _rdTab = (kind === 'en') ? 'en' : 'cn';
+    _bsOpen = false;
     renderBookstoreAll();
   }
   // R56-6：手动「📥 收录今日」—— 复用 23:30 自动归档的同一套逻辑
@@ -49138,9 +49932,13 @@ function renderKMAdmin(){
       if(_navCalY===tY && _navCalM===tM && d===tD) cls.push('navcal-today');
       let hol = false; try{ hol = !!(window.Store && window.Store.kmIsHoliday && window.Store.kmIsHoliday(iso)); }catch(e){}
       let make = false; try{ make = !!(window.Store && window.Store.kmIsMakeup && window.Store.kmIsMakeup(iso)); }catch(e){}
-      if(hol) cls.push('navcal-holiday');
+      /* R298-1.1：校历假期（上海中小学寒假 / 暑假）优先标注名称，法定假日与调班仍保持原样 */
+      let schoolHol = ''; try{ schoolHol = (window.Store && window.Store.kmSchoolHolidayLabel) ? (window.Store.kmSchoolHolidayLabel(iso) || '') : ''; }catch(e){}
+      if(hol || schoolHol) cls.push('navcal-holiday');
+      if(schoolHol) cls.push('navcal-school-holiday');
       if(make) cls.push('navcal-makeup');
-      const tag = hol ? '<span class="navcal-tag">休</span>' : (make ? '<span class="navcal-tag navcal-tag-makeup">班</span>' : '');
+      const tag = schoolHol ? '<span class="navcal-tag navcal-tag-school">'+esc(schoolHol)+'</span>'
+        : (hol ? '<span class="navcal-tag">休</span>' : (make ? '<span class="navcal-tag navcal-tag-makeup">班</span>' : ''));
       const sub = navCalCellSub(_navCalY, _navCalM, d);
       const subHtml = sub.text ? '<span class="'+sub.cls+'">'+sub.text+'</span>' : '<span class="navcal-l navcal-l-empty"></span>';
       html += '<div class="'+cls.join(' ')+'"><span class="navcal-d">'+d+'</span>'+subHtml+tag+'</div>';
@@ -49239,6 +50037,7 @@ function renderKMAdmin(){
         + '<div class="navcal-grid" id="navCalGrid"></div>'
         + '<div class="navcal-legend"><span class="navcal-legend-swatch navcal-swatch-today"></span> 今天　'
         + '<span class="navcal-legend-swatch navcal-swatch-hol"></span> 法定节假日（浅红）　'
+        + '<span class="navcal-legend-swatch navcal-swatch-school"></span> 上海中小学寒暑假　'
         + '<span class="navcal-legend-swatch navcal-swatch-makeup"></span> 调班（班）　'
         + '<span class="navcal-legend-swatch navcal-swatch-fest"></span> 节日　'
         + '<span class="navcal-legend-swatch navcal-swatch-term"></span> 节气　·　点「年 月」可上下滑动选择 · 日期下方显示农历</div>';
@@ -50197,6 +50996,23 @@ function renderKMAdmin(){
     if(bsMainToggle && !bsMainToggle._bound){ bsMainToggle._bound = true; bsMainToggle.onclick = ()=>{
       openBookstorePage();
     }; }
+    // R298-4.1：收录书屋左侧的「语文阅读 / 英语阅读」按键
+    document.querySelectorAll('[data-rd-tab]').forEach(b=>{
+      if(b._rdBound) return;
+      b._rdBound = true;
+      b.onclick = ()=> rdSwitchPanel(b.getAttribute('data-rd-tab'));
+    });
+    // R298-4.4：视口变化后按当日最高卡重新对齐三张语文卡（rAF 合并，仅大阅读页可见时执行）
+    if(!window._r298EqualizeBound){
+      window._r298EqualizeBound = true;
+      let _eqRaf = 0;
+      window.addEventListener('resize', ()=>{
+        const pg = document.querySelector('.page-reading');
+        if(!pg || pg.hidden) return;
+        if(_eqRaf) return;
+        _eqRaf = (window.requestAnimationFrame || function(cb){ return setTimeout(cb, 16); })(function(){ _eqRaf = 0; r298EqualizeCnCols(); });
+      }, { passive:true });
+    }
     // R59-5：「📥 收录今日」按键已移除 —— 归档统一由每日 23:30 定时任务自动完成
     //（保留 archiveReadingTodayManual 函数以兼容旧调用，不再绑定入口按键）
     const onBsDel = (e)=>{
