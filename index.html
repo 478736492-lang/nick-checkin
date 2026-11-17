@@ -10576,6 +10576,14 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
 .haoci-use-item .hu-def b,.haoci-use-item .hu-ex b{color:var(--tone-700)}
 @media (max-width:1100px){ .haoci-use-grid{grid-template-columns:repeat(2,minmax(0,1fr))} }
 
+/* ============ R297-2 每日成语 / 文学小常识移回「好词好句」卡内（好句内容下方） ============ */
+/* 该卡在语文三栏的窄列里，原来的两列横排会挤，这里改为列内单列上下排布 */
+.daily-lit-inline{margin-top:12px;padding-top:10px;border-top:1px dashed var(--tone-200)}
+.daily-lit-inline .dli-head{font-size:12px;font-weight:800;color:var(--tone-700);margin:0 0 8px;letter-spacing:.02em}
+.daily-lit-inline .dl-grid{display:grid;grid-template-columns:1fr;gap:10px}
+/* ============ R297-1 必做任务卡：时间段 · 星期标签 ============ */
+.task-date-label{white-space:nowrap}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -11583,17 +11591,11 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
         <div class="reading-col-head" data-page-node-id="R296haociUseHead">✨ 好词使用 <span class="haoci-use-hint">释义 · 例句</span></div>
         <div class="haoci-use-grid" id="haociUseGrid" data-page-node-id="R296haociUseGrid"></div>
       </div>
-      <!-- R295-2.2/2.3：【每日文学】独立卡 —— 每日成语 + 文学小常识横向排布，位于三张语文卡下方 -->
-      <div class="daily-lit-card" id="dailyLitCard">
-        <div class="reading-col-head">📖 每日文学</div>
-        <div class="dl-grid">
-          <div class="dl-item" id="dailyLitChengyu"></div>
-          <div class="dl-item" id="dailyLitLore"></div>
-        </div>
-      </div>
     </div>
 
-    <!-- R295-2.2：原「每日成语 / 文学小常识」已从好词好句卡迁出，统一收进上方【每日文学】卡。 -->
+    <!-- R297-2：【每日成语 / 文学小常识】已移回上方「好词好句」卡内、好句内容分组下方，
+         由 renderDailyLitInline() 在 #cnColWords 末尾动态挂载（该列表每次渲染会重写 innerHTML，
+         所以不能用静态节点）。原独立【每日文学】卡外壳已移除。 -->
 
     <!-- 英语：日常交流 / 英语短文 两栏并列 -->
     <div class="reading-area reading-en">
@@ -14293,6 +14295,755 @@ window.R296_TASK_PLAN = {
 };
 
 </script>
+<!-- R297-1：必做任务清单（日期段 × 星期 × 时间段 × 科目），由同一份 Excel 精确重解析 -->
+<script>
+/* R297-1：必做任务清单 —— 由《打卡任务.xlsx》三张日程表精确解析生成。
+   维度：日期段（3-16 / 17-30 / 27-2）× 星期（0=周日…6=周六）× 时间段 × 科目。
+   3-16 表本身无时间列，对应任务 time 留空，不虚构时间。 */
+window.R297_TASK_PLAN = {
+ "version": "R297",
+ "source": "打卡任务.xlsx",
+ "generatedAt": "2026-11-17",
+ "subjects": [
+  "语文",
+  "数学",
+  "英语",
+  "学习",
+  "阅读",
+  "围棋"
+ ],
+ "tasks": [
+  {
+   "id": "r297-语文-语文作文 阅读",
+   "name": "语文作文 阅读",
+   "subject": "语文",
+   "time": "09:00-09:30",
+   "minutes": 25,
+   "plan": [
+    {
+     "from": 17,
+     "to": 30,
+     "days": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "time": "09:00-09:30"
+    },
+    {
+     "from": 27,
+     "to": 2,
+     "days": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "time": "09:00-09:30"
+    }
+   ]
+  },
+  {
+   "id": "r297-语文-复述-上午",
+   "name": "复述（上午）",
+   "subject": "语文",
+   "time": "09:00-09:30",
+   "minutes": 25,
+   "plan": [
+    {
+     "from": 27,
+     "to": 2,
+     "days": [
+      6
+     ],
+     "time": "09:00-09:30"
+    },
+    {
+     "from": 17,
+     "to": 30,
+     "days": [
+      6
+     ],
+     "time": "09:00-09:30"
+    }
+   ]
+  },
+  {
+   "id": "r297-语文-阅读练习",
+   "name": "阅读练习",
+   "subject": "语文",
+   "time": "09:45-10:30",
+   "minutes": 25,
+   "plan": [
+    {
+     "from": 17,
+     "to": 30,
+     "days": [
+      1,
+      3,
+      4,
+      5
+     ],
+     "time": "09:45-10:30"
+    },
+    {
+     "from": 27,
+     "to": 2,
+     "days": [
+      1,
+      3,
+      4,
+      5
+     ],
+     "time": "09:45-10:30"
+    }
+   ]
+  },
+  {
+   "id": "r297-语文-拼音句型",
+   "name": "拼音句型",
+   "subject": "语文",
+   "time": "09:45-10:30",
+   "minutes": 25,
+   "plan": [
+    {
+     "from": 17,
+     "to": 30,
+     "days": [
+      2
+     ],
+     "time": "09:45-10:30"
+    },
+    {
+     "from": 27,
+     "to": 2,
+     "days": [
+      2
+     ],
+     "time": "09:45-10:30"
+    }
+   ]
+  },
+  {
+   "id": "r297-语文-看图写话",
+   "name": "看图写话",
+   "subject": "语文",
+   "time": "10:45-11:30",
+   "minutes": 25,
+   "plan": [
+    {
+     "from": 17,
+     "to": 30,
+     "days": [
+      1,
+      3,
+      5
+     ],
+     "time": "10:45-11:30"
+    },
+    {
+     "from": 27,
+     "to": 2,
+     "days": [
+      1,
+      3,
+      5
+     ],
+     "time": "10:45-11:30"
+    }
+   ]
+  },
+  {
+   "id": "r297-语文-诗词背默",
+   "name": "诗词背默",
+   "subject": "语文",
+   "time": "10:45-11:30",
+   "minutes": 25,
+   "plan": [
+    {
+     "from": 17,
+     "to": 30,
+     "days": [
+      2,
+      4,
+      6
+     ],
+     "time": "10:45-11:30"
+    },
+    {
+     "from": 27,
+     "to": 2,
+     "days": [
+      2,
+      4,
+      6
+     ],
+     "time": "10:45-11:30"
+    }
+   ]
+  },
+  {
+   "id": "r297-语文-复述-晚间",
+   "name": "复述（晚间）",
+   "subject": "语文",
+   "time": "21:00-21:30",
+   "minutes": 25,
+   "plan": [
+    {
+     "from": 27,
+     "to": 2,
+     "days": [
+      6
+     ],
+     "time": "21:00-21:30"
+    },
+    {
+     "from": 17,
+     "to": 30,
+     "days": [
+      6
+     ],
+     "time": "21:00-21:30"
+    }
+   ]
+  },
+  {
+   "id": "r297-语文-好词好句",
+   "name": "好词好句",
+   "subject": "语文",
+   "time": "",
+   "minutes": 25,
+   "plan": [
+    {
+     "from": 3,
+     "to": 16,
+     "days": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "time": ""
+    }
+   ]
+  },
+  {
+   "id": "r297-语文-好句仿写",
+   "name": "好句仿写",
+   "subject": "语文",
+   "time": "",
+   "minutes": 25,
+   "plan": [
+    {
+     "from": 3,
+     "to": 16,
+     "days": [
+      0,
+      2,
+      3,
+      5,
+      6
+     ],
+     "time": ""
+    }
+   ]
+  },
+  {
+   "id": "r297-语文-写作",
+   "name": "写作",
+   "subject": "语文",
+   "time": "",
+   "minutes": 25,
+   "plan": [
+    {
+     "from": 3,
+     "to": 16,
+     "days": [
+      1
+     ],
+     "time": ""
+    }
+   ]
+  },
+  {
+   "id": "r297-语文-阅读理解",
+   "name": "阅读理解",
+   "subject": "语文",
+   "time": "",
+   "minutes": 25,
+   "plan": [
+    {
+     "from": 3,
+     "to": 16,
+     "days": [
+      1,
+      3,
+      5
+     ],
+     "time": ""
+    }
+   ]
+  },
+  {
+   "id": "r297-数学-乐读计算",
+   "name": "乐读计算",
+   "subject": "数学",
+   "time": "14:30-15:00",
+   "minutes": 20,
+   "plan": [
+    {
+     "from": 17,
+     "to": 30,
+     "days": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "time": "14:30-15:00"
+    },
+    {
+     "from": 27,
+     "to": 2,
+     "days": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "time": "14:30-15:00"
+    }
+   ]
+  },
+  {
+   "id": "r297-数学-乐读计算小超市",
+   "name": "乐读计算小超市",
+   "subject": "数学",
+   "time": "",
+   "minutes": 20,
+   "plan": [
+    {
+     "from": 3,
+     "to": 16,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "time": ""
+    }
+   ]
+  },
+  {
+   "id": "r297-数学-乐读习题",
+   "name": "乐读习题",
+   "subject": "数学",
+   "time": "",
+   "minutes": 20,
+   "plan": [
+    {
+     "from": 3,
+     "to": 16,
+     "days": [
+      1,
+      3,
+      5
+     ],
+     "time": ""
+    }
+   ]
+  },
+  {
+   "id": "r297-数学-乐读学以致用",
+   "name": "乐读学以致用",
+   "subject": "数学",
+   "time": "",
+   "minutes": 20,
+   "plan": [
+    {
+     "from": 3,
+     "to": 16,
+     "days": [
+      4
+     ],
+     "time": ""
+    }
+   ]
+  },
+  {
+   "id": "r297-英语-学而思作业",
+   "name": "学而思作业",
+   "subject": "英语",
+   "time": "16:30-17:15",
+   "minutes": 25,
+   "plan": [
+    {
+     "from": 3,
+     "to": 16,
+     "days": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "time": ""
+    },
+    {
+     "from": 17,
+     "to": 30,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "time": "16:30-17:15"
+    },
+    {
+     "from": 27,
+     "to": 2,
+     "days": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "time": "16:30-17:15"
+    }
+   ]
+  },
+  {
+   "id": "r297-英语-KET",
+   "name": "KET",
+   "subject": "英语",
+   "time": "19:45-20:30",
+   "minutes": 25,
+   "plan": [
+    {
+     "from": 17,
+     "to": 30,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "time": "19:45-20:30"
+    },
+    {
+     "from": 27,
+     "to": 2,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "time": "19:45-20:30"
+    }
+   ]
+  },
+  {
+   "id": "r297-英语-学而思词句默写",
+   "name": "学而思词句默写",
+   "subject": "英语",
+   "time": "20:30-20:45",
+   "minutes": 25,
+   "plan": [
+    {
+     "from": 27,
+     "to": 2,
+     "days": [
+      0,
+      2,
+      4
+     ],
+     "time": "20:30-20:45"
+    }
+   ]
+  },
+  {
+   "id": "r297-英语-周周练选题",
+   "name": "周周练选题",
+   "subject": "英语",
+   "time": "",
+   "minutes": 25,
+   "plan": [
+    {
+     "from": 3,
+     "to": 16,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      5,
+      6
+     ],
+     "time": ""
+    }
+   ]
+  },
+  {
+   "id": "r297-英语-学而思词汇语法",
+   "name": "学而思词汇语法",
+   "subject": "英语",
+   "time": "",
+   "minutes": 25,
+   "plan": [
+    {
+     "from": 3,
+     "to": 16,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "time": ""
+    }
+   ]
+  },
+  {
+   "id": "r297-英语-阅读理解",
+   "name": "阅读理解",
+   "subject": "英语",
+   "time": "",
+   "minutes": 25,
+   "plan": [
+    {
+     "from": 3,
+     "to": 16,
+     "days": [
+      2,
+      4,
+      6
+     ],
+     "time": ""
+    }
+   ]
+  },
+  {
+   "id": "r297-学习-三年级预习",
+   "name": "三年级预习",
+   "subject": "学习",
+   "time": "15:15-16:00",
+   "minutes": 30,
+   "plan": [
+    {
+     "from": 17,
+     "to": 30,
+     "days": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "time": "15:15-16:00"
+    },
+    {
+     "from": 27,
+     "to": 2,
+     "days": [
+      1,
+      3,
+      5
+     ],
+     "time": "15:15-16:00"
+    }
+   ]
+  },
+  {
+   "id": "r297-学习-一课一练",
+   "name": "一课一练",
+   "subject": "学习",
+   "time": "15:15-16:00",
+   "minutes": 30,
+   "plan": [
+    {
+     "from": 17,
+     "to": 30,
+     "days": [
+      1,
+      3,
+      5
+     ],
+     "time": "15:15-16:00"
+    },
+    {
+     "from": 27,
+     "to": 2,
+     "days": [
+      2,
+      4
+     ],
+     "time": "15:15-16:00"
+    }
+   ]
+  },
+  {
+   "id": "r297-阅读-英语阅读100篇",
+   "name": "英语阅读100篇",
+   "subject": "阅读",
+   "time": "21:00-21:30",
+   "minutes": 25,
+   "plan": [
+    {
+     "from": 3,
+     "to": 16,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "time": ""
+    },
+    {
+     "from": 17,
+     "to": 30,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "time": "21:00-21:30"
+    },
+    {
+     "from": 27,
+     "to": 2,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "time": "21:00-21:30"
+    }
+   ]
+  },
+  {
+   "id": "r297-阅读-图书馆书",
+   "name": "图书馆书",
+   "subject": "阅读",
+   "time": "21:30-22:00",
+   "minutes": 25,
+   "plan": [
+    {
+     "from": 3,
+     "to": 16,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "time": ""
+    },
+    {
+     "from": 17,
+     "to": 30,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "time": "21:30-22:00"
+    },
+    {
+     "from": 27,
+     "to": 2,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "time": "21:30-22:00"
+    }
+   ]
+  },
+  {
+   "id": "r297-围棋-围棋",
+   "name": "围棋",
+   "subject": "围棋",
+   "time": "13:30-14:15",
+   "minutes": 40,
+   "plan": [
+    {
+     "from": 17,
+     "to": 30,
+     "days": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "time": "13:30-14:15"
+    },
+    {
+     "from": 27,
+     "to": 2,
+     "days": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "time": "13:30-14:15"
+    }
+   ]
+  }
+ ]
+};
+
+</script>
 <!-- R272-1：统一持久化数据层必须先于 store.js 加载；它只提供异步事务能力，
      不改变 S.load() / S.save() 的同步调用语义，也不触碰任何页面 UI。 -->
 <script>
@@ -16353,6 +17104,43 @@ window.R296_TASK_PLAN = {
      数据来自 r296_task_seed.js 的 window.R296_TASK_PLAN（构建期由 Excel 精确解析生成）。
      每条任务带 plan:[{from,to,days:[0..6]}]，tasksForDate 按「当天日号落在哪个日期段 + 是否该星期」筛选，
      从而实现「按打卡时间对应日期导入展示」。 */
+  /* R297-1：必做任务清单（按「日期段 × 星期 × 时间段 × 科目」精确导入）——
+     数据来自 r297_task_seed.js 的 window.R297_TASK_PLAN，由《打卡任务.xlsx》三张日程表解析。
+     与 R296 的区别：3-16 表本身没有时间列，对应任务 time 留空（不虚构）；复述按上午/晚间拆为两条；
+     科目补齐「学习 / 阅读 / 围棋」，让必做各版块都能落到卡片上。 */
+  function r297Plan(){
+    const p = (typeof window !== 'undefined') ? window.R297_TASK_PLAN : null;
+    return (p && Array.isArray(p.tasks) && p.tasks.length) ? p : null;
+  }
+  function r297ImportedTasks(){
+    const plan = r297Plan();
+    if(!plan) return [];
+    return plan.tasks.map(t=>{
+      const ranges = (t.plan||[]).map(p=>({
+        from:Number(p.from), to:Number(p.to),
+        days:(p.days||[]).map(Number), time:String(p.time||'')
+      }));
+      return {
+        id: t.id, name: t.name, subject: t.subject, type:'必做任务', stars:2,
+        minutes: Number(t.minutes)||20,
+        desc: '按《打卡任务》清单 · ' + (t.time || '3–16 时段'),
+        standard: '按清单要求完成并打卡',
+        enabled: true, weekendOnly: false, card:'required',
+        time: String(t.time||''), plan: ranges, _r297: true,
+        /* R297-1.3：清单里「乐读计算」在 17-30 / 27-2 两段出现（3-16 段叫「乐读计算小超市」），
+           名称不统一会让 R232 的 calcDaily 联动失效 —— 统一按名字前缀挂 readingKind，
+           保证无论当天命中哪条任务，都能与乐读数学「今日打卡」共用同一份 calcDaily 状态。 */
+        readingKind: /乐读计算/.test(String(t.name||'')) ? 'calcDaily' : ''
+      };
+    });
+  }
+  /* R297：时间段排序键 —— 有 time 的按开始时间升序排在前，无 time（3-16 表）排在该科目末尾 */
+  function r297TimeKey(t){
+    const s = String((t && t.time) || '');
+    const m = s.match(/^(\d{1,2}):(\d{2})/);
+    if(!m) return 99999;
+    return (Number(m[1]) * 60) + Number(m[2]);
+  }
   function r296Plan(){
     const p = (typeof window !== 'undefined') ? window.R296_TASK_PLAN : null;
     return (p && Array.isArray(p.tasks)) ? p : null;
@@ -17337,6 +18125,35 @@ window.R296_TASK_PLAN = {
       const _wp = r296WeekPlanSeed();
       if(_wp) st.weekPlan = _wp;
       st._r296TaskV1 = true;
+      save(st);
+    }
+    /* R297-1：清除必做任务卡的打卡内容，并按《打卡任务.xlsx》的「星期 × 时间段 × 科目」
+       重新导入必做任务（r297_task_seed.js）。
+       ⚠️ 边界：
+         · 只清「今天及以后」的必做任务打卡记录 —— 历史日期的记录一条不删（不可逆数据不做破坏）；
+         · 星星余额 st.stars / archive.totalStars 不动（清的是卡片勾选状态，不是奖励账本）；
+         · 只替换导入来源的旧必做任务（r295_/r296_/r297_），用户自建的必做任务原样保留；
+         · 旧任务留 id/name/subject 轻量快照，供历史记录回显名称。
+       种子未加载时整段跳过，绝不把任务清空。 */
+    if(!st._r297TaskV2 && r297Plan()){
+      const _today297 = todayStr();
+      const _isImported = t => !!(t && (t._r295 === true || t._r296 === true || t._r297 === true ||
+        /^r29[567]_/.test(String(t.id||''))));
+      const _oldReq = (st.tasks||[]).filter(t=>t && t.type === '必做任务');
+      st.r297TaskBackup = { at: Date.now(), tasks: _oldReq.map(t=>({id:t.id, name:t.name, subject:t.subject, type:t.type})) };
+      const _reqIds = {};
+      _oldReq.forEach(t=>{ if(t && t.id != null) _reqIds[t.id] = 1; });
+      r297ImportedTasks().forEach(t=>{ _reqIds[t.id] = 1; });
+      const _before = (st.records||[]).length;
+      st.records = (st.records||[]).filter(r=>{
+        if(!r) return false;
+        if(String(r.date||'') < _today297) return true;   // 历史保留
+        return !_reqIds[r.taskId];                        // 今天及以后：必做打卡清除
+      });
+      st._r297ClearedN = _before - st.records.length;
+      st._r297ClearedAt = Date.now();
+      st.tasks = (st.tasks||[]).filter(t=>! _isImported(t)).concat(r297ImportedTasks());
+      st._r297TaskV2 = true;
       save(st);
     }
     // R16-3：首页标语迁移（仅当用户仍沿用旧默认标语时升级为新标语；家长自定义过的标语保持不动）
@@ -18555,7 +19372,7 @@ window.R296_TASK_PLAN = {
     const d = new Date(dateStr+'T00:00:00');
     const isWeekend = d.getDay()===0 || d.getDay()===6;
     const dow = d.getDay(); // 0=周日 ... 6=周六
-    return st.tasks.filter(t=>{
+    const _r297List = st.tasks.filter(t=>{
       if(!t.enabled) return false;
       /* R271-1.2：循环规则 + 假期任务集自动切换。
          全部规则只读 st.r271（用户私有配置），不改任务本体、不删任何已有任务；
@@ -18606,6 +19423,15 @@ window.R296_TASK_PLAN = {
       if(t.weekendOnly && !isWeekend) return false;
       return true;
     });
+    /* R297-1：按「时间段」升序返回 —— 必做各版块内的任务按当天日程先后排列；
+       有 time 的按时:分排序在前，3-16 表（本身无时间列）排在该科目末尾，
+       同一时间再按任务名稳定排序，避免每次渲染顺序抖动。 */
+    _r297List.sort((a,b)=>{
+      const ka = r297TimeKey(a), kb = r297TimeKey(b);
+      if(ka !== kb) return ka - kb;
+      return String((a && a.name) || '').localeCompare(String((b && b.name) || ''), 'zh');
+    });
+    return _r297List;
   }
   function getRecord(dateStr,taskId){
     const st = load();
@@ -37801,7 +38627,9 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   // R253-2：逐条任务可在「设置中心 · 打卡任务设置 · 🧭 跳转」里单独配置开关与目标板块，
   //         配置优先于默认映射；关闭跳转后卡片主体点击不弹窗、不跳转（圆形打卡键不受影响）。
   const HOME_TASK_PAGE_MAP = {
-    '乐读计算小超市':'math', '乐读数学':'math',
+    // R297-1.3：清单导入后 17-30 / 27-2 两段的任务名为「乐读计算」，与 3-16 段的「乐读计算小超市」同源，
+    //            这里补一条前缀映射，避免换个日期段首页卡片就失去「跳到乐读数学」的能力。
+    '乐读计算小超市':'math', '乐读计算':'math', '乐读数学':'math',
     '学而思作业':'xueersi', 'KET学习':'newworld-english',
     '古诗词背默':'newworld-yuwen', '小作文/看图写话':'newworld-yuwen'
   };
@@ -37966,7 +38794,8 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     $('#homeTodayDate').textContent = today;
     $('#homeTodaySummary').textContent = `今日 ${done}/${tasks.length}`;
     // V15-T7：先按 必做/选做 分类，再按科目细分
-    const subOrder = ['语文','数学','英语','运动','围棋','习惯家务','错题'];
+    // R297-1：科目顺序补齐「学习 / 阅读」，并允许清单里新出现的科目自动追加（不再整块丢弃）
+    const subOrder = ['语文','数学','英语','学习','阅读','运动','围棋','习惯家务','错题'];
     const typeOrder = [['必做任务','⭐ 必做'],['选做拓展任务','✨ 选做']];
     let html='';
     for(const [type,label] of typeOrder){
@@ -37977,7 +38806,9 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         <div class="subject-cols">`;
       const grouped = {};
       bucket.forEach(t=>{ (grouped[t.subject]=grouped[t.subject]||[]).push(t); });
-      html += subOrder.filter(s=>grouped[s]&&grouped[s].length).map(sub=>`
+      const subList = subOrder.filter(s=>grouped[s]&&grouped[s].length)
+        .concat(Object.keys(grouped).filter(s=>subOrder.indexOf(s) < 0));
+      html += subList.map(sub=>`
         <div class="subject-col">
           <div class="subject-col-head">
             <span class="ico">${subIco(sub)}</span>
@@ -37988,7 +38819,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
             const on=isDone(t);
             return `<div class="task-item ${on?'done':'undone'}">
               <div class="task-check ${on?'on':''}" data-check="${t.id}"></div>
-              <div class="task-main"><div class="task-name">${esc(t.name)}</div></div>
+              <div class="task-main"><div class="task-name">${esc(t.name)}</div>${t.time?`<div class="task-extra task-time">🕘 ${esc(t.time)}</div>`:''}</div>
             </div>`;
           }).join('')}
           ${grouped[sub].length>6?`<div class="more">…等 ${grouped[sub].length-6} 项</div>`:''}
@@ -38328,19 +39159,43 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     $('#btnTaskSettings').textContent = taskManage ? '✅ 完成' : '✏️ 编辑';
   }
   // 任务打卡日期标签（v5：各任务右侧显示需要打卡的日期）
-  function taskDateLabel(t){
-    if(t.checkDate) return `📅 ${t.checkDate}`;
-    if(t.weekendOnly) return '周末';
-    return '每天';
+  /* R297-1：标签升级为「时间段 · 星期」—— 必做任务按《打卡任务》日程表带上了时间段，
+     让卡片能直接看出「几点做、星期几做」。plan 里的 days 是 getDay() 口径（0=周日）。 */
+  function taskPlanDaysLabel(t){
+    const plan = Array.isArray(t && t.plan) ? t.plan : null;
+    if(!plan || !plan.length) return '';
+    const set = {};
+    plan.forEach(p=>{ (p && Array.isArray(p.days) ? p.days : []).forEach(d=>{ set[Number(d)] = 1; }); });
+    const arr = Object.keys(set).map(Number).sort((a,b)=>a-b);
+    if(!arr.length || arr.length === 7) return '每天';
+    if(arr.length === 5 && arr.join(',') === '1,2,3,4,5') return '周一至周五';
+    if(arr.length === 6 && arr.join(',') === '0,1,2,3,4,5') return '周一至周六';
+    const N = ['周日','周一','周二','周三','周四','周五','周六'];
+    return arr.map(d=>N[d]||'').filter(Boolean).join('、');
   }
-  // 必做（排除运动/围棋，它们有独立板块）：按学科分组展示
+  function taskDateLabel(t){
+    const parts = [];
+    if(t && t.time) parts.push('🕘 ' + t.time);
+    if(t && t.checkDate) parts.push('📅 ' + t.checkDate);
+    else if(t && t.weekendOnly) parts.push('周末');
+    else {
+      const dl = taskPlanDaysLabel(t);
+      if(dl) parts.push(dl);
+    }
+    return parts.join(' · ') || '每天';
+  }
+  // 必做（排除运动/作息，它们有独立板块）：按学科分组展示
+  // R297-1：科目板块改为「固定优先 + 实际出现即追加」—— 学习 / 阅读 / 围棋 三个科目
+  //         在《打卡任务》清单里都有安排，旧版写死 order 会把它们整块丢掉，导致任务导入后看不见。
   function renderTodayReq(st, today){
-    const reqs = S.tasksForDate(today).filter(t=>t.type==='必做任务' && t.subject!=='运动' && t.subject!=='围棋' && t.subject!=='作息');
+    const reqs = S.tasksForDate(today).filter(t=>t.type==='必做任务' && t.subject!=='运动' && t.subject!=='作息');
     if(!reqs.length){ $('#todayReq').innerHTML='<div style="color:var(--muted);text-align:center;padding:20px">暂无必做任务</div>'; return; }
-    const order = ['语文','数学','英语','作息']; // R13-Req4：新增作息卡片
+    const base = ['语文','数学','英语','学习','阅读','围棋'];
     const grouped = {};
     reqs.forEach(t=>{ (grouped[t.subject]=grouped[t.subject]||[]).push(t); });
-    $('#todayReq').innerHTML = order.filter(s=>grouped[s]&&grouped[s].length).map(sub=>`
+    const order = base.filter(s=>grouped[s] && grouped[s].length)
+      .concat(Object.keys(grouped).filter(s=>base.indexOf(s) < 0));
+    $('#todayReq').innerHTML = order.map(sub=>`
       <div class="subject-col">
         <div class="subject-col-head"><span class="ico">${subIco(sub)}</span> ${sub}</div>
         ${grouped[sub].map(t=>renderTaskItem(t, st)).join('')}
@@ -38546,7 +39401,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     };
   }
   function subIco(s){
-    return {'语文':'📖','数学':'🔢','英语':'🔤','阅读':'📕','百科':'🌐','运动':'⚽','围棋':'♟️','家务小帮手':'🧹','文明小标兵':'🏅','错题':'📝','作息':'😴'}[s]||'📚';
+    return {'语文':'📖','数学':'🔢','英语':'🔤','阅读':'📕','学习':'✏️','百科':'🌐','运动':'⚽','围棋':'♟️','家务小帮手':'🧹','文明小标兵':'🏅','错题':'📝','作息':'😴'}[s]||'📚';
   }
 
   // ============ 乐读数学（v10：仅「题库」+ 动态题型子板块；思路/答案直接呈现；仅留「掌握」键 +2⭐） ============
@@ -39547,11 +40402,30 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     '</div>';
     col.innerHTML = card;
   }
-  function renderDailyLitCard(){
-    const box = document.getElementById('dailyLitCard');
-    if(box) box.hidden = false;
+  /* R297-2：每日成语 / 文学小常识移回「好词好句」卡内、好句内容分组下方。
+     #cnColWords 每次渲染由 fillCol() 整段重写 innerHTML，静态子节点会被冲掉，
+     所以本函数在 fillCol 之后把两张卡动态挂到该列表末尾（= 好句内容下方）。
+     内容生成仍走 injectDailyChengyuCard() / injectDailyLoreCard()，打卡键
+     data-ri-checkin="cnWords::<词条>" 与 +1⭐ 规则完全不变，不新增存储字段。 */
+  function renderDailyLitInline(){
+    const col = document.getElementById('cnColWords');
+    if(!col) return;
+    const old = document.getElementById('dailyLitInline');
+    if(old && old.parentNode) old.parentNode.removeChild(old);
+    const wrap = document.createElement('div');
+    wrap.className = 'daily-lit-inline';
+    wrap.id = 'dailyLitInline';
+    wrap.innerHTML =
+      '<div class="dli-head">📖 每日文学</div>' +
+      '<div class="dl-grid">' +
+        '<div class="dl-item" id="dailyLitChengyu"></div>' +
+        '<div class="dl-item" id="dailyLitLore"></div>' +
+      '</div>';
+    col.appendChild(wrap);
     injectDailyChengyuCard();
   }
+  // 兼容旧调用名（收录书屋等历史代码引用）：映射到新位置
+  function renderDailyLitCard(){ renderDailyLitInline(); }
   /* R296-3.2/3.3：【好词使用】独立卡 —— 把好词的释义 / 例句从「好词好句」迁出，
      放在好词好句、古诗词鉴赏、优秀作文三张卡下方；内部子卡片一行 3 个。
      数据仍取同一份好词分组（当日轮换结果与好词好句卡完全一致），只做展示层拆词，不改任何存档。 */
@@ -39611,8 +40485,8 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     fillCol('#cnColWords',   cnWordsItems, 'cnWords', 'cn');
     // R296-3.2/3.3：好词使用（释义 + 例句）独立卡
     renderHaociUseCard(sysWords);
-    // R295-2.3：每日成语 + 文学小常识从好词栏移出，落到三张语文卡下方的「每日文学」横排卡片
-    renderDailyLitCard();
+    // R297-2：每日成语 + 文学小常识移回好词好句卡（好句内容下方），必须在 fillCol('#cnColWords') 之后挂载
+    renderDailyLitInline();
     // R57-2：古诗词鉴赏每日只显示一首（每日轮换，offset=5 与其它栏错开）
     fillCol('#cnColPoem',    colContent('cnPoem', 1, 5, 2), 'cnPoem', 'cn');
     fillCol('#cnColEssay',   colContent('cnEssay',   1, 2, 2), 'cnEssay',   'cn');
@@ -49660,8 +50534,11 @@ if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
     // 历史任务（任务表里已删除，但当天有记录）也要能看到
     (st.records || []).forEach(r=>{
       if(r.date !== ds || !r.completed || known[r.taskId]) return;
-      // R295：旧必做任务被清单替换后，历史记录靠轻量快照回显原任务名（记录本身一条不删）
-      const bk = (st.r295ReqBackup && st.r295ReqBackup.tasks) || [];
+      // R295 / R297：旧必做任务被清单替换后，历史记录靠轻量快照回显原任务名（记录本身一条不删）
+      const bk = []
+        .concat((st.r297TaskBackup && st.r297TaskBackup.tasks) || [])
+        .concat((st.r296TaskBackup && st.r296TaskBackup.tasks) || [])
+        .concat((st.r295ReqBackup && st.r295ReqBackup.tasks) || []);
       const t = (st.tasks||[]).find(x=>x.id===r.taskId) || bk.find(x=>x.id===r.taskId);
       list.push({id:r.taskId, name:(t && t.name) || '历史任务', subject:(t && t.subject) || '',
                  required:false, done:true,
