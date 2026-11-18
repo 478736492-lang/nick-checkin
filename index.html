@@ -12815,15 +12815,19 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
           <option value="0">关闭跳转</option>
         </select>
       </div>
-      <div class="jump-form-row" data-page-node-id="R302jumpGroupRow">
-        <span class="jump-form-label">层级主题</span>
+      <div class="jump-form-row" data-page-node-id="R303jumpNavRow">
+        <span class="jump-form-label">一级 · 板块</span>
         <select id="jumpGroupSel" class="jump-select" data-page-node-id="R302jumpGroupSel"></select>
       </div>
       <div class="jump-form-row" data-page-node-id="R253jumpPageRow">
-        <span class="jump-form-label">板块 / 次级页</span>
+        <span class="jump-form-label">二级 · 子页面</span>
         <select id="jumpPageSel" class="jump-select" data-page-node-id="R253jumpPageSel"></select>
       </div>
-      <div class="parent-edit-hint" data-page-node-id="R253jumpHint">📌 开启后，在首页点击该任务卡片的主体区域会先弹确认框，确认后前往所选板块；点卡片左侧的圆形打卡键只打卡、不跳转。关闭后卡片主体点击无反应。</div>
+      <div class="jump-form-row" data-page-node-id="R303jumpSubRow" id="jumpSubRow">
+        <span class="jump-form-label">三级 · 标题</span>
+        <select id="jumpSubSel" class="jump-select" data-page-node-id="R303jumpSubSel"></select>
+      </div>
+      <div class="parent-edit-hint" data-page-node-id="R253jumpHint">📌 依次选择「板块 → 子页面 → 标题」确定跳转落点；若所选子页面下没有更细的标题，三级留空即可。开启后在首页点击卡片主体会先弹确认框再前往；点左侧圆形打卡键只打卡、不跳转。关闭后卡片主体点击无反应。</div>
     </div>
     <div class="modal-foot" data-page-node-id="R253modalTaskJumpFoot">
       <button class="primary-btn" id="btnJumpSave" data-page-node-id="R253btnJumpSave">💾 保存</button>
@@ -26061,6 +26065,62 @@ be 动词：am / is → was；are → were
     { page:'newworld-english',  group:'新世界',     label:'英语专区' },
     { page:'newworld-suzhi',    group:'新世界',     label:'拓展素养' }
   ];
+  /* R303-1：任务卡片跳转三级数据源 —— 一级=导航栏板块，二级=板块下子页面，三级=子页面内标题。
+     仅覆盖支持跳转的三大板块（与 HOME_TASK_ALLOWED_PAGES 一致）。
+     落点 page 格式：
+       一级/二级 → 沿用 math / math:calc / newworld-yuwen 等（goPage 的「板块:次级页」）；
+       三级标题 → newworld-yuwen:keda 形式，applyTaskJumpSub 写入对应 slot 记忆键后自动定位到该标题。 */
+  const TASK_JUMP_TREE = [
+    { nav:'math', label:'乐读数学', children:[
+      { page:'math', label:'首页' },
+      { page:'math:calc', label:'计算小超市' },
+      { page:'math:note', label:'乐读数学笔记' },
+      { page:'math:exercise', label:'乐读练习题' }
+    ]},
+    { nav:'xueersi', label:'学而思英语', children:[
+      { page:'xueersi', label:'首页' },
+      { page:'xueersi:checkin', label:'每日巩固打卡' },
+      { page:'xueersi:words', label:'词汇' },
+      { page:'xueersi:grammar', label:'语法' },
+      { page:'xueersi:notes', label:'课堂笔记' },
+      { page:'xueersi:exercise', label:'学而思练习' },
+      { page:'xueersi:done', label:'已默写' }
+    ]},
+    { nav:'newworld', label:'新世界', children:[
+      { page:'newworld', label:'首页' },
+      { page:'newworld-yuwen', label:'语文专区', children:[
+        { page:'newworld-yuwen:keda', label:'课文朗读' },
+        { page:'newworld-yuwen:ciyu', label:'必背知识' },
+        { page:'newworld-yuwen:gushi', label:'古诗词' },
+        { page:'newworld-yuwen:wenyan', label:'文言文' },
+        { page:'newworld-yuwen:sucai', label:'作文素材' },
+        { page:'newworld-yuwen:zxzs', label:'专项知识' }
+      ]},
+      { page:'newworld-math', label:'数学专区', children:[
+        { page:'newworld-math:kbtb', label:'课本同步' },
+        { page:'newworld-math:yytz', label:'应用题专项' },
+        { page:'newworld-math:xnmt', label:'校内思维题' },
+        { page:'newworld-math:asmst', label:'奥数思维题' },
+        { page:'newworld-math:ctb', label:'错题笔记' }
+      ]},
+      { page:'newworld-english', label:'英语专区', children:[
+        { page:'newworld-english:dd', label:'书本课文' },
+        { page:'newworld-english:gd', label:'重点知识' },
+        { page:'newworld-english:w3500', label:'3500 词' },
+        { page:'newworld-english:yyxzs', label:'英语小知识' },
+        { page:'newworld-english:zw', label:'英文作文' },
+        { page:'newworld-english:ctb', label:'错题本' }
+      ]},
+      { page:'newworld-suzhi', label:'拓展素养', children:[
+        { page:'newworld-suzhi:ktxs', label:'推荐书籍' },
+        { page:'newworld-suzhi:mwjl', label:'美文摘选' },
+        { page:'newworld-suzhi:hsx', label:'红色上海' },
+        { page:'newworld-suzhi:jnh', label:'华夏五千年' },
+        { page:'newworld-suzhi:kx', label:'科学小知识' },
+        { page:'newworld-suzhi:df', label:'道法小课堂' }
+      ]}
+    ]}
+  ];
   function getTaskJump(t){
     if(!t) return { enabled:false, page:'', pages:TASK_JUMP_PAGES.slice() };
     return {
@@ -27764,7 +27824,7 @@ be 动词：am / is → was；are → were
     tasksForDate, getRecord, toggleCheckIn, makeupDay, saveWrong, r298Plan, r298ImportedTasks, r298WeekPlanSeed,
     addTask, updateTask, deleteTask,
     // R253-2：首页任务卡跳转独立配置
-    TASK_JUMP_PAGES, getTaskJump, setTaskJump,
+    TASK_JUMP_PAGES, TASK_JUMP_TREE, getTaskJump, setTaskJump,
     // R253-4：词汇题库（词汇语法巩固题源）
     xsWordPool, xsWordBankAdd, xsWordBankUpdate, xsWordBankDelete, xsWordBankGet, xsWordBankImportAll,
     // R253-3：巩固打卡历次作答记录
@@ -28804,6 +28864,17 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       if(['calc','note','exercise'].indexOf(s) >= 0){ try{ setLeiduTab(s); }catch(e){} }
     }else if(base === 'xueersi'){
       if(['words','grammar','notes','exercise','checkin','done'].indexOf(s) >= 0) xsCat = s;
+    }else if(base.indexOf('newworld-') === 0){
+      /* R303-1：新世界专区三级标题落点 —— 把 sub 写入对应 slot 记忆键，
+         后续 renderYuwenPage / renderSlotPage 会自动定位到该标题卡片。 */
+      const slotMap = {
+        'newworld-yuwen':'nwSlot:newworld-yuwen',
+        'newworld-math':'nwSlot:sxSlotBody',
+        'newworld-english':'nwSlot:enSlotBody',
+        'newworld-suzhi':'nwSlot:szSlotBody'
+      };
+      const mk = slotMap[base];
+      if(mk){ try{ _uiMem(mk, s); }catch(e){} }
     }
   }
   function goPage(page){
@@ -39768,6 +39839,26 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   function taskJumpLabel(page){
     const key = String(page || '');
     if(!key) return '';
+    // R303-1：优先从三级树解析完整路径名（新世界 · 语文专区 · 课文朗读）
+    const tree = (window.Store && window.Store.TASK_JUMP_TREE) ? window.Store.TASK_JUMP_TREE : [];
+    for(let i=0;i<tree.length;i++){
+      const nav = tree[i];
+      const navLabel = String(nav.label || '');
+      const children = nav.children || [];
+      for(let j=0;j<children.length;j++){
+        const c = children[j];
+        if(String(c.page) === key){
+          if(String(c.label) === '首页' || String(c.page) === String(nav.nav)) return navLabel;
+          return navLabel + ' · ' + String(c.label || '');
+        }
+        const subs = c.children || [];
+        for(let k=0;k<subs.length;k++){
+          if(String(subs[k].page) === key){
+            return navLabel + ' · ' + String(c.label || '') + ' · ' + String(subs[k].label || '');
+          }
+        }
+      }
+    }
     const list = (window.Store && window.Store.TASK_JUMP_PAGES) ? window.Store.TASK_JUMP_PAGES : [];
     const p = list.find(x => String(x.page) === key);
     if(p){
@@ -39778,7 +39869,8 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     return HOME_TASK_PAGE_LABELS[key] || '';
   }
   // R252-2 / R301-3.1：仅「新世界 / 乐读数学 / 学而思英语」三大板块（含其下级次级页）支持跳转
-  const HOME_TASK_ALLOWED_PAGES = /^(math|xueersi|newworld(?:-[a-z-]+)?)(?::[a-z]+)?$/;
+  // R303-1：允许三级标题次级段含数字（如 newworld-english:w3500）
+  const HOME_TASK_ALLOWED_PAGES = /^(math|xueersi|newworld(?:-[a-z-]+)?)(?::[a-z0-9]+)?$/;
   // R250-2 / R252-2：首页任务卡片 → 三大板块内部页面映射；未命中返回空串
   // R253-2：逐条任务可在「设置中心 · 打卡任务设置 · 🧭 跳转」里单独配置开关与目标板块，
   //         配置优先于默认映射；关闭跳转后卡片主体点击不弹窗、不跳转（圆形打卡键不受影响）。
@@ -49825,47 +49917,61 @@ function renderKMAdmin(){
     const t = S.load().tasks.find(x=>String(x.id)===String(taskId));
     if(!t) return;
     const cfg = S.getTaskJump(t);
-    const pages = S.TASK_JUMP_PAGES || [];
+    const tree = S.TASK_JUMP_TREE || [];
     const nameEl = $('#jumpTaskName');
     if(nameEl) nameEl.textContent = t.name || '未命名任务';
     const enEl = $('#jumpEnabledSel');
     if(enEl) enEl.value = cfg.enabled ? '1' : '0';
     const gEl = $('#jumpGroupSel');
     const pgEl = $('#jumpPageSel');
-    // R302-2.1：跳转目标按「层级主题 → 板块/次级页」两级独立选择框分级操作
-    //   数据仍来自 TASK_JUMP_PAGES（group 为主题，page 为真实落点），保存格式 math:calc 等保持不变
-    const groups = [];
-    const gmap = {};
-    pages.forEach(p=>{
-      const g = String(p.group || '其他');
-      if(!gmap[g]){ gmap[g] = []; groups.push(g); }
-      gmap[g].push(p);
-    });
-    const cur = cfg.page || homeTaskPage(t) || (pages[0] && pages[0].page) || 'math';
-    const curItem = pages.filter(p=>String(p.page) === String(cur))[0];
-    const fillPages = (g, keepCur)=>{
-      if(!pgEl) return;
-      const list = gmap[g] || gmap[groups[0]] || [];
-      pgEl.innerHTML = list.map(p=>
-        `<option value="${esc(p.page)}">${esc(p.label || p.page)}</option>`
-      ).join('');
-      const want = (keepCur && list.some(p=>String(p.page) === String(cur)))
-        ? cur : (list[0] && list[0].page);
+    const sbEl = $('#jumpSubSel');
+    const sbRow = $('#jumpSubRow');
+    /* R303-1：三级联动 —— 一级板块(jumpGroupSel) → 二级子页面(jumpPageSel) → 三级标题(jumpSubSel)。
+       数据源 TASK_JUMP_TREE；落点 page 兼容既有 math:calc / newworld-yuwen 格式，
+       三级标题用 newworld-yuwen:keda 形式（applyTaskJumpSub 写入 slot 记忆键）。 */
+    const cur = String(cfg.page || homeTaskPage(t) || 'math');
+    const navOf = page => tree.find(n => (n.children||[]).some(c =>
+      String(c.page) === String(page) || (c.children||[]).some(s=>String(s.page)===String(page)))) || tree[0];
+    const pageOf = (nav, page) => (nav && nav.children || []).find(c =>
+      String(c.page) === String(page) || (c.children||[]).some(s=>String(s.page)===String(page)));
+    const fillPages = (nav, keepCur)=>{
+      if(!pgEl || !nav) return;
+      const list = nav.children || [];
+      pgEl.innerHTML = list.map(p=>`<option value="${esc(p.page)}">${esc(p.label || p.page)}</option>`).join('');
+      const want = (keepCur && list.some(p=>String(p.page) === String(cur))) ? cur : (list[0] && list[0].page);
       if(want) pgEl.value = want;
     };
+    const fillSubs = (pageNode, keepCur)=>{
+      const has = !!(pageNode && pageNode.children && pageNode.children.length);
+      if(sbRow) sbRow.hidden = !has;
+      if(!sbEl) return;
+      if(!has){ sbEl.innerHTML = '<option value="">（无三级标题，本页即落点）</option>'; sbEl.value = ''; return; }
+      sbEl.innerHTML = pageNode.children.map(s=>`<option value="${esc(s.page)}">${esc(s.label || s.page)}</option>`).join('');
+      const want = (keepCur && pageNode.children.some(s=>String(s.page) === String(cur))) ? cur : (pageNode.children[0] && pageNode.children[0].page);
+      if(want) sbEl.value = want;
+    };
+    const initNav = navOf(cur);
+    const initPageNode = pageOf(initNav, cur);
     if(gEl){
-      gEl.innerHTML = groups.map(g=>`<option value="${esc(g)}">${esc(g)}</option>`).join('');
-      gEl.value = curItem ? String(curItem.group || '其他') : (groups[0] || '');
-      if(!gEl.value && groups[0]) gEl.value = groups[0];
-      fillPages(gEl.value, true);
-      gEl.onchange = ()=>fillPages(gEl.value, false);
+      gEl.innerHTML = tree.map(n=>`<option value="${esc(n.nav)}">${esc(n.label)}</option>`).join('');
+      gEl.value = initNav ? String(initNav.nav) : (tree[0] && tree[0].nav) || '';
+      if(!gEl.value && tree[0]) gEl.value = tree[0].nav;
+      fillPages(initNav, true);
+      fillSubs(pgEl ? pageOf(initNav, pgEl.value) : initPageNode, true);
+      gEl.onchange = ()=>{ const nav = tree.find(n=>String(n.nav)===String(gEl.value)) || tree[0]; fillPages(nav, false); fillSubs(pgEl ? pageOf(nav, pgEl.value) : null, false); };
     }else{
-      fillPages(groups[0] || '', true);
+      fillPages(tree[0], true);
+      fillSubs(pgEl ? pageOf(tree[0], pgEl.value) : null, true);
     }
+    if(pgEl) pgEl.onchange = ()=>{
+      const nav = tree.find(n=>String(n.nav)===String((gEl&&gEl.value)||'')) || tree[0];
+      fillSubs(pageOf(nav, pgEl.value), false);
+    };
     const sync = ()=>{
       const off = !!(enEl && enEl.value === '0');
       if(gEl) gEl.disabled = off;
       if(pgEl) pgEl.disabled = off;
+      if(sbEl) sbEl.disabled = off;
     };
     if(enEl && !enEl._bound){ enEl._bound = true; enEl.onchange = sync; }
     sync();
@@ -49873,7 +49979,8 @@ function renderKMAdmin(){
     if(save){
       save.onclick = ()=>{
         const enabled = enEl ? (enEl.value === '1') : true;
-        const page = pgEl ? pgEl.value : '';
+        const subVal = (sbEl && sbEl.value && sbRow && !sbRow.hidden) ? String(sbEl.value) : '';
+        const page = subVal || (pgEl ? pgEl.value : '');
         S.setTaskJump(taskId, { enabled, page });
         hideModal('#modalTaskJump');
         refreshSettingsTaskLists();
