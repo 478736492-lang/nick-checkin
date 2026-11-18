@@ -9683,6 +9683,9 @@ body.r256-sheet-on{overflow:hidden}
   font-size:12px;font-weight:800;color:var(--tone-700);
 }
 .task-jump-block .tjb-page select{flex:1;min-width:0}
+/* R306-2.6：跳转目标改为「三级联动组件」入口，落点只读回显 */
+.task-jump-block .tjb-pick{gap:8px;flex-wrap:wrap}
+.task-jump-block .tjb-target{font-size:12px;font-weight:700;color:var(--tone-700);line-height:1.35;flex:1 1 auto;min-width:0}
 .task-jump-block.is-off{opacity:.75}
 
 /* ================= R269-1 设置中心：全部卡片统一尺寸 =================
@@ -12216,9 +12219,11 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
           <span class="tjb-state" id="tJumpState" data-page-node-id="R258tJumpState">已开启</span>
           <span class="tjb-tip" data-page-node-id="R258tjbTip">关闭后点首页任务卡主体不跳转（右侧打卡键照常）</span>
         </div>
-        <label class="tjb-page" data-page-node-id="R258tjbPage">跳转目标
-          <select id="tJumpPage" data-page-node-id="R258tJumpPage"></select>
-        </label>
+        <!-- R306-2.6：旧单级下拉下线 → 统一走三级联动组件，避免编辑任务保存时把三级落点清空 -->
+        <div class="tjb-page tjb-pick" data-page-node-id="R306tjbPickRow">
+          <button type="button" class="tjr-cfg" id="tJumpPickBtn" data-page-node-id="R306tJumpPickBtn">选择目标 ›</button>
+          <span class="tjb-target" id="tJumpPageLabel" data-page-node-id="R306tJumpPageLabel">默认（按任务类型自动匹配）</span>
+        </div>
       </div>
       <div class="form-warn" id="tWarn" data-page-node-id="lqDbvL6V4Jl6kpiY4lDfng"></div>
     </div>
@@ -48750,6 +48755,7 @@ function renderKMAdmin(){
      · 开关：task.jumpEnabled（缺省视为开启）
      · 目标：task.jumpPage（空 = 按任务类型自动匹配，与首页既有规则一致） */
   let _tJumpOn = true;
+  let _tJumpTouched = false;   // R306-2.6：本次编辑是否在三级组件里改过跳转（改过则以库内值为准）
   function syncTaskJumpUI(){
     const sw = document.getElementById('tJumpEnabled');
     const sel = document.getElementById('tJumpPage');
@@ -48762,16 +48768,25 @@ function renderKMAdmin(){
     if(blk) blk.classList.toggle('is-off', !on);
   }
   function initTaskJumpEditor(task){
-    const sel = document.getElementById('tJumpPage');
-    const jp = (S && S.getTaskJump) ? S.getTaskJump(task || null) : { pages: [] };
-    if(sel){
-      const pages = (jp.pages && jp.pages.length) ? jp.pages : [];
-      sel.innerHTML = '<option value="">默认（按任务类型自动匹配）</option>'
-        + pages.map(pg => `<option value="${esc(pg.page)}">${esc(pg.label)}</option>`).join('');
-      const want = (task && task.jumpPage) ? String(task.jumpPage) : '';
-      sel.value = want;
-      if(want && sel.value !== want) sel.value = '';   // 目标板块已下线 → 回落默认
+    /* R306-2.6：单级下拉已下线 —— 跳转目标统一由三级联动组件设置，这里只回显当前落点 */
+    const lab = document.getElementById('tJumpPageLabel');
+    const pick = document.getElementById('tJumpPickBtn');
+    const want = (task && task.jumpPage) ? String(task.jumpPage) : '';
+    if(lab){
+      lab.textContent = want ? (taskJumpLabel(want) || want) : '默认（按任务类型自动匹配）';
+      lab.title = want || '';
     }
+    if(pick){
+      pick.hidden = !editingTaskId;
+      if(!pick._bound){
+        pick._bound = true;
+        pick.onclick = ()=>{
+          if(editingTaskId) openTaskJumpSetting(editingTaskId);
+          else toast('请先保存任务，再设置跳转目标');
+        };
+      }
+    }
+    _tJumpTouched = false;
     _tJumpOn = task ? (task.jumpEnabled !== false) : true;
     syncTaskJumpUI();
     const sw = document.getElementById('tJumpEnabled');
@@ -48887,9 +48902,18 @@ function renderKMAdmin(){
       extraDates: [...taskExtraDates],
       weekendOnly: $('#tWeekend').value==='1',
       stars: Math.max(0, parseInt($('#tStars').value)||0),
-      // R258-3.1：任务卡片跳转（逐条任务独立保存）
-      jumpEnabled: !!_tJumpOn,
-      jumpPage: (document.getElementById('tJumpPage') ? document.getElementById('tJumpPage').value : '') || ''
+      // R306-2.6：跳转目标由三级组件直接写库，这里不覆盖，避免把三级落点清空
+      jumpEnabled: (function(){
+        if(_tJumpTouched){
+          const cur = editingTaskId ? (S.load().tasks || []).find(x=>String(x.id)===String(editingTaskId)) : null;
+          if(cur) return cur.jumpEnabled !== false;
+        }
+        return !!_tJumpOn;
+      })(),
+      jumpPage: (function(){
+        const cur = editingTaskId ? (S.load().tasks || []).find(x=>String(x.id)===String(editingTaskId)) : null;
+        return cur ? String(cur.jumpPage || '') : '';
+      })()
     };
     if(editingTaskId) S.updateTask(editingTaskId, data);
     else S.addTask(data);
@@ -50104,6 +50128,10 @@ function renderKMAdmin(){
         const hasSub = !!(sbRow && !sbRow.hidden && sbEl && sbEl.value);
         const page = String(hasSub ? sbEl.value : pgEl.value);
         S.setTaskJump(taskId, { enabled, page });
+        // R306-2.6：任务编辑弹窗若同屏打开，实时回显并标记「已在三级组件改过」
+        _tJumpTouched = true;
+        const lab = document.getElementById('tJumpPageLabel');
+        if(lab){ lab.textContent = taskJumpLabel(page) || page || '默认（按任务类型自动匹配）'; lab.title = page || ''; }
         hideModal('#modalTaskJump');
         refreshSettingsTaskLists();
         const label = taskJumpLabel(page) || page || '';
