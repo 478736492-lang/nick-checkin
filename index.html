@@ -8781,6 +8781,16 @@ button,.pbtn,[role="button"],.nw-card,.wp-card,.sub-card,.sub-tab,.kb-card,.kb-u
 .jump-form-label{flex:0 0 92px;font-size:13px;font-weight:800;color:var(--tone-800)}
 .jump-select{flex:1 1 auto;min-width:0;font-family:inherit;font-size:13px;font-weight:700;color:var(--tone-900);background:#fff;border:1.5px solid var(--tone-200);border-radius:10px;padding:8px 10px;cursor:pointer}
 .jump-select:disabled{background:#f2f4f8;color:#98a4b5;cursor:not-allowed}
+/* R306-2：任务卡跳转 —— 分级选择组件 */
+.jump-picker{background:var(--tone-050);border:1px solid var(--tone-150);border-radius:14px;padding:12px 14px 6px;margin-bottom:12px}
+.jump-picker-head{font-size:13px;font-weight:900;color:var(--tone-950);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.jump-picker .jump-form-row{margin-bottom:9px}
+.jump-picker .jump-form-label{flex:0 0 84px;font-size:12.5px;font-weight:800;color:var(--tone-900)}
+.jump-picker .jump-select{border-radius:10px;padding:9px 10px;background:#fff}
+.jump-picker .jump-form-row[hidden]{display:none!important}
+.jump-sub-note{font-size:12px;color:var(--tone-800);background:rgba(47,111,199,.08);border-left:3px solid var(--tone-600);border-radius:8px;padding:7px 10px;margin:0 0 10px}
+.jump-sub-note[hidden]{display:none!important}
+.jump-preview{font-size:12.5px;font-weight:800;color:var(--tone-950);background:#fff;border:1.5px dashed var(--tone-250);border-radius:10px;padding:8px 11px;margin:2px 0 10px;word-break:break-all}
 
 /* —— R253-3 / R253-4 巩固打卡：已答对数据下方 · 题库 + 已默写 —— */
 .xs-adv-head-side{flex-direction:column;align-items:flex-end;gap:6px}
@@ -12821,19 +12831,24 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
           <option value="0">关闭跳转</option>
         </select>
       </div>
-      <div class="jump-form-row" data-page-node-id="R303jumpNavRow">
-        <span class="jump-form-label">一级 · 板块</span>
-        <select id="jumpGroupSel" class="jump-select" data-page-node-id="R302jumpGroupSel"></select>
+      <div class="jump-picker" id="jumpPicker" data-page-node-id="R306jumpPicker">
+        <div class="jump-picker-head" data-page-node-id="R306jumpPickerHead">🧭 跳转目标（三级联动）</div>
+        <div class="jump-form-row" data-page-node-id="R306jumpGroupRow">
+          <span class="jump-form-label">一级目标</span>
+          <select id="jumpGroupSel" class="jump-select" data-page-node-id="R306jumpGroupSel"></select>
+        </div>
+        <div class="jump-form-row" data-page-node-id="R306jumpPageRow">
+          <span class="jump-form-label">二级目标</span>
+          <select id="jumpPageSel" class="jump-select" data-page-node-id="R306jumpPageSel"></select>
+        </div>
+        <div class="jump-form-row" id="jumpSubRow" data-page-node-id="R306jumpSubRow">
+          <span class="jump-form-label">三级目标</span>
+          <select id="jumpSubSel" class="jump-select" data-page-node-id="R306jumpSubSel"></select>
+        </div>
+        <div class="jump-sub-note" id="jumpSubNote" data-page-node-id="R306jumpSubNote" hidden>本板块没有三级页面，保存后直接跳转到二级所选页面</div>
+        <div class="jump-preview" id="jumpPreview" data-page-node-id="R306jumpPreview"></div>
       </div>
-      <div class="jump-form-row" data-page-node-id="R253jumpPageRow">
-        <span class="jump-form-label">二级 · 子页面</span>
-        <select id="jumpPageSel" class="jump-select" data-page-node-id="R253jumpPageSel"></select>
-      </div>
-      <div class="jump-form-row" data-page-node-id="R303jumpSubRow" id="jumpSubRow">
-        <span class="jump-form-label">三级 · 标题</span>
-        <select id="jumpSubSel" class="jump-select" data-page-node-id="R303jumpSubSel"></select>
-      </div>
-      <div class="parent-edit-hint" data-page-node-id="R253jumpHint">📌 依次选择「板块 → 子页面 → 标题」确定跳转落点；若所选子页面下没有更细的标题，三级留空即可。开启后在首页点击卡片主体会先弹确认框再前往；点左侧圆形打卡键只打卡、不跳转。关闭后卡片主体点击无反应。</div>
+      <div class="parent-edit-hint" data-page-node-id="R306jumpHint">📌 先选一级板块，再选二级子板块；二级下有三级页面时可再精确到三级页面。开启后在首页点击卡片主体会先弹确认框再前往；点左侧圆形打卡键只打卡、不跳转。</div>
     </div>
     <div class="modal-foot" data-page-node-id="R253modalTaskJumpFoot">
       <button class="primary-btn" id="btnJumpSave" data-page-node-id="R253btnJumpSave">💾 保存</button>
@@ -26077,81 +26092,66 @@ be 动词：am / is → was；are → were
        一级/二级 → 沿用 math / math:calc / newworld-yuwen 等（goPage 的「板块:次级页」）；
        三级标题 → newworld-yuwen:keda 形式，applyTaskJumpSub 写入对应 slot 记忆键后自动定位到该标题。 */
   const TASK_JUMP_TREE = [
-    /* R305-3：一级目标 = 导航栏全部板块，顺序与侧栏一致（首页 / 新世界 / 乐读数学 / 学而思英语 /
-       中华通史 / 大阅读 / 百科讲堂 / 知识秘境 / 种植园 / 成长档案 / 设置中心）；
-       二级 = 板块下子页面；三级 = 子页面内标题。无三级内容的板块仅列「首页」，三级选择框自动隐藏。 */
-    { nav:'home', label:'首页', children:[
-      { page:'home', label:'首页' }
-    ]},
+    /* R306-2：任务卡跳转分级组件数据源（重建）
+       一级 = 6 个可跳转板块：新世界 / 乐读数学 / 学而思英语 / 中华通史 / 大阅读 / 百科讲堂
+       二级 = 一级板块下的子板块（专区 / 子页面 / 阅读语种 / 百科主题）
+       三级 = 二级子板块下的三级页面；无三级时该层留空，保存后直接跳二级页面
+       落点 page 统一「板块:子页」格式，由 goPage / applyTaskJumpSub 分发。 */
     { nav:'newworld', label:'新世界', children:[
-      { page:'newworld', label:'首页' },
       { page:'newworld-yuwen', label:'语文专区', children:[
-        { page:'newworld-yuwen:keda', label:'课文朗读' },
-        { page:'newworld-yuwen:ciyu', label:'必背知识' },
-        { page:'newworld-yuwen:gushi', label:'古诗词' },
-        { page:'newworld-yuwen:wenyan', label:'文言文' },
-        { page:'newworld-yuwen:sucai', label:'作文素材' },
-        { page:'newworld-yuwen:zxzs', label:'专项知识' }
+        { page:'newworld-yuwen:keda',  label:'课文同步' },
+        { page:'newworld-yuwen:gushi', label:'小学古诗文' },
+        { page:'newworld-yuwen:sucai', label:'作文专项' }
       ]},
       { page:'newworld-math', label:'数学专区', children:[
-        { page:'newworld-math:kbtb', label:'课本同步' },
-        { page:'newworld-math:yytz', label:'应用题专项' },
-        { page:'newworld-math:xnmt', label:'校内思维题' },
-        { page:'newworld-math:asmst', label:'奥数思维题' },
-        { page:'newworld-math:ctb', label:'错题笔记' }
+        { page:'newworld-math:kbtb', label:'同步课时练习' },
+        { page:'newworld-math:xnmt', label:'思维拓展' },
+        { page:'newworld-math:ctb',  label:'错题本' }
       ]},
       { page:'newworld-english', label:'英语专区', children:[
-        { page:'newworld-english:dd', label:'书本课文' },
-        { page:'newworld-english:gd', label:'重点知识' },
-        { page:'newworld-english:w3500', label:'3500 词' },
-        { page:'newworld-english:yyxzs', label:'英语小知识' },
-        { page:'newworld-english:zw', label:'英文作文' },
-        { page:'newworld-english:ctb', label:'错题本' }
+        { page:'newworld-english:dd',    label:'同步课时练习' },
+        { page:'newworld-english:w3500', label:'课外扩展' },
+        { page:'newworld-english:ctb',   label:'错题本' }
       ]},
       { page:'newworld-suzhi', label:'拓展素养', children:[
-        { page:'newworld-suzhi:ktxs', label:'推荐书籍' },
-        { page:'newworld-suzhi:mwjl', label:'美文摘选' },
-        { page:'newworld-suzhi:hsx', label:'红色上海' },
-        { page:'newworld-suzhi:jnh', label:'华夏五千年' },
-        { page:'newworld-suzhi:kx', label:'科学小知识' },
-        { page:'newworld-suzhi:df', label:'道法小课堂' }
+        { page:'newworld-suzhi:ktxs', label:'拓展阅读' },
+        { page:'newworld-suzhi:hsx',  label:'人文拓展' },
+        { page:'newworld-suzhi:kx',   label:'综合素养' }
       ]}
     ]},
     { nav:'math', label:'乐读数学', children:[
-      { page:'math', label:'首页' },
-      { page:'math:calc', label:'计算小超市' },
-      { page:'math:note', label:'乐读数学笔记' },
+      { page:'math:calc',     label:'计算小超市' },
+      { page:'math:note',     label:'乐读数学笔记' },
       { page:'math:exercise', label:'乐读练习题' }
     ]},
     { nav:'xueersi', label:'学而思英语', children:[
-      { page:'xueersi', label:'首页' },
-      { page:'xueersi:checkin', label:'每日巩固打卡' },
-      { page:'xueersi:words', label:'词汇' },
-      { page:'xueersi:grammar', label:'语法' },
-      { page:'xueersi:notes', label:'课堂笔记' },
+      { page:'xueersi:checkin',  label:'每日巩固打卡' },
+      { page:'xueersi:words',    label:'词汇' },
+      { page:'xueersi:grammar',  label:'语法' },
+      { page:'xueersi:notes',    label:'课堂笔记' },
       { page:'xueersi:exercise', label:'学而思练习' },
-      { page:'xueersi:done', label:'已默写' }
+      { page:'xueersi:done',     label:'已默写' }
     ]},
     { nav:'zhts', label:'中华通史', children:[
-      { page:'zhts', label:'时光长河首页' }
+      { page:'zhts:timeline', label:'时光长河' },
+      { page:'zhts:compare',  label:'中外对照' },
+      { page:'zhts:quiz',     label:'闯关练习' },
+      { page:'zhts:progress', label:'学习报告' }
     ]},
     { nav:'reading', label:'大阅读', children:[
-      { page:'reading', label:'首页' }
+      { page:'reading:cn', label:'语文阅读' },
+      { page:'reading:en', label:'英语阅读' }
     ]},
     { nav:'baike', label:'百科讲堂', children:[
-      { page:'baike', label:'首页' }
-    ]},
-    { nav:'knowledge', label:'知识秘境', children:[
-      { page:'knowledge', label:'首页' }
-    ]},
-    { nav:'farm', label:'种植园', children:[
-      { page:'farm', label:'首页' }
-    ]},
-    { nav:'archive', label:'成长档案', children:[
-      { page:'archive', label:'首页' }
-    ]},
-    { nav:'settings', label:'设置中心', children:[
-      { page:'settings', label:'首页' }
+      { page:'baike:历史文化',  label:'历史文化' },
+      { page:'baike:地理地貌',  label:'地理地貌' },
+      { page:'baike:天文科普',  label:'天文科普' },
+      { page:'baike:奇妙物理',  label:'奇妙物理' },
+      { page:'baike:生命健康',  label:'生命健康' },
+      { page:'baike:科技前沿',  label:'科技前沿' },
+      { page:'baike:动动脑筋吧', label:'动动脑筋吧' },
+      { page:'baike:趣味数学',  label:'趣味数学' },
+      { page:'baike:化学实验室', label:'化学实验室' }
     ]}
   ];
   function getTaskJump(t){
@@ -28908,7 +28908,40 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       };
       const mk = slotMap[base];
       if(mk){ try{ _uiMem(mk, s); }catch(e){} }
+    }else if(base === 'zhts'){
+      /* R306-2：中华通史 —— 记录目标视图，iframe 就绪后由 applyZhtsJumpView 切过去 */
+      if(['home','timeline','compare','quiz','progress','study'].indexOf(s) >= 0){ try{ _uiMem('zhtsView', s); }catch(e){} }
+    }else if(base === 'reading'){
+      /* R306-2：大阅读 —— 语文阅读 / 英语阅读 两个子板块 */
+      if(s === 'cn' || s === 'en'){ try{ _uiMem('readingTab', s); }catch(e){} }
+    }else if(base === 'baike'){
+      /* R306-2：百科讲堂 —— 落点定位到对应主题卡片 */
+      try{ _uiMem('baikeCat', s); }catch(e){}
     }
+  }
+
+  /* R306-2：跳转落点应用 —— 大阅读语种 / 百科主题 / 通史视图 */
+  function applyReadingJumpTab(){
+    let tab = '';
+    try{ tab = _uiMem('readingTab') || ''; }catch(e){}
+    if(!tab) return;
+    try{ _uiMem('readingTab', ''); }catch(e){}
+    const btn = document.getElementById(tab === 'en' ? 'rdTabEn' : 'rdTabCn');
+    if(btn) try{ btn.click(); }catch(e){}
+  }
+  function applyBaikeJumpCat(){
+    let cat = '';
+    try{ cat = _uiMem('baikeCat') || ''; }catch(e){}
+    if(!cat) return;
+    try{ _uiMem('baikeCat', ''); }catch(e){}
+    setTimeout(function(){
+      const el = document.querySelector('#baikeBoxes [data-bk-cat="' + cat + '"]');
+      if(el){
+        try{ el.scrollIntoView({behavior:'smooth', block:'center'}); }catch(e){}
+        el.classList.add('r306-jump-hit');
+        setTimeout(function(){ el.classList.remove('r306-jump-hit'); }, 2400);
+      }
+    }, 90);
   }
   function goPage(page){
     // R301-3.1：拆出「板块:次级页」，先落子页再切页面
@@ -28966,8 +28999,8 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     if(page==='math'){ if(_fromPage !== 'math') setLeiduTab(_uiMem('leiduTab') || 'calc'); renderMath(); }
     if(page==='xueersi') renderXueersi();
     // R56-6：每次进入大阅读默认回到「今日阅读三栏」主视图（收录书屋需点按钮切换）
-    if(page==='reading'){ _bsOpen = false; renderReading(); }
-    if(page==='baike') renderBaike();
+    if(page==='reading'){ _bsOpen = false; renderReading(); applyReadingJumpTab(); }
+    if(page==='baike'){ renderBaike(); applyBaikeJumpCat(); }
     if(page==='chuangguan') renderChuangguan();
     if(page==='knowledge') renderKnowledge();
     // R118-2：Nick 的备忘录独立页面
@@ -29007,6 +29040,30 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       return;
     }
     if(f.getAttribute('srcdoc') !== html) f.setAttribute('srcdoc', html);
+    applyZhtsJumpView();
+  }
+
+  /* R306-2：任务卡跳转指定了中华通史内部视图时，等 iframe 就绪后切过去 */
+  function applyZhtsJumpView(){
+    let view = '';
+    try{ view = _uiMem('zhtsView') || ''; }catch(e){}
+    if(!view) return;
+    const f = document.getElementById('zhtsFrame');
+    if(!f) return;
+    let tries = 0;
+    const tick = function(){
+      tries++;
+      try{
+        const w = f.contentWindow;
+        if(w && typeof w.go === 'function'){
+          try{ _uiMem('zhtsView', ''); }catch(e){}
+          w.go(view);
+          return;
+        }
+      }catch(e){}
+      if(tries < 50) setTimeout(tick, 120);
+    };
+    setTimeout(tick, 120);
   }
 
   // R131-2：点击【保存设置】→ 提交暂存草稿到 localStorage 并立即生效
@@ -39905,7 +39962,8 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   // R304-3：一级目标扩展到导航栏各板块，白名单向后追加（保留 math|xueersi|newworld 前缀兼容旧断言）；
   //         默认映射 HOME_TASK_PAGE_MAP / 关键词兜底仍只覆盖三大板块，未显式配置的任务行为不变。
   // R303-1：允许三级标题次级段含数字（如 newworld-english:w3500）
-  const HOME_TASK_ALLOWED_PAGES = /^(math|xueersi|newworld(?:-[a-z-]+)?|home|zhts|reading|baike|knowledge|farm|archive|settings)(?::[a-z0-9]+)?$/;
+  /* R306-2：次级段落允许中文（百科讲堂主题 = baike:历史文化；通史视图 = zhts:timeline） */
+  const HOME_TASK_ALLOWED_PAGES = /^(math|xueersi|newworld(?:-[a-z-]+)?|home|zhts|reading|baike|knowledge|farm|archive|settings)(?::[^:]+)?$/;
   // R250-2 / R252-2：首页任务卡片 → 三大板块内部页面映射；未命中返回空串
   // R253-2：逐条任务可在「设置中心 · 打卡任务设置 · 🧭 跳转」里单独配置开关与目标板块，
   //         配置优先于默认映射；关闭跳转后卡片主体点击不弹窗、不跳转（圆形打卡键不受影响）。
@@ -49948,11 +50006,15 @@ function renderKMAdmin(){
       });
     });
   }
+  /* R306-2：任务卡片跳转 —— 分级跳转选择组件（重建）
+     一级：6 个板块（新世界 / 乐读数学 / 学而思英语 / 中华通史 / 大阅读 / 百科讲堂）
+     二级：该板块下的子板块；三级：子板块下的三级页面
+     二级无三级页面时，三级行隐藏并给出提示，保存后直接跳二级页面 */
   function openTaskJumpSetting(taskId){
     const t = S.load().tasks.find(x=>String(x.id)===String(taskId));
     if(!t) return;
     const cfg = S.getTaskJump(t);
-    const tree = S.TASK_JUMP_TREE || [];
+    const tree = (S.TASK_JUMP_TREE || []).slice();
     const nameEl = $('#jumpTaskName');
     if(nameEl) nameEl.textContent = t.name || '未命名任务';
     const enEl = $('#jumpEnabledSel');
@@ -49961,61 +50023,86 @@ function renderKMAdmin(){
     const pgEl = $('#jumpPageSel');
     const sbEl = $('#jumpSubSel');
     const sbRow = $('#jumpSubRow');
-    /* R303-1：三级联动 —— 一级板块(jumpGroupSel) → 二级子页面(jumpPageSel) → 三级标题(jumpSubSel)。
-       数据源 TASK_JUMP_TREE；落点 page 兼容既有 math:calc / newworld-yuwen 格式，
-       三级标题用 newworld-yuwen:keda 形式（applyTaskJumpSub 写入 slot 记忆键）。 */
-    const cur = String(cfg.page || homeTaskPage(t) || 'math');
-    const navOf = page => tree.find(n => (n.children||[]).some(c =>
-      String(c.page) === String(page) || (c.children||[]).some(s=>String(s.page)===String(page)))) || tree[0];
-    const pageOf = (nav, page) => (nav && nav.children || []).find(c =>
-      String(c.page) === String(page) || (c.children||[]).some(s=>String(s.page)===String(page)));
-    const fillPages = (nav, keepCur)=>{
-      if(!pgEl || !nav) return;
-      const list = nav.children || [];
-      pgEl.innerHTML = list.map(p=>`<option value="${esc(p.page)}">${esc(p.label || p.page)}</option>`).join('');
-      const want = (keepCur && list.some(p=>String(p.page) === String(cur))) ? cur : (list[0] && list[0].page);
-      if(want) pgEl.value = want;
-    };
-    const fillSubs = (pageNode, keepCur)=>{
-      const has = !!(pageNode && pageNode.children && pageNode.children.length);
-      if(sbRow) sbRow.hidden = !has;
-      if(!sbEl) return;
-      if(!has){ sbEl.innerHTML = '<option value="">（无三级标题，本页即落点）</option>'; sbEl.value = ''; return; }
-      sbEl.innerHTML = pageNode.children.map(s=>`<option value="${esc(s.page)}">${esc(s.label || s.page)}</option>`).join('');
-      const want = (keepCur && pageNode.children.some(s=>String(s.page) === String(cur))) ? cur : (pageNode.children[0] && pageNode.children[0].page);
-      if(want) sbEl.value = want;
-    };
-    const initNav = navOf(cur);
-    const initPageNode = pageOf(initNav, cur);
-    if(gEl){
-      gEl.innerHTML = tree.map(n=>`<option value="${esc(n.nav)}">${esc(n.label)}</option>`).join('');
-      gEl.value = initNav ? String(initNav.nav) : (tree[0] && tree[0].nav) || '';
-      if(!gEl.value && tree[0]) gEl.value = tree[0].nav;
-      fillPages(initNav, true);
-      fillSubs(pgEl ? pageOf(initNav, pgEl.value) : initPageNode, true);
-      gEl.onchange = ()=>{ const nav = tree.find(n=>String(n.nav)===String(gEl.value)) || tree[0]; fillPages(nav, false); fillSubs(pgEl ? pageOf(nav, pgEl.value) : null, false); };
-    }else{
-      fillPages(tree[0], true);
-      fillSubs(pgEl ? pageOf(tree[0], pgEl.value) : null, true);
+    const sbNote = $('#jumpSubNote');
+    const prevEl = $('#jumpPreview');
+    if(!gEl || !pgEl || !tree.length) return;
+
+    const cur = String(cfg.page || homeTaskPage(t) || '');
+    const kids = n => (n && n.children) || [];
+    const pickGroup = p => tree.find(n => kids(n).some(c => String(c.page) === p
+        || kids(c).some(x => String(x.page) === p))) || tree[0];
+    const pickPage = (nav, p) => kids(nav).find(c => String(c.page) === p
+        || kids(c).some(x => String(x.page) === p)) || kids(nav)[0];
+    const curGroup = pickGroup(cur);
+    const curPage = pickPage(curGroup, cur);
+
+    function refreshPreview(){
+      const nav = tree.find(n=>String(n.nav)===String(gEl.value)) || tree[0];
+      const gLabel = (nav && nav.label) || '';
+      const node = kids(nav).find(c=>String(c.page)===String(pgEl.value)) || kids(nav)[0];
+      const pLabel = (node && node.label) || '';
+      const subs = kids(node);
+      const sLabel = subs.length ? ((subs.find(x=>String(x.page)===String(sbEl.value))||subs[0]||{}).label||'') : '';
+      if(prevEl) prevEl.textContent = '落点：' + [gLabel, pLabel, sLabel].filter(Boolean).join(' › ');
     }
-    if(pgEl) pgEl.onchange = ()=>{
-      const nav = tree.find(n=>String(n.nav)===String((gEl&&gEl.value)||'')) || tree[0];
-      fillSubs(pageOf(nav, pgEl.value), false);
+    function fillGroups(){
+      gEl.innerHTML = tree.map(n=>`<option value="${esc(n.nav)}">${esc(n.label)}</option>`).join('');
+      gEl.value = curGroup ? String(curGroup.nav) : String(tree[0].nav);
+    }
+    function fillPages(nav, keep){
+      const list = kids(nav);
+      pgEl.innerHTML = list.map(p=>`<option value="${esc(p.page)}">${esc(p.label || p.page)}</option>`).join('');
+      const same = keep && list.some(p=>String(p.page) === String(cur));
+      const want = same ? String(cur) : (list[0] ? String(list[0].page) : '');
+      if(want) pgEl.value = want;
+      fillSubs(nav);
+      refreshPreview();
+    }
+    function fillSubs(nav){
+      const node = kids(nav).find(c=>String(c.page)===String(pgEl.value)) || kids(nav)[0];
+      const subs = kids(node);
+      const has = subs.length > 0;
+      if(sbRow) sbRow.hidden = !has;
+      if(sbNote) sbNote.hidden = has;
+      if(!sbEl) return;
+      if(!has){ sbEl.innerHTML = '<option value="">—</option>'; sbEl.value = ''; return; }
+      sbEl.innerHTML = subs.map(x=>`<option value="${esc(x.page)}">${esc(x.label || x.page)}</option>`).join('');
+      const hitCur = (String(cur) === String(pgEl.value)) ? false : subs.some(x=>String(x.page)===String(cur));
+      sbEl.value = hitCur ? String(cur) : String(subs[0].page);
+    }
+
+    fillGroups();
+    fillPages(curGroup, true);
+    if(sbEl && !(sbRow && sbRow.hidden) && cur && String(cur) !== String(pgEl.value)){
+      const hit = kids(curPage).some(x=>String(x.page)===String(cur));
+      if(hit) sbEl.value = String(cur);
+    }
+    refreshPreview();
+
+    gEl.onchange = ()=>{
+      const nav = tree.find(n=>String(n.nav)===String(gEl.value)) || tree[0];
+      fillPages(nav, false);
     };
+    pgEl.onchange = ()=>{
+      const nav = tree.find(n=>String(n.nav)===String(gEl.value)) || tree[0];
+      fillSubs(nav);
+      refreshPreview();
+    };
+    if(sbEl) sbEl.onchange = refreshPreview;
+
     const sync = ()=>{
       const off = !!(enEl && enEl.value === '0');
-      if(gEl) gEl.disabled = off;
-      if(pgEl) pgEl.disabled = off;
-      if(sbEl) sbEl.disabled = off;
+      [gEl, pgEl, sbEl].forEach(el=>{ if(el) el.disabled = off; });
     };
     if(enEl && !enEl._bound){ enEl._bound = true; enEl.onchange = sync; }
     sync();
+
     const save = $('#btnJumpSave');
     if(save){
       save.onclick = ()=>{
         const enabled = enEl ? (enEl.value === '1') : true;
-        const subVal = (sbEl && sbEl.value && sbRow && !sbRow.hidden) ? String(sbEl.value) : '';
-        const page = subVal || (pgEl ? pgEl.value : '');
+        const hasSub = !!(sbRow && !sbRow.hidden && sbEl && sbEl.value);
+        const page = String(hasSub ? sbEl.value : pgEl.value);
         S.setTaskJump(taskId, { enabled, page });
         hideModal('#modalTaskJump');
         refreshSettingsTaskLists();
@@ -50025,6 +50112,7 @@ function renderKMAdmin(){
     }
     showModal('#modalTaskJump');
   }
+
   // ============ R85：设置中心 —— 各卡片弹窗路由 ============
   // R150-6：家长模式 —— 各板块打卡任务⭐奖励设置（新世界 / 乐读数学 / 学而思英语 / 大阅读 / 百科讲堂）
   // 修改写入 st.taskStars，打卡链路实时读取 getTaskStars(id)；addStars 同步累加 st.archive.totalStars（即种植园星星统计）。
