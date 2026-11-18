@@ -9147,16 +9147,22 @@ body.r256-sheet-on{overflow:hidden}
 /* 悬浮键 */
 .r256-fab{
   position:fixed;right:16px;bottom:22px;z-index:9200;display:flex;flex-direction:column;gap:8px;
-  opacity:0;transform:translateY(8px);pointer-events:none;transition:.2s ease;
+  opacity:0;transform:translateY(8px);pointer-events:none;transition:opacity .2s ease,transform .2s ease;
+  touch-action:none;
 }
 .r256-fab.show{opacity:1;transform:none;pointer-events:auto}
 .r256-fab-btn{
-  width:42px;height:42px;border-radius:14px;border:1px solid var(--tone-150);cursor:pointer;
+  width:42px;height:42px;border-radius:14px;border:1px solid var(--tone-150);cursor:grab;
   background:rgba(255,255,255,.96);font-size:18px;line-height:1;
   box-shadow:0 6px 18px rgba(24,58,100,.18);
 }
 .r256-fab-btn:hover{background:var(--tone-100);transform:translateY(-1px)}
 .r256-fab-btn[hidden]{display:none!important}
+/* R304-2：悬浮键拖拽 —— 抓取态光标 / 拖拽中提升层级+轻微放大 / 已移动态去掉过渡避免回弹 */
+.r256-fab.r304-fab-moved{transition:none;transform:none}
+.r256-fab.r304-fab-dragging{z-index:9600;opacity:.92;transform:none;cursor:grabbing}
+.r256-fab.r304-fab-dragging .r256-fab-btn{cursor:grabbing;box-shadow:0 10px 26px rgba(24,58,100,.30)}
+.r256-fab.r304-fab-dragging .r256-fab-btn:hover{transform:none}
 
 /* 离线提示条 */
 .r256-offline{
@@ -26119,6 +26125,28 @@ be 动词：am / is → was；are → were
         { page:'newworld-suzhi:kx', label:'科学小知识' },
         { page:'newworld-suzhi:df', label:'道法小课堂' }
       ]}
+    ]},
+    /* R304-3：一级目标扩展到导航栏各板块；无三级内容的板块仅列「首页」，三级选择框自动隐藏 */
+    { nav:'home', label:'首页', children:[
+      { page:'home', label:'首页' }
+    ]},
+    { nav:'zhts', label:'中华通史', children:[
+      { page:'zhts', label:'时光长河首页' }
+    ]},
+    { nav:'reading', label:'大阅读', children:[
+      { page:'reading', label:'首页' }
+    ]},
+    { nav:'baike', label:'百科讲堂', children:[
+      { page:'baike', label:'首页' }
+    ]},
+    { nav:'knowledge', label:'知识秘境', children:[
+      { page:'knowledge', label:'首页' }
+    ]},
+    { nav:'farm', label:'种植园', children:[
+      { page:'farm', label:'首页' }
+    ]},
+    { nav:'archive', label:'成长档案', children:[
+      { page:'archive', label:'首页' }
     ]}
   ];
   function getTaskJump(t){
@@ -39868,9 +39896,11 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     }
     return HOME_TASK_PAGE_LABELS[key] || '';
   }
-  // R252-2 / R301-3.1：仅「新世界 / 乐读数学 / 学而思英语」三大板块（含其下级次级页）支持跳转
+  // R252-2 / R301-3.1：原仅「新世界 / 乐读数学 / 学而思英语」三大板块支持跳转
+  // R304-3：一级目标扩展到导航栏各板块，白名单向后追加（保留 math|xueersi|newworld 前缀兼容旧断言）；
+  //         默认映射 HOME_TASK_PAGE_MAP / 关键词兜底仍只覆盖三大板块，未显式配置的任务行为不变。
   // R303-1：允许三级标题次级段含数字（如 newworld-english:w3500）
-  const HOME_TASK_ALLOWED_PAGES = /^(math|xueersi|newworld(?:-[a-z-]+)?)(?::[a-z0-9]+)?$/;
+  const HOME_TASK_ALLOWED_PAGES = /^(math|xueersi|newworld(?:-[a-z-]+)?|home|zhts|reading|baike|knowledge|farm|archive)(?::[a-z0-9]+)?$/;
   // R250-2 / R252-2：首页任务卡片 → 三大板块内部页面映射；未命中返回空串
   // R253-2：逐条任务可在「设置中心 · 打卡任务设置 · 🧭 跳转」里单独配置开关与目标板块，
   //         配置优先于默认映射；关闭跳转后卡片主体点击不弹窗、不跳转（圆形打卡键不受影响）。
@@ -53042,6 +53072,92 @@ if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
     if(top) top.onclick = ()=> window.scrollTo({top:0, behavior:'smooth'});
     const sb = $('#r256FabSearch');
     if(sb) sb.onclick = ()=> r256OpenSearch();
+    r304BindFabDrag(fab);
+  }
+
+  /* ============================================================
+     R304-2 右下角悬浮键支持拖拽移动位置（位置存独立小键，刷新/版本更新保留）
+     ============================================================ */
+  function r304BindFabDrag(fab){
+    if(!fab || fab._r304DragBound) return;
+    fab._r304DragBound = true;
+    const KEY = 'r304FabPos';
+    // 恢复上次位置（存 left/top 相对视口的坐标）
+    const applyPos = ()=>{
+      let x = null, y = null;
+      try{ const p = JSON.parse(_uiMem(KEY) || 'null'); if(p && Number.isFinite(p.x)){ x = p.x; y = p.y; } }catch(e){}
+      if(x == null || y == null) return;
+      const w = fab.offsetWidth || 42, h = fab.offsetHeight || 84;
+      const maxX = Math.max(0, (window.innerWidth || 1024) - w - 4);
+      const maxY = Math.max(0, (window.innerHeight || 768) - h - 4);
+      fab.style.left = Math.max(4, Math.min(maxX, x)) + 'px';
+      fab.style.top  = Math.max(4, Math.min(maxY, y)) + 'px';
+      fab.style.right = 'auto';
+      fab.style.bottom = 'auto';
+      fab.classList.add('r304-fab-moved');
+    };
+    applyPos();
+
+    let dragging = false, moved = false, startX = 0, startY = 0, originLeft = 0, originTop = 0;
+    const pointX = e => (e.touches && e.touches[0]) ? e.touches[0].clientX : e.clientX;
+    const pointY = e => (e.touches && e.touches[0]) ? e.touches[0].clientY : e.clientY;
+    const onStart = e=>{
+      // 只响应主键 / 单指，避免多指误触
+      if(e.button != null && e.button !== 0) return;
+      if(e.touches && e.touches.length > 1) return;
+      const r = fab.getBoundingClientRect();
+      dragging = true; moved = false;
+      startX = pointX(e); startY = pointY(e);
+      originLeft = r.left; originTop = r.top;
+      fab.classList.add('r304-fab-dragging');
+      // 从 CSS 的 right/bottom 定位切换为 left/top 定位，位置不从视觉上跳动
+      fab.style.left = r.left + 'px';
+      fab.style.top = r.top + 'px';
+      fab.style.right = 'auto';
+      fab.style.bottom = 'auto';
+    };
+    const onMove = e=>{
+      if(!dragging) return;
+      const dx = pointX(e) - startX, dy = pointY(e) - startY;
+      if(Math.abs(dx) + Math.abs(dy) < 4 && !moved) return; // 阈值，避免点击被判为拖拽
+      moved = true;
+      if(e.cancelable) e.preventDefault();
+      const w = fab.offsetWidth || 42, h = fab.offsetHeight || 84;
+      const maxX = Math.max(0, (window.innerWidth || 1024) - w - 4);
+      const maxY = Math.max(0, (window.innerHeight || 768) - h - 4);
+      const nx = Math.max(4, Math.min(maxX, originLeft + dx));
+      const ny = Math.max(4, Math.min(maxY, originTop + dy));
+      fab.style.left = nx + 'px';
+      fab.style.top = ny + 'px';
+    };
+    const onEnd = ()=>{
+      if(!dragging) return;
+      dragging = false;
+      fab.classList.remove('r304-fab-dragging');
+      if(!moved) return;
+      fab.classList.add('r304-fab-moved');
+      try{ _uiMem(KEY, JSON.stringify({ x: fab.offsetLeft, y: fab.offsetTop })); }catch(e){}
+      // 拖拽结束后抑制一次点击，避免误触「检索 / 回顶」
+      fab._r304SuppressClick = true;
+      setTimeout(()=>{ fab._r304SuppressClick = false; }, 80);
+    };
+    if(window.PointerEvent){
+      fab.addEventListener('pointerdown', onStart);
+      window.addEventListener('pointermove', onMove, {passive:false});
+      window.addEventListener('pointerup', onEnd);
+      window.addEventListener('pointercancel', onEnd);
+    }else{
+      fab.addEventListener('touchstart', onStart, {passive:true});
+      window.addEventListener('touchmove', onMove, {passive:false});
+      window.addEventListener('touchend', onEnd);
+      fab.addEventListener('mousedown', onStart);
+      window.addEventListener('mousemove', onMove);
+      window.addEventListener('mouseup', onEnd);
+    }
+    // 拖拽后抑制子按钮的点击
+    fab.addEventListener('click', e=>{
+      if(fab._r304SuppressClick){ e.preventDefault(); e.stopPropagation(); }
+    }, true);
   }
 
   /* ============================================================
