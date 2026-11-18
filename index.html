@@ -10511,8 +10511,10 @@ textarea.xs-adv-input-box{
 .r271-dock-menu-label{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .r271-dock-menu-no{flex:0 0 auto;font-size:10.5px;color:var(--tone-600)}
 /* R274-2.1：右下角快捷键重做 —— 五个功能键不再常驻，收进 ⚡ 上方的托盘，点开才逐个出现 */
-.r271-dock-tray{display:flex;flex-direction:column;gap:8px;align-items:flex-end;transform-origin:bottom right;animation:r274TrayIn .16s ease-out}
+.r271-dock-tray{position:absolute;bottom:calc(100% + 8px);right:0;left:auto;display:flex;flex-direction:column;gap:8px;align-items:flex-end;transform-origin:bottom right;animation:r274TrayIn .16s ease-out}
 .r271-dock-tray[hidden]{display:none}
+/* R308-3.1 托盘向左反向排布：靠右/靠左放置自动夹入视口后，视觉锚点切到左下，按键左对齐不溢出 */
+.r271-dock-tray.r308-tray-flip{align-items:flex-start;transform-origin:bottom left}
 .r271-dock-pill{display:flex;align-items:center;gap:8px;min-height:46px;min-width:132px;box-sizing:border-box;padding:0 12px 0 8px;border-radius:23px;border:2px solid var(--tone-300);background:rgba(255,255,255,.96);box-shadow:0 6px 18px rgba(20,50,90,.18);color:var(--tone-900);font-size:13.5px;font-weight:800;cursor:pointer;transition:transform .12s ease,box-shadow .12s ease;text-align:left}
 .r271-dock-pill:active{transform:scale(.96)}
 .r271-dock-pill:focus-visible{outline:2px solid var(--tone-600);outline-offset:2px}
@@ -54566,6 +54568,30 @@ function init(){
     if(t){ t.classList.toggle('on', dockMenuOpen); t.setAttribute('aria-expanded', String(dockMenuOpen)); }
     const d = q('#r271Dock');
     if(d) d.classList.toggle('is-open', dockMenuOpen);
+    if(dockMenuOpen) r308FitDockTray();  /* R308-3.1：展开后按剩余可视区域定位托盘，防溢出 */
+  }
+  /* ============================================================
+     R308-3.1 ⚡ 托盘按剩余可视区域智能定位：
+     · 托盘绝对定位脱离 flex 流，dock 宽度恒为 ⚡ 按钮宽度（拖拽坐标稳定、⚡ 不跳位）
+     · 默认托盘右缘对齐 dock 右缘（向左展开）；靠右/靠左放置导致溢出时，
+       自动夹取到视口内并向左/反向排布，保证全部功能键完整可见
+     ============================================================ */
+  function r308FitDockTray(){
+    const dock=q('#r271Dock'), tray=q('#r271DockMenu');
+    if(!dock||!tray||tray.hidden) return;
+    const vw=window.innerWidth||1024, M=8;
+    const dr=dock.getBoundingClientRect();
+    const tw=tray.offsetWidth||190;
+    const dw=dr.width||dock.offsetWidth||48;
+    const dockRight=dr.left+dw;
+    let trayLeft=dockRight-tw;                          // 默认：右缘贴 dock 右缘，向左展开
+    if(trayLeft<M) trayLeft=Math.max(M, dr.left);        // 左侧空间不足 → 反向：左缘贴 dock 左缘
+    if(trayLeft+tw>vw-M) trayLeft=vw-M-tw;              // 右侧溢出 → 夹回视口内（向左反向排布）
+    if(trayLeft<M) trayLeft=M;
+    tray.style.left=Math.round(trayLeft-dr.left)+'px';
+    tray.style.right='auto';
+    const flipped=trayLeft>dockRight-tw+1;              // 与默认右对齐不同即为反向排布
+    tray.classList.toggle('r308-tray-flip', flipped);
   }
   function shell(){
     if(root) return root;
@@ -54688,6 +54714,8 @@ function init(){
       const r=dock.getBoundingClientRect();
       persist(place(r.left, r.top));
     });
+    /* R308-3.1：窗口尺寸变化时若托盘展开，按新视口重新夹取，避免旋转/缩放后溢出 */
+    window.addEventListener('resize', ()=>{ if(dockMenuOpen) r308FitDockTray(); });
   }
   function open(tab){
     shell();
