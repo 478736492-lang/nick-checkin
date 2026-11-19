@@ -9687,6 +9687,24 @@ body.r256-sheet-on{overflow:hidden}
 .task-jump-block .tjb-pick{gap:8px;flex-wrap:wrap}
 .task-jump-block .tjb-target{font-size:12px;font-weight:700;color:var(--tone-700);line-height:1.35;flex:1 1 auto;min-width:0}
 .task-jump-block.is-off{opacity:.75}
+/* R311-1.1：目标选择面板下沉到「已开启」行下方 —— 宽度跟随编辑任务卡容器，自适应不溢出 */
+.task-jump-block .tjb-inline{margin-top:10px;width:100%;box-sizing:border-box}
+.task-jump-block .tjb-inline .jump-picker{
+  width:100%;box-sizing:border-box;margin:0;padding:12px;background:#fff;
+  border:1px solid var(--tone-200);border-radius:12px;
+}
+.task-jump-block .tjb-inline .jump-picker-head{margin-bottom:10px}
+.task-jump-block .tjb-inline .jump-form-row{gap:8px;flex-wrap:nowrap;margin-bottom:9px}
+.task-jump-block .tjb-inline .jump-form-label{flex:0 0 74px;font-size:12px}
+.task-jump-block .tjb-inline .jump-select{flex:1 1 auto;min-width:0;width:100%;padding:8px 9px}
+.task-jump-block .tjb-inline .jump-preview{margin-bottom:4px;font-size:12px}
+.task-jump-block .tjb-inline[hidden]{display:none!important}
+.tjb-inline-foot{display:flex;align-items:center;gap:8px;margin-top:8px}
+.tjb-inline-foot[hidden]{display:none!important}
+@media (max-width:560px){
+  .task-jump-block .tjb-inline .jump-form-row{flex-wrap:wrap}
+  .task-jump-block .tjb-inline .jump-form-label{flex:1 1 100%}
+}
 
 /* ================= R269-1 设置中心：全部卡片统一尺寸 =================
    R268 之前这里是「左列一张被拉高的提醒卡 + 右列四张短卡」的嵌套网格，
@@ -12225,7 +12243,7 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
           <div class="star-pop-grid" id="tStarsGrid"></div>
         </div>
       </label>
-      <label data-page-node-id="IHE6D0k28EMB3mrhGcwErM">是否周末专属 <select id="tWeekend" data-page-node-id="jfwmT2iacC5DscfCGH72t8"><option value="0" data-page-node-id="cC0Et3BQHvO3JIfHhMHZXC">否</option><option value="1" data-page-node-id="33ABn4izWy07nqhkQoU21R">是</option></select></label>
+      <!-- R311-3.1：周末专属设置项已删除（数据字段 weekendOnly 保留，编辑时原值不覆盖） -->
       <!-- R258-3.1：任务卡片跳转配置（新增/编辑任务弹窗内，逐条任务独立设置） -->
       <div class="task-jump-block" id="tJumpBlock" data-page-node-id="R258tJumpBlock">
         <div class="tjb-head" data-page-node-id="R258tjbHead">🧭 任务卡片跳转</div>
@@ -12236,8 +12254,14 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
         </div>
         <!-- R306-2.6：旧单级下拉下线 → 统一走三级联动组件，避免编辑任务保存时把三级落点清空 -->
         <div class="tjb-page tjb-pick" data-page-node-id="R306tjbPickRow">
-          <button type="button" class="tjr-cfg" id="tJumpPickBtn" data-page-node-id="R306tJumpPickBtn">选择目标 ›</button>
-          <span class="tjb-target" id="tJumpPageLabel" data-page-node-id="R306tJumpPageLabel">默认（按任务类型自动匹配）</span>
+          <button type="button" class="tjr-cfg" id="tJumpPickBtn" data-page-node-id="R306tJumpPickBtn" aria-expanded="false">选择目标 ›</button>
+          <span class="tjb-target" id="tJumpPageLabel" data-page-node-id="R306tJumpPageLabel"></span>
+        </div>
+        <!-- R311-1.1：目标选择面板下沉到「已开启」按键下方，内联展示并随编辑任务卡容器宽度自适应 -->
+        <div class="tjb-inline" id="tJumpInlineHost" hidden data-page-node-id="R311tJumpInlineHost"></div>
+        <div class="tjb-inline-foot" id="tJumpInlineFoot" hidden data-page-node-id="R311tJumpInlineFoot">
+          <button type="button" class="primary-btn small" id="btnJumpInlineSave" data-page-node-id="R311btnJumpInlineSave">✓ 保存跳转目标</button>
+          <button type="button" class="pbtn small" id="btnJumpInlineClose" data-page-node-id="R311btnJumpInlineClose">收起</button>
         </div>
       </div>
       <div class="form-warn" id="tWarn" data-page-node-id="lqDbvL6V4Jl6kpiY4lDfng"></div>
@@ -48816,13 +48840,48 @@ function renderKMAdmin(){
     if(sel) sel.disabled = !on;
     if(blk) blk.classList.toggle('is-off', !on);
   }
+  /* R311-1.1：目标选择面板从独立弹窗下沉到编辑任务卡内、「已开启」行下方，
+     随容器宽度自适应；再次点「选择目标」可收起。 */
+  let _jumpInlineOpen = false;
+  function _mountJumpPicker(inline){
+    const p = document.getElementById('jumpPicker');
+    if(!p) return;
+    if(inline){
+      const host = document.getElementById('tJumpInlineHost');
+      if(host){ host.appendChild(p); host.hidden = false; }
+    }else{
+      /* 设置中心仍用原弹窗：把同一个 #jumpPicker 挂回弹窗 body（hint 之前） */
+      const modal = document.getElementById('modalTaskJump');
+      const body = modal ? modal.querySelector('.modal-body') : null;
+      const hint = modal ? modal.querySelector('.parent-edit-hint') : null;
+      if(body){ if(hint) body.insertBefore(p, hint); else body.appendChild(p); }
+    }
+    const foot = document.getElementById('tJumpInlineFoot');
+    if(foot) foot.hidden = !inline;
+    const pick = document.getElementById('tJumpPickBtn');
+    if(pick){
+      pick.setAttribute('aria-expanded', inline ? 'true' : 'false');
+      pick.textContent = inline ? '收起目标 ⌃' : '选择目标 ›';
+    }
+    _jumpInlineOpen = !!inline;
+  }
+  function _collapseJumpInline(){
+    const host = document.getElementById('tJumpInlineHost');
+    if(host) host.hidden = true;
+    const foot = document.getElementById('tJumpInlineFoot');
+    if(foot) foot.hidden = true;
+    const pick = document.getElementById('tJumpPickBtn');
+    if(pick){ pick.setAttribute('aria-expanded','false'); pick.textContent = '选择目标 ›'; }
+    _jumpInlineOpen = false;
+  }
   function initTaskJumpEditor(task){
     /* R306-2.6：单级下拉已下线 —— 跳转目标统一由三级联动组件设置，这里只回显当前落点 */
     const lab = document.getElementById('tJumpPageLabel');
     const pick = document.getElementById('tJumpPickBtn');
     const want = (task && task.jumpPage) ? String(task.jumpPage) : '';
     if(lab){
-      lab.textContent = want ? (taskJumpLabel(want) || want) : '默认（按任务类型自动匹配）';
+      /* R311-2.1：未配置跳转目标时回显为空（不再显示默认兜底文案） */
+      lab.textContent = want ? (taskJumpLabel(want) || want) : '';
       lab.title = want || '';
     }
     if(pick){
@@ -48830,11 +48889,13 @@ function renderKMAdmin(){
       if(!pick._bound){
         pick._bound = true;
         pick.onclick = ()=>{
-          if(editingTaskId) openTaskJumpSetting(editingTaskId);
-          else toast('请先保存任务，再设置跳转目标');
+          if(!editingTaskId){ toast('请先保存任务，再设置跳转目标'); return; }
+          if(_jumpInlineOpen){ _collapseJumpInline(); return; }
+          openTaskInlinePick(editingTaskId);
         };
       }
     }
+    _collapseJumpInline();
     _tJumpTouched = false;
     _tJumpOn = task ? (task.jumpEnabled !== false) : true;
     syncTaskJumpUI();
@@ -48856,7 +48917,7 @@ function renderKMAdmin(){
     $('#tCheckDate').value = task && task.checkDate ? task.checkDate : '';
     $('#tStars').value = task && typeof task.stars==='number' ? task.stars : (task && (task.type==='必做任务' || task.subject==='家务小帮手' || task.subject==='习惯家务') ? 2 : 1);
     syncStarsUI();
-    $('#tWeekend').value = task && task.weekendOnly? '1':'0';
+    /* R311-3.1：周末专属设置项已删除；weekendOnly 字段保留，保存时沿用任务原值 */
     $('#tWarn').textContent = '';
     // R258-3.1：新增/编辑任务弹窗内的「任务卡片跳转」配置
     initTaskJumpEditor(task);
@@ -48869,6 +48930,8 @@ function renderKMAdmin(){
     renderDaysPreview();
     showModal('#modalTaskEdit');
   }
+  /* R311：测试钩子 —— 供探针直接打开编辑弹窗（不改变任何业务行为） */
+  try{ window.__r311OpenTaskEdit = openTaskEdit; }catch(e){}
   // R170-2：完成奖励 ⭐ 改为弹窗选择数字（0~20）；底层值仍存于隐藏 #tStars，兼容 openTaskEdit/saveTaskFromModal
   function buildStarsGrid(){
     const grid = document.getElementById('tStarsGrid'); if(!grid) return;
@@ -48949,7 +49012,11 @@ function renderKMAdmin(){
       checkDate,
       daysOfWeek,
       extraDates: [...taskExtraDates],
-      weekendOnly: $('#tWeekend').value==='1',
+      /* R311-3.1：设置项已删除 —— 编辑既有任务时保留原值，新增任务默认 false，避免覆盖历史数据 */
+      weekendOnly: (function(){
+        const cur = editingTaskId ? (S.load().tasks || []).find(x=>String(x.id)===String(editingTaskId)) : null;
+        return cur ? !!cur.weekendOnly : false;
+      })(),
       stars: Math.max(0, parseInt($('#tStars').value)||0),
       // R306-2.6：跳转目标由三级组件直接写库，这里不覆盖，避免把三级落点清空
       jumpEnabled: (function(){
@@ -50083,7 +50150,10 @@ function renderKMAdmin(){
      一级：6 个板块（新世界 / 乐读数学 / 学而思英语 / 中华通史 / 大阅读 / 百科讲堂）
      二级：该板块下的子板块；三级：子板块下的三级页面
      二级无三级页面时，三级行隐藏并给出提示，保存后直接跳二级页面 */
-  function openTaskJumpSetting(taskId){
+  function openTaskJumpSetting(taskId){ return _openJumpSetting(taskId, false); }
+  /* R311-1.1：编辑任务弹窗内联入口 —— 面板展开在「已开启」行下方 */
+  function openTaskInlinePick(taskId){ return _openJumpSetting(taskId, true); }
+  function _openJumpSetting(taskId, inline){
     const t = S.load().tasks.find(x=>String(x.id)===String(taskId));
     if(!t) return;
     const cfg = S.getTaskJump(t);
@@ -50100,94 +50170,147 @@ function renderKMAdmin(){
     const prevEl = $('#jumpPreview');
     if(!gEl || !pgEl || !tree.length) return;
 
-    const cur = String(cfg.page || homeTaskPage(t) || '');
+    /* R311-2.1：严格回显已保存落点 —— 不再用 homeTaskPage(t) 兜底。
+       否则「未配置」会被自动匹配值伪装成已配置，保存后落点与回显不一致。 */
+    const cur = String(cfg.page || '');
     const kids = n => (n && n.children) || [];
-    const pickGroup = p => tree.find(n => kids(n).some(c => String(c.page) === p
-        || kids(c).some(x => String(x.page) === p))) || tree[0];
-    const pickPage = (nav, p) => kids(nav).find(c => String(c.page) === p
-        || kids(c).some(x => String(x.page) === p)) || kids(nav)[0];
-    const curGroup = pickGroup(cur);
-    const curPage = pickPage(curGroup, cur);
+    const navByKey = k => tree.find(n => String(n.nav) === String(k)) || null;
+    const secondOf = (nav, p) => kids(nav).find(c => String(c.page) === String(p)) || null;
+    const thirdOf = (nav, p) => {
+      for(let i=0;i<kids(nav).length;i++){
+        const c = kids(nav)[i];
+        const hit = kids(c).find(x=>String(x.page)===String(p));
+        if(hit) return { parent:c, node:hit };
+      }
+      return null;
+    };
+    let curNav = null, curPage = '', curSub = '';
+    if(cur){
+      curNav = navByKey(cur);                       /* 一级落点（如 math） */
+      if(!curNav){
+        curNav = tree.find(n => kids(n).some(c => String(c.page)===cur || kids(c).some(x=>String(x.page)===cur))) || null;
+        if(curNav){
+          const second = secondOf(curNav, cur);
+          if(second){ curPage = String(second.page); }
+          else {
+            const t3 = thirdOf(curNav, cur);
+            if(t3){ curPage = String(t3.parent.page); curSub = String(t3.node.page); }
+            else { curNav = null; }
+          }
+        }
+      }
+    }
 
     function refreshPreview(){
-      const nav = tree.find(n=>String(n.nav)===String(gEl.value)) || tree[0];
-      const gLabel = (nav && nav.label) || '';
-      const node = kids(nav).find(c=>String(c.page)===String(pgEl.value)) || kids(nav)[0];
-      const pLabel = (node && node.label) || '';
-      const subs = kids(node);
-      const sLabel = subs.length ? ((subs.find(x=>String(x.page)===String(sbEl.value))||subs[0]||{}).label||'') : '';
-      if(prevEl) prevEl.textContent = '落点：' + [gLabel, pLabel, sLabel].filter(Boolean).join(' › ');
+      if(!gEl.value){ if(prevEl) prevEl.textContent = '落点：（未配置）'; return; }
+      const nav = navByKey(gEl.value);
+      if(!nav){ if(prevEl) prevEl.textContent = '落点：' + (taskJumpLabel(gEl.value) || gEl.value); return; }
+      const second = secondOf(nav, pgEl.value);
+      const parts = [String(nav.label || nav.nav)];
+      if(second){
+        parts.push(String(second.label || second.page));
+        const third = (sbEl && sbEl.value) ? kids(second).find(x=>String(x.page)===String(sbEl.value)) : null;
+        if(third) parts.push(String(third.label || third.page));
+      }
+      if(prevEl) prevEl.textContent = '落点：' + parts.join(' › ');
     }
     function fillGroups(){
-      gEl.innerHTML = tree.map(n=>`<option value="${esc(n.nav)}">${esc(n.label)}</option>`).join('');
-      gEl.value = curGroup ? String(curGroup.nav) : String(tree[0].nav);
+      let html = '<option value="">（未配置）</option>';
+      html += tree.map(n=>`<option value="${esc(n.nav)}">${esc(n.label)}</option>`).join('');
+      /* 兼容旧存档 / 非三级树内的历史落点：原样保留，保存时不丢失 */
+      if(cur && !curNav) html += `<option value="${esc(cur)}">当前：${esc(taskJumpLabel(cur) || cur)}</option>`;
+      gEl.innerHTML = html;
+      gEl.value = curNav ? String(curNav.nav) : (cur ? String(cur) : '');
     }
-    function fillPages(nav, keep){
-      const list = kids(nav);
-      pgEl.innerHTML = list.map(p=>`<option value="${esc(p.page)}">${esc(p.label || p.page)}</option>`).join('');
-      const same = keep && list.some(p=>String(p.page) === String(cur));
-      const want = same ? String(cur) : (list[0] ? String(list[0].page) : '');
-      if(want) pgEl.value = want;
-      fillSubs(nav);
-      refreshPreview();
+    function fillPages(nav, keepPage, keepSub){
+      if(!nav){
+        pgEl.innerHTML = '<option value="">—</option>'; pgEl.value = ''; pgEl.disabled = true;
+        if(sbEl){ sbEl.innerHTML = '<option value="">—</option>'; sbEl.value = ''; sbEl.disabled = true; }
+        if(sbRow) sbRow.hidden = true;
+        if(sbNote) sbNote.hidden = true;
+        refreshPreview();
+        return;
+      }
+      pgEl.disabled = false;
+      pgEl.innerHTML = `<option value="">（整个「${esc(nav.label)}」）</option>`
+        + kids(nav).map(p=>`<option value="${esc(p.page)}">${esc(p.label || p.page)}</option>`).join('');
+      pgEl.value = (keepPage && kids(nav).some(p=>String(p.page)===String(keepPage))) ? String(keepPage) : '';
+      fillSubs(nav, keepSub || '');
     }
-    function fillSubs(nav){
-      const node = kids(nav).find(c=>String(c.page)===String(pgEl.value)) || kids(nav)[0];
-      const subs = kids(node);
+    function fillSubs(nav, keepSub){
+      const second = nav ? secondOf(nav, pgEl.value) : null;
+      const subs = second ? kids(second) : [];
       const has = subs.length > 0;
       if(sbRow) sbRow.hidden = !has;
       if(sbNote) sbNote.hidden = has;
       if(!sbEl) return;
-      if(!has){ sbEl.innerHTML = '<option value="">—</option>'; sbEl.value = ''; return; }
-      sbEl.innerHTML = subs.map(x=>`<option value="${esc(x.page)}">${esc(x.label || x.page)}</option>`).join('');
-      const hitCur = (String(cur) === String(pgEl.value)) ? false : subs.some(x=>String(x.page)===String(cur));
-      sbEl.value = hitCur ? String(cur) : String(subs[0].page);
+      if(!has){
+        sbEl.innerHTML = '<option value="">—</option>'; sbEl.value = ''; sbEl.disabled = true;
+        refreshPreview();
+        return;
+      }
+      sbEl.disabled = false;
+      sbEl.innerHTML = `<option value="">（整个「${esc(second.label || second.page)}」）</option>`
+        + subs.map(x=>`<option value="${esc(x.page)}">${esc(x.label || x.page)}</option>`).join('');
+      sbEl.value = (keepSub && subs.some(x=>String(x.page)===String(keepSub))) ? String(keepSub) : '';
+      refreshPreview();
     }
 
     fillGroups();
-    fillPages(curGroup, true);
-    if(sbEl && !(sbRow && sbRow.hidden) && cur && String(cur) !== String(pgEl.value)){
-      const hit = kids(curPage).some(x=>String(x.page)===String(cur));
-      if(hit) sbEl.value = String(cur);
-    }
+    fillPages(curNav, curPage, curSub);
     refreshPreview();
 
-    gEl.onchange = ()=>{
-      const nav = tree.find(n=>String(n.nav)===String(gEl.value)) || tree[0];
-      fillPages(nav, false);
-    };
-    pgEl.onchange = ()=>{
-      const nav = tree.find(n=>String(n.nav)===String(gEl.value)) || tree[0];
-      fillSubs(nav);
-      refreshPreview();
-    };
-    if(sbEl) sbEl.onchange = refreshPreview;
-
-    const sync = ()=>{
+    /* R311-2.1：保存值 = 当前选择值，逐级映射，绝不夹带自动匹配值 */
+    function currentJumpPage(){
+      if(!gEl.value) return '';
+      const nav = navByKey(gEl.value);
+      if(!nav) return String(gEl.value);                 /* 历史落点原样保留 */
+      if(!pgEl.value) return String(nav.nav);            /* 仅一级 = 板块首页 */
+      const second = secondOf(nav, pgEl.value);
+      if(!second) return String(pgEl.value);
+      if(sbEl && sbEl.value) return String(sbEl.value);  /* 三级 */
+      return String(second.page);                        /* 二级 */
+    }
+    function sync(){
       const off = !!(enEl && enEl.value === '0');
-      [gEl, pgEl, sbEl].forEach(el=>{ if(el) el.disabled = off; });
-    };
-    if(enEl && !enEl._bound){ enEl._bound = true; enEl.onchange = sync; }
+      if(gEl) gEl.disabled = off;
+      if(pgEl) pgEl.disabled = off || !gEl.value;
+      if(sbEl) sbEl.disabled = off || !gEl.value || !pgEl.value || !!(sbRow && sbRow.hidden);
+    }
+    gEl.onchange = ()=>{ fillPages(navByKey(gEl.value), '', ''); sync(); };
+    pgEl.onchange = ()=>{ fillSubs(navByKey(gEl.value), ''); refreshPreview(); sync(); };
+    if(sbEl) sbEl.onchange = refreshPreview;
+    if(enEl) enEl.onchange = sync;
     sync();
 
-    const save = $('#btnJumpSave');
-    if(save){
-      save.onclick = ()=>{
-        const enabled = enEl ? (enEl.value === '1') : true;
-        const hasSub = !!(sbRow && !sbRow.hidden && sbEl && sbEl.value);
-        const page = String(hasSub ? sbEl.value : pgEl.value);
-        S.setTaskJump(taskId, { enabled, page });
-        // R306-2.6：任务编辑弹窗若同屏打开，实时回显并标记「已在三级组件改过」
-        _tJumpTouched = true;
-        const lab = document.getElementById('tJumpPageLabel');
-        if(lab){ lab.textContent = taskJumpLabel(page) || page || '默认（按任务类型自动匹配）'; lab.title = page || ''; }
-        hideModal('#modalTaskJump');
-        refreshSettingsTaskLists();
-        const label = taskJumpLabel(page) || page || '';
-        toast(enabled ? ('🧭 已开启跳转：' + (t.name||'') + ' → ' + label) : ('🧭 已关闭跳转：' + (t.name||'')));
-      };
+    function doSave(){
+      /* 内联保存以编辑卡开关状态为准；设置中心弹窗以弹窗下拉为准 */
+      const enabled = inline ? !!_tJumpOn : (enEl ? (enEl.value === '1') : true);
+      const page = currentJumpPage();
+      S.setTaskJump(taskId, { enabled, page });
+      /* R306-2.6：任务编辑弹窗若同屏打开，实时回显并标记「已在三级组件改过」 */
+      _tJumpTouched = true;
+      const lab = document.getElementById('tJumpPageLabel');
+      if(lab){ lab.textContent = page ? (taskJumpLabel(page) || page) : ''; lab.title = page || ''; }
+      refreshSettingsTaskLists();
+      const label = page ? (taskJumpLabel(page) || page) : '';
+      toast(enabled ? ('🧭 已开启跳转：' + (t.name||'') + (label ? (' → ' + label) : '')) : ('🧭 已关闭跳转：' + (t.name||'')));
+      return page;
     }
-    showModal('#modalTaskJump');
+    const save = $('#btnJumpSave');
+    if(save) save.onclick = ()=>{ doSave(); hideModal('#modalTaskJump'); };
+    const inlineSave = $('#btnJumpInlineSave');
+    if(inlineSave) inlineSave.onclick = ()=>{ doSave(); _collapseJumpInline(); };
+    const inlineClose = $('#btnJumpInlineClose');
+    if(inlineClose) inlineClose.onclick = ()=>{ _collapseJumpInline(); };
+
+    if(inline){
+      _mountJumpPicker(true);
+      hideModal('#modalTaskJump');
+    }else{
+      _mountJumpPicker(false);
+      showModal('#modalTaskJump');
+    }
   }
 
   // ============ R85：设置中心 —— 各卡片弹窗路由 ============
