@@ -9701,6 +9701,22 @@ body.r256-sheet-on{overflow:hidden}
 .task-jump-block .tjb-inline[hidden]{display:none!important}
 .tjb-inline-foot{display:flex;align-items:center;gap:8px;margin-top:8px}
 .tjb-inline-foot[hidden]{display:none!important}
+/* R312-2：编辑任务弹窗 —— 全部设置项统一「蓝色区域 + 虚线」，标题字体对齐「任务卡片跳转」 */
+.te-block{
+  margin-top:10px;padding:10px 12px;border-radius:12px;
+  background:var(--tone-050);border:1px dashed var(--tone-275);
+}
+.te-block .te-head{font-size:12.5px;font-weight:900;color:var(--tone-700);margin-bottom:8px;line-height:1.3}
+.te-block .te-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.te-block .te-row>input,.te-block .te-row>select,.te-block .te-row>textarea{flex:1 1 auto;min-width:0;width:100%}
+.te-block .te-row>textarea{min-height:62px}
+.te-block .te-date-row>input[type="date"]{flex:1 1 170px;min-width:0;width:auto}
+.te-block .te-date-row>button{flex:0 0 auto;margin:0}
+.te-block .te-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.te-block .te-chips:empty{display:none}
+.te-block .te-note{font-size:11px;color:var(--muted);margin-top:8px;line-height:1.4}
+.te-block .form-hint{margin:8px 0 0}
+#tDaysWeek{display:flex;gap:6px;flex-wrap:wrap;margin:0}
 @media (max-width:560px){
   .task-jump-block .tjb-inline .jump-form-row{flex-wrap:wrap}
   .task-jump-block .tjb-inline .jump-form-label{flex:1 1 100%}
@@ -10761,6 +10777,76 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
 }
 .rd-panel[hidden]{ display:none!important; }
 
+/* ============================================================
+   R312-4：大阅读语文面板三行排版
+   第一行 好词好句（原宽度 1/3）+ 好词使用（自适应剩余 2/3）
+   第二行 古诗词鉴赏（卡内从左至右：古诗 / 大意+创作背景 / 赏析）
+   第三行 优秀作文
+   ============================================================ */
+.reading-cn .reading-cols{display:flex;flex-direction:column;gap:12px;align-items:stretch}
+.reading-cn .rd-cn-row{display:grid;grid-template-columns:1fr;gap:12px;min-width:0;align-items:stretch}
+.reading-cn .rd-cn-row-1{grid-template-columns:1fr 2fr}
+.reading-cn .haoci-use-card{margin:0;height:100%;box-sizing:border-box;display:flex;flex-direction:column}
+.reading-cn .haoci-use-grid{grid-template-columns:repeat(auto-fit,minmax(148px,1fr))}
+.reading-cn .rd-cn-row-2>.reading-col,.reading-cn .rd-cn-row-3>.reading-col{width:100%}
+/* 古诗词鉴赏：卡内三段横排 */
+.ri-poem-cols{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1.3fr) minmax(0,1.05fr);gap:10px;align-items:start}
+.ri-poem-col{min-width:0;display:flex;flex-direction:column;gap:6px}
+.ri-poem-col .ri-poem-body{margin-top:0}
+.ri-poem-col .ri-poem-sec{margin-top:0}
+@media (min-width:901px) and (max-width:1180px){
+  .ri-poem-cols{grid-template-columns:minmax(0,1fr) minmax(0,1.15fr) minmax(0,1fr);gap:8px}
+}
+@media (max-width:900px){
+  .reading-cn .rd-cn-row-1{grid-template-columns:1fr}
+  .ri-poem-cols{grid-template-columns:1fr}
+}
+
+/* ============================================================
+   R312-6：语文专区·作文专项「精读仿写」
+   每页 2 道例题，卡内「例文精读 / 精读点拨 / 仿写题 + 参考仿写」
+   ============================================================ */
+.jd-wrap{padding:12px 14px 18px;background:linear-gradient(135deg,var(--tone-075),var(--tone-100));border:1px solid var(--tone-line-soft);border-radius:var(--card-r-md)}
+.jd-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.jd-card{background:#fff;border:1.5px solid var(--tone-150);border-radius:var(--card-r-sm);padding:11px 13px;min-width:0;display:flex;flex-direction:column;gap:8px}
+.jd-card-h{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:800;color:var(--tone-900);padding-bottom:7px;border-bottom:1px dashed var(--tone-200)}
+.jd-no{flex:0 0 22px;height:22px;line-height:22px;text-align:center;border-radius:50%;background:var(--tone-100);color:var(--tone-800);font-size:11px}
+.jd-title{flex:1 1 auto;min-width:0}
+.jd-tag{flex:0 0 auto;font-size:11px;font-weight:800;color:var(--tone-800);background:var(--tone-075);border:1px solid var(--tone-200);border-radius:999px;padding:1px 8px}
+.jd-sec{border-radius:10px;padding:8px 10px;font-size:12.5px;line-height:1.72}
+.jd-sec .jd-k{font-size:12px;font-weight:800;color:var(--tone-800);margin-bottom:3px}
+.jd-sec .jd-v{color:#33405c;overflow-wrap:anywhere;word-break:break-word;white-space:pre-wrap}
+.jd-read{background:var(--tone-025);border-left:3px solid var(--tone-400)}
+.jd-point{background:var(--tone-050);border-left:3px solid var(--tone-600)}
+.jd-task{background:#fffaf0;border-left:3px solid var(--orange)}
+.jd-ref{border:1px dashed var(--tone-200);border-radius:10px;padding:7px 10px;font-size:12.5px;line-height:1.7;background:#fff}
+.jd-ref>summary{cursor:pointer;font-weight:800;font-size:12px;color:var(--tone-700);list-style:none}
+.jd-ref>summary::-webkit-details-marker{display:none}
+.jd-ref>summary::before{content:'▸ ';font-weight:900}
+.jd-ref[open]>summary::before{content:'▾ '}
+.jd-ref .jd-v{margin-top:5px;color:#33405c;white-space:pre-wrap;overflow-wrap:anywhere}
+.jd-card .sc-checkin-row{margin-top:auto}
+@media (max-width:900px){ .jd-grid{grid-template-columns:1fr} }
+
+/* ============================================================
+   R312-7：乐读练习题 —— 只展示题目 / 提交后出现「正确答案」/ 答案弹窗
+   ============================================================ */
+.mex-daily-card .mex-q-body{font-size:14px;font-weight:800;line-height:1.72;color:var(--tone-900);display:block}
+.mex-q-img{display:block;max-width:100%;height:auto;margin:8px 0;border-radius:10px;border:1px solid var(--tone-200);background:#fff}
+.mex-src{font-size:11px;font-weight:800;color:var(--tone-700);background:var(--tone-075);border:1px solid var(--tone-200);border-radius:999px;padding:2px 9px}
+.mex-answer-row .mex-ans{flex:1 1 auto;min-width:0}
+.mex-answer-row .mex-btn{flex:0 0 auto}
+.mex-answer-btn{color:#fff!important;background:linear-gradient(135deg,var(--tone-600),var(--tone-800))!important;border-color:var(--tone-800)!important}
+.mex-submit-note{font-size:11.5px;color:var(--tone-700);font-weight:700}
+.mex-submit-note.mex-undo{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border:1px dashed var(--tone-300);border-radius:999px;background:var(--tone-025);color:var(--tone-700);cursor:pointer;font-family:inherit;line-height:1.4}
+.mex-submit-note.mex-undo:hover{background:var(--tone-075);border-color:var(--tone-400)}
+.mex-answer-q{font-size:13.5px;font-weight:800;line-height:1.75;color:var(--tone-900);background:var(--tone-025);border:1px solid var(--tone-150);border-radius:10px;padding:9px 11px;margin-bottom:10px;overflow-wrap:anywhere}
+.mex-answer-mine{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:8px}
+.mex-answer-mine.is-ok{color:#1f7a44}
+.mex-answer-key{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--tone-075);border:1px dashed var(--tone-300);border-radius:10px;padding:9px 11px;font-size:14px;color:var(--tone-950)}
+.mex-answer-k{font-size:12px;font-weight:800;color:var(--tone-700)}
+.mex-answer-key b{font-size:15px}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -11408,9 +11494,24 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
   <!-- ========== 弹窗：练习题 · 题库（R249-1：所有新增 / 删除题目操作都在题库内执行） ========== -->
   <div class="modal-mask" id="modalMexBank" hidden data-page-node-id="R249modalMexBank">
     <div class="modal-box modal-sm" style="min-width:420px;max-width:560px" data-page-node-id="R249mexBankBox">
-      <div class="modal-head" data-page-node-id="R249mexBankHead"><h3>📚 练习题题库</h3><button class="modal-x" data-close data-page-node-id="R249mexBankX">×</button></div>
+      <div class="modal-head" data-page-node-id="R249mexBankHead"><h3>📚 乐读练习题题库</h3><button class="modal-x" data-close data-page-node-id="R249mexBankX">×</button></div>
       <div class="modal-body" id="mexBankBody" data-page-node-id="R249mexBankBody"></div>
       <div class="modal-foot" data-page-node-id="R249mexBankFoot"><button class="pbtn" data-close>关闭</button></div>
+    </div>
+  </div>
+
+  <!-- R312-7：乐读练习题「正确答案」弹窗（提交后才出现的按键 → 弹出答案与解题过程） -->
+  <div class="modal-mask" id="modalMexAnswer" hidden data-page-node-id="R312modalMexAnswer">
+    <div class="modal-box modal-sm" style="min-width:420px;max-width:620px" data-page-node-id="R312mexAnswerBox">
+      <div class="modal-head" data-page-node-id="R312mexAnswerHead"><h3>📖 正确答案 · 解题过程</h3><button class="modal-x" data-close data-page-node-id="R312mexAnswerX">×</button></div>
+      <div class="modal-body" data-page-node-id="R312mexAnswerBody">
+        <div class="mex-answer-q" id="mexAnswerQ" data-page-node-id="R312mexAnswerQ"></div>
+        <div class="mex-answer-mine" id="mexAnswerMine" data-page-node-id="R312mexAnswerMine"></div>
+        <div class="mex-answer-key"><span class="mex-answer-k">📌 标准答案</span><b id="mexAnswerA" data-page-node-id="R312mexAnswerA">—</b></div>
+        <div class="mex-steps-h">🧩 完整解题过程</div>
+        <div id="mexAnswerSteps" data-page-node-id="R312mexAnswerSteps"></div>
+      </div>
+      <div class="modal-foot" data-page-node-id="R312mexAnswerFoot"><button class="pbtn" data-close>关闭</button></div>
     </div>
   </div>
 
@@ -11639,12 +11740,12 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
       <!-- R260-5.1：「计算小超市」与「乐读数学笔记」按键位置互换（笔记在前、小超市在后），默认仍落在计算小超市 -->
       <button type="button" class="leidu-tab" data-leidu-tab="note" aria-pressed="false">📒 乐读数学笔记</button>
       <!-- R249-1：练习题按键移至「计算小超市」与「乐读数学笔记」之间 -->
-      <button type="button" class="leidu-tab" data-leidu-tab="exercise" aria-pressed="false">✏️ 练习题</button>
+      <button type="button" class="leidu-tab" data-leidu-tab="exercise" aria-pressed="false">✏️ 乐读练习题</button>
       <button type="button" class="leidu-tab active" data-leidu-tab="calc" aria-pressed="true">🧮 计算小超市</button>
     </div>
     <!-- 计算小超市 内容卡（R227：从新世界·数学专区·错题本整体移入） -->
     <div class="leidu-pane" data-leidu-pane="calc" id="leiduCalcPane"></div>
-    <!-- R249-1：练习题 内容卡（题库入口 + 每日随机一题作答 / 批改 / 答对打卡） -->
+    <!-- R249-1：练习题 内容卡（R312-7 起：只展示题目 → 提交 → 右侧「正确答案」弹窗） -->
     <div class="leidu-pane" data-leidu-pane="exercise" id="leiduExercisePane" hidden></div>
     <!-- 乐读数学笔记 内容卡（= 原 板块和题型 卡片） -->
     <div class="leidu-pane" data-leidu-pane="note" id="leiduNotePane" hidden>
@@ -11710,6 +11811,8 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
         <button class="sub-tab active" data-xs-cat="words" data-page-node-id="bIdFhDZ9zmRt3QscgXNna5">🔤 词汇</button>
         <button class="sub-tab" data-xs-cat="grammar" data-page-node-id="pk7ufwpxLS7x5Xj5vu8FRB">📐 语法</button>
         <button class="sub-tab" data-xs-cat="notes" data-page-node-id="R218xsNoteTab">📝 课堂笔记</button>
+        <!-- R312-8：课堂笔记与每日巩固之间新增「课前测」子板块（学年 + Lesson，排版同课堂笔记） -->
+        <button class="sub-tab" data-xs-cat="pretest" data-page-node-id="R312xsPretestTab">🧪 课前测</button>
         <!-- V21-1：巩固打卡子板块（每日默写）；R247-3 改名「词汇语法巩固」；R250-1 与学而思练习互换位置
              R260-4.1：板块按键名称改为「每日巩固」 -->
         <button class="sub-tab" data-xs-cat="checkin" data-page-node-id="16Lidsc7U9X3IdqhZRSIjY">🎯 每日巩固</button>
@@ -11753,30 +11856,33 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
       <!-- R58-1：栏目内「＋新增」已移除；语文阅读后的新增键仅家长模式可见 -->
       <div class="reading-area-head">📚 语文阅读 <button class="pbtn small hidden-in-child" data-reading-add="cn" data-page-node-id="r58AddCn001">＋ 新增</button></div>
       <div class="reading-cols">
-        <div class="reading-col rc-words" data-page-node-id="YnDSWSGjXRzN9iG8bA0pna">
-          <div class="reading-col-head" data-page-node-id="deui0OHJjcasEiMoprh5UZ">✨ 好词好句</div>
-          <div class="reading-col-list" id="cnColWords" data-page-node-id="Ac2SVKddwA2KW6jU2VEmcE"></div>
+        <!-- R312-4：三行排版 —— ①好词好句（保持原宽度）+ 好词使用（自适应剩余宽度）
+             ②古诗词鉴赏（卡内从左到右：古诗 / 诗词大意和创作背景 / 赏析） ③优秀作文 -->
+        <div class="rd-cn-row rd-cn-row-1">
+          <div class="reading-col rc-words" data-page-node-id="YnDSWSGjXRzN9iG8bA0pna">
+            <div class="reading-col-head" data-page-node-id="deui0OHJjcasEiMoprh5UZ">✨ 好词好句</div>
+            <div class="reading-col-list" id="cnColWords" data-page-node-id="Ac2SVKddwA2KW6jU2VEmcE"></div>
+          </div>
+          <!-- R296-3.2/3.3：【好词使用】独立卡（R312-4 起与好词好句同行） -->
+          <div class="haoci-use-card" id="haociUseCard" data-page-node-id="R296haociUseCard">
+            <div class="reading-col-head" data-page-node-id="R296haociUseHead">✨ 好词使用 <span class="haoci-use-hint">释义 · 例句</span><span class="haoci-use-count" id="haociUseCount"></span></div>
+            <div class="haoci-use-grid" id="haociUseGrid" data-page-node-id="R296haociUseGrid"></div>
+            <!-- R300-1.1：好词全覆盖后分页展示（12 个/页），分页条与其余阅读栏同款 .yw-pager -->
+            <div class="haoci-use-pager" id="haociUsePager"></div>
+          </div>
         </div>
-        <div class="reading-col rc-poem">
-          <div class="reading-col-head">📜 古诗词鉴赏</div>
-          <div class="reading-col-list" id="cnColPoem"></div>
+        <div class="rd-cn-row rd-cn-row-2">
+          <div class="reading-col rc-poem">
+            <div class="reading-col-head">📜 古诗词鉴赏</div>
+            <div class="reading-col-list" id="cnColPoem"></div>
+          </div>
         </div>
-        <div class="reading-col rc-essay" data-page-node-id="2jApxR3uzYCEJ5m1AbLm7">
-          <div class="reading-col-head" data-page-node-id="6QzDKw1tyYYlAeKOogr4DF">📝 优秀作文</div>
-          <div class="reading-col-list" id="cnColEssay" data-page-node-id="UpqHqBYMlMq8oxJHmYonsl8"></div>
+        <div class="rd-cn-row rd-cn-row-3">
+          <div class="reading-col rc-essay" data-page-node-id="2jApxR3uzYCEJ5m1AbLm7">
+            <div class="reading-col-head" data-page-node-id="6QzDKw1tyYYlAeKOogr4DF">📝 优秀作文</div>
+            <div class="reading-col-list" id="cnColEssay" data-page-node-id="UpqHqBYMlMq8oxJHmYonsl8"></div>
+          </div>
         </div>
-      </div>
-      <!-- R299-1：【每日成语 / 文学小常识】移回「好词好句」卡片内部，与好词、好句自上而下依次排列。
-           该节点不再写在静态 HTML 里 —— fillCol('#cnColWords') 会用 innerHTML 重写整栏，
-           故由 renderDailyLitInline() 在 fillCol 之后动态挂到 #cnColWords 末尾（分页器之前），
-           内容仍由 injectDailyChengyuCard() / injectDailyLoreCard() 填充。 -->
-      <!-- R296-3.2/3.3：【好词使用】独立卡 —— 好词的释义与例句，紧跟三张语文卡下方，
-           横向排布，内部子卡片一行 3 个（内容从好词好句卡迁出，好词好句恢复原分组展示） -->
-      <div class="haoci-use-card" id="haociUseCard" data-page-node-id="R296haociUseCard">
-        <div class="reading-col-head" data-page-node-id="R296haociUseHead">✨ 好词使用 <span class="haoci-use-hint">释义 · 例句</span><span class="haoci-use-count" id="haociUseCount"></span></div>
-        <div class="haoci-use-grid" id="haociUseGrid" data-page-node-id="R296haociUseGrid"></div>
-        <!-- R300-1.1：好词全覆盖后分页展示（12 个/页），分页条与其余阅读栏同款 .yw-pager -->
-        <div class="haoci-use-pager" id="haociUsePager"></div>
       </div>
     </div>
     </div><!-- /#rdPanelCn -->
@@ -12205,44 +12311,83 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
       <h3 id="taskEditTitle" data-page-node-id="N8ZHOjbjV1HVG8H8Z7pMhl">新增/编辑任务</h3>
       <button class="modal-x" data-close data-page-node-id="ezLvvUzJTXDwBB64h0Kern">×</button>
     </div>
-    <div class="modal-body" data-page-node-id="FMju28xzkEX3PSvxptRx8n">
-      <label data-page-node-id="MzmbfzTrnWBDTRAvDWWXH2">学科 <select id="tSubject" data-page-node-id="M7HdMarnt5MziYLhTGUdyo">
-        <option data-page-node-id="oOl6xB5B8f7C7Pa10XyNE4">语文</option><option data-page-node-id="A8fOON0mh5kYtf5bTS54mu">数学</option><option data-page-node-id="FqlG7AAt7p9dan8yeFYu5K">英语</option>
-        <option data-page-node-id="BNIEA5qtCbLwG9eAtjP5hF">作息</option><option data-page-node-id="HSRPdH3tOUwW0Olyi1Moq0">运动</option><option data-page-node-id="JsBOEWrYVYRKGF7Wbs3shZ">围棋</option><option data-page-node-id="e0JrIuE3GAJtSL3jpvXp7x">家务小帮手</option><option data-page-node-id="I8AkuEzNt6LG1CBjV4eCkl">习惯家务</option><option data-page-node-id="o2Vl97FrvqRnlxiIscwnri">错题</option><option data-page-node-id="qSb7R43civilOpt001">文明小标兵</option>
-      </select></label>
-      <label data-page-node-id="P7CSP3PY2epjhIjpwPXNzr">任务类型 <select id="tType" data-page-node-id="zsgcIooUjkgH2MPivGXBHh">
-        <option value="必做任务" data-page-node-id="tEWMLTD9ewoMRn4nd5NGgg">必做任务</option>
-        <option value="选做拓展任务" data-page-node-id="iSVBD5Em0Z1bfQnUPs9fLi">选做拓展任务</option>
-        <option value="错题订正" data-page-node-id="Xqtw1Bh9Idn62cpSrZ366o">错题订正</option>
-      </select></label>
-      <label data-page-node-id="2SY5TeFAk8ntYBqaqtFQrF">任务名称 <input type="text" id="tName" placeholder="如：阅读《草房子》20分钟" data-page-node-id="lPx5ZBkAir2glWyQbA49cD"></label>
-      <label data-page-node-id="EcTFZP1sohT8JTV7jlX88b">预估时长(分钟) <input type="number" id="tMinutes" min="1" value="15" data-page-node-id="5dJolS4I1Y14GOTlcDXUgQ"></label>
-      <label data-page-node-id="s1XojiG1b6zaVlgamgWVte">任务说明 <textarea id="tDesc" placeholder="任务的详细说明"></textarea></label>
-      <label data-page-node-id="YgLRp1BRbX3gxjG9KaV0Ci">完成标准 <textarea id="tStandard" placeholder="怎样算完成？"></textarea></label>
-      <!-- V11.4：打卡日期 — 多选 7 天 / 跳选具体日期 -->
-      <div class="form-hint" style="margin-top:6px" data-page-node-id="6fqlw5VPpBwTT21E63oa2p">📅 打卡日期（多选或跳选）</div>
-      <div id="tDaysWeek" style="display:flex;gap:6px;flex-wrap:wrap;margin:6px 0" data-page-node-id="p6ZJjiEG69htXjiEYFpJyY">
-        <label class="t-day-cb" data-page-node-id="jnj4BzRHkVwoEPAUE1TBeP"><input type="checkbox" value="1" data-page-node-id="PllmxEZGP7VVxrKVFbME42">周一</label>
-        <label class="t-day-cb" data-page-node-id="Bu2ce3Jz8fEhr9cBHkmWiG"><input type="checkbox" value="2" data-page-node-id="Kmf1wUElOkb0mebwXIKYd9">周二</label>
-        <label class="t-day-cb" data-page-node-id="WToBPxrhQeoLRcT26cGSbn"><input type="checkbox" value="3" data-page-node-id="yjtPDjjifsPsGxtK6Be4wx">周三</label>
-        <label class="t-day-cb" data-page-node-id="reXmuJexOsWZ8d3knBZ3Sz"><input type="checkbox" value="4" data-page-node-id="d0cqVoru8AJzre9uDHCxVv">周四</label>
-        <label class="t-day-cb" data-page-node-id="bk4zq5BCCSkelYn5ZkUveO"><input type="checkbox" value="5" data-page-node-id="Ey2wVfpIrnY0PXUugX6Ahi">周五</label>
-        <label class="t-day-cb" data-page-node-id="OZOaFMIv1pRH4WWUs3Jb9D"><input type="checkbox" value="6" data-page-node-id="nqXzyPA5l0H5t948ByVigS">周六</label>
-        <label class="t-day-cb" data-page-node-id="7eZtFYxkxdWNsDVkxwrtFc"><input type="checkbox" value="0" data-page-node-id="Shp22BJbpf0VH5WFTGlzTp">周日</label>
-      </div>
-      <label data-page-node-id="K28yxbjbt7dzCIRGzjLuzb">或指定具体日期（可加多个） <input type="date" id="tCheckDate" data-page-node-id="2OzBsu2hwW920WzBNJ6dNF"></label>
-      <div id="tExtraDates" style="display:flex;gap:6px;flex-wrap:wrap;margin:6px 0" data-page-node-id="wPdzuSqVKJqvR2M0OCF7fH"></div>
-      <button type="button" class="pbtn small" id="btnAddExtraDate" data-page-node-id="mPLs8T9i8u8HRBv5UHdkdD">＋ 添加日期</button>
-      <span style="font-size:11px;color:var(--muted);margin-left:6px" data-page-node-id="Hta0CJT7btLwwHoWmARsxg">不选任何日期 = 每天打卡</span>
-      <div class="form-hint" id="tDaysPreview" data-page-node-id="k9gIBhatUVjuQ8icDl16BH"></div>
-      <label class="star-pick-label" data-page-node-id="10xN629n9QmB7dOGBAzrHU">完成奖励 ⭐（打卡可得成长星数量）
-        <input type="hidden" id="tStars" value="2">
-        <button type="button" class="star-pick-btn" id="tStarsBtn">⭐ 2</button>
-        <div class="star-pop" id="tStarsPop" hidden>
-          <div class="star-pop-title">选择完成奖励 ⭐ 数量（0~20）</div>
-          <div class="star-pop-grid" id="tStarsGrid"></div>
+    <div class="modal-body te-body" data-page-node-id="FMju28xzkEX3PSvxptRx8n">
+      <!-- R312-2：全部设置项统一为「蓝色区域 + 虚线」块，标题字体与任务卡片跳转保持一致 -->
+      <div class="te-block" data-page-node-id="R312teSubject">
+        <div class="te-head" data-page-node-id="R312teSubjectHead">学科</div>
+        <div class="te-row" data-page-node-id="R312teSubjectRow">
+          <select id="tSubject" data-page-node-id="M7HdMarnt5MziYLhTGUdyo">
+            <option data-page-node-id="oOl6xB5B8f7C7Pa10XyNE4">语文</option><option data-page-node-id="A8fOON0mh5kYtf5bTS54mu">数学</option><option data-page-node-id="FqlG7AAt7p9dan8yeFYu5K">英语</option>
+            <option data-page-node-id="BNIEA5qtCbLwG9eAtjP5hF">作息</option><option data-page-node-id="HSRPdH3tOUwW0Olyi1Moq0">运动</option><option data-page-node-id="JsBOEWrYVYRKGF7Wbs3shZ">围棋</option><option data-page-node-id="e0JrIuE3GAJtSL3jpvXp7x">家务小帮手</option><option data-page-node-id="I8AkuEzNt6LG1CBjV4eCkl">习惯家务</option><option data-page-node-id="o2Vl97FrvqRnlxiIscwnri">错题</option><option data-page-node-id="qSb7R43civilOpt001">文明小标兵</option>
+          </select>
         </div>
-      </label>
+      </div>
+      <div class="te-block" data-page-node-id="R312teType">
+        <div class="te-head" data-page-node-id="R312teTypeHead">任务类型</div>
+        <div class="te-row" data-page-node-id="R312teTypeRow">
+          <select id="tType" data-page-node-id="zsgcIooUjkgH2MPivGXBHh">
+            <option value="必做任务" data-page-node-id="tEWMLTD9ewoMRn4nd5NGgg">必做任务</option>
+            <option value="选做拓展任务" data-page-node-id="iSVBD5Em0Z1bfQnUPs9fLi">选做拓展任务</option>
+            <option value="错题订正" data-page-node-id="Xqtw1Bh9Idn62cpSrZ366o">错题订正</option>
+          </select>
+        </div>
+      </div>
+      <div class="te-block" data-page-node-id="R312teName">
+        <div class="te-head" data-page-node-id="R312teNameHead">任务名称</div>
+        <div class="te-row" data-page-node-id="R312teNameRow">
+          <input type="text" id="tName" placeholder="如：阅读《草房子》20分钟" data-page-node-id="lPx5ZBkAir2glWyQbA49cD">
+        </div>
+      </div>
+      <div class="te-block" data-page-node-id="R312teMinutes">
+        <div class="te-head" data-page-node-id="R312teMinutesHead">预估时长(分钟)</div>
+        <div class="te-row" data-page-node-id="R312teMinutesRow">
+          <input type="number" id="tMinutes" min="1" value="15" data-page-node-id="5dJolS4I1Y14GOTlcDXUgQ">
+        </div>
+      </div>
+      <div class="te-block" data-page-node-id="R312teDesc">
+        <div class="te-head" data-page-node-id="R312teDescHead">任务说明</div>
+        <div class="te-row" data-page-node-id="R312teDescRow">
+          <textarea id="tDesc" placeholder="任务的详细说明"></textarea>
+        </div>
+      </div>
+      <div class="te-block" data-page-node-id="R312teStandard">
+        <div class="te-head" data-page-node-id="R312teStandardHead">完成标准</div>
+        <div class="te-row" data-page-node-id="R312teStandardRow">
+          <textarea id="tStandard" placeholder="怎样算完成？"></textarea>
+        </div>
+      </div>
+      <!-- V11.4：打卡日期 — 多选 7 天 / 跳选具体日期 -->
+      <!-- R312-2：日期设置块与任务卡片跳转同款蓝底虚线；「添加日期」移到日期选择框右侧 -->
+      <div class="te-block" id="tDaysBlock" data-page-node-id="R312teDays">
+        <div class="te-head" data-page-node-id="6fqlw5VPpBwTT21E63oa2p">📅 打卡日期（多选或跳选）</div>
+        <div class="te-row" id="tDaysWeek" data-page-node-id="p6ZJjiEG69htXjiEYFpJyY">
+          <label class="t-day-cb" data-page-node-id="jnj4BzRHkVwoEPAUE1TBeP"><input type="checkbox" value="1" data-page-node-id="PllmxEZGP7VVxrKVFbME42">周一</label>
+          <label class="t-day-cb" data-page-node-id="Bu2ce3Jz8fEhr9cBHkmWiG"><input type="checkbox" value="2" data-page-node-id="Kmf1wUElOkb0mebwXIKYd9">周二</label>
+          <label class="t-day-cb" data-page-node-id="WToBPxrhQeoLRcT26cGSbn"><input type="checkbox" value="3" data-page-node-id="yjtPDjjifsPsGxtK6Be4wx">周三</label>
+          <label class="t-day-cb" data-page-node-id="reXmuJexOsWZ8d3knBZ3Sz"><input type="checkbox" value="4" data-page-node-id="d0cqVoru8AJzre9uDHCxVv">周四</label>
+          <label class="t-day-cb" data-page-node-id="bk4zq5BCCSkelYn5ZkUveO"><input type="checkbox" value="5" data-page-node-id="Ey2wVfpIrnY0PXUugX6Ahi">周五</label>
+          <label class="t-day-cb" data-page-node-id="OZOaFMIv1pRH4WWUs3Jb9D"><input type="checkbox" value="6" data-page-node-id="nqXzyPA5l0H5t948ByVigS">周六</label>
+          <label class="t-day-cb" data-page-node-id="7eZtFYxkxdWNsDVkxwrtFc"><input type="checkbox" value="0" data-page-node-id="Shp22BJbpf0VH5WFTGlzTp">周日</label>
+        </div>
+        <div class="te-row te-date-row" data-page-node-id="R312teDateRow">
+          <input type="date" id="tCheckDate" data-page-node-id="2OzBsu2hwW920WzBNJ6dNF">
+          <button type="button" class="pbtn small" id="btnAddExtraDate" data-page-node-id="mPLs8T9i8u8HRBv5UHdkdD">＋ 添加日期</button>
+        </div>
+        <div class="te-chips" id="tExtraDates" data-page-node-id="wPdzuSqVKJqvR2M0OCF7fH"></div>
+        <div class="te-note" data-page-node-id="Hta0CJT7btLwwHoWmARsxg">不选任何日期 = 每天打卡（可选指定具体日期，可加多个）</div>
+        <div class="form-hint" id="tDaysPreview" data-page-node-id="k9gIBhatUVjuQ8icDl16BH"></div>
+      </div>
+      <div class="te-block" data-page-node-id="R312teStars">
+        <div class="te-head" data-page-node-id="10xN629n9QmB7dOGBAzrHU">完成奖励 ⭐（打卡可得成长星数量）</div>
+        <div class="te-row star-pick-label" data-page-node-id="R312teStarsRow">
+          <input type="hidden" id="tStars" value="2">
+          <button type="button" class="star-pick-btn" id="tStarsBtn">⭐ 2</button>
+          <div class="star-pop" id="tStarsPop" hidden>
+            <div class="star-pop-title">选择完成奖励 ⭐ 数量（0~20）</div>
+            <div class="star-pop-grid" id="tStarsGrid"></div>
+          </div>
+        </div>
+      </div>
       <!-- R311-3.1：周末专属设置项已删除（数据字段 weekendOnly 保留，编辑时原值不覆盖） -->
       <!-- R258-3.1：任务卡片跳转配置（新增/编辑任务弹窗内，逐条任务独立设置） -->
       <div class="task-jump-block" id="tJumpBlock" data-page-node-id="R258tJumpBlock">
@@ -12252,17 +12397,11 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
           <span class="tjb-state" id="tJumpState" data-page-node-id="R258tJumpState">已开启</span>
           <span class="tjb-tip" data-page-node-id="R258tjbTip">关闭后点首页任务卡主体不跳转（右侧打卡键照常）</span>
         </div>
-        <!-- R306-2.6：旧单级下拉下线 → 统一走三级联动组件，避免编辑任务保存时把三级落点清空 -->
+        <!-- R312-1：删除「选择目标」按键；三级联动设置卡常显在「已开启」下方，落点只读回显 -->
         <div class="tjb-page tjb-pick" data-page-node-id="R306tjbPickRow">
-          <button type="button" class="tjr-cfg" id="tJumpPickBtn" data-page-node-id="R306tJumpPickBtn" aria-expanded="false">选择目标 ›</button>
           <span class="tjb-target" id="tJumpPageLabel" data-page-node-id="R306tJumpPageLabel"></span>
         </div>
-        <!-- R311-1.1：目标选择面板下沉到「已开启」按键下方，内联展示并随编辑任务卡容器宽度自适应 -->
-        <div class="tjb-inline" id="tJumpInlineHost" hidden data-page-node-id="R311tJumpInlineHost"></div>
-        <div class="tjb-inline-foot" id="tJumpInlineFoot" hidden data-page-node-id="R311tJumpInlineFoot">
-          <button type="button" class="primary-btn small" id="btnJumpInlineSave" data-page-node-id="R311btnJumpInlineSave">✓ 保存跳转目标</button>
-          <button type="button" class="pbtn small" id="btnJumpInlineClose" data-page-node-id="R311btnJumpInlineClose">收起</button>
-        </div>
+        <div class="tjb-inline" id="tJumpInlineHost" data-page-node-id="R311tJumpInlineHost"></div>
       </div>
       <div class="form-warn" id="tWarn" data-page-node-id="lqDbvL6V4Jl6kpiY4lDfng"></div>
     </div>
@@ -17867,6 +18006,21 @@ window.R298_TASK_PLAN = {
     {id:uid(),name:'乐于助人',subject:'文明小标兵',type:'选做拓展任务',stars:2,minutes:5,desc:'主动帮助他人',standard:'主动帮助同学或家人',enabled:true,weekendOnly:false}
     // V39：删除选做中的「错题订正复盘」（错题卡片不再显示）
   ];
+  // R312-5：必做板块 —— 语文 / 数学 / 英语「校内作业」，周二~周五每天 1 项，每完成 1 项 +1⭐
+  const R312_HOMEWORK = [
+    {id:'r312_yw_hw', name:'语文校内作业', subject:'语文', minutes:25, desc:'按老师布置完成', standard:'书写工整、按时提交'},
+    {id:'r312_sx_hw', name:'数学校内作业', subject:'数学', minutes:25, desc:'按老师布置完成', standard:'独立完成、订正错题'},
+    {id:'r312_yy_hw', name:'英语校内作业', subject:'英语', minutes:15, desc:'按老师布置完成', standard:'听读跟读、书写工整'}
+  ];
+  const R312_HW_DAYS = ['2','3','4','5'];   // 周二 / 周三 / 周四 / 周五
+  function r312HomeworkTasks(){
+    return R312_HOMEWORK.map(x=>({
+      id:x.id, name:x.name, subject:x.subject, type:'必做任务', stars:1,
+      minutes:Number(x.minutes)||20, desc:x.desc, standard:x.standard,
+      enabled:true, weekendOnly:false, daysOfWeek:R312_HW_DAYS.slice(),
+      card:'required', _r312:true
+    }));
+  }
   // R295-3.2：来自《打卡任务.xlsx》的必做任务清单（24 项周计划 + 6 项学而思作业）
   const R295_REQ_TASKS = [
     {name:"语文作文",subject:"语文",minutes:30,days:['1','2','3','4','5']},
@@ -19050,6 +19204,73 @@ window.R298_TASK_PLAN = {
       const _wp298 = r298WeekPlanSeed();
       if(_wp298) st.weekPlan = _wp298;
       st._r298TaskV3 = true;
+      save(st);
+    }
+    /* R312-5：必做板块补齐三科「校内作业」（周二~周五，每项 1⭐），并同步进「一周打卡计划」表格。
+       ⚠️ 只补缺失任务 / 统一这三条的排期与⭐；其它任务、历史打卡记录、星星账本、用户自建内容一律不动。 */
+    if(!st._r312HomeworkV1){
+      const items = r312HomeworkTasks();
+      st.tasks = Array.isArray(st.tasks) ? st.tasks : [];
+      items.forEach(it=>{
+        const hit = st.tasks.find(t=>t && String(t.name)===it.name && String(t.subject)===it.subject && t.type==='必做任务');
+        if(hit){
+          hit.daysOfWeek = R312_HW_DAYS.slice();
+          hit.stars = 1;
+          hit.enabled = true;
+          hit._r312 = true;
+        } else {
+          st.tasks.push(it);
+        }
+      });
+      const wp = (st.weekPlan && typeof st.weekPlan === 'object') ? st.weekPlan : weekPlanSeed();
+      if(!Array.isArray(wp.cats)) wp.cats = [];
+      if(!Array.isArray(wp.times)) wp.times = [];
+      if(!Array.isArray(wp.timeColors)) wp.timeColors = [];
+      if(!Array.isArray(wp.catColors)) wp.catColors = [];
+      if(!wp.cells || typeof wp.cells !== 'object') wp.cells = {};
+      const hasRow = (cat, name)=>{
+        for(let ri=0; ri<wp.cats.length; ri++){
+          if(String(wp.cats[ri]) !== cat) continue;
+          for(let ci=0; ci<7; ci++){
+            const c = wp.cells[ri + '-' + ci];
+            if(c && String(c.t || '') === name) return true;
+          }
+        }
+        return false;
+      };
+      // R312-5：按科目插入到同科目分组末尾（而非一律追加表尾），保证「分类格按相邻同名合并」仍然成立
+      const insertRow = (cat, name)=>{
+        let at = -1;
+        for(let ri=0; ri<wp.cats.length; ri++){ if(String(wp.cats[ri]) === cat) at = ri; }
+        const pos = (at >= 0) ? at + 1 : wp.cats.length;
+        const shifted = {};
+        Object.keys(wp.cells).forEach(k=>{
+          const m = /^(\d+)-(\d+)$/.exec(k);
+          if(!m){ shifted[k] = wp.cells[k]; return; }
+          const ri = Number(m[1]);
+          shifted[(ri >= pos ? ri + 1 : ri) + '-' + m[2]] = wp.cells[k];
+        });
+        wp.cells = shifted;
+        wp.cats.splice(pos, 0, cat);
+        wp.times.splice(pos, 0, '');
+        wp.timeColors.splice(pos, 0, '#ffffff');
+        wp.catColors.splice(pos, 0, (at >= 0 && wp.catColors[at]) ? wp.catColors[at] : '#ffffff');
+        R312_HW_DAYS.forEach(d=>{ wp.cells[pos + '-' + (Number(d)-1)] = {t: name, c:'#ffffff'}; });
+      };
+      items.forEach(it=>{
+        if(hasRow(it.subject, it.name)) return;   // 已有同名行 → 不重复追加，用户排版保持原样
+        insertRow(it.subject, it.name);
+      });
+      wp.rows = Math.max(Number(wp.rows)||0, wp.cats.length);
+      st.weekPlan = wp;
+      st._r312HomeworkV1 = true;
+      save(st);
+    }
+    /* R312-7：把「乐读数学笔记」的全部题目 / 答案 / 解题过程整理进「乐读练习题」题库，
+       题目标注来源（乐读数学笔记 + 题型）。按题干去重，用户自建题目与历史作答一律保留。 */
+    if(!st._r312MexImportV1){
+      st.mathProblemImportedCount = r312ImportMathNotes(st);
+      st._r312MexImportV1 = true;
       save(st);
     }
     // R16-3：首页标语迁移（仅当用户仍沿用旧默认标语时升级为新标语；家长自定义过的标语保持不动）
@@ -20485,6 +20706,61 @@ window.R298_TASK_PLAN = {
     return st.nwZone[key].slice();
   }
 
+  // R312-7：「乐读数学笔记」题目 → 「乐读练习题」题库（题目标注来源板块与题型）
+  function r312StripImg(s){ return String(s == null ? '' : s).replace(/\[\[IMG:[^\]]*\]\]/g, ' '); }
+  function r312NormQ(s){ return r312StripImg(s).replace(/\s+/g, '').trim(); }
+  /* 从【解答】里取最终答案：优先「= 结果」行，其次带「答案」字样的行，再次解答段最后一行；
+     取不到像答案的内容时回退「见解题过程」，绝不臆造数值。 */
+  function r312AnswerOf(solution){
+    const lines = String(solution||'').split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+    if(!lines.length) return '见解题过程';
+    const clean = s => String(s)
+      .replace(/^[①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳]\s*/, '')
+      .replace(/^\d+[.、)）]\s*/, '')
+      .replace(/(?:←.*|<-.*|✅.*)$/,'').replace(/[。．.]$/,'').trim();
+    for(let i=lines.length-1;i>=0;i--){
+      const m = lines[i].match(/(?:=|＝)\s*([^=＝]+)$/);
+      if(m && m[1]){ const v = clean(m[1]); if(v && /\d/.test(v)) return v; }
+    }
+    for(let i=lines.length-1;i>=0;i--){
+      const m = lines[i].match(/答案[:：]?\s*(.+)$/);
+      if(m && m[1]){ const v = clean(m[1]); if(v) return v; }
+    }
+    const last = clean(lines[lines.length-1]);
+    return (last && last.length <= 40 && /\d/.test(last)) ? last : '见解题过程';
+  }
+  function r312ImportMathNotes(st){
+    if(!Array.isArray(st.mathExerciseBank)) st.mathExerciseBank = [];
+    const bank = st.mathExerciseBank;
+    const have = new Set(bank.map(x=>r312NormQ(x && x.q)));
+    let n = 0;
+    (Array.isArray(st.mathProblems) ? st.mathProblems : []).forEach(m=>{
+      if(!m) return;
+      let rawQ = String(m.desc || m.title || '').trim();
+      const ans = r312AnswerOf(m.solution);
+      /* 题干里若已带「= 答案」，去掉这一段，保证练习题页只展示题目 */
+      if(ans && ans !== '见解题过程'){
+        const escAns = ans.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        rawQ = rawQ.replace(new RegExp('\\s*[=＝]\\s*' + escAns + '\\s*$'), '').trim();
+      }
+      const key = r312NormQ(rawQ);
+      if(!key || have.has(key)) return;
+      have.add(key);
+      bank.push({
+        id: 'mex_note_' + String(m.id || (Date.now() + '_' + n)),
+        q: rawQ,
+        a: ans,
+        steps: String(m.solution || ''),
+        ans: '', ok: false,
+        src: '乐读数学笔记',
+        type: String(m.type || ''),
+        fromNote: true,
+        at: Number(m.createdAt) || Date.now()
+      });
+      n++;
+    });
+    return n;
+  }
   // ===== R248-1：乐读数学「练习题」独立题库 =====
   // 与 st.mathProblems（数学笔记题库）、st.calcBank（计算题库）完全隔离，单独存于 st.mathExerciseBank。
   // 首次读取时把 R247 存在通用 nwZone['math_exercises'] 的历史题目一次性迁移过来，不丢数据。
@@ -25716,6 +25992,51 @@ be 动词：am / is → was；are → were
   // 清空原语法卡片派生题库；统一走「看中文例句、默写英文」中译英，每日随机抽 2 题。
   // 条目结构（来自 window.XS_TRANSLATE_SEED）：{ id, zh 中文, en 英文, hint 语法点 }
   // R252-1：seed 题之后追加用户导入题，并应用编辑覆盖 / 删除标记，供每日抽题与题库弹窗共用
+  /* R312-9：课前测巩固题库（每日抽 2 题，放在每日巩固的语法默写之后）。
+     题目同时并入「学而思题库 → 语法题」分区（kind='pretest'），可查看 / 编辑 / 删除。 */
+  const XS_PRETEST_SEED = [
+    {id:'01', zh:'它可能是一艘宇宙飞船。', en:'It might be a spaceship.'},
+    {id:'02', zh:'我想住在火星上。', en:'I want to live on Mars.'},
+    {id:'03', zh:'我们怎样才能帮助环境？', en:'How can we help the environment?'},
+    {id:'04', zh:'我们应该回收废纸。', en:'We should recycle waste paper.'},
+    {id:'05', zh:'你们俩都太棒了。', en:'You were both brilliant.'},
+    {id:'06', zh:'你喜欢慢跑吗？', en:'Do you like jogging?'},
+    {id:'07', zh:'这是最大的奖品。', en:'It is the biggest prize.'},
+    {id:'08', zh:'我们很喜欢那片海滩。', en:'We loved the beach.'},
+    {id:'09', zh:'查理是个调皮的邻居。', en:'Charlie is a naughty neighbour.'},
+    {id:'10', zh:'明天会下雨吗？', en:'Will it rain tomorrow?'},
+    {id:'11', zh:'我每天早上七点起床。', en:'I get up at seven every morning.'},
+    {id:'12', zh:'她正在做作业。', en:'She is doing her homework.'},
+    {id:'13', zh:'昨天我们去了公园。', en:'We went to the park yesterday.'},
+    {id:'14', zh:'这本书比那本更有趣。', en:'This book is more interesting than that one.'},
+    {id:'15', zh:'你多久踢一次足球？', en:'How often do you play football?'},
+    {id:'16', zh:'我从来没有去过北京。', en:'I have never been to Beijing.'},
+    {id:'17', zh:'请你打开窗户好吗？', en:'Could you open the window, please?'},
+    {id:'18', zh:'他擅长游泳。', en:'He is good at swimming.'},
+    {id:'19', zh:'那里有多少个学生？', en:'How many students are there?'},
+    {id:'20', zh:'不要在教室里跑。', en:"Don't run in the classroom."},
+    {id:'21', zh:'我打算明天去看电影。', en:'I am going to see a film tomorrow.'},
+    {id:'22', zh:'这些是我的书。', en:'These are my books.'},
+    {id:'23', zh:'她比我高。', en:'She is taller than me.'},
+    {id:'24', zh:'春天天气变暖了。', en:'It gets warmer in spring.'}
+  ];
+  /* R312-9：按日期种子从课前测题库抽 2 题（当日固定，跨日换题） */
+  function xsPretestDailyFrom(pool, date){
+    const arr = (pool || []).filter(x=>x && x.kind === 'pretest');
+    if(!arr.length) return [];
+    const seed = parseInt(String(date||todayStr()).replace(/-/g,''),10) || 1;
+    const n = Math.min(2, arr.length);
+    const start = (seed * 13) % arr.length;
+    const out = [];
+    for(let i=0; i<arr.length && out.length<n; i++){
+      const it = arr[(start+i) % arr.length];
+      if(out.some(x=>x.grammarId === it.grammarId)) continue;
+      out.push({ wordId:'ptq_'+String(it.id).replace(/^pt_/,''), grammarId:it.grammarId,
+        en:it.en, zh:it.zh, pretest:true, date:String(date||todayStr()) });
+    }
+    return out;
+  }
+  function xsBuildDailyPretest(){ return xsPretestDailyFrom(xsGrammarPool(), todayStr()); }
   function xsGrammarPool(){
     const raw = (typeof XS_TRANSLATE_SEED !== 'undefined' && XS_TRANSLATE_SEED)
              || (typeof window !== 'undefined' && window.XS_TRANSLATE_SEED)
@@ -25750,6 +26071,16 @@ be 动词：am / is → was；are → were
         });
       });
     }
+    /* R312-9：课前测题并入题库（kind='pretest'），可在「📚 题库 → 语法题」查看 / 编辑 / 删除 */
+    const ptSeed = (typeof XS_PRETEST_SEED !== 'undefined' && Array.isArray(XS_PRETEST_SEED)) ? XS_PRETEST_SEED : [];
+    if(ptSeed.length){
+      const has = new Set(base.map(x=>String(x.id)));
+      ptSeed.forEach(it=>{
+        const pid = 'pt_' + it.id;
+        if(has.has(pid)) return;
+        base.push({ id:pid, grammarId:pid, title:'课前测', en:it.en, zh:it.zh, kind:'pretest', fromSeed:true });
+      });
+    }
     const merge = (it)=> b.edits[it.id] ? Object.assign({}, it, b.edits[it.id]) : it;
     return base.filter(it=>!b.deleted[it.id]).map(merge)
       .concat(b.items.filter(it=>!b.deleted[it.id]).map(merge));
@@ -25757,7 +26088,8 @@ be 动词：am / is → was；are → were
   // R71-1：重置语法题出题规则 —— 每日从「语法题库」随机抽 2 个例题，展示中文翻译，默写英文句子
   // 规则：以「日期 + 重置偏移」为种子洗牌抽取；当日固定，点「🔄 重置语法题」换一组
   function xsBuildDailyGrammar(){
-    const pool = xsGrammarPool();
+    /* R312-9：语法默写只取语法题，课前测题单独走「课前测巩固」 */
+    const pool = xsGrammarPool().filter(x=>x && x.kind !== 'pretest');
     if(!pool.length) return [];
     const st = load();
     const today = todayStr();
@@ -25833,6 +26165,8 @@ be 动词：am / is → was；are → were
     }
     // R59-3 / R-T1：第 11、12 题 —— 语法默写题（题源：中译英题库，随机 2 道，看中文默英文）
     out.push(...xsBuildDailyGrammar());
+    // R312-9：语法默写之后再追加 2 道「课前测巩固」题（题源：课前测题库）
+    out.push(...xsBuildDailyPretest());
     return out;
   }
   // R-T1：巩固打卡顺延 —— 当日 10 词 + 2 语法未全部完成（未 +2⭐）时，整组任务自动顺延到次日；
@@ -25840,9 +26174,23 @@ be 动词：am / is → was；are → were
   function xsBuildDailyWords(){
     const st = load();
     const today = todayStr();
+    /* R312-9：无论批次是今天新建还是历史顺延，都保证里面含有当日 2 道「课前测巩固」题 */
+    const finish = (items)=>{
+      try{
+        if(Array.isArray(items) && items.length && !items.some(x=>x && x.pretest)){
+          const extra = xsBuildDailyPretest();
+          if(extra.length){
+            items = items.concat(extra);
+            st.xueersiActiveBatch = { date: today, items: items };
+            save(st);
+          }
+        }
+      }catch(e){}
+      return items;
+    };
     // 今日已有激活批次 → 直接复用
     if(st.xueersiActiveBatch && st.xueersiActiveBatch.date === today && Array.isArray(st.xueersiActiveBatch.items)){
-      return st.xueersiActiveBatch.items;
+      return finish(st.xueersiActiveBatch.items);
     }
     // 跨日：上一激活批次存在但未完成 → 顺延（保留题目与已完成态）
     if(st.xueersiActiveBatch && st.xueersiActiveBatch.date && st.xueersiActiveBatch.date !== today){
@@ -25861,14 +26209,14 @@ be 动词：am / is → was；are → were
           answered: prevRes.answered ? Object.assign({}, prevRes.answered) : {}
         };
         save(st);
-        return items;
+        return finish(items);
       }
     }
     // 上一日已做完 / 无历史 → 生成新一批
     const items = xsBuildFreshDaily();
     st.xueersiActiveBatch = { date: today, items: items };
     save(st);
-    return items;
+    return finish(items);
   }
   // V11.2：每日词汇打卡结果（答对列表） — 用于判断是否全部做完 +2⭐
   function xsGetTodayResult(){
@@ -25901,7 +26249,7 @@ be 动词：am / is → was；are → were
       st.xueersiWrongs = st.xueersiWrongs.filter(x=>_wk(x.wordId) !== _wk(wordId));
     } else {
       // R59-3：语法默写题不进词汇错题本（次日按日期种子重新抽取）
-      if(String(wordId).indexOf('gq_') !== 0 && !st.xueersiWrongs.find(x=>String(x.wordId).replace(/^w_/,'') === String(wordId).replace(/^w_/,''))) st.xueersiWrongs.push({wordId, since: today});
+      if(!/^(gq_|ptq_)/.test(String(wordId)) && !st.xueersiWrongs.find(x=>String(x.wordId).replace(/^w_/,'') === String(wordId).replace(/^w_/,''))) st.xueersiWrongs.push({wordId, since: today});
     }
     // R250-1：全部题目完成统一获得 2⭐（不论对错，只看是否全部提交；rec.rewarded 幂等不重复发放）
     if(!rec.rewarded && answeredCount >= rec.total){
@@ -27977,6 +28325,7 @@ be 动词：am / is → was；are → were
     parseEnZhDict, parseBulkText, xsBulkAddWords, xsAddWrong, xsRemoveWrong, xsBuildDailyWords, xsGetTodayResult, xsRecordAnswer,
     // R71-1 / R252-1：语法题库（seed + 用户导入 / 编辑 / 删除，供巩固打卡随机抽题 + 题库弹窗展示）
     xsGrammarPool, xsGramBankAdd, xsGramBankUpdate, xsGramBankDelete, xsGramBankGet, xsGramBankImportExamples,
+    xsBuildDailyPretest, XS_PRETEST_SEED,
     xsStoryStart, xsStoryAdvance, xsStoryGetAll,
     // V15-T6：RAZ 已删除
     // V14-T8：设置密码（4 位数字 PIN）
@@ -30471,9 +30820,114 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     ] },
     { title:'作文专项', icon:'✏️', items:[
       { key:'sucai',    icon:'💡', label:'作文素材' },
-      { key:'zxzs',     icon:'📚', label:'专项知识' }
+      { key:'zxzs',     icon:'📚', label:'专项知识' },
+      /* R312-6：专项知识之后新增「精读仿写」 */
+      { key:'jingdu',   icon:'✍️', label:'精读仿写' }
     ] }
   ];
+
+  /* ===== R312-6：作文专项「精读仿写」=====
+     每页 2 道仿写例题，每道例题配 1 道仿写题；每完成 1 题 +1⭐（与语文专区其它打卡一致：可撤销）。 */
+  const YW_JINGDU = [
+    {
+      title:'《秋天的雨》开头仿写',
+      read:'秋天的雨，是一把钥匙。它带着清凉和温柔，轻轻地，轻轻地，趁你没留意，把秋天的大门打开了。',
+      point:'作者把「秋雨」比作「钥匙」，再用「轻轻地，轻轻地」重复，写出雨来的样子很轻很柔；最后一句「把秋天的大门打开了」，把看不见的季节变化写成了看得见的动作。比喻 + 反复 + 动作，是这段的三个法宝。',
+      task:'请以「春天的风，是一把钥匙」开头，写 3～4 句话，用上比喻和反复，写出春风把春天打开的样子。',
+      ref:'春天的风，是一把钥匙。它带着温暖和花香，悄悄地，悄悄地，趁你没留意，把春天的大门打开了。小草探出头来，柳枝摇着绿色的长辫子，桃花笑红了脸。'
+    },
+    {
+      title:'《荷花》荷叶仿写',
+      read:'荷花已经开了不少了。荷叶挨挨挤挤的，像一个个碧绿的大圆盘。白荷花在这些大圆盘之间冒出来。',
+      point:'「挨挨挤挤」写出荷叶多而密，「像一个个碧绿的大圆盘」用比喻写出形状和颜色，「冒出来」的「冒」字最有劲，写出荷花使劲往上长的样子。',
+      task:'观察一种植物的叶子（如梧桐叶、荷叶、爬山虎），用「数量 + 比喻 + 一个动词」写 2～3 句话。',
+      ref:'梧桐叶已经长得满树都是了。叶子密密层层地叠在一起，像一把把撑开的小绿伞。阳光从叶缝里漏下来，在地上洒下点点光斑。'
+    },
+    {
+      title:'《燕子》外形仿写',
+      read:'一身乌黑光亮的羽毛，一对俊俏轻快的翅膀，加上剪刀似的尾巴，凑成了那样活泼可爱的小燕子。',
+      point:'先分写三个部分（羽毛、翅膀、尾巴），每个部分都用「数量 + 样子」的短语，最后用「凑成了」把三部分合成一只完整的小动物。这是写动物外形最好用的「分—总」结构。',
+      task:'用「一身……，一对……，加上……，凑成了……」的句式，写一种你熟悉的小动物。',
+      ref:'一身雪白柔软的绒毛，一对红宝石似的眼睛，加上三瓣不停动着的小嘴，凑成了那只蹦蹦跳跳的小白兔。'
+    },
+    {
+      title:'《富饶的西沙群岛》排比仿写',
+      read:'鱼成群结队地在珊瑚丛中穿来穿去。有的全身布满彩色的条纹；有的头上长着一簇红缨；有的周身像插着好些扇子，游动的时候飘飘摇摇。',
+      point:'三个「有的……」，一句一个样子，把鱼群写得又多又奇。排比句要记住：结构相同、字数相近、内容不重复。',
+      task:'用「有的……；有的……；有的……」写一写课间操场上的同学，至少三个「有的」。',
+      ref:'下课了，操场上一下子热闹起来。有的同学在跳绳，绳子甩得像一道道彩虹；有的同学在踢毽子，毽子上下翻飞；有的同学围着花坛看蚂蚁搬家，蹲得腿都麻了。'
+    },
+    {
+      title:'《美丽的小兴安岭》四季仿写',
+      read:'春天，树木抽出新的枝条，长出嫩绿的叶子。夏天，树木长得葱葱茏茏，密密层层的枝叶把森林封得严严实实的。',
+      point:'按「春—夏—秋—冬」的顺序写，每个季节抓一个最突出的变化：春天「抽出」，夏天「封得严严实实」。顺序清楚，画面才不乱。',
+      task:'按季节顺序，写一写你家窗外那棵树一年四季的变化，每个季节至少 1 句话。',
+      ref:'春天，窗外的桃树冒出粉红的花苞，像撒了一树小星星。夏天，叶子长得又大又绿，把窗户遮出一片阴凉。秋天，叶子黄了，一片片飘下来，像一只只蝴蝶。冬天，树枝光秃秃的，挂着几颗红红的果子，等着小鸟来吃。'
+    },
+    {
+      title:'《大自然的声音》拟声仿写',
+      read:'风，是大自然的音乐家。他会在森林里演奏他的手风琴。当他翻动树叶，树叶便像歌手一样，唱出各种不同的歌曲。',
+      point:'把风当成人来写（拟人），再给声音找到具体的「乐器」——手风琴、树叶歌手。写声音时，最好写出「谁 + 在哪儿 + 发出什么声音」。',
+      task:'选一种大自然的声音（雨、雷、小溪、鸟），用拟人的方法写 3 句话。',
+      ref:'雨，是大自然的鼓手。他会在屋顶上敲起小鼓，咚哒咚哒，越敲越急。落在荷叶上时，他又变成一位轻轻的歌手，沙沙沙，沙沙沙，唱着夏天的歌。'
+    },
+    {
+      title:'《铺满金色巴掌的水泥道》比喻仿写',
+      read:'水泥道像铺上了一块彩色的地毯。这是一块印着落叶图案的、闪闪发光的地毯，从脚下一直铺到很远很远的地方。',
+      point:'先比喻成「地毯」，再一步步补充「印着落叶图案」「闪闪发光」「一直铺到很远」，比喻之后继续往下写细节，句子才会越长越好看。',
+      task:'把一条小路（或一片草地）比作一样东西，再补两个细节，写 2～3 句话。',
+      ref:'小区里的石板路像一条灰白色的长带子。带子上落满了金黄的银杏叶，一片挨着一片，从楼门口一直铺到花坛边，踩上去沙沙作响。'
+    },
+    {
+      title:'《秋天的雨》色彩仿写',
+      read:'你看，它把黄色给了银杏树，黄黄的叶子像一把把小扇子，扇哪扇哪，扇走了夏天的炎热。',
+      point:'「把颜色给谁」+「像什么」+「做什么」，三句话一气呵成，颜色就活了。仿写时可以换颜色、换植物、换动作。',
+      task:'用「它把＿＿色给了＿＿，＿＿的＿＿像＿＿，＿＿哪＿＿哪，＿＿」的句式写一句话。',
+      ref:'它把红色给了枫树，红红的枫叶像一枚枚邮票，飘哇飘哇，邮来了秋天的凉爽。'
+    },
+    {
+      title:'《我们奇妙的世界》天空仿写',
+      read:'天空呈粉红色，慢慢地变成了蔚蓝色，太阳就像一个大火球一样升起来了。',
+      point:'写景要写出「变化」：颜色由粉红到蔚蓝，太阳从「升起来」到「像大火球」。用「慢慢地」「一样」这些词，画面就有了过程。',
+      task:'观察一次日出或日落，按时间顺序写出天空颜色的变化，至少写出两种颜色。',
+      ref:'天边先是淡淡的橘黄色，慢慢地染成了杏红色，最后整片天空都变成了玫瑰色。太阳像一个害羞的孩子，一点一点从楼顶后面探出头来。'
+    },
+    {
+      title:'《火烧云》变化仿写',
+      read:'这地方的火烧云变化极多，一会儿红彤彤的，一会儿金灿灿的，一会儿半紫半黄，一会儿半灰半百合色。',
+      point:'连用四个「一会儿」，写出颜色变化又快又多；每个「一会儿」后面的颜色词都不重复。写变化类文章，最忌只用「很漂亮」三个字。',
+      task:'用四个「一会儿」写一写云（或烟花、晚霞）的形状或颜色变化。',
+      ref:'天上的云变化极多，一会儿像一群绵羊，一会儿像一条长龙，一会儿像一座雪山，一会儿又散成一片片鱼鳞。'
+    }
+  ];
+  let _jdPage = 0;
+  function ywJingdu(){
+    const per = 2;
+    const pages = Math.max(1, Math.ceil(YW_JINGDU.length / per));
+    if(_jdPage < 0 || _jdPage >= pages) _jdPage = 0;
+    const slice = YW_JINGDU.slice(_jdPage*per, _jdPage*per + per);
+    const cards = slice.map((it, ii)=>{
+      const idx = _jdPage*per + ii;
+      const jk = 'jd' + idx + '#' + (it.title || '');
+      const done = (window.Store && window.Store.isReadingRead) ? window.Store.isReadingRead('ywJingdu', jk) : false;
+      return `
+      <div class="jd-card">
+        <div class="jd-card-h"><span class="jd-no">${idx+1}</span><span class="jd-title">${esc(it.title||'')}</span><span class="jd-tag">仿写例题</span></div>
+        <div class="jd-sec jd-read"><div class="jd-k">📖 例文精读</div><div class="jd-v">${esc(it.read||'')}</div></div>
+        <div class="jd-sec jd-point"><div class="jd-k">🔍 精读点拨</div><div class="jd-v">${esc(it.point||'')}</div></div>
+        <div class="jd-sec jd-task"><div class="jd-k">✍️ 仿写题</div><div class="jd-v">${esc(it.task||'')}</div></div>
+        <details class="jd-ref"><summary>查看参考仿写</summary><div class="jd-v">${esc(it.ref||'')}</div></details>
+        <div class="sc-checkin-row">
+          <button type="button" class="sc-checkin-btn${done?' checked':''}" data-jd-checkin="${esc(jk)}" title="${done?'已完成（点击取消，扣回 1⭐）':'完成仿写 +1⭐'}">${done?'✅已完成':'□完成仿写'}</button>
+        </div>
+      </div>`;
+    }).join('');
+    return `<div class="zx-wrap jd-wrap">
+      <div class="zx-head">✍️ 精读仿写 <span class="zx-count">共 ${YW_JINGDU.length} 题 · 每完成 1 题 +1⭐</span></div>
+      <div class="jd-grid">${cards}</div>
+      ${ywPager(_jdPage, pages, '每页 2 题')}
+    </div>`;
+  }
 
   // ===== R251-3：作文专项「专项知识」（按 3 大分类导入 docx 内容）=====
   let _zxCat = 0;
@@ -30581,6 +31035,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       // R250-3：看图写话内容页已整体移除
       case 'sucai':    html = ywSucai(pg); break;
       case 'zxzs':     html = ywZhuanxiang(); break; // R251-3：作文专项「专项知识」
+      case 'jingdu':   html = ywJingdu(); break;     // R312-6：作文专项「精读仿写」
       case 'gushi':    html = ywGushi(pg); break;
       case 'wenyan':   html = ywWenyan(pg); break;
       default:         html = '';
@@ -30635,6 +31090,32 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
             btn.textContent = '✅已学';
             btn.title = '已打卡（点击取消，扣回 '+S.getTaskStars('sc')+'⭐）';
             toast('🎉 专项知识打卡 +'+S.getTaskStars('sc')+'⭐');
+          }
+        });
+      });
+    }
+    // R312-6：精读仿写 —— 每完成 1 题 +1⭐（可撤销，走阅读打卡同一份持久化）
+    if(key === 'jingdu'){
+      slotBody.querySelectorAll('[data-jd-checkin]').forEach(btn=>{
+        if(btn._jdCkBound) return; btn._jdCkBound = true;
+        btn.addEventListener('click', (e)=>{
+          e.stopPropagation();
+          const k = btn.getAttribute('data-jd-checkin') || '';
+          const JD_STAR = 1;
+          if(window.Store.isReadingRead('ywJingdu', k)){
+            window.Store.unmarkReadingRead('ywJingdu', k);
+            addStars(-JD_STAR);
+            btn.classList.remove('checked');
+            btn.textContent = '□完成仿写';
+            btn.title = '完成仿写 +' + JD_STAR + '⭐';
+          } else {
+            window.Store.markReadingRead('ywJingdu', k);
+            addStars(JD_STAR);
+            btn.classList.add('checked');
+            btn.textContent = '✅已完成';
+            btn.title = '已完成（点击取消，扣回 ' + JD_STAR + '⭐）';
+            playCheckinSound();
+            toast('✍️ 精读仿写完成 +' + JD_STAR + '⭐');
           }
         });
       });
@@ -41162,28 +41643,42 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     if(!lines.length) return '<div class="mex-step-empty">（这道题还没有录入分步解题思路）</div>';
     return '<ol class="mex-steps">' + lines.map(l=>'<li>' + esc(l) + '</li>').join('') + '</ol>';
   }
-  // R249-1：练习题首页 = 题库入口按键 + 当日随机抽取的一道题（作答 / 批改 / 答对打卡 +1⭐）
+  // R312-7：题目正文渲染 —— [[IMG:path]] 转成图片，其余文字转义（题目只展示题目，不含答案）
+  function mexQHtml(q){
+    const s = String(q||'');
+    const parts = [];
+    const re = /\[\[IMG:([^\]]+)\]\]/g;
+    let last = 0, m;
+    while((m = re.exec(s))){
+      parts.push(esc(s.slice(last, m.index)));
+      parts.push('<img class="mex-q-img" src="' + esc(String(m[1]||'').trim()) + '" alt="题目配图" loading="lazy">');
+      last = m.index + m[0].length;
+    }
+    parts.push(esc(s.slice(last)));
+    return parts.join('').trim();
+  }
+  // R312-7：练习题首页 = 题库入口 + 当日一题（只展示题目 → 提交 → 右侧出现「正确答案」）
   function mexDailyCardHtml(it){
     const id = String(it.id||'');
-    // R248-1：答案与判定结果都落库，刷新后解答区、答题框、打卡状态一起还原
-    const ansText = (_mexOpen[id] && _mexOpen[id].ans != null) ? _mexOpen[id].ans : String(it.ans || '');
-    const open = !!_mexOpen[id] || !!String(it.ans || '');
+    const submitted = !!it.submitted;
+    const draft = _mexDrafts[id] != null ? _mexDrafts[id] : String(it.ans || '');
     const done = mexCorrect(id);
+    const srcTag = it.src
+      ? `<span class="mex-src">📚 ${esc(it.src)}${it.type ? (' · ' + esc(it.type)) : ''}</span>` : '';
     return `<div class="mex-card mex-daily-card${done?' is-checked':''}">
       <div class="mex-card-h">
         <span class="mex-daily-badge">📅 今日一题</span>
-        <span class="mex-q">${esc(it.q||'未命名题目')}</span>
+        ${srcTag}
       </div>
+      <div class="mex-q mex-q-body">${mexQHtml(it.q) || '未命名题目'}</div>
       <div class="mex-answer-row">
-        <input type="text" class="mex-ans" data-mex-ans="${esc(id)}" value="${esc(_mexDrafts[id] != null ? _mexDrafts[id] : String(it.ans||''))}" placeholder="填写你的答案，再点「批改」">
-        <button type="button" class="mex-btn mex-grade" data-mex-act="grade" data-mex-id="${esc(id)}">✅ 批改</button>
-        <button type="button" class="mex-btn mex-check${done?' is-done':''}" data-mex-act="check" data-mex-id="${esc(id)}" title="${done?'已打卡，点击撤销并扣回 1⭐':'答对本题后打卡 +1⭐'}">${done?'✅ 已打卡 +1⭐ · 点击撤销':'🎯 答对打卡 +1⭐'}</button>
+        <input type="text" class="mex-ans" data-mex-ans="${esc(id)}" value="${esc(draft)}" placeholder="写下你的答案，再点「提交」">
+        <button type="button" class="mex-btn mex-grade" data-mex-act="grade" data-mex-id="${esc(id)}">✅ 提交</button>
+        ${submitted ? `<button type="button" class="mex-btn mex-answer-btn" data-mex-act="answer" data-mex-id="${esc(id)}" title="查看正确答案与完整解题过程">📖 正确答案</button>` : ''}
       </div>
-      ${open ? `<div class="mex-result">
-        <div class="mex-result-h">📌 标准答案：<b>${esc(it.a||'—')}</b><span class="mex-you">你的答案：${esc(ansText || '—')}</span></div>
-        <div class="mex-steps-h">🧩 完整解题步骤</div>
-        ${mexStepsHtml(it.steps)}
-      </div>` : ''}
+      ${submitted ? (done
+        ? `<button type="button" class="mex-submit-note mex-undo" data-mex-act="check" data-mex-id="${esc(id)}" title="点击撤销本题打卡并扣回 1⭐">✅ 本题已打卡 +1⭐ · 点击撤销</button>`
+        : `<div class="mex-submit-note">📌 已提交，点右侧「正确答案」查看解题过程与答案</div>`) : ''}
     </div>`;
   }
   // R249-1：题库弹窗 —— 所有新增 / 删除题目操作都在题库内执行
@@ -41208,6 +41703,24 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       </div>
       <div class="mex-bank-list">${rows}</div>`;
   }
+  // R312-7：「正确答案」弹窗 —— 展示标准答案 + 完整解题过程（仅提交后可见）
+  function openMexAnswer(id){
+    const it = mexItems().filter(x=>String(x.id)===String(id))[0];
+    if(!it) return;
+    const qEl = document.getElementById('mexAnswerQ');
+    const aEl = document.getElementById('mexAnswerA');
+    const sEl = document.getElementById('mexAnswerSteps');
+    const mEl = document.getElementById('mexAnswerMine');
+    if(qEl) qEl.innerHTML = mexQHtml(it.q) || '—';
+    if(aEl) aEl.textContent = String(it.a || '见解题过程');
+    if(sEl) sEl.innerHTML = mexStepsHtml(it.steps);
+    if(mEl){
+      const mine = String(it.ans || '').trim();
+      mEl.textContent = mine ? ('你的答案：' + mine + (it.ok ? ' ✅ 正确' : ' ✗ 再想一想')) : '你的答案：（未填写）';
+      mEl.className = 'mex-answer-mine' + (it.ok ? ' is-ok' : '');
+    }
+    showModal('#modalMexAnswer');
+  }
   function renderMathExercise(){
     const pane = document.getElementById('leiduExercisePane');
     if(!pane) return;
@@ -41226,7 +41739,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       dailyHtml = mexDailyCardHtml(bank[idx]);
     }
     pane.innerHTML = `<div class="mex-wrap">
-      <div class="mex-head"><span class="mex-title">✏️ 练习题</span><button type="button" class="mex-btn mex-bank-btn" data-mex-act="bank">📚 题库（${bank.length}）</button><span class="mex-hint">每日从题库随机抽一题作答 · 答对打卡 +1⭐（可撤销，刷新不丢）</span></div>
+      <div class="mex-head"><span class="mex-title">✏️ 乐读练习题</span><button type="button" class="mex-btn mex-bank-btn" data-mex-act="bank">📚 题库（${bank.length}）</button><span class="mex-hint">每日从题库随机抽一题作答 · 提交后查看正确答案 · 答对打卡 +1⭐（可撤销，刷新不丢）</span></div>
       <div class="mex-daily">${dailyHtml}</div>
     </div>`;
   }
@@ -41280,16 +41793,20 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       const arr = mexItems();
       const hit = arr.filter(x=>String(x.id)===String(id))[0];
       const correct = !!(hit && val && String(hit.a||'').trim() === val);
-      // R248-1：把作答与判定结果落库，刷新后解答区/打卡状态一并还原
-      if(hit){ hit.ans = val; hit.ok = correct; mexSave(arr); }
+      // R312-7：提交即记录「已提交 / 作答 / 对错」，页面只留题目与「正确答案」入口，不再内联展开答案
+      if(hit){ hit.ans = val; hit.ok = correct; hit.submitted = true; mexSave(arr); }
       _mexDrafts[String(id)] = val;
       _mexOpen[String(id)] = { ans: val };
       // 每答对一题自动打卡 +1⭐（同一题幂等，不重复发放）
       let rewarded = false;
       if(correct && !mexCorrect(id)){ const r = mexMark(id, true); rewarded = !!(r && r.ok); }
       renderMathExercise();
-      if(correct) toast(rewarded ? '🎉 答对啦！已打卡 +1⭐，下面是完整解题步骤' : '🎉 答对啦！下面是完整解题步骤');
-      else toast('📖 已展示标准答案与完整解题步骤，对照看看～');
+      if(correct) toast(rewarded ? '🎉 答对啦！已打卡 +1⭐，点「正确答案」看完整解题过程' : '🎉 答对啦！点「正确答案」看完整解题过程');
+      else toast('📌 已提交，点右侧「正确答案」核对答案与解题过程');
+      return;
+    }
+    if(act === 'answer'){
+      openMexAnswer(b.getAttribute('data-mex-id'));
       return;
     }
     if(act === 'check'){
@@ -42241,17 +42758,21 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       const passageAttr = (kind==='enPassage' && (it.en||it.body))
         ? ` data-ri-passage="${esc(it.title)}" data-ri-passage-txt="${esc(mainText)}" data-state="idle"` : '';
       // R206-3：打卡键移到本卡标题行右端（原为卡片右下角独立容器）
+      // R312-4：古诗词鉴赏卡内从左至右 = 古诗 / （诗词大意 + 创作背景）/ 赏析
+      const poemCols = isPoem
+        ? `<div class="ri-poem-cols">
+            <div class="ri-poem-col ri-poem-col-main">${bodyHtml}</div>
+            <div class="ri-poem-col ri-poem-col-mid">${poemMeaningHtml}${poemBgHtml}</div>
+            <div class="ri-poem-col ri-poem-col-ana">${analysisHtml}</div>
+          </div>`
+        : '';
       return `<div class="reading-item ${enCls} ${isChecked?'is-checked':''}"${passageAttr}>
         <div class="ri-head-row">
           <div class="ri-title">${esc(it.title)} ${userTag}</div>
           ${checkinBtn}
         </div>
         ${it.meta?`<div class="ri-meta">${esc(it.meta)}</div>`:''}${catTagHtml}
-        ${bodyHtml}
-        ${translationHtml}
-        ${poemMeaningHtml}
-        ${poemBgHtml}
-        ${analysisHtml}
+        ${isPoem ? poemCols : (bodyHtml + translationHtml + poemMeaningHtml + poemBgHtml + analysisHtml)}
       </div>`;
     }).join('');
   }
@@ -44928,8 +45449,8 @@ function renderKMAdmin(){
     if(pager) pager.innerHTML = '';
     const items = xsexItems();
     const hint = $('#xsSummaryHint');
-    if(hint) hint.textContent = '📝 学而思练习 · 共 ' + items.length + ' 条记录（课堂练习 / 课前测 / 各类测试记录）';
-    const types = ['课堂练习','课前测','单元测试','期中/期末','其他测试记录'];
+    if(hint) hint.textContent = '📝 学而思练习 · 共 ' + items.length + ' 条记录（课堂练习 / 各类测试记录）';
+    const types = ['课堂练习','单元测试','期中/期末','其他测试记录'];  // R312-8：「课前测」已独立成子板块，此处不再提供该按键
     const cards = items.length ? items.map(it=>{
       const imgs = Array.isArray(it.imgs) ? it.imgs : (it.img ? [it.img] : []);
       const d = it.at ? new Date(Number(it.at)) : null;
@@ -44951,7 +45472,7 @@ function renderKMAdmin(){
     target.innerHTML = `<div class="xsex-wrap">
       <div class="xsex-head">
         <span class="xsex-title">📝 学而思练习</span>
-        <span class="xsex-hint">课堂练习 · 课前测 · 各类测试记录，支持新增 / 删除题目与图片导入</span>
+        <span class="xsex-hint">课堂练习 · 各类测试记录，支持新增 / 删除题目与图片导入（课前测已独立为左侧子板块）</span>
       </div>
       <div class="xsex-add">
         <input type="text" class="xsex-input" id="xsexTitle" maxlength="60" placeholder="题目 / 练习名称（如 第 3 课课堂练习）">
@@ -45042,6 +45563,13 @@ function renderKMAdmin(){
   let _xsNoteDelMode = false;   // 删除模式
   const XS_NOTE_READ = 'xsNote';       // 打卡 kind（readFlags 命名空间）
   const XS_NOTE_NS = 'xsnote::';       // 图片存储键前缀
+  /* R312-8：新增「课前测」子板块 —— 与课堂笔记同款排版（学年 + Lesson），数据与打卡独立命名空间 */
+  const XS_PRETEST_READ = 'xsPretest';
+  const XS_PRETEST_NS = 'xspretest::';
+  let _xsNoteMode = 'notes';           // 'notes' = 课堂笔记；'pretest' = 课前测
+  function xsModeIsPretest(){ return _xsNoteMode === 'pretest'; }
+  function xsReadKind(){ return xsModeIsPretest() ? XS_PRETEST_READ : XS_NOTE_READ; }
+  function xsModeLabel(){ return xsModeIsPretest() ? '课前测' : '课堂笔记'; }
   // R221-1：课堂笔记删除「单元」维度，改为「学年 + lesson」归档；null = 尚未选择（首屏自动落到第一项）
   let _xsNoteYear = null;
   let _xsNoteLesson = null;
@@ -45049,14 +45577,14 @@ function renderKMAdmin(){
   let _xsNoteAutoOpen = '';      // R244-5：重渲染后仅「学年管理」可自动展开 year 面板，lesson 一律不自动弹
   let _xsNoteOutsideBound = false;
   function xsNoteKey(){
-    return XS_NOTE_NS + (_xsNoteYear || '') + '|' + (_xsNoteLesson || '');
+    return (xsModeIsPretest() ? XS_PRETEST_NS : XS_NOTE_NS) + (_xsNoteYear || '') + '|' + (_xsNoteLesson || '');
   }
   function xsNoteItems(){
     return (window.Store && window.Store.getEnKeyPoints) ? window.Store.getEnKeyPoints(xsNoteKey()) : [];
   }
   function xsNoteDoneCount(items){
     const nk = xsNoteKey();
-    return (items||[]).filter((it,k)=> S.isReadingRead(XS_NOTE_READ, nk+'::'+k)).length;
+    return (items||[]).filter((it,k)=> S.isReadingRead(xsReadKind(), nk+'::'+k)).length;
   }
   // R221-1：首个可用学年 / lesson 作为默认选项；已选选项被删除时自动回落
   function xsNoteEnsureSelection(){
@@ -45077,7 +45605,7 @@ function renderKMAdmin(){
     const target = $('#xsSummaryList');
     if(!target) return;
     xsNoteEnsureSeed();
-    xsNoteEnsureSeedImages();
+    if(!xsModeIsPretest()) xsNoteEnsureSeedImages();   // R312-8：内置照片只播种到课堂笔记
     xsNoteEnsureSelection();
     const items = xsNoteItems();
     const total = items.length;
@@ -45087,7 +45615,7 @@ function renderKMAdmin(){
     const starStr = '⭐'.repeat(starN) + '☆'.repeat(5-starN);
     const nk = xsNoteKey();
     const cardsHtml = total ? items.map((it,k)=>{
-      const d = S.isReadingRead(XS_NOTE_READ, nk+'::'+k);
+      const d = S.isReadingRead(xsReadKind(), nk+'::'+k);
       return `
         <div class="kp-img-card${d?' is-checked':''}" data-xs-note-card="${k}" title="${_xsNoteDelMode?'点击删除这张图片':'点击图片放大查看内容'}">
           <img class="kp-img" src="${esc(it.img)}" alt="${esc(it.t||'课堂笔记')}" loading="lazy" decoding="async" />
@@ -45097,14 +45625,14 @@ function renderKMAdmin(){
             <button class="kp-check-btn${d?' is-done':''}" data-xs-note-check="${k}">${d?'✅ 取消打卡':'□ 打卡'}</button>
           </div>
         </div>`;
-    }).join('') : '<div class="kp-empty">这个学年 · Lesson 还没有课堂笔记图片，点上面「➕ 增加」导入课堂笔记照片吧～</div>';
+    }).join('') : '<div class="kp-empty">这个学年 · Lesson 还没有' + xsModeLabel() + '记录，点上面「➕ 新增' + xsModeLabel() + '」导入照片吧～</div>';
     target.classList.remove('xs-list-grammar','xs-list-raz');
     target.classList.add('notes-mode');
     target.innerHTML = `
-      <div class="yw-comp-head xs-note-head">课堂笔记
+      <div class="yw-comp-head xs-note-head">${xsModeLabel()}
         <span class="xs-note-head-actions">
-          <button type="button" class="pbtn small" data-xs-note-add="1" title="导入课堂笔记照片（相册 / 文件夹）">➕ 新增笔记</button>
-          <button type="button" class="pbtn small${_xsNoteDelMode?' is-on':''}" data-xs-note-del-mode="1" title="进入删除模式后可点击图片删除">${_xsNoteDelMode?'🗑 退出删除':'🗑 删除笔记'}</button>
+          <button type="button" class="pbtn small" data-xs-note-add="1" title="导入${xsModeLabel()}照片（相册 / 文件夹）">➕ 新增${xsModeLabel()}</button>
+          <button type="button" class="pbtn small${_xsNoteDelMode?' is-on':''}" data-xs-note-del-mode="1" title="进入删除模式后可点击图片删除">${_xsNoteDelMode?'🗑 退出删除':'🗑 删除'+xsModeLabel()}</button>
         </span>
       </div>
       <div class="math-filter-bar xs-note-filter-bar">
@@ -45168,7 +45696,7 @@ function renderKMAdmin(){
         const vImg = document.getElementById('kpViewerImg');
         const vCap = document.getElementById('kpViewerCap');
         if(vImg) vImg.src = img.getAttribute('src');
-        if(vCap) vCap.textContent = (cap && cap.textContent) ? cap.textContent : '课堂笔记图片';
+        if(vCap) vCap.textContent = (cap && cap.textContent) ? cap.textContent : (xsModeLabel() + '图片');
         showModal('#modalKpViewer');
       });
     });
@@ -45206,13 +45734,13 @@ function renderKMAdmin(){
     const items = xsNoteItems();
     if(!items.length) return;
     const nk = xsNoteKey();
-    const allDone = ()=> items.every((it,k)=> S.isReadingRead(XS_NOTE_READ, nk+'::'+k));
+    const allDone = ()=> items.every((it,k)=> S.isReadingRead(xsReadKind(), nk+'::'+k));
     const was = allDone();
     const key = nk + '::' + idx;
-    if(S.isReadingRead(XS_NOTE_READ, key)){
-      S.unmarkReadingRead(XS_NOTE_READ, key);
+    if(S.isReadingRead(xsReadKind(), key)){
+      S.unmarkReadingRead(xsReadKind(), key);
     } else {
-      S.markReadingRead(XS_NOTE_READ, key);
+      S.markReadingRead(xsReadKind(), key);
       playCheckinSound();
     }
     const now = allDone();
@@ -45225,11 +45753,11 @@ function renderKMAdmin(){
     const list = xsNoteItems();
     const it = list[idx];
     const name = (it && it.t) ? it.t : ('第 ' + (idx+1) + ' 张');
-    openCustomModal('删除课堂笔记图片',
-      `确定删除「<b>${esc(name)}</b>」这张课堂笔记图片吗？<div style="margin-top:8px;color:#5b6b85;font-size:13px">删除后不可恢复，该图片的打卡记录也会一并清除。</div>`,
+    openCustomModal('删除' + xsModeLabel() + '图片',
+      `确定删除「<b>${esc(name)}</b>」这张${xsModeLabel()}图片吗？<div style="margin-top:8px;color:#5b6b85;font-size:13px">删除后不可恢复，该图片的打卡记录也会一并清除。</div>`,
       ()=>{
         const nk = xsNoteKey();
-        if(window.Store && window.Store.shiftEnKeyPointReads) window.Store.shiftEnKeyPointReads(nk, idx, XS_NOTE_READ);
+        if(window.Store && window.Store.shiftEnKeyPointReads) window.Store.shiftEnKeyPointReads(nk, idx, xsReadKind());
         if(window.Store && window.Store.delEnKeyPoint) window.Store.delEnKeyPoint(nk, idx);
         toast('🗑 已删除该图片');
         renderXsNotes();
@@ -45250,7 +45778,7 @@ function renderKMAdmin(){
         pending--;
         if(pending > 0) return;
         inp.value = '';
-        toast(added ? ('✅ 已导入 ' + added + ' 张课堂笔记图片') : '⚠️ 图片导入失败，请重试');
+        toast(added ? ('✅ 已导入 ' + added + ' 张' + xsModeLabel() + '图片') : '⚠️ 图片导入失败，请重试');
         if(added) renderXsNotes();
       };
       files.forEach(f=>{
@@ -45476,7 +46004,9 @@ function renderKMAdmin(){
     _uiMem('xsCat', xsCat); // R254-7：记住当前页签（下次进入直接回到这里）
     $$('.xs-summary-pane .xs-sub-tabs [data-xs-cat]').forEach(b=>b.classList.toggle('active', b.dataset.xsCat===xsCat));
     // R218-1：课堂笔记子板块（与「新世界·英语专区·重点知识」功能/交互完全一致）
-    if(xsCat === 'notes'){ renderXsNotes(); return; }
+    if(xsCat === 'notes'){ _xsNoteMode = 'notes'; renderXsNotes(); return; }
+    // R312-8：课前测（与课堂笔记同款：学年 + Lesson + 图片导入 + 打卡），位于课堂笔记与每日巩固之间
+    if(xsCat === 'pretest'){ _xsNoteMode = 'pretest'; renderXsNotes(); return; }
     // R247-3：学而思练习（独立板块：课堂练习 / 课前测 / 各类测试记录）
     if(xsCat === 'exercise'){ renderXsExercise(); return; }
     // V21-1：巩固打卡子板块 — 每日 10 题词汇默写（独立渲染，不占用词汇/语法分页）
@@ -45694,7 +46224,7 @@ function renderKMAdmin(){
            </div>`);
       return `<div class="xs-adv-card ${status} ${it.redo?'redo':''}" data-xs-cid="${esc(wid)}">
       <div class="xs-adv-no">
-        <span class="xs-adv-no-idx">第 ${i+1} 题${it.grammar?' 📐语法':''}</span>
+        <span class="xs-adv-no-idx">第 ${i+1} 题${it.pretest?' 🧪课前测':(it.grammar?' 📐语法':'')}</span>
         <span class="xs-adv-status ${ok?'ok':(answered?'bad':'todo')}">${statusTxt}</span>
         ${it.grammar && !isChild() && !it.fromSeed?`<span class="xs-adv-gram-ops"><button type="button" class="xs-adv-gram-op" data-xs-gram-edit="${esc(it.grammarId)}" title="修改此题">✎</button><button type="button" class="xs-adv-gram-op" data-xs-gram-del="${esc(it.grammarId)}" title="删除此题">✕</button></span>`:''}
       </div>
@@ -45710,12 +46240,14 @@ function renderKMAdmin(){
       </div>`;
     };
     // 按题序完整展示：默写中 + 待巩固 + 已答对（完成态原位显示）
-    let sepDone = false, sepGram = false;
+    let sepDone = false, sepGram = false, sepPre = false;
     const listHtml = daily.map((it,i)=>{
       let head = '';
       if(it.redo && !sepDone){ sepDone = true; head = `<div class="xs-adv-sep">🔁 昨日错题重做 — 做完也计入今日打卡</div>`; }
       // R59-3：语法默写题分隔条（第 11、12 题）
       if(it.grammar && !sepGram){ sepGram = true; head += `<div class="xs-adv-sep">📐 语法默写 — 看中文例句翻译，默写英文句子</div>`; }
+      // R312-9：语法默写之后的「课前测巩固」（每日 2 题）
+      if(it.pretest && !sepPre){ sepPre = true; head += `<div class="xs-adv-sep">🧪 课前测巩固 — 看中文提示，默写英文句子（每日 2 题）</div>`; }
       return head + cardHtml(it,i);
     }).join('');
     const editableCount = daily.filter(d=>!(rec.answered && rec.answered[d.wordId] === true)).length;
@@ -45982,7 +46514,9 @@ function renderKMAdmin(){
     const editId = String(window.xsBankEditId || '');
     const summary = window.xsBankSummary === 'summary';
     const daily = (S.xsBuildDailyWords && S.xsBuildDailyWords()) || [];
-    const todayIds = daily.filter(d => !!d.grammar === isG).map(d => String(d.wordId||'').replace(/^gq_/,''));
+    // R312-9：语法分区同时包含课前测题（kind='pretest'），词汇分区排除它们
+    const todayIds = daily.filter(d => isG ? (!!d.grammar || !!d.pretest) : (!d.grammar && !d.pretest))
+      .map(d => String(d.wordId||'').replace(/^(gq_|ptq_)/,''));
     const listHtml = slice.length ? slice.map((it,i)=>{
       const isToday = todayIds.indexOf(String(it.id)) >= 0;
       const isEditing = editMode && editId === String(it.id);
@@ -48843,6 +49377,7 @@ function renderKMAdmin(){
   /* R311-1.1：目标选择面板从独立弹窗下沉到编辑任务卡内、「已开启」行下方，
      随容器宽度自适应；再次点「选择目标」可收起。 */
   let _jumpInlineOpen = false;
+  let _syncJumpPicker = null;   // R312-1：编辑卡开关切换时同步三级联动面板可用态
   function _mountJumpPicker(inline){
     const p = document.getElementById('jumpPicker');
     if(!p) return;
@@ -48874,36 +49409,37 @@ function renderKMAdmin(){
     if(pick){ pick.setAttribute('aria-expanded','false'); pick.textContent = '选择目标 ›'; }
     _jumpInlineOpen = false;
   }
+  /* R312-1：编辑任务卡内删除「选择目标」按键 —— 三级联动设置卡默认常显在「已开启」下方。
+     已保存任务：改动即时写库；新增任务：先记草稿，保存任务时随任务一起落库。 */
+  let _tJumpDraftPage = '';
   function initTaskJumpEditor(task){
-    /* R306-2.6：单级下拉已下线 —— 跳转目标统一由三级联动组件设置，这里只回显当前落点 */
     const lab = document.getElementById('tJumpPageLabel');
-    const pick = document.getElementById('tJumpPickBtn');
     const want = (task && task.jumpPage) ? String(task.jumpPage) : '';
     if(lab){
       /* R311-2.1：未配置跳转目标时回显为空（不再显示默认兜底文案） */
       lab.textContent = want ? (taskJumpLabel(want) || want) : '';
       lab.title = want || '';
     }
-    if(pick){
-      pick.hidden = !editingTaskId;
-      if(!pick._bound){
-        pick._bound = true;
-        pick.onclick = ()=>{
-          if(!editingTaskId){ toast('请先保存任务，再设置跳转目标'); return; }
-          if(_jumpInlineOpen){ _collapseJumpInline(); return; }
-          openTaskInlinePick(editingTaskId);
-        };
-      }
-    }
-    _collapseJumpInline();
     _tJumpTouched = false;
     _tJumpOn = task ? (task.jumpEnabled !== false) : true;
+    _tJumpDraftPage = want;
     syncTaskJumpUI();
     const sw = document.getElementById('tJumpEnabled');
     if(sw && !sw._bound){
       sw._bound = true;
-      sw.onclick = ()=>{ _tJumpOn = !_tJumpOn; syncTaskJumpUI(); };
+      sw.onclick = ()=>{
+        _tJumpOn = !_tJumpOn; syncTaskJumpUI();
+        if(typeof _syncJumpPicker === 'function') _syncJumpPicker();
+      };
     }
+    /* 常显挂载：已保存任务直接以库内数据渲染；新增任务以草稿对象渲染（id 为空则不写库） */
+    const draft = task ? task : {
+      id: null,
+      name: (($('#tName') || {}).value || '新任务'),
+      jumpEnabled: _tJumpOn,
+      jumpPage: ''
+    };
+    _openJumpSetting(draft, true);
   }
   function openTaskEdit(task, presetSubject){
     editingTaskId = task? task.id : null;
@@ -49027,6 +49563,8 @@ function renderKMAdmin(){
         return !!_tJumpOn;
       })(),
       jumpPage: (function(){
+        /* R312-1：三级联动面板常显后，改动即记草稿；新增任务保存时随任务一起落库 */
+        if(_tJumpTouched) return String(_tJumpDraftPage || '');
         const cur = editingTaskId ? (S.load().tasks || []).find(x=>String(x.id)===String(editingTaskId)) : null;
         return cur ? String(cur.jumpPage || '') : '';
       })()
@@ -50151,12 +50689,15 @@ function renderKMAdmin(){
      二级：该板块下的子板块；三级：子板块下的三级页面
      二级无三级页面时，三级行隐藏并给出提示，保存后直接跳二级页面 */
   function openTaskJumpSetting(taskId){ return _openJumpSetting(taskId, false); }
-  /* R311-1.1：编辑任务弹窗内联入口 —— 面板展开在「已开启」行下方 */
+  /* R311-1.1：编辑任务弹窗内联入口 —— 面板展开在「已开启」行下方；R312-1 起默认常显 */
   function openTaskInlinePick(taskId){ return _openJumpSetting(taskId, true); }
-  function _openJumpSetting(taskId, inline){
-    const t = S.load().tasks.find(x=>String(x.id)===String(taskId));
+  function _openJumpSetting(taskOrId, inline){
+    /* R312-1：支持传入任务对象（新增任务尚未落库时用草稿对象渲染，不写库） */
+    const isDraft = !!taskOrId && typeof taskOrId === 'object';
+    const t = isDraft ? taskOrId : S.load().tasks.find(x=>String(x.id)===String(taskOrId));
     if(!t) return;
-    const cfg = S.getTaskJump(t);
+    const taskId = (t && t.id) ? t.id : null;
+    const cfg = isDraft ? { enabled: t.jumpEnabled !== false, page: String(t.jumpPage || '') } : S.getTaskJump(t);
     const tree = (S.TASK_JUMP_TREE || []).slice();
     const nameEl = $('#jumpTaskName');
     if(nameEl) nameEl.textContent = t.name || '未命名任务';
@@ -50272,26 +50813,31 @@ function renderKMAdmin(){
       return String(second.page);                        /* 二级 */
     }
     function sync(){
-      const off = !!(enEl && enEl.value === '0');
+      /* R312-1：内联态以编辑卡「已开启」开关为准；设置中心弹窗以弹窗下拉为准 */
+      const off = inline ? !_tJumpOn : !!(enEl && enEl.value === '0');
       if(gEl) gEl.disabled = off;
       if(pgEl) pgEl.disabled = off || !gEl.value;
       if(sbEl) sbEl.disabled = off || !gEl.value || !pgEl.value || !!(sbRow && sbRow.hidden);
     }
-    gEl.onchange = ()=>{ fillPages(navByKey(gEl.value), '', ''); sync(); };
-    pgEl.onchange = ()=>{ fillSubs(navByKey(gEl.value), ''); refreshPreview(); sync(); };
-    if(sbEl) sbEl.onchange = refreshPreview;
-    if(enEl) enEl.onchange = sync;
+    try{ _syncJumpPicker = sync; }catch(e){}
+    gEl.onchange = ()=>{ fillPages(navByKey(gEl.value), '', ''); sync(); doSave(true); };
+    pgEl.onchange = ()=>{ fillSubs(navByKey(gEl.value), ''); refreshPreview(); sync(); doSave(true); };
+    if(sbEl) sbEl.onchange = ()=>{ refreshPreview(); doSave(true); };
+    if(enEl) enEl.onchange = ()=>{ sync(); };
     sync();
 
-    function doSave(){
+    function doSave(silent){
       /* 内联保存以编辑卡开关状态为准；设置中心弹窗以弹窗下拉为准 */
       const enabled = inline ? !!_tJumpOn : (enEl ? (enEl.value === '1') : true);
       const page = currentJumpPage();
-      S.setTaskJump(taskId, { enabled, page });
-      /* R306-2.6：任务编辑弹窗若同屏打开，实时回显并标记「已在三级组件改过」 */
+      /* R312-1：内联常显卡改动即记录草稿；已保存任务立即写库，新增任务等保存时随任务落库 */
+      _tJumpDraftPage = page;
       _tJumpTouched = true;
+      if(taskId) S.setTaskJump(taskId, { enabled, page });
+      /* R306-2.6：任务编辑弹窗若同屏打开，实时回显并标记「已在三级组件改过」 */
       const lab = document.getElementById('tJumpPageLabel');
       if(lab){ lab.textContent = page ? (taskJumpLabel(page) || page) : ''; lab.title = page || ''; }
+      if(silent) return page;
       refreshSettingsTaskLists();
       const label = page ? (taskJumpLabel(page) || page) : '';
       toast(enabled ? ('🧭 已开启跳转：' + (t.name||'') + (label ? (' → ' + label) : '')) : ('🧭 已关闭跳转：' + (t.name||'')));
@@ -50299,10 +50845,6 @@ function renderKMAdmin(){
     }
     const save = $('#btnJumpSave');
     if(save) save.onclick = ()=>{ doSave(); hideModal('#modalTaskJump'); };
-    const inlineSave = $('#btnJumpInlineSave');
-    if(inlineSave) inlineSave.onclick = ()=>{ doSave(); _collapseJumpInline(); };
-    const inlineClose = $('#btnJumpInlineClose');
-    if(inlineClose) inlineClose.onclick = ()=>{ _collapseJumpInline(); };
 
     if(inline){
       _mountJumpPicker(true);
