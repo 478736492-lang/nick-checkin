@@ -17653,7 +17653,9 @@ window.R298_TASK_PLAN = {
     '鸡兔同笼综合': ['jitu_00.jpg', 'jitu_01.jpg', 'jitu_02.jpg', 'jitu_03.jpg', 'jitu_04.jpg', 'jitu_05.jpg', 'jitu_06.jpg', 'jitu_07.jpg', 'jitu_08.jpg', 'jitu_09.jpg', 'jitu_10.jpg', 'jitu_11.jpg', 'jitu_12.jpg', 'jitu_13.jpg', 'jitu_14.jpg', 'jitu_15.jpg', 'jitu_16.jpg', 'jitu_17.jpg'],
     '归一问题': ['guiyi_00.jpg', 'guiyi_01.jpg', 'guiyi_02.jpg', 'guiyi_03.jpg', 'guiyi_04.jpg', 'guiyi_05.jpg', 'guiyi_06.jpg', 'guiyi_07.jpg', 'guiyi_08.jpg', 'guiyi_09.jpg', 'guiyi_10.jpg', 'guiyi_11.jpg', 'guiyi_12.jpg', 'guiyi_13.jpg', 'guiyi_14.jpg', 'guiyi_15.jpg', 'guiyi_16.jpg', 'guiyi_17.jpg'],
     // R252-6：第九讲「角的认识与计算」19 张配图（00=知识笔记「第9讲 角的认识与计算」，01..18=基础巩固 / 能力提升 / 学以致用等练习页）
-    '角的认识与计算': ['jiaodu_00.jpg', 'jiaodu_01.jpg', 'jiaodu_02.jpg', 'jiaodu_03.jpg', 'jiaodu_04.jpg', 'jiaodu_05.jpg', 'jiaodu_06.jpg', 'jiaodu_07.jpg', 'jiaodu_08.jpg', 'jiaodu_09.jpg', 'jiaodu_10.jpg', 'jiaodu_11.jpg', 'jiaodu_12.jpg', 'jiaodu_13.jpg', 'jiaodu_14.jpg', 'jiaodu_15.jpg', 'jiaodu_16.jpg', 'jiaodu_17.jpg', 'jiaodu_18.jpg']
+    '角的认识与计算': ['jiaodu_00.jpg', 'jiaodu_01.jpg', 'jiaodu_02.jpg', 'jiaodu_03.jpg', 'jiaodu_04.jpg', 'jiaodu_05.jpg', 'jiaodu_06.jpg', 'jiaodu_07.jpg', 'jiaodu_08.jpg', 'jiaodu_09.jpg', 'jiaodu_10.jpg', 'jiaodu_11.jpg', 'jiaodu_12.jpg', 'jiaodu_13.jpg', 'jiaodu_14.jpg', 'jiaodu_15.jpg', 'jiaodu_16.jpg', 'jiaodu_17.jpg', 'jiaodu_18.jpg'],
+    // R310-6.1：第十讲「三角形认识」18 张课堂讲义图片（00=知识笔记「第10讲 三角形认识」，01..17=三边关系 / 基础巩固 / 能力提升 / 学以致用等练习页）
+    '三角形认识': ['sanjiao_00.jpg', 'sanjiao_01.jpg', 'sanjiao_02.jpg', 'sanjiao_03.jpg', 'sanjiao_04.jpg', 'sanjiao_05.jpg', 'sanjiao_06.jpg', 'sanjiao_07.jpg', 'sanjiao_08.jpg', 'sanjiao_09.jpg', 'sanjiao_10.jpg', 'sanjiao_11.jpg', 'sanjiao_12.jpg', 'sanjiao_13.jpg', 'sanjiao_14.jpg', 'sanjiao_15.jpg', 'sanjiao_16.jpg', 'sanjiao_17.jpg']
   };
   // R230：默认承载卡名（「2026 春二 A+」）对外暴露，供 UI 在「未显式选板块」时回落到该卡
   function getDefaultMathGroupName(){ return MATH_GROUP_DEFAULT; }
@@ -17829,8 +17831,8 @@ window.R298_TASK_PLAN = {
     {id:uid(),name:'10:00前睡觉',subject:'作息',type:'必做任务',stars:2,minutes:0,desc:'每晚10点前上床睡觉',standard:'10:00前熄灯入睡',enabled:true,weekendOnly:false},
     // 运动
     {id:uid(),name:'篮球课',subject:'运动',type:'必做任务',minutes:40,desc:'篮球训练课',standard:'完成训练内容',enabled:true,weekendOnly:false},
-    // 围棋（V38.3：移至选做，每周至少3局）
-    {id:uid(),name:'围棋对弈',subject:'围棋',type:'选做拓展任务',minutes:25,desc:'每周至少3局',standard:'每周完成3局对弈',enabled:true,weekendOnly:false, frequency:'weekly', needCount:3},
+    // 围棋（V38.3：移至选做；R310-5.1：按家长要求删除 desc / standard 文字描述）
+    {id:uid(),name:'围棋对弈',subject:'围棋',type:'选做拓展任务',minutes:25,desc:'',standard:'',enabled:true,weekendOnly:false, frequency:'weekly', needCount:3},
     // V39：家务小帮手（原习惯家务；仅保留任务名，下方说明删除）
     // R136-3：按家长要求移除「洗碗」「扫地」两项（R136 起不再作为默认任务；存量用户由下方迁移一并移除）
     {id:uid(),name:'倒垃圾',subject:'家务小帮手',type:'选做拓展任务',minutes:5,enabled:true,weekendOnly:false},
