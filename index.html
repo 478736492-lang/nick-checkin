@@ -10846,6 +10846,238 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
 .mex-answer-k{font-size:12px;font-weight:800;color:var(--tone-700)}
 .mex-answer-key b{font-size:15px}
 
+/* ============================================================
+   R314-A5：错题订正复盘 —— 字数提示 + 图片凭证上传（拍照 / 相册多张）
+   ============================================================ */
+.r314-cc{float:right;font-size:11px;font-weight:800;color:var(--tone-700);background:var(--tone-075);border:1px solid var(--tone-200);border-radius:999px;padding:1px 8px;line-height:1.6}
+.r314-proof{margin-top:10px;border:1.5px dashed var(--tone-200);border-radius:12px;padding:10px 12px;background:var(--tone-025)}
+.r314-proof-head{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12.5px;font-weight:800;color:var(--tone-800)}
+.r314-proof-count{flex:0 0 auto;font-size:11.5px;font-weight:800;color:var(--tone-700);background:#fff;border:1px solid var(--tone-200);border-radius:999px;padding:1px 9px}
+.r314-proof-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(86px,1fr));gap:8px;margin-top:9px}
+.r314-proof-empty{grid-column:1/-1;font-size:11.5px;line-height:1.7;color:var(--muted);background:#fff;border:1px solid var(--tone-150);border-radius:10px;padding:9px 11px}
+.r314-proof-item{position:relative;width:100%;aspect-ratio:1;border-radius:10px;overflow:hidden;border:1.5px solid var(--tone-200);background:#fff}
+.r314-proof-item img{width:100%;height:100%;object-fit:cover;display:block}
+.r314-proof-del{position:absolute;top:3px;right:3px;width:22px;height:22px;border-radius:50%;border:none;background:rgba(20,35,60,.72);color:#fff;font-size:14px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.r314-proof-del:hover{background:#d1435b}
+.r314-proof-acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.r314-proof-acts .pbtn{min-height:36px;padding:0 14px;font-size:12.5px;font-weight:800}
+.r314-proof-acts #wProofClear{color:#b5354b;border-color:#f0c2ca;background:#fff5f7}
+
+/* ============================================================
+   R314-A6：移动端 / 小屏适配 —— 一周打卡计划、本月日历横向滚动；
+   卡片与字号自适应手机、平板、网页端
+   ============================================================ */
+@media (max-width: 900px){
+  /* 一周打卡计划：表格保持可读宽度，超出部分横向滚动（不再挤压变形 / 溢出被裁） */
+  #weekPlanMount{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+  #weekPlanMount > *{min-width:720px}
+  #weekPlanMount table{min-width:720px}
+  /* 本月日历：7 列保持可点击面积，超出横向滚动 */
+  #calGrid{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch}
+  #calGrid.empty{min-width:0}
+  .wp-week-chart{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;min-width:0}
+  .wp-week-chart .week-bar{min-width:34px}
+  /* 弹窗跟随视口，不再出现内部横向溢出 */
+  #modalWeekPlan .modal-box{max-width:calc(100vw - 12px);width:calc(100vw - 12px)}
+  #modalWeekPlan .nw-sub-body{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  /* 卡片与字号自适应 */
+  .wp-card{padding:12px 12px}
+  .wp-task-name{font-size:13px}
+  .wp-task-sub{font-size:11.5px}
+  .page-title h2{font-size:17px}
+  .modal-box{max-width:calc(100vw - 16px)}
+  .r314-proof-list{grid-template-columns:repeat(auto-fill,minmax(74px,1fr))}
+}
+@media (max-width: 560px){
+  .main-wrap{padding:10px 10px 20px}
+  .wp-grid{gap:10px}
+  .wp-mini-head{font-size:13px}
+  .wp-week-chart{height:104px}
+  .sidebar{width:92px;flex-basis:92px}
+  .nav-btn .lbl{font-size:11px}
+  .r314-proof-acts .pbtn{flex:1 1 30%;min-width:96px}
+}
+/* 网页端大屏：字号与卡片略微放大，保持可读性 */
+@media (min-width: 1400px){
+  .main-wrap{padding:18px 26px 30px}
+  .wp-task-name{font-size:14.5px}
+}
+
+/* ============================================================
+   R314-B/C/D：成长中心（学情报告 / 徽章成就 / 星星商城 /
+   单元目标 / 摘抄积累本 / 作息健康）+ 打卡主题动画
+   ============================================================ */
+.page-growth .page-title-main{display:flex;flex-direction:column;gap:2px}
+.r314-sub{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.2px}
+.r314-star-pill{display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:900;color:#8a5a00;background:linear-gradient(180deg,#fff6d8,#ffe9a8);border:1px solid #f2d488;border-radius:999px;padding:5px 14px;box-shadow:0 2px 6px rgba(190,150,40,.15)}
+.r314-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.r314-tab{border:1px solid var(--tone-200);background:#fff;color:var(--tone-800);font-size:12.5px;font-weight:800;padding:7px 14px;border-radius:999px;cursor:pointer;transition:.15s;white-space:nowrap}
+.r314-tab:hover{border-color:var(--tone-400);background:var(--tone-025)}
+.r314-tab.active{background:var(--tone-600);border-color:var(--tone-600);color:#fff;box-shadow:0 3px 10px rgba(30,58,138,.18)}
+.r314-panel{display:flex;flex-direction:column;gap:12px}
+.r314-card{background:#fff;border:1px solid var(--tone-150);border-radius:16px;padding:14px 16px;box-shadow:0 4px 14px rgba(30,58,138,.06)}
+.r314-card-head{font-size:13.5px;font-weight:900;color:var(--tone-900);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.r314-empty{font-size:12px;color:var(--muted);background:var(--tone-025);border:1px dashed var(--tone-200);border-radius:10px;padding:12px;text-align:center}
+
+/* 报告 */
+.r314-scope-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.r314-scope{border:1px solid var(--tone-200);background:#fff;font-size:12.5px;font-weight:800;color:var(--tone-800);padding:6px 14px;border-radius:999px;cursor:pointer}
+.r314-scope.active{background:var(--tone-100);border-color:var(--tone-400);color:var(--tone-900)}
+.r314-scope-range{margin-left:auto;font-size:11.5px;font-weight:700;color:var(--muted)}
+.r314-kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
+.r314-kpi{background:linear-gradient(180deg,var(--tone-025),var(--tone-050));border:1px solid var(--tone-150);border-radius:14px;padding:12px 10px;text-align:center}
+.r314-kpi-v{font-size:24px;font-weight:900;color:var(--tone-800);line-height:1.1}
+.r314-kpi-l{font-size:12px;font-weight:800;color:var(--tone-700);margin-top:3px}
+.r314-kpi-s{font-size:10.5px;color:var(--muted);margin-top:2px}
+.r314-sub-row{display:grid;grid-template-columns:96px 1fr 74px;align-items:center;gap:10px;margin:7px 0}
+.r314-sub-name{font-size:12.5px;font-weight:800;color:var(--tone-800);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.r314-sub-bar{height:10px;background:var(--tone-075);border-radius:999px;overflow:hidden}
+.r314-sub-bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#7bb7ff,#3d8bff);transition:width .35s}
+.r314-sub-val{font-size:12px;font-weight:900;color:var(--tone-800);text-align:right}
+.r314-sub-val span{display:block;font-size:10.5px;font-weight:600;color:var(--muted)}
+.r314-weak-item,.r314-wrong-item{display:flex;align-items:center;gap:8px;font-size:12.5px;padding:6px 8px;border-radius:9px;background:var(--tone-025);margin:5px 0}
+.r314-weak-name,.r314-wrong-name{font-weight:800;color:var(--tone-800);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.r314-weak-val{font-size:11.5px;font-weight:800;color:#b4552f}
+.r314-wrong-n{font-size:11.5px;font-weight:900;color:#b4552f}
+.r314-sum-card{background:linear-gradient(180deg,#fffdf5,#fff8e6);border-color:#f4e2b0}
+.r314-sum-text{font-size:12.5px;line-height:1.85;color:#5d4a1f;font-weight:600}
+.r314-report-acts{display:flex;gap:8px;flex-wrap:wrap}
+.r314-act{flex:1 1 120px;min-height:38px;font-size:12.5px;font-weight:800}
+
+/* 徽章 */
+.r314-badge-sum .r314-badge-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px}
+.r314-badge{border:1.5px solid var(--tone-150);border-radius:13px;padding:10px 6px;text-align:center;background:#fff;opacity:.55;filter:grayscale(1);transition:.2s}
+.r314-badge.on{opacity:1;filter:none;background:linear-gradient(180deg,#fffdf2,#fff4d6);border-color:#f0d58c;box-shadow:0 3px 10px rgba(200,160,50,.16)}
+.r314-badge-ico{font-size:24px;line-height:1.2}
+.r314-badge-name{font-size:11.5px;font-weight:900;color:var(--tone-900);margin-top:3px}
+.r314-badge-cond{font-size:10px;color:var(--muted);margin-top:2px;line-height:1.4}
+
+/* 首页徽章条 */
+.r314-home-badges{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin:6px 0 2px}
+.r314-hb-title{font-size:10.5px;font-weight:900;color:var(--tone-700);background:var(--tone-075);border-radius:999px;padding:1px 7px}
+.r314-hb{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:linear-gradient(180deg,#fffdf2,#ffefc4);border:1px solid #efd693;font-size:13px;cursor:default}
+.r314-hb-more{font-size:10.5px;font-weight:800;color:var(--muted)}
+.r314-hb-empty{font-size:11px;color:var(--muted)}
+
+/* 商城 */
+.r314-shop-note{font-size:11.5px;color:var(--muted);margin:-4px 0 8px}
+.r314-shop-wallbar{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:11.5px;font-weight:800;color:var(--tone-700)}
+.r314-wall{border:1px solid var(--tone-200);background:#fff;border-radius:999px;padding:3px 10px;font-size:11.5px;font-weight:800;color:var(--tone-800);cursor:pointer}
+.r314-wall.active{background:var(--tone-100);border-color:var(--tone-400)}
+.r314-shop-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
+.r314-shop-item{display:grid;grid-template-columns:44px 1fr auto;grid-template-areas:"ico body price" "ico body btn";gap:4px 10px;align-items:center;background:#fff;border:1px solid var(--tone-150);border-radius:14px;padding:12px}
+.r314-shop-item.owned{background:linear-gradient(180deg,#fffdf4,#fff8e4);border-color:#f0dca6}
+.r314-shop-ico{grid-area:ico;font-size:26px}
+.r314-shop-body{grid-area:body}
+.r314-shop-name{font-size:13px;font-weight:900;color:var(--tone-900)}
+.r314-shop-desc{font-size:11px;color:var(--muted);line-height:1.5}
+.r314-shop-price{grid-area:price;font-size:12px;font-weight:900;color:#a06a00;text-align:right}
+.r314-buy{grid-area:btn;min-height:32px;font-size:11.5px;font-weight:800;padding:0 12px}
+.r314-buy.off{opacity:.6}
+.r314-buy.on{background:#eaf7ed;border-color:#a9dcb8;color:#1f6b39}
+
+/* 目标 / 表单 */
+.r314-form{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.r314-form-2{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+.r314-form label{display:flex;flex-direction:column;gap:4px;font-size:11.5px;font-weight:800;color:var(--tone-700)}
+.r314-form input,.r314-form select{height:34px;border:1px solid var(--tone-200);border-radius:9px;padding:0 10px;font-size:12.5px;font-weight:600;color:var(--tone-900);background:#fff}
+.r314-add{margin-top:10px;min-height:36px;font-size:12.5px;font-weight:900;padding:0 18px}
+.r314-tip{margin-top:8px;font-size:11px;line-height:1.7;color:var(--muted)}
+.r314-goal{border:1px solid var(--tone-150);border-radius:13px;padding:11px 12px;margin-bottom:9px;background:#fcfdff}
+.r314-goal.done{background:linear-gradient(180deg,#f7fdf8,#eefaf1);border-color:#bfe6cb}
+.r314-goal-head{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.r314-goal-title{font-size:13px;font-weight:900;color:var(--tone-900)}
+.r314-goal-due{font-size:11px;font-weight:800;color:var(--muted)}
+.r314-goal-due.over{color:#c0455c}
+.r314-goal-sub{font-size:11.5px;color:var(--muted);margin:3px 0 7px}
+.r314-goal-bar{height:9px;background:var(--tone-075);border-radius:999px;overflow:hidden}
+.r314-goal-bar i{display:block;height:100%;background:linear-gradient(90deg,#8bd6a4,#3fae6a);border-radius:999px;transition:width .35s}
+.r314-goal-foot{display:flex;align-items:center;gap:8px;margin-top:7px;font-size:11.5px;font-weight:800;color:var(--tone-700);flex-wrap:wrap}
+.r314-goal-claimed{color:#1f6b39}
+.r314-goal-wait{color:var(--muted)}
+.r314-mini{min-height:28px;font-size:11px;font-weight:800;padding:0 10px;margin-left:auto}
+.r314-mini.r314-del{color:#b5354b;border-color:#f0c2ca;background:#fff5f7;margin-left:0}
+
+/* 摘抄本 */
+.r314-extypes{display:flex;gap:6px;margin-bottom:8px}
+.r314-extype{border:1px solid var(--tone-200);background:#fff;border-radius:999px;padding:4px 12px;font-size:11.5px;font-weight:800;color:var(--tone-800);cursor:pointer}
+.r314-extype.active{background:var(--tone-600);border-color:var(--tone-600);color:#fff}
+.r314-ex-input{width:100%;min-height:88px;border:1px solid var(--tone-200);border-radius:11px;padding:10px 12px;font-size:12.5px;line-height:1.7;font-weight:600;color:var(--tone-900);resize:vertical}
+.r314-file input{height:auto;padding:6px 8px;font-size:11px}
+.r314-ex{border:1px solid var(--tone-150);border-radius:12px;padding:10px 12px;margin-bottom:8px;background:#fcfdff}
+.r314-ex.shared{background:linear-gradient(180deg,#f8fcff,#f1f8ff);border-style:dashed}
+.r314-ex-head{display:flex;align-items:center;gap:7px;margin-bottom:4px}
+.r314-ex-type{font-size:10.5px;font-weight:900;color:#2f5f9e;background:#e8f2ff;border-radius:999px;padding:1px 8px}
+.r314-ex-src{font-size:11px;color:var(--muted);flex:1}
+.r314-ex-from{font-size:10px;font-weight:800;color:#4a7bb5}
+.r314-ex-del{margin-left:auto;border:none;background:transparent;color:#b5354b;font-size:15px;line-height:1;cursor:pointer;padding:0 4px}
+.r314-ex-text{font-size:12.5px;line-height:1.8;color:var(--tone-900);font-weight:600;white-space:pre-wrap;word-break:break-word}
+.r314-ex-img{width:100%;max-width:220px;border-radius:9px;margin-top:7px;border:1px solid var(--tone-150)}
+
+/* 作息健康 */
+.r314-hd-row{display:grid;grid-template-columns:56px 1fr 1fr 90px 66px;align-items:center;gap:8px;font-size:11.5px;padding:6px 4px;border-bottom:1px dashed var(--tone-150)}
+.r314-hd-row:last-child{border-bottom:none}
+.r314-hd-date{font-weight:900;color:var(--tone-800)}
+.r314-hd-flag{font-weight:700;color:var(--tone-700);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.r314-hd-flag i{color:var(--muted);font-style:normal;font-weight:600}
+.r314-hd-bar{height:8px;background:var(--tone-075);border-radius:999px;overflow:hidden}
+.r314-hd-bar i{display:block;height:100%;background:linear-gradient(90deg,#8fb8ff,#4d7fe0);border-radius:999px}
+.r314-hd-hrs{text-align:right;font-weight:800;color:var(--tone-800)}
+.r314-hd-today{font-size:12px;font-weight:700;color:var(--tone-700);margin:8px 0 2px}
+.r314-hd-today b{font-size:15px;color:var(--tone-900)}
+.r314-row{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12.5px;font-weight:800;color:var(--tone-800);padding:6px 0}
+.r314-row select,.r314-row input[type="time"]{height:32px;border:1px solid var(--tone-200);border-radius:9px;padding:0 9px;font-size:12px;font-weight:700;background:#fff}
+.r314-switch{position:relative;display:inline-block;width:44px;height:24px;flex:0 0 auto}
+.r314-switch input{position:absolute;opacity:0;width:0;height:0}
+.r314-switch i{position:absolute;inset:0;background:var(--tone-200);border-radius:999px;transition:.2s;cursor:pointer}
+.r314-switch i:before{content:"";position:absolute;width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.r314-switch input:checked + i{background:#3fae6a}
+.r314-switch input:checked + i:before{transform:translateX(20px)}
+.r314-rem-perm{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:11.5px;font-weight:700;color:var(--tone-700);margin-top:4px}
+.r314-rem-perm b{color:var(--tone-900)}
+
+/* 打卡主题动画 */
+.r314-cheer{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:0}
+.r314-cheer.play{animation:r314CheerIn 1.8s ease forwards}
+.r314-cheer-card{background:linear-gradient(180deg,#ffffff,var(--tone-050));border:2px solid #cfe4ff;border-radius:22px;padding:22px 34px;text-align:center;box-shadow:0 18px 50px rgba(30,58,138,.22)}
+.r314-cheer-emoji{font-size:56px;line-height:1.1;animation:r314Bounce .9s ease}
+.r314-cheer-txt{font-size:17px;font-weight:900;color:var(--tone-900);margin-top:6px}
+.r314-cheer-sub{font-size:12px;font-weight:700;color:#a06a00;margin-top:3px}
+@keyframes r314CheerIn{0%{opacity:0;transform:scale(.86)}12%{opacity:1;transform:scale(1)}80%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.04)}}
+@keyframes r314Bounce{0%,100%{transform:translateY(0)}30%{transform:translateY(-14px) rotate(-6deg)}60%{transform:translateY(-4px) rotate(5deg)}}
+
+/* 主题壁纸（星星商城虚拟权益） */
+body.r314-wall-sunset .main-wrap{background-image:linear-gradient(180deg,rgba(255,236,214,.0),rgba(255,214,170,.28)),radial-gradient(1200px 600px at 15% -10%,#ffe3c2,transparent 60%),radial-gradient(1000px 500px at 90% 0%,#ffd0d8,transparent 55%)}
+body.r314-wall-snow .main-wrap{background-image:linear-gradient(180deg,rgba(226,240,255,.0),rgba(196,222,255,.28)),radial-gradient(1200px 600px at 20% -10%,#dcecff,transparent 60%),radial-gradient(900px 500px at 85% 0%,#e6e0ff,transparent 55%)}
+body.r314-frame-gold .home-avatar{box-shadow:0 0 0 4px #f4dd97,0 6px 18px rgba(190,150,40,.35)}
+
+/* 小屏适配（成长中心） */
+@media (max-width: 900px){
+  .r314-sub-row{grid-template-columns:74px 1fr 64px}
+  .r314-shop-list{grid-template-columns:1fr}
+  .r314-hd-row{grid-template-columns:48px 1fr 1fr 70px;row-gap:3px}
+  .r314-hd-bar{display:none}
+  .r314-hd-hrs{grid-column:4}
+  .r314-form{grid-template-columns:1fr 1fr}
+}
+@media (max-width: 560px){
+  .r314-form,.r314-form-2{grid-template-columns:1fr}
+  .r314-kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .r314-tabs{gap:6px}
+  .r314-tab{font-size:11.5px;padding:6px 11px}
+  .r314-hd-row{grid-template-columns:42px 1fr 1fr;font-size:11px}
+  .r314-hd-hrs{grid-column:1/-1;text-align:left}
+}
+
+/* R314-B1/E2：任务凭证入口 + 数学错题本导入 */
+.r314-cred-btn{flex:0 0 auto;min-width:30px;padding:0 6px;font-size:13px;line-height:1;opacity:.55}
+.r314-cred-btn.has{opacity:1;background:#e8f4ff;border-color:#a9cdf3;box-shadow:0 0 0 2px rgba(120,170,240,.14)}
+.r314-cred-btn:hover{opacity:1}
+.r314-import-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--tone-025);border:1px dashed var(--tone-200);border-radius:11px;padding:8px 10px;margin-bottom:10px}
+.r314-import-row .pbtn{min-height:30px;font-size:11.5px;font-weight:800}
+.r314-import-tip{font-size:10.5px;color:var(--muted);line-height:1.5}
+@media (max-width:560px){.r314-import-tip{display:none}}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -10871,6 +11103,8 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
     <button data-page="knowledge" class="nav-btn" data-page-node-id="dgvyriSBjRdIUt8IN5czeu"><span class="ico" data-page-node-id="KLxDkQogyEnhpWCUb0SkTf">🗺️</span><span class="lbl" data-page-node-id="0yzSgv0ZsfU7DUC3iBV5IU">知识秘境</span></button>
     <button data-page="farm" class="nav-btn" data-page-node-id="ILnFRXZgyFt6KUIHjdMjpi"><span class="ico" data-page-node-id="L91QcPKV3apQubouy8iHof">🌱</span><span class="lbl" data-page-node-id="3RvFnrBWk6gsLhpSANuJ0o">种植园</span></button>
     <button data-page="archive" class="nav-btn" data-page-node-id="71DCFRcIT0GWGt2QoPlIPE"><span class="ico" data-page-node-id="1fYFy0rpBdufGRwWSdwWAP">🏆</span><span class="lbl" data-page-node-id="Gkt7ejoiCugArdTvMAn8BU">成长档案</span></button>
+    <!-- R314-D：成长中心（报告 / 徽章 / 商城 / 目标 / 摘抄 / 作息） -->
+    <button data-page="growth" class="nav-btn" data-page-node-id="R314GrowthNav"><span class="ico" data-page-node-id="R314GrowthNavIco">🌱</span><span class="lbl" data-page-node-id="R314GrowthNavLbl">成长中心</span></button>
     <button class="nav-btn" data-page="settings" data-page-node-id="R85navSettings"><span class="ico" data-page-node-id="R85navSetIco">⚙️</span><span class="lbl" data-page-node-id="R85navSetLbl">设置中心</span></button>
   </nav>
 </aside>
@@ -10903,6 +11137,8 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
               <div class="wp-nick-meta" data-page-node-id="e2DEPuj9wJu77ZXuf8Oiy7"><span id="homeGrade" data-page-node-id="R104homeGrade">三年级</span> · <span id="homeStreak" data-page-node-id="Dlql4BFWnp2Iq1Pyh9aRqp">0</span><button type="button" class="wp-grade-edit wp-streak-edit hidden-in-child" id="btnStreakEdit" title="修改连续打卡天数（仅家长模式）" data-page-node-id="R276BtnStreakEdit">✎</button> 天连续<button type="button" class="wp-grade-edit hidden-in-child" id="btnGradeEdit" title="修改学段（仅家长模式可编辑）" data-page-node-id="R104btnGradeEdit">✎</button></div>
               <div class="wp-exp-bar" data-page-node-id="JaJmQY3ShZnBIHYM91mGxt"><div class="wp-exp-fill" id="homeExpFill" data-page-node-id="4RLEl1NWoU1n51hDkgCCjw"></div></div>
               <div class="wp-nick-cur" data-page-node-id="z2FxTe1Ebljgr91PTCU9Ql"><span data-page-node-id="uf02XBEH02pOuWWM9Wf5u5">⭐ <b id="homeStars" data-page-node-id="TdE8l5SCKfxw7jjclC8MmM">0</b></span> <span data-page-node-id="h59rGwiWWOcZeqaHjfBZsr">💰 <b id="homeCoins" data-page-node-id="8VB8nIFNZKEHqtkK8J2k5f">0</b></span> <span id="homeExp" class="wp-nick-exp" data-page-node-id="4k1GPDm5ctuzotD16TnQ8c">0 经验</span></div>
+              <!-- R314-C：成就徽章条（展示在首页个人信息区，点亮徽章自动出现） -->
+              <div class="r314-home-badges" id="homeBadgeStrip" data-page-node-id="R314HomeBadges"></div>
               <div class="wp-encourage" id="homeEncourage" data-page-node-id="V2mhawsF63fFPWeWstDwuQ">今天又是元气满满的一天哦～</div>
               <button class="wp-encourage-edit hidden-in-child" id="btnGreetEdit" title="家长编辑问候语" data-page-node-id="kU4k6ZI8gFL2Xl8pBDCbIt">✎ 编辑</button>
             </div>
@@ -12197,6 +12433,30 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
   </div></section>
 
   <!-- ================= 成长档案 ================= -->
+  <!-- R314-D：成长中心 —— 学情报告 / 徽章成就 / 星星商城 / 单元目标 / 摘抄积累本 / 作息健康 -->
+  <section class="page page-growth" data-page="growth" data-zone="growth" data-page-node-id="R314GrowthPage" hidden>
+    <div class="page-title" data-page-node-id="R314GrowthTitle">
+      <div class="page-title-main" data-page-node-id="R314GrowthTitleMain">
+        <h2 data-page-node-id="R314GrowthH2">🌱 成长中心</h2>
+        <div class="r314-sub" data-page-node-id="R314GrowthSub">学情报告 · 徽章成就 · 星星商城 · 单元目标 · 摘抄本 · 作息健康</div>
+      </div>
+      <div class="page-actions" data-page-node-id="R314GrowthActs">
+        <span class="r314-star-pill" id="growStarPill" data-page-node-id="R314GrowthPill">⭐ 0</span>
+      </div>
+    </div>
+    <div class="page-content" data-page-node-id="R314GrowthContent">
+      <div class="r314-tabs" id="growTabs" data-page-node-id="R314GrowthTabs">
+        <button class="r314-tab active" data-gtab="report" data-page-node-id="R314TabReport">📊 学情报告</button>
+        <button class="r314-tab" data-gtab="badge" data-page-node-id="R314TabBadge">🏅 徽章成就</button>
+        <button class="r314-tab" data-gtab="shop" data-page-node-id="R314TabShop">🛍️ 星星商城</button>
+        <button class="r314-tab" data-gtab="goal" data-page-node-id="R314TabGoal">🎯 单元目标</button>
+        <button class="r314-tab" data-gtab="excerpt" data-page-node-id="R314TabExcerpt">📝 摘抄本</button>
+        <button class="r314-tab" data-gtab="health" data-page-node-id="R314TabHealth">🌙 作息健康</button>
+      </div>
+      <div class="r314-panel" id="growPanel" data-page-node-id="R314GrowthPanel"></div>
+    </div>
+  </section>
+
   <section class="page page-archive" data-page="archive" hidden data-page-node-id="rO5PKT931BnXZx1RawEKQ2">
     <div class="page-title" data-page-node-id="StvTzAbICc7ediOsOymivd"><h2 data-page-node-id="Yc4CDTyvfk73PrB7HXB9Ij"></h2></div><div class="page-content">
     <div class="archive-grid" data-page-node-id="ibzJFBBAtBWH9sce7K9Yiv">
@@ -12317,6 +12577,8 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
           <select id="tSubject" data-page-node-id="M7HdMarnt5MziYLhTGUdyo">
             <option data-page-node-id="oOl6xB5B8f7C7Pa10XyNE4">语文</option><option data-page-node-id="A8fOON0mh5kYtf5bTS54mu">数学</option><option data-page-node-id="FqlG7AAt7p9dan8yeFYu5K">英语</option>
             <option data-page-node-id="BNIEA5qtCbLwG9eAtjP5hF">作息</option><option data-page-node-id="HSRPdH3tOUwW0Olyi1Moq0">运动</option><option data-page-node-id="JsBOEWrYVYRKGF7Wbs3shZ">围棋</option><option data-page-node-id="e0JrIuE3GAJtSL3jpvXp7x">家务小帮手</option><option data-page-node-id="I8AkuEzNt6LG1CBjV4eCkl">习惯家务</option><option data-page-node-id="o2Vl97FrvqRnlxiIscwnri">错题</option><option data-page-node-id="qSb7R43civilOpt001">文明小标兵</option>
+            <!-- R314-F：小日记片段作为可选做子任务类型 -->
+            <option data-page-node-id="R314OptDiarySubject">小日记片段</option>
           </select>
         </div>
       </div>
@@ -12643,16 +12905,73 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
       <button class="modal-x" data-close data-page-node-id="sESTmSqE3x7kAbZSMw0LyP">×</button>
     </div>
     <div class="modal-body" data-page-node-id="90QXes9V4GG53pm6FLpFse">
+      <!-- R314-E2：与乐读数学错题本互通 —— 一键导入未订正错题 -->
+      <div class="r314-import-row" data-page-node-id="R314WrongImportRow">
+        <button type="button" class="pbtn" id="wImportMath" data-page-node-id="R314WrongImportBtn">📥 从乐读数学错题本导入</button>
+        <span class="r314-import-tip" data-page-node-id="R314WrongImportTip">把错题本里未订正的题一键填进复盘</span>
+      </div>
       <label data-page-node-id="9hY01JcPiRJ2MYfENnoKBP">学科 <select id="wSubject" data-page-node-id="UghAeGdtoDVve2oQuiszMy">
         <option data-page-node-id="XwvmDPhJQuuxZiHF8dNRjF">语文</option><option data-page-node-id="q0inXauQeVSeHZAiyCUvA6">数学</option><option data-page-node-id="eSWaMDode5tvF75LxgHu73">英语</option>
       </select></label>
       <label data-page-node-id="yayzL5B0oKrBnZD318H2nG">错题数量 <input type="number" id="wCount" min="1" value="3" data-page-node-id="DF9zsV8lVS1Qm5OsNfwwW4"></label>
-      <label data-page-node-id="Fs6hSUbK8I6eJATNMY5gRq">错题内容 / 错误原因 <textarea id="wNote" placeholder="例如：把"辨"和"辩"搞混了；应用题审题不清..."></textarea></label>
-      <label data-page-node-id="XlqM16lIgbs8UhFEYyTypD">订正结果 <textarea id="wResult" placeholder="订正后的正确答案、解题思路"></textarea></label>
+      <label data-page-node-id="Fs6hSUbK8I6eJATNMY5gRq">错题内容 / 错误原因 <span class="r314-cc" id="wNoteCc">0 字</span><textarea id="wNote" maxlength="500" placeholder="例如：把“辨”和“辩”搞混了；应用题审题不清..."></textarea></label>
+      <label data-page-node-id="XlqM16lIgbs8UhFEYyTypD">解题思路 / 订正结果 <span class="r314-cc" id="wResultCc">0 字</span><textarea id="wResult" maxlength="800" placeholder="订正后的正确答案、解题思路"></textarea></label>
+      <!-- R314-A5：错题复盘图片凭证（拍照 / 相册多张上传） -->
+      <div class="r314-proof" data-page-node-id="R314WrongProof">
+        <div class="r314-proof-head">
+          <span>📷 上传凭证（作业照片 / 订正截图）</span>
+          <span class="r314-proof-count" id="wProofCount">0 / 4</span>
+        </div>
+        <div class="r314-proof-list" id="wProofList">
+          <div class="r314-proof-empty">支持拍照或从相册多选，最多 4 张（自动压缩后只存本机）</div>
+        </div>
+        <div class="r314-proof-acts">
+          <button type="button" class="pbtn" id="wProofCamera">📷 拍照</button>
+          <button type="button" class="pbtn" id="wProofAlbum">🖼️ 相册选择</button>
+          <button type="button" class="pbtn" id="wProofClear" hidden>清空凭证</button>
+        </div>
+        <input type="file" id="wProofCameraInput" accept="image/*" capture="environment" multiple hidden data-page-node-id="R314WrongProofCam">
+        <input type="file" id="wProofAlbumInput" accept="image/*" multiple hidden data-page-node-id="R314WrongProofAlbum">
+      </div>
     </div>
     <div class="modal-foot" data-page-node-id="Ax9TWd5ONDDi3MEwo2lF2b">
       <button class="primary-btn" id="btnSaveWrong" data-page-node-id="DXlyBm37UC2GD5IGPAGBOM">保存并打卡</button>
       <button class="pbtn" data-close data-page-node-id="HLeAd8yDw5Sst5mvnNyFBM">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 弹窗：任务完成凭证（拍照 / 相册 + 简短备注） ========== -->
+<div class="modal-mask" id="modalTaskCred" hidden data-page-node-id="R314TaskCredModal">
+  <div class="modal-box" data-page-node-id="R314TaskCredBox">
+    <div class="modal-head" data-page-node-id="R314TaskCredHead">
+      <h3 id="taskCredTitle" data-page-node-id="R314TaskCredTitle">📷 打卡凭证</h3>
+      <button class="modal-x" data-close data-page-node-id="R314TaskCredX">×</button>
+    </div>
+    <div class="modal-body" data-page-node-id="R314TaskCredBody">
+      <div class="r314-proof" data-page-node-id="R314TaskCredProof">
+        <div class="r314-proof-head">
+          <span>作业照片 / 阅读截图</span>
+          <span class="r314-proof-count" id="taskCredCount">0 / 4</span>
+        </div>
+        <div class="r314-proof-list" id="taskCredList">
+          <div class="r314-proof-empty">支持拍照或从相册多选，最多 4 张（仅存本机）</div>
+        </div>
+        <div class="r314-proof-acts">
+          <button type="button" class="pbtn" id="taskCredCamera">📷 拍照</button>
+          <button type="button" class="pbtn" id="taskCredAlbum">🖼️ 相册选择</button>
+          <button type="button" class="pbtn" id="taskCredClear" hidden>清空凭证</button>
+        </div>
+        <input type="file" id="taskCredCameraInput" accept="image/*" capture="environment" multiple hidden data-page-node-id="R314TaskCredCam">
+        <input type="file" id="taskCredAlbumInput" accept="image/*" multiple hidden data-page-node-id="R314TaskCredAlbum">
+      </div>
+      <label data-page-node-id="R314TaskCredNoteLabel">简短备注 <span class="r314-cc" id="taskCredNoteCc">0 / 200</span>
+        <textarea id="taskCredNote" maxlength="200" placeholder="例如：第 3 题独立完成，读了两遍才想通" data-page-node-id="R314TaskCredNote"></textarea>
+      </label>
+    </div>
+    <div class="modal-foot" data-page-node-id="R314TaskCredFoot">
+      <button class="primary-btn" id="btnTaskCredSave" data-page-node-id="R314TaskCredSave">保存凭证</button>
+      <button class="pbtn" data-close data-page-node-id="R314TaskCredCancel">取消</button>
     </div>
   </div>
 </div>
@@ -19279,6 +19598,53 @@ window.R298_TASK_PLAN = {
       st._r312MexImportV1 = true;
       save(st);
     }
+    /* R314-A1：围棋对弈任务旧文案清理 —— 老存档里「每周至少 N 局 / 每周完成 N 局对弈」等
+       描述文字统一清空（源码早已无此文案，这一句只存在于历史存档的 desc / standard 里）。
+       只清命中旧文案的字段，其它手写描述、任务名、配置一律不动。 */
+    if(!st._r314GoCopyV1){
+      const OLD_GO_COPY = /每周至少\s*3\s*局|每周完成\s*3\s*局|每周三局|每周\s*3\s*局对弈/;
+      (st.tasks || []).forEach(function(t){
+        if(!t) return;
+        if(String(t.subject||'') !== '围棋' && !/围棋/.test(String(t.name||''))) return;
+        if(typeof t.desc === 'string' && OLD_GO_COPY.test(t.desc)) t.desc = '';
+        if(typeof t.standard === 'string' && OLD_GO_COPY.test(t.standard)) t.standard = '';
+      });
+      st._r314GoCopyV1 = true;
+      save(st);
+    }
+    /* R314-A2：⭐分值统一 —— 任务缺少 stars（或不是合法数字）时按类型补默认值：
+       必做 / 家务 / 习惯 → 2⭐，其余 → 1⭐。已有合法数字一律保留，
+       保证「设置中心配置的分值」就是「首页展示的分值」= 「打卡实际发放的分值」，三处同源。 */
+    if(!st._r314StarAlignV1){
+      (st.tasks || []).forEach(function(t){
+        if(!t) return;
+        if(typeof t.stars === 'number' && isFinite(t.stars) && t.stars >= 0) return;
+        t.stars = (t.type === '必做任务' || t.subject === '家务小帮手' || t.subject === '习惯家务') ? 2 : 1;
+      });
+      st._r314StarAlignV1 = true;
+      save(st);
+    }
+    /* R314：成长中心数据容器（徽章 / 星星商城 / 阶段挑战 / 单元目标 / 摘抄本 / 作息健康 / 成长报告）。
+       只补缺失结构，绝不覆盖用户已录入内容。 */
+    st.r314 = (st.r314 && typeof st.r314 === 'object' && !Array.isArray(st.r314)) ? st.r314 : {};
+    (function(){
+      const r = st.r314;
+      if(!r.badges || typeof r.badges !== 'object' || Array.isArray(r.badges)) r.badges = {};
+      if(!r.shop || typeof r.shop !== 'object' || Array.isArray(r.shop)) r.shop = {};
+      if(!Array.isArray(r.shop.owned)) r.shop.owned = [];
+      if(!r.shop.used || typeof r.shop.used !== 'object') r.shop.used = {};
+      if(!r.challenges || typeof r.challenges !== 'object' || Array.isArray(r.challenges)) r.challenges = {};
+      if(!r.challenges.claims || typeof r.challenges.claims !== 'object') r.challenges.claims = {};
+      if(!r.challenges.start || typeof r.challenges.start !== 'object') r.challenges.start = {};
+      if(!Array.isArray(r.goals)) r.goals = [];
+      if(!Array.isArray(r.excerpts)) r.excerpts = [];
+      if(!r.health || typeof r.health !== 'object' || Array.isArray(r.health)) r.health = {};
+      if(!r.health.days || typeof r.health.days !== 'object') r.health.days = {};
+      if(!r.health.eye || typeof r.health.eye !== 'object') r.health.eye = {};
+      if(!r.report || typeof r.report !== 'object') r.report = {};
+      if(!r.creds || typeof r.creds !== 'object' || Array.isArray(r.creds)) r.creds = {};
+      if(!r.remind || typeof r.remind !== 'object') r.remind = { on:false, time:'19:30', lastAt:0 };
+    })();
     // R16-3：首页标语迁移（仅当用户仍沿用旧默认标语时升级为新标语；家长自定义过的标语保持不动）
     (function(){
       const oldZh = '不要烦，不要烦，工作永远做不完';
@@ -20610,6 +20976,12 @@ window.R298_TASK_PLAN = {
     const st = load();
     return st.records.find(r=>r.date===dateStr && r.taskId===taskId);
   }
+  /* R314-A2：任务⭐唯一取数口径 —— 设置中心配置 → 首页展示 → 打卡发放 三处共用。
+     有合法 stars 一律用配置值；缺失时按类型兜底（必做 / 家务 / 习惯 2⭐，其余 1⭐）。 */
+  function starOfTask(t){
+    if(t && typeof t.stars === 'number' && isFinite(t.stars) && t.stars >= 0) return t.stars;
+    return (t && (t.type === '必做任务' || t.subject === '家务小帮手' || t.subject === '习惯家务')) ? 2 : 1;
+  }
   function toggleCheckIn(dateStr,taskId){
     const st = load();
     const task = st.tasks.find(t=>t.id===taskId);
@@ -20620,7 +20992,8 @@ window.R298_TASK_PLAN = {
     if(r.completed){
       r.count = (r.count||0)+1;
       r.actualMinutes = task.minutes * r.count;
-      r.stars = typeof task.stars==='number' ? task.stars : (task.type==='必做任务' || task.subject==='家务小帮手' || task.subject==='习惯家务' ? 2 : 1);
+      // R314-A2：统一走 starOfTask，和首页⭐徽标永远一致
+      r.stars = starOfTask(task);
       const recent = st.records.filter(x=>x.date===dateStr && x.completed && Date.now()-x._ts<10000);
       r.isSuspicious = recent.length>=2;
       r._ts = Date.now();
@@ -20640,13 +21013,16 @@ window.R298_TASK_PLAN = {
     tasks.forEach(t=>{
       let r = st.records.find(x=>x.date===dateStr && x.taskId===t.id);
       if(!r){ r={id:uid(),date:dateStr,taskId:t.id,completed:false,actualMinutes:0,parentNote:'',stars:0,isMakeup:false,isSuspicious:false,_ts:0,count:0}; st.records.push(r); }
-      r.completed = true; r.actualMinutes = t.minutes; r.stars = 2; r.isMakeup = true; r._ts = Date.now();
+      r.completed = true; r.actualMinutes = t.minutes; r.stars = starOfTask(t); r.isMakeup = true; r._ts = Date.now();
     });
     recompute(st);
     save(st);
     return {ok:true};
   }
-  function saveWrong(dateStr, subject, count, note, result){
+  /* R314-A5：新增 extra = { proofs:[dataUrl…], idea:'解题思路', note:'备注' }
+     —— 图片凭证与思路文本跟着这条打卡记录一起落库（含进全量备份 / 合并导入 / 云同步），
+        不再是「上传完只留在内存」的假功能。 */
+  function saveWrong(dateStr, subject, count, note, result, extra){
     const st = load();
     let t = st.tasks.find(t=>t.name==='错题订正复盘' && t.type==='选做拓展任务');
     if(!t){
@@ -20658,6 +21034,19 @@ window.R298_TASK_PLAN = {
     r.completed = true; r.actualMinutes = (count||1)*3; r.stars = 1;
     r.count = (r.count||0)+1;
     r.parentNote = `[${subject}] 错题${count}道 | ${note||''} | 订正：${result||''}`;
+    const ex = (extra && typeof extra === 'object') ? extra : null;
+    if(ex){
+      const proofs = Array.isArray(ex.proofs) ? ex.proofs.filter(x=>typeof x==='string' && x).slice(0,4) : [];
+      // 只存合法 dataURL / http 链接，防止把任意字符串写进主档
+      r.proofs = proofs.filter(x=>/^data:image\//i.test(x) || /^https?:\/\//i.test(x));
+      r.idea = String(ex.idea || result || '').slice(0, 800);
+      r.wrongNote = String(ex.note || note || '').slice(0, 500);
+    } else {
+      r.proofs = Array.isArray(r.proofs) ? r.proofs : [];
+      r.idea = String(r.idea || result || '').slice(0, 800);
+      r.wrongNote = String(r.wrongNote || note || '').slice(0, 500);
+    }
+    // 兼容旧读法：R271 错题面板按 parentNote 前缀识别，保持不变
     r._ts = Date.now();
     recompute(st);
     save(st);
@@ -21629,6 +22018,35 @@ window.R298_TASK_PLAN = {
     // R44：文明小标兵 —— 「文明小标兵」科目任务累计打卡满 30 次点亮
     const civCount = (st.records||[]).filter(r=>r.completed && ((st.tasks||[]).find(t=>t.id===r.taskId)||{}).subject==='文明小标兵').length;
     a.badges.civilityStar = civCount>=30;
+    /* R314-C：新增成就徽章 —— 阅读满 20 次 / 全勤月 / 计算 30 天 / 摘抄 10 条 / 单元目标 3 个。
+       只做只读计算，不写任何用户录入数据；异常一律不影响主流程。 */
+    try{
+      a.badges.read20 = (a.readDays|0) >= 20;
+      a.badges.read21 = (a.readDays|0) >= 21;
+      a.badges.calc30 = (st.calcStreak|0) >= 30;
+      const _r = (st.r314 && typeof st.r314 === 'object') ? st.r314 : {};
+      a.badges.excerpt10 = ((_r.excerpts || []).length) >= 10;
+      a.badges.goal5 = ((_r.goals || []).filter(function(g){ return g && g.claimed; }).length) >= 3;
+      /* 全勤月：本月「有必做任务的日子」截止今天全部完成 */
+      (function(){
+        const ds = todayStr();
+        const ym = ds.slice(0, 7);
+        const todayN = parseInt(ds.slice(8, 10), 10) || 1;
+        let tot = 0, ok = 0;
+        for(let d = 1; d <= todayN; d++){
+          const date = ym + '-' + String(d).padStart(2, '0');
+          const need = tasksForDate(date).filter(function(t){ return t.type === '必做任务'; });
+          if(!need.length) continue;
+          tot++;
+          const allDone = need.every(function(t){
+            const rr = (st.records || []).find(function(x){ return x.date === date && x.taskId === t.id; });
+            return !!(rr && rr.completed);
+          });
+          if(allDone) ok++;
+        }
+        a.badges.fullMonth = tot > 0 && ok === tot;
+      })();
+    }catch(e){}
     a.unlockedBadges = Object.keys(a.badges).filter(k=>a.badges[k]);
     a.unlockedCerts = Object.keys(a.certs).filter(k=>a.certs[k]);
   }
@@ -27875,6 +28293,60 @@ be 动词：am / is → was；are → were
   function _r256(){ const st = load(); if(!st.r256) st.r256 = {}; return st.r256; }
 
   function getR256(){ try{ return JSON.parse(JSON.stringify(_r256())); }catch(e){ return {}; } }
+  /* R314：成长中心容器（徽章 / 商城 / 挑战 / 单元目标 / 摘抄本 / 作息健康 / 成长报告）。
+     与 R256 同款薄封装：读返回深拷贝，写走主档 save，五层保护链全部沿用。 */
+  function _r314(){
+    const st = load();
+    if(!st.r314 || typeof st.r314 !== 'object') st.r314 = {};
+    return st.r314;
+  }
+  function getR314(){ try{ return JSON.parse(JSON.stringify(_r314())); }catch(e){ return {}; } }
+  function setR314(patch){
+    const st = load();
+    const cur = (st.r314 && typeof st.r314 === 'object') ? st.r314 : {};
+    st.r314 = Object.assign({}, cur, patch || {});
+    save(st);
+    return getR314();
+  }
+  /* 单条路径写：setR314Path('health.days.2026-11-19', obj) */
+  function setR314Path(path, val){
+    const st = load();
+    if(!st.r314 || typeof st.r314 !== 'object') st.r314 = {};
+    const seg = String(path || '').split('.').filter(Boolean);
+    if(!seg.length) return getR314();
+    let node = st.r314;
+    for(let i=0;i<seg.length-1;i++){
+      const k = seg[i];
+      if(!node[k] || typeof node[k] !== 'object' || Array.isArray(node[k])) node[k] = {};
+      node = node[k];
+    }
+    node[seg[seg.length-1]] = val;
+    save(st);
+    return getR314();
+  }
+  /* R314-C：星星收支（商城兑换 / 挑战奖励）—— 只动 archive.totalStars，
+     保存时的⭐流水差异检测会自动记一笔，账本可追溯，不会覆盖任何用户录入数据。 */
+  function r314AddStars(n, why){
+    const k = Math.round(Number(n) || 0);
+    if(!k) return { ok:false, msg:'星星数无效' };
+    const st = load();
+    if(!st.archive || typeof st.archive !== 'object') st.archive = {};
+    st.archive.totalStars = (st.archive.totalStars|0) + k;
+    try{ setStarWhy(why || ('R314 奖励 +' + k)); }catch(e){}
+    save(st);
+    return { ok:true, stars: st.archive.totalStars };
+  }
+  function r314SpendStars(n, why){
+    const k = Math.round(Number(n) || 0);
+    if(!k || k < 0) return { ok:false, msg:'星星数无效' };
+    const st = load();
+    const cur = (st.archive && st.archive.totalStars) | 0;
+    if(cur < k) return { ok:false, msg:'星星不足（当前 ' + cur + ' ⭐）' };
+    st.archive.totalStars = cur - k;
+    try{ setStarWhy(why || ('R314 消费 -' + k)); }catch(e){}
+    save(st);
+    return { ok:true, stars: st.archive.totalStars };
+  }
   function setR256(patch){
     const st = load();
     st.r256 = Object.assign({}, st.r256 || {}, patch || {});
@@ -28313,6 +28785,8 @@ be 动词：am / is → was；are → were
     r271StorageScan, r271DedupeState, r271RepairStorage,
     // R256：打卡总览 / 星星流水 / 提醒 / 护眼 / 补卡 / 错题复练 / 断点 / 收藏 / 提示 / 图鉴 / 证书 / 暂存 / 单模块重置
     getR256, setR256, getStarLog, clearStarLog, setStarWhy,
+    // R314：成长中心容器 + ⭐统一取数口径
+    getR314, setR314, setR314Path, starOfTask, r314AddStars, r314SpendStars,
     getRemindCfg, saveRemindCfg, getEyeCfg, saveEyeCfg,
     makeupState, setMakeupLimit, makeupTask, makeupLog,
     getWrongReviewCfg, saveWrongReviewCfg,
@@ -29480,6 +29954,8 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     if(page==='en-tense-practice'){ tnRestore(); renderEnTensePractice(); }
     if(page==='farm') renderFarm();
     if(page==='archive') renderArchive();
+    // R314-D：成长中心（学情报告 / 徽章成就 / 星星商城 / 单元目标 / 摘抄本 / 作息健康）
+    if(page==='growth') renderGrowth();
     // R276-3.2：新导航板块
     if(page==='zhts') renderZhts();
     resetIdle();
@@ -37840,6 +38316,8 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     // 拖拽 + 打卡点击（仅绑定一次）
     initWallpaperDnd();
     bindMonthStats(); // R150-3：月度统计按钮绑定（幂等）
+    // R314-C：首页个人信息区徽章条（随打卡实时刷新）
+    try{ r314RenderHomeBadges(); }catch(e){}
   }
 
   // R131-3：Nick 的备忘录重构 —— 编号玻璃便签卡散落背景（时间/事项/备注 + 字号/颜色/透明度自定义）
@@ -39969,7 +40447,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     const items = histDayData(key);
     if(!items.length) return '';
     const evts = items.slice(0,4).map(it=>
-      `<div class="wp-history-ev"><span class="wp-history-year">${esc(String(it[0]))}</span><span class="wp-history-txt">${esc(String(it[1]))}</span></div>`
+      `<div class="wp-history-ev" data-hist-jump="${esc(r314EraOfYear(it[0]))}" data-hist-year="${esc(String(it[0]))}" title="点击在中华通史·时光长河中查看"><span class="wp-history-year">${esc(String(it[0]))}</span><span class="wp-history-txt">${esc(String(it[1]))}</span></div>`
     ).join('');
     return `<div class="wp-history" data-history-open="1" title="点击查看全年收录">
       <div class="wp-history-head">
@@ -39998,7 +40476,8 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       </div>`;
     }
     const ops = editMode ? `<span class="hist-ev-ops"><button class="hist-op" data-hist-edit="${k}:${i}">改</button><button class="hist-op hist-op-del" data-hist-del="${k}:${i}">删</button></span>` : '';
-    return `<div class="wp-history-ev"><span class="wp-history-year">${esc(String(it[0]))}</span><span class="wp-history-txt">${esc(String(it[1]))}</span>${ops}</div>`;
+    const jump = editMode ? '' : ` data-hist-jump="${esc(r314EraOfYear(it[0]))}" data-hist-year="${esc(String(it[0]))}" title="点击在中华通史·时光长河中查看"`;
+    return `<div class="wp-history-ev"${jump}><span class="wp-history-year">${esc(String(it[0]))}</span><span class="wp-history-txt">${esc(String(it[1]))}</span>${ops}</div>`;
   }
   function renderHistoryAllBody(){
     const data = (typeof window !== 'undefined' && window.HISTORY_TODAY) ? window.HISTORY_TODAY : {};
@@ -40097,48 +40576,102 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     });
   })();
 
-  // V35：2026 节日历（万年历风格，内置）→ R52-1：始终展示未来最近的 4 个
-  const FESTIVALS_2026 = [
-    {date:'2026-01-01', name:'元旦', emoji:'🎉', kind:'solar'},
-    {date:'2026-02-14', name:'情人节', emoji:'💕', kind:'solar'},
-    {date:'2026-02-17', name:'春节', emoji:'🏮', kind:'trad'},
-    {date:'2026-03-03', name:'元宵', emoji:'🥣', kind:'trad'},
-    {date:'2026-03-08', name:'妇女节', emoji:'👩', kind:'solar'},
-    {date:'2026-03-12', name:'植树节', emoji:'🌳', kind:'solar'},
-    {date:'2026-04-05', name:'清明', emoji:'🌿', kind:'trad'},
-    {date:'2026-05-01', name:'劳动节', emoji:'💪', kind:'solar'},
-    {date:'2026-05-10', name:'母亲节', emoji:'🌹', kind:'solar'},
-    {date:'2026-06-01', name:'儿童节', emoji:'🎈', kind:'solar'},
-    {date:'2026-06-19', name:'端午', emoji:'🐉', kind:'trad'},
-    {date:'2026-06-21', name:'父亲节', emoji:'🧔', kind:'solar'},
-    {date:'2026-07-01', name:'建党节', emoji:'🌟', kind:'solar'},
-    {date:'2026-08-01', name:'建军节', emoji:'⭐', kind:'solar'},
-    {date:'2026-08-07', name:'立秋', emoji:'🍂', kind:'term'},
-    {date:'2026-08-23', name:'处暑', emoji:'🌾', kind:'term'},
-    {date:'2026-09-07', name:'白露', emoji:'🌫️', kind:'term'},
-    {date:'2026-09-10', name:'教师节', emoji:'📚', kind:'solar'},
-    {date:'2026-09-23', name:'秋分', emoji:'🍁', kind:'term'},
-    {date:'2026-09-25', name:'中秋', emoji:'🌕', kind:'trad'},
-    {date:'2026-10-01', name:'国庆节', emoji:'🇨🇳', kind:'solar'},
-    {date:'2026-10-08', name:'寒露', emoji:'🌧️', kind:'term'},
-    {date:'2026-10-18', name:'重阳', emoji:'🌾', kind:'trad'},
-    {date:'2026-10-23', name:'霜降', emoji:'❄️', kind:'term'},
-    {date:'2026-11-07', name:'立冬', emoji:'🧣', kind:'term'},
-    {date:'2026-11-11', name:'双十一', emoji:'🛒', kind:'solar'},
-    {date:'2026-11-22', name:'小雪', emoji:'🌨️', kind:'term'},
-    {date:'2026-11-26', name:'感恩节', emoji:'🦃', kind:'solar'},
-    {date:'2026-12-07', name:'大雪', emoji:'⛄', kind:'term'},
-    {date:'2026-12-22', name:'冬至', emoji:'🥟', kind:'term'},
-    {date:'2026-12-24', name:'平安夜', emoji:'🎄', kind:'solar'},
-    {date:'2026-12-25', name:'圣诞节', emoji:'🎅', kind:'solar'}
-  ];
+  /* R314-A4：节日 / 节气日历改为「按系统时间实时推算」。
+     旧版是一张写死 2026 年日期的常量表（FESTIVALS_2026），换年即整张卡片失效、
+     农历节日（春节 / 端午 / 中秋 / 重阳）日期也不会跟着变。现在：
+       ① 公历固定节日 → 按月日直接生成；
+       ② 农历节日 → 复用万年历已内置的 1900–2049 农历算法（navCalLunarOf / navCalFestival）；
+       ③ 二十四节气 → 复用万年历内置节气算法（navCalTermName）；
+       ④ 母亲节 / 父亲节 / 感恩节 → 按「第 n 个星期几」实时推算。
+     结果按年缓存，跨年自动重建，永不写死日期。 */
+  const R314_FEST_META = {
+    // name: [emoji, kind]
+    '元旦':['🎉','solar'], '情人节':['💕','solar'], '妇女节':['👩','solar'], '植树节':['🌳','solar'],
+    '愚人节':['🤪','solar'], '劳动节':['💪','solar'], '青年节':['🎓','solar'], '母亲节':['🌹','solar'],
+    '儿童节':['🎈','solar'], '父亲节':['🧔','solar'], '建党节':['🌟','solar'], '建军节':['⭐','solar'],
+    '教师节':['📚','solar'], '国庆节':['🇨🇳','solar'], '双十一':['🛒','solar'], '感恩节':['🦃','solar'],
+    '平安夜':['🎄','solar'], '圣诞节':['🎅','solar'],
+    '春节':['🏮','trad'], '元宵':['🥣','trad'], '端午':['🐉','trad'], '中秋':['🌕','trad'],
+    '重阳':['🌾','trad'], '除夕':['🎆','trad'], '清明':['🌿','trad'],
+    '小寒':['🥶','term'], '大寒':['❄️','term'], '立春':['🌱','term'], '雨水':['🌧️','term'],
+    '惊蛰':['🐛','term'], '春分':['🌸','term'], '谷雨':['🌾','term'], '立夏':['☀️','term'],
+    '小满':['🌾','term'], '芒种':['🌾','term'], '夏至':['🌞','term'], '小暑':['🍉','term'],
+    '大暑':['🔥','term'], '立秋':['🍂','term'], '处暑':['🌾','term'], '白露':['🌫️','term'],
+    '秋分':['🍁','term'], '寒露':['🌧️','term'], '霜降':['❄️','term'], '立冬':['🧣','term'],
+    '小雪':['🌨️','term'], '大雪':['⛄','term'], '冬至':['🥟','term']
+  };
+  function r314Pad2(n){ return String(n).padStart(2,'0'); }
+  // 第 n 个星期 weekday（0=周日）在 y 年 m 月的公历日
+  function r314NthWeekday(y, m, weekday, n){
+    const firstDow = new Date(y, m-1, 1).getDay();
+    return 1 + ((7 + weekday - firstDow) % 7) + (n-1)*7;
+  }
+  function r314FestivalYear(y){
+    const out = [];
+    const seen = {};
+    const push = (m, d, name)=>{
+      const meta = R314_FEST_META[name];
+      if(!meta) return;
+      const date = y + '-' + r314Pad2(m) + '-' + r314Pad2(d);
+      const k = date + '|' + name;
+      if(seen[k]) return;
+      seen[k] = 1;
+      out.push({ date:date, name:name, emoji:meta[0], kind:meta[1] });
+    };
+    for(let m=1; m<=12; m++){
+      const days = new Date(y, m, 0).getDate();
+      for(let d=1; d<=days; d++){
+        let lu = null;
+        try{ lu = navCalLunarOf(y, m, d); }catch(e){ lu = null; }
+        let fest = '';
+        try{ fest = navCalFestival(m, d, lu) || ''; }catch(e){ fest = ''; }
+        if(fest) push(m, d, fest);
+        let term = '';
+        try{ term = navCalTermName(y, m, d) || ''; }catch(e){ term = ''; }
+        if(term) push(m, d, term);
+      }
+    }
+    // 按「第 n 个星期日 / 星期四」推算的节日
+    try{ push(5, r314NthWeekday(y, 5, 0, 2), '母亲节'); }catch(e){}
+    try{ push(6, r314NthWeekday(y, 6, 0, 3), '父亲节'); }catch(e){}
+    try{ push(11, r314NthWeekday(y, 11, 4, 4), '感恩节'); }catch(e){}
+    return out;
+  }
+  let _r314FestCache = { key:'', list:[] };
+  function festAll(){
+    const y = new Date().getFullYear();
+    const key = String(y);
+    if(_r314FestCache.key !== key){
+      const list = r314FestivalYear(y).concat(r314FestivalYear(y+1));
+      list.sort((a,b)=> a.date < b.date ? -1 : (a.date > b.date ? 1 : 0));
+      _r314FestCache = { key:key, list:list };
+    }
+    return _r314FestCache.list;
+  }
   function daysBetween(a,b){
     const da = new Date(a+'T00:00:00'), db = new Date(b+'T00:00:00');
     return Math.round((db - da) / 86400000);
   }
+  // R314-A4：始终取「今天及以后」最近的 n 个；节气最多占 2 席，避免把传统节日挤掉
   function getUpcomingFestivals(n){
     const today = S.todayStr();
-    return FESTIVALS_2026.filter(f=>f.date >= today).sort((a,b)=> a.date < b.date ? -1 : 1).slice(0, n);
+    const list = festAll().filter(f=>f.date >= today);
+    const out = []; let terms = 0;
+    for(let i=0; i<list.length && out.length<n; i++){
+      const f = list[i];
+      if(f.kind === 'term'){ if(terms >= 2) continue; terms++; }
+      out.push(f);
+    }
+    return out;
+  }
+  // 按名称取「最近一次」的节日条目（详情弹窗用，保证日期永远是最新的那次）
+  function findFestival(name){
+    const today = S.todayStr();
+    const all = festAll();
+    const upcoming = all.filter(f=>f.name===name && f.date >= today);
+    if(upcoming.length) return upcoming[0];
+    const past = all.filter(f=>f.name===name);
+    return past.length ? past[past.length-1] : null;
   }
 
   // V37：节日详情（来源故事 + 习俗）
@@ -40348,7 +40881,8 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
 
   // V37：根据节日名称打开详情弹窗 — V53：每天首次点击获得 +1⭐（当日再次点击不重复给星）
   function openFestivalDetail(name){
-    const f = FESTIVALS_2026.find(x=>x.name===name);
+    // R314-A4：改为按名称取最近一次条目，日期随系统时间自动更新
+    const f = findFestival(name);
     if(!f) return;
     const d = daysBetween(S.todayStr(), f.date);
     const daysTxt = d<=0 ? '就是今天 🎉' : (d + ' 天后');
@@ -41157,7 +41691,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   function renderTodayOpt(st, today){
     const opts = S.tasksForDate(today).filter(t=>t.type==='选做拓展任务' && t.subject!=='运动' && t.subject!=='围棋' && t.subject!=='错题' && t.subject!=='习惯家务');
     if(!opts.length){ $('#todayOpt').innerHTML='<div style="color:var(--muted);text-align:center;padding:20px">暂无选做任务</div>'; return; }
-    const order = ['语文','数学','英语','文明小标兵'];
+    const order = ['语文','数学','英语','文明小标兵','小日记片段'];
     const grouped = {};
     opts.forEach(t=>{ (grouped[t.subject]=grouped[t.subject]||[]).push(t); });
     $('#todayOpt').innerHTML = order.filter(s=>grouped[s]&&grouped[s].length).map(sub=>`
@@ -41186,7 +41720,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       $('#todayHouse').innerHTML = houses.map(t=>{
         const edit = isP ? `<button class="pbtn" data-edit-task="${t.id}">✏️</button>` : '';
         const checked = (st.records.find(r=>r.date===today && r.taskId===t.id && r.completed)) ? 'done' : '';
-        const starN = typeof t.stars==='number' ? t.stars : 2;
+        const starN = taskStarN(t);
         return `<div class="task-item ${checked}">
           <div class="task-main">
             <div class="task-name">${esc(t.name)} <span class="task-star-badge" title="完成可得成长星">⭐${starN}</span></div>
@@ -41209,7 +41743,9 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   }
   // R169-2：任务⭐数量共用口径 —— 首页选做/必做卡与「任务设置」页取同一数据源（设置中心打卡任务配置 st.tasks），
   // 保证两处显示的⭐获取数量永远一致
+  // R314-A2：口径下沉到 Store.starOfTask，与「打卡实际发放⭐」合并为同一函数，彻底杜绝配置 / 展示 / 发放三处不一致
   function taskStarN(t){
+    try{ if(S && typeof S.starOfTask === 'function') return S.starOfTask(t); }catch(e){}
     return (t && typeof t.stars==='number') ? t.stars
       : (t && (t.type==='必做任务' || t.subject==='家务小帮手' || t.subject==='习惯家务') ? 2 : 1);
   }
@@ -41222,6 +41758,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         <div class="task-extra">${esc(t.standard||'')} · ${t.minutes}分钟${t.needCount?` · 本周需${t.needCount}次`:''} · 完成 +${starN}⭐</div>
       </div>
       <span class="task-date-label">${taskDateLabel(t)}</span>
+      <button class="pbtn r314-cred-btn${(function(){ try{ return r314CredHas(t.id) ? ' has' : ''; }catch(e){ return ''; } })()}" data-task-cred="${t.id}" title="上传作业照片 / 填写备注">📷</button>
       ${isChild() && !_forceTaskEdit ? '' : `
         <button class="pbtn" data-edit-task="${t.id}">✏️</button>`}
     </div>`;
@@ -48322,6 +48859,16 @@ function renderKMAdmin(){
     }catch(e){}
   }
   window.playCheckinSound = playCheckinSound;
+  /* R314-B4：打卡成功主题动画 —— 以装饰器方式挂在统一入口上，
+     不改动音效函数本体（音效开关关闭时动画照常出现）。 */
+  (function(){
+    const _r314BaseCheckinSound = playCheckinSound;
+    playCheckinSound = function(){
+      try{ if(typeof r314Celebrate === 'function') r314Celebrate(); }catch(e){}
+      return _r314BaseCheckinSound.apply(this, arguments);
+    };
+    window.playCheckinSound = playCheckinSound;
+  })();
   /* R293-2.1 中华通史（iframe）按键音效 —— 与学而思英语板块完全同源、同槽位、同预设。
      学而思英语板块内的按键（页签 / 工具键 / 普通按钮）在 sfxSlotOf 里统一归入 'third' 槽位
      （默认预设 h「木鱼嗒」），用户在「设置中心 · 点击音效」里更换第三级按键音后，
@@ -49748,15 +50295,148 @@ function renderKMAdmin(){
   }
 
   // ============ 错题保存 ============
+  /* R314-A5：错题订正复盘 —— 图片凭证（拍照 / 相册，多张）+ 备注 / 解题思路字数提示。
+     凭证随这条打卡记录一起落库（r.proofs），全量备份 / 合并导入 / 云同步都会带上。 */
+  const R314_PROOF_MAX = 4;
+  let _r314WProofs = [];
+  function r314CompressImg(file, cb){
+    try{
+      const fr = new FileReader();
+      fr.onload = ()=>{
+        try{
+          const im = new Image();
+          im.onload = ()=>{
+            try{
+              const maxSide = 900;
+              const sc = Math.min(1, maxSide / Math.max(im.width || maxSide, im.height || maxSide));
+              const cv = document.createElement('canvas');
+              cv.width = Math.max(1, Math.round((im.width || maxSide) * sc));
+              cv.height = Math.max(1, Math.round((im.height || maxSide) * sc));
+              const cx = cv.getContext('2d');
+              if(!cx){ cb(String(fr.result || '')); return; }
+              cx.drawImage(im, 0, 0, cv.width, cv.height);
+              cb(cv.toDataURL('image/jpeg', 0.68));
+            }catch(e){ cb(String(fr.result || '')); }
+          };
+          im.onerror = ()=> cb(String(fr.result || ''));
+          im.src = String(fr.result || '');
+        }catch(e){ cb(String(fr.result || '')); }
+      };
+      fr.onerror = ()=> toast('图片读取失败');
+      fr.readAsDataURL(file);
+    }catch(e){ toast('当前环境不支持图片上传'); }
+  }
+  function renderWProofList(){
+    const box = document.getElementById('wProofList');
+    const cnt = document.getElementById('wProofCount');
+    const clr = document.getElementById('wProofClear');
+    if(cnt) cnt.textContent = _r314WProofs.length + ' / ' + R314_PROOF_MAX;
+    if(clr) clr.hidden = !_r314WProofs.length;
+    if(!box) return;
+    if(!_r314WProofs.length){
+      box.innerHTML = '<div class="r314-proof-empty">支持拍照或从相册多选，最多 ' + R314_PROOF_MAX + ' 张（自动压缩后只存本机）</div>';
+      return;
+    }
+    box.innerHTML = _r314WProofs.map((u,i)=>
+      '<div class="r314-proof-item"><img src="' + esc(u) + '" alt="凭证' + (i+1) + '" /><button type="button" class="r314-proof-del" data-wproof-del="' + i + '" title="移除这张">×</button></div>'
+    ).join('');
+    box.querySelectorAll('[data-wproof-del]').forEach(b=>{
+      b.onclick = ()=>{
+        const i = Number(b.getAttribute('data-wproof-del'));
+        _r314WProofs.splice(i, 1);
+        renderWProofList();
+      };
+    });
+  }
+  function r314AddProofFiles(files){
+    const list = Array.from(files || []).filter(f=>f && /^image\//.test(f.type || ''));
+    if(!list.length) return;
+    let room = R314_PROOF_MAX - _r314WProofs.length;
+    if(room <= 0){ toast('最多上传 ' + R314_PROOF_MAX + ' 张凭证'); return; }
+    const todo = list.slice(0, room);
+    let done = 0;
+    todo.forEach(f=>{
+      r314CompressImg(f, (url)=>{
+        if(url && _r314WProofs.length < R314_PROOF_MAX) _r314WProofs.push(url);
+        done++;
+        if(done >= todo.length) renderWProofList();
+      });
+    });
+    if(list.length > room) toast('已保留前 ' + room + ' 张（上限 ' + R314_PROOF_MAX + ' 张）');
+  }
+  function r314UpdateCc(){
+    const n = document.getElementById('wNote');
+    const r = document.getElementById('wResult');
+    const nc = document.getElementById('wNoteCc');
+    const rc = document.getElementById('wResultCc');
+    if(nc) nc.textContent = String((n && n.value) || '').length + ' 字';
+    if(rc) rc.textContent = String((r && r.value) || '').length + ' 字';
+  }
+  function r314ResetWrongProof(){
+    _r314WProofs = [];
+    renderWProofList();
+    r314UpdateCc();
+  }
+  // R314-A5：统一入口 —— 每次打开都清空上次的临时凭证，避免串记录
+  function r314OpenWrongModal(){
+    try{ r314ResetWrongProof(); }catch(e){}
+    showModal('#modalWrong');
+  }
+  function initWrongProofUI(){
+    const cam = document.getElementById('wProofCamera');
+    const camIn = document.getElementById('wProofCameraInput');
+    const alb = document.getElementById('wProofAlbum');
+    const albIn = document.getElementById('wProofAlbumInput');
+    const clr = document.getElementById('wProofClear');
+    const note = document.getElementById('wNote');
+    const res = document.getElementById('wResult');
+    if(cam && camIn) cam.onclick = ()=> camIn.click();
+    if(alb && albIn) alb.onclick = ()=> albIn.click();
+    if(camIn) camIn.addEventListener('change', ()=>{ r314AddProofFiles(camIn.files); camIn.value = ''; });
+    if(albIn) albIn.addEventListener('change', ()=>{ r314AddProofFiles(albIn.files); albIn.value = ''; });
+    if(clr) clr.onclick = ()=> r314ResetWrongProof();
+    if(note) note.addEventListener('input', r314UpdateCc);
+    if(res) res.addEventListener('input', r314UpdateCc);
+    r314UpdateCc();
+    renderWProofList();
+    /* R314-E2：与乐读数学错题本互通 —— 一键把未订正错题填进复盘表单 */
+    const imp = document.getElementById('wImportMath');
+    if(imp && !imp._bound){
+      imp._bound = true;
+      imp.onclick = function(){
+        let list = [];
+        try{ list = (S.getCalcWrongs() || []).filter(function(w){ return w && !w.fixedAt; }).slice(0, 8); }catch(e){}
+        if(!list.length){ toast('数学错题本里暂无待订正的题'); return; }
+        const fmt = function(w){
+          const a = (w.a == null ? '' : w.a), b = (w.b == null ? '' : w.b), c = (w.c == null ? '' : w.c);
+          return String(a) + ' ' + String(w.op || '') + ' ' + String(b) + (w.op2 ? (' ' + w.op2 + ' ' + c) : '');
+        };
+        const noteEl = document.getElementById('wNote');
+        const resEl = document.getElementById('wResult');
+        const cntEl = document.getElementById('wCount');
+        const subEl = document.getElementById('wSubject');
+        if(subEl) subEl.value = '数学';
+        if(noteEl) noteEl.value = list.map(function(w, i){
+          return (i + 1) + '. ' + fmt(w) + ' = ?（我的答案：' + (w.wrongVal == null ? '—' : w.wrongVal) + '）';
+        }).join('\n');
+        if(resEl) resEl.value = list.map(function(w, i){ return (i + 1) + '. 正确答案：' + (w.ans == null ? '' : w.ans); }).join('\n');
+        if(cntEl) cntEl.value = list.length;
+        r314UpdateCc();
+        toast('📥 已导入 ' + list.length + ' 道数学错题，可直接补充思路后保存');
+      };
+    }
+  }
   function saveWrongFromModal(){
     const subject = $('#wSubject').value;
     const count = parseInt($('#wCount').value)||1;
     const note = $('#wNote').value.trim();
     const result = $('#wResult').value.trim();
-    S.saveWrong(S.todayStr(), subject, count, note, result);
+    // R314-A5：连凭证 / 解题思路一起落库
+    S.saveWrong(S.todayStr(), subject, count, note, result, { proofs:_r314WProofs.slice(), idea:result, note:note });
     hideModal('#modalWrong');
-    toast('错题复盘已打卡 +1⭐');
+    toast('错题复盘已打卡 +1⭐' + (_r314WProofs.length ? ' · 凭证 ' + _r314WProofs.length + ' 张' : ''));
     playCheckinSound();
+    r314ResetWrongProof();
     renderToday(); renderHome();
   }
 
@@ -51110,7 +51790,7 @@ function renderKMAdmin(){
     renderTaskStarSettings(); // R150-6：⭐奖励设置（家长模式）
     const addHouse = $('#settingsTaskHouse').querySelector('#btnAddHouse');
     if(addHouse) addHouse.onclick = ()=> openTaskEdit(null, '家务小帮手');
-    const ow = $('#btnSettingsOpenWrong'); if(ow) ow.onclick = ()=> showModal('#modalWrong');
+    const ow = $('#btnSettingsOpenWrong'); if(ow) ow.onclick = ()=> r314OpenWrongModal();
     const addReq = $('#btnSettingsAddReq'); if(addReq) addReq.onclick = ()=>{ openTaskEdit(null); const t=$('#tType'); if(t) t.value='必做任务'; };
     const addOpt = $('#btnSettingsAddOpt'); if(addOpt) addOpt.onclick = ()=>{ openTaskEdit(null); const t=$('#tType'); if(t) t.value='选做拓展任务'; };
     // R136-2：注入「锁定 / 解锁」开关（设置中心内对每个任务可一键切换）
@@ -51489,7 +52169,7 @@ function renderKMAdmin(){
   const NAVCAL_SOLAR_FEST = {
     '1-1':'元旦','2-14':'情人节','3-8':'妇女节','3-12':'植树节','4-1':'愚人节','5-1':'劳动节',
     '5-4':'青年节','6-1':'儿童节','7-1':'建党节','8-1':'建军节','9-10':'教师节','10-1':'国庆节',
-    '12-24':'平安夜','12-25':'圣诞节'
+    '11-11':'双十一','12-24':'平安夜','12-25':'圣诞节'
   };
   // 农历固定节日（月-日，闰月不计）
   const NAVCAL_LUNAR_FEST = {
@@ -51893,6 +52573,10 @@ function renderKMAdmin(){
     }catch(e){}
     // 设置：合并进「任务设置」页（单一版块；系统设置锁卡片点击解锁）
     bindPinGate();
+    // R314-A5：错题复盘凭证上传 / 字数提示（幂等绑定）
+    try{ initWrongProofUI(); }catch(e){}
+    // R314-D：成长中心初始化（壁纸 / 历史联动 / 提醒循环 / 首页徽章条）
+    try{ r314Init(); }catch(e){}
     const btnUnlock = document.getElementById('btnUnlockSystem');
     if(btnUnlock && !btnUnlock._bound){
       btnUnlock._bound = true;
@@ -52076,6 +52760,9 @@ function renderKMAdmin(){
       const el=$(sel); if(el && !el._taskBound){ el._taskBound=true; el.addEventListener('click', handleTodayClick); }
     });
     function handleTodayClick(e){
+      // R314-B1：任务凭证上传（拍照 / 相册 + 备注）
+      const credBtn = e.target.closest ? e.target.closest('[data-task-cred]') : null;
+      if(credBtn){ r314OpenTaskCred(credBtn.getAttribute('data-task-cred')); return; }
       // R248-4：修复「家务小帮手」等任务打卡键点击无响应 —— 统一走 toggleCheckIn（再点即撤销，状态落库）
       const taskCk = e.target.closest ? e.target.closest('[data-ri-checkin]') : null;
       if(taskCk){
@@ -52123,7 +52810,7 @@ function renderKMAdmin(){
       toast(taskManage ? '编辑模式：点击 ✏️ 可编辑任务（删除请在编辑弹窗内）' : '已退出编辑模式');
     };
     // 错题按钮
-    $('#btnOpenWrong').onclick=()=>showModal('#modalWrong');
+    $('#btnOpenWrong').onclick=()=> r314OpenWrongModal();
     $('#btnSaveWrong').onclick=saveWrongFromModal;
     // 围棋
     $('#btnSaveGo').onclick=saveGoFromModal;
@@ -52907,7 +53594,8 @@ if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
   function checkFestivalReminder(){
     try{
       const today = S.todayStr();
-      const f = FESTIVALS_2026.find(x=>x.date===today);
+      // R314-A4：当日节气 / 节日由实时日历推算，不再依赖写死年份的表
+      const f = festAll().find(x=>x.date===today);
       if(!f) return;
       const flagKey = 'festRemindFlags';
       let flags = {};
@@ -55185,9 +55873,14 @@ function init(){
   }
   function backupSummary(payload){
     const d = (payload && (payload.data || payload.state || payload)) || {};
+    const r314 = d.r314 || {};
     return { tasks:(d.tasks || []).length, records:(d.records || []).length,
       stars:(d.archive || {}).totalStars || 0, plots:(d.plots || []).length,
       memos:(d.nickMemos || []).length, schedule:!!d.schedule,
+      // R314-A7：备份摘要补上错题复盘 / 摘抄 / 单元目标 / 作息记录，避免「看着导出成功、实际少了模块」
+      wrongs:(d.calcWrongBook || []).length + (d.xueersiWrongs || []).length + ((d.km && d.km.wrong) || []).length,
+      excerpts:(r314.excerpts || []).length, goals:(r314.goals || []).length,
+      health:Object.keys((r314.health && r314.health.days) || {}).length,
       bytes:(() => { try{ return JSON.stringify(payload).length; }catch(e){ return 0; } })() };
   }
   function takeSnapshot(){
@@ -55897,7 +56590,7 @@ function init(){
       case 'child-save': guard(()=>go(()=>{ upd(c=>{ c.childMode = chk('childModeOn'); }); applyUi(); tip('👦 孩子模式界面已更新'); render(); })); break;
       case 'backup-now': go(()=>{ const p=backupPayload(); if(!p){ tip('备份生成失败'); return; } dlText(JSON.stringify(p), backupName(), 'application/json;charset=utf-8'); upd(c=>{ c.backup.lastAt=Date.now(); }); tip('💾 备份已导出（文件名带时间戳）'); }); break;
       case 'backup-snapshot': go(()=>{ const s=takeSnapshot(); tip(s ? '📸 当前快照已生成，可随时回退' : '快照生成失败'); render(); }); break;
-      case 'backup-preview': go(()=>{ const f=q('#backupFile'), file=f&&f.files&&f.files[0]; const box=q('#r271BackupPreview'); if(!file){ tip('请先选择备份文件'); return; } const fr=new FileReader(); fr.onload=()=>{ try{ const p=JSON.parse(String(fr.result||'{}')); const s=backupSummary(p); window.__R271_PENDING_BACKUP__=p; if(box) box.innerHTML='<b>备份摘要</b><div class="r271-log">任务 '+s.tasks+' 个 · 打卡 '+s.records+' 条 · ⭐ '+s.stars+' · 田地 '+s.plots+' 块 · 备忘 '+s.memos+' 条 · '+(s.schedule?'含课程表':'无课程表')+' · '+Math.round(s.bytes/1024)+' KB</div>'+muted('确认后采用「合并」策略导入，不会清空现有数据。'); tip('✅ 备份预览已生成'); }catch(err){ if(box) box.innerHTML='<div class="r271-log">❌ 文件不是有效的 JSON 备份</div>'; } }; fr.readAsText(file); }); break;
+      case 'backup-preview': go(()=>{ const f=q('#backupFile'), file=f&&f.files&&f.files[0]; const box=q('#r271BackupPreview'); if(!file){ tip('请先选择备份文件'); return; } const fr=new FileReader(); fr.onload=()=>{ try{ const p=JSON.parse(String(fr.result||'{}')); const s=backupSummary(p); window.__R271_PENDING_BACKUP__=p; if(box) box.innerHTML='<b>备份摘要</b><div class="r271-log">任务 '+s.tasks+' 个 · 打卡 '+s.records+' 条 · ⭐ '+s.stars+' · 田地 '+s.plots+' 块 · 备忘 '+s.memos+' 条 · 错题 '+s.wrongs+' 条 · 摘抄 '+s.excerpts+' 条 · 单元目标 '+s.goals+' 个 · 作息 '+s.health+' 天 · '+(s.schedule?'含课程表':'无课程表')+' · '+Math.round(s.bytes/1024)+' KB</div>'+muted('确认后采用「合并」策略导入，不会清空现有数据。'); tip('✅ 备份预览已生成'); }catch(err){ if(box) box.innerHTML='<div class="r271-log">❌ 文件不是有效的 JSON 备份</div>'; } }; fr.readAsText(file); }); break;
       case 'backup-restore': guard(()=>danger('即将把预览的备份合并进当前数据：\n· 同 id 内容以备份为准，本地独有内容保留\n· 导入前会自动生成快照，可随时回退\n\n确认继续导入吗？', ()=>go(()=>{ const p=window.__R271_PENDING_BACKUP__; if(!p){ tip('请先预览备份文件'); return; } const s=takeSnapshot(); const r=mergeBackup(p); tip(r.ok ? '✅ 已合并导入（导入前快照已保留）' : '⚠️ ' + r.msg); if(s) tip('📸 导入前快照：' + new Date(s.at).toLocaleString('zh-CN')); render(); }), '备份导入确认')); break;
       case 'backup-rollback': guard(()=>danger('即将把本机数据恢复到最近一份快照：\n· 当前状态会自动另存为新快照，可再次恢复\n· 快照之后的改动会被覆盖\n\n确认继续回退吗？', ()=>go(()=>{ const c=cfg(), s=(c.backup.snapshots||[])[0]; if(!s){ tip('没有可用快照'); return; } const r=mergeBackup(s.payload); tip(r.ok ? '⏪ 已回退到最近快照' : '⚠️ ' + r.msg); render(); }), '快照回退确认')); break;
       case 'diag-run': render(); tip('🩺 诊断已刷新'); break;
@@ -55935,30 +56628,70 @@ function init(){
   }
 
   /* 导入合并：只补缺失字段，绝不覆盖 / 清空现有用户数据 */
+  /* R314-A7：合并逻辑改为「通用深度补齐」，不再维护一份写死的字段白名单。
+     旧版只认 tasks / records / plots / gifts / mathProblems / calcBook / calcWrongBook /
+     nickMemos / xueersiWrongs 九个数组 + 六七个对象键，之后新增的任何数据
+     （错题复盘凭证、摘抄本、单元目标、徽章、商城、挑战、作息健康…）在导入时都会被静默丢弃。
+     现在：
+       · 数组按主键（id / key / qid / date|taskId）补齐缺失项，本地同主键内容一律不动；
+       · 对象递归下钻，只补缺失键；
+       · 标量只在本地 undefined 时才填。
+     即「备份里有的都补进来，本地已有的一条不覆盖、一条不删除」。 */
+  function _mergeKeyOf(x){
+    if(x === null || x === undefined) return 'v:null';
+    if(typeof x !== 'object') return 'v:' + String(x);
+    if(x.id !== undefined && x.id !== null) return 'id:' + String(x.id);
+    if(x.key !== undefined && x.key !== null) return 'key:' + String(x.key);
+    if(x.qid !== undefined && x.qid !== null) return 'qid:' + String(x.qid);
+    if(x.date !== undefined && x.taskId !== undefined) return 'dt:' + String(x.date) + '|' + String(x.taskId);
+    if(x.date !== undefined) return 'd:' + String(x.date) + '|' + String(x.name || x.item || x.title || '');
+    if(x.at !== undefined) return 'at:' + String(x.at);
+    if(x.w !== undefined) return 'w:' + String(x.w);
+    try{ return 'j:' + JSON.stringify(x); }catch(e){ return 'j:' + String(x); }
+  }
+  function mergeFillDeep(dst, src, depth){
+    const d = Number(depth) || 0;
+    if(d > 10) return dst;
+    if(Array.isArray(src)){
+      if(!Array.isArray(dst)) return JSON.parse(JSON.stringify(src));
+      const have = {};
+      dst.forEach(x=>{ have[_mergeKeyOf(x)] = 1; });
+      src.forEach(x=>{
+        const k = _mergeKeyOf(x);
+        if(!have[k]){ dst.push(JSON.parse(JSON.stringify(x))); have[k] = 1; }
+      });
+      return dst;
+    }
+    if(src && typeof src === 'object'){
+      if(!dst || typeof dst !== 'object' || Array.isArray(dst)) return JSON.parse(JSON.stringify(src));
+      Object.keys(src).forEach(k=>{
+        if(k.indexOf('__') === 0) return;
+        const v = src[k];
+        if(v && typeof v === 'object'){ dst[k] = mergeFillDeep(dst[k], v, d+1); }
+        else if(dst[k] === undefined){ dst[k] = v; }
+      });
+      return dst;
+    }
+    return dst === undefined ? src : dst;
+  }
+  function _mergeCount(st){
+    try{
+      const s = st || {};
+      const r314 = s.r314 || {};
+      return (s.tasks||[]).length + (s.records||[]).length + (s.mathProblems||[]).length
+        + (s.calcWrongBook||[]).length + (s.nickMemos||[]).length
+        + (r314.excerpts||[]).length + (r314.goals||[]).length + Object.keys(r314.health && r314.health.days || {}).length;
+    }catch(e){ return 0; }
+  }
   function mergeBackup(payload){
     try{
       const src = payload && (payload.data || payload.state || payload);
       if(!src || typeof src !== 'object') return { ok:false, msg:'备份内容为空' };
       const st = S.load();
-      // 数组类：按主键补齐缺失项；对象类：只补缺失键
-      const arrKeys = ['tasks','records','plots','gifts','mathProblems','calcBook','calcWrongBook','nickMemos','xueersiWrongs'];
-      arrKeys.forEach(k => {
-        if(!Array.isArray(src[k])) return;
-        if(!Array.isArray(st[k])) st[k] = [];
-        const ids = new Set(st[k].map(x => String((x && (x.id || x.key || x.date + '|' + x.taskId)) || JSON.stringify(x))));
-        src[k].forEach(x => {
-          const key = String((x && (x.id || x.key || x.date + '|' + x.taskId)) || JSON.stringify(x));
-          if(!ids.has(key)){ st[k].push(x); ids.add(key); }
-        });
-      });
-      ['schedule','profile','archive','inventory','r256','r271','settings','km','weekPlan'].forEach(k => {
-        if(src[k] && typeof src[k] === 'object'){
-          if(!st[k] || typeof st[k] !== 'object') st[k] = {};
-          Object.keys(src[k]).forEach(kk => { if(st[k][kk] === undefined) st[k][kk] = src[k][kk]; });
-        }
-      });
+      const before = _mergeCount(st);
+      mergeFillDeep(st, src, 0);
       S.save(st);
-      return { ok:true };
+      return { ok:true, added: Math.max(0, _mergeCount(st) - before) };
     }catch(e){ return { ok:false, msg:'合并失败：' + (e && e.message || '') }; }
   }
 
@@ -56526,6 +57259,1163 @@ function init(){
   /* R272-1.5 / 2.5：启动屏障 —— 等 IndexedDB 主库完成旧存量迁移 / 损坏恢复再初始化页面，
      避免 Safari 驱逐 localStorage 后首屏短暂渲染「空档」。持久化层带 1.6 秒硬超时，
      IDB 不可用时自动降级且绝不白屏。所有原有界面、文字、交互表现保持不变，用户无感。 */
+  /* ============================================================================
+     R314-B / C / D：成长中心
+     —— 学情报告 / 徽章成就 / 星星商城 / 单元目标 / 摘抄积累本 / 作息健康
+     数据全部落在 st.r314（S.getR314 / S.setR314 / S.setR314Path），
+     只补缺失结构、绝不覆盖用户已录入内容；⭐ 收支统一走 S.r314AddStars / r314SpendStars。
+     ============================================================================ */
+  var _r314Tab = 'report';
+  var _r314Scope = 'week';
+
+  function r314St(){ try{ return S.getR314() || {}; }catch(e){ return {}; } }
+  function r314Stars(){ try{ const st = S.load(); return (st.archive && st.archive.totalStars) | 0; }catch(e){ return 0; } }
+  function r314Pad(n){ return String(n).length < 2 ? ('0' + n) : String(n); }
+  function r314Esc(s){ return esc(String(s == null ? '' : s)); }
+
+  /* 周期天数：本周（周一起 7 天） / 本月（1 号起至今天，月内滚动口径） */
+  function r314ScopeDays(scope){
+    if(scope === 'month'){
+      const t = S.todayStr(), ym = t.slice(0, 7);
+      const todayN = parseInt(t.slice(8, 10), 10) || 1;
+      const out = [];
+      for(let d = 1; d <= todayN; d++) out.push(ym + '-' + r314Pad(d));
+      return out;
+    }
+    try{ return S.weekRange(); }catch(e){ return [S.todayStr()]; }
+  }
+
+  /* ---------- 学情报告 ---------- */
+  function r314ReportData(scope){
+    const days = r314ScopeDays(scope);
+    const rep = S.buildReport(days, scope === 'month' ? '本月' : '本周');
+    const st = S.load();
+    const inDay = {}; days.forEach(d => inDay[d] = 1);
+    let stars = 0;
+    st.records.filter(r => r.completed && inDay[r.date]).forEach(r => stars += (r.stars || 0));
+
+    /* 各科完成率（任务口径：当日启用任务数为分母，完成记录数为分子） */
+    const bySub = {};
+    days.forEach(d => {
+      S.tasksForDate(d).forEach(t => {
+        const k = t.subject || '其他';
+        if(!bySub[k]) bySub[k] = { done:0, total:0 };
+        bySub[k].total++;
+        const r = st.records.find(x => x.date === d && x.taskId === t.id);
+        if(r && r.completed) bySub[k].done++;
+      });
+    });
+    const subs = Object.keys(bySub).map(k => ({
+      name:k, done:bySub[k].done, total:bySub[k].total,
+      rate: bySub[k].total ? Math.round(bySub[k].done / bySub[k].total * 100) : 0
+    })).sort((a, b) => b.rate - a.rate);
+
+    /* 高频错题：乐读数学错题本按题型聚合 + 学而思错题按科目聚合 */
+    const wrongTop = [];
+    try{
+      const cw = Array.isArray(st.calcWrongBook) ? st.calcWrongBook : [];
+      const cat = {};
+      cw.forEach(w => { const k = w.cat || '计算小超市'; cat[k] = (cat[k] || 0) + 1; });
+      Object.keys(cat).sort((a, b) => cat[b] - cat[a]).slice(0, 3).forEach(k => wrongTop.push({ name:k, n:cat[k], from:'数学' }));
+      const xs = Array.isArray(st.xueersiWrongs) ? st.xueersiWrongs : [];
+      xs.forEach(w => { const k = w.subject || w.type || '英语'; const i = wrongTop.findIndex(x => x.name === k); if(i >= 0) wrongTop[i].n++; });
+    }catch(e){}
+
+    /* 阅读 / 运动时长（分钟） */
+    const readMin = rep.readMin || 0, sportMin = rep.sportMin || 0;
+
+    /* 薄弱任务：周期内完成率最低的 3 个必做任务（只统计至少有 1 天的） */
+    const taskAgg = {};
+    days.forEach(d => {
+      S.tasksForDate(d).filter(t => t.type === '必做任务').forEach(t => {
+        if(!taskAgg[t.id]) taskAgg[t.id] = { name:t.name, done:0, total:0 };
+        taskAgg[t.id].total++;
+        const r = st.records.find(x => x.date === d && x.taskId === t.id);
+        if(r && r.completed) taskAgg[t.id].done++;
+      });
+    });
+    const weakTasks = Object.keys(taskAgg).map(k => {
+      const a = taskAgg[k];
+      return { name:a.name, rate: a.total ? Math.round(a.done / a.total * 100) : 0, done:a.done, total:a.total };
+    }).filter(x => x.total > 0).sort((a, b) => a.rate - b.rate).slice(0, 3);
+
+    const lowSub = subs.length ? subs[subs.length - 1] : null;
+    return { days, rep, stars, subs, wrongTop, readMin, sportMin, weakTasks, lowSub, scope };
+  }
+
+  function r314ReportText(data){
+    const d = data || r314ReportData(_r314Scope);
+    const L = [];
+    L.push('📊 Nick 学习成长报告（' + (d.scope === 'month' ? '本月' : '本周') + '）');
+    L.push('周期：' + d.days[0] + ' ~ ' + d.days[d.days.length - 1]);
+    L.push('整体完成率：' + d.rep.overall + '%（' + d.rep.doneTask + '/' + d.rep.totalTask + ' 项）');
+    L.push('收获成长星：' + d.stars + ' ⭐');
+    L.push('阅读时长：' + d.readMin + ' 分钟 · 运动时长：' + d.sportMin + ' 分钟');
+    if(d.subs.length){
+      L.push('');
+      L.push('【各科完成率】');
+      d.subs.forEach(s => L.push('· ' + s.name + '：' + s.rate + '%（' + s.done + '/' + s.total + '）'));
+    }
+    if(d.weakTasks.length){
+      L.push('');
+      L.push('【需要加油的任务】');
+      d.weakTasks.forEach(w => L.push('· ' + w.name + '：' + w.rate + '%（' + w.done + '/' + w.total + '）'));
+    }
+    if(d.wrongTop.length){
+      L.push('');
+      L.push('【高频错题】');
+      d.wrongTop.forEach(w => L.push('· ' + w.name + '：' + w.n + ' 题'));
+    }
+    L.push('');
+    L.push('【学情小结】');
+    L.push(r314Summary(data));
+    return L.join('\n');
+  }
+
+  function r314Summary(data){
+    const d = data || r314ReportData(_r314Scope);
+    const parts = [];
+    parts.push('本' + (d.scope === 'month' ? '月' : '周') + '整体完成率 ' + d.rep.overall + '%，' +
+      (d.rep.overall >= 85 ? '打卡节奏稳、执行力很棒。' :
+       d.rep.overall >= 60 ? '整体节奏不错，个别任务需要盯一下。' :
+       '完成率偏低，建议把任务拆小、固定时段完成。'));
+    if(d.lowSub && d.lowSub.rate < 80) parts.push('「' + d.lowSub.name + '」完成率 ' + d.lowSub.rate + '%，是当前相对薄弱的一科，可适当降低单次时长、提高频次。');
+    if(d.weakTasks.length && d.weakTasks[0].rate < 80) parts.push('最容易漏掉的是「' + d.weakTasks[0].name + '」（' + d.weakTasks[0].rate + '%），建议放进每日固定清单。');
+    if(d.wrongTop.length) parts.push('错题集中在「' + d.wrongTop[0].name + '」，可安排一次专项订正复盘。');
+    if(d.readMin < 60) parts.push('阅读时长偏少（' + d.readMin + ' 分钟），建议每天固定 15 分钟大阅读。');
+    if(d.rep.overall >= 85 && d.readMin >= 60) parts.push('保持当前节奏即可，适当增加拓展任务。');
+    return parts.join('');
+  }
+
+  function r314ReportHtml(){
+    const d = r314ReportData(_r314Scope);
+    const subs = d.subs.map(s =>
+      '<div class="r314-sub-row"><div class="r314-sub-name">' + r314Esc(s.name) + '</div>' +
+      '<div class="r314-sub-bar"><i style="width:' + s.rate + '%"></i></div>' +
+      '<div class="r314-sub-val">' + s.rate + '%<span>' + s.done + '/' + s.total + '</span></div></div>'
+    ).join('') || '<div class="r314-empty">本周期还没有启用任何任务</div>';
+    const weak = d.weakTasks.map(w =>
+      '<div class="r314-weak-item"><span class="r314-weak-name">' + r314Esc(w.name) + '</span>' +
+      '<span class="r314-weak-val">' + w.rate + '% · ' + w.done + '/' + w.total + '</span></div>'
+    ).join('') || '<div class="r314-empty">暂无必做任务数据</div>';
+    const wrong = d.wrongTop.map(w =>
+      '<div class="r314-wrong-item"><span class="r314-wrong-ico">' + (w.from === '英语' ? '📘' : '🧮') + '</span>' +
+      '<span class="r314-wrong-name">' + r314Esc(w.name) + '</span><span class="r314-wrong-n">' + w.n + ' 题</span></div>'
+    ).join('') || '<div class="r314-empty">暂无收录错题，表现不错～</div>';
+
+    return '' +
+      '<div class="r314-scope-bar">' +
+        '<button class="r314-scope' + (_r314Scope === 'week' ? ' active' : '') + '" data-gscope="week">📅 本周</button>' +
+        '<button class="r314-scope' + (_r314Scope === 'month' ? ' active' : '') + '" data-gscope="month">🗓️ 本月</button>' +
+        '<span class="r314-scope-range">' + d.days[0].slice(5) + ' ~ ' + d.days[d.days.length - 1].slice(5) + '</span>' +
+      '</div>' +
+      '<div class="r314-kpi-grid">' +
+        '<div class="r314-kpi"><div class="r314-kpi-v">' + d.rep.overall + '%</div><div class="r314-kpi-l">整体完成率</div><div class="r314-kpi-s">' + d.rep.doneTask + '/' + d.rep.totalTask + ' 项</div></div>' +
+        '<div class="r314-kpi"><div class="r314-kpi-v">' + d.stars + '</div><div class="r314-kpi-l">成长星 ⭐</div><div class="r314-kpi-s">周期内获得</div></div>' +
+        '<div class="r314-kpi"><div class="r314-kpi-v">' + d.readMin + '</div><div class="r314-kpi-l">阅读时长</div><div class="r314-kpi-s">分钟</div></div>' +
+        '<div class="r314-kpi"><div class="r314-kpi-v">' + d.sportMin + '</div><div class="r314-kpi-l">运动时长</div><div class="r314-kpi-s">分钟</div></div>' +
+      '</div>' +
+      '<div class="r314-card"><div class="r314-card-head">📚 各科打卡完成率</div>' + subs + '</div>' +
+      '<div class="r314-card"><div class="r314-card-head">⚠️ 薄弱任务（需重点跟进）</div>' + weak + '</div>' +
+      '<div class="r314-card"><div class="r314-card-head">🚩 高频错题分布</div>' + wrong + '</div>' +
+      '<div class="r314-card r314-sum-card"><div class="r314-card-head">💡 学情小结（给家长）</div>' +
+        '<div class="r314-sum-text">' + r314Esc(r314Summary(d)) + '</div></div>' +
+      '<div class="r314-report-acts">' +
+        '<button class="pbtn r314-act" id="growReportCopy">📋 复制文本</button>' +
+        '<button class="pbtn r314-act" id="growReportPng">🖼️ 导出图片</button>' +
+        '<button class="pbtn r314-act" id="growReportShare">📤 分享</button>' +
+      '</div>';
+  }
+
+  function r314ReportCardCanvas(){
+    const d = r314ReportData(_r314Scope);
+    const lines = r314ReportText(d).split('\n');
+    const W = 900, pad = 56, lh = 34;
+    const H = Math.max(520, pad * 2 + 90 + lines.length * lh);
+    const c = document.createElement('canvas');
+    c.width = W; c.height = H;
+    const g = c.getContext('2d');
+    if(!g) return null;
+    g.fillStyle = '#ffffff'; g.fillRect(0, 0, W, H);
+    g.fillStyle = '#eaf4ff'; g.fillRect(0, 0, W, 132);
+    g.fillStyle = '#123a6b'; g.font = 'bold 38px "PingFang SC","Microsoft YaHei",sans-serif';
+    g.fillText('Nick 学习成长报告', pad, 62);
+    g.fillStyle = '#4a6b90'; g.font = '20px "PingFang SC","Microsoft YaHei",sans-serif';
+    g.fillText((d.scope === 'month' ? '本月' : '本周') + ' · ' + d.days[0] + ' ~ ' + d.days[d.days.length - 1], pad, 100);
+    g.font = '21px "PingFang SC","Microsoft YaHei",sans-serif';
+    let y = 132 + pad + 6;
+    lines.slice(1).forEach(t => {
+      g.fillStyle = t.indexOf('【') === 0 ? '#123a6b' : '#2b3d55';
+      g.fillText(t, pad, y);
+      y += lh;
+    });
+    g.fillStyle = '#8aa0b8'; g.font = '16px "PingFang SC","Microsoft YaHei",sans-serif';
+    g.fillText('生成时间 ' + new Date().toLocaleString('zh-CN'), pad, H - 28);
+    return c;
+  }
+
+  function r314DownloadDataUrl(url, name){
+    try{
+      const a = document.createElement('a');
+      a.href = url; a.download = name;
+      document.body.appendChild(a); a.click();
+      setTimeout(()=>{ try{ a.remove(); }catch(e){} }, 200);
+      return true;
+    }catch(e){ return false; }
+  }
+
+  /* ---------- 徽章成就 ---------- */
+  function r314BadgeDefs(){
+    return [
+      { k:'firstCheckin', ico:'🌟', name:'首次打卡', cond:'完成第 1 次打卡' },
+      { k:'firstWeek', ico:'⚡', name:'一周坚持', cond:'连续 7 天' },
+      { k:'firstMonth', ico:'🏅', name:'月度达人', cond:'连续 30 天' },
+      { k:'firstReading', ico:'📖', name:'阅读启航', cond:'阅读 1 天' },
+      { k:'readStar', ico:'📚', name:'阅读小星', cond:'阅读 10 天' },
+      { k:'read20', ico:'🎓', name:'阅读满 20 次', cond:'阅读打卡 20 天' },
+      { k:'read21', ico:'🔥', name:'21 天阅读挑战', cond:'阅读打卡 21 天' },
+      { k:'fullMonth', ico:'🗓️', name:'全勤月', cond:'当月必做全部完成' },
+      { k:'firstSport', ico:'⚽', name:'运动启航', cond:'运动 1 天' },
+      { k:'sportStar', ico:'🏃', name:'运动小将', cond:'运动 10 天' },
+      { k:'firstGo', ico:'♟️', name:'初入棋局', cond:'完成第 1 局围棋' },
+      { k:'go10', ico:'🏆', name:'围棋新秀', cond:'完成 10 局围棋' },
+      { k:'calc30', ico:'🧮', name:'计算小能手', cond:'计算小超市连续 30 天' },
+      { k:'timeMaster', ico:'⏰', name:'时间管理大师', cond:'作息连续 7 天' },
+      { k:'civilityStar', ico:'🤝', name:'文明小标兵', cond:'文明任务 30 次' },
+      { k:'excerpt10', ico:'✍️', name:'摘抄达人', cond:'摘抄本收录 10 条' },
+      { k:'goal5', ico:'🎯', name:'目标达成者', cond:'完成 3 个单元目标' },
+      { k:'exp100', ico:'💯', name:'百星璀璨', cond:'累计 100 成长星' },
+      { k:'exp500', ico:'🌠', name:'五百星辉', cond:'累计 500 成长星' }
+    ];
+  }
+
+  /* R314-C3：阶段性挑战 —— 21 天阅读 / 30 天计算，完成发额外星星 + 限定徽章 */
+  function r314ChallengeDefs(){
+    return [
+      { id:'read21', ico:'📖', name:'21 天阅读挑战', target:21, unit:'天', reward:30, badge:'read21',
+        metric:'readDays', desc:'大阅读 / 阅读类任务累计打卡 21 天' },
+      { id:'calc30', ico:'🧮', name:'30 天计算小天才', target:30, unit:'天', reward:50, badge:'calc30',
+        metric:'calcStreak', desc:'计算小超市连续打卡 30 天' }
+    ];
+  }
+  function r314ChallengeProgress(c){
+    const st = S.load();
+    const a = st.archive || {};
+    const raw = c.metric === 'readDays' ? (a.readDays | 0) : (st.calcStreak | 0);
+    return { raw: raw, cur: Math.min(raw, c.target), target: c.target, pct: Math.min(100, Math.round(raw / c.target * 100)) };
+  }
+  function r314ChallengeHtml(){
+    const r = r314St();
+    const claims = (r.challenges && r.challenges.claims) || {};
+    const rows = r314ChallengeDefs().map(function(c){
+      const p = r314ChallengeProgress(c);
+      const claimed = !!claims[c.id];
+      const btn = claimed
+        ? '<span class="r314-goal-claimed">✅ 已领取奖励</span>'
+        : (p.pct >= 100
+            ? '<button class="pbtn r314-mini on" data-gch-claim="' + c.id + '">🎁 领取 ' + c.reward + ' ⭐</button>'
+            : '<span class="r314-goal-wait">还差 ' + Math.max(0, c.target - p.raw) + ' ' + c.unit + '</span>');
+      return '<div class="r314-goal' + (p.pct >= 100 ? ' done' : '') + '">' +
+        '<div class="r314-goal-head"><span class="r314-goal-title">' + c.ico + ' ' + c.name + '</span>' +
+        '<span class="r314-goal-due">奖励 ' + c.reward + ' ⭐ + 限定徽章</span></div>' +
+        '<div class="r314-goal-sub">' + c.desc + '</div>' +
+        '<div class="r314-goal-bar"><i style="width:' + p.pct + '%"></i></div>' +
+        '<div class="r314-goal-foot"><span>' + p.cur + ' / ' + c.target + ' ' + c.unit + '（' + p.pct + '%）</span>' + btn + '</div>' +
+      '</div>';
+    }).join('');
+    return '<div class="r314-card"><div class="r314-card-head">🔥 阶段性挑战</div>' + rows + '</div>';
+  }
+  function r314BindChallenges(){
+    $$('#growPanel [data-gch-claim]').forEach(function(b){
+      b.onclick = function(){
+        const id = b.getAttribute('data-gch-claim');
+        const c = r314ChallengeDefs().find(function(x){ return x.id === id; });
+        if(!c) return;
+        const p = r314ChallengeProgress(c);
+        if(p.pct < 100){ toast('挑战还没完成哦'); return; }
+        const r = r314St();
+        const ch = Object.assign({}, r.challenges || {});
+        const claims = Object.assign({}, ch.claims || {});
+        if(claims[id]){ toast('奖励已领取'); return; }
+        claims[id] = S.todayStr();
+        ch.claims = claims;
+        S.setR314({ challenges: ch });
+        S.r314AddStars(c.reward, '阶段挑战完成：' + c.name);
+        playCongrats();
+        toast('🎉 ' + c.name + ' 完成，+' + c.reward + ' ⭐');
+        r314RenderTab();
+        try{ renderHome(); }catch(e){}
+      };
+    });
+  }
+
+  function r314BadgeHtml(){
+    const st = S.load();
+    const b = (st.archive && st.archive.badges) || {};
+    const defs = r314BadgeDefs();
+    const on = defs.filter(x => b[x.k]).length;
+    const grid = defs.map(x =>
+      '<div class="r314-badge' + (b[x.k] ? ' on' : '') + '" title="' + r314Esc(x.cond) + '">' +
+        '<div class="r314-badge-ico">' + x.ico + '</div>' +
+        '<div class="r314-badge-name">' + r314Esc(x.name) + '</div>' +
+        '<div class="r314-badge-cond">' + r314Esc(x.cond) + '</div>' +
+      '</div>').join('');
+    return '<div class="r314-card r314-badge-sum"><div class="r314-card-head">🏅 已点亮 ' + on + ' / ' + defs.length + ' 枚徽章</div>' +
+      '<div class="r314-badge-grid">' + grid + '</div></div>' + r314ChallengeHtml();
+  }
+
+  /* 首页个人信息区的徽章条（只展示已点亮的前 6 枚） */
+  function r314RenderHomeBadges(){
+    const box = document.getElementById('homeBadgeStrip');
+    if(!box) return;
+    const st = S.load();
+    const b = (st.archive && st.archive.badges) || {};
+    const list = r314BadgeDefs().filter(x => b[x.k]);
+    if(!list.length){
+      box.innerHTML = '<span class="r314-hb-empty">🏅 完成打卡即可点亮徽章</span>';
+      return;
+    }
+    box.innerHTML = '<span class="r314-hb-title">徽章</span>' + list.slice(0, 6).map(x =>
+      '<span class="r314-hb" title="' + r314Esc(x.name) + '：' + r314Esc(x.cond) + '">' + x.ico + '</span>'
+    ).join('') + (list.length > 6 ? '<span class="r314-hb-more">+' + (list.length - 6) + '</span>' : '');
+  }
+
+  /* ---------- 星星商城（仅虚拟权益，无实物交易） ---------- */
+  function r314ShopItems(){
+    return [
+      { id:'skipOpt', ico:'🎟️', name:'免一次选做任务', price:50, kind:'ticket', desc:'今天可以少做一项选做，⭐照发' },
+      { id:'wallSunset', ico:'🌇', name:'主题壁纸 · 落日草原', price:80, kind:'perm', desc:'解锁后可在本页一键切换' },
+      { id:'wallSnow', ico:'❄️', name:'主题壁纸 · 雪夜霓虹', price:80, kind:'perm', desc:'解锁后可在本页一键切换' },
+      { id:'frameGold', ico:'🖼️', name:'头像框 · 金穗', price:60, kind:'perm', desc:'点亮首页头像外框' }
+    ];
+  }
+
+  function r314ShopHtml(){
+    const r = r314St();
+    const shop = r.shop || {};
+    const owned = Array.isArray(shop.owned) ? shop.owned : [];
+    const tickets = (shop.tickets || {});
+    const stars = r314Stars();
+    const cards = r314ShopItems().map(it => {
+      const isOwned = owned.indexOf(it.id) >= 0;
+      const tCnt = tickets[it.id] | 0;
+      const canBuy = stars >= it.price;
+      let btn = '';
+      if(it.kind === 'perm'){
+        btn = isOwned
+          ? '<button class="pbtn r314-buy on" data-gshop-use="' + it.id + '">✅ 已解锁（点击使用）</button>'
+          : '<button class="pbtn r314-buy' + (canBuy ? '' : ' off') + '" data-gshop-buy="' + it.id + '">' + it.price + ' ⭐ 兑换</button>';
+      } else {
+        btn = '<button class="pbtn r314-buy' + (canBuy ? '' : ' off') + '" data-gshop-buy="' + it.id + '">' + it.price + ' ⭐ 兑换</button>'
+          + (tCnt > 0 ? '<button class="pbtn r314-buy on" data-gshop-use="' + it.id + '">🎟️ 使用（剩 ' + tCnt + '）</button>' : '');
+      }
+      return '<div class="r314-shop-item' + (isOwned ? ' owned' : '') + '">' +
+        '<div class="r314-shop-ico">' + it.ico + '</div>' +
+        '<div class="r314-shop-body"><div class="r314-shop-name">' + it.name + '</div>' +
+        '<div class="r314-shop-desc">' + it.desc + '</div></div>' +
+        '<div class="r314-shop-price">' + it.price + ' ⭐</div>' + btn + '</div>';
+    }).join('');
+    const curWall = (r.shop && r.shop.wall) || '';
+    return '<div class="r314-card r314-shop-head"><div class="r314-card-head">🛍️ 星星商城 · 我的余额 ' + stars + ' ⭐</div>' +
+      '<div class="r314-shop-note">仅兑换虚拟权益（免作业特权 / 主题壁纸 / 头像框），不涉及任何实物交易。</div>' +
+      '<div class="r314-shop-wallbar">壁纸：' +
+        '<button class="r314-wall' + (!curWall ? ' active' : '') + '" data-gwall="">默认</button>' +
+        (owned.indexOf('wallSunset') >= 0 ? '<button class="r314-wall' + (curWall === 'wallSunset' ? ' active' : '') + '" data-gwall="wallSunset">🌇 落日草原</button>' : '') +
+        (owned.indexOf('wallSnow') >= 0 ? '<button class="r314-wall' + (curWall === 'wallSnow' ? ' active' : '') + '" data-gwall="wallSnow">❄️ 雪夜霓虹</button>' : '') +
+      '</div></div>' + '<div class="r314-shop-list">' + cards + '</div>';
+  }
+
+  function r314BuyShop(id){
+    const it = r314ShopItems().find(x => x.id === id);
+    if(!it) return;
+    const r = r314St();
+    const shop = r.shop || {};
+    const owned = Array.isArray(shop.owned) ? shop.owned.slice() : [];
+    const tickets = Object.assign({}, shop.tickets || {});
+    if(it.kind === 'perm' && owned.indexOf(id) >= 0){ toast('已解锁，无需重复兑换'); return; }
+    const res = S.r314SpendStars(it.price, '星星商城兑换：' + it.name);
+    if(!res.ok){ toast('⚠️ ' + (res.msg || '兑换失败')); return; }
+    if(it.kind === 'perm'){ owned.push(id); }
+    else { tickets[id] = (tickets[id] | 0) + 1; }
+    S.setR314({ shop: Object.assign({}, shop, { owned: owned, tickets: tickets }) });
+    playZooSound('redeem');
+    toast('🎉 已兑换「' + it.name + '」');
+    r314RenderTab();
+  }
+
+  function r314UseShop(id){
+    const it = r314ShopItems().find(x => x.id === id);
+    if(!it) return;
+    const r = r314St();
+    const shop = r.shop || {};
+    if(it.kind === 'perm'){
+      const owned = Array.isArray(shop.owned) ? shop.owned : [];
+      if(owned.indexOf(id) < 0){ toast('请先兑换再使用'); return; }
+      S.setR314({ shop: Object.assign({}, shop, { wall: (shop.wall === id ? '' : id) }) });
+      r314ApplyWallpaper();
+      r314RenderTab();
+      toast(shop.wall === id ? '已切回默认壁纸' : '壁纸已切换');
+      return;
+    }
+    const tickets = Object.assign({}, shop.tickets || {});
+    if((tickets[id] | 0) <= 0){ toast('暂无可用次数，请先兑换'); return; }
+    const today = S.todayStr();
+    const used = Object.assign({}, shop.used || {});
+    if(used[id] === today){ toast('今天已经用过了，明天再用吧～'); return; }
+    tickets[id] = (tickets[id] | 0) - 1;
+    used[id] = today;
+    S.setR314({ shop: Object.assign({}, shop, { tickets: tickets, used: used }) });
+    toast('🎟️ 今日已使用「' + it.name + '」，选做任务可免做一项');
+    r314RenderTab();
+  }
+
+  function r314ApplyWallpaper(){
+    try{
+      const r = r314St();
+      const w = (r.shop && r.shop.wall) || '';
+      document.body.classList.remove('r314-wall-sunset', 'r314-wall-snow');
+      if(w === 'wallSunset') document.body.classList.add('r314-wall-sunset');
+      if(w === 'wallSnow') document.body.classList.add('r314-wall-snow');
+      const owned = (r.shop && r.shop.owned) || [];
+      document.body.classList.toggle('r314-frame-gold', owned.indexOf('frameGold') >= 0);
+    }catch(e){}
+  }
+
+  /* ---------- 单元目标规划 ---------- */
+  function r314GoalTaskName(id){
+    const st = S.load();
+    const t = (st.tasks || []).find(x => x.id === id);
+    return t ? t.name : '（任务已删除）';
+  }
+
+  function r314GoalProgress(g){
+    const st = S.load();
+    if(!g) return { done:0, target:1, pct:0 };
+    const since = g.since || (g.createdAt ? new Date(g.createdAt).toISOString().slice(0, 10) : '');
+    const done = (st.records || []).filter(r => r && r.completed && r.taskId === g.taskId
+      && (!since || String(r.date) >= since)
+      && (!g.due || String(r.date) <= g.due)).length;
+    const target = Math.max(1, g.target | 0);
+    return { done:done, target:target, pct: Math.min(100, Math.round(done / target * 100)) };
+  }
+
+  function r314GoalHtml(){
+    const r = r314St();
+    const goals = Array.isArray(r.goals) ? r.goals : [];
+    const st = S.load();
+    const tasks = (st.tasks || []).filter(t => t && t.enabled !== false);
+    const opts = tasks.map(t => '<option value="' + r314Esc(t.id) + '">' + r314Esc(t.name) + '（' + r314Esc(t.subject || t.type || '') + '）</option>').join('')
+      || '<option value="">暂无可用任务</option>';
+    const defDue = (function(){
+      const d = new Date(); d.setDate(d.getDate() + 14);
+      return d.getFullYear() + '-' + r314Pad(d.getMonth() + 1) + '-' + r314Pad(d.getDate());
+    })();
+    const list = goals.map(g => {
+      const p = r314GoalProgress(g);
+      const over = g.due && S.todayStr() > g.due && p.pct < 100;
+      return '<div class="r314-goal' + (p.pct >= 100 ? ' done' : '') + '">' +
+        '<div class="r314-goal-head"><span class="r314-goal-title">' + r314Esc(g.title) + '</span>' +
+        '<span class="r314-goal-due' + (over ? ' over' : '') + '">' + (g.due ? ('截止 ' + r314Esc(g.due)) : '长期') + '</span></div>' +
+        '<div class="r314-goal-sub">绑定：' + r314Esc(r314GoalTaskName(g.taskId)) + ' · 目标 ' + p.target + ' 次 · 奖励 ' + (g.reward | 0) + ' ⭐</div>' +
+        '<div class="r314-goal-bar"><i style="width:' + p.pct + '%"></i></div>' +
+        '<div class="r314-goal-foot"><span>' + p.done + ' / ' + p.target + '（' + p.pct + '%）</span>' +
+        (g.claimed
+          ? '<span class="r314-goal-claimed">✅ 奖励已领取</span>'
+          : (p.pct >= 100
+              ? '<button class="pbtn r314-mini on" data-ggoal-claim="' + r314Esc(g.id) + '">🎁 领取 ' + (g.reward | 0) + ' ⭐</button>'
+              : '<span class="r314-goal-wait">继续加油</span>')) +
+        '<button class="pbtn r314-mini r314-del" data-ggoal-del="' + r314Esc(g.id) + '">删除</button>' +
+        '</div></div>';
+    }).join('') || '<div class="r314-empty">还没有设置单元目标，添加一个吧～</div>';
+
+    return '<div class="r314-card"><div class="r314-card-head">🎯 新建单元学习目标</div>' +
+      '<div class="r314-form">' +
+        '<label>目标名称<input id="growGoalTitle" maxlength="30" placeholder="例如：口算 100 题全对"></label>' +
+        '<label>绑定任务<select id="growGoalTask">' + opts + '</select></label>' +
+        '<label>目标次数<input type="number" id="growGoalTarget" min="1" max="999" value="10"></label>' +
+        '<label>截止日期<input type="date" id="growGoalDue" value="' + defDue + '"></label>' +
+        '<label>奖励星星<input type="number" id="growGoalReward" min="1" max="500" value="20"></label>' +
+      '</div>' +
+      '<button class="pbtn r314-add" id="growGoalAdd">＋ 添加目标</button>' +
+      '<div class="r314-tip">进度按「绑定任务在创建日之后、截止日之前的完成次数」实时计算；达成后可领取奖励星星。</div>' +
+    '</div>' +
+    '<div class="r314-card"><div class="r314-card-head">📌 我的目标（' + goals.length + '）</div>' + list + '</div>';
+  }
+
+  function r314BindGoal(){
+    const add = document.getElementById('growGoalAdd');
+    if(add) add.onclick = function(){
+      const title = String((document.getElementById('growGoalTitle') || {}).value || '').trim();
+      const taskId = String((document.getElementById('growGoalTask') || {}).value || '');
+      const target = parseInt((document.getElementById('growGoalTarget') || {}).value, 10) || 0;
+      const due = String((document.getElementById('growGoalDue') || {}).value || '');
+      const reward = parseInt((document.getElementById('growGoalReward') || {}).value, 10) || 0;
+      if(!title){ toast('请填写目标名称'); return; }
+      if(!taskId){ toast('请选择要绑定的打卡任务'); return; }
+      if(target <= 0){ toast('目标次数要大于 0'); return; }
+      const r = r314St();
+      const goals = Array.isArray(r.goals) ? r.goals.slice() : [];
+      goals.push({
+        id: 'g' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+        title: title, taskId: taskId, target: target, due: due,
+        reward: Math.max(1, reward || 10),
+        createdAt: Date.now(), since: S.todayStr(), claimed: false
+      });
+      S.setR314({ goals: goals });
+      toast('🎯 目标已添加');
+      r314RenderTab();
+    };
+    $$('#growPanel [data-ggoal-claim]').forEach(b => b.onclick = function(){
+      const id = b.getAttribute('data-ggoal-claim');
+      const r = r314St();
+      const goals = (Array.isArray(r.goals) ? r.goals : []).map(g => Object.assign({}, g));
+      const g = goals.find(x => x.id === id);
+      if(!g) return;
+      const p = r314GoalProgress(g);
+      if(p.pct < 100){ toast('还没达成目标哦'); return; }
+      if(g.claimed){ toast('奖励已领取'); return; }
+      g.claimed = true;
+      S.setR314({ goals: goals });
+      S.r314AddStars(g.reward | 0, '单元目标达成：' + g.title);
+      playCongrats();
+      toast('🎉 目标达成，+' + (g.reward | 0) + ' ⭐');
+      r314RenderTab();
+      try{ renderHome(); }catch(e){}
+    });
+    $$('#growPanel [data-ggoal-del]').forEach(b => b.onclick = function(){
+      const id = b.getAttribute('data-ggoal-del');
+      const r = r314St();
+      const goals = Array.isArray(r.goals) ? r.goals : [];
+      const g = goals.find(x => x.id === id);
+      r307DangerConfirm('将删除单元目标「' + (g ? g.title : '') + '」，删除后不可恢复。\n打卡记录不受影响。', function(){
+        const left = goals.filter(x => x.id !== id);
+        S.setR314({ goals: left });
+        toast('目标已删除');
+        r314RenderTab();
+      }, '删除单元目标');
+    });
+  }
+
+  /* ---------- 摘抄积累本（与大阅读好词好句互通） ---------- */
+  var _r314ExType = '好词';
+
+  function r314ExcerptList(){
+    const r = r314St();
+    const mine = (Array.isArray(r.excerpts) ? r.excerpts : []).slice();
+    let shared = [];
+    try{
+      shared = (S.getReading('cnWords') || []).filter(x => x && x.source === 'user' && x.from !== 'r314');
+    }catch(e){}
+    const seen = {};
+    mine.forEach(x => seen[String(x.text || '').trim()] = 1);
+    const extra = shared.map(x => ({
+      id:'rd-' + String(x.body || '').slice(0, 8),
+      type: x.meta === '好词' ? '好词' : '好句',
+      text: String(x.body || ''),
+      source: '大阅读',
+      img: '',
+      date: '',
+      readonly: true
+    })).filter(x => x.text && !seen[x.text]);
+    return mine.map(x => Object.assign({}, x, { readonly:false })).concat(extra);
+  }
+
+  function r314ExcerptHtml(){
+    const list = r314ExcerptList();
+    const types = ['好词', '好句', '段落'];
+    const typeBtns = types.map(t => '<button class="r314-extype' + (_r314ExType === t ? ' active' : '') + '" data-gtype="' + t + '">' + t + '</button>').join('');
+    const rows = list.map(x =>
+      '<div class="r314-ex' + (x.readonly ? ' shared' : '') + '">' +
+        '<div class="r314-ex-head"><span class="r314-ex-type">' + r314Esc(x.type || '好句') + '</span>' +
+        '<span class="r314-ex-src">' + r314Esc(x.source || '') + '</span>' +
+        (x.readonly ? '<span class="r314-ex-from">来自大阅读</span>'
+          : '<button class="r314-ex-del" data-gex-del="' + r314Esc(x.id) + '" title="删除这条摘抄">×</button>') + '</div>' +
+        '<div class="r314-ex-text">' + r314Esc(x.text || '') + '</div>' +
+        (x.img ? '<img class="r314-ex-img" src="' + r314Esc(x.img) + '" alt="摘抄图片" />' : '') +
+      '</div>').join('') || '<div class="r314-empty">还没有摘抄内容，写一句试试～</div>';
+
+    return '<div class="r314-card"><div class="r314-card-head">📝 新增摘抄</div>' +
+      '<div class="r314-extypes">' + typeBtns + '</div>' +
+      '<textarea id="growExText" class="r314-ex-input" maxlength="600" placeholder="摘抄好词 / 好句 / 段落…（会同步到大阅读·好词好句）"></textarea>' +
+      '<div class="r314-form r314-form-2">' +
+        '<label>出处<input id="growExSource" maxlength="30" placeholder="书名 / 篇名"></label>' +
+        '<label class="r314-file">图片<input type="file" id="growExImg" accept="image/*"></label>' +
+      '</div>' +
+      '<button class="pbtn r314-add" id="growExAdd">＋ 收录到摘抄本</button>' +
+      '<div class="r314-tip">手动录入或拍照上传均可；收录后自动同步到大阅读「好词好句」，两处共享同一份数据。</div>' +
+    '</div>' +
+    '<div class="r314-card"><div class="r314-card-head">📚 已收录（' + list.length + '）</div>' + rows + '</div>';
+  }
+
+  var _r314ExImg = '';
+
+  function r314BindExcerpt(){
+    $$('#growPanel [data-gtype]').forEach(b => b.onclick = function(){
+      _r314ExType = b.getAttribute('data-gtype');
+      r314RenderTab();
+    });
+    const file = document.getElementById('growExImg');
+    if(file) file.onchange = function(){
+      const f = file.files && file.files[0];
+      if(!f) return;
+      r314CompressImg(f, function(url){ _r314ExImg = url || ''; toast(_r314ExImg ? '图片已添加' : '图片读取失败'); });
+    };
+    const add = document.getElementById('growExAdd');
+    if(add) add.onclick = function(){
+      const ta = document.getElementById('growExText');
+      const text = String((ta && ta.value) || '').trim();
+      if(!text){ toast('请先填写摘抄内容'); return; }
+      const src = String((document.getElementById('growExSource') || {}).value || '').trim();
+      const r = r314St();
+      const list = Array.isArray(r.excerpts) ? r.excerpts.slice() : [];
+      list.unshift({
+        id: 'e' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5),
+        type: _r314ExType, text: text, source: src, img: _r314ExImg || '', date: S.todayStr()
+      });
+      S.setR314({ excerpts: list });
+      /* 与大阅读好词好句互通：同一段文字写进大阅读用户词条，两边都能看到 */
+      try{
+        S.addUserReading('cnWords', {
+          body: text,
+          meta: _r314ExType === '好词' ? '好词' : '好句',
+          detail: src,
+          from: 'r314'
+        });
+      }catch(e){}
+      _r314ExImg = '';
+      if(ta) ta.value = '';
+      playZooSound('pop');
+      toast('✍️ 已收录，并同步到大阅读');
+      r314RenderTab();
+    };
+    $$('#growPanel [data-gex-del]').forEach(b => b.onclick = function(){
+      const id = b.getAttribute('data-gex-del');
+      const r = r314St();
+      const list = Array.isArray(r.excerpts) ? r.excerpts : [];
+      const it = list.find(x => x.id === id);
+      r307DangerConfirm('将删除摘抄「' + String((it && it.text) || '').slice(0, 24) + '…」？\n删除后不可恢复。', function(){
+        S.setR314({ excerpts: list.filter(x => x.id !== id) });
+        toast('已删除');
+        r314RenderTab();
+      }, '删除摘抄');
+    });
+  }
+
+  /* ---------- 作息健康（早起 / 睡眠时长 / 用眼休息 / 每日提醒） ---------- */
+  function r314SleepHours(sleep, wake){
+    if(!sleep || !wake) return 0;
+    const a = String(sleep).split(':').map(Number), b = String(wake).split(':').map(Number);
+    if(a.length < 2 || b.length < 2) return 0;
+    if(isNaN(a[0]) || isNaN(b[0])) return 0;
+    let mins = (b[0] * 60 + b[1]) - (a[0] * 60 + a[1]);
+    if(mins <= 0) mins += 1440;
+    return Math.round(mins / 6) / 10;
+  }
+
+  function r314HealthHtml(){
+    const r = r314St();
+    const h = r.health || {};
+    const days = h.days || {};
+    const today = S.todayStr();
+    const td = days[today] || {};
+    const todayH = td.wake && td.sleep ? r314SleepHours(td.sleep, td.wake) : 0;
+    const eye = Object.assign({ on:false, every:40, last:0 }, h.eye || {});
+    const rem = Object.assign({ on:false, time:'19:30', lastAt:0 }, r.remind || {});
+    const perm = (typeof window !== 'undefined' && 'Notification' in window) ? Notification.permission : 'unsupported';
+
+    const week = [];
+    for(let i = 6; i >= 0; i--){
+      const d = new Date(); d.setDate(d.getDate() - i);
+      const ds = d.getFullYear() + '-' + r314Pad(d.getMonth() + 1) + '-' + r314Pad(d.getDate());
+      const x = days[ds] || {};
+      const hrs = x.wake && x.sleep ? r314SleepHours(x.sleep, x.wake) : 0;
+      week.push('<div class="r314-hd-row"><span class="r314-hd-date">' + ds.slice(5) + '</span>' +
+        '<span class="r314-hd-flag">' + (x.wake ? '🌅 ' + r314Esc(x.wake) : '<i>未记录早起</i>') + '</span>' +
+        '<span class="r314-hd-flag">' + (x.sleep ? '🌙 ' + r314Esc(x.sleep) : '<i>未记录入睡</i>') + '</span>' +
+        '<span class="r314-hd-bar"><i style="width:' + Math.min(100, Math.round(hrs / 12 * 100)) + '%"></i></span>' +
+        '<span class="r314-hd-hrs">' + (hrs ? hrs + ' 小时' : '—') + '</span></div>');
+    }
+
+    return '<div class="r314-card"><div class="r314-card-head">🌅 今日作息（' + today + '）</div>' +
+      '<div class="r314-form r314-form-2">' +
+        '<label>早起时间<input type="time" id="growWake" value="' + r314Esc(td.wake || '07:00') + '"></label>' +
+        '<label>入睡时间<input type="time" id="growSleep" value="' + r314Esc(td.sleep || '21:30') + '"></label>' +
+      '</div>' +
+      '<div class="r314-hd-today">' + (todayH ? '本次睡眠时长 <b>' + todayH + '</b> 小时' : '填写早起与入睡时间后自动计算睡眠时长') + '</div>' +
+      '<button class="pbtn r314-add" id="growHealthSave">💾 保存今日作息</button>' +
+      '<div class="r314-tip">跨零点会自动按次日计算（例如 21:30 入睡、07:00 起床 = 9.5 小时）。</div>' +
+    '</div>' +
+    '<div class="r314-card"><div class="r314-card-head">📈 最近 7 天作息</div>' + week.join('') + '</div>' +
+    '<div class="r314-card"><div class="r314-card-head">👀 用眼休息提醒</div>' +
+      '<div class="r314-row"><span>开启提醒</span>' +
+        '<label class="r314-switch"><input type="checkbox" id="growEyeOn"' + (eye.on ? ' checked' : '') + '><i></i></label></div>' +
+      '<div class="r314-row"><span>提醒间隔</span>' +
+        '<select id="growEyeEvery">' +
+          [20, 30, 40, 45, 60].map(n => '<option value="' + n + '"' + ((eye.every | 0) === n ? ' selected' : '') + '>' + n + ' 分钟</option>').join('') +
+        '</select></div>' +
+      '<div class="r314-tip">开启后每 ' + (eye.every | 0) + ' 分钟提示远眺 20 秒，眼睛也需要下课休息～</div>' +
+    '</div>' +
+    '<div class="r314-card"><div class="r314-card-head">⏰ 每日学习提醒</div>' +
+      '<div class="r314-row"><span>浏览器通知</span>' +
+        '<label class="r314-switch"><input type="checkbox" id="growRemOn"' + (rem.on ? ' checked' : '') + '><i></i></label></div>' +
+      '<div class="r314-row"><span>提醒时间</span><input type="time" id="growRemTime" value="' + r314Esc(rem.time || '19:30') + '"></div>' +
+      '<div class="r314-rem-perm">通知权限：<b>' + (perm === 'granted' ? '已授权' : perm === 'denied' ? '已被拒绝（请在浏览器设置里开启）' : perm === 'unsupported' ? '当前环境不支持' : '未授权') + '</b>' +
+        (perm === 'default' ? '<button class="pbtn r314-mini" id="growRemAsk">授权通知</button>' : '') +
+        '<button class="pbtn r314-mini" id="growRemTest">发送测试通知</button></div>' +
+      '<div class="r314-tip">到点后若还有必做任务未完成，会弹出通知提醒今日待办（同一天只提醒一次）。</div>' +
+    '</div>';
+  }
+
+  function r314BindHealth(){
+    const save = document.getElementById('growHealthSave');
+    if(save) save.onclick = function(){
+      const wake = String((document.getElementById('growWake') || {}).value || '');
+      const sleep = String((document.getElementById('growSleep') || {}).value || '');
+      if(!wake || !sleep){ toast('请填写早起与入睡时间'); return; }
+      const today = S.todayStr();
+      const hrs = r314SleepHours(sleep, wake);
+      S.setR314Path('health.days.' + today, Object.assign({}, (r314St().health || {}).days && (r314St().health.days || {})[today] || {}, {
+        wake: wake, sleep: sleep, hours: hrs, at: Date.now()
+      }));
+      toast('🌙 已记录：睡眠 ' + hrs + ' 小时');
+      r314RenderTab();
+    };
+    const eyeOn = document.getElementById('growEyeOn');
+    if(eyeOn) eyeOn.onchange = function(){
+      S.setR314Path('health.eye.on', !!eyeOn.checked);
+      S.setR314Path('health.eye.last', Date.now());
+      toast(eyeOn.checked ? '👀 用眼提醒已开启' : '用眼提醒已关闭');
+      r314RenderTab();
+    };
+    const eyeEvery = document.getElementById('growEyeEvery');
+    if(eyeEvery) eyeEvery.onchange = function(){
+      S.setR314Path('health.eye.every', parseInt(eyeEvery.value, 10) || 40);
+      S.setR314Path('health.eye.last', Date.now());
+      r314RenderTab();
+    };
+    const remOn = document.getElementById('growRemOn');
+    if(remOn) remOn.onchange = function(){
+      const cfg = Object.assign({ on:false, time:'19:30', lastAt:0 }, r314St().remind || {});
+      cfg.on = !!remOn.checked;
+      S.setR314({ remind: cfg });
+      toast(remOn.checked ? '⏰ 每日提醒已开启' : '每日提醒已关闭');
+      r314RenderTab();
+    };
+    const remTime = document.getElementById('growRemTime');
+    if(remTime) remTime.onchange = function(){
+      const cfg = Object.assign({ on:false, time:'19:30', lastAt:0 }, r314St().remind || {});
+      cfg.time = String(remTime.value || '19:30');
+      S.setR314({ remind: cfg });
+      toast('提醒时间已设为 ' + cfg.time);
+    };
+    const ask = document.getElementById('growRemAsk');
+    if(ask) ask.onclick = function(){ r314AskNotify(); };
+    const test = document.getElementById('growRemTest');
+    if(test) test.onclick = function(){
+      const today = S.todayStr();
+      const st = S.load();
+      const left = S.tasksForDate(today).filter(t => t.type === '必做任务').filter(t => {
+        const x = (st.records || []).find(r => r.date === today && r.taskId === t.id);
+        return !(x && x.completed);
+      });
+      r314Notify('🌙 今日还有 ' + left.length + ' 项打卡没完成', left.slice(0, 3).map(t => t.name).join(' / ') || '全部完成啦！');
+    };
+  }
+
+  /* ---------- 通知 / 定时提醒 ---------- */
+  function r314NotifySupported(){ return typeof window !== 'undefined' && 'Notification' in window; }
+  function r314AskNotify(){
+    if(!r314NotifySupported()){ toast('当前浏览器不支持通知，请用 Safari / Chrome 打开'); return; }
+    try{
+      Notification.requestPermission().then(function(p){
+        toast(p === 'granted' ? '✅ 通知已授权' : '未授权，将只能用站内提示');
+        r314RenderTab();
+      });
+    }catch(e){ toast('授权失败，请到浏览器设置里开启通知'); }
+  }
+  function r314Notify(title, body){
+    try{
+      if(r314NotifySupported() && Notification.permission === 'granted'){
+        new Notification(title, { body: body || '', icon: 'icon-192.png', tag: 'r314' });
+        return true;
+      }
+    }catch(e){}
+    try{ toast(title + (body ? ' · ' + body : '')); }catch(e){}
+    return false;
+  }
+
+  function r314RemindTick(){
+    try{
+      const r = r314St();
+      const cfg = Object.assign({ on:false, time:'19:30', lastAt:0 }, r.remind || {});
+      if(!cfg.on) return;
+      const now = new Date();
+      const hm = r314Pad(now.getHours()) + ':' + r314Pad(now.getMinutes());
+      const today = S.todayStr();
+      if(hm < cfg.time) return;
+      if(cfg.lastAt === today) return;
+      const st = S.load();
+      const left = S.tasksForDate(today).filter(t => t.type === '必做任务').filter(t => {
+        const x = (st.records || []).find(rr => rr.date === today && rr.taskId === t.id);
+        return !(x && x.completed);
+      });
+      S.setR314({ remind: Object.assign({}, cfg, { lastAt: today }) });
+      if(!left.length) return;
+      r314Notify('🌙 今日还有 ' + left.length + ' 项打卡没完成', left.slice(0, 3).map(t => t.name).join(' / '));
+    }catch(e){}
+  }
+
+  function r314EyeTick(){
+    try{
+      const r = r314St();
+      const eye = Object.assign({ on:false, every:40, last:0 }, (r.health || {}).eye || {});
+      if(!eye.on) return;
+      const now = Date.now();
+      if(!eye.last){ S.setR314Path('health.eye.last', now); return; }
+      if(now - eye.last >= (eye.every | 0) * 60000){
+        r314Notify('👀 让眼睛休息一下', '远眺 20 秒，看看窗外的绿色～');
+        S.setR314Path('health.eye.last', now);
+      }
+    }catch(e){}
+  }
+
+  /* ---------- 打卡成功主题动画 ---------- */
+  function r314Celebrate(msg){
+    try{
+      let box = document.getElementById('r314Cheer');
+      if(!box){
+        box = document.createElement('div');
+        box.id = 'r314Cheer';
+        box.className = 'r314-cheer';
+        document.body.appendChild(box);
+      }
+      box.innerHTML = '<div class="r314-cheer-card">' +
+        '<div class="r314-cheer-emoji">🦊</div>' +
+        '<div class="r314-cheer-txt">' + r314Esc(msg || '太棒了！打卡成功') + '</div>' +
+        '<div class="r314-cheer-sub">Nick 为你点赞 +⭐</div></div>';
+      box.classList.remove('play');
+      void box.offsetWidth;
+      box.classList.add('play');
+      clearTimeout(r314Celebrate._t);
+      r314Celebrate._t = setTimeout(function(){ box.classList.remove('play'); }, 1800);
+    }catch(e){}
+  }
+
+  /* ---------- 历史上的今天 → 中华通史联动 ---------- */
+  function r314EraOfYear(y){
+    const s = String(y == null ? '' : y);
+    const neg = s.indexOf('前') >= 0;
+    const num = parseInt(s.replace(/[^\d]/g, ''), 10);
+    if(isNaN(num)) return '先秦';
+    const n = neg ? -num : num;
+    if(n <= -2070) return '史前与传说时代';
+    if(n <= -221) return '先秦';
+    if(n <= 220) return '秦汉';
+    if(n <= 907) return '魏晋南北朝至隋唐';
+    if(n <= 1912) return '宋元明清';
+    if(n <= 1949) return '近代';
+    return '当代';
+  }
+
+  function r314JumpZhtsEra(era, year){
+    try{ _uiMem('zhtsView', 'timeline'); }catch(e){}
+    try{ goPage('zhts'); }catch(e){}
+    let tries = 0;
+    const tick = function(){
+      tries++;
+      const f = document.getElementById('zhtsFrame');
+      try{
+        const w = f && f.contentWindow;
+        if(w && typeof w.go === 'function'){
+          try{ w.go('timeline'); }catch(e){}
+          setTimeout(function(){
+            try{
+              const doc = w.document;
+              const all = doc.querySelectorAll('*');
+              let target = null;
+              for(let i = all.length - 1; i >= 0; i--){
+                const el = all[i];
+                if(el.children.length > 8) continue;
+                if(String(el.textContent || '').indexOf(era) < 0) continue;
+                if(el.tagName === 'BUTTON' || el.getAttribute('onclick') || /(^|\s)(card|era|node|tl-item)(\s|$)/.test(String(el.className || ''))){
+                  target = el; break;
+                }
+                if(!target) target = el;
+              }
+              if(target){
+                try{ target.scrollIntoView({ block:'center' }); }catch(e){}
+                const clickable = target.closest('[onclick],button,.card,.era-card,.tl-item') || target;
+                clickable.click();
+              }
+            }catch(e){}
+          }, 460);
+          return;
+        }
+      }catch(e){}
+      if(tries < 45) setTimeout(tick, 160);
+    };
+    setTimeout(tick, 160);
+  }
+
+  function r314BindHistoryJump(){
+    if(r314BindHistoryJump._bound) return;
+    r314BindHistoryJump._bound = true;
+    document.addEventListener('click', function(e){
+      const el = e.target && e.target.closest ? e.target.closest('[data-hist-jump]') : null;
+      if(!el) return;
+      e.preventDefault();
+      e.stopPropagation();
+      const era = el.getAttribute('data-hist-jump') || '先秦';
+      const year = el.getAttribute('data-hist-year') || '';
+      toast('🏯 正在前往中华通史 · ' + era);
+      r314JumpZhtsEra(era, year);
+    }, true);
+  }
+
+  /* ---------- 页面与页签 ---------- */
+  function renderGrowth(){
+    try{ r314ApplyWallpaper(); }catch(e){}
+    const pill = document.getElementById('growStarPill');
+    if(pill) pill.textContent = '⭐ ' + r314Stars();
+    $$('#growTabs [data-gtab]').forEach(function(b){
+      b.classList.toggle('active', b.getAttribute('data-gtab') === _r314Tab);
+      b.onclick = function(){
+        _r314Tab = b.getAttribute('data-gtab');
+        r314RenderTab();
+      };
+    });
+    r314RenderTab();
+  }
+
+  function r314RenderTab(){
+    const panel = document.getElementById('growPanel');
+    if(!panel) return;
+    const pill = document.getElementById('growStarPill');
+    if(pill) pill.textContent = '⭐ ' + r314Stars();
+    $$('#growTabs [data-gtab]').forEach(function(b){
+      b.classList.toggle('active', b.getAttribute('data-gtab') === _r314Tab);
+    });
+    if(_r314Tab === 'report'){
+      panel.innerHTML = r314ReportHtml();
+      r314BindReport();
+    } else if(_r314Tab === 'badge'){
+      panel.innerHTML = r314BadgeHtml();
+      r314BindChallenges();
+    } else if(_r314Tab === 'shop'){
+      panel.innerHTML = r314ShopHtml();
+      r314BindShop();
+    } else if(_r314Tab === 'goal'){
+      panel.innerHTML = r314GoalHtml();
+      r314BindGoal();
+    } else if(_r314Tab === 'excerpt'){
+      panel.innerHTML = r314ExcerptHtml();
+      r314BindExcerpt();
+    } else if(_r314Tab === 'health'){
+      panel.innerHTML = r314HealthHtml();
+      r314BindHealth();
+    }
+  }
+
+  function r314BindReport(){
+    $$('#growPanel [data-gscope]').forEach(function(b){
+      b.onclick = function(){
+        _r314Scope = b.getAttribute('data-gscope');
+        r314RenderTab();
+      };
+    });
+    const cp = document.getElementById('growReportCopy');
+    if(cp) cp.onclick = function(){
+      const txt = r314ReportText();
+      try{
+        if(navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(txt).then(function(){ toast('📋 报告已复制到剪贴板'); })
+            .catch(function(){ r314CopyFallback(txt); });
+        } else { r314CopyFallback(txt); }
+      }catch(e){ r314CopyFallback(txt); }
+    };
+    const png = document.getElementById('growReportPng');
+    if(png) png.onclick = function(){
+      const c = r314ReportCardCanvas();
+      if(!c){ toast('导出失败，请换用「复制文本」'); return; }
+      const ok = r314DownloadDataUrl(c.toDataURL('image/png'), 'Nick学习报告-' + S.todayStr() + '.png');
+      toast(ok ? '🖼️ 报告图片已导出' : '导出失败');
+    };
+    const sh = document.getElementById('growReportShare');
+    if(sh) sh.onclick = function(){
+      const txt = r314ReportText();
+      try{
+        if(navigator.share){
+          navigator.share({ title:'Nick 学习成长报告', text: txt }).catch(function(){});
+        } else { r314CopyFallback(txt); }
+      }catch(e){ r314CopyFallback(txt); }
+    };
+  }
+
+  function r314CopyFallback(txt){
+    try{
+      const ta = document.createElement('textarea');
+      ta.value = txt;
+      ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      const ok = document.execCommand && document.execCommand('copy');
+      ta.remove();
+      toast(ok ? '📋 报告已复制到剪贴板' : '复制失败，请长按选择文本');
+    }catch(e){ toast('复制失败，请长按选择文本'); }
+  }
+
+  function r314BindShop(){
+    $$('#growPanel [data-gshop-buy]').forEach(function(b){
+      b.onclick = function(){ r314BuyShop(b.getAttribute('data-gshop-buy')); };
+    });
+    $$('#growPanel [data-gshop-use]').forEach(function(b){
+      b.onclick = function(){ r314UseShop(b.getAttribute('data-gshop-use')); };
+    });
+    $$('#growPanel [data-gwall]').forEach(function(b){
+      b.onclick = function(){
+        const w = b.getAttribute('data-gwall') || '';
+        const r = r314St();
+        const shop = r.shop || {};
+        S.setR314({ shop: Object.assign({}, shop, { wall: w }) });
+        r314ApplyWallpaper();
+        r314RenderTab();
+        toast(w ? '壁纸已切换' : '已恢复默认壁纸');
+      };
+    });
+  }
+
+  /* ---------- 定时循环 / 初始化 ---------- */
+  function r314StartLoops(){
+    if(r314StartLoops._on) return;
+    r314StartLoops._on = true;
+    setInterval(function(){ try{ r314RemindTick(); }catch(e){} }, 60000);
+    setInterval(function(){ try{ r314EyeTick(); }catch(e){} }, 60000);
+    setTimeout(function(){ try{ r314RemindTick(); }catch(e){} }, 4000);
+  }
+
+  /* ---------- R314-B1：打卡凭证（拍照 / 相册多张 + 简短备注） ----------
+     存 st.r314.creds['<date>::<taskId>'] = { imgs:[dataUrl], note, at }；
+     只写凭证字段，不碰打卡记录 / 任务配置。 */
+  var R314_TASK_CRED_MAX = 4;
+  var _r314Cred = { taskId:'', imgs:[] };
+
+  function r314CredKey(date, taskId){ return String(date) + '::' + String(taskId); }
+  function r314CredGet(date, taskId){
+    try{
+      const r = r314St();
+      return ((r.creds || {})[r314CredKey(date, taskId)]) || null;
+    }catch(e){ return null; }
+  }
+  function r314CredHas(taskId){
+    try{ return !!r314CredGet(S.todayStr(), taskId); }catch(e){ return false; }
+  }
+
+  function r314RenderCredList(){
+    const box = document.getElementById('taskCredList');
+    if(!box) return;
+    if(!_r314Cred.imgs.length){
+      box.innerHTML = '<div class="r314-proof-empty">支持拍照或从相册多选，最多 ' + R314_TASK_CRED_MAX + ' 张（仅存本机）</div>';
+    } else {
+      box.innerHTML = _r314Cred.imgs.map(function(u, i){
+        return '<div class="r314-proof-item"><img src="' + esc(u) + '" alt="凭证' + (i + 1) + '" />' +
+          '<button type="button" class="r314-proof-del" data-tcred-del="' + i + '" title="移除这张">×</button></div>';
+      }).join('');
+      $$('#taskCredList [data-tcred-del]').forEach(function(b){
+        b.onclick = function(){
+          _r314Cred.imgs.splice(parseInt(b.getAttribute('data-tcred-del'), 10) || 0, 1);
+          r314RenderCredList();
+          r314CredCc();
+        };
+      });
+    }
+    const cnt = document.getElementById('taskCredCount');
+    if(cnt) cnt.textContent = _r314Cred.imgs.length + ' / ' + R314_TASK_CRED_MAX;
+    const clr = document.getElementById('taskCredClear');
+    if(clr) clr.hidden = !_r314Cred.imgs.length;
+  }
+
+  function r314CredCc(){
+    const note = document.getElementById('taskCredNote');
+    const cc = document.getElementById('taskCredNoteCc');
+    if(note && cc) cc.textContent = String(note.value || '').length + ' / 200';
+  }
+
+  function r314AddCredFiles(files){
+    if(!files || !files.length) return;
+    let room = R314_TASK_CRED_MAX - _r314Cred.imgs.length;
+    if(room <= 0){ toast('最多上传 ' + R314_TASK_CRED_MAX + ' 张凭证'); return; }
+    const list = Array.prototype.slice.call(files).filter(function(f){ return f && /^image\//.test(f.type || ''); });
+    if(list.length > room) toast('已保留前 ' + room + ' 张（上限 ' + R314_TASK_CRED_MAX + ' 张）');
+    list.slice(0, room).forEach(function(f){
+      r314CompressImg(f, function(url){
+        if(url && _r314Cred.imgs.length < R314_TASK_CRED_MAX){
+          _r314Cred.imgs.push(url);
+          r314RenderCredList();
+          r314CredCc();
+        }
+      });
+    });
+  }
+
+  function r314BindTaskCred(){
+    if(r314BindTaskCred._bound) return;
+    r314BindTaskCred._bound = true;
+    const cam = document.getElementById('taskCredCamera');
+    const alb = document.getElementById('taskCredAlbum');
+    const camIn = document.getElementById('taskCredCameraInput');
+    const albIn = document.getElementById('taskCredAlbumInput');
+    const clr = document.getElementById('taskCredClear');
+    const note = document.getElementById('taskCredNote');
+    const save = document.getElementById('btnTaskCredSave');
+    if(cam && camIn) cam.onclick = function(){ camIn.click(); };
+    if(alb && albIn) alb.onclick = function(){ albIn.click(); };
+    if(camIn) camIn.addEventListener('change', function(){ r314AddCredFiles(camIn.files); camIn.value = ''; });
+    if(albIn) albIn.addEventListener('change', function(){ r314AddCredFiles(albIn.files); albIn.value = ''; });
+    if(clr) clr.onclick = function(){ _r314Cred.imgs = []; r314RenderCredList(); r314CredCc(); };
+    if(note) note.addEventListener('input', r314CredCc);
+    if(save) save.onclick = function(){
+      const tid = _r314Cred.taskId;
+      if(!tid){ hideModal('#modalTaskCred'); return; }
+      const val = String((document.getElementById('taskCredNote') || {}).value || '').trim();
+      const today = S.todayStr();
+      const creds = Object.assign({}, (r314St().creds || {}));
+      if(!_r314Cred.imgs.length && !val){
+        delete creds[r314CredKey(today, tid)];
+        S.setR314({ creds: creds });
+        toast('已清空该任务的凭证');
+      } else {
+        creds[r314CredKey(today, tid)] = { imgs: _r314Cred.imgs.slice(), note: val, at: Date.now() };
+        S.setR314({ creds: creds });
+        toast('📷 凭证已保存' + (_r314Cred.imgs.length ? '（' + _r314Cred.imgs.length + ' 张）' : ''));
+      }
+      hideModal('#modalTaskCred');
+      try{ renderToday(); renderHome(); }catch(e){}
+    };
+  }
+
+  function r314OpenTaskCred(taskId){
+    const st = S.load();
+    const t = (st.tasks || []).find(function(x){ return x.id === taskId; });
+    if(!t) return;
+    const cur = r314CredGet(S.todayStr(), taskId) || {};
+    _r314Cred = { taskId: taskId, imgs: (cur.imgs || []).slice() };
+    const title = document.getElementById('taskCredTitle');
+    if(title) title.textContent = '📷 ' + t.name + ' · 打卡凭证';
+    const note = document.getElementById('taskCredNote');
+    if(note) note.value = cur.note || '';
+    r314BindTaskCred();
+    r314RenderCredList();
+    r314CredCc();
+    showModal('#modalTaskCred');
+  }
+
+  function r314Init(){
+    try{ r314ApplyWallpaper(); }catch(e){}
+    try{ r314BindHistoryJump(); }catch(e){}
+    try{ r314StartLoops(); }catch(e){}
+    try{ r314RenderHomeBadges(); }catch(e){}
+  }
+
   function r272BootInit(){
     const _P = window.R272P;
     if(_P && typeof _P.whenReady === 'function') _P.whenReady(function(){ try{ init(); }catch(e){} });
