@@ -10787,7 +10787,13 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
    ============================================================ */
 .reading-cn .reading-cols{display:flex;flex-direction:column;gap:12px;align-items:stretch}
 .reading-cn .rd-cn-row{display:grid;grid-template-columns:1fr;gap:12px;min-width:0;align-items:stretch}
-.reading-cn .rd-cn-row-1,.reading-cn .rd-cn-row-2{grid-template-columns:1fr 2fr}
+/* R315-B1：两行共用同一组列轨道变量 —— 第一行的「好词好句」与第二行的「古诗词鉴赏」
+   永远落在同一个 1fr 轨道上，宽度严格一致。
+   根因修复：`1fr 2fr` 的 fr 隐含 minmax(auto, fr)，第二列内容最小宽度不同（好词使用是双列网格、
+   优秀作文是长文本）时会把 1fr 挤成不同宽度；改为 minmax(0,·) 后比例恒定。 */
+.reading-cn{--r315-cn-col-a:minmax(0,1fr);--r315-cn-col-b:minmax(0,2fr)}
+.reading-cn .rd-cn-row-1,.reading-cn .rd-cn-row-2{grid-template-columns:var(--r315-cn-col-a) var(--r315-cn-col-b)}
+.reading-cn .rd-cn-row-1>.rc-words,.reading-cn .rd-cn-row-2>.rc-poem{width:100%;min-width:0}
 .reading-cn .haoci-use-card{margin:0;height:100%;box-sizing:border-box;display:flex;flex-direction:column}
 /* R313-3：好词卡一行两张（覆盖原 auto-fit 自适应列数） */
 .reading-cn .haoci-use-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -10862,6 +10868,26 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
 .r314-proof-acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 .r314-proof-acts .pbtn{min-height:36px;padding:0 14px;font-size:12.5px;font-weight:800}
 .r314-proof-acts #wProofClear{color:#b5354b;border-color:#f0c2ca;background:#fff5f7}
+
+/* ============================================================
+   R315-A1：新世界各板块错题本（题干 / 备注 / 解题思路 / 图片凭证）
+   ============================================================ */
+.nw-wrong-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:8px 0 10px}
+.nw-wrong-desc{flex:1 1 240px;min-width:0;font-size:12px;line-height:1.7;color:var(--muted)}
+.nw-wrong-list{display:flex;flex-direction:column;gap:9px}
+.nw-wrong-item{background:#fff;border:1.5px solid var(--tone-150);border-radius:12px;padding:10px 12px;min-width:0}
+.nw-wrong-item.is-legacy{background:var(--tone-025);border-style:dashed}
+.nw-wrong-h{display:flex;align-items:flex-start;gap:8px}
+.nw-wrong-t{flex:1 1 auto;min-width:0;font-size:13.5px;font-weight:800;color:var(--tone-900);line-height:1.55;overflow-wrap:anywhere}
+.nw-wrong-tag{flex:0 0 auto;font-size:10.5px;font-weight:800;color:var(--muted);border:1px solid var(--tone-200);border-radius:999px;padding:1px 8px}
+.nw-wrong-del{flex:0 0 auto;width:24px;height:24px;border-radius:50%;border:1px solid var(--tone-200);background:#fff;color:var(--muted);font-size:14px;line-height:1;cursor:pointer}
+.nw-wrong-del:hover{color:#fff;background:#d1435b;border-color:#d1435b}
+.nw-wrong-note,.nw-wrong-idea{margin-top:7px;font-size:12px;line-height:1.75;color:var(--tone-800);background:var(--tone-025);border-left:3px solid var(--tone-200);border-radius:0 8px 8px 0;padding:6px 9px;overflow-wrap:anywhere}
+.nw-wrong-idea{background:#f4fbf6;border-left-color:#a8dcb9}
+.nw-wrong-note b,.nw-wrong-idea b{display:inline-block;margin-right:6px;font-size:11px;font-weight:900;color:var(--tone-700)}
+.nw-wrong-proofs{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
+.nw-wrong-proof{width:62px;height:62px;border-radius:9px;overflow:hidden;border:1.5px solid var(--tone-200);background:#fff}
+.nw-wrong-proof img{width:100%;height:100%;object-fit:cover;display:block}
 
 /* ============================================================
    R314-A6：移动端 / 小屏适配 —— 一周打卡计划、本月日历横向滚动；
@@ -10959,22 +10985,7 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
 .r314-hb-more{font-size:10.5px;font-weight:800;color:var(--muted)}
 .r314-hb-empty{font-size:11px;color:var(--muted)}
 
-/* 商城 */
-.r314-shop-note{font-size:11.5px;color:var(--muted);margin:-4px 0 8px}
-.r314-shop-wallbar{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:11.5px;font-weight:800;color:var(--tone-700)}
-.r314-wall{border:1px solid var(--tone-200);background:#fff;border-radius:999px;padding:3px 10px;font-size:11.5px;font-weight:800;color:var(--tone-800);cursor:pointer}
-.r314-wall.active{background:var(--tone-100);border-color:var(--tone-400)}
-.r314-shop-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
-.r314-shop-item{display:grid;grid-template-columns:44px 1fr auto;grid-template-areas:"ico body price" "ico body btn";gap:4px 10px;align-items:center;background:#fff;border:1px solid var(--tone-150);border-radius:14px;padding:12px}
-.r314-shop-item.owned{background:linear-gradient(180deg,#fffdf4,#fff8e4);border-color:#f0dca6}
-.r314-shop-ico{grid-area:ico;font-size:26px}
-.r314-shop-body{grid-area:body}
-.r314-shop-name{font-size:13px;font-weight:900;color:var(--tone-900)}
-.r314-shop-desc{font-size:11px;color:var(--muted);line-height:1.5}
-.r314-shop-price{grid-area:price;font-size:12px;font-weight:900;color:#a06a00;text-align:right}
-.r314-buy{grid-area:btn;min-height:32px;font-size:11.5px;font-weight:800;padding:0 12px}
-.r314-buy.off{opacity:.6}
-.r314-buy.on{background:#eaf7ed;border-color:#a9dcb8;color:#1f6b39}
+/* R315-E1：星星商城样式随板块删除（.r314-shop-* / .r314-buy / .r314-wall） */
 
 /* 目标 / 表单 */
 .r314-form{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
@@ -11036,15 +11047,7 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
 .r314-rem-perm{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:11.5px;font-weight:700;color:var(--tone-700);margin-top:4px}
 .r314-rem-perm b{color:var(--tone-900)}
 
-/* 打卡主题动画 */
-.r314-cheer{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:0}
-.r314-cheer.play{animation:r314CheerIn 1.8s ease forwards}
-.r314-cheer-card{background:linear-gradient(180deg,#ffffff,var(--tone-050));border:2px solid #cfe4ff;border-radius:22px;padding:22px 34px;text-align:center;box-shadow:0 18px 50px rgba(30,58,138,.22)}
-.r314-cheer-emoji{font-size:56px;line-height:1.1;animation:r314Bounce .9s ease}
-.r314-cheer-txt{font-size:17px;font-weight:900;color:var(--tone-900);margin-top:6px}
-.r314-cheer-sub{font-size:12px;font-weight:700;color:#a06a00;margin-top:3px}
-@keyframes r314CheerIn{0%{opacity:0;transform:scale(.86)}12%{opacity:1;transform:scale(1)}80%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.04)}}
-@keyframes r314Bounce{0%,100%{transform:translateY(0)}30%{transform:translateY(-14px) rotate(-6deg)}60%{transform:translateY(-4px) rotate(5deg)}}
+/* R315-D1：打卡成功 Nick 主题动画弹层已下线，相关样式与关键帧一并移除（保留壁纸主题） */
 
 /* 主题壁纸（星星商城虚拟权益） */
 body.r314-wall-sunset .main-wrap{background-image:linear-gradient(180deg,rgba(255,236,214,.0),rgba(255,214,170,.28)),radial-gradient(1200px 600px at 15% -10%,#ffe3c2,transparent 60%),radial-gradient(1000px 500px at 90% 0%,#ffd0d8,transparent 55%)}
@@ -11054,7 +11057,6 @@ body.r314-frame-gold .home-avatar{box-shadow:0 0 0 4px #f4dd97,0 6px 18px rgba(1
 /* 小屏适配（成长中心） */
 @media (max-width: 900px){
   .r314-sub-row{grid-template-columns:74px 1fr 64px}
-  .r314-shop-list{grid-template-columns:1fr}
   .r314-hd-row{grid-template-columns:48px 1fr 1fr 70px;row-gap:3px}
   .r314-hd-bar{display:none}
   .r314-hd-hrs{grid-column:4}
@@ -11077,6 +11079,43 @@ body.r314-frame-gold .home-avatar{box-shadow:0 0 0 4px #f4dd97,0 6px 18px rgba(1
 .r314-import-row .pbtn{min-height:30px;font-size:11.5px;font-weight:800}
 .r314-import-tip{font-size:10.5px;color:var(--muted);line-height:1.5}
 @media (max-width:560px){.r314-import-tip{display:none}}
+
+/* ============================================================
+   R315-G1：成长中心 → 成长档案（合并去重后的排版）
+   档案页第二栅格：阶段挑战 / 单元目标 / 摘抄本 / 作息健康
+   报告卡内补充块：KPI + 各科完成率 + 薄弱任务 + 高频错题 + 学情小结
+   ============================================================ */
+.page-archive .r315-archive-grid{margin-top:18px}
+.r315-card{padding:14px 16px 16px}
+.r315-card .card-head{margin-bottom:10px}
+.r315-blk{background:var(--tone-025);border:1px solid var(--tone-150);border-radius:12px;padding:10px 12px;margin-bottom:10px}
+.r315-blk:last-child{margin-bottom:0}
+.r315-blk-h{font-size:12.5px;font-weight:900;color:var(--tone-800);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.r315-blk .r314-goal{margin:0 0 8px;background:#fff}
+.r315-blk .r314-goal:last-child{margin-bottom:0}
+.r315-report-extra{margin-top:12px}
+.r315-report-extra .r315-blk{background:var(--tone-025)}
+.r315-kpi-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.r315-sum .r314-sum-text{font-size:12.5px;line-height:1.85;color:var(--tone-850)}
+.r315-report-acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.r315-report-acts .pbtn{min-height:34px;padding:0 14px;font-size:12px;font-weight:800}
+
+/* 阶段性挑战 —— 家长模式内联编辑奖励 */
+.r315-ch-edit-btn{margin-left:6px}
+.r315-ch-edit{display:flex;flex-wrap:wrap;align-items:flex-end;gap:8px;margin-top:9px;padding:9px 10px;background:var(--tone-050);border:1.5px dashed var(--tone-250);border-radius:11px}
+.r315-ch-edit[hidden]{display:none!important}
+.r315-ch-edit label{display:flex;flex-direction:column;gap:4px;font-size:11.5px;font-weight:800;color:var(--tone-700);min-width:0}
+.r315-ch-edit input{min-height:32px;border:1px solid var(--tone-200);border-radius:9px;padding:0 9px;font-size:12.5px;font-weight:700;color:var(--tone-900);background:#fff;min-width:118px}
+.r315-ch-edit-acts{display:flex;gap:7px;flex-wrap:wrap}
+.r315-ch-edit-acts .pbtn{min-height:32px;font-size:11.5px;font-weight:800}
+@media (max-width:900px){
+  .r315-kpi-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media (max-width:560px){
+  .r315-kpi-3{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .r315-ch-edit input{min-width:0;width:100%}
+  .r315-ch-edit label{flex:1 1 100%}
+}
 
 </style>
 </head>
@@ -11103,8 +11142,7 @@ body.r314-frame-gold .home-avatar{box-shadow:0 0 0 4px #f4dd97,0 6px 18px rgba(1
     <button data-page="knowledge" class="nav-btn" data-page-node-id="dgvyriSBjRdIUt8IN5czeu"><span class="ico" data-page-node-id="KLxDkQogyEnhpWCUb0SkTf">🗺️</span><span class="lbl" data-page-node-id="0yzSgv0ZsfU7DUC3iBV5IU">知识秘境</span></button>
     <button data-page="farm" class="nav-btn" data-page-node-id="ILnFRXZgyFt6KUIHjdMjpi"><span class="ico" data-page-node-id="L91QcPKV3apQubouy8iHof">🌱</span><span class="lbl" data-page-node-id="3RvFnrBWk6gsLhpSANuJ0o">种植园</span></button>
     <button data-page="archive" class="nav-btn" data-page-node-id="71DCFRcIT0GWGt2QoPlIPE"><span class="ico" data-page-node-id="1fYFy0rpBdufGRwWSdwWAP">🏆</span><span class="lbl" data-page-node-id="Gkt7ejoiCugArdTvMAn8BU">成长档案</span></button>
-    <!-- R314-D：成长中心（报告 / 徽章 / 商城 / 目标 / 摘抄 / 作息） -->
-    <button data-page="growth" class="nav-btn" data-page-node-id="R314GrowthNav"><span class="ico" data-page-node-id="R314GrowthNavIco">🌱</span><span class="lbl" data-page-node-id="R314GrowthNavLbl">成长中心</span></button>
+    <!-- R315-G1：成长中心已并入「成长档案」，独立导航键与独立页整体下线 -->
     <button class="nav-btn" data-page="settings" data-page-node-id="R85navSettings"><span class="ico" data-page-node-id="R85navSetIco">⚙️</span><span class="lbl" data-page-node-id="R85navSetLbl">设置中心</span></button>
   </nav>
 </aside>
@@ -12433,29 +12471,7 @@ body.r314-frame-gold .home-avatar{box-shadow:0 0 0 4px #f4dd97,0 6px 18px rgba(1
   </div></section>
 
   <!-- ================= 成长档案 ================= -->
-  <!-- R314-D：成长中心 —— 学情报告 / 徽章成就 / 星星商城 / 单元目标 / 摘抄积累本 / 作息健康 -->
-  <section class="page page-growth" data-page="growth" data-zone="growth" data-page-node-id="R314GrowthPage" hidden>
-    <div class="page-title" data-page-node-id="R314GrowthTitle">
-      <div class="page-title-main" data-page-node-id="R314GrowthTitleMain">
-        <h2 data-page-node-id="R314GrowthH2">🌱 成长中心</h2>
-        <div class="r314-sub" data-page-node-id="R314GrowthSub">学情报告 · 徽章成就 · 星星商城 · 单元目标 · 摘抄本 · 作息健康</div>
-      </div>
-      <div class="page-actions" data-page-node-id="R314GrowthActs">
-        <span class="r314-star-pill" id="growStarPill" data-page-node-id="R314GrowthPill">⭐ 0</span>
-      </div>
-    </div>
-    <div class="page-content" data-page-node-id="R314GrowthContent">
-      <div class="r314-tabs" id="growTabs" data-page-node-id="R314GrowthTabs">
-        <button class="r314-tab active" data-gtab="report" data-page-node-id="R314TabReport">📊 学情报告</button>
-        <button class="r314-tab" data-gtab="badge" data-page-node-id="R314TabBadge">🏅 徽章成就</button>
-        <button class="r314-tab" data-gtab="shop" data-page-node-id="R314TabShop">🛍️ 星星商城</button>
-        <button class="r314-tab" data-gtab="goal" data-page-node-id="R314TabGoal">🎯 单元目标</button>
-        <button class="r314-tab" data-gtab="excerpt" data-page-node-id="R314TabExcerpt">📝 摘抄本</button>
-        <button class="r314-tab" data-gtab="health" data-page-node-id="R314TabHealth">🌙 作息健康</button>
-      </div>
-      <div class="r314-panel" id="growPanel" data-page-node-id="R314GrowthPanel"></div>
-    </div>
-  </section>
+  <!-- R315-G1：成长中心（学情报告 / 徽章 / 阶段挑战 / 单元目标 / 摘抄本 / 作息健康）整体并入下方「成长档案」页，独立页与导航键已下线 -->
 
   <section class="page page-archive" data-page="archive" hidden data-page-node-id="rO5PKT931BnXZx1RawEKQ2">
     <div class="page-title" data-page-node-id="StvTzAbICc7ediOsOymivd"><h2 data-page-node-id="Yc4CDTyvfk73PrB7HXB9Ij"></h2></div><div class="page-content">
@@ -12470,6 +12486,8 @@ body.r314-frame-gold .home-avatar{box-shadow:0 0 0 4px #f4dd97,0 6px 18px rgba(1
           </div>
         </div>
         <div class="weekly-report" id="weeklyReport" data-page-node-id="xCNdyyGS9yjmH2FSHQNjC3"></div>
+        <!-- R315-G1：成长中心「学情报告」并入本卡 —— 成长星 / 阅读 / 运动 KPI + 各科完成率 + 薄弱任务 + 高频错题 + 学情小结 -->
+        <div class="r315-report-extra" id="archiveReportExtra" data-page-node-id="R315ArchiveReportExtra"></div>
         <div class="hidden-in-child report-export-row" data-page-node-id="hFWxzxTNKkTWSMZygVw4Lh">
           <button class="pbtn report-export-btn" id="btnExportPng" data-page-node-id="G3d7iMA7qb6YYoXBdsR9Ht">📷 导出图片</button>
           <button class="pbtn report-export-btn" id="btnExportCsv" data-page-node-id="P2oLPiZDF2ULjcaVmFDhwI">📊 导出表格</button>
@@ -12489,6 +12507,25 @@ body.r314-frame-gold .home-avatar{box-shadow:0 0 0 4px #f4dd97,0 6px 18px rgba(1
           <button class="pbtn hidden-in-child" id="btnManageCerts" title="家长可增删改电子奖状，关联打卡数据" data-page-node-id="ck05bdOSAogwD01Q0yR43d">⚙️ 管理</button>
         </div>
         <div class="cert-list" id="certList" data-page-node-id="ePJ6yumaNG0tzOtxHoZBOv"></div>
+      </div>
+    </div>
+    <!-- R315-G1：原「成长中心」其余板块并入成长档案（顺序按使用频次：先挑战目标，再积累与作息） -->
+    <div class="archive-grid r315-archive-grid" data-page-node-id="R315ArchiveGrid">
+      <div class="card r315-card" data-page-node-id="R315ArchiveChallengeCard">
+        <div class="card-head" data-page-node-id="R315ArchiveChallengeHead"><h3 data-page-node-id="R315ArchiveChallengeH3">🔥 阶段性挑战</h3></div>
+        <div id="archiveChallengeHost" data-page-node-id="R315ArchiveChallengeHost"></div>
+      </div>
+      <div class="card r315-card" data-page-node-id="R315ArchiveGoalCard">
+        <div class="card-head" data-page-node-id="R315ArchiveGoalHead"><h3 data-page-node-id="R315ArchiveGoalH3">🎯 单元目标</h3></div>
+        <div id="archiveGoalHost" data-page-node-id="R315ArchiveGoalHost"></div>
+      </div>
+      <div class="card r315-card" data-page-node-id="R315ArchiveExcerptCard">
+        <div class="card-head" data-page-node-id="R315ArchiveExcerptHead"><h3 data-page-node-id="R315ArchiveExcerptH3">📝 摘抄积累本</h3></div>
+        <div id="archiveExcerptHost" data-page-node-id="R315ArchiveExcerptHost"></div>
+      </div>
+      <div class="card r315-card" data-page-node-id="R315ArchiveHealthCard">
+        <div class="card-head" data-page-node-id="R315ArchiveHealthHead"><h3 data-page-node-id="R315ArchiveHealthH3">🌙 作息健康</h3></div>
+        <div id="archiveHealthHost" data-page-node-id="R315ArchiveHealthHost"></div>
       </div>
     </div>
   </div></section>
@@ -12937,6 +12974,44 @@ body.r314-frame-gold .home-avatar{box-shadow:0 0 0 4px #f4dd97,0 6px 18px rgba(1
     <div class="modal-foot" data-page-node-id="Ax9TWd5ONDDi3MEwo2lF2b">
       <button class="primary-btn" id="btnSaveWrong" data-page-node-id="DXlyBm37UC2GD5IGPAGBOM">保存并打卡</button>
       <button class="pbtn" data-close data-page-node-id="HLeAd8yDw5Sst5mvnNyFBM">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 弹窗：新世界各板块错题本（题干 / 备注 / 解题思路 / 图片凭证） ========== -->
+<div class="modal-mask" id="modalNwWrong" hidden data-page-node-id="R315NwWrongModal">
+  <div class="modal-box" data-page-node-id="R315NwWrongBox">
+    <div class="modal-head" data-page-node-id="R315NwWrongHead">
+      <h3 data-page-node-id="R315NwWrongTitle">📒 记录错题 · <span id="nwWrongSubjectLbl">数学</span></h3>
+      <button class="modal-x" data-close data-page-node-id="R315NwWrongX">×</button>
+    </div>
+    <div class="modal-body" data-page-node-id="R315NwWrongBody">
+      <label data-page-node-id="R315NwWrongTitleLb">错题题干 / 来源 <span class="r314-cc" id="nwWrongTitleCc">0 字</span>
+        <input id="nwWrongTitle" maxlength="200" type="text" placeholder="数学错题：题干 / 题号 / 来源（例如：练习册 P32 第 5 题）" data-page-node-id="R315NwWrongTitleIn"></label>
+      <label data-page-node-id="R315NwWrongNoteLb">备注 <span class="r314-cc" id="nwWrongNoteCc">0 / 200 字</span>
+        <textarea id="nwWrongNote" maxlength="200" placeholder="错误原因 / 当时怎么想的（选填）" data-page-node-id="R315NwWrongNoteIn"></textarea></label>
+      <label data-page-node-id="R315NwWrongIdeaLb">解题思路 <span class="r314-cc" id="nwWrongIdeaCc">0 / 800 字</span>
+        <textarea id="nwWrongIdea" maxlength="800" placeholder="订正后的正确解法 / 关键步骤（选填）" data-page-node-id="R315NwWrongIdeaIn"></textarea></label>
+      <div class="r314-proof" data-page-node-id="R315NwWrongProof">
+        <div class="r314-proof-head">
+          <span>📷 上传凭证（作业照片 / 订正截图）</span>
+          <span class="r314-proof-count" id="nwWrongProofCount">0 / 4</span>
+        </div>
+        <div class="r314-proof-list" id="nwWrongProofList">
+          <div class="r314-proof-empty">支持拍照或从相册多选，最多 4 张（自动压缩后存本机）</div>
+        </div>
+        <div class="r314-proof-acts">
+          <button type="button" class="pbtn" id="nwWrongCamera" data-page-node-id="R315NwWrongCam">📷 拍照</button>
+          <button type="button" class="pbtn" id="nwWrongAlbum" data-page-node-id="R315NwWrongAlb">🖼️ 相册选择</button>
+          <button type="button" class="pbtn" id="nwWrongProofClear" hidden data-page-node-id="R315NwWrongClr">清空凭证</button>
+        </div>
+        <input type="file" id="nwWrongCameraInput" accept="image/*" capture="environment" multiple hidden data-page-node-id="R315NwWrongCamIn">
+        <input type="file" id="nwWrongAlbumInput" accept="image/*" multiple hidden data-page-node-id="R315NwWrongAlbIn">
+      </div>
+    </div>
+    <div class="modal-foot" data-page-node-id="R315NwWrongFoot">
+      <button class="primary-btn" id="btnNwWrongSave" data-page-node-id="R315NwWrongSave">保存错题</button>
+      <button class="pbtn" data-close data-page-node-id="R315NwWrongCancel">取消</button>
     </div>
   </div>
 </div>
@@ -19644,7 +19719,17 @@ window.R298_TASK_PLAN = {
       if(!r.report || typeof r.report !== 'object') r.report = {};
       if(!r.creds || typeof r.creds !== 'object' || Array.isArray(r.creds)) r.creds = {};
       if(!r.remind || typeof r.remind !== 'object') r.remind = { on:false, time:'19:30', lastAt:0 };
+      /* R315-C6：阶段性挑战奖励可由家长改写（只覆盖被改写的那一项，未改写的沿用默认） */
+      if(!r.challenges.reward || typeof r.challenges.reward !== 'object') r.challenges.reward = {};
+      if(!r.challenges.name || typeof r.challenges.name !== 'object') r.challenges.name = {};
     })();
+    /* R315-A1：新世界各板块错题本 —— 结构化错题（题干 / 备注 / 解题思路 / 图片凭证）。
+       与旧 nwZone 里只有标题的「错题本 / 错题笔记」条目分开存：旧条目原样保留只读展示，
+       新录入一律进 nwWrong，互不覆盖。 */
+    if(!st.nwWrong || typeof st.nwWrong !== 'object' || Array.isArray(st.nwWrong)) st.nwWrong = {};
+    ['语文','数学','英语'].forEach(function(sub){
+      if(!Array.isArray(st.nwWrong[sub])) st.nwWrong[sub] = [];
+    });
     // R16-3：首页标语迁移（仅当用户仍沿用旧默认标语时升级为新标语；家长自定义过的标语保持不动）
     (function(){
       const oldZh = '不要烦，不要烦，工作永远做不完';
@@ -21099,6 +21184,57 @@ window.R298_TASK_PLAN = {
     st.nwZone[key] = Array.isArray(arr) ? arr.slice() : [];
     save(st);
     return st.nwZone[key].slice();
+  }
+
+  /* ===== R315-A1：新世界各板块错题本（结构化） =====
+     条目字段：{ id, title:'题干/来源', note:'备注', idea:'解题思路', proofs:[dataURL…], ts }
+     ① 只增不删旧数据：旧 nwZone['错题本'|'错题笔记'] 的标题条目独立保留（legacy），
+        这里只负责新录入的富文本条目；
+     ② proofs 只收 data:image / http(s) 链接，最多 4 张，防止任意字符串写进主档。 */
+  const NW_WRONG_SUBJECTS = ['语文','数学','英语'];
+  function _nwWrongState(st){
+    if(!st.nwWrong || typeof st.nwWrong !== 'object' || Array.isArray(st.nwWrong)) st.nwWrong = {};
+    NW_WRONG_SUBJECTS.forEach(function(s){ if(!Array.isArray(st.nwWrong[s])) st.nwWrong[s] = []; });
+    return st.nwWrong;
+  }
+  function getNwWrong(subject){
+    const st = load();
+    const b = _nwWrongState(st);
+    return (b[subject] || []).map(function(x){ return Object.assign({}, x, { proofs: (x.proofs || []).slice() }); });
+  }
+  function addNwWrong(subject, item){
+    const st = load();
+    const b = _nwWrongState(st);
+    const sub = NW_WRONG_SUBJECTS.indexOf(subject) >= 0 ? subject : '数学';
+    const it = item || {};
+    const proofs = Array.isArray(it.proofs) ? it.proofs.filter(function(u){
+      return typeof u === 'string' && (/^data:image\//i.test(u) || /^https?:\/\//i.test(u));
+    }).slice(0, 4) : [];
+    const rec = {
+      id: 'nw' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+      title: String(it.title || '').slice(0, 200),
+      note: String(it.note || '').slice(0, 500),
+      idea: String(it.idea || '').slice(0, 800),
+      proofs: proofs,
+      ts: Date.now()
+    };
+    b[sub].unshift(rec);
+    save(st);
+    return rec;
+  }
+  function delNwWrong(subject, id){
+    const st = load();
+    const b = _nwWrongState(st);
+    const sub = NW_WRONG_SUBJECTS.indexOf(subject) >= 0 ? subject : '数学';
+    /* nwWrong 不在写盘闸 GUARD_WIPE_KEYS 里，删除不会触发「非空变空」回填 */
+    b[sub] = b[sub].filter(function(x){ return !x || x.id !== id; });
+    save(st);
+    return b[sub].slice();
+  }
+  function countNwWrong(subject){
+    const st = load();
+    const b = _nwWrongState(st);
+    return (b[subject] || []).length;
   }
 
   // R312-7：「乐读数学笔记」题目 → 「乐读练习题」题库（题目标注来源板块与题型）
@@ -28897,6 +29033,8 @@ be 动词：am / is → was；are → were
     getCertMetrics, getMetricValue, getCustomCerts, addCustomCert, updateCustomCert, deleteCustomCert,
     // V70：新世界各板块用户添加内容
     getNwZone, addNwZone, delNwZone, setNwZone, // R181-6c：补导出（R179 漏导出致拖拽排序静默不落库）
+    // R315-A1：新世界各板块错题本（题干 / 备注 / 解题思路 / 图片凭证）
+    getNwWrong, addNwWrong, delNwWrong, countNwWrong, NW_WRONG_SUBJECTS,
     // R248-1：练习题独立题库 + 每题答对 +1⭐ 打卡（可撤销 / 本地持久化）
     getMathExerciseBank, setMathExerciseBank, addMathExercise, delMathExercise,
     isMathExerciseCorrect, markMathExerciseCorrect, unmarkMathExerciseCorrect,
@@ -29955,7 +30093,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     if(page==='farm') renderFarm();
     if(page==='archive') renderArchive();
     // R314-D：成长中心（学情报告 / 徽章成就 / 星星商城 / 单元目标 / 摘抄本 / 作息健康）
-    if(page==='growth') renderGrowth();
+    /* R315-G1：成长中心页面已并入「成长档案」（page=archive），不再有独立 growth 页 */
     // R276-3.2：新导航板块
     if(page==='zhts') renderZhts();
     resetIdle();
@@ -33885,8 +34023,165 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     }
     return n;
   }
+  /* ===== R315-A1：新世界各板块错题本 =====
+     结构化错题（题干 / 备注 / 解题思路 / 图片凭证），数学专区分区 key = 错题笔记，
+     英语专区 key = 错题本；旧 nwZone 里只有标题的历史条目原样只读展示，不删不改。 */
+  const R315_NW_PROOF_MAX = 4;
+  let _r315NwProofs = [];
+  let _r315NwSubject = '数学';
+  let _r315NwLegacyKey = '错题笔记';
+
+  function r315NwProofList(){
+    const box = document.getElementById('nwWrongProofList');
+    const cnt = document.getElementById('nwWrongProofCount');
+    const clr = document.getElementById('nwWrongProofClear');
+    if(cnt) cnt.textContent = _r315NwProofs.length + ' / ' + R315_NW_PROOF_MAX;
+    if(clr) clr.hidden = !_r315NwProofs.length;
+    if(!box) return;
+    if(!_r315NwProofs.length){
+      box.innerHTML = '<div class="r314-proof-empty">支持拍照或相册多选，最多 ' + R315_NW_PROOF_MAX + ' 张（自动压缩后存本机）</div>';
+      return;
+    }
+    box.innerHTML = _r315NwProofs.map(function(u, i){
+      return '<div class="r314-proof-item"><img src="' + esc(u) + '" alt="凭证' + (i + 1) + '" />' +
+        '<button type="button" class="r314-proof-del" data-nwproof-del="' + i + '" title="移除这张">×</button></div>';
+    }).join('');
+    box.querySelectorAll('[data-nwproof-del]').forEach(function(b){
+      b.onclick = function(){ _r315NwProofs.splice(Number(b.getAttribute('data-nwproof-del')), 1); r315NwProofList(); };
+    });
+  }
+  function r315NwAddFiles(files){
+    const list = Array.from(files || []).filter(function(f){ return f && /^image\//.test(f.type || ''); });
+    if(!list.length) return;
+    const room = R315_NW_PROOF_MAX - _r315NwProofs.length;
+    if(room <= 0){ toast('最多上传 ' + R315_NW_PROOF_MAX + ' 张凭证'); return; }
+    const todo = list.slice(0, room);
+    let done = 0;
+    todo.forEach(function(f){
+      r314CompressImg(f, function(url){
+        if(url && _r315NwProofs.length < R315_NW_PROOF_MAX) _r315NwProofs.push(url);
+        done++;
+        if(done >= todo.length) r315NwProofList();
+      });
+    });
+    if(list.length > room) toast('已保留前 ' + room + ' 张（上限 ' + R315_NW_PROOF_MAX + ' 张）');
+  }
+  function r315NwCc(){
+    const t = document.getElementById('nwWrongTitle');
+    const n = document.getElementById('nwWrongNote');
+    const r = document.getElementById('nwWrongIdea');
+    const tc = document.getElementById('nwWrongTitleCc');
+    const nc = document.getElementById('nwWrongNoteCc');
+    const rc = document.getElementById('nwWrongIdeaCc');
+    if(tc) tc.textContent = String((t && t.value) || '').length + ' / 200 字';
+    if(nc) nc.textContent = String((n && n.value) || '').length + ' / 200 字';
+    if(rc) rc.textContent = String((r && r.value) || '').length + ' / 800 字';
+  }
+  function r315ResetNwWrongForm(){
+    _r315NwProofs = [];
+    r315NwProofList();
+    const t = document.getElementById('nwWrongTitle');
+    const n = document.getElementById('nwWrongNote');
+    const i = document.getElementById('nwWrongIdea');
+    if(t) t.value = '';
+    if(n) n.value = '';
+    if(i) i.value = '';
+    r315NwCc();
+  }
+  function r315OpenNwWrong(subject, legacyKey){
+    _r315NwSubject = subject;
+    _r315NwLegacyKey = legacyKey || '错题本';
+    const t = document.getElementById('nwWrongTitle');
+    if(t) t.setAttribute('placeholder', subject + '错题：题干 / 题号 / 来源（例如：练习册 P32 第 5 题）');
+    const sub = document.getElementById('nwWrongSubjectLbl');
+    if(sub) sub.textContent = subject;
+    r315ResetNwWrongForm();
+    showModal('#modalNwWrong');
+    setTimeout(function(){ if(t) t.focus(); }, 40);
+  }
+  function r315SaveNwWrong(){
+    const title = String((document.getElementById('nwWrongTitle') || {}).value || '').trim();
+    if(!title){ toast('请先填写错题题干 / 来源'); return; }
+    const note = String((document.getElementById('nwWrongNote') || {}).value || '').trim();
+    const idea = String((document.getElementById('nwWrongIdea') || {}).value || '').trim();
+    S.addNwWrong(_r315NwSubject, { title: title, note: note, idea: idea, proofs: _r315NwProofs.slice() });
+    hideModal('#modalNwWrong');
+    toast('📒 已收进' + _r315NwSubject + '错题本' + (_r315NwProofs.length ? ' · 凭证 ' + _r315NwProofs.length + ' 张' : ''));
+    r315ResetNwWrongForm();
+    if(typeof window.__slotRerender === 'function') window.__slotRerender();
+  }
+  function r315InitNwWrong(){
+    if(r315InitNwWrong._bound) return;
+    r315InitNwWrong._bound = true;
+    document.addEventListener('click', function(e){
+      const add = e.target && e.target.closest ? e.target.closest('[data-nww-add]') : null;
+      if(add){
+        e.preventDefault();
+        r315OpenNwWrong(add.getAttribute('data-nww-sub') || '数学', add.getAttribute('data-nww-add'));
+        return;
+      }
+      const del = e.target && e.target.closest ? e.target.closest('[data-nww-del]') : null;
+      if(del){
+        e.preventDefault();
+        const sub = del.getAttribute('data-nww-sub') || '数学';
+        const id = del.getAttribute('data-nww-del');
+        r307DangerConfirm('将删除这道' + sub + '错题及其图片凭证，删除后不可恢复。\n其它错题与打卡记录不受影响。', function(){
+          if(S.delNwWrong) S.delNwWrong(sub, id);
+          toast('已删除');
+          if(typeof window.__slotRerender === 'function') window.__slotRerender();
+        }, '删除错题');
+      }
+    }, false);
+    const cam = document.getElementById('nwWrongCamera');
+    const camIn = document.getElementById('nwWrongCameraInput');
+    const alb = document.getElementById('nwWrongAlbum');
+    const albIn = document.getElementById('nwWrongAlbumInput');
+    const clr = document.getElementById('nwWrongProofClear');
+    const note = document.getElementById('nwWrongNote');
+    const idea = document.getElementById('nwWrongIdea');
+    const save = document.getElementById('btnNwWrongSave');
+    if(cam && camIn) cam.onclick = function(){ camIn.click(); };
+    if(alb && albIn) alb.onclick = function(){ albIn.click(); };
+    if(camIn) camIn.addEventListener('change', function(){ r315NwAddFiles(camIn.files); camIn.value = ''; });
+    if(albIn) albIn.addEventListener('change', function(){ r315NwAddFiles(albIn.files); albIn.value = ''; });
+    if(clr) clr.onclick = function(){ _r315NwProofs = []; r315NwProofList(); };
+    if(note) note.addEventListener('input', r315NwCc);
+    if(idea) idea.addEventListener('input', r315NwCc);
+    const title = document.getElementById('nwWrongTitle');
+    if(title) title.addEventListener('input', r315NwCc);
+    if(save) save.onclick = r315SaveNwWrong;
+    r315NwCc();
+  }
+
+  function nwWrongBook(subject, legacyKey){
+    const mine = (S.getNwWrong && S.getNwWrong(subject)) || [];
+    const legacy = (S.getNwZone && S.getNwZone(legacyKey)) || [];
+    const rows = mine.map(function(it){
+      const proofs = Array.isArray(it.proofs) ? it.proofs : [];
+      return '<div class="nw-wrong-item">' +
+        '<div class="nw-wrong-h"><span class="nw-wrong-t">' + esc(it.title || '（未填写题干）') + '</span>' +
+          '<button class="nw-wrong-del" data-nww-del="' + esc(it.id) + '" data-nww-sub="' + esc(subject) + '" title="删除这道错题">×</button></div>' +
+        (it.note ? '<div class="nw-wrong-note"><b>备注</b>' + esc(it.note) + '</div>' : '') +
+        (it.idea ? '<div class="nw-wrong-idea"><b>解题思路</b>' + esc(it.idea) + '</div>' : '') +
+        (proofs.length ? '<div class="nw-wrong-proofs">' + proofs.map(function(u, i){
+          return '<span class="nw-wrong-proof"><img src="' + esc(u) + '" alt="凭证' + (i + 1) + '" /></span>';
+        }).join('') + '</div>' : '') +
+      '</div>';
+    }).join('');
+    const legacyRows = legacy.map(function(it){
+      return '<div class="nw-wrong-item is-legacy"><div class="nw-wrong-h">' +
+        '<span class="nw-wrong-t">' + esc(typeof it === 'string' ? it : (it && it.t) || '') + '</span>' +
+        '<span class="nw-wrong-tag">旧记录</span></div></div>';
+    }).join('');
+    const total = mine.length + legacy.length;
+    return '<div class="yw-comp-head">错题本 <span class="yw-sub">' + subject + ' · 共 ' + total + ' 道</span></div>' +
+      '<div class="nw-wrong-bar"><span class="nw-wrong-desc">拍照 / 相册上传作业与订正凭证，备注 + 解题思路一起留档，复习时一眼看懂错在哪。</span>' +
+        '<button class="nw-zone-add" data-nww-add="' + esc(legacyKey) + '" data-nww-sub="' + esc(subject) + '">＋ 记录错题</button></div>' +
+      ((total) ? ('<div class="nw-wrong-list">' + rows + legacyRows + '</div>')
+              : '<div class="nw-zone-empty">还没有错题，点「＋ 记录错题」把错题和订正凭证收进来～</div>');
+  }
   function sxWrongBook(){
-    return nwSlotGeneric('错题笔记','📒','把做错的题收进来，定期复习不再错。', false);
+    return nwWrongBook('数学', '错题笔记');
   }
   // R237-1：当日批改快照（按题面 key 索引），刷新/切页后回填
   function _calcDrillMap(){
@@ -36223,10 +36518,11 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     if(key === 'zw') return renderEnEssay(_enEssayPage);      // R204：英文作文（每页 4 篇）
     if(key === 'yyxzs') return enGrammar();               // R24-5：英语小知识（语法体系）
     if(key === 'w3500') return renderEnWords3500();        // R247-2：3500 词（每页 2 张分类卡片）
+    // R315-A1：英语错题本与数学错题本同款（题干 / 备注 / 解题思路 / 图片凭证）
+    if(key === 'ctb') return nwWrongBook('英语', '错题本');
     const map = {
       // R122：与上方 EN_TOP_CARDS 保持一致的板块名
-      gd:  ['重点知识','📌','导入课本重点照片，逐张打卡。', true],
-      ctb: ['错题本','📓','把做错的题收进来，定期复习不再错。', false]
+      gd:  ['重点知识','📌','导入课本重点照片，逐张打卡。', true]
     };
     const m = map[key] || [label,'🔤',''];
     return nwSlotGeneric(m[0], m[1], m[2], m[3]);
@@ -48838,11 +49134,29 @@ function renderKMAdmin(){
      现统一为：全平台只有这一份打卡音效，打卡成功与取消打卡复用同一音效，由捕获阶段统一分发，
      不再依赖各模块 handler 是否记得调用。 */
   let _checkinSfxAt = 0;
+  /* R315-D2：取消打卡（撤销）不再发声 —— 打卡类「遗憾/撤销」音效整体下线，
+     只有真正完成打卡才有反馈音。_r315UndoSfxAt 由捕获阶段按「点击前的按键状态」写入。 */
+  let _r315UndoSfxAt = 0;
+  function r315IsUndoClick(el){
+    try{
+      const node = (el && el.closest) ? (el.closest(CHECKIN_SFX_SEL) || el) : el;
+      if(!node || !node.classList) return false;
+      const cl = node.classList;
+      if(cl.contains('checked') || cl.contains('is-checked') || cl.contains('is-done') ||
+         cl.contains('done') || cl.contains('on') || cl.contains('is-on')) return true;
+      if(node.getAttribute && node.getAttribute('aria-pressed') === 'true') return true;
+      if(node.getAttribute && node.getAttribute('data-check') === '1') return true;
+      if(node.closest && node.closest('.reading-item.is-checked')) return true;
+      return false;
+    }catch(e){ return false; }
+  }
   function playCheckinSound(){
     try{
       // R300-3：打卡音效走独立开关（默认开），不再因总开关默认关闭而整体失声
       if(!isCheckinSfxOn()) return;
       const n = Date.now();
+      // R315-D2：撤销打卡静默（400ms 窗口覆盖捕获与 handler 两次调用）
+      if(_r315UndoSfxAt && n - _r315UndoSfxAt < 400) return;
       /* 同一次点击里「捕获分发」与「handler 自身调用」会先后各来一次，120ms 内合并为一声；
          不同次点击间隔远大于此值，不影响连续打卡。 */
       if(_checkinSfxAt && n - _checkinSfxAt < 120) return;
@@ -48859,16 +49173,8 @@ function renderKMAdmin(){
     }catch(e){}
   }
   window.playCheckinSound = playCheckinSound;
-  /* R314-B4：打卡成功主题动画 —— 以装饰器方式挂在统一入口上，
-     不改动音效函数本体（音效开关关闭时动画照常出现）。 */
-  (function(){
-    const _r314BaseCheckinSound = playCheckinSound;
-    playCheckinSound = function(){
-      try{ if(typeof r314Celebrate === 'function') r314Celebrate(); }catch(e){}
-      return _r314BaseCheckinSound.apply(this, arguments);
-    };
-    window.playCheckinSound = playCheckinSound;
-  })();
+  /* R315-D1：打卡成功主题动画（Nick 表情弹层）已按需求整体下线，统一入口保持原样，
+     不再挂任何装饰器；R315-D2 起「取消打卡」也不再发声（见 _r315UndoSfxAt）。 */
   /* R293-2.1 中华通史（iframe）按键音效 —— 与学而思英语板块完全同源、同槽位、同预设。
      学而思英语板块内的按键（页签 / 工具键 / 普通按钮）在 sfxSlotOf 里统一归入 'third' 槽位
      （默认预设 h「木鱼嗒」），用户在「设置中心 · 点击音效」里更换第三级按键音后，
@@ -48884,6 +49190,8 @@ function renderKMAdmin(){
           const t = e.target; if(!t || !t.closest) return;
           if(t.closest('[disabled],[aria-disabled="true"]')) return;
           if(!t.closest(CHECKIN_SFX_SEL)) return;
+          /* R315-D2：点击前已经是「已打卡」态 = 这次是撤销 → 全程静默（不再有遗憾/撤销音） */
+          if(r315IsUndoClick(t)){ _r315UndoSfxAt = Date.now(); return; }
           playCheckinSound();
         }catch(_){}
       }, true);
@@ -49791,25 +50099,8 @@ function renderKMAdmin(){
       <div class="as-item"><div class="v">${a.totalCoins}</div><div class="l">金币</div></div>
       <div class="as-item"><div class="v">${a.monthDone}</div><div class="l">本月打卡</div></div>
       <div class="as-item"><div class="v">${S.getWeekGoCount()}</div><div class="l">本周围棋局数</div></div>`;
-    const badgeDefs = [
-      {k:'firstCheckin',ico:'🌟',name:'首次打卡',cond:'完成第1次打卡'},
-      {k:'firstWeek',ico:'⚡',name:'一周坚持',cond:'连续7天'},
-      {k:'firstMonth',ico:'🏅',name:'月度达人',cond:'连续30天'},
-      {k:'firstReading',ico:'📖',name:'阅读启航',cond:'阅读1天'},
-      {k:'readStar',ico:'📚',name:'阅读小星',cond:'阅读10天'},
-      {k:'firstSport',ico:'⚽',name:'运动启航',cond:'运动1天'},
-      {k:'sportStar',ico:'🏃',name:'运动小将',cond:'运动10天'},
-      {k:'firstGo',ico:'♟️',name:'初入棋局',cond:'完成第1局围棋'},
-      {k:'go10',ico:'🏆',name:'围棋新秀',cond:'完成10局围棋'},
-      {k:'timeMaster',ico:'⏰',name:'时间管理大师',cond:'作息连续7天'},
-      {k:'civilityStar',ico:'🤝',name:'文明小标兵',cond:'文明任务打卡30次'},
-      {k:'firstCoin',ico:'💰',name:'第一桶金',cond:'获得金币'},
-      {k:'firstHarvest',ico:'🧺',name:'丰收喜悦',cond:'采摘作物'},
-      {k:'firstGift',ico:'🎁',name:'礼物初体验',cond:'兑换礼物'},
-      {k:'exp100',ico:'💯',name:'百星璀璨',cond:'100成长星'},
-      {k:'exp500',ico:'🌠',name:'五百星辉',cond:'500成长星'},
-      {k:'king500',ico:'👑',name:'打卡之王',cond:'500成长星'}
-    ];
+    /* R315-G1：徽章定义统一到 r314BadgeDefs（成长档案与首页徽章条共用一份，去重后不再各存一套） */
+    const badgeDefs = (typeof r314BadgeDefs === 'function') ? r314BadgeDefs() : [];
     $('#badgeWall').innerHTML = badgeDefs.map(b=>`
       <div class="badge ${a.badges&&a.badges[b.k]?'on':''}">
         <div class="b-ico">${b.ico}</div><div class="b-name">${b.name}</div><div class="b-cond">${b.cond}</div>
@@ -49839,6 +50130,8 @@ function renderKMAdmin(){
         renderArchiveReport();
       };
     });
+    /* R315-G1：成长档案其余板块（阶段挑战 / 单元目标 / 摘抄本 / 作息健康）随档案页一起渲染 */
+    try{ r315RenderArchive(); }catch(e){}
   }
   function renderArchiveReport(){
     const rep = archiveReportType === 'monthly' ? S.buildMonthlyReport() : S.buildWeeklyReport();
@@ -49875,10 +50168,11 @@ function renderKMAdmin(){
     $('#weeklyReport').innerHTML = `
       <div class="report-header">${periodLabel} · 完成率 <b>${rep.overall}%</b> · 任务 ${rep.doneTask}/${rep.totalTask} · 最长 ${rep.longest} 天</div>
       <div class="report-cols">${hasSec ? (colHtml(col1) + colHtml(col2)) : '<div style="color:var(--muted);padding:10px;text-align:center">暂无打卡数据</div>'}</div>
-      <div class="report-line"><span class="l">⚽ 运动时长</span><span class="v">${rep.sportMin} 分钟</span></div>
-      <div class="report-line"><span class="l">📖 阅读时长</span><span class="v">${rep.readMin} 分钟</span></div>
       <div class="report-line"><span class="l">⚠️ 薄弱学科</span><span class="v">${esc(rep.weak)}</span></div>`;
       // R61-7：卡片最下方「围棋局数」行已按需求移除（围棋统计保留在板块分类卡中）
+      /* R315-G1：运动/阅读时长已并入成长档案 KPI（与各科完成率、薄弱任务、高频错题、学情小结同屏），
+         此处不再重复两行读数；周期口径统一取 archiveReportType，周/月切换两处同步。 */
+    try{ r315RenderReportExtra(); }catch(e){}
   }
 
   // V17-8：电子奖状管理（家长可增删改 + 关联打卡数据）
@@ -52577,6 +52871,7 @@ function renderKMAdmin(){
     try{ initWrongProofUI(); }catch(e){}
     // R314-D：成长中心初始化（壁纸 / 历史联动 / 提醒循环 / 首页徽章条）
     try{ r314Init(); }catch(e){}
+    try{ r315InitNwWrong(); }catch(e){}
     const btnUnlock = document.getElementById('btnUnlockSystem');
     if(btnUnlock && !btnUnlock._bound){
       btnUnlock._bound = true;
@@ -57485,18 +57780,42 @@ function init(){
       { k:'excerpt10', ico:'✍️', name:'摘抄达人', cond:'摘抄本收录 10 条' },
       { k:'goal5', ico:'🎯', name:'目标达成者', cond:'完成 3 个单元目标' },
       { k:'exp100', ico:'💯', name:'百星璀璨', cond:'累计 100 成长星' },
-      { k:'exp500', ico:'🌠', name:'五百星辉', cond:'累计 500 成长星' }
+      { k:'exp500', ico:'🌠', name:'五百星辉', cond:'累计 500 成长星' },
+      /* R315-G1：原「成长档案 · 徽章墙」独有的 4 枚并进统一徽章表，两处共用一份定义，去重后不再各存一套 */
+      { k:'firstCoin', ico:'💰', name:'第一桶金', cond:'获得金币' },
+      { k:'firstHarvest', ico:'🧺', name:'丰收喜悦', cond:'采摘作物' },
+      { k:'firstGift', ico:'🎁', name:'礼物初体验', cond:'兑换礼物' },
+      { k:'king500', ico:'👑', name:'打卡之王', cond:'500 成长星' }
     ];
   }
 
-  /* R314-C3：阶段性挑战 —— 21 天阅读 / 30 天计算，完成发额外星星 + 限定徽章 */
+  /* R314-C3：阶段性挑战 —— 21 天阅读 / 30 天计算，完成发额外星星 + 限定徽章
+     R315-F1：奖励文案与⭐数量可由家长改写（存 r314.challenges.reward / .name），
+     未改写的沿用默认值；领取时按改写后的数量结算。 */
+  function r315ChOverride(){
+    const r = r314St();
+    const c = (r.challenges && typeof r.challenges === 'object') ? r.challenges : {};
+    return {
+      reward: (c.reward && typeof c.reward === 'object') ? c.reward : {},
+      name: (c.name && typeof c.name === 'object') ? c.name : {}
+    };
+  }
   function r314ChallengeDefs(){
+    const o = r315ChOverride();
     return [
       { id:'read21', ico:'📖', name:'21 天阅读挑战', target:21, unit:'天', reward:30, badge:'read21',
         metric:'readDays', desc:'大阅读 / 阅读类任务累计打卡 21 天' },
       { id:'calc30', ico:'🧮', name:'30 天计算小天才', target:30, unit:'天', reward:50, badge:'calc30',
         metric:'calcStreak', desc:'计算小超市连续打卡 30 天' }
-    ];
+    ].map(function(c){
+      const rw = Number(o.reward[c.id]);
+      const nm = String(o.name[c.id] == null ? '' : o.name[c.id]).trim();
+      return Object.assign({}, c, {
+        reward: (isFinite(rw) && rw >= 1) ? Math.round(rw) : c.reward,
+        rewardName: nm || '限定徽章',
+        edited: !!(o.reward[c.id] != null || nm)
+      });
+    });
   }
   function r314ChallengeProgress(c){
     const st = S.load();
@@ -57504,9 +57823,10 @@ function init(){
     const raw = c.metric === 'readDays' ? (a.readDays | 0) : (st.calcStreak | 0);
     return { raw: raw, cur: Math.min(raw, c.target), target: c.target, pct: Math.min(100, Math.round(raw / c.target * 100)) };
   }
-  function r314ChallengeHtml(){
+  function r314ChallengeHtml(bare){
     const r = r314St();
     const claims = (r.challenges && r.challenges.claims) || {};
+    const parent = (typeof isParent === 'function') && isParent();
     const rows = r314ChallengeDefs().map(function(c){
       const p = r314ChallengeProgress(c);
       const claimed = !!claims[c.id];
@@ -57515,18 +57835,36 @@ function init(){
         : (p.pct >= 100
             ? '<button class="pbtn r314-mini on" data-gch-claim="' + c.id + '">🎁 领取 ' + c.reward + ' ⭐</button>'
             : '<span class="r314-goal-wait">还差 ' + Math.max(0, c.target - p.raw) + ' ' + c.unit + '</span>');
-      return '<div class="r314-goal' + (p.pct >= 100 ? ' done' : '') + '">' +
+      /* R315-F1：家长模式可编辑奖励文案 + ⭐数量（内联展开，不弹窗） */
+      const editBtn = parent
+        ? '<button class="r314-mini r315-ch-edit-btn" data-gch-edit="' + c.id + '" title="家长可修改奖励与星星数量">✎ 改奖励</button>'
+        : '';
+      const editor = parent
+        ? '<div class="r315-ch-edit" id="gchEdit_' + c.id + '" hidden>' +
+            '<label>奖励内容<input id="gchName_' + c.id + '" maxlength="20" value="' + r314Esc(c.rewardName) + '" placeholder="如：限定徽章 / 免做券"></label>' +
+            '<label>奖励⭐数<input id="gchReward_' + c.id + '" type="number" min="1" max="500" value="' + c.reward + '"></label>' +
+            '<div class="r315-ch-edit-acts">' +
+              '<button class="pbtn r314-mini on" data-gch-save="' + c.id + '">保存</button>' +
+              '<button class="pbtn r314-mini" data-gch-cancel="' + c.id + '">取消</button>' +
+              '<button class="pbtn r314-mini r314-del" data-gch-reset="' + c.id + '">恢复默认</button>' +
+            '</div></div>'
+        : '';
+      return '<div class="r314-goal' + (p.pct >= 100 ? ' done' : '') + '" data-gch-card="' + c.id + '">' +
         '<div class="r314-goal-head"><span class="r314-goal-title">' + c.ico + ' ' + c.name + '</span>' +
-        '<span class="r314-goal-due">奖励 ' + c.reward + ' ⭐ + 限定徽章</span></div>' +
+        '<span class="r314-goal-due">奖励 ' + c.reward + ' ⭐ + ' + r314Esc(c.rewardName) + (c.edited ? ' · 家长已调整' : '') + '</span></div>' +
         '<div class="r314-goal-sub">' + c.desc + '</div>' +
         '<div class="r314-goal-bar"><i style="width:' + p.pct + '%"></i></div>' +
-        '<div class="r314-goal-foot"><span>' + p.cur + ' / ' + c.target + ' ' + c.unit + '（' + p.pct + '%）</span>' + btn + '</div>' +
+        '<div class="r314-goal-foot"><span>' + p.cur + ' / ' + c.target + ' ' + c.unit + '（' + p.pct + '%）</span>' + btn + editBtn + '</div>' +
+        editor +
       '</div>';
     }).join('');
-    return '<div class="r314-card"><div class="r314-card-head">🔥 阶段性挑战</div>' + rows + '</div>';
+    const tip = parent ? '<div class="r314-tip">家长模式：点「✎ 改奖励」可修改奖励内容与⭐数量，保存后立即生效，领取时按新数量结算。</div>' : '';
+    /* R315-G1：并入成长档案时由外层卡片提供标题，bare=true 不再自带卡片头（去重） */
+    if(bare) return rows + tip;
+    return '<div class="r314-card r315-card"><div class="r314-card-head">🔥 阶段性挑战</div>' + rows + tip + '</div>';
   }
   function r314BindChallenges(){
-    $$('#growPanel [data-gch-claim]').forEach(function(b){
+    $$('#archiveChallengeHost [data-gch-claim]').forEach(function(b){
       b.onclick = function(){
         const id = b.getAttribute('data-gch-claim');
         const c = r314ChallengeDefs().find(function(x){ return x.id === id; });
@@ -57547,6 +57885,56 @@ function init(){
         try{ renderHome(); }catch(e){}
       };
     });
+    /* R315-F1：家长编辑奖励 —— 内联展开 / 保存 / 取消 / 恢复默认 */
+    const scope = '#archiveChallengeHost';
+    $$(scope + ' [data-gch-edit]').forEach(function(b){
+      b.onclick = function(){
+        const id = b.getAttribute('data-gch-edit');
+        const box = document.getElementById('gchEdit_' + id);
+        if(!box) return;
+        box.hidden = !box.hidden;
+      };
+    });
+    $$(scope + ' [data-gch-cancel]').forEach(function(b){
+      b.onclick = function(){
+        const box = document.getElementById('gchEdit_' + b.getAttribute('data-gch-cancel'));
+        if(box) box.hidden = true;
+      };
+    });
+    $$(scope + ' [data-gch-save]').forEach(function(b){
+      b.onclick = function(){
+        const id = b.getAttribute('data-gch-save');
+        const base = r314ChallengeDefs().find(function(x){ return x.id === id; });
+        if(!base) return;
+        const nmEl = document.getElementById('gchName_' + id);
+        const rwEl = document.getElementById('gchReward_' + id);
+        const nm = String((nmEl && nmEl.value) || '').trim();
+        const rw = parseInt((rwEl && rwEl.value), 10);
+        if(!nm){ toast('请填写奖励内容'); return; }
+        if(!isFinite(rw) || rw < 1 || rw > 500){ toast('奖励⭐数需在 1~500 之间'); return; }
+        const r = r314St();
+        const ch = Object.assign({}, r.challenges || {});
+        ch.reward = Object.assign({}, ch.reward || {}, { [id]: rw });
+        ch.name = Object.assign({}, ch.name || {}, { [id]: nm });
+        S.setR314({ challenges: ch });
+        toast('✅ 「' + base.name + '」奖励已改为 ' + rw + ' ⭐ + ' + nm);
+        r314RenderTab();
+      };
+    });
+    $$(scope + ' [data-gch-reset]').forEach(function(b){
+      b.onclick = function(){
+        const id = b.getAttribute('data-gch-reset');
+        const r = r314St();
+        const ch = Object.assign({}, r.challenges || {});
+        const rw = Object.assign({}, ch.reward || {});
+        const nm = Object.assign({}, ch.name || {});
+        delete rw[id]; delete nm[id];
+        ch.reward = rw; ch.name = nm;
+        S.setR314({ challenges: ch });
+        toast('已恢复默认奖励');
+        r314RenderTab();
+      };
+    });
   }
 
   function r314BadgeHtml(){
@@ -57560,8 +57948,9 @@ function init(){
         '<div class="r314-badge-name">' + r314Esc(x.name) + '</div>' +
         '<div class="r314-badge-cond">' + r314Esc(x.cond) + '</div>' +
       '</div>').join('');
+    /* R315-G1：徽章与阶段性挑战已拆成成长档案里的两块独立内容，这里只出徽章，避免重复渲染 */
     return '<div class="r314-card r314-badge-sum"><div class="r314-card-head">🏅 已点亮 ' + on + ' / ' + defs.length + ' 枚徽章</div>' +
-      '<div class="r314-badge-grid">' + grid + '</div></div>' + r314ChallengeHtml();
+      '<div class="r314-badge-grid">' + grid + '</div></div>';
   }
 
   /* 首页个人信息区的徽章条（只展示已点亮的前 6 枚） */
@@ -57580,107 +57969,10 @@ function init(){
     ).join('') + (list.length > 6 ? '<span class="r314-hb-more">+' + (list.length - 6) + '</span>' : '');
   }
 
-  /* ---------- 星星商城（仅虚拟权益，无实物交易） ---------- */
-  function r314ShopItems(){
-    return [
-      { id:'skipOpt', ico:'🎟️', name:'免一次选做任务', price:50, kind:'ticket', desc:'今天可以少做一项选做，⭐照发' },
-      { id:'wallSunset', ico:'🌇', name:'主题壁纸 · 落日草原', price:80, kind:'perm', desc:'解锁后可在本页一键切换' },
-      { id:'wallSnow', ico:'❄️', name:'主题壁纸 · 雪夜霓虹', price:80, kind:'perm', desc:'解锁后可在本页一键切换' },
-      { id:'frameGold', ico:'🖼️', name:'头像框 · 金穗', price:60, kind:'perm', desc:'点亮首页头像外框' }
-    ];
-  }
-
-  function r314ShopHtml(){
-    const r = r314St();
-    const shop = r.shop || {};
-    const owned = Array.isArray(shop.owned) ? shop.owned : [];
-    const tickets = (shop.tickets || {});
-    const stars = r314Stars();
-    const cards = r314ShopItems().map(it => {
-      const isOwned = owned.indexOf(it.id) >= 0;
-      const tCnt = tickets[it.id] | 0;
-      const canBuy = stars >= it.price;
-      let btn = '';
-      if(it.kind === 'perm'){
-        btn = isOwned
-          ? '<button class="pbtn r314-buy on" data-gshop-use="' + it.id + '">✅ 已解锁（点击使用）</button>'
-          : '<button class="pbtn r314-buy' + (canBuy ? '' : ' off') + '" data-gshop-buy="' + it.id + '">' + it.price + ' ⭐ 兑换</button>';
-      } else {
-        btn = '<button class="pbtn r314-buy' + (canBuy ? '' : ' off') + '" data-gshop-buy="' + it.id + '">' + it.price + ' ⭐ 兑换</button>'
-          + (tCnt > 0 ? '<button class="pbtn r314-buy on" data-gshop-use="' + it.id + '">🎟️ 使用（剩 ' + tCnt + '）</button>' : '');
-      }
-      return '<div class="r314-shop-item' + (isOwned ? ' owned' : '') + '">' +
-        '<div class="r314-shop-ico">' + it.ico + '</div>' +
-        '<div class="r314-shop-body"><div class="r314-shop-name">' + it.name + '</div>' +
-        '<div class="r314-shop-desc">' + it.desc + '</div></div>' +
-        '<div class="r314-shop-price">' + it.price + ' ⭐</div>' + btn + '</div>';
-    }).join('');
-    const curWall = (r.shop && r.shop.wall) || '';
-    return '<div class="r314-card r314-shop-head"><div class="r314-card-head">🛍️ 星星商城 · 我的余额 ' + stars + ' ⭐</div>' +
-      '<div class="r314-shop-note">仅兑换虚拟权益（免作业特权 / 主题壁纸 / 头像框），不涉及任何实物交易。</div>' +
-      '<div class="r314-shop-wallbar">壁纸：' +
-        '<button class="r314-wall' + (!curWall ? ' active' : '') + '" data-gwall="">默认</button>' +
-        (owned.indexOf('wallSunset') >= 0 ? '<button class="r314-wall' + (curWall === 'wallSunset' ? ' active' : '') + '" data-gwall="wallSunset">🌇 落日草原</button>' : '') +
-        (owned.indexOf('wallSnow') >= 0 ? '<button class="r314-wall' + (curWall === 'wallSnow' ? ' active' : '') + '" data-gwall="wallSnow">❄️ 雪夜霓虹</button>' : '') +
-      '</div></div>' + '<div class="r314-shop-list">' + cards + '</div>';
-  }
-
-  function r314BuyShop(id){
-    const it = r314ShopItems().find(x => x.id === id);
-    if(!it) return;
-    const r = r314St();
-    const shop = r.shop || {};
-    const owned = Array.isArray(shop.owned) ? shop.owned.slice() : [];
-    const tickets = Object.assign({}, shop.tickets || {});
-    if(it.kind === 'perm' && owned.indexOf(id) >= 0){ toast('已解锁，无需重复兑换'); return; }
-    const res = S.r314SpendStars(it.price, '星星商城兑换：' + it.name);
-    if(!res.ok){ toast('⚠️ ' + (res.msg || '兑换失败')); return; }
-    if(it.kind === 'perm'){ owned.push(id); }
-    else { tickets[id] = (tickets[id] | 0) + 1; }
-    S.setR314({ shop: Object.assign({}, shop, { owned: owned, tickets: tickets }) });
-    playZooSound('redeem');
-    toast('🎉 已兑换「' + it.name + '」');
-    r314RenderTab();
-  }
-
-  function r314UseShop(id){
-    const it = r314ShopItems().find(x => x.id === id);
-    if(!it) return;
-    const r = r314St();
-    const shop = r.shop || {};
-    if(it.kind === 'perm'){
-      const owned = Array.isArray(shop.owned) ? shop.owned : [];
-      if(owned.indexOf(id) < 0){ toast('请先兑换再使用'); return; }
-      S.setR314({ shop: Object.assign({}, shop, { wall: (shop.wall === id ? '' : id) }) });
-      r314ApplyWallpaper();
-      r314RenderTab();
-      toast(shop.wall === id ? '已切回默认壁纸' : '壁纸已切换');
-      return;
-    }
-    const tickets = Object.assign({}, shop.tickets || {});
-    if((tickets[id] | 0) <= 0){ toast('暂无可用次数，请先兑换'); return; }
-    const today = S.todayStr();
-    const used = Object.assign({}, shop.used || {});
-    if(used[id] === today){ toast('今天已经用过了，明天再用吧～'); return; }
-    tickets[id] = (tickets[id] | 0) - 1;
-    used[id] = today;
-    S.setR314({ shop: Object.assign({}, shop, { tickets: tickets, used: used }) });
-    toast('🎟️ 今日已使用「' + it.name + '」，选做任务可免做一项');
-    r314RenderTab();
-  }
-
-  function r314ApplyWallpaper(){
-    try{
-      const r = r314St();
-      const w = (r.shop && r.shop.wall) || '';
-      document.body.classList.remove('r314-wall-sunset', 'r314-wall-snow');
-      if(w === 'wallSunset') document.body.classList.add('r314-wall-sunset');
-      if(w === 'wallSnow') document.body.classList.add('r314-wall-snow');
-      const owned = (r.shop && r.shop.owned) || [];
-      document.body.classList.toggle('r314-frame-gold', owned.indexOf('frameGold') >= 0);
-    }catch(e){}
-  }
-
+  /* ---------- 星星商城（R315-E1 已整体下线） ----------
+     需求：删除星星商城板块。兑换 / 使用 / 壁纸切换全部不再对外暴露；
+     历史存档里的 st.r314.shop 原样保留（不清空用户数据），只是不再读写展示。 */
+  function r314ApplyWallpaper(){ /* no-op（R315-E1：商城下线，壁纸不再随商城切换） */ }
   /* ---------- 单元目标规划 ---------- */
   function r314GoalTaskName(id){
     const st = S.load();
@@ -57765,7 +58057,7 @@ function init(){
       toast('🎯 目标已添加');
       r314RenderTab();
     };
-    $$('#growPanel [data-ggoal-claim]').forEach(b => b.onclick = function(){
+    $$('#archiveGoalHost [data-ggoal-claim]').forEach(b => b.onclick = function(){
       const id = b.getAttribute('data-ggoal-claim');
       const r = r314St();
       const goals = (Array.isArray(r.goals) ? r.goals : []).map(g => Object.assign({}, g));
@@ -57782,7 +58074,7 @@ function init(){
       r314RenderTab();
       try{ renderHome(); }catch(e){}
     });
-    $$('#growPanel [data-ggoal-del]').forEach(b => b.onclick = function(){
+    $$('#archiveGoalHost [data-ggoal-del]').forEach(b => b.onclick = function(){
       const id = b.getAttribute('data-ggoal-del');
       const r = r314St();
       const goals = Array.isArray(r.goals) ? r.goals : [];
@@ -57850,7 +58142,7 @@ function init(){
   var _r314ExImg = '';
 
   function r314BindExcerpt(){
-    $$('#growPanel [data-gtype]').forEach(b => b.onclick = function(){
+    $$('#archiveExcerptHost [data-gtype]').forEach(b => b.onclick = function(){
       _r314ExType = b.getAttribute('data-gtype');
       r314RenderTab();
     });
@@ -57888,7 +58180,7 @@ function init(){
       toast('✍️ 已收录，并同步到大阅读');
       r314RenderTab();
     };
-    $$('#growPanel [data-gex-del]').forEach(b => b.onclick = function(){
+    $$('#archiveExcerptHost [data-gex-del]').forEach(b => b.onclick = function(){
       const id = b.getAttribute('data-gex-del');
       const r = r314St();
       const list = Array.isArray(r.excerpts) ? r.excerpts : [];
@@ -58079,45 +58371,84 @@ function init(){
     }catch(e){}
   }
 
-  /* ---------- 打卡成功主题动画 ---------- */
-  function r314Celebrate(msg){
-    try{
-      let box = document.getElementById('r314Cheer');
-      if(!box){
-        box = document.createElement('div');
-        box.id = 'r314Cheer';
-        box.className = 'r314-cheer';
-        document.body.appendChild(box);
-      }
-      box.innerHTML = '<div class="r314-cheer-card">' +
-        '<div class="r314-cheer-emoji">🦊</div>' +
-        '<div class="r314-cheer-txt">' + r314Esc(msg || '太棒了！打卡成功') + '</div>' +
-        '<div class="r314-cheer-sub">Nick 为你点赞 +⭐</div></div>';
-      box.classList.remove('play');
-      void box.offsetWidth;
-      box.classList.add('play');
-      clearTimeout(r314Celebrate._t);
-      r314Celebrate._t = setTimeout(function(){ box.classList.remove('play'); }, 1800);
-    }catch(e){}
+  /* ---------- 打卡成功主题动画（R315-D1 已下线） ----------
+     需求：取消「打卡成功弹出 Nick 遗憾表情主题动画提示」。
+     统一入口 playCheckinSound 不再挂装饰器，本模块不再生成任何全屏弹层；
+     保留一个空实现，避免历史代码/外部调用点因函数缺失报错。 */
+  function r314Celebrate(){ /* no-op（R315-D1） */ }
+
+  /* ---------- 历史上的今天 → 中华通史联动 ----------
+     R315-H1：按「公元年份」精确换算到中华通史 10 大时代 + 具体历史节点；
+     年份无法解析（如用户自填「很久以前」）或落不进任何时代时 **不跳转**，只给提示。 */
+  function r315AbsYear(s){
+    const t = String(s == null ? '' : s).trim();
+    if(!t) return null;
+    /* 全角数字 → 半角 */
+    const norm = t.replace(/[０-９]/g, function(c){ return String.fromCharCode(c.charCodeAt(0) - 65248); });
+    const m = /(\d{1,7})/.exec(norm);
+    if(!m) return null;
+    let n = parseInt(m[1], 10);
+    if(!isFinite(n)) return null;
+    const bc = /前|公元前|BC|B\.C/i.test(norm);
+    if(/万/.test(norm)) n = n * 10000;
+    if(/亿/.test(norm)) n = n * 100000000;
+    return bc ? -n : n;
+  }
+  /* 与中华通史 ERA_TIMES 一一对应的区间（左闭右开，最后一档开区间） */
+  const R315_ERA_SPAN = [
+    { name:'史前文明',       from:-Infinity, to:-2070 },
+    { name:'先秦',           from:-2070,     to:-221  },
+    { name:'秦汉',           from:-221,      to:220   },
+    { name:'魏晋南北朝',     from:220,       to:589   },
+    { name:'隋唐',           from:581,       to:907   },
+    { name:'辽宋夏金',       from:907,       to:1279  },
+    { name:'元明清',         from:1271,      to:1840  },
+    { name:'晚清',           from:1840,      to:1912  },
+    { name:'民国',           from:1912,      to:1949  },
+    { name:'新中国',         from:1949,      to:Infinity }
+  ];
+  function r314EraOfYear(y){
+    const n = r315AbsYear(y);
+    if(n === null) return '';
+    for(let i = 0; i < R315_ERA_SPAN.length; i++){
+      const s = R315_ERA_SPAN[i];
+      if(n >= s.from && n < s.to) return s.name;
+    }
+    return '';
   }
 
-  /* ---------- 历史上的今天 → 中华通史联动 ---------- */
-  function r314EraOfYear(y){
-    const s = String(y == null ? '' : y);
-    const neg = s.indexOf('前') >= 0;
-    const num = parseInt(s.replace(/[^\d]/g, ''), 10);
-    if(isNaN(num)) return '先秦';
-    const n = neg ? -num : num;
-    if(n <= -2070) return '史前与传说时代';
-    if(n <= -221) return '先秦';
-    if(n <= 220) return '秦汉';
-    if(n <= 907) return '魏晋南北朝至隋唐';
-    if(n <= 1912) return '宋元明清';
-    if(n <= 1949) return '近代';
-    return '当代';
+  /* 在 iframe 内取时代名 / 节点年份表；取不到返回 null（调用方按「无匹配」处理） */
+  function r315ZhtsMeta(w){
+    try{
+      const raw = w.eval('(function(){try{return JSON.stringify({' +
+        'eras:(typeof ERAS!=="undefined"?ERAS.map(function(e){return e.name}):[]),' +
+        'nodes:(typeof NODES!=="undefined"?NODES.map(function(n){return {id:n.id,era:n.era,s:n.year_start,e:n.year_end}}):[])' +
+        '});}catch(e){return "";}})()');
+      if(!raw) return null;
+      const o = JSON.parse(raw);
+      if(!o || !Array.isArray(o.nodes)) return null;
+      return o;
+    }catch(e){ return null; }
+  }
+  function r315ZhtsPickNode(meta, n){
+    if(!meta || !Array.isArray(meta.nodes) || n === null) return null;
+    let best = null;
+    meta.nodes.forEach(function(nd){
+      const a = r315AbsYear(nd.s), b = r315AbsYear(nd.e);
+      if(a === null) return;
+      const hi = (b === null ? a + 60 : b);
+      if(n >= a && n <= hi){
+        const span = Math.abs(hi - a);
+        if(!best || span < best.span) best = { node: nd, span: span };
+      }
+    });
+    return best ? best.node : null;
   }
 
   function r314JumpZhtsEra(era, year){
+    const n = r315AbsYear(year);
+    const eraName = era || r314EraOfYear(year);
+    if(n === null || !eraName) return false;   /* R315-H1：无匹配事件 → 不跳转 */
     try{ _uiMem('zhtsView', 'timeline'); }catch(e){}
     try{ goPage('zhts'); }catch(e){}
     let tries = 0;
@@ -58127,34 +58458,41 @@ function init(){
       try{
         const w = f && f.contentWindow;
         if(w && typeof w.go === 'function'){
-          try{ w.go('timeline'); }catch(e){}
+          const meta = r315ZhtsMeta(w);
+          let idx = -1;
+          if(meta && meta.eras.length){
+            idx = meta.eras.indexOf(eraName);
+          }
+          if(idx < 0){
+            for(let i = 0; i < R315_ERA_SPAN.length; i++){
+              if(R315_ERA_SPAN[i].name === eraName){ idx = i; break; }
+            }
+          }
+          const node = r315ZhtsPickNode(meta, n);
+          if(idx < 0 && !node) return;      /* 对应不上 → 停在原页，不做假跳转 */
           setTimeout(function(){
             try{
-              const doc = w.document;
-              const all = doc.querySelectorAll('*');
-              let target = null;
-              for(let i = all.length - 1; i >= 0; i--){
-                const el = all[i];
-                if(el.children.length > 8) continue;
-                if(String(el.textContent || '').indexOf(era) < 0) continue;
-                if(el.tagName === 'BUTTON' || el.getAttribute('onclick') || /(^|\s)(card|era|node|tl-item)(\s|$)/.test(String(el.className || ''))){
-                  target = el; break;
-                }
-                if(!target) target = el;
+              if(node && typeof w.go === 'function'){
+                w.go('study', { eraIdx: idx >= 0 ? idx : undefined, nodeId: node.id });
+              } else if(typeof w.go === 'function'){
+                w.go('study', { eraIdx: idx });
               }
-              if(target){
-                try{ target.scrollIntoView({ block:'center' }); }catch(e){}
-                const clickable = target.closest('[onclick],button,.card,.era-card,.tl-item') || target;
-                clickable.click();
-              }
+              setTimeout(function(){
+                try{
+                  const doc = w.document;
+                  const pill = doc.querySelector('.node-pill.on') || doc.querySelector('.node-pill');
+                  if(pill && pill.scrollIntoView) pill.scrollIntoView({ block:'center', inline:'center' });
+                }catch(e){}
+              }, 320);
             }catch(e){}
-          }, 460);
+          }, 240);
           return;
         }
       }catch(e){}
       if(tries < 45) setTimeout(tick, 160);
     };
     setTimeout(tick, 160);
+    return true;
   }
 
   function r314BindHistoryJump(){
@@ -58165,64 +58503,76 @@ function init(){
       if(!el) return;
       e.preventDefault();
       e.stopPropagation();
-      const era = el.getAttribute('data-hist-jump') || '先秦';
+      const era = el.getAttribute('data-hist-jump') || '';
       const year = el.getAttribute('data-hist-year') || '';
-      toast('🏯 正在前往中华通史 · ' + era);
-      r314JumpZhtsEra(era, year);
+      /* R315-H1：先判定有没有可落地的时代 / 年份，匹配不上就不跳 */
+      const eraName = era || r314EraOfYear(year);
+      const n = r315AbsYear(year);
+      if(!eraName || n === null){
+        toast('这条事件暂未匹配到中华通史节点，已取消跳转');
+        return;
+      }
+      const ok = r314JumpZhtsEra(eraName, year);
+      if(!ok){ toast('这条事件暂未匹配到中华通史节点，已取消跳转'); return; }
+      toast('🏯 正在前往中华通史 · ' + eraName);
     }, true);
   }
 
-  /* ---------- 页面与页签 ---------- */
-  function renderGrowth(){
-    try{ r314ApplyWallpaper(); }catch(e){}
-    const pill = document.getElementById('growStarPill');
-    if(pill) pill.textContent = '⭐ ' + r314Stars();
-    $$('#growTabs [data-gtab]').forEach(function(b){
-      b.classList.toggle('active', b.getAttribute('data-gtab') === _r314Tab);
-      b.onclick = function(){
-        _r314Tab = b.getAttribute('data-gtab');
-        r314RenderTab();
-      };
-    });
-    r314RenderTab();
+  /* ---------- 页面：成长档案（R315-G1） ----------
+     需求：成长中心内所有板块迁移并入「成长档案」，合并内容并去重，按实用角度重新排版。
+     落位：
+       学情报告  → 并入原有「📋 学习报告」卡（周期跟随 周度/月度 页签，导出沿用原按键）
+       徽章成就  → 并入原有「🏅 徽章墙」（统一 r314BadgeDefs 一份定义）
+       阶段挑战 / 单元目标 / 摘抄本 / 作息健康 → 档案页第二栅格四张卡
+     去重：不再有独立的成长中心页与页签；报告里重复的「完成率 / 阅读 / 运动」读数只保留一处。 */
+  function renderGrowth(){ r315RenderArchive(); } /* 兼容历史调用 */
+
+  /* 报告补充块：成长星 / 阅读 / 运动 KPI + 各科完成率 + 薄弱任务 + 高频错题 + 学情小结 + 复制分享 */
+  function r315ReportExtraHtml(){
+    const d = r314ReportData(_r314Scope);
+    const subs = d.subs.map(function(s){
+      return '<div class="r314-sub-row"><div class="r314-sub-name">' + r314Esc(s.name) + '</div>' +
+        '<div class="r314-sub-bar"><i style="width:' + s.rate + '%"></i></div>' +
+        '<div class="r314-sub-val">' + s.rate + '%<span>' + s.done + '/' + s.total + '</span></div></div>';
+    }).join('') || '<div class="r314-empty">本周期还没有启用任何任务</div>';
+    const weak = d.weakTasks.map(function(w){
+      return '<div class="r314-weak-item"><span class="r314-weak-name">' + r314Esc(w.name) + '</span>' +
+        '<span class="r314-weak-val">' + w.rate + '% · ' + w.done + '/' + w.total + '</span></div>';
+    }).join('') || '<div class="r314-empty">暂无必做任务数据</div>';
+    const wrong = d.wrongTop.map(function(w){
+      return '<div class="r314-wrong-item"><span class="r314-wrong-ico">' + (w.from === '英语' ? '📘' : '🧮') + '</span>' +
+        '<span class="r314-wrong-name">' + r314Esc(w.name) + '</span><span class="r314-wrong-n">' + w.n + ' 题</span></div>';
+    }).join('') || '<div class="r314-empty">暂无收录错题，表现不错～</div>';
+
+    return '<div class="r315-blk">' +
+        '<div class="r314-kpi-grid r315-kpi-3">' +
+          '<div class="r314-kpi"><div class="r314-kpi-v">' + d.stars + '</div><div class="r314-kpi-l">成长星 ⭐</div><div class="r314-kpi-s">周期内获得</div></div>' +
+          '<div class="r314-kpi"><div class="r314-kpi-v">' + d.readMin + '</div><div class="r314-kpi-l">阅读时长</div><div class="r314-kpi-s">分钟</div></div>' +
+          '<div class="r314-kpi"><div class="r314-kpi-v">' + d.sportMin + '</div><div class="r314-kpi-l">运动时长</div><div class="r314-kpi-s">分钟</div></div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="r315-blk"><div class="r315-blk-h">📚 各科打卡完成率</div>' + subs + '</div>' +
+      '<div class="r315-blk"><div class="r315-blk-h">⚠️ 薄弱任务（需重点跟进）</div>' + weak + '</div>' +
+      '<div class="r315-blk"><div class="r315-blk-h">🚩 高频错题分布</div>' + wrong + '</div>' +
+      '<div class="r315-blk r315-sum"><div class="r315-blk-h">💡 学情小结（给家长）</div>' +
+        '<div class="r314-sum-text">' + r314Esc(r314Summary(d)) + '</div></div>' +
+      '<div class="r315-report-acts">' +
+        '<button class="pbtn r314-act" id="growReportCopy" type="button">📋 复制文本</button>' +
+        '<button class="pbtn r314-act" id="growReportShare" type="button">📤 分享</button>' +
+      '</div>';
   }
 
-  function r314RenderTab(){
-    const panel = document.getElementById('growPanel');
-    if(!panel) return;
-    const pill = document.getElementById('growStarPill');
-    if(pill) pill.textContent = '⭐ ' + r314Stars();
-    $$('#growTabs [data-gtab]').forEach(function(b){
-      b.classList.toggle('active', b.getAttribute('data-gtab') === _r314Tab);
-    });
-    if(_r314Tab === 'report'){
-      panel.innerHTML = r314ReportHtml();
-      r314BindReport();
-    } else if(_r314Tab === 'badge'){
-      panel.innerHTML = r314BadgeHtml();
-      r314BindChallenges();
-    } else if(_r314Tab === 'shop'){
-      panel.innerHTML = r314ShopHtml();
-      r314BindShop();
-    } else if(_r314Tab === 'goal'){
-      panel.innerHTML = r314GoalHtml();
-      r314BindGoal();
-    } else if(_r314Tab === 'excerpt'){
-      panel.innerHTML = r314ExcerptHtml();
-      r314BindExcerpt();
-    } else if(_r314Tab === 'health'){
-      panel.innerHTML = r314HealthHtml();
-      r314BindHealth();
-    }
+  /* 报告周期跟随「周度 / 月度」页签 —— 两处唯一真源，避免出现两套时间口径 */
+  function r315SyncReportScope(){
+    _r314Scope = (typeof archiveReportType !== 'undefined' && archiveReportType === 'monthly') ? 'month' : 'week';
+    return _r314Scope;
   }
 
-  function r314BindReport(){
-    $$('#growPanel [data-gscope]').forEach(function(b){
-      b.onclick = function(){
-        _r314Scope = b.getAttribute('data-gscope');
-        r314RenderTab();
-      };
-    });
+  function r315RenderReportExtra(){
+    const box = document.getElementById('archiveReportExtra');
+    if(!box) return;
+    r315SyncReportScope();
+    box.innerHTML = r315ReportExtraHtml();
     const cp = document.getElementById('growReportCopy');
     if(cp) cp.onclick = function(){
       const txt = r314ReportText();
@@ -58232,13 +58582,6 @@ function init(){
             .catch(function(){ r314CopyFallback(txt); });
         } else { r314CopyFallback(txt); }
       }catch(e){ r314CopyFallback(txt); }
-    };
-    const png = document.getElementById('growReportPng');
-    if(png) png.onclick = function(){
-      const c = r314ReportCardCanvas();
-      if(!c){ toast('导出失败，请换用「复制文本」'); return; }
-      const ok = r314DownloadDataUrl(c.toDataURL('image/png'), 'Nick学习报告-' + S.todayStr() + '.png');
-      toast(ok ? '🖼️ 报告图片已导出' : '导出失败');
     };
     const sh = document.getElementById('growReportShare');
     if(sh) sh.onclick = function(){
@@ -58251,6 +58594,57 @@ function init(){
     };
   }
 
+  /* R315-G1：整页重渲染前保存各表单正在输入的草稿，渲染后原样回填 ——
+     档案页会被别的板块动作间接触发刷新，不能让家长填了一半的目标 / 摘抄 / 作息被冲掉。 */
+  const R315_KEEP_INPUTS = [
+    'growGoalTitle','growGoalTask','growGoalTarget','growGoalDue','growGoalReward',
+    'growExText','growExSource','growWake','growSleep','growEyeEvery','growRemTime'
+  ];
+  function r315SnapInputs(){
+    const o = {};
+    R315_KEEP_INPUTS.forEach(function(id){
+      const el = document.getElementById(id);
+      if(el && el.value != null) o[id] = el.value;
+    });
+    return o;
+  }
+  function r315RestoreInputs(o){
+    if(!o) return;
+    Object.keys(o).forEach(function(id){
+      const el = document.getElementById(id);
+      if(el && el.value != null) el.value = o[id];
+    });
+  }
+
+  function r315RenderArchive(){
+    const snap = r315SnapInputs();
+    try{ r315RenderReportExtra(); }catch(e){}
+    const ch = document.getElementById('archiveChallengeHost');
+    if(ch){ ch.innerHTML = r314ChallengeHtml(true); }
+    const gl = document.getElementById('archiveGoalHost');
+    if(gl){ gl.innerHTML = r315Bare(r314GoalHtml()); }
+    const ex = document.getElementById('archiveExcerptHost');
+    if(ex){ ex.innerHTML = r315Bare(r314ExcerptHtml()); }
+    const hd = document.getElementById('archiveHealthHost');
+    if(hd){ hd.innerHTML = r315Bare(r314HealthHtml()); }
+    try{ r314BindChallenges(); }catch(e){}
+    try{ r314BindGoal(); }catch(e){}
+    try{ r314BindExcerpt(); }catch(e){}
+    try{ r314BindHealth(); }catch(e){}
+    try{ r314RenderHomeBadges(); }catch(e){}
+    r315RestoreInputs(snap);
+  }
+  /* R315-G1：把 R314 的卡片壳换成档案页内的浅色分块，避免「卡中卡」的双层边框 */
+  function r315Bare(html){
+    return String(html == null ? '' : html)
+      .split('class="r314-card r314-badge-sum"').join('class="r315-blk"')
+      .split('class="r314-card"').join('class="r315-blk"')
+      .split('class="r314-card-head"').join('class="r315-blk-h"');
+  }
+
+  /* 各绑定器动作后统一重渲染成长档案（原「页签内刷新」） */
+  function r314RenderTab(){ r315RenderArchive(); }
+
   function r314CopyFallback(txt){
     try{
       const ta = document.createElement('textarea');
@@ -58262,26 +58656,6 @@ function init(){
       ta.remove();
       toast(ok ? '📋 报告已复制到剪贴板' : '复制失败，请长按选择文本');
     }catch(e){ toast('复制失败，请长按选择文本'); }
-  }
-
-  function r314BindShop(){
-    $$('#growPanel [data-gshop-buy]').forEach(function(b){
-      b.onclick = function(){ r314BuyShop(b.getAttribute('data-gshop-buy')); };
-    });
-    $$('#growPanel [data-gshop-use]').forEach(function(b){
-      b.onclick = function(){ r314UseShop(b.getAttribute('data-gshop-use')); };
-    });
-    $$('#growPanel [data-gwall]').forEach(function(b){
-      b.onclick = function(){
-        const w = b.getAttribute('data-gwall') || '';
-        const r = r314St();
-        const shop = r.shop || {};
-        S.setR314({ shop: Object.assign({}, shop, { wall: w }) });
-        r314ApplyWallpaper();
-        r314RenderTab();
-        toast(w ? '壁纸已切换' : '已恢复默认壁纸');
-      };
-    });
   }
 
   /* ---------- 定时循环 / 初始化 ---------- */
