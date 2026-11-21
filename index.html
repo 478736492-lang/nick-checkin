@@ -1007,6 +1007,10 @@ button[hidden]{display:none!important}
 .bk-checkin-btn.txt{width:auto;min-width:92px;height:30px;border-radius:16px;padding:0 12px;font-size:12px;font-weight:800;gap:4px;justify-content:center;line-height:1}
 .bk-checkin-btn.txt::after,.bk-checkin-btn.txt::before{display:none}
 .bk-checkin-btn.txt.done{background:linear-gradient(135deg,#fff3c4,#ffe08a);border-color:#ffd24d;color:var(--orange-dark)}
+/* R319-3：百科顺序解锁 —— 未解锁卡（🔒）灰化，禁止点击 */
+.bk-checkin-btn.bk-locked{background:linear-gradient(135deg,var(--tone-050),var(--tone-100));border-color:var(--tone-300);color:var(--tone-700);cursor:not-allowed;opacity:.72;font-size:13px}
+.bk-checkin-btn.bk-locked::after,.bk-checkin-btn.bk-locked::before{display:none}
+.bk-checkin-btn.bk-locked:hover{transform:none;border-color:var(--tone-300)}
 /* 百科集中营：今日猜谜每日单条 */
 .bk-lib-caimi{margin-bottom:14px;border:2px solid #ffe08a;background:linear-gradient(135deg,#fffaf0,#fff7e6)}
 .bk-lib-caimi .bk-lib-cat-head{color:var(--orange-dark)}
@@ -11181,6 +11185,49 @@ body.r314-frame-gold .home-avatar{box-shadow:0 0 0 4px #f4dd97,0 6px 18px rgba(1
   .r317-ch-setup-desc{grid-column:1/-1}
 }
 
+/* ============ R319-1：我的书单（分类收纳 + 已读标记 + 增改删） ============ */
+.r319-booklist-box{width:min(1120px,96vw);max-height:90vh;display:flex;flex-direction:column}
+.r319-bl-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.r319-bl-head h3{margin:0}
+.r319-bl-head-actions{display:flex;gap:10px;margin-left:auto;flex-wrap:wrap}
+.r319-bl-body{overflow:auto;flex:1;min-height:0}
+.r319-bl-toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px;padding:0 2px}
+.r319-bl-tip{font-size:13px;color:var(--muted)}
+.r319-bl-stat{font-size:13px;font-weight:800;color:var(--tone-700);background:var(--tone-050);border:1px solid var(--tone-150);border-radius:20px;padding:4px 14px}
+.r319-cat-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.r319-cat-card{background:var(--tone-025);border:1px solid var(--tone-200);border-radius:14px;padding:12px;box-shadow:0 4px 12px rgba(30,58,138,.08);min-width:0}
+.r319-cat-head{display:flex;align-items:center;gap:8px;padding-bottom:9px;margin-bottom:8px;border-bottom:2px solid var(--tone-200)}
+.r319-cat-name{font-size:16px;font-weight:900;color:var(--tone-900)}
+.r319-cat-count{font-size:12px;font-weight:800;color:var(--tone-600);background:var(--tone-100);border-radius:12px;padding:2px 9px}
+.r319-cat-badge{font-size:11px;font-weight:700;color:var(--muted);border:1px solid var(--tone-200);border-radius:10px;padding:1px 7px;margin-left:auto}
+.r319-cat-del{margin-left:auto;border:1px solid var(--tone-200);background:#fff;border-radius:8px;cursor:pointer;font-size:13px;padding:2px 7px;color:var(--tone-700)}
+.r319-book-list{display:flex;flex-direction:column;gap:6px}
+.r319-cat-empty{font-size:12px;color:var(--muted);padding:8px 2px}
+.r319-book-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;background:#fff;border:1px solid var(--tone-150);border-radius:10px;padding:7px 9px;transition:background .15s,border-color .15s}
+.r319-book-row.is-read{background:linear-gradient(135deg,var(--tone-050),var(--tone-100));border-color:var(--green-dark)}
+.r319-book-name{font-size:13px;font-weight:800;color:var(--tone-900);line-height:1.4;flex:1 1 100px;min-width:0}
+.r319-book-row.is-read .r319-book-name{color:var(--green-dark)}
+.r319-book-author{font-size:11px;color:var(--muted);flex:1 1 60px;min-width:0}
+.r319-book-ops{display:flex;gap:4px;margin-left:auto}
+.r319-row-btn{border:1px solid var(--tone-200);background:#fff;border-radius:8px;cursor:pointer;font-size:12px;font-weight:800;padding:3px 8px;color:var(--tone-700);white-space:nowrap}
+.r319-row-btn:hover{border-color:var(--tone-400)}
+.r319-row-btn.r319-read.done{background:var(--green-dark);border-color:var(--green-dark);color:#fff}
+.r319-row-btn.r319-del{color:var(--danger);border-color:var(--danger-line)}
+.r319-bookedit-box,.r319-catadd-box{width:min(480px,94vw)}
+.r319-be-body{display:flex;flex-direction:column;gap:12px}
+.r319-be-label{display:flex;flex-direction:column;gap:5px;font-size:13px;font-weight:800;color:var(--tone-900)}
+.r319-be-select,.r319-be-body .nw-add-input{width:100%;box-sizing:border-box}
+.r319-be-err{min-height:18px;color:var(--danger);font-size:12px;font-weight:700}
+.r319-bl-body::-webkit-scrollbar{width:8px}
+.r319-bl-body::-webkit-scrollbar-thumb{background:var(--tone-200);border-radius:8px}
+@media (max-width:900px){
+  .r319-cat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:680px){
+  .r319-cat-grid{grid-template-columns:minmax(0,1fr)}
+  .r319-bl-head-actions{margin-left:0;width:100%}
+}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -11898,6 +11945,67 @@ body.r314-frame-gold .home-avatar{box-shadow:0 0 0 4px #f4dd97,0 6px 18px rgba(1
       </div>
       <div class="modal-body">
         <div class="ktxs-ops-body" id="ktxsBookOpsBody"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== R319-1：我的书单（分类收纳 + 已读标记 + 增改删） ========== -->
+  <div class="modal-mask" id="modalR319BookList" hidden>
+    <div class="modal-box r319-booklist-box">
+      <div class="modal-head r319-bl-head">
+        <h3>📖 我的书单</h3>
+        <div class="r319-bl-head-actions">
+          <button type="button" class="secondary-btn" id="btnR319AddCat">➕ 新建分类</button>
+          <button type="button" class="primary-btn" id="btnR319AddBook">➕ 添加书籍</button>
+        </div>
+        <button class="modal-x" data-close>×</button>
+      </div>
+      <div class="modal-body r319-bl-body">
+        <div class="r319-bl-toolbar">
+          <span class="r319-bl-tip">按分类收纳 · 点「已读」变绿 · 预设分类不可删</span>
+          <span class="r319-bl-stat" id="r319BlStat"></span>
+        </div>
+        <div class="r319-cat-grid" id="r319CatGrid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- R319-1：书籍新增 / 编辑小弹窗（分类 + 书名 + 作者） -->
+  <div class="modal-mask" id="modalR319BookEdit" hidden>
+    <div class="modal-box r319-bookedit-box">
+      <div class="modal-head"><h3 id="r319BeTitle">添加书籍</h3><button class="modal-x" data-close>×</button></div>
+      <div class="modal-body r319-be-body">
+        <label class="r319-be-label">所属分类
+          <select id="r319BeCat" class="r319-be-select"></select>
+        </label>
+        <label class="r319-be-label">书名
+          <input type="text" id="r319BeName" class="nw-add-input" maxlength="60" placeholder="如：金色的草地" />
+        </label>
+        <label class="r319-be-label">作者
+          <input type="text" id="r319BeAuthor" class="nw-add-input" maxlength="40" placeholder="如：米·普里什文（可留空）" />
+        </label>
+        <div class="r319-be-err" id="r319BeErr"></div>
+      </div>
+      <div class="modal-foot">
+        <button class="pbtn" data-close>取消</button>
+        <button class="pbtn primary" id="btnR319BeSave">💾 保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- R319-1：新增分类小弹窗 -->
+  <div class="modal-mask" id="modalR319CatAdd" hidden>
+    <div class="modal-box r319-catadd-box">
+      <div class="modal-head"><h3>新建分类</h3><button class="modal-x" data-close>×</button></div>
+      <div class="modal-body r319-be-body">
+        <label class="r319-be-label">分类名称
+          <input type="text" id="r319CatName" class="nw-add-input" maxlength="20" placeholder="如：科普" />
+        </label>
+        <div class="r319-be-err" id="r319CatErr"></div>
+      </div>
+      <div class="modal-foot">
+        <button class="pbtn" data-close>取消</button>
+        <button class="pbtn primary" id="btnR319CatSave">💾 新建</button>
       </div>
     </div>
   </div>
@@ -17962,7 +18070,7 @@ window.R298_TASK_PLAN = {
     'userReading','readingPanelDone','mathProblems','mathNotes','mathNoteStatus','mathGroups',
     'mathGallery','mathExerciseBank','plots','inventory','gifts','shop','stage','km','farmOpen',
     'music','farmLayout','en3500Marks','r314','nwWrong','homeGreets','homeBanner','sectionTitleTexts',
-    'schedule','memos','weekPlanColors','__schema','__seq','__commitAt','__tomb'];
+    'schedule','memos','weekPlanColors','r319BookList','__r319BookListSeedV1','__schema','__seq','__commitAt','__tomb'];
   /* 轻档超预算时的「可牺牲顺序」：从体积最大且可再生 / 有主档兜底的字段开始丢 */
   const LIGHT_DROP_ORDER = ['calcBank','mathProblems','mathGallery','xueersiWordBank','km','calcWrongBook'];
   let _r318XsSrc = null, _r318XsDelta = null;
@@ -19919,6 +20027,56 @@ window.R298_TASK_PLAN = {
     if(!st.bookBookmarks) st.bookBookmarks = {};
     // R178：目录 { 书名: [ {t:'目录标题', page:页号, ts} ] }
     if(!st.bookToc) st.bookToc = {};
+    /* ===== R319-1：我的书单（新世界·拓展素养·推荐书籍）=====
+       一次性种子：6 个预设分类 + 26 本推荐书（自动匹配分类）。
+       🔴 只在首次（__r319BookListSeedV1 未置位）注入；按书名 / 分类名去重补齐，
+       用户后续新增的自定义分类、书籍、改名、作者、已读状态一律不覆盖。 */
+    if(!st.r319BookList || typeof st.r319BookList !== 'object' || Array.isArray(st.r319BookList)) st.r319BookList = {cats:[], books:[]};
+    if(!Array.isArray(st.r319BookList.cats)) st.r319BookList.cats = [];
+    if(!Array.isArray(st.r319BookList.books)) st.r319BookList.books = [];
+    if(!st.__r319BookListSeedV1){
+      var _r319DefCats = ['绘本','童话','漫画','散文','文学','小说'];
+      var _r319DefBooks = [
+        ['金色的草地','米·普里什文','散文'],
+        ['搭船的鸟','郭风','散文'],
+        ['大个子老鼠小个子猫系列','周锐','童话'],
+        ['慢性子裁缝和急性子顾客','周锐','童话'],
+        ['书上的鱼','刘保法','童话'],
+        ['兔子坡','罗伯特·罗素','文学'],
+        ['大自然的精灵','佟希仁','散文'],
+        ['遇见奇迹鸟','佟希仁','散文'],
+        ['跟着小溪去远航','毛芦芦','散文'],
+        ['我们抱山去','毛芦芦','散文'],
+        ['我是大自然的孩子','毛芦芦','散文'],
+        ['獾和臭鼬','埃米·廷伯莱克','绘本'],
+        ['银顶针的夏天','伊丽莎白·恩赖特','文学'],
+        ['金篮子旅店','路德维格','绘本'],
+        ['万物的童话系列','肖定丽','童话'],
+        ['万物的钥匙系列','肖定丽','童话'],
+        ['奇妙的田螺','宗介华','童话'],
+        ['会飞的伙伴','宗介华','童话'],
+        ['雪地追踪','宗介华','小说'],
+        ['带刺的朋友','宗介华','散文'],
+        ['湖边的雕像','金波','童话'],
+        ['会走路的雪人','金波','童话'],
+        ['面对一棵树','金波','散文'],
+        ['月亮湖','金波','童话'],
+        ['米小圈脑筋急转弯系列','','漫画'],
+        ['米小圈上学记系列','','小说']
+      ];
+      _r319DefCats.forEach(function(n){
+        if(!st.r319BookList.cats.some(function(c){ return c && c.name === n; })){
+          st.r319BookList.cats.push({id:'rc_'+n, name:n, builtin:true});
+        }
+      });
+      _r319DefBooks.forEach(function(b, i){
+        if(st.r319BookList.books.some(function(x){ return x && x.title === b[0]; })) return;
+        var _cat = st.r319BookList.cats.filter(function(c){ return c.name === b[2]; })[0];
+        st.r319BookList.books.push({id:'rb_'+(Date.now()+i)+'_'+i, cat:_cat?_cat.id:'', title:b[0], author:b[1], read:false, ts:Date.now()+i});
+      });
+      st.__r319BookListSeedV1 = true;
+      save(st);
+    }
     // V11.6：记录每日日常交流完成状态（5 条均完成 → +2⭐，仅一次）
     if(!st.speakingComplete) st.speakingComplete = {};
     if(!st.goRecords) st.goRecords = [];
@@ -21919,6 +22077,89 @@ window.R298_TASK_PLAN = {
     st.nwZone[key] = Array.isArray(arr) ? arr.slice() : [];
     save(st);
     return st.nwZone[key].slice();
+  }
+
+  /* ===== R319-1：我的书单读写 API（全量对象读写，用户数据只增改不覆盖） ===== */
+  function getR319BookList(){
+    const st = load();
+    const bl = (st.r319BookList && typeof st.r319BookList === 'object') ? st.r319BookList : {cats:[], books:[]};
+    try{ return JSON.parse(JSON.stringify({cats: bl.cats||[], books: bl.books||[]})); }catch(e){ return {cats:[], books:[]}; }
+  }
+  function _r319WriteBookList(list){
+    const st = load();
+    st.r319BookList = {
+      cats: Array.isArray(list && list.cats) ? list.cats : [],
+      books: Array.isArray(list && list.books) ? list.books : []
+    };
+    // 分类 / 书籍删空属于用户合法操作，放行 shrink 防回填
+    allowShrinkOnce(['r319BookList']);
+    save(st);
+    return getR319BookList();
+  }
+  function r319AddCat(name){
+    const list = getR319BookList();
+    const n = String(name||'').trim().slice(0,20);
+    if(!n) return {ok:false, msg:'分类名不能为空'};
+    if(list.cats.some(c=>c.name === n)) return {ok:false, msg:'分类「'+n+'」已存在'};
+    list.cats.push({id:'rc_'+uid(), name:n, builtin:false, ts:Date.now()});
+    _r319WriteBookList(list);
+    return {ok:true, list};
+  }
+  function r319DelCat(id){
+    const list = getR319BookList();
+    const cat = list.cats.filter(c=>c.id === id)[0];
+    if(!cat) return {ok:false, msg:'分类不存在'};
+    if(cat.builtin) return {ok:false, msg:'预设分类不可删除'};
+    const moved = list.books.filter(b=>b.cat === id);
+    list.cats = list.cats.filter(c=>c.id !== id);
+    // 该分类下的书移入「小说」（若无则第一个分类），不误删用户书籍
+    const fallback = list.cats.filter(c=>c.name === '小说')[0] || list.cats[0];
+    moved.forEach(b=>{ b.cat = fallback ? fallback.id : ''; });
+    _r319WriteBookList(list);
+    return {ok:true, list, moved:moved.length};
+  }
+  function r319AddBook(cat, title, author){
+    const list = getR319BookList();
+    const t = String(title||'').trim().slice(0,60);
+    if(!t) return {ok:false, msg:'书名不能为空'};
+    if(list.books.some(b=>b.title === t)) return {ok:false, msg:'《'+t+'》已在书单中'};
+    const cid = list.cats.some(c=>c.id === cat) ? cat : (list.cats[0] ? list.cats[0].id : '');
+    list.books.push({id:'rb_'+uid(), cat:cid, title:t, author:String(author||'').trim().slice(0,40), read:false, ts:Date.now()});
+    _r319WriteBookList(list);
+    return {ok:true, list};
+  }
+  function r319EditBook(id, patch){
+    const list = getR319BookList();
+    const b = list.books.filter(x=>x.id === id)[0];
+    if(!b) return {ok:false, msg:'书籍不存在'};
+    const p = patch || {};
+    if(p.title !== undefined){
+      const t = String(p.title||'').trim().slice(0,60);
+      if(!t) return {ok:false, msg:'书名不能为空'};
+      if(list.books.some(x=>x.id !== id && x.title === t)) return {ok:false, msg:'《'+t+'》已在书单中'};
+      b.title = t;
+    }
+    if(p.author !== undefined) b.author = String(p.author||'').trim().slice(0,40);
+    if(p.cat !== undefined && list.cats.some(c=>c.id === p.cat)) b.cat = p.cat;
+    _r319WriteBookList(list);
+    return {ok:true, list};
+  }
+  function r319DelBook(id){
+    const list = getR319BookList();
+    const before = list.books.length;
+    list.books = list.books.filter(x=>x.id !== id);
+    if(list.books.length === before) return {ok:false, msg:'书籍不存在'};
+    _r319WriteBookList(list);
+    return {ok:true, list};
+  }
+  function r319ToggleRead(id){
+    const list = getR319BookList();
+    const b = list.books.filter(x=>x.id === id)[0];
+    if(!b) return {ok:false, msg:'书籍不存在'};
+    b.read = !b.read;
+    b.readTs = b.read ? Date.now() : 0;
+    _r319WriteBookList(list);
+    return {ok:true, read:b.read, list};
   }
 
   /* ===== R315-A1：新世界各板块错题本（结构化） =====
@@ -24695,10 +24936,25 @@ window.R298_TASK_PLAN = {
   // V11.6 + V12.1：百科打卡（每段内容后打卡标记点击显示闪电/✓，统计每主题已打卡次数）
   // 当日 9 主题全部完成 → +5⭐（返 justAllCompleted=true）
   // 再点同一键 → 撤销（扣回 1 次计数 + 若触发全勤则扣回 5⭐）
+  /* ===== R319-3：百科讲堂顺序解锁 =====
+     按页面显示顺序（动动脑筋吧已置底、猜谜置末）依次解锁：
+     第一张始终可打；第 N 张必须前一张今日已打卡，禁止跳过。 */
+  const R319_BAIKE_ORDER = ['历史文化','地理地貌','天文科普','奇妙物理','生命健康','科技前沿','趣味数学','化学实验室','动动脑筋吧','猜谜'];
+  function r319BaikePrev(cat){
+    const i = R319_BAIKE_ORDER.indexOf(cat);
+    return i > 0 ? R319_BAIKE_ORDER[i-1] : '';
+  }
+  function r319BaikeUnlocked(cat){
+    const prev = r319BaikePrev(cat);
+    return !prev || isBaikeChecked(prev);
+  }
+  function r319BaikeOrder(){ return R319_BAIKE_ORDER.slice(); }
   function markBaikeCheckin(cat){
     const st = load();
     const key = todayStr()+'::'+cat;
     if(st.baikeFlags[key]) return {ok:false, already:true, count: st.baikeCounts[cat]||0};
+    // R319-3：顺序解锁 —— 上一张未打卡则拒绝（UI 同步锁定，store 层再兜一道）
+    if(!r319BaikeUnlocked(cat)) return {ok:false, locked:true, prev:r319BaikePrev(cat), msg:'请先完成「'+r319BaikePrev(cat)+'」的打卡'};
     st.baikeFlags[key] = true;
     st.baikeCounts[cat] = (st.baikeCounts[cat]||0) + 1;
     // 检查今天是否 9 主题全部完成（首次达成时 +5⭐）
@@ -29791,6 +30047,8 @@ be 动词：am / is → was；are → were
     getR256, setR256, getStarLog, clearStarLog, setStarWhy,
     // R314：成长中心容器 + ⭐统一取数口径
     getR314, setR314, setR314Path, starOfTask, r314AddStars, r314SpendStars,
+    // R319-3：百科顺序解锁
+    R319_BAIKE_ORDER, r319BaikePrev, r319BaikeUnlocked, r319BaikeOrder,
     getRemindCfg, saveRemindCfg, getEyeCfg, saveEyeCfg,
     makeupState, setMakeupLimit, makeupTask, makeupLog,
     getWrongReviewCfg, saveWrongReviewCfg,
@@ -29901,6 +30159,8 @@ be 动词：am / is → was；are → were
     getCertMetrics, getMetricValue, getCustomCerts, addCustomCert, updateCustomCert, deleteCustomCert,
     // V70：新世界各板块用户添加内容
     getNwZone, addNwZone, delNwZone, setNwZone, // R181-6c：补导出（R179 漏导出致拖拽排序静默不落库）
+    // R319-1：我的书单
+    getR319BookList, r319AddCat, r319DelCat, r319AddBook, r319EditBook, r319DelBook, r319ToggleRead,
     // R315-A1：新世界各板块错题本（题干 / 备注 / 解题思路 / 图片凭证）
     getNwWrong, addNwWrong, delNwWrong, countNwWrong, NW_WRONG_SUBJECTS,
     // R248-1：练习题独立题库 + 每题答对 +1⭐ 打卡（可撤销 / 本地持久化）
@@ -37914,6 +38174,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         <div class="yw-comp-head">${esc(label||'推荐书籍')} · 共 ${items.length} 本
           ${isParent()? '<button type="button" class="ktxs-head-btn' + (_ktxsListEdit?' is-active':'') + '" data-ktxs-edit-list="1" title="点击进入 / 退出编辑（编辑态下可拖动排序、每卡显示编辑键）">✏️ 编辑</button>' : ''}
           <button type="button" class="ktxs-head-btn" data-ktxs-memo-head="${esc(label||'推荐书籍')}" title="书籍备忘（整份推荐书目的阅读备忘，可增 / 改 / 删）">📝 备忘</button>
+          <button type="button" class="ktxs-head-btn r319-booklist-btn" data-r319-booklist="1" title="打开我的书单（按分类收纳，支持已读标记）">📖 我的书单</button>
           <button type="button" class="ktxs-head-btn" data-ktxs-add-book="1" title="添加一本新书">➕ 添加书籍</button>
         </div>
         <div class="sz-card-grid ktxs-book-grid">${cards}</div>
@@ -39260,6 +39521,173 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         });
       });
     });
+  }
+  /* ============ R319-1：我的书单（分类收纳 + 已读标记 + 增 / 删 / 改） ============ */
+  // 数据全量落 st.r319BookList（R318 轻档保护 + 一次性种子，用户新增数据不覆盖）
+  function _r319Bl(){
+    return (S && S.getR319BookList) ? S.getR319BookList() : {cats:[], books:[]};
+  }
+  function r319RenderBookList(){
+    const grid = document.getElementById('r319CatGrid');
+    if(!grid) return;
+    const data = _r319Bl();
+    const cats = data.cats || [];
+    const books = data.books || [];
+    const stat = document.getElementById('r319BlStat');
+    if(stat){
+      const readN = books.filter(b=>b.read).length;
+      stat.textContent = cats.length + ' 个分类 · ' + books.length + ' 本书 · 已读 ' + readN;
+    }
+    grid.innerHTML = cats.map(c=>{
+      const list = books.filter(b=>b.cat === c.id);
+      const rows = list.map(b=>`
+        <div class="r319-book-row${b.read?' is-read':''}" data-r319-bid="${esc(b.id)}">
+          <span class="r319-book-name">《${esc(b.title)}》</span>
+          <span class="r319-book-author">${b.author?esc(b.author)+' 著':''}</span>
+          <span class="r319-book-ops">
+            <button type="button" class="r319-row-btn r319-read${b.read?' done':''}" data-r319-act="read" title="${b.read?'取消已读':'标记已读'}">${b.read?'✓ 已读':'已读'}</button>
+            <button type="button" class="r319-row-btn r319-edit" data-r319-act="edit" title="编辑书名/作者/分类">✏️</button>
+            <button type="button" class="r319-row-btn r319-del" data-r319-act="del" title="删除这本书">🗑</button>
+          </span>
+        </div>`).join('') || '<div class="r319-cat-empty">暂无书籍，点右上「添加书籍」新增</div>';
+      return `
+        <div class="r319-cat-card" data-r319-cat="${esc(c.id)}">
+          <div class="r319-cat-head">
+            <span class="r319-cat-name">${esc(c.name)}</span>
+            <span class="r319-cat-count">${list.length} 本</span>
+            ${c.builtin?'<span class="r319-cat-badge">预设</span>':'<button type="button" class="r319-cat-del" data-r319-catdel="'+esc(c.id)+'" title="删除自定义分类">🗑</button>'}
+          </div>
+          <div class="r319-book-list">${rows}</div>
+        </div>`;
+    }).join('') || '<div class="nw-zone-empty">还没有分类</div>';
+  }
+  function r319OpenBookList(){
+    r319RenderBookList();
+    showModal('#modalR319BookList');
+  }
+  // 书籍新增 / 编辑弹窗：mode='add' 或 'edit'
+  let _r319EditBid = '';
+  function r319OpenBookEdit(mode, bid){
+    const data = _r319Bl();
+    const cats = data.cats || [];
+    const sel = document.getElementById('r319BeCat');
+    const nameEl = document.getElementById('r319BeName');
+    const auEl = document.getElementById('r319BeAuthor');
+    const titleEl = document.getElementById('r319BeTitle');
+    const errEl = document.getElementById('r319BeErr');
+    if(!sel || !nameEl || !auEl) return;
+    if(errEl) errEl.textContent = '';
+    _r319EditBid = mode === 'edit' ? bid : '';
+    const book = mode === 'edit' ? (data.books||[]).filter(b=>b.id === bid)[0] : null;
+    if(titleEl) titleEl.textContent = mode === 'edit' ? '编辑书籍' : '添加书籍';
+    sel.innerHTML = cats.map(c=>`<option value="${esc(c.id)}"${(book&&book.cat===c.id)?' selected':''}>${esc(c.name)}</option>`).join('');
+    nameEl.value = book ? book.title : '';
+    auEl.value = book ? (book.author||'') : '';
+    showModal('#modalR319BookEdit');
+    setTimeout(()=>{ try{ nameEl.focus(); }catch(e){} }, 30);
+  }
+  function r319SaveBookEdit(){
+    const sel = document.getElementById('r319BeCat');
+    const nameEl = document.getElementById('r319BeName');
+    const auEl = document.getElementById('r319BeAuthor');
+    const errEl = document.getElementById('r319BeErr');
+    const fail = m=>{ if(errEl) errEl.textContent = m; };
+    const cat = sel ? sel.value : '';
+    const title = nameEl ? nameEl.value.trim() : '';
+    const author = auEl ? auEl.value.trim() : '';
+    if(!title){ fail('请填写书名'); return; }
+    let r;
+    if(_r319EditBid && S.r319EditBook){
+      r = S.r319EditBook(_r319EditBid, {title, author, cat});
+    } else if(S.r319AddBook){
+      r = S.r319AddBook(cat, title, author);
+    } else { fail('存储不可用'); return; }
+    if(r && r.ok === false){ fail(r.msg || '保存失败'); return; }
+    hideModal('#modalR319BookEdit');
+    r319RenderBookList();
+    toast(_r319EditBid ? '📖 已更新书籍' : '📖 已加入书单');
+  }
+  function r319BindBookList(){
+    // 打开书单入口
+    const slotBody = document.getElementById('szSlotBody');
+    if(slotBody && !slotBody._r319BlBound){
+      slotBody._r319BlBound = true;
+      slotBody.addEventListener('click', e=>{
+        const btn = e.target.closest('[data-r319-booklist]');
+        if(!btn) return;
+        e.stopPropagation();
+        r319OpenBookList();
+      });
+    }
+    // 弹窗内分类卡操作（事件委托）
+    const grid = document.getElementById('r319CatGrid');
+    if(grid && !grid._r319Bound){
+      grid._r319Bound = true;
+      grid.addEventListener('click', e=>{
+        const delCat = e.target.closest('[data-r319-catdel]');
+        if(delCat){
+          const cid = delCat.getAttribute('data-r319-catdel');
+          r307DangerConfirm('将删除该自定义分类，分类下的书籍会移入「小说」分类（不会删除书籍）。\n确认删除吗？', ()=>{
+            const r = S.r319DelCat(cid);
+            if(r && r.ok){ toast('🗑 已删除分类'); r319RenderBookList(); }
+            else toast((r&&r.msg)||'删除失败');
+          }, '删除分类');
+          return;
+        }
+        const opBtn = e.target.closest('[data-r319-act]');
+        if(!opBtn) return;
+        const row = opBtn.closest('[data-r319-bid]');
+        if(!row) return;
+        const bid = row.getAttribute('data-r319-bid');
+        const act = opBtn.getAttribute('data-r319-act');
+        if(act === 'read'){
+          const r = S.r319ToggleRead(bid);
+          if(r && r.ok) r319RenderBookList();
+        } else if(act === 'edit'){
+          r319OpenBookEdit('edit', bid);
+        } else if(act === 'del'){
+          const data = _r319Bl();
+          const b = (data.books||[]).filter(x=>x.id === bid)[0];
+          r307DangerConfirm('将《'+((b&&b.title)||'这本书')+'》从我的书单中删除，删除后不可恢复。\n其它书籍与打卡记录不受影响。', ()=>{
+            const r = S.r319DelBook(bid);
+            if(r && r.ok){ toast('🗑 已删除《'+((b&&b.title)||'书籍')+'》'); r319RenderBookList(); }
+            else toast((r&&r.msg)||'删除失败');
+          }, '删除书籍');
+        }
+      });
+    }
+    // 顶部按钮
+    const bAddCat = document.getElementById('btnR319AddCat');
+    if(bAddCat && !bAddCat._r319Bound){
+      bAddCat._r319Bound = true;
+      bAddCat.onclick = ()=>{
+        const err = document.getElementById('r319CatErr');
+        const inp = document.getElementById('r319CatName');
+        if(err) err.textContent = '';
+        if(inp) inp.value = '';
+        showModal('#modalR319CatAdd');
+        setTimeout(()=>{ try{ inp.focus(); }catch(e){} }, 30);
+      };
+    }
+    const bAddBook = document.getElementById('btnR319AddBook');
+    if(bAddBook && !bAddBook._r319Bound){ bAddBook._r319Bound = true; bAddBook.onclick = ()=>r319OpenBookEdit('add', ''); }
+    const bBeSave = document.getElementById('btnR319BeSave');
+    if(bBeSave && !bBeSave._r319Bound){ bBeSave._r319Bound = true; bBeSave.onclick = r319SaveBookEdit; }
+    const bCatSave = document.getElementById('btnR319CatSave');
+    if(bCatSave && !bCatSave._r319Bound){
+      bCatSave._r319Bound = true;
+      bCatSave.onclick = ()=>{
+        const inp = document.getElementById('r319CatName');
+        const err = document.getElementById('r319CatErr');
+        const name = inp ? inp.value.trim() : '';
+        if(!name){ if(err) err.textContent = '请填写分类名'; return; }
+        const r = S.r319AddCat(name);
+        if(r && r.ok === false){ if(err) err.textContent = r.msg; return; }
+        hideModal('#modalR319CatAdd');
+        r319RenderBookList();
+        toast('📂 已新建分类「'+name+'」');
+      };
+    }
   }
   // 美文摘选：来源 + 内容 双字段记录（存 store.nwZone['meiwen']）
   function meiwenSlot(){
@@ -41645,7 +42073,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     const items = histDayData(key);
     if(!items.length) return '';
     const evts = items.slice(0,4).map(it=>
-      `<div class="wp-history-ev" data-hist-jump="${esc(r314EraOfYear(it[0]))}" data-hist-year="${esc(String(it[0]))}" title="点击在中华通史·时光长河中查看"><span class="wp-history-year">${esc(String(it[0]))}</span><span class="wp-history-txt">${esc(String(it[1]))}</span></div>`
+      `<div class="wp-history-ev"><span class="wp-history-year">${esc(String(it[0]))}</span><span class="wp-history-txt">${esc(String(it[1]))}</span></div>`
     ).join('');
     return `<div class="wp-history" data-history-open="1" title="点击查看全年收录">
       <div class="wp-history-head">
@@ -41674,8 +42102,8 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       </div>`;
     }
     const ops = editMode ? `<span class="hist-ev-ops"><button class="hist-op" data-hist-edit="${k}:${i}">改</button><button class="hist-op hist-op-del" data-hist-del="${k}:${i}">删</button></span>` : '';
-    const jump = editMode ? '' : ` data-hist-jump="${esc(r314EraOfYear(it[0]))}" data-hist-year="${esc(String(it[0]))}" title="点击在中华通史·时光长河中查看"`;
-    return `<div class="wp-history-ev"${jump}><span class="wp-history-year">${esc(String(it[0]))}</span><span class="wp-history-txt">${esc(String(it[1]))}</span>${ops}</div>`;
+    // R319-2.2：已取消「历史上的今天 → 中华通史」联动，事件行不再携带跳转属性
+    return `<div class="wp-history-ev"><span class="wp-history-year">${esc(String(it[0]))}</span><span class="wp-history-txt">${esc(String(it[1]))}</span>${ops}</div>`;
   }
   function renderHistoryAllBody(){
     const data = (typeof window !== 'undefined' && window.HISTORY_TODAY) ? window.HISTORY_TODAY : {};
@@ -44744,11 +45172,14 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         const cntB = counts['动动脑筋吧']||0;
         const cntR = counts['猜谜']||0;
         // R218-6：打卡键与打卡计数并入白色内容卡底部（原卡片外「打卡计数条」已移除）
+        // R319-3：顺序解锁 —— 未解锁卡显示 🔒，禁止打卡（store 层同时拦截）
+        const btLock = !btDone && !(S.r319BaikeUnlocked ? S.r319BaikeUnlocked('动动脑筋吧') : true);
+        const cmLock = !cmDone && !(S.r319BaikeUnlocked ? S.r319BaikeUnlocked('猜谜') : true);
         const btBtn = bt
-          ? `<button class="bk-checkin-btn txt ${btDone?'done':''}" data-baike-checkin="动动脑筋吧" title="${btDone?'已打卡·再点取消':'打卡看答案'}">${btDone?'✓ 已打卡':'🤔 看答案'}</button>`
+          ? `<button class="bk-checkin-btn txt ${btLock?'bk-locked':(btDone?'done':'')}" data-baike-checkin="动动脑筋吧" type="button" title="${btLock?'完成上一张卡片打卡后解锁':(btDone?'已打卡·再点取消':'打卡看答案')}">${btLock?'🔒 未解锁':(btDone?'✓ 已打卡':'🤔 看答案')}</button>`
           : '';
         const cmBtn = cm
-          ? `<button class="bk-checkin-btn txt ${cmDone?'done':''}" data-baike-checkin="猜谜" title="${cmDone?'已打卡·再点取消':'打卡看答案'}">${cmDone?'✓ 已打卡':'🀄 看答案'}</button>`
+          ? `<button class="bk-checkin-btn txt ${cmLock?'bk-locked':(cmDone?'done':'')}" data-baike-checkin="猜谜" type="button" title="${cmLock?'完成上一张卡片打卡后解锁':(cmDone?'已打卡·再点取消':'打卡看答案')}">${cmLock?'🔒 未解锁':(cmDone?'✓ 已打卡':'🀄 看答案')}</button>`
           : '';
         const btCard = bt
           ? `<div class="bk-mini brain-card ${btDone?'checked':''}" data-bk-cat="动动脑筋吧">
@@ -44774,9 +45205,11 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       const b = byCat[c.key];
       const done = !!b && S.isBaikeChecked(c.key);
       const cnt = counts[c.key]||0;
+      // R319-3：顺序解锁 —— 未解锁卡显示 🔒（保留 data-baike-checkin 供 DOM 结构断言，靠 .bk-locked + store 双层拦截）
+      const locked = !done && !(S.r319BaikeUnlocked ? S.r319BaikeUnlocked(c.key) : true);
       // R218-6：打卡键 + 打卡计数迁入白色内容卡底部，卡片外不再有独立计数条
       const ckBtn = b
-        ? `<button class="bk-checkin-btn ${done?'done':''}" data-baike-checkin="${esc(c.key)}" title="${done?'已打卡':'点击打卡'}"></button>`
+        ? `<button class="bk-checkin-btn ${locked?'bk-locked':(done?'done':'')}" data-baike-checkin="${esc(c.key)}" title="${locked?'完成上一张卡片打卡后解锁':(done?'已打卡':'点击打卡')}">${locked?'🔒':''}</button>`
         : '';
       const body = b
         ? `<div class="bk-mini ${done?'checked':''}" data-bk-cat="${esc(c.key)}">
@@ -54818,6 +55251,8 @@ function renderKMAdmin(){
     if(baikeBoxes && !baikeBoxes._bound){
       baikeBoxes._bound = true;
       baikeBoxes.addEventListener('click', (e)=>{
+        // R319-3：未解锁卡（🔒）提示按顺序打卡，禁止跳过
+        if(e.target.closest('.bk-locked')){ toast('🔒 请先完成上一张卡片的打卡，依次解锁～'); return; }
         let btn = e.target.closest('[data-baike-checkin]');
         if(!btn){
           // R27-2-4：整卡点击打卡（非打卡圆钮区域）
@@ -54848,6 +55283,8 @@ function renderKMAdmin(){
           toast(r.justAllCompleted ? '🎉 9 主题全打卡完成 +5⭐！' : '🦥 已打卡 ' + cat);
           playCheckinSound();
           renderBaike(); renderBaikeLib(); renderHome();
+        } else if(r && r.locked){
+          toast('🔒 ' + (r.msg || '请先完成上一张卡片的打卡'));
         }
       });
     }
@@ -54894,6 +55331,8 @@ if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
     // 档案导出
     $('#btnExportPng').onclick=exportPng;
     $('#btnExportCsv').onclick=exportCsv;
+    // R319-1：我的书单交互绑定
+    try{ r319BindBookList(); }catch(e){}
     // 闲置
     document.addEventListener('click', resetIdle);
     document.addEventListener('keydown', resetIdle);
@@ -59898,7 +60337,7 @@ function init(){
 
   function r314Init(){
     try{ r314ApplyWallpaper(); }catch(e){}
-    try{ r314BindHistoryJump(); }catch(e){}
+    // R319-2.2：历史上的今天 → 中华通史联动已取消，不再绑定跳转监听
     try{ r314StartLoops(); }catch(e){}
     try{ r314RenderHomeBadges(); }catch(e){}
   }
@@ -59914,6 +60353,10 @@ function init(){
     window.__r317BsWordUseItems = function(){ return bsItemsOf('cnWordUse'); };
     window.__r317GoYuwenJcb = function(){ if(typeof window.__r313GoPage==='function') window.__r313GoPage('newworld'); renderYuwenSlot('jcb','摘抄本',document.getElementById('ywSlotBody')); };
     window.__r317ChallengeDefs = r314ChallengeDefs;
+    /* R319 探针钩子 */
+    window.__r319OpenBookList = r319OpenBookList;
+    window.__r319RenderBookList = r319RenderBookList;
+    window.__r319BaikeOrder = (S && S.r319BaikeOrder) ? S.r319BaikeOrder() : [];
   }catch(e){}
   function r272BootInit(){
     const _P = window.R272P;
