@@ -10786,14 +10786,27 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
    R313-3：好词使用卡内好词卡一行两张
    ============================================================ */
 .reading-cn .reading-cols{display:flex;flex-direction:column;gap:12px;align-items:stretch}
-.reading-cn .rd-cn-row{display:grid;grid-template-columns:1fr;gap:12px;min-width:0;align-items:stretch}
+/* R316-3：两行卡片统一间距（好词好句 ↔ 好词使用、古诗词鉴赏 ↔ 古诗词应用 ↔ 优秀作文） */
+.reading-cn{--r316-cn-gap:16px}
+.reading-cn .rd-cn-row{display:grid;grid-template-columns:1fr;gap:var(--r316-cn-gap);min-width:0;align-items:stretch}
 /* R315-B1：两行共用同一组列轨道变量 —— 第一行的「好词好句」与第二行的「古诗词鉴赏」
    永远落在同一个 1fr 轨道上，宽度严格一致。
    根因修复：`1fr 2fr` 的 fr 隐含 minmax(auto, fr)，第二列内容最小宽度不同（好词使用是双列网格、
    优秀作文是长文本）时会把 1fr 挤成不同宽度；改为 minmax(0,·) 后比例恒定。 */
 .reading-cn{--r315-cn-col-a:minmax(0,1fr);--r315-cn-col-b:minmax(0,2fr)}
-.reading-cn .rd-cn-row-1,.reading-cn .rd-cn-row-2{grid-template-columns:var(--r315-cn-col-a) var(--r315-cn-col-b)}
-.reading-cn .rd-cn-row-1>.rc-words,.reading-cn .rd-cn-row-2>.rc-poem{width:100%;min-width:0}
+.reading-cn .rd-cn-row-1{grid-template-columns:var(--r315-cn-col-a) var(--r315-cn-col-b)}
+/* R316-2/3：第二行三卡等间距 —— 古诗词鉴赏（与好词好句同宽）/ 古诗词应用 / 优秀作文 */
+.reading-cn .rd-cn-row-2{grid-template-columns:var(--r315-cn-col-a) minmax(0,1.2fr) var(--r315-cn-col-b)}
+.reading-cn .rd-cn-row-1>.rc-words,.reading-cn .rd-cn-row-2>.rc-poem,.reading-cn .rd-cn-row-2>.rc-poem-use{width:100%;min-width:0}
+/* 显式补一列 margin，防止个别浏览器把 grid gap 折叠成 0（用户反馈的「间距丢失」） */
+.reading-cn .rd-cn-row-1>.rc-words,.reading-cn .rd-cn-row-2>.rc-poem{margin-right:0}
+.reading-cn .rd-cn-row-1>.haoci-use-card,.reading-cn .rd-cn-row-2>.rc-poem-use,.reading-cn .rd-cn-row-2>.rc-essay{margin-left:0}
+/* 古诗词应用卡：主题标题 + 母题标签 + 逐段应用示例 */
+.rc-poem-use .reading-item{background:linear-gradient(180deg,var(--tone-025),#fff);border-color:var(--tone-150)}
+.r316-pu-theme{display:inline-block;margin:4px 0 8px;padding:2px 9px;border-radius:999px;background:var(--tone-100);color:var(--tone-800);font-size:11px;font-weight:900}
+.r316-pu-para{font-size:12.5px;line-height:1.78;color:var(--tone-850);margin:0 0 7px;padding-left:9px;border-left:3px solid var(--tone-200)}
+.r316-pu-para:last-child{margin-bottom:0}
+.bs-item-poem-use .r316-pu-para{font-size:12.5px;line-height:1.8}
 .reading-cn .haoci-use-card{margin:0;height:100%;box-sizing:border-box;display:flex;flex-direction:column}
 /* R313-3：好词卡一行两张（覆盖原 auto-fit 自适应列数） */
 .reading-cn .haoci-use-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -10805,6 +10818,9 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
 .ri-poem-col .ri-poem-sec{margin-top:0}
 @media (max-width:900px){
   .reading-cn .rd-cn-row-1,.reading-cn .rd-cn-row-2{grid-template-columns:1fr}
+}
+@media (max-width:560px){
+  .reading-cn{--r316-cn-gap:12px}
 }
 
 /* ============================================================
@@ -11115,6 +11131,18 @@ body.r314-frame-gold .home-avatar{box-shadow:0 0 0 4px #f4dd97,0 6px 18px rgba(1
   .r315-kpi-3{grid-template-columns:repeat(2,minmax(0,1fr))}
   .r315-ch-edit input{min-width:0;width:100%}
   .r315-ch-edit label{flex:1 1 100%}
+}
+
+/* ============================================================
+   R316-4：成长档案「点次标题切换内容」页签（沿用原成长中心视觉）
+   ============================================================ */
+.page-archive .r316-atabs{margin:2px 0 16px}
+.page-archive [data-r316-atab-panel][hidden],
+.page-archive [data-r316-atab-grid][hidden]{display:none!important}
+.page-archive .card-head h3{cursor:pointer;user-select:none}
+.page-archive .card-head h3:hover{color:var(--tone-600)}
+@media (max-width:560px){
+  .page-archive .r316-atabs .r314-tab{flex:1 1 46%;min-width:0;font-size:11.5px}
 }
 
 </style>
@@ -12150,6 +12178,11 @@ body.r314-frame-gold .home-avatar{box-shadow:0 0 0 4px #f4dd97,0 6px 18px rgba(1
             <div class="reading-col-head">📜 古诗词鉴赏</div>
             <div class="reading-col-list" id="cnColPoem"></div>
           </div>
+          <!-- R316-2：古诗词应用 —— 每日从《以诗词观人生》61 个子主题自动抽 1 个展示，打卡机制与其他阅读卡一致 -->
+          <div class="reading-col rc-poem-use" id="poemUseCard">
+            <div class="reading-col-head">🌿 古诗词应用 <span class="haoci-use-hint">每日一主题</span></div>
+            <div class="reading-col-list" id="cnColPoemUse"></div>
+          </div>
           <div class="reading-col rc-essay" data-page-node-id="2jApxR3uzYCEJ5m1AbLm7">
             <div class="reading-col-head" data-page-node-id="6QzDKw1tyYYlAeKOogr4DF">📝 优秀作文</div>
             <div class="reading-col-list" id="cnColEssay" data-page-node-id="UpqHqBYMlMq8oxJHmYonsl8"></div>
@@ -12184,7 +12217,7 @@ body.r314-frame-gold .home-avatar{box-shadow:0 0 0 4px #f4dd97,0 6px 18px rgba(1
         <!-- R59-5：「📥 收录今日」按键已移除 —— 收录统一由每日 23:30 定时自动归档完成 -->
         <!-- R61-3：归档状态标记文字已按需求删除 -->
       </div>
-      <div class="bs-page-intro" data-page-node-id="CXfmIhyvSrGBLLreL5IfAK">好词好句 · 好词使用 · 文学小常识 · 古诗词鉴赏 · 优秀作文 · 成语学习 · 日常交流 · 英语短文 —— 全部内容按主题分类，点主题栏切换，分页浏览（每日 23:30 自动收录当日打卡内容）</div>
+      <div class="bs-page-intro" data-page-node-id="CXfmIhyvSrGBLLreL5IfAK">好词好句 · 好词使用 · 文学小常识 · 古诗词鉴赏 · 古诗词应用 · 优秀作文 · 成语学习 · 日常交流 · 英语短文 —— 全部内容按主题分类，点主题栏切换，分页浏览（每日 23:30 自动收录当日打卡内容）</div>
       <!-- R57-2：主题栏 —— 按主题分类切换（好词好句 / 文学小常识 / 古诗词鉴赏 / 优秀作文 / 日常交流 / 英语短文） -->
       <div class="bs-tabs" id="bsTabs" data-page-node-id="bsR57tabs0001"></div>
       <!-- R57-2：主题内容区 —— 单主题展示 + 分页（各主题独立页码，每页 8 条） -->
@@ -12195,6 +12228,8 @@ body.r314-frame-gold .home-avatar{box-shadow:0 0 0 4px #f4dd97,0 6px 18px rgba(1
         <!-- R273-6.3：文学小常识详情（298 条全量，分页浏览） -->
         <div class="bs-theme-body" id="bsColLore" hidden data-page-node-id="R273bsLoreBody"></div>
         <div class="bs-theme-body" id="bsColPoem" hidden data-page-node-id="bsR57body0002"></div>
+        <!-- R316-2：古诗词应用（9 大母题 / 61 子主题，按主题分类浏览） -->
+        <div class="bs-theme-body" id="bsColPoemUse" hidden data-page-node-id="R316bsPoemUseBody"></div>
         <div class="bs-theme-body" id="bsColEssay" hidden data-page-node-id="bsR57body0003"></div>
         <div class="bs-theme-body" id="bsColSpeak" hidden data-page-node-id="bsR57body0004"></div>
         <div class="bs-theme-body" id="bsColPassage" hidden data-page-node-id="bsR57body0005"></div>
@@ -12475,8 +12510,17 @@ body.r314-frame-gold .home-avatar{box-shadow:0 0 0 4px #f4dd97,0 6px 18px rgba(1
 
   <section class="page page-archive" data-page="archive" hidden data-page-node-id="rO5PKT931BnXZx1RawEKQ2">
     <div class="page-title" data-page-node-id="StvTzAbICc7ediOsOymivd"><h2 data-page-node-id="Yc4CDTyvfk73PrB7HXB9Ij"></h2></div><div class="page-content">
+    <!-- R316-4：成长档案恢复原成长中心的「点次标题切换内容」交互，卡片按页签分组展示 -->
+    <div class="r314-tabs r316-atabs" id="archiveTabs" data-page-node-id="R316ArchiveTabs">
+      <button class="r314-tab active" data-r316-atab="report" data-page-node-id="R316TabReport">📊 学情报告</button>
+      <button class="r314-tab" data-r316-atab="badge" data-page-node-id="R316TabBadge">🏅 徽章墙</button>
+      <button class="r314-tab" data-r316-atab="challenge" data-page-node-id="R316TabChallenge">🔥 阶段挑战</button>
+      <button class="r314-tab" data-r316-atab="goal" data-page-node-id="R316TabGoal">🎯 单元目标</button>
+      <button class="r314-tab" data-r316-atab="excerpt" data-page-node-id="R316TabExcerpt">📝 摘抄本</button>
+      <button class="r314-tab" data-r316-atab="health" data-page-node-id="R316TabHealth">🌙 作息健康</button>
+    </div>
     <div class="archive-grid" data-page-node-id="ibzJFBBAtBWH9sce7K9Yiv">
-      <div class="card report-card" data-page-node-id="Xo8UhvCwNILGTKNo1SieeQ">
+      <div class="card report-card" data-r316-atab-panel="report" data-page-node-id="Xo8UhvCwNILGTKNo1SieeQ">
         <div class="card-head report-card-head" data-page-node-id="od5mA6Pv9ortRsiRCgUHA4">
           <!-- R217-7①：周/月度报告按钮移到「学习报告」标题右侧 -->
           <h3 data-page-node-id="FGHyqG6MeNif2AhF6MGm4H">📋 学习报告</h3>
@@ -12493,15 +12537,15 @@ body.r314-frame-gold .home-avatar{box-shadow:0 0 0 4px #f4dd97,0 6px 18px rgba(1
           <button class="pbtn report-export-btn" id="btnExportCsv" data-page-node-id="P2oLPiZDF2ULjcaVmFDhwI">📊 导出表格</button>
         </div>
       </div>
-      <div class="card badge-card" data-page-node-id="5brWBZhjTQuJKPvvfxOLFH">
+      <div class="card badge-card" data-r316-atab-panel="badge" data-page-node-id="5brWBZhjTQuJKPvvfxOLFH">
         <div class="card-head" data-page-node-id="1br7s9Tt9ByjZoyHndSTNv"><h3 data-page-node-id="wDgGrJcYCARYEzr4mQ3I16">🏅 徽章墙</h3></div>
         <div class="badge-wall" id="badgeWall" data-page-node-id="pvQ38kHGPo7x4p6QAqxVxr"></div>
       </div>
-      <div class="card stats-card" data-page-node-id="EbKlZV9IbewiTo25tHRMYV">
+      <div class="card stats-card" data-r316-atab-panel="report" data-page-node-id="EbKlZV9IbewiTo25tHRMYV">
         <div class="card-head" data-page-node-id="Yh3Kd9LmQ2nR8sT6vWx1Za"><h3 data-page-node-id="Pq7R4tV2bN9mK6cX1zL8Yw">📊 数据统计</h3></div>
         <div class="archive-stats" id="archiveStats" data-page-node-id="K0tjupdFDhcPGNZtZeP9Gq"></div>
       </div>
-      <div class="card cert-card" data-page-node-id="TVDJsWWfwtehBgIXFux1Lk">
+      <div class="card cert-card" data-r316-atab-panel="report" data-page-node-id="TVDJsWWfwtehBgIXFux1Lk">
         <div class="card-head" data-page-node-id="Jh8MWFQZWQmt1ZRGNGrnoi">
           <h3 data-page-node-id="aHsTjvQLCn5RwuwFdm7u9a">🎖️ 电子奖状</h3>
           <button class="pbtn hidden-in-child" id="btnManageCerts" title="家长可增删改电子奖状，关联打卡数据" data-page-node-id="ck05bdOSAogwD01Q0yR43d">⚙️ 管理</button>
@@ -12510,20 +12554,20 @@ body.r314-frame-gold .home-avatar{box-shadow:0 0 0 4px #f4dd97,0 6px 18px rgba(1
       </div>
     </div>
     <!-- R315-G1：原「成长中心」其余板块并入成长档案（顺序按使用频次：先挑战目标，再积累与作息） -->
-    <div class="archive-grid r315-archive-grid" data-page-node-id="R315ArchiveGrid">
-      <div class="card r315-card" data-page-node-id="R315ArchiveChallengeCard">
+    <div class="archive-grid r315-archive-grid" id="r316ArchiveGrid2" data-r316-atab-grid="second" data-page-node-id="R315ArchiveGrid">
+      <div class="card r315-card" data-r316-atab-panel="challenge" data-page-node-id="R315ArchiveChallengeCard">
         <div class="card-head" data-page-node-id="R315ArchiveChallengeHead"><h3 data-page-node-id="R315ArchiveChallengeH3">🔥 阶段性挑战</h3></div>
         <div id="archiveChallengeHost" data-page-node-id="R315ArchiveChallengeHost"></div>
       </div>
-      <div class="card r315-card" data-page-node-id="R315ArchiveGoalCard">
+      <div class="card r315-card" data-r316-atab-panel="goal" data-page-node-id="R315ArchiveGoalCard">
         <div class="card-head" data-page-node-id="R315ArchiveGoalHead"><h3 data-page-node-id="R315ArchiveGoalH3">🎯 单元目标</h3></div>
         <div id="archiveGoalHost" data-page-node-id="R315ArchiveGoalHost"></div>
       </div>
-      <div class="card r315-card" data-page-node-id="R315ArchiveExcerptCard">
+      <div class="card r315-card" data-r316-atab-panel="excerpt" data-page-node-id="R315ArchiveExcerptCard">
         <div class="card-head" data-page-node-id="R315ArchiveExcerptHead"><h3 data-page-node-id="R315ArchiveExcerptH3">📝 摘抄积累本</h3></div>
         <div id="archiveExcerptHost" data-page-node-id="R315ArchiveExcerptHost"></div>
       </div>
-      <div class="card r315-card" data-page-node-id="R315ArchiveHealthCard">
+      <div class="card r315-card" data-r316-atab-panel="health" data-page-node-id="R315ArchiveHealthCard">
         <div class="card-head" data-page-node-id="R315ArchiveHealthHead"><h3 data-page-node-id="R315ArchiveHealthH3">🌙 作息健康</h3></div>
         <div id="archiveHealthHost" data-page-node-id="R315ArchiveHealthHost"></div>
       </div>
@@ -14201,6 +14245,7 @@ body.r314-frame-gold .home-avatar{box-shadow:0 0 0 4px #f4dd97,0 6px 18px rgba(1
 <script src="./assets/seed_history_today.js"></script>
 <!-- R62-3：必背知识数据（ywBeishu 读取 window.YW_BEISHU，PDF 全量导入） -->
 <script src="./assets/seed_beishu_data.js"></script>
+<script src="./assets/seed_poem_life_seed.js"></script>
 <script src="./assets/seed_mao_poems.js"></script>
 <script src="./assets/seed_wantong_stories.js"></script>
 <!-- R182-6：金波《童年琐记》正文数据（window.TONGNIAN_STORIES + window.KTXS_TONGNIAN_COVER） -->
@@ -21150,7 +21195,7 @@ window.R298_TASK_PLAN = {
     const st=load();
     st.tasks = st.tasks.filter(t=>t.id!==id);
     st.records = st.records.filter(r=>r.taskId!==id);
-    save(st);
+    r316DeleteSave(st);
   }
 
   // ----- 新世界各板块用户添加内容 -----
@@ -21174,7 +21219,7 @@ window.R298_TASK_PLAN = {
     const st = load();
     if(!st.nwZone || !st.nwZone[key]) return [];
     st.nwZone[key].splice(idx, 1);
-    save(st);
+    r316DeleteSave(st);
     return st.nwZone[key].slice();
   }
   // R179-4：保存某板块条目顺序数组（如 ktxs_order 存书籍标题顺序字符串数组）
@@ -21228,7 +21273,7 @@ window.R298_TASK_PLAN = {
     const sub = NW_WRONG_SUBJECTS.indexOf(subject) >= 0 ? subject : '数学';
     /* nwWrong 不在写盘闸 GUARD_WIPE_KEYS 里，删除不会触发「非空变空」回填 */
     b[sub] = b[sub].filter(function(x){ return !x || x.id !== id; });
-    save(st);
+    r316DeleteSave(st);
     return b[sub].slice();
   }
   function countNwWrong(subject){
@@ -21341,7 +21386,7 @@ window.R298_TASK_PLAN = {
       // R300：删到 readFlags 为空属合法操作，放行一次写盘闸
       try{ allowShrinkOnce(['readFlags']); }catch(e){}
     }
-    save(st);
+    r316DeleteSave(st);
     return st.mathExerciseBank.slice();
   }
   // 每题答对打卡 +1⭐（readFlags 幂等，可撤销，刷新不丢）
@@ -21391,6 +21436,55 @@ window.R298_TASK_PLAN = {
     delete st.uiFlags[k]; save(st); return {ok:true};
   }
 
+  /* ===== R316-1：增删类操作统一落库复核 =====
+     旧版「删除后刷新图片还在」的根因有两类：
+     ① 写盘闸把合法删空当成数据被清空并回填（readFlags 等保护字段）；
+     ② 异步镜像 / 缓存层回读到旧副本，UI 已刷新但磁盘还是旧数据。
+     这里提供统一出口：写前一次性放行合法收缩，写后立刻从主档原文回读校验；
+     校验不过就再直写一次桥梁快照，仍不过才明确返回失败，绝不再报「删除成功」。 */
+  function r316ReadFresh(){
+    try{
+      const r = _readMainRaw();
+      if(r && r.raw) return JSON.parse(r.raw);
+    }catch(e){}
+    return load();
+  }
+  function r316VerifiedSave(st, verifier, shrinkKeys){
+    if(shrinkKeys) try{ allowShrinkOnce(shrinkKeys); }catch(e){}
+    const ok = save(st);
+    if(!ok) return false;
+    if(typeof verifier === 'function'){
+      let fresh = r316ReadFresh();
+      if(!verifier(fresh)){
+        // 主档桥梁回读仍有旧值：直写一次并同步缓存（镜像随后由 save 的异步链补齐）
+        try{ localStorage.setItem(KEY, JSON.stringify(st)); }catch(e){}
+        _loadCachePut(st);
+        fresh = r316ReadFresh();
+        if(!verifier(fresh)) return false;
+      }
+    }
+    return true;
+  }
+  // 平台通用「删除」保存：合法收缩一次性放行 + 回读复核，供所有 del*/remove*/delete* 复用。
+  // 默认复核「所有顶层字段的形状」与本次写出的 st 一致（数组长度 / 对象键数），
+  // 嵌套字段（如 enKeyPoints[unitId]）由调用方传 verifier 做精确复核。
+  function r316DeleteSave(st, verifier){
+    const shape = {};
+    try{
+      Object.keys(st || {}).forEach(function(k){
+        if(k.indexOf('__') === 0) return;
+        shape[k] = _shapeOf(st[k]);
+      });
+    }catch(e){}
+    return r316VerifiedSave(st, function(fresh){
+      if(!fresh || typeof fresh !== 'object') return false;
+      if(typeof verifier === 'function' && !verifier(fresh)) return false;
+      try{
+        return Object.keys(shape).every(function(k){ return _shapeOf(fresh[k]) === shape[k]; });
+      }catch(e){ return false; }
+    }, GUARD_WIPE_KEYS);
+  }
+
   // ----- R122：新世界·英语专区「重点知识」单元图片（原「书本词汇」改名并改为图片为主） -----
   // 说明：不能用 addNwZone —— 它把 c 字段截断到 800 字符，装不下图片 dataURL。
   // 每条 { img:'data:image/...', t:'说明文字', ts }；图片在 app 侧已用 canvas 压缩（最长边 ≤1280、JPEG 0.8）。
@@ -21407,21 +21501,39 @@ window.R298_TASK_PLAN = {
       t:   String((item && item.t) || '').slice(0, 120),
       ts:  Date.now()
     });
-    const ok = save(st);
+    const added = st.enKeyPoints[unitId][st.enKeyPoints[unitId].length - 1];
+    // R316-1：导入后从主档原文回读确认这张图片真的落库了，回读失败一律按失败处理。
+    const ok = r316VerifiedSave(st, function(fresh){
+      const list = fresh && fresh.enKeyPoints && fresh.enKeyPoints[unitId];
+      return !!(list && list.some(function(x){ return x && x.img === added.img && x.ts === added.ts; }));
+    });
     // R126 安全加固：配额超限（写入失败）时回滚内存态，避免「看起来导入成功、刷新后丢失」以及
     // 后续任何 save 反复序列化超大 dataURL 失败；返回 null 作为失败信号。
     if(!ok){
       st.enKeyPoints[unitId].pop();
+      _loadCachePut(st);
       return null;
     }
     return st.enKeyPoints[unitId].slice();
   }
   function delEnKeyPoint(unitId, idx){
     const st = load();
-    if(!st.enKeyPoints || !st.enKeyPoints[unitId]) return [];
+    if(!st.enKeyPoints || !st.enKeyPoints[unitId]) return null;
     const i = parseInt(idx, 10);
-    if(!isNaN(i) && i >= 0 && i < st.enKeyPoints[unitId].length) st.enKeyPoints[unitId].splice(i, 1);
-    save(st);
+    if(isNaN(i) || i < 0 || i >= st.enKeyPoints[unitId].length) return null;
+    const removed = st.enKeyPoints[unitId][i];
+    st.enKeyPoints[unitId].splice(i, 1);
+    // R316-1：删除必须「回读确认」——主档里若还能找到这张图，就说明删了个假，
+    // 明确返回 null 让 UI 报错，绝不能给你「已删除」的假象。
+    const ok = r316DeleteSave(st, function(fresh){
+      const list = fresh && fresh.enKeyPoints && fresh.enKeyPoints[unitId];
+      return !!list && !list.some(function(x){ return x && x.img === removed.img && x.ts === removed.ts; });
+    });
+    if(!ok){
+      st.enKeyPoints[unitId].splice(i, 0, removed);
+      _loadCachePut(st);
+      return null;
+    }
     return st.enKeyPoints[unitId].slice();
   }
   // 注意：打卡状态按 readFlags[`${kind}::${unitId}::${idx}`] 扁平存放，键里含图片下标。
@@ -21440,6 +21552,8 @@ window.R298_TASK_PLAN = {
       next[prefix + (i > removedIdx ? i - 1 : i)] = st.readFlags[k];
     });
     st.readFlags = next;
+    // R316-1：删掉最后一张图时 readFlags 会合法变空，必须放行，否则写盘闸会把打卡记录整份回填
+    try{ allowShrinkOnce(['readFlags']); }catch(e){}
     save(st);
   }
 
@@ -21501,7 +21615,7 @@ window.R298_TASK_PLAN = {
     const st = load();
     if(!st.customList || !Array.isArray(st.customList[kind])) return [];
     st.customList[kind] = st.customList[kind].filter(x=>String(x.id)!==String(id));
-    save(st);
+    r316DeleteSave(st);
     return st.customList[kind].slice();
   }
   // R117：首页备忘录（朱迪小提示）。事项结构：{ id, text }（text 上限 120 字）
@@ -22670,7 +22784,7 @@ window.R298_TASK_PLAN = {
     if(!s.removed) s.removed = {};
     if(!s.removed[kind]) s.removed[kind] = {};
     s.removed[kind][id] = 1;
-    const st = load(); st.shop = s; save(st);
+    const st = load(); st.shop = s; r316DeleteSave(st);
     return {ok:true};
   }
   function updateShopItem(kind, id, patch){
@@ -22754,7 +22868,7 @@ window.R298_TASK_PLAN = {
   function deleteMathProblem(id){
     const st = load();
     st.mathProblems = st.mathProblems.filter(x=>x.id!==id);
-    save(st);
+    r316DeleteSave(st);
   }
   // ----- v5 数学掌握度（题库 / 掌握 / 未掌握） -----
   function setMathMastery(id, value){
@@ -22821,7 +22935,7 @@ window.R298_TASK_PLAN = {
   function refundReadingStars(kind){
     // R248-4：撤销打卡统一按 kind 扣回（en3500cat 5⭐ / mathExercise 1⭐ / 阅读类 3·2·1⭐）
     // R300-1.2：cnWordUse（好词使用逐词）与 cnWords 同为 +1⭐，取消时同样扣回 1⭐
-    const map = {cnEssay:3, enPassage:2, cnPoem:2, cnWords:1, cnSentence:1, cnWordUse:1, enSpeaking:0, en3500cat:5, mathExercise:1};
+    const map = {cnEssay:3, enPassage:2, cnPoem:2, cnPoemUse:1, cnWords:1, cnSentence:1, cnWordUse:1, enSpeaking:0, en3500cat:5, mathExercise:1};
     return map[kind] || 0;
   }
   // v10 兼容旧调用（保留）
@@ -22878,7 +22992,7 @@ window.R298_TASK_PLAN = {
     (st.mathGroups||[]).forEach(g => { g.types = g.types.filter(t => t !== name); });
     // 同时清空该题型的所有题目
     (st.mathProblems||[]).forEach(m=>{ if(m.type === name) m.type = '未分类'; });
-    save(st);
+    r316DeleteSave(st);
     return {ok:true, list: (st.customMathTypes||[]).slice()};
   }
   // ----- R91：乐读数学「次级卡」（学期/班型）+「三级卡」（题型归属） -----
@@ -23065,6 +23179,8 @@ window.R298_TASK_PLAN = {
     else if(kind==='enPassage'){ reward=2; rewardLabel='英语短文 +2⭐'; }
     else if(kind==='cnWords' || kind==='cnSentence'){ reward=1; rewardLabel='好词好句 +1⭐'; }
     else if(kind==='cnPoem'){ reward=2; rewardLabel='古诗词鉴赏 +2⭐'; }
+    // R316-2：【古诗词应用】按主题打卡 +1⭐（与好词使用同为逐条工具卡，可撤销 / 可扣回）
+    else if(kind==='cnPoemUse'){ reward=1; rewardLabel='古诗词应用 +1⭐'; }
     // R300-1.2：【好词使用】逐词打卡 —— 与「好词好句」卡完全同规则（+1⭐ / 可撤销 / 可扣回）
     else if(kind==='cnWordUse'){ reward=1; rewardLabel='好词使用 +1⭐'; }
     // R59-1：人文拓展 / 综合素养 每篇 +1⭐
@@ -23334,7 +23450,7 @@ window.R298_TASK_PLAN = {
     const st = load();
     st.goRecords = st.goRecords.filter(g=>g.id!==id);
     recompute(st);
-    save(st);
+    r316DeleteSave(st);
   }
   function getWeekGoCount(){
     const st = load();
@@ -23544,7 +23660,7 @@ window.R298_TASK_PLAN = {
     if(!st.bookBookmarks || !st.bookBookmarks[title]) return [];
     const i = parseInt(idx,10);
     if(!isNaN(i) && i>=0 && i<st.bookBookmarks[title].length) st.bookBookmarks[title].splice(i,1);
-    save(st);
+    r316DeleteSave(st);
     return st.bookBookmarks[title].slice();
   }
   function setBookBookmarkFlag(title, idx, flagged){
@@ -23575,7 +23691,7 @@ window.R298_TASK_PLAN = {
     if(!st.bookToc || !st.bookToc[title]) return [];
     const i = parseInt(idx,10);
     if(!isNaN(i) && i>=0 && i<st.bookToc[title].length) st.bookToc[title].splice(i,1);
-    save(st);
+    r316DeleteSave(st);
     return st.bookToc[title].slice();
   }
   // R183-6：按「文章（entry）」已读统计 —— 进度仅计已打卡文章，未打卡不计
@@ -23637,7 +23753,7 @@ window.R298_TASK_PLAN = {
     if(st.bookReadAward10 && st.bookReadAward10[title]) delete st.bookReadAward10[title];
     if(st.bookReadAward100 && st.bookReadAward100[title]) delete st.bookReadAward100[title];
     if(st.readFlags && st.readFlags['suzhi_ktxs::'+title]) delete st.readFlags['suzhi_ktxs::'+title];
-    save(st);
+    r316DeleteSave(st);
     return true;
   }
 
@@ -23684,7 +23800,7 @@ window.R298_TASK_PLAN = {
     const st = load();
     if(!st.customBaike) return;
     st.customBaike = st.customBaike.filter(x=>String(x.id)!==String(id));
-    save(st);
+    r316DeleteSave(st);
   }
   // R53-1：知识笔记（按题型归属；展示在对应题型第一个内容卡片位置）
   function getMathNotes(){
@@ -23704,7 +23820,7 @@ window.R298_TASK_PLAN = {
     const st = load();
     if(!st.mathNotes) return;
     st.mathNotes = st.mathNotes.filter(x=>String(x.id)!==String(id));
-    save(st);
+    r316DeleteSave(st);
   }
   // R253-6：乐读数学「知识笔记」打卡 —— 与 2026 春二 A+ 题目卡同一套逻辑：
   //   两键「✅ 已学 / 🔄 需巩固」，再点同一键回到「未学」；切到已学 +1⭐，从已学切换走扣回 1⭐。
@@ -24323,7 +24439,7 @@ window.R298_TASK_PLAN = {
     const arr = (st.todayArchive && st.todayArchive[today]) || [];
     if(!arr[idx]) return {ok:false};
     arr.splice(idx, 1);
-    save(st);
+    r316DeleteSave(st);
     return {ok:true};
   }
   function isReadingArchivedToday(){ const st = load(); return (st.readingArchiveDate||'') === todayStr(); }
@@ -24331,7 +24447,7 @@ window.R298_TASK_PLAN = {
     const st = load();
     if(!st.userReading || !st.userReading[kind]) return {ok:false};
     st.userReading[kind] = (st.userReading[kind]||[]).filter(x=>x.title!==title);
-    save(st);
+    r316DeleteSave(st);
     return {ok:true};
   }
 
@@ -27649,7 +27765,7 @@ be 动词：am / is → was；are → were
   function delHomeGreet(i){
     const st = load();
     if(!st.homeGreets) st.homeGreets = DEFAULT_HOME_GREETS.slice();
-    if(i>=0 && i<st.homeGreets.length){ st.homeGreets.splice(i,1); save(st); }
+    if(i>=0 && i<st.homeGreets.length){ st.homeGreets.splice(i,1); r316DeleteSave(st); }
     return st.homeGreets;
   }
   function resetHomeGreets(){
@@ -27835,7 +27951,7 @@ be 动词：am / is → was；are → were
     const st = load();
     st.archive = st.archive || {};
     st.archive.customCerts = (st.archive.customCerts || []).filter(c=>c.id!==id);
-    save(st);
+    r316DeleteSave(st);
     return {ok:true};
   }
 
@@ -27986,7 +28102,7 @@ be 动词：am / is → was；are → were
     if(isNaN(idx) || idx<0 || idx>=st.calcBank.length) return {ok:false, msg:'题号不存在'};
     st.calcBank.splice(idx,1);
     st.calcBankSeeded = true;
-    save(st);
+    r316DeleteSave(st);
     return {ok:true, total:st.calcBank.length};
   }
   // R231-2：一次性迁移导入 xlsx 题库（1250 题，带 cat 与 ans）；清空旧库，幂等
@@ -29048,6 +29164,8 @@ be 动词：am / is → was；are → were
     getXsNoteSeedImgsDone, setXsNoteSeedImgsDone,
     // R178：书籍封面 / 正文完成 / 书签 / 目录
     getBookCover, setBookCover, getBookPageDone, toggleBookPageDone, countBookPageDone, getBookEntryDone, toggleBookEntryDone, countBookEntryDone, getKtxsBooks, updateKtxsBook, deleteKtxsBook, getBookBookmarks, addBookBookmark, delBookBookmark, setBookBookmarkFlag, getBookToc, addBookToc, delBookToc,
+    // R316-1：增删类操作统一落库复核（放行合法删空 + 回读校验 + 失败重试）
+    r316ReadFresh, r316VerifiedSave, r316DeleteSave,
     // R126：存储写入错误状态（配额超限感知）
     getSaveError,
     // R131-2：设置中心「保存设置」暂存模型
@@ -33497,8 +33615,13 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       openCustomModal('删除重点知识图片',
         `确定删除「<b>${esc(name)}</b>」这张重点知识图片吗？<div style="margin-top:8px;color:#5b6b85;font-size:13px">删除后不可恢复，该图片的打卡记录也会一并清除。</div>`,
         ()=>{
+          // R316-1：先删图片再重排打卡下标，两步都必须真实落库；任何一步失败都不报「已删除」
+          const after = (window.Store && window.Store.delEnKeyPoint) ? window.Store.delEnKeyPoint(unitId, idx) : null;
+          if(after === null){ toast('⚠️ 删除未生效，请重试'); return false; }
           if(window.Store && window.Store.shiftEnKeyPointReads) window.Store.shiftEnKeyPointReads(unitId, idx, EN_KP_READ);
-          if(window.Store && window.Store.delEnKeyPoint) window.Store.delEnKeyPoint(unitId, idx);
+          // R316-1：清掉旧图片节点的 src，避免浏览器内存缓存让已删图片「闪回」
+          const oldImg = slotBody.querySelector('[data-kp-card="' + idx + '"] img');
+          if(oldImg) oldImg.src = '';
           toast('🗑 已删除该图片');
           if(typeof rerender === 'function') rerender();
           return true;
@@ -36714,20 +36837,40 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   function renderEnglishPage(){ renderSlotPage('enTopCards','enSlotBody','enSlotHint', EN_TOP_CARDS, enSlot, 'dd'); }
   // R122：重点知识图片导入 —— 绑定隐藏 file input（全局只绑一次，避免 slotBody 重渲染后重复绑定）
   // 流程：选图 → 过滤非图片 → 逐张压缩（最长边 1280 / JPEG 0.8）→ 写入当前单元 → 重渲染
+  let _enKpImportChain = Promise.resolve();   // R316-1：串行队列，避免多张图并发压缩/写库互相踩踏
+  function enKpImportOne(unitId, f){
+    return new Promise(resolve=>{
+      let settled = false;
+      const finish = ok=>{ if(!settled){ settled = true; resolve(!!ok); } };
+      try{
+        enKpCompressImage(f, dataUrl=>{
+          if(!dataUrl){ finish(false); return; }
+          try{
+            // R126/R316：返回 null = 写入回读校验失败或配额超限（已回滚），一律按失败处理
+            const r = (window.Store && window.Store.addEnKeyPoint) ? window.Store.addEnKeyPoint(unitId, { img:dataUrl, t:'' }) : null;
+            if(r === null) toast('⚠️ 这张图片未能保存，请检查存储空间后重试');
+            finish(r !== null);
+          }catch(e){ toast('⚠️ 图片保存失败：' + (e && e.message ? e.message : '存储空间不足')); finish(false); }
+        });
+      }catch(e){ finish(false); }
+    });
+  }
   function initEnKeyPointImport(){
     const inp = document.getElementById('enKpImgInput');
     if(!inp || inp._kpBound) return;
     inp._kpBound = true;
     inp.addEventListener('change', ()=>{
       const files = Array.prototype.slice.call(inp.files || []).filter(f=> /^image\//.test(f.type || ''));
-      if(!files.length){ inp.value = ''; return; }
+      inp.value = '';   // R316-1：立即释放文件句柄，重复选同一张图也能再次触发
+      if(!files.length) return;
       const unitId = _enKpAddUnit || ((EN_OXFORD_VOCAB_3A[_enKpUnit]||{}).id) || '';
-      if(!unitId){ inp.value = ''; toast('请先选择一个单元'); return; }
-      let pending = files.length, added = 0;
-      const done = ()=>{
-        pending--;
-        if(pending > 0) return;
-        inp.value = '';
+      if(!unitId){ toast('请先选择一个单元'); return; }
+      let added = 0;
+      _enKpImportChain = _enKpImportChain.then(()=>{
+        let chain = Promise.resolve();
+        files.forEach(f=>{ chain = chain.then(()=>enKpImportOne(unitId, f)).then(ok=>{ if(ok) added++; }); });
+        return chain;
+      }).then(()=>{
         _enKpAddUnit = '';   // 清掉一次性目标，后续导入始终跟随当前单元
         toast(added ? ('✅ 已导入 ' + added + ' 张重点知识图片') : '⚠️ 图片导入失败，请重试');
         if(added){
@@ -36735,23 +36878,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
           if(typeof window.__slotRerender === 'function') window.__slotRerender();
           else if(typeof renderEnglishPage === 'function') renderEnglishPage();
         }
-      };
-      files.forEach(f=>{
-        enKpCompressImage(f, (dataUrl)=>{
-          if(dataUrl){
-            try{
-              // R126：addEnKeyPoint 返回 null = 存储配额超限（已回滚，内存不残留），明确提示用户
-              const r = (window.Store && window.Store.addEnKeyPoint) ? window.Store.addEnKeyPoint(unitId, { img:dataUrl, t:'' }) : null;
-              if(r === null){
-                toast('⚠️ 存储空间已满，这张图片导入失败，请先删除部分旧图片再试');
-              }else{
-                added++;
-              }
-            }catch(e){ toast('⚠️ 存储空间不足，请先删除部分图片'); }
-          }
-          done();
-        });
-      });
+      }).catch(e=>{ toast('⚠️ 图片导入失败，请重试'); });
     });
   }
 
@@ -43147,6 +43274,31 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     for(let i=0;i<w;i++) out.push(items[(start+i)%n]);
     return out;
   }
+  /* R316-2：《以诗词观人生》古诗词应用 —— 9 大母题 / 61 子主题
+     主视图每日按日期抽 1 个主题；收录书屋按母题分组展示全部主题。 */
+  function r316PoemFlat(){
+    const out = [];
+    (window.POEM_LIFE_SEED || []).forEach(function(t, ti){
+      (t && t.subs || []).forEach(function(s, si){
+        if(!s || !s.title) return;
+        out.push({
+          key: ti + '-' + si,
+          title: t.theme + ' · ' + s.title,
+          theme: t.theme,
+          sub: s.title,
+          paras: (s.paras || []).slice(),
+          body: (s.paras || []).join('\n')
+        });
+      });
+    });
+    return out;
+  }
+  function r316TodayPoem(){
+    const list = r316PoemFlat();
+    if(!list.length) return null;
+    const pick = dailyRotate(list, 1, 316, 1);
+    return pick[0] || null;
+  }
   // 用户新增内容始终显示在最前，系统内容每日轮换不重复
   function colContent(kind, win, offset, everyN){
     // R56-6：已归档(source==='archived')内容只在「收录书屋」展示，不混入今日阅读三栏
@@ -43354,6 +43506,9 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     renderDailyLitInline();
     // R57-2：古诗词鉴赏每日只显示一首（每日轮换，offset=5 与其它栏错开）
     fillCol('#cnColPoem',    colContent('cnPoem', 1, 5, 2), 'cnPoem', 'cn');
+    // R316-2：古诗词应用每日一主题（与鉴赏卡同行，位于鉴赏与作文之间）
+    const _r316Today = r316TodayPoem();
+    fillCol('#cnColPoemUse', _r316Today ? [{title:_r316Today.title, body:_r316Today.body, meta:_r316Today.theme, sub:_r316Today.sub}] : [], 'cnPoemUse', 'cn');
     fillCol('#cnColEssay',   colContent('cnEssay',   1, 2, 2), 'cnEssay',   'cn');
     // 需求⑤：每次渲染后重新为英语短文卡绑定点击朗读（卡片为新元素，_ppBound 去重）
     const _enPC = document.getElementById('enColPassage');
@@ -43372,7 +43527,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
      只统计两张面板里当日的阅读卡（好词使用是「全量词库工具卡」，不参与完成度判定），
      集齐即发、缺一张即按同额扣回，奖励按天记录在 readingPanelDone，刷新/重进不会重复发放。 */
   function checkReadingPanelAllDone(silent){
-    const PANELS = { cn:['cnColWords','cnColPoem','cnColEssay'], en:['enColSpeak','enColPassage'] };
+    const PANELS = { cn:['cnColWords','cnColPoem','cnColPoemUse','cnColEssay'], en:['enColSpeak','enColPassage'] };
     let changed = false;
     Object.keys(PANELS).forEach(panel=>{
       let total = 0, done = 0;
@@ -43429,6 +43584,8 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     // R273-6.3：文学小常识入口 —— 固定排在「好词好句」与「古诗词鉴赏」之间
     {key:'cnLore',label:'📖 文学小常识'},
     {key:'cnPoem',label:'📜 古诗词鉴赏'},
+    // R316-2：古诗词应用（《以诗词观人生》9 大母题 / 61 子主题）
+    {key:'cnPoemUse',label:'🌿 古诗词应用'},
     {key:'cnEssay',label:'📝 优秀作文'},
     // R295-2.4：收录书屋同步新增「每日文学」入口（每日成语 + 文学小常识横向并排）
     {key:'enSpeaking',label:'💬 日常交流'},
@@ -43444,6 +43601,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     {key:'cnWordUse',  sel:'#bsColWordUse'},
     {key:'cnLore',     sel:'#bsColLore'},
     {key:'cnPoem',     sel:'#bsColPoem'},
+    {key:'cnPoemUse',  sel:'#bsColPoemUse'},
     {key:'cnEssay',    sel:'#bsColEssay'},
     {key:'enSpeaking', sel:'#bsColSpeak'},
     {key:'enPassage',  sel:'#bsColPassage'},
@@ -43466,6 +43624,10 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     if(kind === 'cnWordUse'){
       // R301-4.2：收录书屋「好词使用」范围 = 好词好句卡当日展示的好词（与好词使用卡同一数据源）
       return haociUseListOf(haociDisplayGroups()).map(x=>({ title:x.w, meaning:x.m, example:x.e, meta:'好词使用', source:'sys' }));
+    }
+    if(kind === 'cnPoemUse'){
+      // R316-2：全部 61 个子主题按母题顺序收录，标题带母题前缀便于按主题分类浏览
+      return r316PoemFlat();
     }
     if(kind === 'cnChengyu'){
       const list = (window.CHENGYU_SEED || []).filter(x => x && x.word);
@@ -43498,6 +43660,14 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         (it.example?'<div class="haoci-ex"><b>例句：</b>'+esc(it.example)+'</div>':'')+
       '</div>';
     }
+    // R316-2：古诗词应用按「母题标签 + 逐段释义」展示，61 个子主题全部可检索
+    if(kind==='cnPoemUse'){
+      const ps = (it.paras || []).map(function(p){ return '<div class="r316-pu-para">'+esc(p)+'</div>'; }).join('');
+      return '<div class="bs-item bs-item-poem-use">'
+        + '<div class="ri-title">🌿 '+esc(it.sub || it.title || '')+' <span class="ri-meta" style="background:'+tagBg+'">'+tagTxt+'</span></div>'
+        + '<div class="r316-pu-theme">'+esc(it.theme || '')+'</div>'
+        + ps + '</div>';
+    }
     // 日常交流：完整展开主题 + 对话（复用主视图气泡渲染，保证内容一致）
     if(kind==='enSpeaking' && it.lines){
       return `<div class="bs-item bs-item-speak">
@@ -43520,7 +43690,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   }
   // R57-2：收录书屋各主题独立页码
   // R59-5：每页条数按主题配置 —— 好词好句 6 / 古诗词鉴赏 4 / 优秀作文 2 / 日常交流 2 / 英语短文 2
-  const BS_PER_PAGE = { cnWords:6, cnWordUse:9, cnLore:6, cnPoem:4, cnEssay:2, enSpeaking:2, enPassage:2, cnChengyu:4 };
+  const BS_PER_PAGE = { cnWords:6, cnWordUse:9, cnLore:6, cnPoem:4, cnPoemUse:6, cnEssay:2, enSpeaking:2, enPassage:2, cnChengyu:4 };
   let _bsTab = 'cnWords';
   let _bsPage = {};
   function renderBookstoreAll(){
@@ -50132,6 +50302,48 @@ function renderKMAdmin(){
     });
     /* R315-G1：成长档案其余板块（阶段挑战 / 单元目标 / 摘抄本 / 作息健康）随档案页一起渲染 */
     try{ r315RenderArchive(); }catch(e){}
+    /* R316-4：恢复原成长中心「点次标题切换内容」的卡片交互 */
+    try{ r316BindArchiveTabs(); }catch(e){}
+  }
+  /* R316-4：成长档案页签 —— 顶部 6 个次标题 + 卡片标题双击切换，内容与原成长中心一致 */
+  let _r316Atab = 'report';
+  function r316ApplyArchiveTab(){
+    try{
+      $$('#archiveTabs [data-r316-atab]').forEach(function(b){
+        b.classList.toggle('active', b.getAttribute('data-r316-atab') === _r316Atab);
+      });
+      $$('.page-archive [data-r316-atab-panel]').forEach(function(c){
+        c.hidden = c.getAttribute('data-r316-atab-panel') !== _r316Atab;
+      });
+      const g2 = document.getElementById('r316ArchiveGrid2');
+      if(g2) g2.hidden = ['challenge','goal','excerpt','health'].indexOf(_r316Atab) < 0;
+    }catch(e){}
+  }
+  function r316BindArchiveTabs(){
+    const bar = document.getElementById('archiveTabs');
+    if(!bar || bar._r316Bound) return;
+    bar._r316Bound = true;
+    bar.addEventListener('click', function(e){
+      const b = e.target && e.target.closest ? e.target.closest('[data-r316-atab]') : null;
+      if(!b) return;
+      _r316Atab = b.getAttribute('data-r316-atab') || 'report';
+      r316ApplyArchiveTab();
+    });
+    // 卡片内的次标题同样可点，等价于原成长中心的页签切换
+    try{
+      $$('.page-archive .card-head h3').forEach(function(h){
+        const card = h.closest('[data-r316-atab-panel]');
+        if(!card || h._r316Bound) return;
+        h._r316Bound = true;
+        h.style.cursor = 'pointer';
+        h.title = '点击切换对应内容';
+        h.addEventListener('click', function(){
+          _r316Atab = card.getAttribute('data-r316-atab-panel') || 'report';
+          r316ApplyArchiveTab();
+        });
+      });
+    }catch(e){}
+    r316ApplyArchiveTab();
   }
   function renderArchiveReport(){
     const rep = archiveReportType === 'monthly' ? S.buildMonthlyReport() : S.buildWeeklyReport();
@@ -53726,7 +53938,7 @@ function renderKMAdmin(){
       if(sep<0) return;
       const kind = raw.slice(0, sep);
       const title = raw.slice(sep+2);
-      const KIND_LABEL = {cnWords:'好词好句',cnWordUse:'好词使用',cnLore:'文学小常识',cnPoem:'古诗词鉴赏',cnEssay:'优秀作文',enPassage:'英语短文',enSpeaking:'英语日常交流',cnChengyu:'成语学习'};
+      const KIND_LABEL = {cnWords:'好词好句',cnWordUse:'好词使用',cnLore:'文学小常识',cnPoem:'古诗词鉴赏',cnPoemUse:'古诗词应用',cnEssay:'优秀作文',enPassage:'英语短文',enSpeaking:'英语日常交流',cnChengyu:'成语学习'};
       // R300-1.2：卡片自带 data-ri-label 时优先用它（每日成语 / 文学小常识虽复用 cnWords 键，提示语仍准确）
       const kindLabel = btn.getAttribute('data-ri-label') || KIND_LABEL[kind] || kind;
       if(S.isReadingRead(kind, title)){
@@ -53772,7 +53984,7 @@ function renderKMAdmin(){
     }
     // R60-3：补上 cnColPoem —— 此前漏绑「古诗词鉴赏」列，导致该栏打卡键点击无反应（打卡失效）
     // R300-1.2：补上 haociUseGrid —— 好词使用每张卡新增打卡键，与大阅读其余卡片同一套委托
-    ['cnColWords','cnColPoem','cnColEssay','enColSpeak','enColPassage','haociUseGrid'].forEach(id=>{
+    ['cnColWords','cnColPoem','cnColPoemUse','cnColEssay','enColSpeak','enColPassage','haociUseGrid'].forEach(id=>{
       const el = document.getElementById(id);
       if(el && !el._riCheckinBound){ el._riCheckinBound = true; el.addEventListener('click', onRiCheckin); }
     });
@@ -58790,6 +59002,13 @@ function init(){
     try{ r314RenderHomeBadges(); }catch(e){}
   }
 
+  /* R316：探针钩子（jsdom 取不到闭包内函数，显式暴露） */
+  try{
+    window.__r316PoemFlat = r316PoemFlat;
+    window.__r316TodayPoem = r316TodayPoem;
+    window.__r316ApplyArchiveTab = function(tab){ _r316Atab = tab || 'report'; r316ApplyArchiveTab(); };
+    window.__r316EnKpImportOne = enKpImportOne;
+  }catch(e){}
   function r272BootInit(){
     const _P = window.R272P;
     if(_P && typeof _P.whenReady === 'function') _P.whenReady(function(){ try{ init(); }catch(e){} });
