@@ -11228,6 +11228,48 @@ body.r314-frame-gold .home-avatar{box-shadow:0 0 0 4px #f4dd97,0 6px 18px rgba(1
   .r319-bl-head-actions{margin-left:0;width:100%}
 }
 
+/* ============ R320：UI 微调（摘抄删除键 / 语文阅读间距 / 作息卡等宽 / 挑战设置入口） ============ */
+/* R320-5：大阅读语文板块 —— 卡内条目间距与英语阅读内容卡完全一致（8px），
+   大卡之间仍为 12px（与英语 .reading-cols 的 12px 对齐），两级间距都不再各写一套。 */
+.reading-cn .reading-col-list{gap:8px}
+.reading-cn .ri-poem-cols{gap:8px}
+.reading-cn .haoci-use-grid{gap:8px}
+/* R320-6：今日作息 / 最近 7 天作息 与 用眼休息提醒 等宽 */
+.r317-health-cols{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+/* R320-6：阶段性挑战标题右侧「增减设置」入口 */
+.card-head .r320-ch-setup-btn{margin-left:auto;white-space:nowrap}
+.r320-ch-setup-host{margin-top:10px;padding-top:10px;border-top:1px dashed var(--tone-200)}
+.r320-ch-setup-title{font-size:13px;font-weight:900;color:var(--tone-800);margin-bottom:8px}
+/* R320-4：摘抄本「已收录」条目的删除键移到内容左上角 */
+.r314-ex{position:relative;padding-left:32px}
+.r314-ex-del{position:absolute;left:6px;top:6px;margin:0;width:20px;height:20px;display:flex;
+  align-items:center;justify-content:center;border-radius:6px;background:var(--danger-soft,#fdeceb);
+  border:1px solid var(--danger-line,#f0c4bd);font-size:14px;padding:0}
+.r314-ex-del:hover{background:var(--danger-line,#f0c4bd);color:#fff}
+@media (max-width:900px){
+  .r320-ch-setup-host{margin-top:8px}
+}
+@media (max-width:680px){
+  .r317-health-cols{grid-template-columns:minmax(0,1fr)}
+}
+
+/* ============ R320-7：我的书单（已读红色 + 同行布局 + 家长模式操作键） ============ */
+.r319-book-row{flex-wrap:nowrap;gap:8px}
+.r319-book-name{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.r319-book-author{flex:0 1 auto;white-space:nowrap;max-width:38%;overflow:hidden;text-overflow:ellipsis}
+.r319-book-row .r319-read{flex:0 0 auto}
+.r319-book-ops{flex:0 0 auto;display:flex;gap:4px;margin-left:0}
+/* 已读 = 红色（原绿色下线）：整行底色、书名、按钮三处同源 */
+.r319-book-row.is-read{background:linear-gradient(135deg,#fff3f2,#ffe4e1);border-color:var(--danger-line,#f0c4bd)}
+.r319-book-row.is-read .r319-book-name{color:#b5354b}
+.r319-book-row.is-read .r319-book-author{color:#a8595f}
+.r319-row-btn.r319-read.done{background:#d94a4a;border-color:#d94a4a;color:#fff}
+@media (max-width:680px){
+  .r319-book-row{flex-wrap:wrap}
+  .r319-book-name{flex:1 1 100%}
+  .r319-book-author{max-width:none}
+}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -12701,8 +12743,9 @@ body.r314-frame-gold .home-avatar{box-shadow:0 0 0 4px #f4dd97,0 6px 18px rgba(1
     <!-- R315-G1：原「成长中心」其余板块并入成长档案（顺序按使用频次：先挑战目标，再积累与作息） -->
     <div class="archive-grid r315-archive-grid" id="r316ArchiveGrid2" data-r316-atab-grid="second" data-page-node-id="R315ArchiveGrid">
       <div class="card r315-card" data-r316-atab-panel="challenge" data-page-node-id="R315ArchiveChallengeCard">
-        <div class="card-head" data-page-node-id="R315ArchiveChallengeHead"><h3 data-page-node-id="R315ArchiveChallengeH3">🔥 阶段性挑战</h3></div>
+        <div class="card-head" data-page-node-id="R315ArchiveChallengeHead"><h3 data-page-node-id="R315ArchiveChallengeH3">🔥 阶段性挑战</h3><button type="button" class="pbtn r314-mini r320-ch-setup-btn hidden-in-child" id="r320ChSetupBtn" aria-expanded="false" data-page-node-id="R320ChSetupBtn">⚙️ 增减设置</button></div>
         <div id="archiveChallengeHost" data-page-node-id="R315ArchiveChallengeHost"></div>
+        <div id="r320ChSetupHost" class="r320-ch-setup-host" data-page-node-id="R320ChSetupHost" hidden></div>
       </div>
       <div class="card r315-card" data-r316-atab-panel="goal" data-page-node-id="R315ArchiveGoalCard">
         <div class="card-head" data-page-node-id="R315ArchiveGoalHead"><h3 data-page-node-id="R315ArchiveGoalH3">🎯 单元目标</h3></div>
@@ -16585,6 +16628,1290 @@ window.R298_TASK_PLAN = {
 <!-- R272-1：统一持久化数据层必须先于 store.js 加载；它只提供异步事务能力，
      不改变 S.load() / S.save() 的同步调用语义，也不触碰任何页面 UI。 -->
 <script>
+// R320-9：A2 Key Vocabulary 词汇表 —— 由《词汇.docx》导入（共 123 词）
+// 字段与学而思「词汇」板块现有卡片完全一致：en / phonetic / wordZh / example / exampleZh
+// 只在首次导入时按 id 追加（a2v_xxx），不改动、不覆盖用户自己新增或编辑过的词条。
+window.XS_A2_VOCAB = [
+{
+"en": "working hours",
+"phonetic": "ˈwɜːkɪŋ ˌaʊəz",
+"wordZh": "工作时间",
+"example": "His working hours are from 9 am to 5 pm.",
+"exampleZh": "他的工作时间是从早九点到晚五点。",
+"id": "a2v_001",
+"source": "seed"
+},
+{
+"en": "guess",
+"phonetic": "ɡes",
+"wordZh": "猜测",
+"example": "Guess what is in the box!",
+"exampleZh": "猜猜盒子里有什么！",
+"id": "a2v_002",
+"source": "seed"
+},
+{
+"en": "invite",
+"phonetic": "ɪnˈvaɪt",
+"wordZh": "邀请",
+"example": "She invited me to her birthday party.",
+"exampleZh": "她邀请我参加她的生日派对。",
+"id": "a2v_003",
+"source": "seed"
+},
+{
+"en": "follow",
+"phonetic": "ˈfɒləʊ",
+"wordZh": "跟随",
+"example": "The children followed the teacher to the classroom.",
+"exampleZh": "孩子们跟着老师进教室。",
+"id": "a2v_004",
+"source": "seed"
+},
+{
+"en": "hard",
+"phonetic": "hɑːd",
+"wordZh": "困难的",
+"example": "The test today was very hard.",
+"exampleZh": "今天的考试很难。",
+"id": "a2v_005",
+"source": "seed"
+},
+{
+"en": "high",
+"phonetic": "haɪ",
+"wordZh": "高的",
+"example": "That mountain is very high.",
+"exampleZh": "那座山很高。",
+"id": "a2v_006",
+"source": "seed"
+},
+{
+"en": "important",
+"phonetic": "ɪmˈpɔːtnt",
+"wordZh": "重要的",
+"example": "Breakfast is an important meal of the day.",
+"exampleZh": "早餐是一天中很重要的一餐。",
+"id": "a2v_007",
+"source": "seed"
+},
+{
+"en": "lovely",
+"phonetic": "ˈlʌvli",
+"wordZh": "可爱的",
+"example": "She has a lovely smile.",
+"exampleZh": "她有着可爱的笑容。",
+"id": "a2v_008",
+"source": "seed"
+},
+{
+"en": "ready",
+"phonetic": "ˈredi",
+"wordZh": "准备好的",
+"example": "Are you ready for the trip?",
+"exampleZh": "你准备好去旅行了吗？",
+"id": "a2v_009",
+"source": "seed"
+},
+{
+"en": "soft",
+"phonetic": "sɒft",
+"wordZh": "柔软的",
+"example": "The pillow is very soft.",
+"exampleZh": "这个枕头很柔软。",
+"id": "a2v_010",
+"source": "seed"
+},
+{
+"en": "weekday",
+"phonetic": "ˈwiːkdeɪ",
+"wordZh": "工作日",
+"example": "Banks are usually open on weekdays.",
+"exampleZh": "银行在工作日通常都开门。",
+"id": "a2v_011",
+"source": "seed"
+},
+{
+"en": "earn",
+"phonetic": "ɜːn",
+"wordZh": "赚取",
+"example": "She earns a lot of money from her job.",
+"exampleZh": "她从工作中赚了很多钱。",
+"id": "a2v_012",
+"source": "seed"
+},
+{
+"en": "notice",
+"phonetic": "ˈnəʊtɪs",
+"wordZh": "告示，公告",
+"example": "There is a notice on the wall.",
+"exampleZh": "墙上有个告示。",
+"id": "a2v_013",
+"source": "seed"
+},
+{
+"en": "discuss",
+"phonetic": "dɪˈskʌs",
+"wordZh": "讨论",
+"example": "We discussed our homework.",
+"exampleZh": "我们讨论了作业。",
+"id": "a2v_014",
+"source": "seed"
+},
+{
+"en": "forget",
+"phonetic": "fəˈɡet",
+"wordZh": "忘记",
+"example": "Don't forget to do your homework.",
+"exampleZh": "别忘了做作业。",
+"id": "a2v_015",
+"source": "seed"
+},
+{
+"en": "advice",
+"phonetic": "ədˈvaɪs",
+"wordZh": "建议",
+"example": "Steven gave me some good advice.",
+"exampleZh": "",
+"id": "a2v_016",
+"source": "seed"
+},
+{
+"en": "plan",
+"phonetic": "plæn",
+"wordZh": "/；计划；打算",
+"example": "We have a plan to visit London next month.",
+"exampleZh": "我们计划下个月去伦敦。 She plans to enter the competition this weekend. 她计划这周参加这场比赛。",
+"id": "a2v_017",
+"source": "seed"
+},
+{
+"en": "driving licence",
+"phonetic": "ˈdraɪvɪŋ laɪsns",
+"wordZh": "驾驶执照，驾驶证",
+"example": "You need a driving licence to drive a car.",
+"exampleZh": "开车需要驾驶执照。",
+"id": "a2v_018",
+"source": "seed"
+},
+{
+"en": "allow",
+"phonetic": "əˈlaʊ",
+"wordZh": "允许",
+"example": "My parents don't allow me to stay out late.",
+"exampleZh": "我父母不允许我在外面待到很晚。",
+"id": "a2v_019",
+"source": "seed"
+},
+{
+"en": "past",
+"phonetic": "pɑːst",
+"wordZh": "过去；经过",
+"example": "I often think about the past.",
+"exampleZh": "我经常想起过去。",
+"id": "a2v_020",
+"source": "seed"
+},
+{
+"en": "weekly",
+"phonetic": "ˈwiːkli",
+"wordZh": "每周的；每周一次",
+"example": "We have a weekly meeting on Mondays.",
+"exampleZh": "我们在周一开周会。 I visit my grandparents weekly. 我每周都去拜访爷爷奶奶。",
+"id": "a2v_021",
+"source": "seed"
+},
+{
+"en": "sure",
+"phonetic": "ʃʊə(r)",
+"wordZh": "确信的，一定的",
+"example": "Are you sure this is your bag?",
+"exampleZh": "你确定这是你的包吗？",
+"id": "a2v_022",
+"source": "seed"
+},
+{
+"en": "block",
+"phonetic": "blɒk",
+"wordZh": "街区",
+"example": "Our school is on the next block.",
+"exampleZh": "我们的学校在下一个街区。",
+"id": "a2v_023",
+"source": "seed"
+},
+{
+"en": "tights",
+"phonetic": "taɪts",
+"wordZh": "紧身裤，连裤袜",
+"example": "Today I'm wearing a skirt and tights.",
+"exampleZh": "今天我穿着裙子和连裤袜。",
+"id": "a2v_024",
+"source": "seed"
+},
+{
+"en": "zip",
+"phonetic": "zɪp",
+"wordZh": "拉链",
+"example": "When I was trying on the jacket, the zip broke.",
+"exampleZh": "我试穿夹克时，拉链坏了。",
+"id": "a2v_025",
+"source": "seed"
+},
+{
+"en": "case",
+"phonetic": "keɪs",
+"wordZh": "情况",
+"example": "In this case, we need to call the police.",
+"exampleZh": "在这种情况下，我们需要报警。",
+"id": "a2v_026",
+"source": "seed"
+},
+{
+"en": "choose",
+"phonetic": "tʃuːz",
+"wordZh": "选择",
+"example": "You can choose a book from the shelf.",
+"exampleZh": "你可以从书架上选一本书。",
+"id": "a2v_027",
+"source": "seed"
+},
+{
+"en": "fashion",
+"phonetic": "ˈfæʃn",
+"wordZh": "时尚；流行款式",
+"example": "Those jeans are not in fashion!",
+"exampleZh": "那些牛仔裤不流行了！",
+"id": "a2v_028",
+"source": "seed"
+},
+{
+"en": "fit",
+"phonetic": "fɪt",
+"wordZh": "合适，合身",
+"example": "The sweatshirt doesn't fit.",
+"exampleZh": "这件运动衫不合身。",
+"id": "a2v_029",
+"source": "seed"
+},
+{
+"en": "pale",
+"phonetic": "peɪl",
+"wordZh": "浅的，淡的",
+"example": "She is wearing a pale pink blouse.",
+"exampleZh": "她穿着一件淡粉色的衬衫。",
+"id": "a2v_030",
+"source": "seed"
+},
+{
+"en": "try on",
+"phonetic": "traɪ ɒn",
+"wordZh": "试穿；试戴",
+"example": "The woman is trying on the hat.",
+"exampleZh": "那位女士正在试帽子。",
+"id": "a2v_031",
+"source": "seed"
+},
+{
+"en": "uniform",
+"phonetic": "ˈjuːnɪfɔːm",
+"wordZh": "制服",
+"example": "She is wearing a dark blue uniform.",
+"exampleZh": "她穿着深蓝色的制服。",
+"id": "a2v_032",
+"source": "seed"
+},
+{
+"en": "light",
+"phonetic": "laɪt",
+"wordZh": "浅的，淡的",
+"example": "He has a light green car.",
+"exampleZh": "他有一辆浅绿色的汽车。",
+"id": "a2v_033",
+"source": "seed"
+},
+{
+"en": "alone",
+"phonetic": "əˈləʊn",
+"wordZh": "单独的；单独地",
+"example": "He likes being alone in the house.",
+"exampleZh": "他喜欢自己一个人呆在家里。 She decided to climb the mountain alone. 她决定独自去爬那座山。",
+"id": "a2v_034",
+"source": "seed"
+},
+{
+"en": "elderly",
+"phonetic": "ˈeldəli",
+"wordZh": "年纪较大的",
+"example": "The elderly man has white hair and walks slowly.",
+"exampleZh": "这位老人头发花白，走路很慢。",
+"id": "a2v_035",
+"source": "seed"
+},
+{
+"en": "healthy",
+"phonetic": "ˈhelθi",
+"wordZh": "健康的",
+"example": "He looks very healthy.",
+"exampleZh": "他看上去很健康。",
+"id": "a2v_036",
+"source": "seed"
+},
+{
+"en": "honest",
+"phonetic": "ˈɒnɪst",
+"wordZh": "诚实的",
+"example": "She is an honest person.",
+"exampleZh": "她是一个诚实的人。",
+"id": "a2v_037",
+"source": "seed"
+},
+{
+"en": "miserable",
+"phonetic": "ˈmɪzrəbl",
+"wordZh": "痛苦的",
+"example": "She looks miserable.",
+"exampleZh": "她看起来很痛苦。",
+"id": "a2v_038",
+"source": "seed"
+},
+{
+"en": "noisy",
+"phonetic": "ˈnɔɪzi",
+"wordZh": "喧闹的",
+"example": "There are some noisy children playing football.",
+"exampleZh": "一些吵闹的孩子们正在踢足球。",
+"id": "a2v_039",
+"source": "seed"
+},
+{
+"en": "pleasant",
+"phonetic": "ˈpleznt",
+"wordZh": "令人愉快的；亲切友好的",
+"example": "He spent a pleasant day in the park.",
+"exampleZh": "他在公园里度过了愉快的一天。 My neighbour is pleasant. 我的邻居很亲切友好。",
+"id": "a2v_040",
+"source": "seed"
+},
+{
+"en": "strange",
+"phonetic": "streɪndʒ",
+"wordZh": "奇怪的",
+"example": "Last night I had a strange dream.",
+"exampleZh": "昨天晚上我做了一个奇怪的梦。",
+"id": "a2v_041",
+"source": "seed"
+},
+{
+"en": "stressed",
+"phonetic": "strest",
+"wordZh": "紧张的，有压力的",
+"example": "He is always stressed before finals.",
+"exampleZh": "他在期末考试之前总是很紧张。",
+"id": "a2v_042",
+"source": "seed"
+},
+{
+"en": "describe",
+"phonetic": "dɪˈskraɪb",
+"wordZh": "描述",
+"example": "The girl often describes her daily life.",
+"exampleZh": "这个女孩经常描述她的日常生活。",
+"id": "a2v_043",
+"source": "seed"
+},
+{
+"en": "monthly",
+"phonetic": "ˈmʌnθli",
+"wordZh": "每月的；每月一次",
+"example": "We have a monthly meeting.",
+"exampleZh": "我们每月开一次会。",
+"id": "a2v_044",
+"source": "seed"
+},
+{
+"en": "able",
+"phonetic": "ˈeɪbl",
+"wordZh": "能够的",
+"example": "He is able to take care of himself.",
+"exampleZh": "他能够自己照顾自己。",
+"id": "a2v_045",
+"source": "seed"
+},
+{
+"en": "cheerful",
+"phonetic": "ˈtʃɪəfl",
+"wordZh": "高兴的，快乐的",
+"example": "He is usually cheerful.",
+"exampleZh": "他总是很高兴。",
+"id": "a2v_046",
+"source": "seed"
+},
+{
+"en": "enjoy",
+"phonetic": "ɪnˈdʒɔɪ",
+"wordZh": "喜爱",
+"example": "I really enjoy that movie.",
+"exampleZh": "我真的很喜欢那部电影。",
+"id": "a2v_047",
+"source": "seed"
+},
+{
+"en": "glad",
+"phonetic": "ɡlæd",
+"wordZh": "高兴的，愉快的",
+"example": "I'm glad to see you.",
+"exampleZh": "我很高兴见到你。",
+"id": "a2v_048",
+"source": "seed"
+},
+{
+"en": "hate",
+"phonetic": "heɪt",
+"wordZh": "憎恨，厌恶",
+"example": "She hates winter.",
+"exampleZh": "她讨厌冬天。",
+"id": "a2v_049",
+"source": "seed"
+},
+{
+"en": "helpful",
+"phonetic": "ˈhelpfl",
+"wordZh": "有帮助的",
+"example": "He is a helpful child.",
+"exampleZh": "他是一个乐于助人的孩子。",
+"id": "a2v_050",
+"source": "seed"
+},
+{
+"en": "lazy",
+"phonetic": "ˈleɪzi",
+"wordZh": "懒惰的",
+"example": "He is a lazy boy.",
+"exampleZh": "他是一个懒惰的男孩。",
+"id": "a2v_051",
+"source": "seed"
+},
+{
+"en": "mad",
+"phonetic": "mæd",
+"wordZh": "愤怒的",
+"example": "He threw away my book and it made me mad.",
+"exampleZh": "他把我的书扔掉了，这让我很愤怒。",
+"id": "a2v_052",
+"source": "seed"
+},
+{
+"en": "nervous",
+"phonetic": "ˈnɜːvəs",
+"wordZh": "紧张不安的",
+"example": "I'm so nervous about the exam.",
+"exampleZh": "我对这次考试感到很紧张。",
+"id": "a2v_053",
+"source": "seed"
+},
+{
+"en": "serious",
+"phonetic": "ˈsɪəriəs",
+"wordZh": "严肃的",
+"example": "Mr Brown is a serious teacher.Brown",
+"exampleZh": "先生是一位严肃的老师。",
+"id": "a2v_054",
+"source": "seed"
+},
+{
+"en": "upset",
+"phonetic": "ˌʌpˈset",
+"wordZh": "难过的，心烦意乱的",
+"example": "He looks very upset.",
+"exampleZh": "他看起来非常难过。",
+"id": "a2v_055",
+"source": "seed"
+},
+{
+"en": "well-known",
+"phonetic": "ˌwel ˈnəʊn",
+"wordZh": "有名的",
+"example": "He is a well-known local artist.",
+"exampleZh": "他是当地有名的艺术家。",
+"id": "a2v_056",
+"source": "seed"
+},
+{
+"en": "annoying",
+"phonetic": "əˈnɔɪɪŋ",
+"wordZh": "恼人的",
+"example": "It's really annoying that the train is late!",
+"exampleZh": "火车晚点了，真让人恼火！",
+"id": "a2v_057",
+"source": "seed"
+},
+{
+"en": "charming",
+"phonetic": "ˈtʃɑːmɪŋ",
+"wordZh": "有魅力的",
+"example": "She's a charming person.",
+"exampleZh": "她是一位有魅力的人。",
+"id": "a2v_058",
+"source": "seed"
+},
+{
+"en": "hope",
+"phonetic": "həʊp",
+"wordZh": "希望",
+"example": "I hope she can win the game.",
+"exampleZh": "我希望她能赢得比赛。",
+"id": "a2v_059",
+"source": "seed"
+},
+{
+"en": "interested",
+"phonetic": "ˈɪntrəstɪd",
+"wordZh": "感兴趣的",
+"example": "I'm not interested in sport.",
+"exampleZh": "我对体育运动不感兴趣。",
+"id": "a2v_060",
+"source": "seed"
+},
+{
+"en": "patient",
+"phonetic": "ˈpeɪʃnt",
+"wordZh": "有耐心的",
+"example": "She is very patient with children.",
+"exampleZh": "她对孩子特别有耐心。",
+"id": "a2v_061",
+"source": "seed"
+},
+{
+"en": "proud",
+"phonetic": "praʊd",
+"wordZh": "自豪的",
+"example": "I'm proud of myself!",
+"exampleZh": "我为自己感到自豪！",
+"id": "a2v_062",
+"source": "seed"
+},
+{
+"en": "special",
+"phonetic": "ˈspeʃl",
+"wordZh": "特殊的，特别的",
+"example": "Here is a special gift for you.",
+"exampleZh": "这是给你的特别礼物。",
+"id": "a2v_063",
+"source": "seed"
+},
+{
+"en": "worry",
+"phonetic": "ˈwʌri",
+"wordZh": "担心，忧虑",
+"example": "Don't worry. She'll be all right.",
+"exampleZh": "别担心。她会没事的。",
+"id": "a2v_064",
+"source": "seed"
+},
+{
+"en": "adult",
+"phonetic": "ˈædʌlt / əˈdʌlt",
+"wordZh": "成人",
+"example": "Children must be with an adult in the swimming pool.",
+"exampleZh": "孩子必须在成人陪同下进入泳池。",
+"id": "a2v_065",
+"source": "seed"
+},
+{
+"en": "backpack",
+"phonetic": "ˈbækpæk",
+"wordZh": "双肩包",
+"example": "Her mother gave her a backpack on her birthday.",
+"exampleZh": "生日那天，她妈妈送给她一个双肩包。",
+"id": "a2v_066",
+"source": "seed"
+},
+{
+"en": "delay",
+"phonetic": "dɪˈleɪ",
+"wordZh": "/；延误；推迟",
+"example": "The plane has a long delay.",
+"exampleZh": "这班飞机要延误很久。",
+"id": "a2v_067",
+"source": "seed"
+},
+{
+"en": "colourful",
+"phonetic": "ˈkʌləfl",
+"wordZh": "色彩鲜艳的；五颜六色的",
+"example": "The painting is colourful.",
+"exampleZh": "这幅画色彩很鲜艳。 The children are wearing colourful costumes. 孩子们穿着五颜六色的服装。",
+"id": "a2v_068",
+"source": "seed"
+},
+{
+"en": "damaged",
+"phonetic": "ˈdæmɪdʒd",
+"wordZh": "遭破坏的；受损的",
+"example": "The cars looked badly damaged.",
+"exampleZh": "车看起来遭到了严重损坏。",
+"id": "a2v_069",
+"source": "seed"
+},
+{
+"en": "deep",
+"phonetic": "diːp",
+"wordZh": "深的",
+"example": "The water isn't deep here.",
+"exampleZh": "这里水不深。",
+"id": "a2v_070",
+"source": "seed"
+},
+{
+"en": "golden",
+"phonetic": "ˈɡəʊldən",
+"wordZh": "金质的；金色的",
+"example": "She wears a golden necklace.",
+"exampleZh": "她戴了一条金项链。 Here is a golden beach. 这里有一片金色的沙滩。",
+"id": "a2v_071",
+"source": "seed"
+},
+{
+"en": "heavy",
+"phonetic": "ˈhevi",
+"wordZh": "重的，沉的",
+"example": "How heavy is that box?",
+"exampleZh": "那个箱子有多重？",
+"id": "a2v_072",
+"source": "seed"
+},
+{
+"en": "old-fashioned",
+"phonetic": "ˌəʊldˈfæʃnd",
+"wordZh": "老式的，过时的",
+"example": "He threw away all those old-fashioned clothes.",
+"exampleZh": "他把那些过时的衣服都扔了。",
+"id": "a2v_073",
+"source": "seed"
+},
+{
+"en": "real",
+"phonetic": "rɪəl",
+"wordZh": "实际存在的，真实的",
+"example": "Are dragons real?",
+"exampleZh": "龙是真实存在的吗？",
+"id": "a2v_074",
+"source": "seed"
+},
+{
+"en": "rough",
+"phonetic": "rʌf",
+"wordZh": "崎岖的，高低不平的",
+"example": "It was a rough mountain road.",
+"exampleZh": "那是一条崎岖的山路。",
+"id": "a2v_075",
+"source": "seed"
+},
+{
+"en": "safe",
+"phonetic": "seɪf",
+"wordZh": "安全的",
+"example": "The streets are safe in this part of town.",
+"exampleZh": "镇上这个地区的街道很安全。",
+"id": "a2v_076",
+"source": "seed"
+},
+{
+"en": "smooth",
+"phonetic": "smuːð",
+"wordZh": "光滑的",
+"example": "The road ahead was flat and smooth.",
+"exampleZh": "前面的路平坦光滑。",
+"id": "a2v_077",
+"source": "seed"
+},
+{
+"en": "thick",
+"phonetic": "θɪk",
+"wordZh": "厚的",
+"example": "I cut the bread into thick slices.",
+"exampleZh": "我把面包切成了厚片。",
+"id": "a2v_078",
+"source": "seed"
+},
+{
+"en": "useful",
+"phonetic": "ˈjuːsfl",
+"wordZh": "有用的",
+"example": "A dictionary can be very useful.",
+"exampleZh": "字典很有用。",
+"id": "a2v_079",
+"source": "seed"
+},
+{
+"en": "borrow",
+"phonetic": "ˈbɒrəʊ",
+"wordZh": "借",
+"example": "I often borrow books from the library.",
+"exampleZh": "我经常从图书馆里借书。",
+"id": "a2v_080",
+"source": "seed"
+},
+{
+"en": "midnight",
+"phonetic": "ˈmɪdnaɪt",
+"wordZh": "午夜",
+"example": "She arrived home at midnight.",
+"exampleZh": "她在午夜到家。 单词 音标 词性 & 词义 例句",
+"id": "a2v_081",
+"source": "seed"
+},
+{
+"en": "business",
+"phonetic": "ˈbɪznəs",
+"wordZh": "生意；商业",
+"example": "My father has a business.",
+"exampleZh": "我父亲自己做生意。",
+"id": "a2v_082",
+"source": "seed"
+},
+{
+"en": "activity",
+"phonetic": "ækˈtɪvəti",
+"wordZh": "活动",
+"example": "The children enjoy the activity.",
+"exampleZh": "孩子们很喜欢这个活动。",
+"id": "a2v_083",
+"source": "seed"
+},
+{
+"en": "engineer",
+"phonetic": "ˌendʒɪˈnɪə(r)",
+"wordZh": "工程师",
+"example": "She works as an engineer in a car company.",
+"exampleZh": "她在一家汽车公司当工程师。",
+"id": "a2v_084",
+"source": "seed"
+},
+{
+"en": "machine",
+"phonetic": "məˈʃiːn",
+"wordZh": "机器",
+"example": "This washing machine is very easy to use.",
+"exampleZh": "这台洗衣机很容易使用。",
+"id": "a2v_085",
+"source": "seed"
+},
+{
+"en": "nature",
+"phonetic": "ˈneɪtʃə(r)",
+"wordZh": "自然",
+"example": "We should protect nature.",
+"exampleZh": "我们应该保护自然。",
+"id": "a2v_086",
+"source": "seed"
+},
+{
+"en": "platform",
+"phonetic": "ˈplætfɔːm",
+"wordZh": "站台",
+"example": "The train leaves from platform 3.",
+"exampleZh": "火车从三号站台出发。",
+"id": "a2v_087",
+"source": "seed"
+},
+{
+"en": "January",
+"phonetic": "ˈdʒænjuəri",
+"wordZh": "一月",
+"example": "His birthday is in January.",
+"exampleZh": "他的生日在一月。",
+"id": "a2v_088",
+"source": "seed"
+},
+{
+"en": "February",
+"phonetic": "ˈfebruəri",
+"wordZh": "二月",
+"example": "He was born in February.",
+"exampleZh": "他是二月出生的。",
+"id": "a2v_089",
+"source": "seed"
+},
+{
+"en": "March",
+"phonetic": "mɑːtʃ",
+"wordZh": "三月",
+"example": "The next meeting will be in March.",
+"exampleZh": "下次会议在三月举行。",
+"id": "a2v_090",
+"source": "seed"
+},
+{
+"en": "April",
+"phonetic": "ˈeɪprəl",
+"wordZh": "四月",
+"example": "We came back in April.",
+"exampleZh": "我们是四月份回来的。",
+"id": "a2v_091",
+"source": "seed"
+},
+{
+"en": "May",
+"phonetic": "meɪ",
+"wordZh": "五月",
+"example": "They got married on 12 May.",
+"exampleZh": "他们是在 5 月 12 日结的婚。",
+"id": "a2v_092",
+"source": "seed"
+},
+{
+"en": "June",
+"phonetic": "dʒuːn",
+"wordZh": "六月",
+"example": "Last June, it rained heavily.",
+"exampleZh": "去年六月雨水很多。",
+"id": "a2v_093",
+"source": "seed"
+},
+{
+"en": "July",
+"phonetic": "dʒuˈlaɪ",
+"wordZh": "七月",
+"example": "We usually go on holiday in July.",
+"exampleZh": "我们通常在七月去度假。",
+"id": "a2v_094",
+"source": "seed"
+},
+{
+"en": "August",
+"phonetic": "ˈɔːɡəst",
+"wordZh": "八月",
+"example": "We're going to Australia on 1 August.",
+"exampleZh": "我们将在 8 月 1 日去澳大利亚。",
+"id": "a2v_095",
+"source": "seed"
+},
+{
+"en": "September",
+"phonetic": "sepˈtembə(r)",
+"wordZh": "九月",
+"example": "School often starts in September.",
+"exampleZh": "学校经常在 9 月开学。",
+"id": "a2v_096",
+"source": "seed"
+},
+{
+"en": "October",
+"phonetic": "ɒkˈtəʊbə(r)",
+"wordZh": "十月",
+"example": "We went to Paris last October.",
+"exampleZh": "去年十月我们去了巴黎。",
+"id": "a2v_097",
+"source": "seed"
+},
+{
+"en": "November",
+"phonetic": "nəʊˈvembə(r)",
+"wordZh": "十一月",
+"example": "I started my new job in November.",
+"exampleZh": "我在十一月开始了新工作。",
+"id": "a2v_098",
+"source": "seed"
+},
+{
+"en": "December",
+"phonetic": "dɪˈsembə(r)",
+"wordZh": "十二月",
+"example": "It might snow in December.",
+"exampleZh": "十二月可能会下雪。",
+"id": "a2v_099",
+"source": "seed"
+},
+{
+"en": "calendar",
+"phonetic": "ˈkælɪndə(r)",
+"wordZh": "日历",
+"example": "I want a new calendar.",
+"exampleZh": "我想要一个新日历。",
+"id": "a2v_100",
+"source": "seed"
+},
+{
+"en": "arrive",
+"phonetic": "əˈraɪv",
+"wordZh": "到达",
+"example": "They arrived at the station early.",
+"exampleZh": "他们很早就到达了车站。",
+"id": "a2v_101",
+"source": "seed"
+},
+{
+"en": "available",
+"phonetic": "əˈveɪləbl",
+"wordZh": "可用的；可获得的",
+"example": "The book is available in the shop.",
+"exampleZh": "这本书在这家店可以买到。",
+"id": "a2v_102",
+"source": "seed"
+},
+{
+"en": "improve",
+"phonetic": "ɪmˈpruːv",
+"wordZh": "改进；提高",
+"example": "Her English improved a lot.",
+"exampleZh": "她的英语进步了很多。",
+"id": "a2v_103",
+"source": "seed"
+},
+{
+"en": "moment",
+"phonetic": "ˈməʊmənt",
+"wordZh": "时刻",
+"example": "We're busy at the moment.",
+"exampleZh": "我们现在很忙。",
+"id": "a2v_104",
+"source": "seed"
+},
+{
+"en": "broken",
+"phonetic": "ˈbrəʊkən",
+"wordZh": "坏掉的；破碎的",
+"example": "My phone is broken, so I can't use it.",
+"exampleZh": "我的手机坏了，所以不能用了。",
+"id": "a2v_105",
+"source": "seed"
+},
+{
+"en": "engine",
+"phonetic": "ˈendʒɪn",
+"wordZh": "发动机",
+"example": "The car has a very big engine.",
+"exampleZh": "这辆车有一个很强劲的发动机。",
+"id": "a2v_106",
+"source": "seed"
+},
+{
+"en": "petrol",
+"phonetic": "ˈpetrəl",
+"wordZh": "汽油",
+"example": "We need to buy some petrol for the car.",
+"exampleZh": "我们需要给车买些汽油。",
+"id": "a2v_107",
+"source": "seed"
+},
+{
+"en": "type",
+"phonetic": "taɪp",
+"wordZh": "种类，类型",
+"example": "What type of music do you like?",
+"exampleZh": "你喜欢哪种类型的音乐？",
+"id": "a2v_108",
+"source": "seed"
+},
+{
+"en": "comfortable",
+"phonetic": "ˈkʌmfiətəbl",
+"wordZh": "舒服的",
+"example": "The bed was really comfortable.",
+"exampleZh": "这张床真的很舒服。",
+"id": "a2v_109",
+"source": "seed"
+},
+{
+"en": "crazy",
+"phonetic": "ˈkreɪzi",
+"wordZh": "狂热的，着迷的；荒唐的；愚蠢的",
+"example": "My brother is crazy about football.",
+"exampleZh": "我哥哥对足球很着迷。",
+"id": "a2v_110",
+"source": "seed"
+},
+{
+"en": "diary",
+"phonetic": "ˈdaɪəri",
+"wordZh": "日记",
+"example": "Lucy began to keep a diary.Lucy",
+"exampleZh": "开始记日记了。",
+"id": "a2v_111",
+"source": "seed"
+},
+{
+"en": "excellent",
+"phonetic": "ˈeksələnt",
+"wordZh": "卓越的，极好的",
+"example": "The food was excellent.",
+"exampleZh": "这食物美味极了。",
+"id": "a2v_112",
+"source": "seed"
+},
+{
+"en": "polite",
+"phonetic": "pəˈlaɪt",
+"wordZh": "有礼貌的",
+"example": "Please be polite to our guests.",
+"exampleZh": "请对我们的客人保持礼貌。",
+"id": "a2v_113",
+"source": "seed"
+},
+{
+"en": "postcard",
+"phonetic": "ˈpəʊstkɑːd",
+"wordZh": "明信片",
+"example": "I got your postcard.",
+"exampleZh": "我收到你寄的明信片了。",
+"id": "a2v_114",
+"source": "seed"
+},
+{
+"en": "scared",
+"phonetic": "skeəd",
+"wordZh": "害怕的",
+"example": "He's scared of spiders.",
+"exampleZh": "他害怕蜘蛛。",
+"id": "a2v_115",
+"source": "seed"
+},
+{
+"en": "ceiling",
+"phonetic": "ˈsiːlɪŋ",
+"wordZh": "天花板",
+"example": "There is a light on the ceiling.",
+"exampleZh": "天花板上有一盏灯。",
+"id": "a2v_116",
+"source": "seed"
+},
+{
+"en": "memory",
+"phonetic": "ˈmeməri",
+"wordZh": "内存",
+"example": "My computer has 16GB of memory.",
+"exampleZh": "我的电脑有 16GB 的内存。",
+"id": "a2v_117",
+"source": "seed"
+},
+{
+"en": "partner",
+"phonetic": "ˈpɑːtnə(r)",
+"wordZh": "搭档；伙伴",
+"example": "She is my partner in the dance competition.",
+"exampleZh": "她是我舞蹈比赛的搭档。",
+"id": "a2v_118",
+"source": "seed"
+},
+{
+"en": "dentist",
+"phonetic": "ˈdentɪst",
+"wordZh": "牙医",
+"example": "I have to see the dentist tomorrow.",
+"exampleZh": "我明天要去看牙医。",
+"id": "a2v_119",
+"source": "seed"
+},
+{
+"en": "dangerous",
+"phonetic": "ˈdeɪndʒərəs",
+"wordZh": "危险的",
+"example": "It's dangerous to play in the street.",
+"exampleZh": "在街上玩耍是危险的。",
+"id": "a2v_120",
+"source": "seed"
+},
+{
+"en": "noon",
+"phonetic": "nuːn",
+"wordZh": "中午",
+"example": "Let's meet at noon.",
+"exampleZh": "我们中午见。",
+"id": "a2v_121",
+"source": "seed"
+},
+{
+"en": "half",
+"phonetic": "hɑːf",
+"wordZh": "/；一半；二分之一",
+"example": "She ate a half of the cake.",
+"exampleZh": "她吃了一半的蛋糕。",
+"id": "a2v_122",
+"source": "seed"
+},
+{
+"en": "cleaner",
+"phonetic": "ˈkliːnə(r)",
+"wordZh": "清洁工",
+"example": "The cleaner cleans the office every morning.",
+"exampleZh": "清洁工每天早上打扫办公室。",
+"id": "a2v_123",
+"source": "seed"
+}
+];
+
+</script>
+<script>
+/* ============================================================
+   R320：图片专用存储（IndexedDB）
+   ------------------------------------------------------------
+   为什么必须有这一层：
+   主档（localStorage）在 iPad Safari 上只有约 5MB，而「重点知识」导入的
+   课本照片以 base64 直接写进主档。一张 1280px 的 JPEG 约 250KB，base64 后约
+   340KB；主档还会被「轻档 + 两代备份」各复制一份，实际占用是 3–4 倍。
+   于是导入三五张图片就把配额撑满 —— 此后 **任何** 保存（包括打卡）都会失败，
+   表现出来就是「图片导入失败」+「打卡后刷新就没了」，这两个老问题同源。
+
+   本模块把图片字节搬到 IndexedDB（iPad 上通常有数百 MB 配额），
+   主档里只留一个几十字节的 imgRef，配额压力从此与图片数量无关。
+
+   设计要点：
+   - put() 先进内存缓存再异步落库，读取侧 getSync() 可同步取到；
+   - 落库失败时回调方保留内联 base64 兜底，宁可占配额也不能丢图；
+   - 全部接口 Promise 化，兼容老数据（没有 imgRef 的仍按内联处理）。
+   ============================================================ */
+(function(){
+  'use strict';
+  var DB_NAME = 'nick_checkin_img_db';
+  var DB_VER  = 1;
+  var STORE   = 'img';
+  var _db = null;
+  var _openPromise = null;
+  var _mem = {};          // ref -> dataURL（本次会话内的同步缓存）
+  var _failed = false;    // IndexedDB 不可用（隐私模式 / 老内核）→ 永久回退内联
+
+  function _open(){
+    if(_db) return Promise.resolve(_db);
+    if(_openPromise) return _openPromise;
+    _openPromise = new Promise(function(resolve){
+      var done = false;
+      function finish(db){ if(done) return; done = true; _db = db || null; if(!db) _failed = true; resolve(_db); }
+      try{
+        if(typeof indexedDB === 'undefined'){ finish(null); return; }
+        var req = indexedDB.open(DB_NAME, DB_VER);
+        req.onupgradeneeded = function(){
+          try{
+            var db = req.result;
+            if(!db.objectStoreNames.contains(STORE)) db.createObjectStore(STORE, { keyPath:'k' });
+          }catch(e){}
+        };
+        req.onsuccess = function(){ finish(req.result); };
+        req.onerror   = function(){ finish(null); };
+        req.onblocked = function(){ finish(null); };
+        // 某些内核 open 既不 success 也不 error（被系统挂起）—— 800ms 后放弃，改走内联
+        setTimeout(function(){ finish(_db); }, 800);
+      }catch(e){ finish(null); }
+    });
+    return _openPromise;
+  }
+
+  function available(){ return !_failed; }
+
+  function put(ref, dataUrl){
+    var k = String(ref || '');
+    var v = String(dataUrl || '');
+    if(!k || !v || v.indexOf('data:image/') !== 0) return Promise.resolve(false);
+    _mem[k] = v;
+    return _open().then(function(db){
+      if(!db) return false;
+      return new Promise(function(resolve){
+        try{
+          var tx = db.transaction([STORE], 'readwrite');
+          tx.objectStore(STORE).put({ k:k, v:v, ts:Date.now() });
+          tx.oncomplete = function(){ resolve(true); };
+          tx.onerror = function(){ resolve(false); };
+          tx.onabort = function(){ resolve(false); };
+        }catch(e){ resolve(false); }
+      });
+    }).catch(function(){ return false; });
+  }
+
+  function get(ref){
+    var k = String(ref || '');
+    if(!k) return Promise.resolve('');
+    if(_mem[k]) return Promise.resolve(_mem[k]);
+    return _open().then(function(db){
+      if(!db) return '';
+      return new Promise(function(resolve){
+        try{
+          var req = db.transaction([STORE], 'readonly').objectStore(STORE).get(k);
+          req.onsuccess = function(){
+            var v = (req.result && req.result.v) || '';
+            if(v) _mem[k] = v;
+            resolve(v);
+          };
+          req.onerror = function(){ resolve(''); };
+        }catch(e){ resolve(''); }
+      });
+    }).catch(function(){ return ''; });
+  }
+
+  function getSync(ref){ return _mem[String(ref || '')] || ''; }
+
+  function putSync(ref, dataUrl){
+    var k = String(ref || ''), v = String(dataUrl || '');
+    if(!k || !v) return false;
+    _mem[k] = v;
+    put(k, v);           // 异步落库，失败也不影响本次会话显示
+    return true;
+  }
+
+  function del(ref){
+    var k = String(ref || '');
+    delete _mem[k];
+    return _open().then(function(db){
+      if(!db) return false;
+      return new Promise(function(resolve){
+        try{
+          var tx = db.transaction([STORE], 'readwrite');
+          tx.objectStore(STORE).delete(k);
+          tx.oncomplete = function(){ resolve(true); };
+          tx.onerror = function(){ resolve(false); };
+        }catch(e){ resolve(false); }
+      });
+    }).catch(function(){ return false; });
+  }
+
+  function keys(){
+    return _open().then(function(db){
+      if(!db) return Object.keys(_mem);
+      return new Promise(function(resolve){
+        try{
+          var req = db.transaction([STORE], 'readonly').objectStore(STORE).getAllKeys();
+          req.onsuccess = function(){ resolve((req.result || []).map(String)); };
+          req.onerror = function(){ resolve(Object.keys(_mem)); };
+        }catch(e){ resolve(Object.keys(_mem)); }
+      });
+    }).catch(function(){ return Object.keys(_mem); });
+  }
+
+  function clear(){
+    _mem = {};
+    return _open().then(function(db){
+      if(!db) return false;
+      return new Promise(function(resolve){
+        try{
+          var tx = db.transaction([STORE], 'readwrite');
+          tx.objectStore(STORE).clear();
+          tx.oncomplete = function(){ resolve(true); };
+          tx.onerror = function(){ resolve(false); };
+        }catch(e){ resolve(false); }
+      });
+    }).catch(function(){ return false; });
+  }
+
+  function stats(){
+    var n = 0, bytes = 0;
+    Object.keys(_mem).forEach(function(k){ n++; bytes += (_mem[k] || '').length; });
+    return { count:n, memBytes:bytes, available:available(), engine:DB_NAME };
+  }
+
+  window.ImgStore = {
+    available: available,
+    put: put,
+    putSync: putSync,
+    get: get,
+    getSync: getSync,
+    del: del,
+    keys: keys,
+    clear: clear,
+    stats: stats
+  };
+})();
+
+</script>
+<script>
 /* ============================================================================
    R272 · 统一持久化数据层（根治 iPad Safari 数据丢失）
    ----------------------------------------------------------------------------
@@ -18532,7 +19859,7 @@ window.R298_TASK_PLAN = {
          否则「删完立刻切后台」这条路径写出去的仍是上一代的序号，刷新会被旧副本压回去。 */
       try{ _r318TombCapture(st); }catch(e){}
       _r318NextSeq(st);
-      const raw = JSON.stringify(st);
+      const raw = JSON.stringify(_r320DiskView(st));
       // R265-4：版本更新 / 关页面前同样留一份 IndexedDB 镜像（pagehide 在 iPad 上不一定触发）
       const _fts = Date.now();
       try{ _mirrorWrite(raw, _fts); }catch(e){}
@@ -19618,7 +20945,7 @@ window.R298_TASK_PLAN = {
     const done = _restoreFromBackup(st, bad);
     if(done.length){
       // 迁移造成的清零：把救回的数据立即落库，避免下次又读到坏值
-      try{ const raw = JSON.stringify(st); if(_safeSet(KEY, raw)){ _rotateBackup(raw, true); _loadCachePut(st, raw); } }catch(e){}
+      try{ const raw = JSON.stringify(_r320DiskView(st)); if(_safeSet(KEY, raw)){ _rotateBackup(raw, true); _loadCachePut(st, raw); } }catch(e){}
     }
     return done;
   }
@@ -19855,6 +21182,15 @@ window.R298_TASK_PLAN = {
     }
     if(st.clickSfx && typeof st.clickSfx.third === 'undefined') st.clickSfx.third = 'h';
     if(st.clickSfx && st.clickSfx.sub === 'i' && st._clickSfxLevelsR246) st.clickSfx.sub = 'k';
+    /* R320-1：打卡音效「一次点击只响一声」——
+       旧默认 c 是 4 音符上行琶音，一次打卡连发 4 个音，听感即「响了两三次」。
+       老存档里凡是仍停在默认 c 的，一次性换成单响清音 q；用户若自己选过别的预设则保持不动。 */
+    if(!st._clickSfxSingleR320){
+      if(!st.clickSfx) st.clickSfx = {nav:'a', theme:'l', sub:'k', third:'h', checkin:'q'};
+      if(st.clickSfx.checkin === 'c' || !st.clickSfx.checkin) st.clickSfx.checkin = 'q';
+      st._clickSfxSingleR320 = true;
+      save(st);
+    }
     // R150-5：系统默认关闭所有按键音效；是否发声交由用户在设置中心自主开启（soundOn 缺省 false）
     if(typeof st.soundOn === 'undefined') st.soundOn = false;
     // v8：题库默认 2 道公因数题（含详细解答过程）；重建后立即持久化，避免每次 load() 生成新 id
@@ -20653,6 +21989,31 @@ window.R298_TASK_PLAN = {
       }
       if(changed) save(st);
     })();
+    /* R320-9：A2 Key Vocabulary（《词汇.docx》123 词）导入学而思「词汇」板块。
+       规则与 R167-4 的 doc 导入完全一致：用户新增 → 本次导入 → 旧种子，
+       按 id 与英文原词双重去重，绝不覆盖用户自己改过的词条，只追加一次。 */
+    (function mergeA2Vocab(){
+      const seed = (typeof window !== 'undefined' && Array.isArray(window.XS_A2_VOCAB)) ? window.XS_A2_VOCAB : [];
+      if(!seed.length) return;
+      if(st._r320A2VocabV1) return;
+      const norm = function(s){ return String(s || '').toLowerCase().replace(/[^a-z]/g, ''); };
+      const words = st.xueersiContent.words || (st.xueersiContent.words = []);
+      const haveId = new Set(words.map(function(w){ return w && w.id; }));
+      const haveEn = new Set(words.map(function(w){ return w ? norm(w.en) : ''; }).filter(Boolean));
+      const add = seed.filter(function(v){
+        if(!v || !v.id) return false;
+        if(haveId.has(v.id)) return false;
+        const k = norm(v.en);
+        return !!k && !haveEn.has(k);
+      }).map(function(v){ return JSON.parse(JSON.stringify(v)); });
+      if(add.length){
+        const userW = words.filter(function(w){ return w && w.source === 'user'; });
+        const restW = words.filter(function(w){ return !(w && w.source === 'user'); });
+        st.xueersiContent.words = userW.concat(add, restW);
+      }
+      st._r320A2VocabV1 = 1;
+      save(st);
+    })();
     // R167-1：问候语知识库 20 条 → 365 条（六类）。未改过默认列表的用户自动升级；
     //         自己增删过的保留原列表（家长可在问候语编辑器点「恢复默认 365 条」获取新版）
     if(st.homeGreetsVer !== 2){
@@ -20970,7 +22331,7 @@ window.R298_TASK_PLAN = {
     st.__pendingApplied = p.__at;
     // 叠加后立刻把完整状态写回主档；成功即清补丁（下次不会重复叠加）
     try{
-      const raw = JSON.stringify(st);
+      const raw = JSON.stringify(_r320DiskView(st));
       if(_writeMain(raw).ok){ _pendingClear(); _snapshotClear(); _rotateBackup(raw, true); }
     }catch(e){}
     return true;
@@ -21352,6 +22713,34 @@ window.R298_TASK_PLAN = {
     return st;
   }
   function hasSettingsSnapshot(){ return !!_safeGet(KEY_SNAPSHOT); }
+  /* R320-3：落盘视图 —— 已迁到 IndexedDB 的图片（有 imgRef）不再写进主档 / 备份 / 补丁。
+     内存里仍保留 img 供当前会话渲染（hydrate 后再保存也不会把 base64 写回去）。
+     只对 enKeyPoints 做浅拷贝，代价在微秒级，不影响打卡响应。 */
+  function _r320DiskView(st){
+    try{
+      const kp = st && st.enKeyPoints;
+      if(!kp || typeof kp !== 'object') return st;
+      let copy = null;
+      Object.keys(kp).forEach(function(u){
+        const list = kp[u];
+        if(!Array.isArray(list)) return;
+        for(let i=0;i<list.length;i++){
+          const it = list[i];
+          if(it && it.imgRef && it.img){
+            if(!copy) copy = {};
+            if(!copy[u]) copy[u] = list.slice();
+            copy[u][i] = Object.assign({}, it, { img:'' });
+          }
+        }
+      });
+      if(!copy) return st;
+      const out = Object.assign({}, st);
+      const nextKp = Object.assign({}, kp);
+      Object.keys(copy).forEach(function(u){ nextKp[u] = copy[u]; });
+      out.enKeyPoints = nextKp;
+      return out;
+    }catch(e){ return st; }
+  }
   function save(st, _opts){
     /* R270-7.1：_opts.noBackup —— 首启「空档」不值得当备份（详见 load 首次落库处）*/
     const _skipBak = !!(_opts && _opts.noBackup);
@@ -21376,7 +22765,7 @@ window.R298_TASK_PLAN = {
     let raw;
     let _r256Entry = null;
     try{ _r256Entry = _r256Ledger(st); }catch(e){}
-    try{ raw = JSON.stringify(st); }
+    try{ raw = JSON.stringify(_r320DiskView(st)); }
     catch(e){ _saveError = 'serialize'; _loadCachePut(st); return false; }
     /* R318：业务内容与上一次落库完全一致 → 不重复写盘（只把序号还原，保证内存与磁盘同代）。
        iPad 上「同一处反复点击」原本每次都要重写 300KB+ 并连带刷新三份副本，
@@ -22445,12 +23834,27 @@ window.R298_TASK_PLAN = {
     const st = load();
     if(!st.enKeyPoints) st.enKeyPoints = {};
     if(!st.enKeyPoints[unitId]) st.enKeyPoints[unitId] = [];
+    const rawImg = String((item && item.img) || '');
     const added = {
       id: _enKpNewId(),
-      img: String((item && item.img) || ''),
+      img: rawImg,
+      imgRef: '',
       t:   String((item && item.t) || '').slice(0, 120),
       ts:  Date.now()
     };
+    /* R320-3【配额根治】：图片字节搬去 IndexedDB，主档里只留 imgRef。
+       旧实现把 base64 直接写进主档，一张课本照片 300–400KB，而主档还会被
+       「轻档 + 两代备份」复制 3–4 份；导入几张就把 localStorage 的 5MB 撑满，
+       之后连打卡都保存不了（这正是「图片导不进 + 打卡刷新丢失」的共同根因）。
+       putSync 先写内存缓存保证本次会话立即可渲染，落库异步进行。 */
+    let offloaded = false;
+    try{
+      const _idbOK = (typeof indexedDB !== 'undefined');
+      if(rawImg && rawImg.length > 600 && _idbOK && window.ImgStore && window.ImgStore.available()){
+        const ref = 'enkp_' + added.id;
+        if(window.ImgStore.putSync(ref, rawImg)){ added.imgRef = ref; added.img = ''; offloaded = true; }
+      }
+    }catch(e){}
     st.enKeyPoints[unitId].push(added);
     // R317-1：回读校验改按唯一 id —— 同图重复导入也能精确识别「这一张」是否落库。
     const ok = r316VerifiedSave(st, function(fresh){
@@ -22463,7 +23867,64 @@ window.R298_TASK_PLAN = {
       _loadCachePut(st);
       return null;
     }
+    /* R320-3：IndexedDB 落库失败的兜底 —— 把 base64 回填内联，宁可占配额也不能丢图。
+       这条分支只在极少数内核（隐私模式 / IDB 被禁）触发。 */
+    if(offloaded){
+      try{
+        window.ImgStore.put(added.imgRef, rawImg).then(function(wrote){
+          if(wrote) return;
+          try{
+            const s2 = load();
+            const list = (s2.enKeyPoints && s2.enKeyPoints[unitId]) || [];
+            const it = list.filter(function(x){ return x && x.id === added.id; })[0];
+            if(it && !it.img){ it.img = rawImg; it.imgRef = ''; save(s2); }
+          }catch(e){}
+        }).catch(function(){});
+      }catch(e){}
+    }
     return st.enKeyPoints[unitId].slice();
+  }
+  /* R320-3：旧数据一次性迁移 —— 把主档里的内联 base64 搬到 IndexedDB。
+       老用户升级后不必重新导入图片，且迁移完成即刻释放数百 KB 到数 MB 配额。
+       返回迁移张数；失败保持原样（不删原图，绝不因迁移丢数据）。 */
+  function offloadEnKpImages(){
+    if(typeof indexedDB === 'undefined') return Promise.resolve(0);
+    if(!window.ImgStore || !window.ImgStore.available()) return Promise.resolve(0);
+    const st = load();
+    const map = st.enKeyPoints || {};
+    const jobs = [];
+    Object.keys(map).forEach(function(u){
+      (map[u] || []).forEach(function(it){
+        if(!it || it.imgRef) return;
+        const img = String(it.img || '');
+        if(img.indexOf('data:image/') !== 0 || img.length < 2000) return;
+        jobs.push({ u:u, id:it.id, img:img });
+      });
+    });
+    if(!jobs.length) return Promise.resolve(0);
+    let n = 0;
+    const done = [];
+    return jobs.reduce(function(p, job){
+      return p.then(function(){
+        const ref = 'enkp_m_' + String(job.id || (Date.now().toString(36) + Math.random().toString(36).slice(2, 6)));
+        return window.ImgStore.put(ref, job.img).then(function(ok){
+          if(ok){ n++; done.push({ u:job.u, id:job.id, ref:ref }); }
+        });
+      });
+    }, Promise.resolve()).then(function(){
+      if(!done.length) return 0;
+      const cur = load();
+      done.forEach(function(d){
+        const list = (cur.enKeyPoints && cur.enKeyPoints[d.u]) || [];
+        list.forEach(function(it){
+          if(it && (!d.id || it.id === d.id) && String(it.img || '').indexOf('data:image/') === 0){
+            it.imgRef = d.ref; it.img = '';
+          }
+        });
+      });
+      save(cur);
+      return n;
+    }).catch(function(){ return n; });
   }
   // R317-1：删除改为「唯一 id / 下标」双识别 —— 老数据没有 id 时回退到下标 + img+ts，
   // 新数据一律按 id 精确匹配，彻底消除同图误判。
@@ -22517,6 +23978,10 @@ window.R298_TASK_PLAN = {
       try{ const f = r316ReadFresh(); if(f && f.enKeyPoints) st.enKeyPoints = f.enKeyPoints; if(f && f.readFlags) st.readFlags = f.readFlags; }catch(e){}
       _loadCachePut(st);
       return null;
+    }
+    // R320-3：图片本体在 IndexedDB，主档删掉引用后要同步清理，避免孤儿图片长期占用配额
+    if(removed && removed.imgRef){
+      try{ if(window.ImgStore && window.ImgStore.del) window.ImgStore.del(removed.imgRef); }catch(e){}
     }
     return st.enKeyPoints[unitId].slice();
   }
@@ -23128,6 +24593,8 @@ window.R298_TASK_PLAN = {
     /* R273-4.1：重置也要清掉开放时间独立副本，否则会把旧配置复活回来 */
     try{ localStorage.removeItem(KEY_OPENTIME); }catch(e){}
     try{ _mirrorDelete(); }catch(e){}
+    // R320-3：用户主动清空数据时，IndexedDB 里的图片也一并清掉（否则成了看不见的占位）
+    try{ if(window.ImgStore && window.ImgStore.clear) window.ImgStore.clear(); }catch(e){}
     _mirrorLastTs = 0;
     return load();
   }
@@ -30169,7 +31636,7 @@ be 动词：am / is → was；are → were
     // R248-4：纯标记类打卡状态持久化
     isUiFlag, markUiFlag, unmarkUiFlag,
     // R122：新世界·英语专区「重点知识」单元图片（含删除后打卡下标重排）
-    getEnKeyPoints, addEnKeyPoint, delEnKeyPoint, shiftEnKeyPointReads,
+    getEnKeyPoints, addEnKeyPoint, delEnKeyPoint, shiftEnKeyPointReads, offloadEnKpImages,
     // R219-1：学而思英语·课堂笔记「学年 / lesson」选项（可新增 / 删除）
     getXsNoteYears, setXsNoteYears, getXsNoteLessons, setXsNoteLessons,
     // R224-2：内置课堂笔记图片播种完成标志
@@ -37025,8 +38492,37 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   // ---------- R122：「书本词汇」改名「重点知识」，内容改为以导入图片为主 ----------
   // 单元元数据仍复用 EN_OXFORD_VOCAB_3A（Unit 1–10 的 id/unit/title），但不再渲染词汇表文本。
   const EN_KP_READ = 'enKeyPoint';   // 打卡 kind（与书本课文的 enOxfordTheme 对应）
+  /* R320-3：图片字节在 IndexedDB，主档只存 imgRef。
+     启动时先迁老数据再水合；若某次渲染时图片还没进内存，就地触发一次水合并重渲染，
+     用户侧表现就是「图片稍后自己出现」，不会再出现「导入失败 / 图片空白」。 */
+  let _kpHydrating = false;
+  function enKpHydrate(){
+    if(_kpHydrating) return Promise.resolve(0);
+    const st = (window.Store && window.Store.load) ? window.Store.load() : null;
+    const map = (st && st.enKeyPoints) || {};
+    const jobs = [];
+    Object.keys(map).forEach(function(u){
+      (map[u] || []).forEach(function(it){ if(it && it.imgRef && !it.img) jobs.push(it); });
+    });
+    if(!jobs.length) return Promise.resolve(0);
+    const I = window.ImgStore;
+    if(!I || !I.get) return Promise.resolve(0);
+    _kpHydrating = true;
+    return Promise.all(jobs.map(function(it){
+      return I.get(it.imgRef).then(function(v){ if(v) it.img = v; }).catch(function(){});
+    })).then(function(){ _kpHydrating = false; return jobs.length; })
+      .catch(function(){ _kpHydrating = false; return 0; });
+  }
   function enKpItems(unitId){
-    return (window.Store && window.Store.getEnKeyPoints) ? window.Store.getEnKeyPoints(unitId) : [];
+    const items = (window.Store && window.Store.getEnKeyPoints) ? window.Store.getEnKeyPoints(unitId) : [];
+    // 有引用但内存里还没有图 → 后台水合，完成后刷新当前单元（只刷一次，不会循环）
+    if(items.some(function(x){ return x && x.imgRef && !x.img; })){
+      enKpHydrate().then(function(n){
+        if(!n) return;
+        try{ if(document.getElementById('enSlotBody')) renderEnKeyPoints(_enKpUnit); }catch(e){}
+      });
+    }
+    return items;
   }
   function enKpDoneCount(unitId, items){
     return (items||[]).filter((it,k)=> S.isReadingRead(EN_KP_READ, unitId+'::'+k)).length;
@@ -39538,17 +41034,18 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       const readN = books.filter(b=>b.read).length;
       stat.textContent = cats.length + ' 个分类 · ' + books.length + ' 本书 · 已读 ' + readN;
     }
+    const parentMode = (typeof isParent === 'function') ? isParent() : true;
     grid.innerHTML = cats.map(c=>{
       const list = books.filter(b=>b.cat === c.id);
       const rows = list.map(b=>`
         <div class="r319-book-row${b.read?' is-read':''}" data-r319-bid="${esc(b.id)}">
           <span class="r319-book-name">《${esc(b.title)}》</span>
           <span class="r319-book-author">${b.author?esc(b.author)+' 著':''}</span>
-          <span class="r319-book-ops">
-            <button type="button" class="r319-row-btn r319-read${b.read?' done':''}" data-r319-act="read" title="${b.read?'取消已读':'标记已读'}">${b.read?'✓ 已读':'已读'}</button>
+          <button type="button" class="r319-row-btn r319-read${b.read?' done':''}" data-r319-act="read" title="${b.read?'取消已读':'标记已读'}">${b.read?'✓ 已读':'已读'}</button>
+          ${parentMode ? `<span class="r319-book-ops">
             <button type="button" class="r319-row-btn r319-edit" data-r319-act="edit" title="编辑书名/作者/分类">✏️</button>
             <button type="button" class="r319-row-btn r319-del" data-r319-act="del" title="删除这本书">🗑</button>
-          </span>
+          </span>` : ''}
         </div>`).join('') || '<div class="r319-cat-empty">暂无书籍，点右上「添加书籍」新增</div>';
       return `
         <div class="r319-cat-card" data-r319-cat="${esc(c.id)}">
@@ -42649,9 +44146,25 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         const t0 = S.load().tasks.find(x => x.id === ck.dataset.check);
         if(isCalcDailyTask(t0)){ toggleCalcDailyFromHome(); return; }
         const r = S.toggleCheckIn(S.todayStr(), ck.dataset.check);
-        toast(r.completed ? ('打卡成功 +'+(r.stars||0)+'⭐') : (r.isSuspicious ? '⚠️ 疑似无效打卡（过快）' : '已取消'));
+        /* R320-2：先给即时视觉反馈，再把整页重渲染推到下一帧 ——
+           原先「同步落盘 300KB + 全量重渲染」全部挡在点击回调里，iPad 上就是明显的按下去半秒才变。
+           圆钮先变绿，重绘随后跟上，手感立即跟手。 */
+        if(r && r.completed){ try{ ck.classList.add('on'); }catch(_){} }
+        else { try{ ck.classList.remove('on'); }catch(_){} }
+        const _saveErr = (S.getSaveError && S.getSaveError()) || '';
+        if(r && _saveErr){
+          // R320-2：保存失败必须让用户看见，绝不能再「界面打了勾、刷新全没了」
+          toast('⚠️ 这次打卡没能写入本机（' + _saveErr + '），请先删掉部分图片再试');
+        } else {
+          toast(r.completed ? ('打卡成功 +'+(r.stars||0)+'⭐') : (r.isSuspicious ? '⚠️ 疑似无效打卡（过快）' : '已取消'));
+        }
         if(r.completed) playCheckinSound();
-        renderHome(); renderToday();
+        // R320-2b：rAF 可能被节流/暂停（iPad 切后台、省电模式、测试桩），必须补一个定时器兜底，
+        // 否则「落盘成功但界面不重绘」——用户会以为没打上卡。两者只生效一次。
+        let _redrawn = false;
+        const _redraw = ()=>{ if(_redrawn) return; _redrawn = true; renderHome(); renderToday(); };
+        if(typeof requestAnimationFrame === 'function') requestAnimationFrame(_redraw);
+        setTimeout(_redraw, 60);
         return;
       }
       // V37：节日卡点击 → 打开节日详情弹窗
@@ -50405,7 +51918,11 @@ function renderKMAdmin(){
     m:  { group:'按键', label:'圆润嘟',    play(){ sfxSeq([['F5',0.16,0.22,'triangle',0,0]]); } },
     n:  { group:'按键', label:'机械键',    play(){ sfxSeq([['D6',0.035,0.18,'sawtooth',0,0],['A5',0.07,0.20,'triangle',0.035,0]]); } },
     o:  { group:'按键', label:'露珠滴',    play(){ sfxSeq([[1750,0.12,0.18,'sine',0,760]]); } },
-    p:  { group:'按键', label:'八音盒',    play(){ sfxSeq(sfxNotes(['C7','G6','E7'], 0.12, 0.15, 'triangle', 0.075)); } }
+    p:  { group:'按键', label:'八音盒',    play(){ sfxSeq(sfxNotes(['C7','G6','E7'], 0.12, 0.15, 'triangle', 0.075)); } },
+    /* R320-1：打卡专用「单响清音」—— 一次打卡只发一个音。
+       旧的 c「打卡上行琶音」一次点击连发 4 个音符（523/659/784/1046Hz 每隔 70ms），
+       听感就是「音效响两三次」，这才是用户反复反馈「打卡音效响 2 次」的真正原因。 */
+    q:  { group:'经典', label:'打卡清音（单响）', play(){ sfxTone(1046.5, 0.20, 0.26, 'sine', 0, 0); } }
   };
   // R60-2：试听 —— 先恢复 AudioContext（部分浏览器挂起态会吞掉首帧声音），放大音量并保证只响当前一个
   function stopSfxPreview(){
@@ -50430,7 +51947,7 @@ function renderKMAdmin(){
   //         音高由高到低、音色由亮到闷（导航最清脆 → 第三档最轻短），点得越深声音越轻；
   //         打卡（checkin）保留独立的庆祝琶音。四档均可在「设置中心 · 系统设置 · 点击音效设置」里单独更换/试听。
   const SFX_SLOTS = ['nav', 'theme', 'sub', 'third', 'checkin'];
-  function defaultClickSfx(){ return { nav:'a', theme:'l', sub:'k', third:'h', checkin:'c' }; }
+  function defaultClickSfx(){ return { nav:'a', theme:'l', sub:'k', third:'h', checkin:'q' }; }
   // 读取某槽位当前音效预设 id（缺省回退默认）
   function getClickSfx(slot){ const st=(window.Store&&window.Store.load)?window.Store.load():null; const cfg=(st&&st.clickSfx)||defaultClickSfx(); return cfg[slot] || defaultClickSfx()[slot] || 'f'; }
   // 播放某槽位音效
@@ -54291,7 +55808,7 @@ function renderKMAdmin(){
       const _st = (window.Store && window.Store.load) ? window.Store.load() : null;
       if(_st && _st._clickSfxReset !== 'R143'){
         // R246-2：与「按卡片层级区别化」保持一致 —— 导航/主题卡/次级主题卡/三级主题卡四档各不相同，打卡音独立
-        _st.clickSfx = { nav:'a', theme:'l', sub:'k', third:'h', checkin:'c' };
+        _st.clickSfx = { nav:'a', theme:'l', sub:'k', third:'h', checkin:'q' };
         _st._clickSfxReset = 'R143';
         if(window.Store && window.Store.save) window.Store.save(_st);
       }
@@ -56941,6 +58458,20 @@ function init(){
     initFarmMusicState();
     initKMBgmState();   // R76-3：知识秘境背景音乐设置初始化（读回开关/曲目 + 绑定控件）
     initEnKeyPointImport(); // R122：英语专区「重点知识」图片导入（隐藏 file input 的 change 绑定，全局只绑一次）
+    /* R320-3：启动后把老存档里「内联 base64」的重点知识图片迁到 IndexedDB，
+       迁完立刻把图片读回内存供渲染。这一步同时释放主档几百 KB~数 MB 的配额，
+       是「图片导不进 / 打卡保存失败」从根上缓解的关键动作。
+       延后 900ms，避开首屏渲染，绝不阻塞打卡与页面切换。 */
+    setTimeout(()=>{
+      try{
+        const P = (S && S.offloadEnKpImages) ? S.offloadEnKpImages() : Promise.resolve(0);
+        Promise.resolve(P).then(function(n){
+          return enKpHydrate().then(function(){
+            if(n){ try{ if(typeof window.__slotRerender === 'function') window.__slotRerender(); }catch(e){} }
+          });
+        }).catch(function(){});
+      }catch(e){}
+    }, 900);
     initXsNoteImport();    // R218-1：学而思「课堂笔记」图片导入（独立隐藏 input，全局只绑一次）
     renderHome();
     if(typeof autoWelcomeJudy==='function') autoWelcomeJudy();
@@ -59388,7 +60919,7 @@ function init(){
   /* R317-4.4：单元目标板块内的「阶段性挑战增减设置」（仅家长模式可见）。
      内置挑战用 hidden 名单做「隐藏 / 恢复」，家长自建挑战用 custom 数组做「新增 / 删除」；
      隐藏与删除都不改打卡记录与⭐流水，删除动作统一二次确认。 */
-  function r317ChallengeSetupHtml(){
+  function r317ChallengeSetupHtml(bare){
     if(!(typeof isParent === 'function') || !isParent()) return '';
     const r = r314St();
     const ch = (r.challenges && typeof r.challenges === 'object') ? r.challenges : {};
@@ -59413,8 +60944,9 @@ function init(){
         String(c.desc || '家长自定义挑战') + ' · 目标 ' + (c.target | 0) + (c.unit || '天'),
         hidden.indexOf(String(c.id)) >= 0, true);
     })).join('') || '<div class="r314-empty">暂无可设置的挑战</div>';
-    return '<div class="r314-card r317-ch-setup"><div class="r314-card-head">⚙️ 阶段性挑战增减设置（家长）</div>' +
-      '<div class="r317-ch-setup-list">' + rows + '</div>' +
+    /* R320-6：设置面板从「单元目标」迁到「阶段性挑战」卡片内，由标题右侧的按键展开。
+       bare=true 时不带卡片外壳（避免卡中卡），只出标题行 + 列表 + 新增表单。 */
+    const inner = '<div class="r317-ch-setup-list">' + rows + '</div>' +
       '<div class="r317-ch-add">' +
         '<label>挑战名称<input id="r317ChName" maxlength="24" placeholder="例如：14 天练字挑战"></label>' +
         '<label>进度依据<select id="r317ChMetric"><option value="readDays">累计阅读天数</option><option value="calcStreak">连续计算打卡</option></select></label>' +
@@ -59423,8 +60955,12 @@ function init(){
         '<label>说明<input id="r317ChDesc" maxlength="40" placeholder="给孩子的挑战说明"></label>' +
         '<button class="pbtn r314-add" id="r317ChAdd" type="button">＋ 新增挑战</button>' +
       '</div>' +
-      '<div class="r314-tip">内置挑战隐藏后只是不再展示，原有进度与领奖记录保留；家长自建挑战可随时删除，删除前会再次确认。</div>' +
-    '</div>';
+      '<div class="r314-tip">内置挑战隐藏后只是不再展示，原有进度与领奖记录保留；家长自建挑战可随时删除，删除前会再次确认。</div>';
+    if(bare){
+      return '<div class="r320-ch-setup-inner">' +
+        '<div class="r320-ch-setup-title">⚙️ 阶段性挑战增减设置（家长）</div>' + inner + '</div>';
+    }
+    return '<div class="r314-card r317-ch-setup"><div class="r314-card-head">⚙️ 阶段性挑战增减设置（家长）</div>' + inner + '</div>';
   }
   function r317BindChallengeSetup(){
     const addBtn = document.getElementById('r317ChAdd');
@@ -59452,7 +60988,7 @@ function init(){
       toast('🏁 挑战「' + name + '」已添加');
       r314RenderTab();
     };
-    $$('#archiveGoalHost [data-r317-ch-hide]').forEach(function(b){
+    $$('#r320ChSetupHost [data-r317-ch-hide]').forEach(function(b){
       b.onclick = function(){
         const id = b.getAttribute('data-r317-ch-hide');
         r307DangerConfirm('将隐藏该阶段性挑战，挑战进度与已领取奖励记录保留，之后可恢复显示。确认隐藏吗？', function(){
@@ -59467,7 +61003,7 @@ function init(){
         }, '隐藏阶段性挑战');
       };
     });
-    $$('#archiveGoalHost [data-r317-ch-restore]').forEach(function(b){
+    $$('#r320ChSetupHost [data-r317-ch-restore]').forEach(function(b){
       b.onclick = function(){
         const id = b.getAttribute('data-r317-ch-restore');
         const r = r314St();
@@ -59478,7 +61014,7 @@ function init(){
         r314RenderTab();
       };
     });
-    $$('#archiveGoalHost [data-r317-ch-del]').forEach(function(b){
+    $$('#r320ChSetupHost [data-r317-ch-del]').forEach(function(b){
       b.onclick = function(){
         const id = b.getAttribute('data-r317-ch-del');
         const r = r314St();
@@ -59578,7 +61114,8 @@ function init(){
         '</div></div>';
     }).join('') || '<div class="r314-empty">还没有设置单元目标，添加一个吧～</div>';
 
-    /* R317-4.4：左「新建单元学习目标」、右「我的目标」并排；家长模式下方追加阶段挑战增减设置 */
+    /* R317-4.4：左「新建单元学习目标」、右「我的目标」并排
+       R320-6：阶段挑战增减设置已迁入「阶段性挑战」卡片（标题右侧按键展开），这里不再输出 */
     const newCard = '<div class="r314-card"><div class="r314-card-head">🎯 新建单元学习目标</div>' +
       '<div class="r314-form">' +
         '<label>目标名称<input id="growGoalTitle" maxlength="30" placeholder="例如：口算 100 题全对"></label>' +
@@ -59592,7 +61129,7 @@ function init(){
     '</div>';
     const myCard = '<div class="r314-card"><div class="r314-card-head">📌 我的目标（' + goals.length + '）</div>' + list + '</div>';
     return '<div class="r317-goal-cols"><div class="r317-goal-new">' + newCard + '</div>' +
-      '<div class="r317-goal-mine">' + myCard + '</div></div>' + r317ChallengeSetupHtml();
+      '<div class="r317-goal-mine">' + myCard + '</div></div>';
   }
 
   function r314BindGoal(){
@@ -60174,6 +61711,23 @@ function init(){
     try{ r315RenderReportExtra(); }catch(e){}
     const ch = document.getElementById('archiveChallengeHost');
     if(ch){ ch.innerHTML = r314ChallengeHtml(true); }
+    /* R320-6：阶段性挑战增减设置挂在「🔥 阶段性挑战」标题右侧，默认收起，家长模式可见 */
+    const chSetup = document.getElementById('r320ChSetupHost');
+    if(chSetup){
+      chSetup.innerHTML = r317ChallengeSetupHtml(true);
+      if(!chSetup.innerHTML){ chSetup.hidden = true; }
+    }
+    const chBtn = document.getElementById('r320ChSetupBtn');
+    if(chBtn && !chBtn._r320Bound){
+      chBtn._r320Bound = true;
+      chBtn.onclick = function(){
+        const host = document.getElementById('r320ChSetupHost');
+        if(!host) return;
+        host.hidden = !host.hidden;
+        chBtn.setAttribute('aria-expanded', host.hidden ? 'false' : 'true');
+        chBtn.textContent = host.hidden ? '⚙️ 增减设置' : '⚙️ 收起设置';
+      };
+    }
     const gl = document.getElementById('archiveGoalHost');
     if(gl){ gl.innerHTML = r315Bare(r314GoalHtml()); }
     /* R317-2：摘抄本已从成长档案迁出，#archiveExcerptHost 下线（现挂在新世界语文专区 #ywSlotBody） */
