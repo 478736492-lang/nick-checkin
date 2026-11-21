@@ -10785,18 +10785,21 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
            第二行 古诗词鉴赏（1fr，与好词好句等宽）+ 优秀作文（2fr，移到古诗词右侧）
    R313-3：好词使用卡内好词卡一行两张
    ============================================================ */
-.reading-cn .reading-cols{display:flex;flex-direction:column;gap:12px;align-items:stretch}
-/* R316-3：两行卡片统一间距（好词好句 ↔ 好词使用、古诗词鉴赏 ↔ 古诗词应用 ↔ 优秀作文） */
-.reading-cn{--r316-cn-gap:16px}
-.reading-cn .rd-cn-row{display:grid;grid-template-columns:1fr;gap:var(--r316-cn-gap);min-width:0;align-items:stretch}
+/* R317-3：语文阅读板块「全部内容卡片」间距统一 —— 以原「好词好句 ↔ 古诗词鉴赏」的
+   行间标准 12px 为准，行内 / 行间共用同一个变量，杜绝两套间距并存。 */
+.reading-cn{--r317-cn-gap:12px}
+.reading-cn .reading-cols{display:flex;flex-direction:column;gap:var(--r317-cn-gap);align-items:stretch}
+/* R316-3 / R317-3：两行卡片统一间距（好词好句 ↔ 好词使用、古诗词鉴赏 ↔ 古诗词应用 ↔ 优秀作文） */
+.reading-cn .rd-cn-row{display:grid;grid-template-columns:1fr;gap:var(--r317-cn-gap);min-width:0;align-items:stretch}
 /* R315-B1：两行共用同一组列轨道变量 —— 第一行的「好词好句」与第二行的「古诗词鉴赏」
    永远落在同一个 1fr 轨道上，宽度严格一致。
    根因修复：`1fr 2fr` 的 fr 隐含 minmax(auto, fr)，第二列内容最小宽度不同（好词使用是双列网格、
    优秀作文是长文本）时会把 1fr 挤成不同宽度；改为 minmax(0,·) 后比例恒定。 */
 .reading-cn{--r315-cn-col-a:minmax(0,1fr);--r315-cn-col-b:minmax(0,2fr)}
 .reading-cn .rd-cn-row-1{grid-template-columns:var(--r315-cn-col-a) var(--r315-cn-col-b)}
-/* R316-2/3：第二行三卡等间距 —— 古诗词鉴赏（与好词好句同宽）/ 古诗词应用 / 优秀作文 */
-.reading-cn .rd-cn-row-2{grid-template-columns:var(--r315-cn-col-a) minmax(0,1.2fr) var(--r315-cn-col-b)}
+/* R317-3：第二行三卡「等宽」 —— 古诗词鉴赏 / 古诗词应用 / 优秀作文 三张卡宽度一致。
+   行1 仍为 1fr:2fr（好词好句 : 好词使用），古诗词鉴赏取 1/3 恰与好词好句同宽，R315 约束继续成立。 */
+.reading-cn .rd-cn-row-2{grid-template-columns:repeat(3,minmax(0,1fr))}
 .reading-cn .rd-cn-row-1>.rc-words,.reading-cn .rd-cn-row-2>.rc-poem,.reading-cn .rd-cn-row-2>.rc-poem-use{width:100%;min-width:0}
 /* 显式补一列 margin，防止个别浏览器把 grid gap 折叠成 0（用户反馈的「间距丢失」） */
 .reading-cn .rd-cn-row-1>.rc-words,.reading-cn .rd-cn-row-2>.rc-poem{margin-right:0}
@@ -10820,7 +10823,7 @@ body.theme-light-r271 .sidebar,body.theme-light-r271 .page-title,body.theme-ligh
   .reading-cn .rd-cn-row-1,.reading-cn .rd-cn-row-2{grid-template-columns:1fr}
 }
 @media (max-width:560px){
-  .reading-cn{--r316-cn-gap:12px}
+  .reading-cn{--r317-cn-gap:12px}
 }
 
 /* ============================================================
@@ -11143,6 +11146,39 @@ body.r314-frame-gold .home-avatar{box-shadow:0 0 0 4px #f4dd97,0 6px 18px rgba(1
 .page-archive .card-head h3:hover{color:var(--tone-600)}
 @media (max-width:560px){
   .page-archive .r316-atabs .r314-tab{flex:1 1 46%;min-width:0;font-size:11.5px}
+}
+
+/* ============================================================
+   R317-4：成长档案排版微调
+   ============================================================ */
+/* 4.3 作息健康：提醒在左，今日作息 / 最近 7 天在右 */
+.r317-health-cols{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:12px;align-items:start}
+.r317-health-side,.r317-health-main{display:flex;flex-direction:column;gap:10px;min-width:0}
+.r317-health-side .r315-blk,.r317-health-main .r315-blk{margin-bottom:0}
+/* 4.4 单元目标：新建目标在左，我的目标在右 */
+.r317-goal-cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;align-items:start}
+.r317-goal-cols .r315-blk{min-width:0}
+.r317-ch-setup{margin-top:12px}
+.r317-ch-setup-list{display:flex;flex-direction:column;gap:6px}
+.r317-ch-setup-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) auto;gap:8px;align-items:center;padding:7px 9px;background:var(--tone-025);border:1px solid var(--tone-150);border-radius:10px;font-size:12px}
+.r317-ch-setup-row.off{opacity:.58}
+.r317-ch-setup-name{font-weight:900;color:var(--tone-800)}
+.r317-ch-setup-desc{color:var(--tone-600);font-size:11.5px}
+.r317-ch-add{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;align-items:end;margin-top:10px;padding-top:10px;border-top:1.5px dashed var(--tone-200)}
+.r317-ch-add label{display:flex;flex-direction:column;gap:4px;font-size:11.5px;font-weight:800;color:var(--tone-700);min-width:0}
+.r317-ch-add input,.r317-ch-add select{min-height:32px;border:1px solid var(--tone-200);border-radius:9px;padding:0 9px;font-size:12.5px;font-weight:700;color:var(--tone-900);background:var(--tone-025);min-width:0}
+.r317-ch-add .pbtn{min-height:32px;font-size:11.5px;font-weight:800}
+/* 4.5 数据统计：完成率 / 薄弱任务紧跟卡片标题 */
+.r317-stats-extra{grid-column:1/-1;background:var(--tone-025);border:1px solid var(--tone-150);border-radius:12px;padding:10px 12px;margin-bottom:10px}
+.r317-stats-h{font-size:12.5px;font-weight:900;color:var(--tone-800);margin-bottom:7px}
+@media (max-width:900px){
+  .r317-health-cols{grid-template-columns:minmax(0,260px) minmax(0,1fr)}
+  .r317-goal-cols{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:560px){
+  .r317-health-cols{grid-template-columns:minmax(0,1fr)}
+  .r317-ch-setup-row{grid-template-columns:minmax(0,1fr) auto}
+  .r317-ch-setup-desc{grid-column:1/-1}
 }
 
 </style>
@@ -12516,7 +12552,7 @@ body.r314-frame-gold .home-avatar{box-shadow:0 0 0 4px #f4dd97,0 6px 18px rgba(1
       <button class="r314-tab" data-r316-atab="badge" data-page-node-id="R316TabBadge">🏅 徽章墙</button>
       <button class="r314-tab" data-r316-atab="challenge" data-page-node-id="R316TabChallenge">🔥 阶段挑战</button>
       <button class="r314-tab" data-r316-atab="goal" data-page-node-id="R316TabGoal">🎯 单元目标</button>
-      <button class="r314-tab" data-r316-atab="excerpt" data-page-node-id="R316TabExcerpt">📝 摘抄本</button>
+      <!-- R317-2：摘抄本已迁移至「新世界·语文专区·精读仿写右侧」，成长档案页签下线 -->
       <button class="r314-tab" data-r316-atab="health" data-page-node-id="R316TabHealth">🌙 作息健康</button>
     </div>
     <div class="archive-grid" data-page-node-id="ibzJFBBAtBWH9sce7K9Yiv">
@@ -12541,16 +12577,17 @@ body.r314-frame-gold .home-avatar{box-shadow:0 0 0 4px #f4dd97,0 6px 18px rgba(1
         <div class="card-head" data-page-node-id="1br7s9Tt9ByjZoyHndSTNv"><h3 data-page-node-id="wDgGrJcYCARYEzr4mQ3I16">🏅 徽章墙</h3></div>
         <div class="badge-wall" id="badgeWall" data-page-node-id="pvQ38kHGPo7x4p6QAqxVxr"></div>
       </div>
-      <div class="card stats-card" data-r316-atab-panel="report" data-page-node-id="EbKlZV9IbewiTo25tHRMYV">
-        <div class="card-head" data-page-node-id="Yh3Kd9LmQ2nR8sT6vWx1Za"><h3 data-page-node-id="Pq7R4tV2bN9mK6cX1zL8Yw">📊 数据统计</h3></div>
-        <div class="archive-stats" id="archiveStats" data-page-node-id="K0tjupdFDhcPGNZtZeP9Gq"></div>
-      </div>
-      <div class="card cert-card" data-r316-atab-panel="report" data-page-node-id="TVDJsWWfwtehBgIXFux1Lk">
+      <!-- R317-4.1：电子奖状从学情报告迁移至徽章墙板块（同页签展示） -->
+      <div class="card cert-card" data-r316-atab-panel="badge" data-page-node-id="TVDJsWWfwtehBgIXFux1Lk">
         <div class="card-head" data-page-node-id="Jh8MWFQZWQmt1ZRGNGrnoi">
           <h3 data-page-node-id="aHsTjvQLCn5RwuwFdm7u9a">🎖️ 电子奖状</h3>
           <button class="pbtn hidden-in-child" id="btnManageCerts" title="家长可增删改电子奖状，关联打卡数据" data-page-node-id="ck05bdOSAogwD01Q0yR43d">⚙️ 管理</button>
         </div>
         <div class="cert-list" id="certList" data-page-node-id="ePJ6yumaNG0tzOtxHoZBOv"></div>
+      </div>
+      <div class="card stats-card" data-r316-atab-panel="report" data-page-node-id="EbKlZV9IbewiTo25tHRMYV">
+        <div class="card-head" data-page-node-id="Yh3Kd9LmQ2nR8sT6vWx1Za"><h3 data-page-node-id="Pq7R4tV2bN9mK6cX1zL8Yw">📊 数据统计</h3></div>
+        <div class="archive-stats" id="archiveStats" data-page-node-id="K0tjupdFDhcPGNZtZeP9Gq"></div>
       </div>
     </div>
     <!-- R315-G1：原「成长中心」其余板块并入成长档案（顺序按使用频次：先挑战目标，再积累与作息） -->
@@ -12563,10 +12600,7 @@ body.r314-frame-gold .home-avatar{box-shadow:0 0 0 4px #f4dd97,0 6px 18px rgba(1
         <div class="card-head" data-page-node-id="R315ArchiveGoalHead"><h3 data-page-node-id="R315ArchiveGoalH3">🎯 单元目标</h3></div>
         <div id="archiveGoalHost" data-page-node-id="R315ArchiveGoalHost"></div>
       </div>
-      <div class="card r315-card" data-r316-atab-panel="excerpt" data-page-node-id="R315ArchiveExcerptCard">
-        <div class="card-head" data-page-node-id="R315ArchiveExcerptHead"><h3 data-page-node-id="R315ArchiveExcerptH3">📝 摘抄积累本</h3></div>
-        <div id="archiveExcerptHost" data-page-node-id="R315ArchiveExcerptHost"></div>
-      </div>
+      <!-- R317-2：摘抄本卡片已迁移至新世界语文专区（精读仿写右侧） -->
       <div class="card r315-card" data-r316-atab-panel="health" data-page-node-id="R315ArchiveHealthCard">
         <div class="card-head" data-page-node-id="R315ArchiveHealthHead"><h3 data-page-node-id="R315ArchiveHealthH3">🌙 作息健康</h3></div>
         <div id="archiveHealthHost" data-page-node-id="R315ArchiveHealthHost"></div>
@@ -19767,6 +19801,10 @@ window.R298_TASK_PLAN = {
       /* R315-C6：阶段性挑战奖励可由家长改写（只覆盖被改写的那一项，未改写的沿用默认） */
       if(!r.challenges.reward || typeof r.challenges.reward !== 'object') r.challenges.reward = {};
       if(!r.challenges.name || typeof r.challenges.name !== 'object') r.challenges.name = {};
+      /* R317-4.4：阶段性挑战增减设置 —— custom 为家长自建挑战，hidden 为被隐藏的内置挑战 id；
+         只补齐缺失结构，已有数组原样保留，绝不覆盖家长与打卡数据。 */
+      if(!Array.isArray(r.challenges.custom)) r.challenges.custom = [];
+      if(!Array.isArray(r.challenges.hidden)) r.challenges.hidden = [];
     })();
     /* R315-A1：新世界各板块错题本 —— 结构化错题（题干 / 备注 / 解题思路 / 图片凭证）。
        与旧 nwZone 里只有标题的「错题本 / 错题笔记」条目分开存：旧条目原样保留只读展示，
@@ -21456,9 +21494,21 @@ window.R298_TASK_PLAN = {
     if(typeof verifier === 'function'){
       let fresh = r316ReadFresh();
       if(!verifier(fresh)){
-        // 主档桥梁回读仍有旧值：直写一次并同步缓存（镜像随后由 save 的异步链补齐）
-        try{ localStorage.setItem(KEY, JSON.stringify(st)); }catch(e){}
-        _loadCachePut(st);
+        /* R317-1 彻底修复：旧版只直写 localStorage 并_put 缓存，但 r316ReadFresh 优先读
+           IndexedDB 主库（_primaryRaw 仍是旧值），于是「补救写」对回读完全无效 →
+           verifier 二次失败 → add/del 误报失败并回滚内存，但磁盘可能已是新值，
+           造成「点删除提示失败 / 刷新后图片又残留」的内存-磁盘分叉。
+           这里在补救写时同步刷新 R272 主库内存真相，确保回读立刻看到本次写入。 */
+        let fixed = '';
+        try{ fixed = JSON.stringify(st); }catch(e){}
+        try{ if(fixed) localStorage.setItem(KEY, fixed); }catch(e){}
+        _loadCachePut(st, fixed || undefined);
+        try{
+          const _P = (typeof window !== 'undefined') ? window.R272P : null;
+          if(fixed && _P && typeof _P.write === 'function'){
+            _P.write(fixed, Date.now(), { reason:'r317-resync', dedup:false }).catch(function(){});
+          }
+        }catch(e){}
         fresh = r316ReadFresh();
         if(!verifier(fresh)) return false;
       }
@@ -21492,45 +21542,86 @@ window.R298_TASK_PLAN = {
     const st = load();
     return (st.enKeyPoints && st.enKeyPoints[unitId]) ? st.enKeyPoints[unitId].slice() : [];
   }
+  const EN_KP_READ_PREFIX = 'enKeyPoint';
+  // R317-1：每张图片分配「唯一 id」——旧版回读校验用 img+ts 识别图片，
+  // 同毫秒导入的相同图片（或同一张被重复选择）会拿到相同 img+ts，删一张后另一张仍匹配，
+  // 导致 delEnKeyPoint 误判「没删掉」而回滚，磁盘却已删 → 刷新后状态与界面不一致。
+  let _enKpSeq = 0;
+  function _enKpNewId(){ _enKpSeq++; return 'kp' + Date.now().toString(36) + '_' + _enKpSeq.toString(36) + '_' + Math.random().toString(36).slice(2, 7); }
   function addEnKeyPoint(unitId, item){
     const st = load();
     if(!st.enKeyPoints) st.enKeyPoints = {};
     if(!st.enKeyPoints[unitId]) st.enKeyPoints[unitId] = [];
-    st.enKeyPoints[unitId].push({
+    const added = {
+      id: _enKpNewId(),
       img: String((item && item.img) || ''),
       t:   String((item && item.t) || '').slice(0, 120),
       ts:  Date.now()
-    });
-    const added = st.enKeyPoints[unitId][st.enKeyPoints[unitId].length - 1];
-    // R316-1：导入后从主档原文回读确认这张图片真的落库了，回读失败一律按失败处理。
+    };
+    st.enKeyPoints[unitId].push(added);
+    // R317-1：回读校验改按唯一 id —— 同图重复导入也能精确识别「这一张」是否落库。
     const ok = r316VerifiedSave(st, function(fresh){
       const list = fresh && fresh.enKeyPoints && fresh.enKeyPoints[unitId];
-      return !!(list && list.some(function(x){ return x && x.img === added.img && x.ts === added.ts; }));
+      return !!(list && list.some(function(x){ return x && x.id === added.id; }));
     });
-    // R126 安全加固：配额超限（写入失败）时回滚内存态，避免「看起来导入成功、刷新后丢失」以及
-    // 后续任何 save 反复序列化超大 dataURL 失败；返回 null 作为失败信号。
     if(!ok){
-      st.enKeyPoints[unitId].pop();
+      // 写盘失败：以主档真实内容重建内存态，避免磁盘/内存分叉（可能部分写入成功）
+      try{ const f = r316ReadFresh(); if(f && f.enKeyPoints) st.enKeyPoints = f.enKeyPoints; }catch(e){}
       _loadCachePut(st);
       return null;
     }
     return st.enKeyPoints[unitId].slice();
   }
-  function delEnKeyPoint(unitId, idx){
+  // R317-1：删除改为「唯一 id / 下标」双识别 —— 老数据没有 id 时回退到下标 + img+ts，
+  // 新数据一律按 id 精确匹配，彻底消除同图误判。
+  function delEnKeyPoint(unitId, idxOrId, readKind){
     const st = load();
     if(!st.enKeyPoints || !st.enKeyPoints[unitId]) return null;
-    const i = parseInt(idx, 10);
-    if(isNaN(i) || i < 0 || i >= st.enKeyPoints[unitId].length) return null;
-    const removed = st.enKeyPoints[unitId][i];
-    st.enKeyPoints[unitId].splice(i, 1);
-    // R316-1：删除必须「回读确认」——主档里若还能找到这张图，就说明删了个假，
-    // 明确返回 null 让 UI 报错，绝不能给你「已删除」的假象。
+    const list = st.enKeyPoints[unitId];
+    let i = -1, removed = null;
+    if(typeof idxOrId === 'string' && !/^\d+$/.test(idxOrId)){
+      for(let j = 0; j < list.length; j++){ if(list[j] && list[j].id === idxOrId){ i = j; break; } }
+    }
+    if(i < 0){
+      const n = parseInt(idxOrId, 10);
+      if(!isNaN(n) && n >= 0 && n < list.length){ i = n; }
+    }
+    if(i < 0) return null;
+    removed = list[i];
+    list.splice(i, 1);
+    // R317-1：删除 + readFlags 重排「单次落库」完成（原子），杜绝两次 save 之间崩溃
+    // 造成「图片删了、打卡下标没跟上」的错位；readFlags 收缩需一次性放行。
+    const prefix = (readKind || EN_KP_READ_PREFIX) + '::' + unitId + '::';
+    const nextFlags = {};
+    let shifted = false;
+    if(st.readFlags){
+      Object.keys(st.readFlags).forEach(function(k){
+        if(k.indexOf(prefix) === 0){
+          const n = parseInt(k.slice(prefix.length), 10);
+          if(!isNaN(n)){
+            if(n === i){ shifted = true; return; }      // 被删那条的打卡记录一并丢弃
+            nextFlags[prefix + (n > i ? n - 1 : n)] = st.readFlags[k];
+            if(n !== n - (n > i ? 1 : 0)) shifted = true;
+            return;
+          }
+        }
+        nextFlags[k] = st.readFlags[k];
+      });
+      if(shifted){ st.readFlags = nextFlags; try{ allowShrinkOnce(['readFlags']); }catch(e){} }
+    }
     const ok = r316DeleteSave(st, function(fresh){
-      const list = fresh && fresh.enKeyPoints && fresh.enKeyPoints[unitId];
-      return !!list && !list.some(function(x){ return x && x.img === removed.img && x.ts === removed.ts; });
+      const fl = fresh && fresh.enKeyPoints && fresh.enKeyPoints[unitId];
+      if(!fl) return false;
+      if(removed && removed.id){
+        if(fl.some(function(x){ return x && x.id === removed.id; })) return false;
+      }else if(removed){
+        if(fl.some(function(x){ return x && x.img === removed.img && x.ts === removed.ts; })) return false;
+      }
+      return true;
     });
     if(!ok){
-      st.enKeyPoints[unitId].splice(i, 0, removed);
+      // 失败：完全以磁盘为准重建内存，杜绝「界面已删、磁盘还在」的残留假象
+      try{ const f = r316ReadFresh(); if(f && f.enKeyPoints) st.enKeyPoints = f.enKeyPoints; if(f && f.readFlags) st.readFlags = f.readFlags; }catch(e){}
       _loadCachePut(st);
       return null;
     }
@@ -31617,9 +31708,11 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
   // 顶部三功能卡片定义：每张卡含多个圆形子按钮
   const YW_TOP_CARDS = [
     // R240-1：「字词读写」按键及内容整体移除（田字格组件样式保留，供「必背知识」字词复用）
+    // R317-2：专项知识移到「必背知识」右侧展示（原在作文专项卡内）
     { title:'课文同步', icon:'📚', items:[
       { key:'keda',     icon:'📖', label:'课文朗读' },
-      { key:'ciyu',     icon:'📘', label:'必背知识' }
+      { key:'ciyu',     icon:'📘', label:'必背知识' },
+      { key:'zxzs',     icon:'📚', label:'专项知识' }
     ] },
     // R250-3：交换「作文专项」与「小学古诗文」顺序；移除「看图写话」入口及全部内容页面
     { title:'小学古诗文', icon:'📜', items:[
@@ -31629,7 +31722,8 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     { title:'作文专项', icon:'✏️', items:[
       /* R313-6：作文素材与精读仿写位置互换 —— 精读仿写在前，作文素材在后 */
       { key:'jingdu',   icon:'✍️', label:'精读仿写' },
-      { key:'zxzs',     icon:'📚', label:'专项知识' },
+      /* R317-2：成长档案「摘抄本」迁移至此，紧邻精读仿写右侧展示 */
+      { key:'jcb',      icon:'📝', label:'摘抄本' },
       { key:'sucai',    icon:'💡', label:'作文素材' }
     ] }
   ];
@@ -31842,8 +31936,9 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
 
       // R250-3：看图写话内容页已整体移除
       case 'sucai':    html = ywSucai(pg); break;
-      case 'zxzs':     html = ywZhuanxiang(); break; // R251-3：作文专项「专项知识」
+      case 'zxzs':     html = ywZhuanxiang(); break; // R251-3：专项知识（R317-2 移到必背知识右侧）
       case 'jingdu':   html = ywJingdu(); break;     // R312-6：作文专项「精读仿写」
+      case 'jcb':      html = r314ExcerptHtml(); break; // R317-2：摘抄本从成长档案迁入语文专区（精读仿写右侧）
       case 'gushi':    html = ywGushi(pg); break;
       case 'wenyan':   html = ywWenyan(pg); break;
       default:         html = '';
@@ -31927,6 +32022,10 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
           }
         });
       });
+    }
+    // R317-2：摘抄本迁入语文专区 —— 在插槽范围内绑定（新增/删除/同步大阅读）
+    if(key === 'jcb'){
+      try{ r314BindExcerpt('#ywSlotBody', ()=> renderYuwenSlot('jcb', label, slotBody)); }catch(e){}
     }
     // R62-3：必背知识 · 子板块（第N课/语文园地）切换
     if(key === 'ciyu'){
@@ -33590,7 +33689,9 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         if(!unit) return;
         const i = parseInt(card.getAttribute('data-kp-card'), 10);
         if(isNaN(i)) return;
-        if(_enKpDelMode){ enKpDeleteImage(unit, i); return; }  // R123：删除模式下点图片→确认删除
+        // R317-1：删除时传图片稳定 id（老数据回退下标），避免同图 / 下标错位导致删错或删不掉
+        const kpId = card.getAttribute('data-kp-id') || String(i);
+        if(_enKpDelMode){ enKpDeleteImage(unit, kpId, i); return; }  // R123：删除模式下点图片→确认删除
         openKpViewer(card);  // R125：普通模式点图片→放大查看（打卡移到图片下方打卡键）
       });
     });
@@ -33608,17 +33709,21 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       });
     });
     // R123：重点知识 —— 删除图片（顶部「🗑 删除」模式触发：先确认，再重排打卡下标并删除，避免「已学」错位）
-    const enKpDeleteImage = (unitId, idx)=>{
+    const enKpDeleteImage = (unitId, kpId, idx)=>{
       const list = (window.Store && window.Store.getEnKeyPoints) ? window.Store.getEnKeyPoints(unitId) : [];
       const it = list[idx];
       const name = (it && it.t) ? it.t : ('第 ' + (idx+1) + ' 张');
       openCustomModal('删除重点知识图片',
         `确定删除「<b>${esc(name)}</b>」这张重点知识图片吗？<div style="margin-top:8px;color:#5b6b85;font-size:13px">删除后不可恢复，该图片的打卡记录也会一并清除。</div>`,
         ()=>{
-          // R316-1：先删图片再重排打卡下标，两步都必须真实落库；任何一步失败都不报「已删除」
-          const after = (window.Store && window.Store.delEnKeyPoint) ? window.Store.delEnKeyPoint(unitId, idx) : null;
-          if(after === null){ toast('⚠️ 删除未生效，请重试'); return false; }
-          if(window.Store && window.Store.shiftEnKeyPointReads) window.Store.shiftEnKeyPointReads(unitId, idx, EN_KP_READ);
+          // R317-1：删除 + 打卡下标重排已合并为 store 层「单次落库」原子操作；
+          // 传稳定 id 精确定位，失败返回 null → 以磁盘真相重渲染，绝不谎报「已删除」。
+          const after = (window.Store && window.Store.delEnKeyPoint) ? window.Store.delEnKeyPoint(unitId, kpId, EN_KP_READ) : null;
+          if(after === null){
+            toast('⚠️ 删除未生效，请重试');
+            if(typeof rerender === 'function') rerender();   // 用磁盘真实内容刷新，杜绝残留假象
+            return false;
+          }
           // R316-1：清掉旧图片节点的 src，避免浏览器内存缓存让已删图片「闪回」
           const oldImg = slotBody.querySelector('[data-kp-card="' + idx + '"] img');
           if(oldImg) oldImg.src = '';
@@ -36032,10 +36137,11 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     const complete = total > 0 && done === total;
     const starN = total ? Math.round(done/total*5) : 0;
     const starStr = '⭐'.repeat(starN) + '☆'.repeat(5-starN);
-    const cardsHtml = total ? items.map((it,k)=>{
+      const cardsHtml = total ? items.map((it,k)=>{
       const d = S.isReadingRead(EN_KP_READ, u.id+'::'+k);
+      const kpId = it && it.id ? it.id : ('i'+k);   // R317-1：稳定 id，供删除精确识别（同图不再混淆）
       return `
-        <div class="kp-img-card${d?' is-checked':''}" data-kp-card="${k}" title="${_enKpDelMode?'点击删除这张图片':'点击图片放大查看内容'}">
+        <div class="kp-img-card${d?' is-checked':''}" data-kp-card="${k}" data-kp-id="${esc(kpId)}" title="${_enKpDelMode?'点击删除这张图片':'点击图片放大查看内容'}">
           <img class="kp-img" src="${esc(it.img)}" alt="${esc(it.t||'重点知识')}" loading="lazy" decoding="async" />
           ${it.t ? `<div class="kp-img-cap">${esc(it.t)}</div>` : ''}
           <div class="kp-img-foot">
@@ -36065,8 +36171,8 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       <div class="en-oxford-foot">本单元共 ${total} 张 · 已完成 ${done} 张${complete?' · 🎉 本单元已全部完成':''}</div>`;
   }
   // R122：图片导入 —— 读文件 → 等比压缩到最长边 1280 → JPEG 0.8 dataURL（避免撑爆 localStorage）
-  function enKpCompressImage(file, cb){
-    const MAX_EDGE = 1280;
+  function enKpCompressImage(file, cb, maxEdge){
+    const MAX_EDGE = maxEdge || 1280;
     const fr = new FileReader();
     fr.onload = ()=>{
       const src = String(fr.result || '');
@@ -36842,17 +36948,23 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     return new Promise(resolve=>{
       let settled = false;
       const finish = ok=>{ if(!settled){ settled = true; resolve(!!ok); } };
-      try{
-        enKpCompressImage(f, dataUrl=>{
-          if(!dataUrl){ finish(false); return; }
-          try{
-            // R126/R316：返回 null = 写入回读校验失败或配额超限（已回滚），一律按失败处理
-            const r = (window.Store && window.Store.addEnKeyPoint) ? window.Store.addEnKeyPoint(unitId, { img:dataUrl, t:'' }) : null;
-            if(r === null) toast('⚠️ 这张图片未能保存，请检查存储空间后重试');
-            finish(r !== null);
-          }catch(e){ toast('⚠️ 图片保存失败：' + (e && e.message ? e.message : '存储空间不足')); finish(false); }
-        });
-      }catch(e){ finish(false); }
+      // R317-1：配额超限时逐级缩小图片再试（1280 → 1024 → 800 → 640），
+      // 而不是一张失败就整批作废 —— 这是「导入不稳定」最直接的根因之一。
+      const EDGES = [1280, 1024, 800, 640];
+      const tryEdge = (i)=>{
+        if(i >= EDGES.length){ toast('⚠️ 这张图片未能保存，请检查存储空间后重试'); finish(false); return; }
+        try{
+          enKpCompressImage(f, dataUrl=>{
+            if(!dataUrl){ finish(false); return; }
+            try{
+              const r = (window.Store && window.Store.addEnKeyPoint) ? window.Store.addEnKeyPoint(unitId, { img:dataUrl, t:'' }) : null;
+              if(r === null){ tryEdge(i + 1); return; }   // 写入未落库 → 缩图重试
+              finish(true);
+            }catch(e){ tryEdge(i + 1); }
+          }, EDGES[i]);
+        }catch(e){ tryEdge(i + 1); }
+      };
+      tryEdge(0);
     });
   }
   function initEnKeyPointImport(){
@@ -36861,9 +36973,12 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     inp._kpBound = true;
     inp.addEventListener('change', ()=>{
       const files = Array.prototype.slice.call(inp.files || []).filter(f=> /^image\//.test(f.type || ''));
+      // R317-1：目标单元在 change 触发这一刻同步锁定并立即清空全局暂存，
+      // 避免连续点「增加」时上一次的 _enKpAddUnit 串到本次导入（并发/串单元根因）。
+      const unitId = _enKpAddUnit || ((EN_OXFORD_VOCAB_3A[_enKpUnit]||{}).id) || '';
+      _enKpAddUnit = '';
       inp.value = '';   // R316-1：立即释放文件句柄，重复选同一张图也能再次触发
       if(!files.length) return;
-      const unitId = _enKpAddUnit || ((EN_OXFORD_VOCAB_3A[_enKpUnit]||{}).id) || '';
       if(!unitId){ toast('请先选择一个单元'); return; }
       let added = 0;
       _enKpImportChain = _enKpImportChain.then(()=>{
@@ -36871,7 +36986,6 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         files.forEach(f=>{ chain = chain.then(()=>enKpImportOne(unitId, f)).then(ok=>{ if(ok) added++; }); });
         return chain;
       }).then(()=>{
-        _enKpAddUnit = '';   // 清掉一次性目标，后续导入始终跟随当前单元
         toast(added ? ('✅ 已导入 ' + added + ' 张重点知识图片') : '⚠️ 图片导入失败，请重试');
         if(added){
           // R234-7：原地刷新当前板块（不整页重渲染），Unit 5 以后导入完也不会跳回「书本课文 / Unit 1」
@@ -43330,6 +43444,15 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     const sysWords = allWords.filter(x=>x.source!=='user' && x.meta==='好词');
     return [...userW, ...dailyRotate(sysWords, 1, 0)];
   }
+  /* R317-3：收录书屋「好词使用」全量数据源 —— R301 曾把书屋限定成当日轮换 1 组（约 8 词），
+     丢失了 R300 原有的全部系统好词（约 194 词）。这里补回「用户自建好词 + 全部系统好词」，
+     不做 dailyRotate 截断；仅书屋使用，大阅读当日卡仍走 haociDisplayGroups 保持每日轮换不变。 */
+  function haociAllGroups(){
+    const allWords = S.getReading('cnWords').filter(x=>x && x.source!=='archived');
+    const userW = allWords.filter(x=>x.source==='user' && x.meta==='好词');
+    const sysWords = allWords.filter(x=>x.source!=='user' && x.meta==='好词');
+    return [...userW, ...sysWords];
+  }
   // R209-2：好词好句栏每日展示 1 个成语打卡卡（R295 起迁入「每日文学」独立卡）
   function dailyChengyuItem(){
     const seed = (window.CHENGYU_SEED || []).filter(x => x && x.word);
@@ -43622,8 +43745,9 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         }));
     }
     if(kind === 'cnWordUse'){
-      // R301-4.2：收录书屋「好词使用」范围 = 好词好句卡当日展示的好词（与好词使用卡同一数据源）
-      return haociUseListOf(haociDisplayGroups()).map(x=>({ title:x.w, meaning:x.m, example:x.e, meta:'好词使用', source:'sys' }));
+      // R317-3：补回缺失数据 —— 书屋展示「用户自建 + 全部系统好词」（约 194 词），
+      // 不再只取当日 1 组；每日轮换仍由大阅读当日卡 haociDisplayGroups 承担。
+      return haociUseListOf(haociAllGroups()).map(x=>({ title:x.w, meaning:x.m, example:x.e, meta:'好词使用', source:'sys' }));
     }
     if(kind === 'cnPoemUse'){
       // R316-2：全部 61 个子主题按母题顺序收录，标题带母题前缀便于按主题分类浏览
@@ -46843,8 +46967,10 @@ function renderKMAdmin(){
       `确定删除「<b>${esc(name)}</b>」这张${xsModeLabel()}图片吗？<div style="margin-top:8px;color:#5b6b85;font-size:13px">删除后不可恢复，该图片的打卡记录也会一并清除。</div>`,
       ()=>{
         const nk = xsNoteKey();
-        if(window.Store && window.Store.shiftEnKeyPointReads) window.Store.shiftEnKeyPointReads(nk, idx, xsReadKind());
-        if(window.Store && window.Store.delEnKeyPoint) window.Store.delEnKeyPoint(nk, idx);
+        // R317-1：复用 store 层原子删除（图片 + 打卡下标重排单次落库，按 xsReadKind 重排），
+        // 失败以磁盘真相重渲染，不再谎报成功。
+        const after = (window.Store && window.Store.delEnKeyPoint) ? window.Store.delEnKeyPoint(nk, idx, xsReadKind()) : null;
+        if(after === null){ toast('⚠️ 删除未生效，请重试'); renderXsNotes(); return false; }
         toast('🗑 已删除该图片');
         renderXsNotes();
         return true;
@@ -50262,7 +50388,24 @@ function renderKMAdmin(){
   function renderArchive(){
     const st = S.load();
     const a = st.archive;
+    /* R317-4.5：各科打卡完成率 + 薄弱任务移入「数据统计」卡，紧跟在卡片标题下方；
+       报告卡不再展示成长星 / 阅读 / 运动 KPI 与薄弱项，统计口径仍跟随周度 / 月度页签。 */
+    r315SyncReportScope();
+    const d = r314ReportData(_r314Scope);
+    const subs = (d.subs || []).map(function(s){
+      return '<div class="r314-sub-row"><div class="r314-sub-name">' + r314Esc(s.name) + '</div>' +
+        '<div class="r314-sub-bar"><i style="width:' + s.rate + '%"></i></div>' +
+        '<div class="r314-sub-val">' + s.rate + '%<span>' + s.done + '/' + s.total + '</span></div></div>';
+    }).join('') || '<div class="r314-empty">本周期还没有启用任何任务</div>';
+    const weak = (d.weakTasks || []).map(function(w){
+      return '<div class="r314-weak-item"><span class="r314-weak-name">' + r314Esc(w.name) + '</span>' +
+        '<span class="r314-weak-val">' + w.rate + '% · ' + w.done + '/' + w.total + '</span></div>';
+    }).join('') || '<div class="r314-empty">暂无必做任务数据</div>';
     $('#archiveStats').innerHTML = `
+      <div class="r317-stats-extra">
+        <div class="r317-stats-h">📚 各科打卡完成率</div>${subs}
+        <div class="r317-stats-h">⚠️ 薄弱任务（需重点跟进）</div>${weak}
+      </div>
       <div class="as-item"><div class="v">${a.consecutiveDays}</div><div class="l">连续打卡</div></div>
       <div class="as-item"><div class="v">${a.totalStars}</div><div class="l">累计成长星⭐</div></div>
       <div class="as-item"><div class="v">${a.maxConsecutive}</div><div class="l">最长连续</div></div>
@@ -50316,7 +50459,8 @@ function renderKMAdmin(){
         c.hidden = c.getAttribute('data-r316-atab-panel') !== _r316Atab;
       });
       const g2 = document.getElementById('r316ArchiveGrid2');
-      if(g2) g2.hidden = ['challenge','goal','excerpt','health'].indexOf(_r316Atab) < 0;
+      // R317-2：摘抄本已迁出成长档案，第二栅格只服务 challenge / goal / health
+      if(g2) g2.hidden = ['challenge','goal','health'].indexOf(_r316Atab) < 0;
     }catch(e){}
   }
   function r316BindArchiveTabs(){
@@ -50379,8 +50523,7 @@ function renderKMAdmin(){
     const hasSec = col1.length || col2.length;
     $('#weeklyReport').innerHTML = `
       <div class="report-header">${periodLabel} · 完成率 <b>${rep.overall}%</b> · 任务 ${rep.doneTask}/${rep.totalTask} · 最长 ${rep.longest} 天</div>
-      <div class="report-cols">${hasSec ? (colHtml(col1) + colHtml(col2)) : '<div style="color:var(--muted);padding:10px;text-align:center">暂无打卡数据</div>'}</div>
-      <div class="report-line"><span class="l">⚠️ 薄弱学科</span><span class="v">${esc(rep.weak)}</span></div>`;
+      <div class="report-cols">${hasSec ? (colHtml(col1) + colHtml(col2)) : '<div style="color:var(--muted);padding:10px;text-align:center">暂无打卡数据</div>'}</div>`;
       // R61-7：卡片最下方「围棋局数」行已按需求移除（围棋统计保留在板块分类卡中）
       /* R315-G1：运动/阅读时长已并入成长档案 KPI（与各科完成率、薄弱任务、高频错题、学情小结同屏），
          此处不再重复两行读数；周期口径统一取 archiveReportType，周/月切换两处同步。 */
@@ -55430,35 +55573,11 @@ if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
     const cc = $('#r256PickCancel'); if(cc) cc.onclick = r256SheetClose;
   }
 
+  /* R317-4.2：成长档案各页签中的「打卡总览」卡整体下线。
+     保留空函数壳供历史调用点安全无操作；月度报表 / 补卡 / 星星明细等独立弹窗入口不受影响。 */
   function r256MountArchiveCard(){
-    const grid = document.querySelector('.page[data-page="archive"] .archive-grid');
-    if(!grid || grid.querySelector('#r256CoCard')) return;
-    const card = document.createElement('div');
-    card.className = 'card r256-co-card';
-    card.id = 'r256CoCard';
-    card.innerHTML = '<div class="card-head r256-co-head">'
-      + '<h3>🗓️ 打卡总览</h3>'
-      + '<div class="co-tools">'
-      + '<button type="button" class="co-month co-month-btn" id="r256CoMonth" title="点击选择年 / 月">年月</button>'
-      + '<select id="r256CoFilter" title="筛选"><option value="all">全部</option><option value="active">只看主动</option><option value="auto">只看自动</option><option value="makeup">只看补卡</option></select>'
-      + '<button type="button" class="pbtn co-btn" id="r256CoExport">📄 月度报表</button>'
-      + '<button type="button" class="pbtn co-btn hidden-in-child" id="r256CoMakeup">🩹 补卡</button>'
-      + '<button type="button" class="pbtn co-btn" id="r256CoStars">⭐ 星星明细</button>'
-      + '</div></div>'
-      + '<div class="co-summary" id="r256CoSummary"></div>'
-      + '<div class="co-cal" id="r256CoGrid"></div>'
-      + '<div class="co-legend" id="r256CoLegend"></div>';
-    // R270-5.1：打卡总览卡改排到「数据统计 / 电子奖状」下方（原为整行置顶）
-    grid.appendChild(card);
-
-    // R257-11.1：年月改为「点击唤起弹窗 + 数字滑动选择」（原 ‹ › 逐月翻页按键已移除）
-    const mon = $('#r256CoMonth'); if(mon) mon.onclick = ()=> r256OpenMonthPicker();
-    const fl = $('#r256CoFilter');
-    if(fl) fl.onchange = ()=>{ _r256CoFilter = fl.value; r256RenderOverview(); };
-    const ex = $('#r256CoExport'); if(ex) ex.onclick = r256ExportOverview;
-    const mk = $('#r256CoMakeup'); if(mk) mk.onclick = ()=> r256OpenMakeup();
-    const st = $('#r256CoStars'); if(st) st.onclick = ()=> r256RenderStarLog();
-    r256RenderOverview();
+    const old = document.getElementById('r256CoCard');
+    if(old && old.parentNode) old.parentNode.removeChild(old);
   }
 
   /* R269-1：设置中心的「打卡提醒 / 护眼 / 家长管控」三张卡合并成一张入口卡。
@@ -57916,14 +58035,10 @@ function init(){
         '<button class="r314-scope' + (_r314Scope === 'month' ? ' active' : '') + '" data-gscope="month">🗓️ 本月</button>' +
         '<span class="r314-scope-range">' + d.days[0].slice(5) + ' ~ ' + d.days[d.days.length - 1].slice(5) + '</span>' +
       '</div>' +
+      /* R317-4.5：成长星 / 阅读 / 运动 KPI 与各科完成率 / 薄弱任务已移出报告，数据统计卡是唯一展示处 */
       '<div class="r314-kpi-grid">' +
         '<div class="r314-kpi"><div class="r314-kpi-v">' + d.rep.overall + '%</div><div class="r314-kpi-l">整体完成率</div><div class="r314-kpi-s">' + d.rep.doneTask + '/' + d.rep.totalTask + ' 项</div></div>' +
-        '<div class="r314-kpi"><div class="r314-kpi-v">' + d.stars + '</div><div class="r314-kpi-l">成长星 ⭐</div><div class="r314-kpi-s">周期内获得</div></div>' +
-        '<div class="r314-kpi"><div class="r314-kpi-v">' + d.readMin + '</div><div class="r314-kpi-l">阅读时长</div><div class="r314-kpi-s">分钟</div></div>' +
-        '<div class="r314-kpi"><div class="r314-kpi-v">' + d.sportMin + '</div><div class="r314-kpi-l">运动时长</div><div class="r314-kpi-s">分钟</div></div>' +
       '</div>' +
-      '<div class="r314-card"><div class="r314-card-head">📚 各科打卡完成率</div>' + subs + '</div>' +
-      '<div class="r314-card"><div class="r314-card-head">⚠️ 薄弱任务（需重点跟进）</div>' + weak + '</div>' +
       '<div class="r314-card"><div class="r314-card-head">🚩 高频错题分布</div>' + wrong + '</div>' +
       '<div class="r314-card r314-sum-card"><div class="r314-card-head">💡 学情小结（给家长）</div>' +
         '<div class="r314-sum-text">' + r314Esc(r314Summary(d)) + '</div></div>' +
@@ -58012,19 +58127,40 @@ function init(){
       name: (c.name && typeof c.name === 'object') ? c.name : {}
     };
   }
-  function r314ChallengeDefs(){
-    const o = r315ChOverride();
+  function r317DefaultChallenges(){
     return [
       { id:'read21', ico:'📖', name:'21 天阅读挑战', target:21, unit:'天', reward:30, badge:'read21',
         metric:'readDays', desc:'大阅读 / 阅读类任务累计打卡 21 天' },
       { id:'calc30', ico:'🧮', name:'30 天计算小天才', target:30, unit:'天', reward:50, badge:'calc30',
         metric:'calcStreak', desc:'计算小超市连续打卡 30 天' }
-    ].map(function(c){
+    ];
+  }
+  function r314ChallengeDefs(){
+    const o = r315ChOverride();
+    const ch = (r314St().challenges && typeof r314St().challenges === 'object') ? r314St().challenges : {};
+    const hidden = Array.isArray(ch.hidden) ? ch.hidden : [];
+    const custom = Array.isArray(ch.custom) ? ch.custom : [];
+    const defaults = r317DefaultChallenges();
+    /* R317-4.4：内置挑战可在家长设置里隐藏（隐藏后进度与领取记录仍保留），
+       家长自建挑战追加在内置挑战之后，二者共用同一套进度 / 领奖 / 奖励改写逻辑。 */
+    const list = defaults.filter(function(c){ return hidden.indexOf(c.id) < 0; }).concat(custom.filter(function(c){
+      return c && c.id && hidden.indexOf(String(c.id)) < 0;
+    }).map(function(c){
+      return {
+        id: String(c.id), ico: String(c.ico || '🏁'), name: String(c.name || '自定义挑战'),
+        target: Math.max(1, parseInt(c.target, 10) || 7), unit: String(c.unit || '天'),
+        reward: Math.max(1, parseInt(c.reward, 10) || 10), badge: '',
+        metric: c.metric === 'calcStreak' ? 'calcStreak' : 'readDays',
+        desc: String(c.desc || '家长设置的阶段性挑战'),
+        custom: true
+      };
+    }));
+    return list.map(function(c){
       const rw = Number(o.reward[c.id]);
       const nm = String(o.name[c.id] == null ? '' : o.name[c.id]).trim();
       return Object.assign({}, c, {
         reward: (isFinite(rw) && rw >= 1) ? Math.round(rw) : c.reward,
-        rewardName: nm || '限定徽章',
+        rewardName: nm || (c.custom ? '家长自定义奖励' : '限定徽章'),
         edited: !!(o.reward[c.id] != null || nm)
       });
     });
@@ -58149,6 +58285,116 @@ function init(){
     });
   }
 
+  /* R317-4.4：单元目标板块内的「阶段性挑战增减设置」（仅家长模式可见）。
+     内置挑战用 hidden 名单做「隐藏 / 恢复」，家长自建挑战用 custom 数组做「新增 / 删除」；
+     隐藏与删除都不改打卡记录与⭐流水，删除动作统一二次确认。 */
+  function r317ChallengeSetupHtml(){
+    if(!(typeof isParent === 'function') || !isParent()) return '';
+    const r = r314St();
+    const ch = (r.challenges && typeof r.challenges === 'object') ? r.challenges : {};
+    const hidden = Array.isArray(ch.hidden) ? ch.hidden : [];
+    const custom = Array.isArray(ch.custom) ? ch.custom : [];
+    const row = function(id, name, desc, off, isCustom){
+      return '<div class="r317-ch-setup-row' + (off ? ' off' : '') + '">' +
+        '<span class="r317-ch-setup-name">' + r314Esc(name) + '</span>' +
+        '<span class="r317-ch-setup-desc">' + r314Esc(desc) + '</span>' +
+        (isCustom
+          ? '<button class="pbtn r314-mini r314-del" data-r317-ch-del="' + r314Esc(id) + '">删除</button>'
+          : (off
+              ? '<button class="pbtn r314-mini" data-r317-ch-restore="' + r314Esc(id) + '">恢复显示</button>'
+              : '<button class="pbtn r314-mini r314-del" data-r317-ch-hide="' + r314Esc(id) + '">隐藏</button>')) +
+      '</div>';
+    };
+    const rows = r317DefaultChallenges().map(function(c){
+      const off = hidden.indexOf(c.id) >= 0;
+      return row(c.id, c.name, c.desc + ' · 目标 ' + c.target + c.unit, off, false);
+    }).concat(custom.filter(function(c){ return c && c.id; }).map(function(c){
+      return row(String(c.id), String(c.name || '自定义挑战'),
+        String(c.desc || '家长自定义挑战') + ' · 目标 ' + (c.target | 0) + (c.unit || '天'),
+        hidden.indexOf(String(c.id)) >= 0, true);
+    })).join('') || '<div class="r314-empty">暂无可设置的挑战</div>';
+    return '<div class="r314-card r317-ch-setup"><div class="r314-card-head">⚙️ 阶段性挑战增减设置（家长）</div>' +
+      '<div class="r317-ch-setup-list">' + rows + '</div>' +
+      '<div class="r317-ch-add">' +
+        '<label>挑战名称<input id="r317ChName" maxlength="24" placeholder="例如：14 天练字挑战"></label>' +
+        '<label>进度依据<select id="r317ChMetric"><option value="readDays">累计阅读天数</option><option value="calcStreak">连续计算打卡</option></select></label>' +
+        '<label>目标天数<input id="r317ChTarget" type="number" min="1" max="999" value="14"></label>' +
+        '<label>奖励⭐<input id="r317ChReward" type="number" min="1" max="500" value="20"></label>' +
+        '<label>说明<input id="r317ChDesc" maxlength="40" placeholder="给孩子的挑战说明"></label>' +
+        '<button class="pbtn r314-add" id="r317ChAdd" type="button">＋ 新增挑战</button>' +
+      '</div>' +
+      '<div class="r314-tip">内置挑战隐藏后只是不再展示，原有进度与领奖记录保留；家长自建挑战可随时删除，删除前会再次确认。</div>' +
+    '</div>';
+  }
+  function r317BindChallengeSetup(){
+    const addBtn = document.getElementById('r317ChAdd');
+    if(!addBtn) return;
+    addBtn.onclick = function(){
+      const name = String((document.getElementById('r317ChName') || {}).value || '').trim();
+      const target = parseInt((document.getElementById('r317ChTarget') || {}).value, 10);
+      const reward = parseInt((document.getElementById('r317ChReward') || {}).value, 10);
+      if(!name){ toast('请填写挑战名称'); return; }
+      if(!isFinite(target) || target < 1 || target > 999){ toast('目标天数需在 1~999 之间'); return; }
+      if(!isFinite(reward) || reward < 1 || reward > 500){ toast('奖励⭐数需在 1~500 之间'); return; }
+      const r = r314St();
+      const ch = Object.assign({}, r.challenges || {});
+      const custom = Array.isArray(ch.custom) ? ch.custom.slice() : [];
+      const hidden = Array.isArray(ch.hidden) ? ch.hidden.slice() : [];
+      const id = 'ch' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+      custom.push({
+        id: id, ico: '🏁', name: name, target: target, unit: '天', reward: reward,
+        metric: String((document.getElementById('r317ChMetric') || {}).value || 'readDays'),
+        desc: String((document.getElementById('r317ChDesc') || {}).value || '').trim() || '家长设置的阶段性挑战',
+        createdAt: Date.now()
+      });
+      ch.custom = custom; ch.hidden = hidden;
+      S.setR314({ challenges: ch });
+      toast('🏁 挑战「' + name + '」已添加');
+      r314RenderTab();
+    };
+    $$('#archiveGoalHost [data-r317-ch-hide]').forEach(function(b){
+      b.onclick = function(){
+        const id = b.getAttribute('data-r317-ch-hide');
+        r307DangerConfirm('将隐藏该阶段性挑战，挑战进度与已领取奖励记录保留，之后可恢复显示。确认隐藏吗？', function(){
+          const r = r314St();
+          const ch = Object.assign({}, r.challenges || {});
+          const hidden = Array.isArray(ch.hidden) ? ch.hidden.slice() : [];
+          if(hidden.indexOf(id) < 0) hidden.push(id);
+          ch.hidden = hidden;
+          S.setR314({ challenges: ch });
+          toast('挑战已隐藏');
+          r314RenderTab();
+        }, '隐藏阶段性挑战');
+      };
+    });
+    $$('#archiveGoalHost [data-r317-ch-restore]').forEach(function(b){
+      b.onclick = function(){
+        const id = b.getAttribute('data-r317-ch-restore');
+        const r = r314St();
+        const ch = Object.assign({}, r.challenges || {});
+        ch.hidden = (Array.isArray(ch.hidden) ? ch.hidden : []).filter(function(x){ return x !== id; });
+        S.setR314({ challenges: ch });
+        toast('挑战已恢复显示');
+        r314RenderTab();
+      };
+    });
+    $$('#archiveGoalHost [data-r317-ch-del]').forEach(function(b){
+      b.onclick = function(){
+        const id = b.getAttribute('data-r317-ch-del');
+        const r = r314St();
+        const ch = Object.assign({}, r.challenges || {});
+        const custom = Array.isArray(ch.custom) ? ch.custom : [];
+        const one = custom.find(function(x){ return x && String(x.id) === id; });
+        r307DangerConfirm('将删除家长自建挑战「' + (one ? one.name : '') + '」，删除后不可恢复。\n打卡记录与⭐流水不受影响。', function(){
+          ch.custom = custom.filter(function(x){ return !x || String(x.id) !== id; });
+          S.setR314({ challenges: ch });
+          toast('挑战已删除');
+          r314RenderTab();
+        }, '删除阶段性挑战');
+      };
+    });
+  }
+
   function r314BadgeHtml(){
     const st = S.load();
     const b = (st.archive && st.archive.badges) || {};
@@ -58232,7 +58478,8 @@ function init(){
         '</div></div>';
     }).join('') || '<div class="r314-empty">还没有设置单元目标，添加一个吧～</div>';
 
-    return '<div class="r314-card"><div class="r314-card-head">🎯 新建单元学习目标</div>' +
+    /* R317-4.4：左「新建单元学习目标」、右「我的目标」并排；家长模式下方追加阶段挑战增减设置 */
+    const newCard = '<div class="r314-card"><div class="r314-card-head">🎯 新建单元学习目标</div>' +
       '<div class="r314-form">' +
         '<label>目标名称<input id="growGoalTitle" maxlength="30" placeholder="例如：口算 100 题全对"></label>' +
         '<label>绑定任务<select id="growGoalTask">' + opts + '</select></label>' +
@@ -58242,8 +58489,10 @@ function init(){
       '</div>' +
       '<button class="pbtn r314-add" id="growGoalAdd">＋ 添加目标</button>' +
       '<div class="r314-tip">进度按「绑定任务在创建日之后、截止日之前的完成次数」实时计算；达成后可领取奖励星星。</div>' +
-    '</div>' +
-    '<div class="r314-card"><div class="r314-card-head">📌 我的目标（' + goals.length + '）</div>' + list + '</div>';
+    '</div>';
+    const myCard = '<div class="r314-card"><div class="r314-card-head">📌 我的目标（' + goals.length + '）</div>' + list + '</div>';
+    return '<div class="r317-goal-cols"><div class="r317-goal-new">' + newCard + '</div>' +
+      '<div class="r317-goal-mine">' + myCard + '</div></div>' + r317ChallengeSetupHtml();
   }
 
   function r314BindGoal(){
@@ -58353,10 +58602,13 @@ function init(){
 
   var _r314ExImg = '';
 
-  function r314BindExcerpt(){
-    $$('#archiveExcerptHost [data-gtype]').forEach(b => b.onclick = function(){
+  // R317-2：摘抄本从成长档案迁到语文专区，绑定范围与重渲染入口参数化（默认仍兼容旧宿主）
+  function r314BindExcerpt(scopeSel, rerender){
+    const scope = scopeSel || '#archiveExcerptHost';
+    const refresh = (typeof rerender === 'function') ? rerender : r314RenderTab;
+    $$(scope + ' [data-gtype]').forEach(b => b.onclick = function(){
       _r314ExType = b.getAttribute('data-gtype');
-      r314RenderTab();
+      refresh();
     });
     const file = document.getElementById('growExImg');
     if(file) file.onchange = function(){
@@ -58390,9 +58642,9 @@ function init(){
       if(ta) ta.value = '';
       playZooSound('pop');
       toast('✍️ 已收录，并同步到大阅读');
-      r314RenderTab();
+      refresh();
     };
-    $$('#archiveExcerptHost [data-gex-del]').forEach(b => b.onclick = function(){
+    $$(scope + ' [data-gex-del]').forEach(b => b.onclick = function(){
       const id = b.getAttribute('data-gex-del');
       const r = r314St();
       const list = Array.isArray(r.excerpts) ? r.excerpts : [];
@@ -58400,7 +58652,7 @@ function init(){
       r307DangerConfirm('将删除摘抄「' + String((it && it.text) || '').slice(0, 24) + '…」？\n删除后不可恢复。', function(){
         S.setR314({ excerpts: list.filter(x => x.id !== id) });
         toast('已删除');
-        r314RenderTab();
+        refresh();
       }, '删除摘抄');
     });
   }
@@ -58440,7 +58692,9 @@ function init(){
         '<span class="r314-hd-hrs">' + (hrs ? hrs + ' 小时' : '—') + '</span></div>');
     }
 
-    return '<div class="r314-card"><div class="r314-card-head">🌅 今日作息（' + today + '）</div>' +
+    /* R317-4.3：用眼休息提醒 / 每日学习提醒移到「今日作息 + 最近 7 天作息」左侧，
+       两栏并排；输入项 id 与绑定逻辑全部保持不变，用户已保存的作息与提醒数据原样读取。 */
+    const todayCard = '<div class="r314-card"><div class="r314-card-head">🌅 今日作息（' + today + '）</div>' +
       '<div class="r314-form r314-form-2">' +
         '<label>早起时间<input type="time" id="growWake" value="' + r314Esc(td.wake || '07:00') + '"></label>' +
         '<label>入睡时间<input type="time" id="growSleep" value="' + r314Esc(td.sleep || '21:30') + '"></label>' +
@@ -58448,9 +58702,9 @@ function init(){
       '<div class="r314-hd-today">' + (todayH ? '本次睡眠时长 <b>' + todayH + '</b> 小时' : '填写早起与入睡时间后自动计算睡眠时长') + '</div>' +
       '<button class="pbtn r314-add" id="growHealthSave">💾 保存今日作息</button>' +
       '<div class="r314-tip">跨零点会自动按次日计算（例如 21:30 入睡、07:00 起床 = 9.5 小时）。</div>' +
-    '</div>' +
-    '<div class="r314-card"><div class="r314-card-head">📈 最近 7 天作息</div>' + week.join('') + '</div>' +
-    '<div class="r314-card"><div class="r314-card-head">👀 用眼休息提醒</div>' +
+    '</div>';
+    const weekCard = '<div class="r314-card"><div class="r314-card-head">📈 最近 7 天作息</div>' + week.join('') + '</div>';
+    const eyeCard = '<div class="r314-card"><div class="r314-card-head">👀 用眼休息提醒</div>' +
       '<div class="r314-row"><span>开启提醒</span>' +
         '<label class="r314-switch"><input type="checkbox" id="growEyeOn"' + (eye.on ? ' checked' : '') + '><i></i></label></div>' +
       '<div class="r314-row"><span>提醒间隔</span>' +
@@ -58458,8 +58712,8 @@ function init(){
           [20, 30, 40, 45, 60].map(n => '<option value="' + n + '"' + ((eye.every | 0) === n ? ' selected' : '') + '>' + n + ' 分钟</option>').join('') +
         '</select></div>' +
       '<div class="r314-tip">开启后每 ' + (eye.every | 0) + ' 分钟提示远眺 20 秒，眼睛也需要下课休息～</div>' +
-    '</div>' +
-    '<div class="r314-card"><div class="r314-card-head">⏰ 每日学习提醒</div>' +
+    '</div>';
+    const remCard = '<div class="r314-card"><div class="r314-card-head">⏰ 每日学习提醒</div>' +
       '<div class="r314-row"><span>浏览器通知</span>' +
         '<label class="r314-switch"><input type="checkbox" id="growRemOn"' + (rem.on ? ' checked' : '') + '><i></i></label></div>' +
       '<div class="r314-row"><span>提醒时间</span><input type="time" id="growRemTime" value="' + r314Esc(rem.time || '19:30') + '"></div>' +
@@ -58467,6 +58721,10 @@ function init(){
         (perm === 'default' ? '<button class="pbtn r314-mini" id="growRemAsk">授权通知</button>' : '') +
         '<button class="pbtn r314-mini" id="growRemTest">发送测试通知</button></div>' +
       '<div class="r314-tip">到点后若还有必做任务未完成，会弹出通知提醒今日待办（同一天只提醒一次）。</div>' +
+    '</div>';
+    return '<div class="r317-health-cols">' +
+      '<div class="r317-health-side">' + eyeCard + remCard + '</div>' +
+      '<div class="r317-health-main">' + todayCard + weekCard + '</div>' +
     '</div>';
   }
 
@@ -58739,33 +58997,16 @@ function init(){
      去重：不再有独立的成长中心页与页签；报告里重复的「完成率 / 阅读 / 运动」读数只保留一处。 */
   function renderGrowth(){ r315RenderArchive(); } /* 兼容历史调用 */
 
-  /* 报告补充块：成长星 / 阅读 / 运动 KPI + 各科完成率 + 薄弱任务 + 高频错题 + 学情小结 + 复制分享 */
+  /* 报告补充块：R317-4.5 起只保留高频错题 + 学情小结 + 复制分享；
+     成长星 / 阅读 / 运动 KPI 与各科完成率 / 薄弱任务已移入「数据统计」卡，避免同屏重复。 */
   function r315ReportExtraHtml(){
     const d = r314ReportData(_r314Scope);
-    const subs = d.subs.map(function(s){
-      return '<div class="r314-sub-row"><div class="r314-sub-name">' + r314Esc(s.name) + '</div>' +
-        '<div class="r314-sub-bar"><i style="width:' + s.rate + '%"></i></div>' +
-        '<div class="r314-sub-val">' + s.rate + '%<span>' + s.done + '/' + s.total + '</span></div></div>';
-    }).join('') || '<div class="r314-empty">本周期还没有启用任何任务</div>';
-    const weak = d.weakTasks.map(function(w){
-      return '<div class="r314-weak-item"><span class="r314-weak-name">' + r314Esc(w.name) + '</span>' +
-        '<span class="r314-weak-val">' + w.rate + '% · ' + w.done + '/' + w.total + '</span></div>';
-    }).join('') || '<div class="r314-empty">暂无必做任务数据</div>';
     const wrong = d.wrongTop.map(function(w){
       return '<div class="r314-wrong-item"><span class="r314-wrong-ico">' + (w.from === '英语' ? '📘' : '🧮') + '</span>' +
         '<span class="r314-wrong-name">' + r314Esc(w.name) + '</span><span class="r314-wrong-n">' + w.n + ' 题</span></div>';
     }).join('') || '<div class="r314-empty">暂无收录错题，表现不错～</div>';
 
-    return '<div class="r315-blk">' +
-        '<div class="r314-kpi-grid r315-kpi-3">' +
-          '<div class="r314-kpi"><div class="r314-kpi-v">' + d.stars + '</div><div class="r314-kpi-l">成长星 ⭐</div><div class="r314-kpi-s">周期内获得</div></div>' +
-          '<div class="r314-kpi"><div class="r314-kpi-v">' + d.readMin + '</div><div class="r314-kpi-l">阅读时长</div><div class="r314-kpi-s">分钟</div></div>' +
-          '<div class="r314-kpi"><div class="r314-kpi-v">' + d.sportMin + '</div><div class="r314-kpi-l">运动时长</div><div class="r314-kpi-s">分钟</div></div>' +
-        '</div>' +
-      '</div>' +
-      '<div class="r315-blk"><div class="r315-blk-h">📚 各科打卡完成率</div>' + subs + '</div>' +
-      '<div class="r315-blk"><div class="r315-blk-h">⚠️ 薄弱任务（需重点跟进）</div>' + weak + '</div>' +
-      '<div class="r315-blk"><div class="r315-blk-h">🚩 高频错题分布</div>' + wrong + '</div>' +
+    return '<div class="r315-blk"><div class="r315-blk-h">🚩 高频错题分布</div>' + wrong + '</div>' +
       '<div class="r315-blk r315-sum"><div class="r315-blk-h">💡 学情小结（给家长）</div>' +
         '<div class="r314-sum-text">' + r314Esc(r314Summary(d)) + '</div></div>' +
       '<div class="r315-report-acts">' +
@@ -58835,13 +59076,12 @@ function init(){
     if(ch){ ch.innerHTML = r314ChallengeHtml(true); }
     const gl = document.getElementById('archiveGoalHost');
     if(gl){ gl.innerHTML = r315Bare(r314GoalHtml()); }
-    const ex = document.getElementById('archiveExcerptHost');
-    if(ex){ ex.innerHTML = r315Bare(r314ExcerptHtml()); }
+    /* R317-2：摘抄本已从成长档案迁出，#archiveExcerptHost 下线（现挂在新世界语文专区 #ywSlotBody） */
     const hd = document.getElementById('archiveHealthHost');
     if(hd){ hd.innerHTML = r315Bare(r314HealthHtml()); }
     try{ r314BindChallenges(); }catch(e){}
     try{ r314BindGoal(); }catch(e){}
-    try{ r314BindExcerpt(); }catch(e){}
+    try{ r317BindChallengeSetup(); }catch(e){}
     try{ r314BindHealth(); }catch(e){}
     try{ r314RenderHomeBadges(); }catch(e){}
     r315RestoreInputs(snap);
@@ -59008,6 +59248,11 @@ function init(){
     window.__r316TodayPoem = r316TodayPoem;
     window.__r316ApplyArchiveTab = function(tab){ _r316Atab = tab || 'report'; r316ApplyArchiveTab(); };
     window.__r316EnKpImportOne = enKpImportOne;
+    /* R317 探针钩子 */
+    window.__r317HaociAll = haociAllGroups;
+    window.__r317BsWordUseItems = function(){ return bsItemsOf('cnWordUse'); };
+    window.__r317GoYuwenJcb = function(){ if(typeof window.__r313GoPage==='function') window.__r313GoPage('newworld'); renderYuwenSlot('jcb','摘抄本',document.getElementById('ywSlotBody')); };
+    window.__r317ChallengeDefs = r314ChallengeDefs;
   }catch(e){}
   function r272BootInit(){
     const _P = window.R272P;
