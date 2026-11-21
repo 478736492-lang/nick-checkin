@@ -16622,6 +16622,24 @@ window.R298_TASK_PLAN = {
     for(var i=0;i<keys.length;i++){ if(a[keys[i]] < b[keys[i]]) return true; }
     return false;
   }
+  /* R318：升级后校验的判据从「任一规模变小」改成「灾难性流失」。
+     旧判据 any(a[k] < b[k]) 的含义是「只要变小就算被清空」——用户在上次点过
+     「检查更新」之后正常删掉一条记录、取消一次打卡，下一次启动就会被判定为
+     「版本逻辑清空了数据」，整份回滚到升级前的快照，表现为「删掉的又回来、
+     新加的被吃掉」。新判据只认真正的灾难：某一项跌到原来的 50% 以下（原值 ≥4），
+     或者同时有 ≥3 项变少。 */
+  function _shapeLost(a, b){
+    if(!a || !b) return false;
+    var keys = ['records','tasks','stars','plots','wrong','notes','flags'];
+    var drops = 0;
+    for(var i=0;i<keys.length;i++){
+      var k = keys[i];
+      if(a[k] >= b[k]) continue;
+      drops++;
+      if(b[k] >= 4 && a[k] < b[k] * 0.5) return true;
+    }
+    return drops >= 3;
+  }
   function _idbFactory(){
     try{
       if(typeof indexedDB !== 'undefined' && indexedDB) return indexedDB;
@@ -16923,6 +16941,35 @@ window.R298_TASK_PLAN = {
   function _mirrorTs(){
     try{ var m = JSON.parse(_lsGet(LS_MIRROR_B[2]) || 'null'); return (m && m.at) || 0; }catch(e){ return 0; }
   }
+  /* R318【跨介质新旧裁决】：提交序号优先于时间戳。
+     现象：iPad 上「点完打卡 → 立刻刷新」或「版本更新后第一次打开」时，数据经常退回上一份；
+     根因是各层副本靠文件时间戳比新旧，而 IndexedDB / 降级镜像 / 快照都是异步写的，
+     时间戳谁大完全取决于「谁先写完」，与内容新旧无关。
+     store.js 每次真正落库都会把提交序号 __seq 自增并写进存档本体，
+     因此这里只取头部两个数字即可裁决，不需要解析整份存档。 */
+  function _seqOf(raw){
+    if(typeof raw !== 'string' || raw.length < 10) return 0;
+    /* 用户正文里万一出现同名字面量，要求数字后面紧跟 , 或 } 才认，最多试 8 处 */
+    var from = 0;
+    for(var n=0;n<8;n++){
+      var i = raw.indexOf('"__seq":', from);
+      if(i < 0) return 0;
+      var j = i + 8, k = j;
+      while(k < raw.length){ var c = raw.charCodeAt(k); if(c < 48 || c > 57) break; k++; }
+      if(k > j){
+        var nx = raw.charAt(k);
+        if(nx === ',' || nx === '}') return parseInt(raw.slice(j, k), 10) || 0;
+      }
+      from = i + 8;
+    }
+    return 0;
+  }
+  /* 两候选比较：序号大者胜；序号相同（含都为 0 的老存档）才比时间戳 */
+  function _newer(a, b){
+    var as = _seqOf(a.raw), bs = _seqOf(b.raw);
+    if(as !== bs) return as > bs;
+    return (a.ts || 0) > (b.ts || 0);
+  }
 
   /* ----------------------------- 主库写入（排队事务 + 3 次退避重试） ----------------------------- */
   function write(raw, ts, opt){
@@ -17080,7 +17127,8 @@ window.R298_TASK_PLAN = {
     }
     if(!_preUpdate || !jsonOk(r)) return Promise.resolve({ ok:true, rolledBack:false, reason:'no-guard' });
     var before = _preUpdate.shape, after = _shape(r);
-    var lost = _shapeLess(after, before);
+    /* R318：只有灾难性流失才回滚；正常删除 / 撤销不再触发整份回退 */
+    var lost = _shapeLost(after, before);
     var sameHash = hash(r) === _preUpdate.hash;
     if(!lost && !sameHash){
       /* 哈希不同但关键业务规模没有减少（用户正常操作 / 迁移补字段）→ 视为合法，只记日志 */
@@ -17255,11 +17303,15 @@ window.R298_TASK_PLAN = {
     var bridge = _lsGet(LS_KEY);
     var bts = _lsMetaTs();
     var mts = d ? (d.ts || 0) : 0;
-    if(jsonOk(bridge) && (!d || bts >= mts)){
+    /* R318：降级副本与桥梁快照同样按提交序号裁决；都没有序号（老存档）时才退回时间戳 */
+    var _bs = jsonOk(bridge) ? _seqOf(bridge) : 0;
+    var _ds = d ? _seqOf(d.raw) : 0;
+    var _bridgeWin = d ? ((_bs || _ds) ? (_bs >= _ds) : (bts >= mts)) : true;
+    if(jsonOk(bridge) && _bridgeWin){
       _primaryRaw = bridge;
       _primaryTs = bts || _now();
       _recoveredFrom = d ? 'localStorage-bridge' : '';
-      if(d && bts > mts){
+      if(d && (!jsonOk(bridge) || !_bridgeWin)){
         _degradeWrite(bridge, _primaryTs, true);
         log('restore', { from:'localStorage-bridge', bytes:bridge.length, target:'degraded-mirror' });
       }
@@ -17267,7 +17319,7 @@ window.R298_TASK_PLAN = {
     }
     if(d){
       _primaryRaw = d.raw; _primaryTs = mts || _now();
-      if(mts > bts){
+      if(!jsonOk(bridge) || !_bridgeWin){
         _lsSet(LS_KEY, d.raw);
         _lsSetMeta(_primaryTs, d.raw.length);
         _recoveredFrom = 'degraded';
@@ -17295,7 +17347,7 @@ window.R298_TASK_PLAN = {
           if(sn) candidates.push(sn);
           /* 读取优先级：IndexedDB → localStorage 快照 → 历史备份快照。
              时间 newest-wins 只在「确实有证据表明另一层更新」时生效，避免旧镜像回滚新数据。 */
-          candidates.sort(function(a,b){ return (b.ts||0) - (a.ts||0); });
+          candidates.sort(function(a,b){ return _newer(a,b) ? -1 : (_newer(b,a) ? 1 : 0); });
           var chosen = null;
           for(var i=0;i<candidates.length;i++){ if(jsonOk(candidates[i].raw)){ chosen = candidates[i]; break; } }
           if(!chosen){
@@ -17314,7 +17366,16 @@ window.R298_TASK_PLAN = {
             }));
           }
           /* ② localStorage 桥梁快照缺失 / 损坏 / 落后 → 用主库恢复，保证同步 load() 首屏就拿到真实数据 */
-          if(!jsonOk(ls) || (chosen.src === 'indexeddb' && (chosen.ts||0) > _lsMetaTs())){
+          var _needBridge = !jsonOk(ls);
+          if(!_needBridge && chosen.src !== 'localStorage'){
+            /* R318：用提交序号裁决，不再只看 KEY_META.savedAt ——
+               这份 53 字节的元数据一旦写失败（配额临界 / 被清理），
+               旧的主库副本就会把更新的桥梁快照整份覆盖掉，表现为「刷新后打卡全没了」。 */
+            var _cs = _seqOf(chosen.raw), _bs = _seqOf(ls);
+            if(_cs || _bs) _needBridge = (_cs > _bs);
+            else _needBridge = ((chosen.ts || 0) > _lsMetaTs());
+          }
+          if(_needBridge){
             _lsSet(LS_KEY, chosen.raw);
             _lsSetMeta(_now(), chosen.raw.length);
             _recoveredFrom = chosen.src;
@@ -17428,6 +17489,10 @@ window.R298_TASK_PLAN = {
          同一台设备同一时钟，时间戳由 store.save() 用同一个 _ts 写入两层，
          因此这里不需要容差；相等时仍用镜像（内容一致）。 */
       var lt = _lsMetaTs();
+      /* R318：序号能裁决时以序号为准 —— 只要主库带的提交序号不小于桥梁，它就是最新态；
+         没有序号（老存档）才退回「savedAt 比主库时间新则让位」的旧规则。 */
+      var _ps = _seqOf(_primaryRaw), _bs = _seqOf(_lsGet(LS_KEY));
+      if(_ps || _bs) return (_ps >= _bs) ? _primaryRaw : null;
       if(lt && lt > _primaryTs) return null;
       return _primaryRaw;
     },
@@ -17573,6 +17638,429 @@ window.R298_TASK_PLAN = {
     try{ for(let i=0;i<localStorage.length;i++){ const k = localStorage.key(i); if(k) keys[k] = (_safeGet(k)||'').length; } }catch(e){}
     return { used:_usageBytes(true), softLimit:SPACE_SOFT_LIMIT, savedAt:_lastSavedAt(), keys:keys };
   }
+  /* ============ R318：持久化内核重构（提交序号 / 元素墓碑 / 三级对账 / 轻档） ============
+     现象：iPad Safari 下刷新页面或版本更新后，「打卡 / 编辑 / 新增 / 删除」会消失，
+          甚至出现「删掉的东西刷新后又回来了」。
+     根因不是配额（实测整份状态约 330KB，远低于 3.4MB 软上限），而是三处「新旧裁决」不可靠：
+       ① 各介质（IndexedDB 主库 / localStorage 桥梁 / 降级镜像 / 历史快照）靠文件时间戳判新旧，
+          而写入是异步的：刚点完打卡就刷新时，旧副本可能带着更新的时间戳胜出；
+       ② 写盘闸 `_guardBeforeSave` 只认「集合由非空变空」，分不清「用户删掉最后一条」与
+          「数据被清空」，于是删除被当成清空、从旧备份整份回填 → 删了又回来；
+       ③ 小账本 / 差异补丁只做「并集回填」，会把用户已经删掉的条目重新加回去。
+     对策（全部落在 store.js 内，不改任何上层调用语义）：
+       A. 提交序号 `__seq`：每次真正落库自增一次，所有介质都带同一个号；读取时序号大者胜，
+          序号相同才比时间戳 —— 与「写入是否异步完成」彻底解耦。
+       B. 元素墓碑 `__tomb`：记录「哪个集合的哪些元素被用户删过」，随主档落库；
+          任何回填（备份 / 迁移闸 / 小账本 / 补丁）都先剔除墓碑元素，删空则不再回填。
+       C. 三级对账 `_r318Pick`：候选 = 主库 / 桥梁 / 轻档 / 双代备份，
+          按 (seq, at, 数据量) 取胜者，绝不采纳明显更旧的副本。
+       D. 轻档 `KEY_LIGHT`：主档写不进时同步落一份「只含用户业务字段」的小副本（≈130KB），
+          与既有小账本 WAL 组成双落点。 */
+  const KEY_LIGHT = KEY + '_light';
+  const LIGHT_BUDGET = 380 * 1024;
+  const R318_TOMB_TTL = 7 * 24 * 3600 * 1000;   // 墓碑保留 7 天（覆盖「过一阵子才刷新」的场景）
+  const R318_TOMB_MAX = 1200;                   // 墓碑总条数上限，防止主档被墓碑撑大
+  const R318_CORE_KEYS = { profile:1, tasks:1, archive:1, r256:1 };
+  /* 只跟踪「条目型」集合 —— 每条有稳定标识，删掉哪条能精确记录。
+     题库 / 图片等大字段不跟踪（删除由 allowShrinkOnce 显式放行）。 */
+  const R318_TRACK_KEYS = ['records','tasks','readFlags','readLog','calcDoneKeys','calcBook',
+                           'kewenLearned','xueersiAnswerLog'];
+  let _r318Seq = 0;
+  let _r318Seen = null;          // { key: { id:1 } } —— 上次落库时的元素集合
+  let _r318LastRaw = null;       // 上次落库的完整原串，用于写入去重（只差提交戳视为同内容）
+  let _r318LastLen = 0;
+  let _r318LastOk = false;
+  let _r318LightAt = 0;
+  let _r318LightSeq = 0;
+  /* --- A：轻量头部解析 —— 只取顶层 __seq / __commitAt，不做整份 JSON.parse --- */
+  /* 定位「真正的顶层戳字段」：用户正文里万一出现同名字面量，要求数字后面紧跟 , 或 } 才认，
+     不满足就继续往后找。带次数上限，绝不因为脏数据变成慢查询。 */
+  function _r318FindStamp(raw, token){
+    if(typeof raw !== 'string') return -1;
+    let from = 0;
+    for(let n=0; n<8; n++){
+      const i = raw.indexOf(token, from);
+      if(i < 0) return -1;
+      let k = i + token.length;
+      const start = k;
+      while(k < raw.length){ const c = raw.charCodeAt(k); if(c < 48 || c > 57) break; k++; }
+      if(k > start){
+        const nx = raw.charAt(k);
+        if(nx === ',' || nx === '}') return i;
+      }
+      from = i + token.length;
+    }
+    return -1;
+  }
+  function _r318Head(raw){
+    const out = { seq:0, at:0 };
+    if(typeof raw !== 'string' || raw.length < 12) return out;
+    let i = _r318FindStamp(raw, '"__seq":');
+    if(i >= 0){
+      let j = i + 8, k = j;
+      while(k < raw.length){ const c = raw.charCodeAt(k); if(c < 48 || c > 57) break; k++; }
+      if(k > j) out.seq = parseInt(raw.slice(j, k), 10) || 0;
+    }
+    i = _r318FindStamp(raw, '"__commitAt":');
+    if(i >= 0){
+      let j = i + 13, k = j;
+      while(k < raw.length){ const c = raw.charCodeAt(k); if(c < 48 || c > 57) break; k++; }
+      if(k > j) out.at = parseInt(raw.slice(j, k), 10) || 0;
+    }
+    return out;
+  }
+  /* --- A：提交序号 —— 单调递增，跨介质唯一裁决依据 --- */
+  function _r318SyncSeq(seq){ const n = seq|0; if(n > _r318Seq) _r318Seq = n; }
+  function _r318NextSeq(st){
+    if(!st || typeof st !== 'object') return 0;
+    let s = _r318Seq;
+    const cur = st.__seq | 0;
+    if(cur > s) s = cur;
+    s += 1;
+    st.__seq = s;
+    st.__commitAt = Date.now();
+    _r318Seq = s;
+    return s;
+  }
+  /* 写入去重：业务内容完全一致 → 不重复落盘（iPad 写放大是卡顿与配额的主要来源）。
+     实现要点：不跑正则扫全串，只定位 __seq / __commitAt 两段数字，
+     把「数字以外」的三段切片做 === 比较 —— V8 对字符串相等是内容比较，
+     切片本身是零拷贝的 SlicedString，整体开销远低于一次 replace(/g)。 */
+  function _r318StampRanges(x){
+    const i = _r318FindStamp(x, '"__seq":');
+    const j = _r318FindStamp(x, '"__commitAt":');
+    if(i < 0 || j < 0 || i >= j) return null;
+    let ie = i + 8;
+    while(ie < x.length){ const c = x.charCodeAt(ie); if(c < 48 || c > 57) break; ie++; }
+    let je = j + 13;
+    while(je < x.length){ const c = x.charCodeAt(je); if(c < 48 || c > 57) break; je++; }
+    return [i + 8, ie, j + 13, je];
+  }
+  function _r318SameBody(a, b){
+    if(a === b) return true;
+    if(typeof a !== 'string' || typeof b !== 'string' || a.length !== b.length) return false;
+    const ca = _r318StampRanges(a), cb = _r318StampRanges(b);
+    if(!ca || !cb) return false;
+    if((ca[1] - ca[0]) !== (cb[1] - cb[0])) return false;
+    if((ca[3] - ca[2]) !== (cb[3] - cb[2])) return false;
+    return a.slice(0, ca[0]) === b.slice(0, cb[0])
+        && a.slice(ca[1], ca[2]) === b.slice(cb[1], cb[2])
+        && a.slice(ca[3]) === b.slice(cb[3]);
+  }
+  function _r318Dup(raw){
+    if(!_r318LastOk || !_r318LastRaw) return false;
+    if(typeof raw !== 'string' || raw.length !== _r318LastLen) return false;
+    return _r318SameBody(raw, _r318LastRaw);
+  }
+  /* --- B：元素墓碑 --- */
+  function _r318IdOf(k, it){
+    if(it == null) return '';
+    if(typeof it === 'string' || typeof it === 'number') return String(it);
+    if(typeof it !== 'object') return '';
+    if(it.id !== undefined && it.id !== null) return String(it.id);
+    if(it.key !== undefined && it.key !== null) return String(it.key);
+    if(it.date && it.taskId) return String(it.date) + '|' + String(it.taskId);
+    return '';
+  }
+  function _r318IdsOf(k, v){
+    const out = Object.create(null);
+    if(v == null) return out;
+    if(Array.isArray(v)){
+      const n = Math.min(v.length, 8000);
+      for(let i=0;i<n;i++){ const id = _r318IdOf(k, v[i]); if(id) out[id] = 1; }
+      return out;
+    }
+    if(typeof v === 'object'){
+      try{ Object.keys(v).forEach(function(kk){ out[kk] = 1; }); }catch(e){}
+    }
+    return out;
+  }
+  /* 取（并按 TTL 清理）当前状态的墓碑表；结构非法时重建 */
+  function _r318Tomb(st){
+    if(!st || typeof st !== 'object') return null;
+    let t = st.__tomb;
+    if(!t || typeof t !== 'object' || Array.isArray(t)) t = st.__tomb = {};
+    const now = Date.now();
+    Object.keys(t).forEach(function(k){
+      const m = t[k];
+      if(!m || typeof m !== 'object' || Array.isArray(m)){ try{ delete t[k]; }catch(e){} return; }
+      let n = 0;
+      Object.keys(m).forEach(function(id){
+        if(now - (Number(m[id]) || 0) > R318_TOMB_TTL){ try{ delete m[id]; }catch(e){} } else n++;
+      });
+      if(!n){ try{ delete t[k]; }catch(e){} }
+    });
+    return t;
+  }
+  /* 回填前剔除墓碑元素：返回剔除后的值；被删空则返回空值，调用方据此放弃回填 */
+  function _r318StripTomb(k, v, t){
+    const m = t && t[k];
+    if(!m) return v;
+    let has = false;
+    try{ has = Object.keys(m).length > 0; }catch(e){ has = false; }
+    if(!has) return v;
+    if(Array.isArray(v)){
+      const out = v.filter(function(it){ const id = _r318IdOf(k, it); return !id || !m[id]; });
+      return out.length === v.length ? v : out;
+    }
+    if(v && typeof v === 'object'){
+      let changed = false;
+      const out = {};
+      Object.keys(v).forEach(function(kk){ if(m[kk]) changed = true; else out[kk] = v[kk]; });
+      return changed ? out : v;
+    }
+    return v;
+  }
+  /* 对整个状态按墓碑剔除（小账本 / 补丁叠加之后调用，避免「并集回填」把删掉的条目复活） */
+  function _r318StripStateTomb(st){
+    if(!st || typeof st !== 'object') return st;
+    const t = st.__tomb;
+    if(!t || typeof t !== 'object') return st;
+    R318_TRACK_KEYS.forEach(function(k){
+      if(st[k] === undefined) return;
+      try{ st[k] = _r318StripTomb(k, st[k], t); }catch(e){}
+    });
+    return st;
+  }
+  /* 每次落库前：把「上次有、这次没有」的元素记进墓碑，并重拍元素快照。
+     ⚠️ 性能铁律：这是每次点击都会跑的同步路径，先用「元素数量是否变化」做 O(1) 闸门，
+        数量没变就直接返回 —— 常态下（新增一条打卡）根本不进入 id 集合比对。 */
+  let _r318SeenShape = {};
+  function _r318TombCapture(st){
+    if(!st || typeof st !== 'object') return;
+    const t = _r318Tomb(st);
+    if(!t) return;
+    let changed = false;
+    for(let i=0;i<R318_TRACK_KEYS.length;i++){
+      const k = R318_TRACK_KEYS[i];
+      if(_shapeOf(st[k]) !== _r318SeenShape[k]){ changed = true; break; }
+    }
+    if(!changed) return;
+    const now = Date.now();
+    if(_r318Seen){
+      R318_TRACK_KEYS.forEach(function(k){
+        const prev = _r318Seen[k];
+        if(!prev) return;
+        const cur = _r318IdsOf(k, st[k]);
+        let gone = null;
+        Object.keys(prev).forEach(function(id){
+          if(cur[id]) return;
+          (gone || (gone = [])).push(id);
+        });
+        if(!gone) return;
+        if(!t[k] || typeof t[k] !== 'object') t[k] = {};
+        gone.forEach(function(id){ t[k][id] = now; });
+      });
+    }
+    const seen = {};
+    const shape = {};
+    R318_TRACK_KEYS.forEach(function(k){
+      shape[k] = _shapeOf(st[k]);
+      const v = st[k];
+      const n = shape[k];
+      if(n > 8000) return;
+      seen[k] = _r318IdsOf(k, v);
+    });
+    _r318Seen = seen;
+    _r318SeenShape = shape;
+    /* 用户又把它加回来了 → 墓碑立刻失效，否则日后一次正常的备份回填会把这条「删掉」 */
+    Object.keys(t).forEach(function(k){
+      const m = t[k], cur = seen[k];
+      if(!m || typeof m !== 'object' || !cur) return;
+      let left = 0;
+      Object.keys(m).forEach(function(id){ if(cur[id]){ try{ delete m[id]; }catch(e){} } else left++; });
+      if(!left){ try{ delete t[k]; }catch(e){} }
+    });
+    /* 总量控制：超出上限按时间从旧到新裁掉，保证墓碑不会把主档撑大 */
+    const all = [];
+    Object.keys(t).forEach(function(k){
+      if(!t[k] || typeof t[k] !== 'object') return;
+      Object.keys(t[k]).forEach(function(id){ all.push([k, id, Number(t[k][id]) || 0]); });
+    });
+    if(all.length > R318_TOMB_MAX){
+      all.sort(function(a, b){ return a[2] - b[2]; });
+      all.slice(0, all.length - R318_TOMB_MAX).forEach(function(x){
+        try{ delete t[x[0]][x[1]]; }catch(e){}
+      });
+    }
+  }
+  /* --- C：三级对账 —— 候选集按 (seq, at, 体量) 取胜者 --- */
+  function _r318Pick(){
+    const cands = [];
+    const push = function(src, raw, rank){
+      if(!_rawUsable(raw)) return;
+      const h = _r318Head(raw);
+      cands.push({ src:src, raw:raw, seq:h.seq, at:h.at, len:raw.length, rank:rank });
+    };
+    try{
+      const _P = (typeof window !== 'undefined') ? window.R272P : null;
+      if(_P && typeof _P.recoveredRaw === 'function') push('nick_checkin_main_db', _P.recoveredRaw(), 2);
+    }catch(e){}
+    /* 桥梁快照是同步写的：老存档没有 __seq 时用 KEY_META.savedAt 作为它的时间 */
+    const bridgeRaw = _safeGet(KEY);
+    push(KEY, bridgeRaw, 1);
+    push(KEY_BAK1, _safeGet(KEY_BAK1), 3);
+    push(KEY_BAK2, _safeGet(KEY_BAK2), 4);
+    if(!cands.length) return { raw:bridgeRaw, from:KEY };
+    const savedAt = _lastSavedAt();
+    cands.forEach(function(c){
+      if(c.src === KEY && !c.seq && !c.at) c.at = savedAt || 0;
+    });
+    cands.sort(function(a, b){
+      if(b.seq !== a.seq) return b.seq - a.seq;      // ① 提交序号大者胜
+      if(b.at !== a.at) return b.at - a.at;          // ② 落库时间新者胜
+      /* ③ 都没有序号（升级到 R318 之前的老存档）：体量差超过 25% 说明其中一份是空壳，
+            取更完整的那份 —— 这正是「版本更新后第一次打开」最容易踩到的场景。
+            差别不大则仍按介质可信度排，避免把用户的合法删减误判成数据丢失。 */
+      const _mx = Math.max(a.len, b.len, 1);
+      if(Math.abs(b.len - a.len) / _mx > 0.25) return b.len - a.len;
+      return a.rank - b.rank;                        // ④ 同代时按介质可信度（桥梁 > 主库 > bak1 > bak2）
+    });
+    const win = cands[0];
+    if(win.src !== KEY && win.src !== 'nick_checkin_main_db') _recoveredFrom = win.src;
+    return { raw:win.raw, from:win.src, seq:win.seq };
+  }
+  /* --- D1：轻档兜底 —— 主档写失败时，轻档可能已领先一代 ---
+     旧版轻档只写不读，等于「备了胎却从不装上」：主档一旦写坏 / 被浏览器回收，
+     读回来的仍是几个月前的空壳，iPad 上表现为「刷新后打卡全没了」。
+     这里按提交序号判断：轻档序号严格更大 → 说明上一次主档写入失败而轻档写成功，
+     就用轻档里那些「用户可修改字段」覆盖到赢家上，并让 load() 立即把主档修回最新。 */
+  function _r318LightMerge(picked){
+    try{
+      const lightRaw = _safeGet(KEY_LIGHT);
+      if(!_rawUsable(lightRaw)) return picked && picked.raw;
+      const lh = _r318Head(lightRaw);
+      if(!lh.seq) return picked && picked.raw;
+      const wh = _r318Head(picked && picked.raw);
+      if(lh.seq <= wh.seq) return picked && picked.raw;   // 主档不落后 → 轻档没有新信息
+      let base = null, light = null;
+      try{ base = JSON.parse(picked.raw || 'null'); }catch(e){ base = null; }
+      try{ light = JSON.parse(lightRaw); }catch(e){ light = null; }
+      if(!light || typeof light !== 'object') return picked && picked.raw;
+      if(!base || typeof base !== 'object') base = {};
+      let n = 0;
+      LIGHT_KEYS.forEach(function(k){
+        if(light[k] === undefined) return;
+        base[k] = light[k]; n++;
+      });
+      if(!n) return picked && picked.raw;
+      base.__seq = lh.seq;
+      if(lh.at) base.__commitAt = lh.at;
+      _recoveredFrom = KEY_LIGHT;
+      try{ console.warn('[Store] R318 轻档兜底：主档落后 ' + (lh.seq - wh.seq) + ' 代，已用轻档字段修复（' + n + ' 项）'); }catch(e){}
+      return JSON.stringify(base);
+    }catch(e){ return picked && picked.raw; }
+  }
+
+  const LIGHT_KEYS = ['profile','settings','tasks','taskGroups','taskJump','rewardRules','weekPlan',
+    'calcSettings','records','checkinLog','goRecords','archive','r256','readFlags','readLog',
+    'kewenLearned','calcBook','calcDoneKeys','calcDailyLog','calcDrill','calcWrongBook','calcStreak',
+    'calcStreakLastDate','calcStreakRewardWeeks','calcStreakBonusStars','calcBank','calcBankRemoved',
+    'calcBankSeeded','calcBankImported','xueersiWordBank','xsGramBank','xueersiWrongs',
+    'xueersiDailyResults','xueersiAnswerLog','xueersiChecked','xueersiCheckin','xsPretestBank',
+    'baikeViewed','baikeFlags','baikeCounts','lastBaikeDate','customBaike','customList','nwZone',
+    'userReading','readingPanelDone','mathProblems','mathNotes','mathNoteStatus','mathGroups',
+    'mathGallery','mathExerciseBank','plots','inventory','gifts','shop','stage','km','farmOpen',
+    'music','farmLayout','en3500Marks','r314','nwWrong','homeGreets','homeBanner','sectionTitleTexts',
+    'schedule','memos','weekPlanColors','__schema','__seq','__commitAt','__tomb'];
+  /* 轻档超预算时的「可牺牲顺序」：从体积最大且可再生 / 有主档兜底的字段开始丢 */
+  const LIGHT_DROP_ORDER = ['calcBank','mathProblems','mathGallery','xueersiWordBank','km','calcWrongBook'];
+  let _r318XsSrc = null, _r318XsDelta = null;
+  function _r318XsDeltaOf(st){
+    const src = st ? st.xueersiContent : null;
+    if(_r318XsSrc === src) return _r318XsDelta;
+    let d = null;
+    try{ d = _xsUserDelta(st); }catch(e){ d = null; }
+    _r318XsSrc = src; _r318XsDelta = d;
+    return d;
+  }
+  /* 轻档序列化：整体只 stringify 一次（不再逐字段算体积），超预算才按牺牲顺序丢字段重来 */
+  function _r318LightPayload(st){
+    if(!st || typeof st !== 'object') return null;
+    const drops = {};
+    let out = null, s = null;
+    for(let round = 0; round <= LIGHT_DROP_ORDER.length; round++){
+      out = { __light:1 };
+      for(let i=0;i<LIGHT_KEYS.length;i++){
+        const k = LIGHT_KEYS[i];
+        if(drops[k] || st[k] === undefined) continue;
+        out[k] = st[k];
+      }
+      /* 学而思内容只留「用户新增 / 改过」的差值，内置 900+ 词条由种子现算 */
+      const ud = _r318XsDeltaOf(st);
+      if(ud) out.xueersiUserDelta = ud;
+      s = null;
+      try{ s = JSON.stringify(out); }catch(e){ s = null; }
+      if(!s) return null;
+      if(s.length <= LIGHT_BUDGET) return s;
+      if(round >= LIGHT_DROP_ORDER.length) return s;
+      drops[LIGHT_DROP_ORDER[round]] = 1;
+    }
+    return s;
+  }
+  function _r318LightWrite(st, force){
+    try{
+      const now = Date.now();
+      const seq = (st && (st.__seq | 0)) || 0;
+      /* 同一代（序号相同）只写一次；内容变了就必须重写 ——
+         轻档落后一代就等于把「上一代的删除」带回来，因此这里不再按时间窗口节流。 */
+      if(!force && seq && _r318LightSeq === seq) return false;
+      const payload = _r318LightPayload(st);
+      if(!payload) return false;
+      for(let i=0;i<2;i++){
+        if(_safeSet(KEY_LIGHT, payload)){ _r318LightSeq = seq; _r318LightAt = now; return true; }
+        if(!_evictForQuota()) break;
+      }
+    }catch(e){}
+    return false;
+  }
+
+  /* R318：平台级「独立键」写入通道 —— 与主档同一套持久化能力。
+     页面里除主档之外还有十几处 localStorage 直写（历史事件编辑 / 知识点照片缓存 /
+     音乐开关 / 上次浏览位置 / 每日小旗标 …）。它们原本是裸 setItem + 空 catch：
+     iPad 上写不进去就静默丢，刷新后回到旧值，与「全平台一致持久化」不符。
+     这里统一走「写后回读确认 + 配额腾挪重试」，返回值可被调用方感知。 */
+  function kvSet(key, val){
+    if(!key) return false;
+    let s = '';
+    try{ s = (typeof val === 'string') ? val : JSON.stringify(val); }catch(e){ return false; }
+    if(s === undefined) return false;
+    for(let i=0;i<2;i++){
+      if(_safeSet(key, s)){
+        try{ if(_safeGet(key) === s) return true; }catch(e){}
+      }
+      if(!_evictForQuota([key])) break;
+    }
+    return false;
+  }
+  function kvGet(key, dft){
+    try{ const s = _safeGet(key); return (s == null) ? dft : s; }catch(e){ return dft; }
+  }
+  function kvJson(key, dft){
+    try{ const s = _safeGet(key); if(s == null) return dft; const o = JSON.parse(s); return (o == null) ? dft : o; }catch(e){ return dft; }
+  }
+
+  /* --- 诊断口：家长端自检与探针统一从这里读内核状态 --- */  function r318TombCount(){
+    try{
+      const t = (_loadCacheSt && _loadCacheSt.__tomb) || {};
+      let n = 0;
+      Object.keys(t).forEach(function(k){ try{ n += Object.keys(t[k] || {}).length; }catch(e){} });
+      return n;
+    }catch(e){ return 0; }
+  }
+  function r318Info(){
+    const mainRaw = _safeGet(KEY);
+    const mh = _r318Head(mainRaw);
+    let bak1 = 0, light = 0;
+    try{ bak1 = _r318Head(_safeGet(KEY_BAK1)).seq; }catch(e){}
+    try{ light = _r318Head(_safeGet(KEY_LIGHT)).seq; }catch(e){}
+    return {
+      seq:_r318Seq, mainSeq:mh.seq, mainAt:mh.at, bak1Seq:bak1, lightSeq:light,
+      mainBytes:(mainRaw || '').length, lightBytes:(_safeGet(KEY_LIGHT) || '').length,
+      tombKeys:r318TombCount(), lastOk:_r318LastOk
+    };
+  }
+
   /* ============ R265-4：第二持久化介质 —— IndexedDB 全量镜像 ============
      iPad Safari 上有两种 localStorage 根本靠不住的情况：
        ① 5MB 配额被主档 + 双代备份 + 更新前副本挤满，setItem 长期抛 QuotaExceededError；
@@ -17674,7 +18162,17 @@ window.R298_TASK_PLAN = {
       const localTs = _lastSavedAt();
       const localRaw = _safeGet(KEY);
       const localOk = _rawUsable(localRaw);
-      if(localOk && localTs && rec.ts && rec.ts <= localTs){
+      /* R318：镜像与主档的比较同样以提交序号为准。
+         旧实现只在 KEY_META.savedAt 存在时比较时间戳 —— 一旦这份 53 字节的元数据
+         写失败或被人为清理，localTs 归零，更新的主档反而会被旧镜像整份覆盖。 */
+      const _mh = _r318Head(rec.raw);
+      const _lh = _r318Head(localRaw);
+      let _localNewer = false;
+      if(localOk){
+        if(_lh.seq || _mh.seq) _localNewer = (_lh.seq >= _mh.seq);
+        else _localNewer = !!(localTs && rec.ts && rec.ts <= localTs);
+      }
+      if(_localNewer){
         _mirrorLastTs = rec.ts || 0;
         try{ done && done(false); }catch(e){} return;
       }
@@ -17743,6 +18241,12 @@ window.R298_TASK_PLAN = {
       bak1Bytes: (_safeGet(KEY_BAK1)||'').length,
       bak2Bytes: (_safeGet(KEY_BAK2)||'').length,
       pendingBytes: (_safeGet(KEY_PENDING)||'').length,
+      /* R318：把「提交序号 / 轻档 / 墓碑 / 系统持久化授权」一并暴露，
+         家长端与探针才能判断「这一份到底是不是最新的一代」。 */
+      seq: _r318Seq,
+      lightBytes: (_safeGet(KEY_LIGHT)||'').length,
+      tombKeys: r318TombCount(),
+      persisted: (function(){ try{ return !!(window.R272P && window.R272P.isPersisted && window.R272P.isPersisted()); }catch(e){ return false; } })(),
       journal: journalInfo()
     };
   }
@@ -17817,32 +18321,24 @@ window.R298_TASK_PLAN = {
     _rawMemoRaw = raw; _rawMemoOk = ok;
     return ok;
   }
-  // 读取主存档；损坏则依次回退 bak1 / bak2（绝不直接新建空档）
+  // 读取主存档；损坏则依次回退备份（绝不直接新建空档）
   function _readMainRaw(){
-    /* R272-1.6：读取优先级 ① IndexedDB 主库 nick_checkin_main_db ② localStorage 同步桥梁快照
-       ③ 双代备份 ④ 历史备份快照。主库由 r272_persistence.js 在启动屏障里完成迁移 / 恢复，
-       这里只是把「主库最新确认态」同步暴露给原有 load()，上层调用语义完全不变。 */
-    try{
-      const _P = (typeof window !== 'undefined') ? window.R272P : null;
-      if(_P && typeof _P.recoveredRaw === 'function'){
-        const _r = _P.recoveredRaw();
-        if(_rawUsable(_r)){
-          /* R296-2.2：IndexedDB / 降级镜像都是异步写的，用户「点完打卡立刻刷新」时
-             镜像可能还是上一份状态，而桥梁快照（localStorage 主键）是同步写好的。
-             桥梁 savedAt 更新 → 以桥梁为准，否则刷新后打卡记录会退回上一次写入前。 */
-          const _lt = _lastSavedAt();
-          const _pt = (typeof _P.primaryTs === 'function') ? (Number(_P.primaryTs()) || 0) : 0;
-          if(_lt && (!_pt || _lt > _pt)){
-            const _bridge = _safeGet(KEY);
-            if(_rawUsable(_bridge)) return {raw:_bridge, from:KEY};
-          }
-          return {raw:_r, from:'nick_checkin_main_db'};
-        }
-      }
-    }catch(e){}
+    /* R318：读取裁决统一交给 _r318Pick —— 主库 / 桥梁 / 双代备份按提交序号对账。
+       R272-1.6 的「主库优先」与 R296-2.2 的「桥梁 savedAt 更新就让位」两条规则
+       都是拿时间戳猜新旧，异步写没完成时必然误判；序号由 store.save() 同步自增，
+       写入哪一层、写完没写完都不影响「谁更新」这件事。 */
+    const _picked = _r318Pick();
+    if(_picked && _rawUsable(_picked.raw)){
+      if(_picked.from !== KEY) _r318SyncSeq(_r318Head(_picked.raw).seq);
+      /* R318-D1：轻档只写不读等于没备份 —— 序号领先时把它的业务字段合并回来，
+         并让 load() 的 _recoveredFrom 分支立即把主档修成最新，避免「主档一直是旧的」。 */
+      const _merged = _r318LightMerge(_picked);
+      return { raw:_merged, from:(_merged !== _picked.raw ? KEY_LIGHT : _picked.from) };
+    }
+    // 兜底：序号 / 结构都不成立时退回原有「主档 → 双代备份」顺序，绝不返回空档新建
     const main = _safeGet(KEY);
     if(_rawUsable(main)) return {raw:main, from:KEY};
-    for(const k of [KEY_BAK1, KEY_BAK2]){
+    for(const k of [KEY_BAK1, KEY_BAK2, KEY_LIGHT]){
       const b = _safeGet(k);
       if(_rawUsable(b)){ _recoveredFrom = k; return {raw:b, from:k}; }
     }
@@ -17923,7 +18419,11 @@ window.R298_TASK_PLAN = {
       // R263-3.1：只要本次会话有过成功落库，就允许刷盘；
       // 原「!_loadCacheRaw 一律拒绝」在首启 / 缓存异常时反而挡住了最后一次保存。
       if(!_loadCacheRaw && !_sessionPersisted) return false;
-      _guardBeforeSave(st);   // R259：刷盘同样过写盘闸，关页面 / 切后台也守保护规则
+      _guardBeforeSave(st);   // R259/R318：刷盘同样过写盘闸，关页面 / 切后台也守保护规则
+      /* R318：关页面 / 切后台这次写入同样是一次独立提交 —— 墓碑与序号都要一起落地，
+         否则「删完立刻切后台」这条路径写出去的仍是上一代的序号，刷新会被旧副本压回去。 */
+      try{ _r318TombCapture(st); }catch(e){}
+      _r318NextSeq(st);
       const raw = JSON.stringify(st);
       // R265-4：版本更新 / 关页面前同样留一份 IndexedDB 镜像（pagehide 在 iPad 上不一定触发）
       const _fts = Date.now();
@@ -17940,10 +18440,14 @@ window.R298_TASK_PLAN = {
       // R260-1.1：刷盘同样走配额回收链，避免「关页面最后一次操作因空间不足丢失」
       if(!_writeMain(raw).ok){
         // R266：关页面/切后台这最后一次写入最不能丢 —— 先落小账本，再尽力写补丁
+        _r318LastOk = false;
+        try{ _r318LightWrite(st, true); }catch(e){}   // R318：轻档优先，体积最小最容易写进
         try{ _journalWrite(st, _fts); }catch(e){}
         try{ _pendingWrite(st); }catch(e){}
         return false;
       }
+      try{ _r318LastRaw = raw; _r318LastLen = raw.length; _r318LastOk = true; }catch(e){}
+      try{ _r318LightWrite(st, false); }catch(e){}
       _touchSavedAt(raw.length, _fts);
       _snapshotClear();   // R258-1.1：主档已整体落盘，应急设置快照作废
       _pendingClear();    // R261-5.1：主档已整体落盘，差异补丁作废
@@ -18905,20 +19409,66 @@ window.R298_TASK_PLAN = {
   function _restoreFromBackup(st, keys){
     if(!keys.length) return [];
     const readObj = function(raw){ try{ const o = JSON.parse(raw || 'null'); return (o && typeof o === 'object' && !Array.isArray(o)) ? o : null; }catch(e){ return null; } };
-    const srcs = [ readObj(_safeGet(KEY)), readObj(_safeGet(KEY_BAK1)), readObj(_safeGet(KEY_BAK2)) ].filter(Boolean);
+    const _tomb = (st && st.__tomb && typeof st.__tomb === 'object' && !Array.isArray(st.__tomb)) ? st.__tomb : null;
+    const srcs = [ readObj(_safeGet(KEY)), readObj(_safeGet(KEY_BAK1)),
+                   readObj(_safeGet(KEY_BAK2)), readObj(_safeGet(KEY_LIGHT)) ].filter(Boolean);
     if(!srcs.length) return [];
     const done = [];
     keys.forEach(function(k){
       for(let i=0;i<srcs.length;i++){
-        const v = srcs[i][k];
-        if(v !== undefined && _shapeOf(v) > 0){ st[k] = v; done.push(k); break; }
+        let v = srcs[i][k];
+        if(v === undefined) continue;
+        /* R318：用户已经删掉的元素绝不被回填复活 —— 先剔墓碑，剔空就换下一个来源。
+           旧实现直接从备份整份赋回，于是「删掉一条，下一次保存又被旧备份加回来」。 */
+        v = _r318StripTomb(k, v, _tomb);
+        if(_shapeOf(v) > 0){ st[k] = v; done.push(k); break; }
       }
     });
     if(done.length){
-      st.__dataGuard = { at: Date.now(), version: 'R259', keys: done.slice(0, 20), n: done.length };
+      st.__dataGuard = { at: Date.now(), version: 'R318', keys: done.slice(0, 20), n: done.length };
       try{ console.warn('[Store] 数据保护：已阻止一次用户数据清空 →', done.join(',')); }catch(e){}
     }
     return done;
+  }
+  /* R318：判定「整体清空」的信号强度。
+     单看「某个集合变空」分不清「删掉最后一条」和「数据被清空」，
+     这里把多个维度的证据加起来：记录型集合被清空算 1 分，profile 被清空算 2 分，
+     tasks / r256 被清空各算 1 分，成长星从 >0 归零算 1 分。
+     累计 ≥3 分才判定为整体清空 —— 正常删除最多命中 1~2 分。 */
+  let _r318PrevStars = 0;
+  function _r318StarZero(st){
+    try{ return (_r318PrevStars > 0) && (_r256StarsOf(st) === 0); }catch(e){ return false; }
+  }
+  function _r318WipeSignals(st, bad){
+    let n = 0;
+    bad.forEach(function(k){
+      if(k === 'profile'){ n += 2; return; }
+      if(k === 'tasks' || k === 'r256' || k === 'archive'){ n += 1; return; }
+      n += 1;
+    });
+    if(_r318StarZero(st)) n += 1;
+    return n;
+  }
+  /* R318：升级窗口 —— 版本更新后的第一次落库与「用户删除」必须分开对待。
+     R259 的本意是「更新代码把字段清空了要回填」，R318 的本意是「用户删掉最后一条要生效」，
+     两者都合理，区别只在「这次清空是谁干的」：
+       · 显式升级窗口（protectBeforeUpdate 调用后 60 秒）→ 视作代码升级，一律回填；
+       · 磁盘上的 __schema 比本次小 → 确实是新版本首次落库，同样回填；
+       · 其余情况 → 用户删除，按元素墓碑处理，绝不回填。
+     这样既不会在升级时丢数据，也不会把「删了」变成「删不掉」。 */
+  let _upgradeWindowUntil = 0;
+  function _openUpgradeWindow(ms){ _upgradeWindowUntil = Date.now() + (ms || 60000); }
+  let _diskSchemaMemo = null;
+  function _r318DiskSchema(){
+    if(_diskSchemaMemo !== null) return _diskSchemaMemo;
+    try{ const o = JSON.parse(_safeGet(KEY) || 'null'); _diskSchemaMemo = (o && (o.__schema | 0)) || 0; }
+    catch(e){ _diskSchemaMemo = 0; }
+    return _diskSchemaMemo;
+  }
+  function _r318InUpgradeWindow(st){
+    if(Date.now() < _upgradeWindowUntil) return true;
+    const ds = _r318DiskSchema();
+    return ds > 0 && (st && (st.__schema | 0)) > ds;
   }
   function _guardBeforeSave(st){
     const allowAll = _clearAll; _clearAll = false;   // 一次用户操作只放行一次
@@ -18929,7 +19479,26 @@ window.R298_TASK_PLAN = {
       if(allowShrink[k]) return;
       if((_persistedShape[k] || 0) > 0 && _shapeOf(st[k]) === 0) bad.push(k);
     });
-    if(bad.length) _restoreFromBackup(st, bad);
+    if(!bad.length) return st;
+    /* R318：写盘闸的判据从「任意集合变空就回填」改成「多维信号判定整体清空」。
+       旧判据分不清「用户删掉最后一条」和「数据被清空」，一律从旧备份整份回填，
+       iPad 上表现为「删了刷新又回来」。新判据：
+         ⓪ 升级窗口内 → 视作代码升级，全部回填（保住 R259 的原意）；
+         ① 信号累计 ≥3 分 → 判定整体清空，回填全部失守字段；
+         ② 单个记录型集合删空 → 视为合法删除，交给元素墓碑记录意图，不回填；
+         ③ profile / tasks / archive / r256 属结构必备字段，单独失守仍然拦截回填。 */
+    if(_r318InUpgradeWindow(st)){
+      _restoreFromBackup(st, bad);
+      _upgradeWindowUntil = 0;
+      return st;
+    }
+    const signals = _r318WipeSignals(st, bad);
+    if(signals >= 3){
+      _restoreFromBackup(st, bad.concat(_r318StarZero(st) ? ['archive'] : []));
+      return st;
+    }
+    const needRestore = bad.filter(function(k){ return !!R318_CORE_KEYS[k]; });
+    if(needRestore.length) _restoreFromBackup(st, needRestore);
     return st;
   }
   function _guardRestore(st, cap){
@@ -18956,6 +19525,8 @@ window.R298_TASK_PLAN = {
   const PREUPDATE_BUDGET = 600 * 1024;
   function protectBeforeUpdate(){
     try{
+      /* R318：升级窗口打开 60 秒 —— 新版本落库若出现字段被清空，走「升级回填」而不是当成用户删除 */
+      _openUpgradeWindow(60000);
       const st = _loadCacheSt || _staged || null;
       if(!st || typeof st !== 'object') return false;
       const out = { __preupdate: 1, at: Date.now(), schema: st.__schema || 0 };
@@ -19075,6 +19646,10 @@ window.R298_TASK_PLAN = {
     try{ _pendingApply(st); }catch(e){}
     // R266：补丁之外的最后一道保险 —— 小账本（只有它比主档新时才叠加）
     try{ _journalApply(st); }catch(e){}
+    /* R318：补丁 / 小账本 / 快照都只做「并集回填」，会把用户已经删掉的条目重新加回来。
+       这里按状态自带的元素墓碑统一剔除一遍 —— 删除意图跨刷新、跨介质一致。 */
+    try{ _r318StripStateTomb(st); }catch(e){}
+    try{ _r318SyncSeq(st.__seq); _r318Tomb(st); }catch(e){}
     // R259：迁移前拍一份「保护字段当前大小」，迁移后再比对，防止字段迁移把用户数据清零
     const _gcap = _guardCapture(st, GUARD_MIGRATION_KEYS);
     if(!Array.isArray(st.plots) || st.plots.length !== PLOT_COUNT){
@@ -20019,6 +20594,21 @@ window.R298_TASK_PLAN = {
       try{ const _rawR = JSON.stringify(st); if(_safeSet(KEY, _rawR)){ _loadCachePut(st, _rawR); } }catch(e){}
     }
     _persistedShape = _guardCapture(st);
+    try{ _r318PrevStars = _r256StarsOf(st); }catch(e){}
+    /* R318：以「本次读到并完成迁移」的状态重拍元素快照 —— 下一次 save() 的删除判定
+       以它为基线，才能精确知道「哪一条被删了」，而不是只知道「某个集合变小了」。 */
+    try{
+      _r318Seen = {};
+      _r318SeenShape = {};
+      R318_TRACK_KEYS.forEach(function(k){
+        const v = st[k];
+        const n = Array.isArray(v) ? v.length : (v && typeof v === 'object' ? Object.keys(v).length : 0);
+        _r318SeenShape[k] = n;
+        if(n > 8000) return;
+        _r318Seen[k] = _r318IdsOf(k, v);
+      });
+      _r318SyncSeq(st.__seq);
+    }catch(e){}
     _loadCachePut(st);   // R246-3：解析 + 迁移完成后写入缓存
     // R254-1：若本次是从备份救回来的，立即回写主存档，保证下次打开读的是完整数据
     if(_recoveredFrom){
@@ -20094,11 +20684,18 @@ window.R298_TASK_PLAN = {
      做法：① 按「可重建 → 较旧 → 较新」的优先级逐级腾挪，每腾一级就重试一次写入；
            ② 用户数据（主档）永远优先于任何副本：主档写成功是第一目标；
            ③ 顺序：设置快照 → 损坏副本 → 更新前副本 → 上一代备份 → 最新备份。 */
+  /* R318：KEY_LIGHT 放在最后一级 —— 主档写成功永远是第一目标，轻档是最容易重建的一份副本
+     （下一次 save 立刻重写），因此只有在其它副本都已腾空、主档仍写不进时才动它。 */
   const QUOTA_EVICT_ORDER = [KEY_SNAPSHOT, KEY + '_corrupt_backup', KEY_PRE_UPDATE, KEY_BAK2, KEY_BAK1];
   let _quotaEvicted = [];
   function _evictForQuota(skip){
     for(let i=0;i<QUOTA_EVICT_ORDER.length;i++){
       const k = QUOTA_EVICT_ORDER[i];
+      /* R318：主档与轻档是「用户业务数据本体」，任何配额腾挪都不许拿它们开刀 ——
+         旧顺序把 KEY_LIGHT 排在最后，看似无害，但主档写失败后紧接着写补丁 / 小账本时
+         仍会一路腾到它，把刚写好的第二落点删掉（实测 light=0B）。
+         宁可补丁写不进，也不能删掉唯一一份业务副本。 */
+      if(k === KEY || k === KEY_LIGHT) continue;
       if(skip && skip.indexOf(k) >= 0) continue;
       let has = false;
       try{ has = localStorage.getItem(k) != null; }catch(e){ has = false; }
@@ -20405,8 +21002,11 @@ window.R298_TASK_PLAN = {
       body[k] = picked[k]; used += s.length + k.length;
     }
     if(!Object.keys(body).length) return false;
+    /* R318：墓碑随账本一起带走 —— 主档写不进的那段时间里删掉的条目，
+       不能被下一次「并集回填」重新加回来。__seq 一并记下，供读取时判新旧。 */
+    try{ if(st && st.__tomb && typeof st.__tomb === 'object') body.__tomb = st.__tomb; }catch(e){}
     let payload;
-    try{ payload = JSON.stringify({ __at: at || Date.now(), __v: 266, body: body }); }catch(e){ return false; }
+    try{ payload = JSON.stringify({ __at: at || Date.now(), __seq: (st && (st.__seq|0)) || 0, __v: 318, body: body }); }catch(e){ return false; }
     for(let i=0;i<4;i++){
       if(_safeSet(KEY_JOURNAL, payload)) return true;
       if(!_evictForQuota()) break;      // 绝不删主档：主档不在腾挪表里
@@ -20436,7 +21036,28 @@ window.R298_TASK_PLAN = {
        实测很容易命中：一次操作里先是迁移/设置写主档成功（打 savedAt 戳），紧接着主档被写满、
        转存小账本，前后相差不过几毫秒。现在只比严格大小关系，账本不早于主档就必须叠加。 */
     if(mainAt && j.__at && j.__at < mainAt) return false;  // 主档确实比账本新，账本作废
+    /* R318：主档带着比账本更大的提交序号 → 账本一定是上一代的残留，直接作废。
+       序号是同步自增的，不受「账本时间戳 / 主档 savedAt 谁先写」影响。 */
+    try{
+      const _ms = _r318Head(_safeGet(KEY)).seq || (st.__seq | 0);
+      if(j.__seq && _ms && (j.__seq|0) < _ms) return false;
+    }catch(e){}
     const b = j.body;
+    /* R318：先把账本里的墓碑并进当前状态，再做并集回填 —— 顺序反了会把删掉的条目复活。 */
+    try{
+      if(b.__tomb && typeof b.__tomb === 'object' && !Array.isArray(b.__tomb)){
+        const t = (st.__tomb && typeof st.__tomb === 'object' && !Array.isArray(st.__tomb)) ? st.__tomb : (st.__tomb = {});
+        Object.keys(b.__tomb).forEach(function(k){
+          const m = b.__tomb[k];
+          if(!m || typeof m !== 'object' || Array.isArray(m)) return;
+          if(!t[k] || typeof t[k] !== 'object') t[k] = {};
+          Object.keys(m).forEach(function(id){
+            const at = Number(m[id]) || 0;
+            if(!t[k][id] || at > (Number(t[k][id]) || 0)) t[k][id] = at;
+          });
+        });
+      }
+    }catch(e){}
     /* R269-2：题库 / 用户新增英语内容先并集回填 —— 这两类只增不减，
        无论主档旧到什么程度都必须把账本里多出来的题目补回去。 */
     try{ if(b.xsBank) _journalMergeBank(st, 'xueersiWordBank', b.xsBank); }catch(e){}
@@ -20587,12 +21208,30 @@ window.R298_TASK_PLAN = {
        （写盘闸 → 配额回收 → 回读校验 → 失败留差异补丁 → 双代备份），
        任何时刻刷新 / 重载都不丢；写不进时由 R261 的 _pending 补丁兜底。 */
     if(_staging){ _staged = st; st = _settingsRollback(st); }
-    st = _guardBeforeSave(st);                 // R259：写盘闸 —— 非用户主动的清空一律回填
+    st = _guardBeforeSave(st);                 // R259/R318：写盘闸 —— 只有整体清空才回填
+    /* R318：落库前先记录「本次删掉了哪些元素」，再自增提交序号。
+       顺序不能颠倒 —— 墓碑必须写进状态，才能随这一份存档落到所有介质，
+       下一次无论是备份回填、迁移闸还是小账本叠加，都能守住「删了就是删了」。 */
+    try{ _r318TombCapture(st); }catch(e){}
+    const _prevSeq = st && (st.__seq | 0), _prevAt = st && (st.__commitAt | 0);
+    _r318NextSeq(st);
     let raw;
     let _r256Entry = null;
     try{ _r256Entry = _r256Ledger(st); }catch(e){}
     try{ raw = JSON.stringify(st); }
     catch(e){ _saveError = 'serialize'; _loadCachePut(st); return false; }
+    /* R318：业务内容与上一次落库完全一致 → 不重复写盘（只把序号还原，保证内存与磁盘同代）。
+       iPad 上「同一处反复点击」原本每次都要重写 300KB+ 并连带刷新三份副本，
+       既拖慢按键响应，也把配额更快推高。 */
+    if(_r318Dup(raw)){
+      if(st && typeof st === 'object'){
+        if(_prevSeq) st.__seq = _prevSeq; else { try{ delete st.__seq; }catch(e){} }
+        if(_prevAt) st.__commitAt = _prevAt; else { try{ delete st.__commitAt; }catch(e){} }
+      }
+      _saveError = '';
+      _loadCachePut(st);   // 磁盘未变：缓存以磁盘原串为准，下次 load() 可直接命中
+      return true;
+    }
     /* R265-4：无论本机 localStorage 写不写得进，都异步留一份 IndexedDB 全量镜像。
        iPad 上介质失效（配额满 / 隐私模式 / 内存 shim）时，这份镜像是唯一能跨刷新的副本。
        时间戳与成功落库时的 KEY_META.savedAt 共用，hydrateMirror 才能准确判断新旧。 */
@@ -20648,6 +21287,10 @@ window.R298_TASK_PLAN = {
       // R246-3：写失败时内存态仍以本次 st 为准，避免「渲染新数据、点击读回旧数据」两套真相
       // R266：先写「小账本」——它体积可控（≤300KB），即便主档与补丁都写不下也基本能落地，
       //       是打卡数据跨刷新存活的最后保障；随后再尽力写完整差异补丁。
+      _r318LastOk = false;
+      /* R318：主档写不进时，先落一份「轻档」（只含用户业务字段，约 130KB，不含内置素材），
+         它比 300KB 的小账本更可能写进、又比主档小得多，是业务数据跨刷新的第二落点。 */
+      try{ _r318LightWrite(st, true); }catch(e){}
       try{ _journalWrite(st, _ts); }catch(e){}
       // R261-5.1：主档写不进 → 立刻留差异补丁，刷新 / 版本更新后能把修改捞回来
       _r256LedgerRollback(st, _r256Entry);
@@ -20664,6 +21307,8 @@ window.R298_TASK_PLAN = {
       if(_back != null && _back !== raw){
         _saveError = 'verify';
         _r256LedgerRollback(st, _r256Entry);
+        _r318LastOk = false;
+        try{ _r318LightWrite(st, true); }catch(e){}   // R318：读回不一致同样先落轻档
         try{ _journalWrite(st, _ts); }catch(e){}   // R266：读回不一致同样先落小账本
         try{ _pendingWrite(st); }catch(e){}   // R261-5.1：回读不一致同样留补丁
         _loadCachePut(st);
@@ -20688,6 +21333,13 @@ window.R298_TASK_PLAN = {
     // R264-2.1：空间吃紧时优先保住主档与业务数据，更新前副本是可重建的临时保险
     try{ if(_usageBytes() > SPACE_SOFT_LIMIT) localStorage.removeItem(KEY_PRE_UPDATE); }catch(e){}
     _persistedShape = _guardCapture(st);   // R259：记录本次落库后的保护字段大小
+    /* R318：磁盘上的 schema 已经跟上本次写入 —— 升级窗口到此结束，后续清空按用户删除处理 */
+    try{ _diskSchemaMemo = (st && (st.__schema | 0)) || 0; _upgradeWindowUntil = 0; }catch(e){}
+    try{ _r318PrevStars = _r256StarsOf(st); }catch(e){}
+    /* R318：记下本次成功落库的业务内容（已剔提交戳）用于写入去重；
+       同时滚动刷新轻档 —— 主档某一次突然写不进时，跨刷新仍有一份完整的用户业务副本。 */
+    try{ _r318LastRaw = raw; _r318LastLen = raw.length; _r318LastOk = true; }catch(e){}
+    try{ _r318LightWrite(st, false); }catch(e){}
     // R255-5：备份属于「附加保险」，它失败绝不能让主存档被判定为失败
     if(!_skipBak) try{ _rotateBackup(raw, false); }catch(e){}
     return true;
@@ -22223,8 +22875,15 @@ window.R298_TASK_PLAN = {
      否则下次启动 hydrateMirror 或 _journalApply 会把旧记录又搬回来，用户会以为「重置无效」。 */
   function resetData(){
     allowUserClear(); _loadCacheOK = false; _loadCacheRaw = null; _loadCacheSt = null;
-    [KEY, KEY_PENDING, KEY_SNAPSHOT, KEY_META, KEY_BAK1, KEY_BAK2, KEY_PRE_UPDATE, KEY_JOURNAL, KEY_REMIND]
+    /* R318：KEY_LIGHT 也是「完整状态」的一份副本，清空数据时必须一起删 ——
+       否则 _r318Pick() 会挑中这份序号更高的轻档，把刚清空的数据整体复活回来。 */
+    [KEY, KEY_PENDING, KEY_SNAPSHOT, KEY_META, KEY_BAK1, KEY_BAK2, KEY_PRE_UPDATE, KEY_JOURNAL,
+     KEY_REMIND, KEY_LIGHT]
       .forEach(function(k){ try{ localStorage.removeItem(k); }catch(e){} });
+    /* R318：内核计数器与元素快照一并归零，新会话从第 1 代重新开始 */
+    _r318Seq = 0; _r318Seen = null; _r318SeenShape = {};
+    _r318LastRaw = null; _r318LastLen = 0; _r318LastOk = false; _r318LightSeq = 0; _r318PrevStars = 0;
+    _diskSchemaMemo = null; _upgradeWindowUntil = 0;
     /* R273-4.1：重置也要清掉开放时间独立副本，否则会把旧配置复活回来 */
     try{ localStorage.removeItem(KEY_OPENTIME); }catch(e){}
     try{ _mirrorDelete(); }catch(e){}
@@ -29112,6 +29771,8 @@ be 动词：am / is → was；are → were
     r272Logs, r272Export, r272BeforeImport, r272Rollback, r272PersistWait, r272Repair,
     r272Invalidate, hasUnsavedSettings,
     KEY, KEY_BAK1, KEY_BAK2, KEY_META, KEY_SNAPSHOT, KEY_PRE_UPDATE, KEY_JOURNAL, KEY_REMIND, SCHEMA_VERSION,
+    /* R318：持久化内核诊断 —— 提交序号 / 轻档 / 元素墓碑 / 写入去重状态 */
+    KEY_LIGHT, r318Info, r318TombCount, allowShrinkOnce, kvSet, kvGet, kvJson,
     hasSettingsSnapshot, PROTECT_KEYS, allowUserClear, protectBeforeUpdate, hasPreUpdateBackup, dataGuardInfo, SUBJECTS, PLOT_COUNT, STAGE_NEED, todayStr, weekRange, uid,
     load, save, resetData,
     // R254-1/2：数据保护 —— 备份信息 / 强制刷盘
@@ -30157,7 +30818,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
   function _uiMem(key, val){
     try{
       const k = 'ui_mem_' + key;
-      if(arguments.length > 1){ localStorage.setItem(k, String(val)); return String(val); }
+      if(arguments.length > 1){ S.kvSet(k, String(val)); return String(val); }
       return localStorage.getItem(k);
     }catch(e){ return null; }
   }
@@ -31691,7 +32352,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     return null;
   }
   function kwSaveLastPos(unit, lesson){
-    try{ localStorage.setItem('lc_kw_last', JSON.stringify({ unit: String(unit), lesson: lesson!=null ? String(lesson) : null })); }catch(e){}
+    try{ S.kvSet('lc_kw_last', JSON.stringify({ unit: String(unit), lesson: lesson!=null ? String(lesson) : null })); }catch(e){}
   }
   let _sucaiTab = '全部';
   // 通用分页器（与拓展素养 szPager 风格一致）
@@ -40950,10 +41611,10 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   const HIST_EDIT_KEY = 'lc_hist_edit';
   let histEditState = { mode:false, editing:null }; // editing = {k:'MM-DD', idx}，idx=-1 表示新增行
   function histEdits(){
-    try{ return JSON.parse(localStorage.getItem(HIST_EDIT_KEY)||'{}')||{}; }catch(e){ return {}; }
+    try{ return JSON.parse(S.kvGet(HIST_EDIT_KEY,'{}')||'{}')||{}; }catch(e){ return {}; }
   }
   function saveHistEdits(obj){
-    try{ localStorage.setItem(HIST_EDIT_KEY, JSON.stringify(obj)); }catch(e){}
+    try{ S.kvSet(HIST_EDIT_KEY, JSON.stringify(obj)); }catch(e){}
   }
   function histDayData(key){
     const base = (typeof window !== 'undefined' && window.HISTORY_TODAY) ? window.HISTORY_TODAY : {};
@@ -44917,7 +45578,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         let timer = null;
         const finish = function(rec){
           if(aborted) return;
-          cache[i] = rec; try{ localStorage.setItem('zoo_km_photo_v1', JSON.stringify(cache)); }catch(e){}
+          cache[i] = rec; try{ S.kvSet('zoo_km_photo_v1', JSON.stringify(cache)); }catch(e){}
         };
         const ac = (typeof AbortController === 'function') ? new AbortController() : null;
         timer = setTimeout(function(){ aborted = true; try{ if(ac) ac.abort(); }catch(e){} finish({fail:1, ts:Date.now()}); }, 2500);
@@ -48441,7 +49102,7 @@ function renderKMAdmin(){
     e.preventDefault(); e.stopPropagation();
     const nextOn = (window.__farmMusicOn === false); // 当前关 → 开；当前开 → 关
     window.__farmMusicOn = nextOn;
-    try{ localStorage.setItem('farmMusicOn', nextOn ? '1' : '0'); }catch(err){}
+    try{ S.kvSet('farmMusicOn', nextOn ? '1' : '0'); }catch(err){}
     const cb = document.getElementById('farmMusicOn');
     if(cb) cb.checked = nextOn;
     try{
@@ -48457,7 +49118,7 @@ function renderKMAdmin(){
       onCb._bound = true;
       onCb.onchange = ()=>{
         window.__farmMusicOn = !!onCb.checked;
-        localStorage.setItem('farmMusicOn', onCb.checked ? '1' : '0');
+        S.kvSet('farmMusicOn', onCb.checked ? '1' : '0');
         try{ syncFarmMusicQuickToggle(); }catch(e){}
         const onFarm = !document.querySelector('.page[data-page="farm"]').hidden;
         if(window.__farmMusicOn){
@@ -48472,7 +49133,7 @@ function renderKMAdmin(){
       styleSel._bound = true;
       styleSel.onchange = ()=>{
         window.__farmMusicStyle = styleSel.value;
-        localStorage.setItem('farmMusicStyle', styleSel.value);
+        S.kvSet('farmMusicStyle', styleSel.value);
         try{ stopFarmPreview(); }catch(e){} // R79-1：换曲目时停止上一次试听
         const onFarm = !document.querySelector('.page[data-page="farm"]').hidden;
         if(onFarm && window.__farmMusicOn !== false){ stopFarmAmbient(); startFarmAmbient(); }
@@ -48547,7 +49208,7 @@ function renderKMAdmin(){
       onCb._kmBound = true;
       onCb.onchange = ()=>{
         window.__kmBgmOn = !!onCb.checked;
-        localStorage.setItem('kmMusicOn', onCb.checked ? '1' : '0');
+        S.kvSet('kmMusicOn', onCb.checked ? '1' : '0');
         try{
           const set = S.getKMSettings ? S.getKMSettings() : {};
           if(S.saveKMSettings) S.saveKMSettings({ bgm: Object.assign({}, (set.bgm||{}), { on: !!onCb.checked }) });
@@ -48560,7 +49221,7 @@ function renderKMAdmin(){
       styleSel._kmBound = true;
       styleSel.onchange = ()=>{
         window.__kmBgmStyle = styleSel.value;
-        localStorage.setItem('kmMusicStyle', styleSel.value);
+        S.kvSet('kmMusicStyle', styleSel.value);
       };
     }
     const prevBtn = document.getElementById('kmMusicPreview');
@@ -52533,7 +53194,7 @@ function renderKMAdmin(){
         try{
           const cur = S.buildBackupPayload();
           const raw = JSON.stringify(cur);
-          try{ localStorage.setItem('zoo_checkin_v3_restore_safety', raw); }catch(err2){}
+          try{ S.kvSet('zoo_checkin_v3_restore_safety', raw); }catch(err2){}
         }catch(err2){}
         try{
           const merged = mergeStoreData(S.load(), incoming);
@@ -54252,7 +54913,7 @@ if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
       try { flags = JSON.parse(localStorage.getItem(flagKey)||'{}'); } catch(e){}
       if(flags[today]) return; // 今日已提醒过
       flags[today] = true;
-      try { localStorage.setItem(flagKey, JSON.stringify(flags)); } catch(e){}
+      try { S.kvSet(flagKey, JSON.stringify(flags)); } catch(e){}
       const poemOk = !!FESTIVAL_POEMS[f.name];
       setTimeout(()=>{
         toast(`🎉 今天是 ${f.emoji} ${f.name}！${poemOk?'打开节日卡片读应景诗词，还能 +1⭐ 哦～':'快来打卡吧～'}`);
@@ -54893,7 +55554,7 @@ if($('#btnXsGramFilter')) $('#btnXsGramFilter').onclick = openXsGramFilter;
     const modal = $('#modalKtxsRead');
     const v = (on == null) ? !(modal && modal.classList.contains('r256-night')) : !!on;
     if(modal) modal.classList.toggle('r256-night', v);
-    try{ localStorage.setItem('r256_night_read', v ? '1' : '0'); }catch(e){}
+    try{ S.kvSet('r256_night_read', v ? '1' : '0'); }catch(e){}
     const b = $('#r256ReaderNight');
     if(b) b.classList.toggle('is-on', v);
     return v;
@@ -57625,7 +58286,7 @@ function init(){
     function _markFailTip(){
       const now = Date.now();
       try{ sessionStorage.setItem(FAIL_TIP_KEY, String(now)); }catch(e){}
-      try{ localStorage.setItem(FAIL_TIP_KEY, String(now)); }catch(e){}
+      try{ S.kvSet(FAIL_TIP_KEY, String(now)); }catch(e){}
     }
     /* R273-1.1 / R274-1.1：区分「真实写入事务阻塞 / 写入超时 / 事务冲突 / Safari 误报」，
        绝不误报「存储空间已满」。持久化层已做排队 + 退避重试 + 队列排空后裁决，
