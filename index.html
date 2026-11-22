@@ -11270,6 +11270,57 @@ body.r314-frame-gold .home-avatar{box-shadow:0 0 0 4px #f4dd97,0 6px 18px rgba(1
   .r319-book-author{max-width:none}
 }
 
+/* ============ R321：摘抄本分版块 / 语文阅读 2mm 间距 / 古诗词应用蓝底卡 ============ */
+/* R321-2：摘抄本按好词 / 好句 / 段落分版块，次标题复用新增摘抄的同类胶囊 */
+.r314-ex-group + .r314-ex-group{margin-top:12px}
+.r314-ex-subtitle{display:flex;align-items:center;gap:8px;margin:6px 0}
+.r314-ex-subtitle .r314-extype{cursor:default}
+.r314-ex-count{font-size:11.5px;font-weight:800;color:var(--tone-600)}
+/* R321-3：语文阅读全部卡片间距统一 2mm（≈7.6px）；变量覆盖三卡行与行内网格 */
+.reading-cn{--r317-cn-gap:2mm}
+.reading-cn .reading-cols,
+.reading-cn .rd-cn-row,
+.reading-cn .reading-col-list,
+.reading-cn .ri-poem-cols,
+.reading-cn .haoci-use-grid{gap:2mm}
+/* R321-3：古诗词应用逐段蓝底卡，口径对齐鉴赏卡的「诗词大意 / 创作背景」 */
+.r316-pu-paras{display:flex;flex-direction:column;gap:2mm}
+.r316-pu-para{margin:0;padding:7px 9px;border-radius:0 8px 8px 0;
+  background:var(--tone-050);border-left:3px solid var(--tone-400);
+  font-size:12.5px;line-height:1.78;color:var(--tone-900);overflow-wrap:anywhere}
+.r316-pu-para + .r316-pu-para{margin-top:0}
+.bs-item-poem-use .r316-pu-para{margin-bottom:2mm}
+
+/* ============ R321-4：单元目标 / 阶段性挑战 一行两卡 + 新增弹窗 ============ */
+.r321-goal-add-btn{margin-left:auto;white-space:nowrap}
+#archiveChallengeHost{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;align-items:start}
+#archiveChallengeHost .r314-goal{margin-bottom:0}
+#archiveChallengeHost .r314-tip{grid-column:1/-1}
+.r321-goal-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;align-items:start}
+.r321-goal-list .r314-goal{margin-bottom:0}
+.r321-goal-list .r314-empty,.r321-goal-remove .r314-empty{grid-column:1/-1}
+.r321-setup-box{max-width:760px;width:min(760px,94vw)}
+.r321-setup-body{max-height:70vh;overflow:auto}
+.r321-goal-remove{margin-top:14px;padding-top:10px;border-top:1px dashed var(--tone-200)}
+.r321-goal-remove-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 0;border-bottom:1px solid var(--tone-100)}
+@media (max-width:900px){
+  #archiveChallengeHost,.r321-goal-list{grid-template-columns:minmax(0,1fr)}
+}
+
+/* ============ R321-5：书单书名详情 / 导出 / 返回键 ============ */
+.r319-book-name{background:none;border:0;padding:0;text-align:left;cursor:pointer;font-family:inherit}
+.r319-book-name:hover{text-decoration:underline}
+.r321-be-back{border:1px solid var(--tone-200);background:var(--tone-050);color:var(--tone-800);
+  border-radius:8px;padding:5px 12px;font-size:13px;font-weight:800;cursor:pointer}
+.r321-detail-body{padding:18px 20px}
+.r321-detail-grid{display:flex;align-items:center;gap:16px}
+.r321-detail-ico{font-size:44px;line-height:1}
+.r321-detail-title{font-size:19px;font-weight:900;color:var(--tone-900);margin-bottom:8px}
+.r321-detail-line{font-size:13px;color:var(--tone-800);line-height:1.9}
+.r321-export-body{padding:18px 20px}
+.r321-export-body p{font-size:13px;color:var(--tone-700);margin:0 0 14px}
+.r321-export-acts{display:flex;gap:12px;flex-wrap:wrap}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -11991,13 +12042,28 @@ body.r314-frame-gold .home-avatar{box-shadow:0 0 0 4px #f4dd97,0 6px 18px rgba(1
     </div>
   </div>
 
+  <!-- ========== R321：阶段性挑战 / 单元目标 新增弹窗（仅家长模式） ========== -->
+  <div class="modal-mask" id="modalR321ChSetup" hidden>
+    <div class="modal-box r321-setup-box">
+      <div class="modal-head"><h3>➕ 新增阶段性挑战</h3><button class="modal-x" data-close>×</button></div>
+      <div class="modal-body r321-setup-body" id="r321ChSetupBody"></div>
+    </div>
+  </div>
+  <div class="modal-mask" id="modalR321GoalAdd" hidden>
+    <div class="modal-box r321-setup-box">
+      <div class="modal-head"><h3>➕ 新建单元学习目标</h3><button class="modal-x" data-close>×</button></div>
+      <div class="modal-body r321-setup-body" id="r321GoalBody"></div>
+    </div>
+  </div>
+
   <!-- ========== R319-1：我的书单（分类收纳 + 已读标记 + 增改删） ========== -->
   <div class="modal-mask" id="modalR319BookList" hidden>
     <div class="modal-box r319-booklist-box">
       <div class="modal-head r319-bl-head">
         <h3>📖 我的书单</h3>
         <div class="r319-bl-head-actions">
-          <button type="button" class="secondary-btn" id="btnR319AddCat">➕ 新建分类</button>
+          <button type="button" class="primary-btn" id="btnR321Export">📤 导出书单</button>
+          <button type="button" class="primary-btn" id="btnR319AddCat">➕ 新建分类</button>
           <button type="button" class="primary-btn" id="btnR319AddBook">➕ 添加书籍</button>
         </div>
         <button class="modal-x" data-close>×</button>
@@ -12015,7 +12081,7 @@ body.r314-frame-gold .home-avatar{box-shadow:0 0 0 4px #f4dd97,0 6px 18px rgba(1
   <!-- R319-1：书籍新增 / 编辑小弹窗（分类 + 书名 + 作者） -->
   <div class="modal-mask" id="modalR319BookEdit" hidden>
     <div class="modal-box r319-bookedit-box">
-      <div class="modal-head"><h3 id="r319BeTitle">添加书籍</h3><button class="modal-x" data-close>×</button></div>
+      <div class="modal-head"><h3 id="r319BeTitle">添加书籍</h3><button class="r321-be-back" data-close>← 返回</button></div>
       <div class="modal-body r319-be-body">
         <label class="r319-be-label">所属分类
           <select id="r319BeCat" class="r319-be-select"></select>
@@ -12031,6 +12097,26 @@ body.r314-frame-gold .home-avatar{box-shadow:0 0 0 4px #f4dd97,0 6px 18px rgba(1
       <div class="modal-foot">
         <button class="pbtn" data-close>取消</button>
         <button class="pbtn primary" id="btnR319BeSave">💾 保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- R321-5：书本详情 / 书单导出 -->
+  <div class="modal-mask" id="modalR321BookDetail" hidden>
+    <div class="modal-box r321-detail-box">
+      <div class="modal-head"><h3>📖 书本详情</h3><button class="modal-x" data-close>×</button></div>
+      <div class="modal-body r321-detail-body" id="r321BookDetailBody"></div>
+    </div>
+  </div>
+  <div class="modal-mask" id="modalR321Export" hidden>
+    <div class="modal-box r321-export-box">
+      <div class="modal-head"><h3>📤 导出我的书单</h3><button class="modal-x" data-close>×</button></div>
+      <div class="modal-body r321-export-body">
+        <p>选择导出格式，书单会保存到本机「下载」目录。</p>
+        <div class="r321-export-acts">
+          <button type="button" class="primary-btn" id="r321ExportImg">🖼 导出图片（PNG）</button>
+          <button type="button" class="primary-btn" id="r321ExportExcel">📊 导出 Excel（XLS）</button>
+        </div>
       </div>
     </div>
   </div>
@@ -12743,12 +12829,12 @@ body.r314-frame-gold .home-avatar{box-shadow:0 0 0 4px #f4dd97,0 6px 18px rgba(1
     <!-- R315-G1：原「成长中心」其余板块并入成长档案（顺序按使用频次：先挑战目标，再积累与作息） -->
     <div class="archive-grid r315-archive-grid" id="r316ArchiveGrid2" data-r316-atab-grid="second" data-page-node-id="R315ArchiveGrid">
       <div class="card r315-card" data-r316-atab-panel="challenge" data-page-node-id="R315ArchiveChallengeCard">
-        <div class="card-head" data-page-node-id="R315ArchiveChallengeHead"><h3 data-page-node-id="R315ArchiveChallengeH3">🔥 阶段性挑战</h3><button type="button" class="pbtn r314-mini r320-ch-setup-btn hidden-in-child" id="r320ChSetupBtn" aria-expanded="false" data-page-node-id="R320ChSetupBtn">⚙️ 增减设置</button></div>
+        <div class="card-head" data-page-node-id="R315ArchiveChallengeHead"><h3 data-page-node-id="R315ArchiveChallengeH3">🔥 阶段性挑战</h3><button type="button" class="pbtn r314-mini r320-ch-setup-btn hidden-in-child" id="r320ChSetupBtn" aria-expanded="false" data-page-node-id="R320ChSetupBtn">＋ 新增</button></div>
         <div id="archiveChallengeHost" data-page-node-id="R315ArchiveChallengeHost"></div>
         <div id="r320ChSetupHost" class="r320-ch-setup-host" data-page-node-id="R320ChSetupHost" hidden></div>
       </div>
       <div class="card r315-card" data-r316-atab-panel="goal" data-page-node-id="R315ArchiveGoalCard">
-        <div class="card-head" data-page-node-id="R315ArchiveGoalHead"><h3 data-page-node-id="R315ArchiveGoalH3">🎯 单元目标</h3></div>
+        <div class="card-head" data-page-node-id="R315ArchiveGoalHead"><h3 data-page-node-id="R315ArchiveGoalH3">🎯 单元目标</h3><button type="button" class="pbtn r314-mini r321-goal-add-btn hidden-in-child" id="r321GoalAddBtn" data-page-node-id="R321GoalAddBtn">＋ 新增</button></div>
         <div id="archiveGoalHost" data-page-node-id="R315ArchiveGoalHost"></div>
       </div>
       <!-- R317-2：摘抄本卡片已迁移至新世界语文专区（精读仿写右侧） -->
@@ -41039,7 +41125,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       const list = books.filter(b=>b.cat === c.id);
       const rows = list.map(b=>`
         <div class="r319-book-row${b.read?' is-read':''}" data-r319-bid="${esc(b.id)}">
-          <span class="r319-book-name">《${esc(b.title)}》</span>
+          <button type="button" class="r319-book-name" data-r319-act="detail" title="查看书本详情">《${esc(b.title)}》</button>
           <span class="r319-book-author">${b.author?esc(b.author)+' 著':''}</span>
           <button type="button" class="r319-row-btn r319-read${b.read?' done':''}" data-r319-act="read" title="${b.read?'取消已读':'标记已读'}">${b.read?'✓ 已读':'已读'}</button>
           ${parentMode ? `<span class="r319-book-ops">
@@ -41104,6 +41190,68 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     r319RenderBookList();
     toast(_r319EditBid ? '📖 已更新书籍' : '📖 已加入书单');
   }
+  /* ===== R321-5：书本详情 + 书单导出（图片 / Excel） ===== */
+  function r321OpenBookDetail(bid){
+    const data = _r319Bl();
+    const b = (data.books||[]).filter(x=>x.id === bid)[0];
+    const host = document.getElementById('r321BookDetailBody');
+    if(!b || !host) return;
+    const cat = (data.cats||[]).filter(c=>c.id === b.cat)[0];
+    host.innerHTML = '<div class="r321-detail-grid">' +
+      '<div class="r321-detail-ico">📖</div><div>' +
+      '<div class="r321-detail-title">《' + esc(b.title) + '》</div>' +
+      '<div class="r321-detail-line">作者：' + esc(b.author || '未填写') + '</div>' +
+      '<div class="r321-detail-line">分类：' + esc(cat ? cat.name : '未分类') + '</div>' +
+      '<div class="r321-detail-line">阅读状态：' + (b.read ? '✅ 已读' : '📌 未读') + '</div>' +
+      '</div></div>';
+    showModal('#modalR321BookDetail');
+  }
+  function _r321BookRows(){
+    const data = _r319Bl();
+    const cats = data.cats || [];
+    const out = [];
+    cats.forEach(c=>{
+      (data.books||[]).filter(b=>b.cat === c.id).forEach(b=>{
+        out.push({cat:c.name, title:b.title||'', author:b.author||'', read:b.read?'已读':'未读'});
+      });
+    });
+    return out;
+  }
+  function r321ExportBooksPng(){
+    const rows = _r321BookRows();
+    try{
+      const c = document.createElement('canvas');
+      const W = 760, lineH = 30;
+      c.width = W; c.height = Math.max(220, 120 + rows.length * lineH);
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#f4f9ff'; ctx.fillRect(0,0,c.width,c.height);
+      ctx.fillStyle = '#1e3a8a'; ctx.font = 'bold 28px sans-serif';
+      ctx.fillText('📖 我的书单（' + rows.length + ' 本）', 36, 52);
+      ctx.fillStyle = '#5a6b85'; ctx.font = '16px sans-serif';
+      ctx.fillText('分类 / 书名 / 作者 / 阅读状态', 36, 86);
+      ctx.font = '16px sans-serif';
+      rows.forEach((r,i)=>{
+        const txt = r.cat + ' ｜ 《' + r.title + '》' + (r.author ? ' · ' + r.author : '') + ' ｜ ' + r.read;
+        ctx.fillStyle = r.read === '已读' ? '#b5354b' : '#1c5fb8';
+        ctx.fillText(String(txt).slice(0,52), 36, 120 + i*lineH);
+      });
+      const a = document.createElement('a');
+      a.href = c.toDataURL('image/png'); a.download = '我的书单.png'; a.click();
+      toast('🖼 书单图片已导出');
+    }catch(e){ toast('图片导出失败：' + (e && e.message ? e.message : '未知错误')); }
+  }
+  function r321ExportBooksExcel(){
+    const rows = _r321BookRows();
+    const escX = s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    const html = '\ufeff<html><head><meta charset="utf-8"></head><body><table border="1">' +
+      '<tr><th>分类</th><th>书名</th><th>作者</th><th>阅读状态</th></tr>' +
+      rows.map(r=>'<tr><td>'+escX(r.cat)+'</td><td>'+escX(r.title)+'</td><td>'+escX(r.author)+'</td><td>'+escX(r.read)+'</td></tr>').join('') +
+      '</table></body></html>';
+    try{
+      downloadText('我的书单.xls', html, 'application/vnd.ms-excel;charset=utf-8');
+      toast('📊 书单表格已导出');
+    }catch(e){ toast('Excel 导出失败：' + (e && e.message ? e.message : '未知错误')); }
+  }
   function r319BindBookList(){
     // 打开书单入口
     const slotBody = document.getElementById('szSlotBody');
@@ -41137,7 +41285,9 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         if(!row) return;
         const bid = row.getAttribute('data-r319-bid');
         const act = opBtn.getAttribute('data-r319-act');
-        if(act === 'read'){
+        if(act === 'detail'){
+          r321OpenBookDetail(bid);
+        } else if(act === 'read'){
           const r = S.r319ToggleRead(bid);
           if(r && r.ok) r319RenderBookList();
         } else if(act === 'edit'){
@@ -41168,6 +41318,12 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     }
     const bAddBook = document.getElementById('btnR319AddBook');
     if(bAddBook && !bAddBook._r319Bound){ bAddBook._r319Bound = true; bAddBook.onclick = ()=>r319OpenBookEdit('add', ''); }
+    const bExport = document.getElementById('btnR321Export');
+    if(bExport && !bExport._r321Bound){ bExport._r321Bound = true; bExport.onclick = ()=>showModal('#modalR321Export'); }
+    const bExpImg = document.getElementById('r321ExportImg');
+    if(bExpImg && !bExpImg._r321Bound){ bExpImg._r321Bound = true; bExpImg.onclick = r321ExportBooksPng; }
+    const bExpXls = document.getElementById('r321ExportExcel');
+    if(bExpXls && !bExpXls._r321Bound){ bExpXls._r321Bound = true; bExpXls.onclick = r321ExportBooksExcel; }
     const bBeSave = document.getElementById('btnR319BeSave');
     if(bBeSave && !bBeSave._r319Bound){ bBeSave._r319Bound = true; bBeSave.onclick = r319SaveBookEdit; }
     const bCatSave = document.getElementById('btnR319CatSave');
@@ -44145,20 +44301,29 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         // R232-1：乐读计算小超市 → 与乐读数学「今日打卡」共用 calcDaily（只发一次 +2⭐）
         const t0 = S.load().tasks.find(x => x.id === ck.dataset.check);
         if(isCalcDailyTask(t0)){ toggleCalcDailyFromHome(); return; }
+        /* R321-1 根治：把视觉反馈与音效提到同步 save 之前。
+           旧序「S.toggleCheckIn()（同步 load+save，iPad 常见 100–300ms）→ 再置 on 态」，
+           既造成按下去迟钝，又让 120ms 音效去抖窗口过期、捕获分发与 handler 各响一声。
+           现在点击当帧就变绿/发声；落盘结果不符或失败时再回滚，UI 不会说谎。 */
+        const _item0 = ck.closest('.wp-task-item');
+        const _goOn = !ck.classList.contains('on');
+        const _setVisual = (on)=>{
+          try{ ck.classList.toggle('on', on); }catch(_){}
+          try{ if(_item0) _item0.classList.toggle('done', on); }catch(_){}
+        };
+        _setVisual(_goOn);
+        if(_goOn) playCheckinSound(e);
         const r = S.toggleCheckIn(S.todayStr(), ck.dataset.check);
-        /* R320-2：先给即时视觉反馈，再把整页重渲染推到下一帧 ——
-           原先「同步落盘 300KB + 全量重渲染」全部挡在点击回调里，iPad 上就是明显的按下去半秒才变。
-           圆钮先变绿，重绘随后跟上，手感立即跟手。 */
-        if(r && r.completed){ try{ ck.classList.add('on'); }catch(_){} }
-        else { try{ ck.classList.remove('on'); }catch(_){} }
         const _saveErr = (S.getSaveError && S.getSaveError()) || '';
+        if(!r || r.completed !== _goOn || _saveErr) _setVisual(!!(r && r.completed));
         if(r && _saveErr){
           // R320-2：保存失败必须让用户看见，绝不能再「界面打了勾、刷新全没了」
           toast('⚠️ 这次打卡没能写入本机（' + _saveErr + '），请先删掉部分图片再试');
-        } else {
+        } else if(r) {
           toast(r.completed ? ('打卡成功 +'+(r.stars||0)+'⭐') : (r.isSuspicious ? '⚠️ 疑似无效打卡（过快）' : '已取消'));
+        } else {
+          toast('这项任务已不存在');
         }
-        if(r.completed) playCheckinSound();
         // R320-2b：rAF 可能被节流/暂停（iPad 切后台、省电模式、测试桩），必须补一个定时器兜底，
         // 否则「落盘成功但界面不重绘」——用户会以为没打上卡。两者只生效一次。
         let _redrawn = false;
@@ -46233,7 +46398,11 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     fillCol('#cnColPoem',    colContent('cnPoem', 1, 5, 2), 'cnPoem', 'cn');
     // R316-2：古诗词应用每日一主题（与鉴赏卡同行，位于鉴赏与作文之间）
     const _r316Today = r316TodayPoem();
-    fillCol('#cnColPoemUse', _r316Today ? [{title:_r316Today.title, body:_r316Today.body, meta:_r316Today.theme, sub:_r316Today.sub}] : [], 'cnPoemUse', 'cn');
+    fillCol('#cnColPoemUse', _r316Today ? [{
+      title:_r316Today.title, body:_r316Today.body,
+      paras:(_r316Today.paras || []).slice(),
+      meta:_r316Today.theme, sub:_r316Today.sub
+    }] : [], 'cnPoemUse', 'cn');
     fillCol('#cnColEssay',   colContent('cnEssay',   1, 2, 2), 'cnEssay',   'cn');
     // 需求⑤：每次渲染后重新为英语短文卡绑定点击朗读（卡片为新元素，_ppBound 去重）
     const _enPC = document.getElementById('enColPassage');
@@ -46557,7 +46726,11 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       // R204：古诗词正文逐句成行（楷体居中），其它类型仍用 .ri-body 整段
       const bodyHtml = isPoem
         ? `<div class="ri-poem-body">${poemLines(mainText).map(l=>`<span class="ri-poem-line">${esc(l)}</span>`).join('')}</div>`
-        : `<div class="ri-body">${esc(mainText)}</div>`;
+        : (kind==='cnPoemUse'
+          // R321-3：古诗词应用每个段落独立蓝底卡，与古诗词鉴赏「诗词大意 / 创作背景」同一套底卡
+          ? '<div class="r316-pu-paras">' + ((it.paras && it.paras.length ? it.paras : [mainText])
+              .filter(Boolean).map(p=>'<div class="r316-pu-para">'+esc(p)+'</div>').join('')) + '</div>'
+          : `<div class="ri-body">${esc(mainText)}</div>`);
       const translationHtml = (kind==='enPassage' && it.zh)
         ? `<div class="reading-translation">${esc(it.zh)}</div>` : '';
       // 文库排版优化：英语短文标题下补充「难度 + 主题分类」标签（复用蓝系配色）
@@ -52057,8 +52230,15 @@ function renderKMAdmin(){
       return false;
     }catch(e){ return false; }
   }
-  function playCheckinSound(){
+  function playCheckinSound(srcEvt){
     try{
+      /* R321-1：同一「物理点击」只发一声。原 120ms 时间窗在 iPad 上不够用 ——
+         同步 save（主档+备份+轻档）常耗时 >120ms，捕获分发与 handler 调用落到窗口两侧，
+         就响两声。改为按事件对象去重，与时间无关；无事件的老调用仍走下面的时间窗。 */
+      if(srcEvt){
+        if(srcEvt.__r321CheckinSfx) return;
+        srcEvt.__r321CheckinSfx = true;
+      }
       // R300-3：打卡音效走独立开关（默认开），不再因总开关默认关闭而整体失声
       if(!isCheckinSfxOn()) return;
       const n = Date.now();
@@ -52099,7 +52279,7 @@ function renderKMAdmin(){
           if(!t.closest(CHECKIN_SFX_SEL)) return;
           /* R315-D2：点击前已经是「已打卡」态 = 这次是撤销 → 全程静默（不再有遗憾/撤销音） */
           if(r315IsUndoClick(t)){ _r315UndoSfxAt = Date.now(); return; }
-          playCheckinSound();
+          playCheckinSound(e);
         }catch(_){}
       }, true);
     }
@@ -60958,9 +61138,9 @@ function init(){
       '<div class="r314-tip">内置挑战隐藏后只是不再展示，原有进度与领奖记录保留；家长自建挑战可随时删除，删除前会再次确认。</div>';
     if(bare){
       return '<div class="r320-ch-setup-inner">' +
-        '<div class="r320-ch-setup-title">⚙️ 阶段性挑战增减设置（家长）</div>' + inner + '</div>';
+        '<div class="r320-ch-setup-title">➕ 新增阶段性挑战（家长）</div>' + inner + '</div>';
     }
-    return '<div class="r314-card r317-ch-setup"><div class="r314-card-head">⚙️ 阶段性挑战增减设置（家长）</div>' + inner + '</div>';
+    return '<div class="r314-card r317-ch-setup"><div class="r314-card-head">➕ 新增阶段性挑战（家长）</div>' + inner + '</div>';
   }
   function r317BindChallengeSetup(){
     const addBtn = document.getElementById('r317ChAdd');
@@ -60988,7 +61168,7 @@ function init(){
       toast('🏁 挑战「' + name + '」已添加');
       r314RenderTab();
     };
-    $$('#r320ChSetupHost [data-r317-ch-hide]').forEach(function(b){
+    $$('#modalR321ChSetup [data-r317-ch-hide], #r320ChSetupHost [data-r317-ch-hide]').forEach(function(b){
       b.onclick = function(){
         const id = b.getAttribute('data-r317-ch-hide');
         r307DangerConfirm('将隐藏该阶段性挑战，挑战进度与已领取奖励记录保留，之后可恢复显示。确认隐藏吗？', function(){
@@ -61003,7 +61183,7 @@ function init(){
         }, '隐藏阶段性挑战');
       };
     });
-    $$('#r320ChSetupHost [data-r317-ch-restore]').forEach(function(b){
+    $$('#modalR321ChSetup [data-r317-ch-restore], #r320ChSetupHost [data-r317-ch-restore]').forEach(function(b){
       b.onclick = function(){
         const id = b.getAttribute('data-r317-ch-restore');
         const r = r314St();
@@ -61014,7 +61194,7 @@ function init(){
         r314RenderTab();
       };
     });
-    $$('#r320ChSetupHost [data-r317-ch-del]').forEach(function(b){
+    $$('#modalR321ChSetup [data-r317-ch-del], #r320ChSetupHost [data-r317-ch-del]').forEach(function(b){
       b.onclick = function(){
         const id = b.getAttribute('data-r317-ch-del');
         const r = r314St();
@@ -61085,9 +61265,8 @@ function init(){
     return { done:done, target:target, pct: Math.min(100, Math.round(done / target * 100)) };
   }
 
-  function r314GoalHtml(){
-    const r = r314St();
-    const goals = Array.isArray(r.goals) ? r.goals : [];
+  /* R321-4：新建单元学习目标表单迁入标题右侧「＋新增」弹窗；主页面只保留「我的目标」 */
+  function r321GoalModalHtml(){
     const st = S.load();
     const tasks = (st.tasks || []).filter(t => t && t.enabled !== false);
     const opts = tasks.map(t => '<option value="' + r314Esc(t.id) + '">' + r314Esc(t.name) + '（' + r314Esc(t.subject || t.type || '') + '）</option>').join('')
@@ -61096,6 +61275,26 @@ function init(){
       const d = new Date(); d.setDate(d.getDate() + 14);
       return d.getFullYear() + '-' + r314Pad(d.getMonth() + 1) + '-' + r314Pad(d.getDate());
     })();
+    const goals = (Array.isArray(r314St().goals) ? r314St().goals : []);
+    const removeList = goals.length
+      ? goals.map(g => '<div class="r321-goal-remove-row"><span>' + r314Esc(g.title) + '</span>' +
+          '<button type="button" class="pbtn r314-mini r314-del" data-ggoal-del="' + r314Esc(g.id) + '">移除</button></div>').join('')
+      : '<div class="r314-empty">暂无已有目标</div>';
+    return '<div class="r314-form">' +
+        '<label>目标名称<input id="growGoalTitle" maxlength="30" placeholder="例如：口算 100 题全对"></label>' +
+        '<label>绑定任务<select id="growGoalTask">' + opts + '</select></label>' +
+        '<label>目标次数<input type="number" id="growGoalTarget" min="1" max="999" value="10"></label>' +
+        '<label>截止日期<input type="date" id="growGoalDue" value="' + defDue + '"></label>' +
+        '<label>奖励星星<input type="number" id="growGoalReward" min="1" max="500" value="20"></label>' +
+      '</div>' +
+      '<button class="pbtn r314-add" id="growGoalAdd">＋ 添加目标</button>' +
+      '<div class="r314-tip">进度按「绑定任务在创建日之后、截止日之前的完成次数」实时计算；达成后可领取奖励星星。</div>' +
+      '<div class="r321-goal-remove"><div class="r314-card-head">🗑 移除已有目标</div>' + removeList + '</div>';
+  }
+
+  function r314GoalHtml(){
+    const r = r314St();
+    const goals = Array.isArray(r.goals) ? r.goals : [];
     const list = goals.map(g => {
       const p = r314GoalProgress(g);
       const over = g.due && S.todayStr() > g.due && p.pct < 100;
@@ -61114,22 +61313,10 @@ function init(){
         '</div></div>';
     }).join('') || '<div class="r314-empty">还没有设置单元目标，添加一个吧～</div>';
 
-    /* R317-4.4：左「新建单元学习目标」、右「我的目标」并排
-       R320-6：阶段挑战增减设置已迁入「阶段性挑战」卡片（标题右侧按键展开），这里不再输出 */
-    const newCard = '<div class="r314-card"><div class="r314-card-head">🎯 新建单元学习目标</div>' +
-      '<div class="r314-form">' +
-        '<label>目标名称<input id="growGoalTitle" maxlength="30" placeholder="例如：口算 100 题全对"></label>' +
-        '<label>绑定任务<select id="growGoalTask">' + opts + '</select></label>' +
-        '<label>目标次数<input type="number" id="growGoalTarget" min="1" max="999" value="10"></label>' +
-        '<label>截止日期<input type="date" id="growGoalDue" value="' + defDue + '"></label>' +
-        '<label>奖励星星<input type="number" id="growGoalReward" min="1" max="500" value="20"></label>' +
-      '</div>' +
-      '<button class="pbtn r314-add" id="growGoalAdd">＋ 添加目标</button>' +
-      '<div class="r314-tip">进度按「绑定任务在创建日之后、截止日之前的完成次数」实时计算；达成后可领取奖励星星。</div>' +
-    '</div>';
-    const myCard = '<div class="r314-card"><div class="r314-card-head">📌 我的目标（' + goals.length + '）</div>' + list + '</div>';
-    return '<div class="r317-goal-cols"><div class="r317-goal-new">' + newCard + '</div>' +
-      '<div class="r317-goal-mine">' + myCard + '</div></div>';
+    /* R321-4：新建目标已移入弹窗；主区只渲染「我的目标」，一格两个 */
+    const myCard = '<div class="r314-card"><div class="r314-card-head">📌 我的目标（' + goals.length + '）</div>' +
+      '<div class="r321-goal-list">' + list + '</div></div>';
+    return '<div class="r317-goal-cols"><div class="r317-goal-mine">' + myCard + '</div></div>';
   }
 
   function r314BindGoal(){
@@ -61154,6 +61341,9 @@ function init(){
       S.setR314({ goals: goals });
       toast('🎯 目标已添加');
       r314RenderTab();
+      const gb = document.getElementById('r321GoalBody');
+      if(gb && gb.innerHTML) gb.innerHTML = r321GoalModalHtml();
+      try{ r314BindGoal(); }catch(e){}
     };
     $$('#archiveGoalHost [data-ggoal-claim]').forEach(b => b.onclick = function(){
       const id = b.getAttribute('data-ggoal-claim');
@@ -61172,7 +61362,7 @@ function init(){
       r314RenderTab();
       try{ renderHome(); }catch(e){}
     });
-    $$('#archiveGoalHost [data-ggoal-del]').forEach(b => b.onclick = function(){
+    $$('#archiveGoalHost [data-ggoal-del], #modalR321GoalAdd [data-ggoal-del]').forEach(b => b.onclick = function(){
       const id = b.getAttribute('data-ggoal-del');
       const r = r314St();
       const goals = Array.isArray(r.goals) ? r.goals : [];
@@ -61182,59 +61372,62 @@ function init(){
         S.setR314({ goals: left });
         toast('目标已删除');
         r314RenderTab();
+        // R321-4：弹窗内移除后同步刷新弹窗列表，避免残留已删目标
+        const gb = document.getElementById('r321GoalBody');
+        if(gb && gb.innerHTML) gb.innerHTML = r321GoalModalHtml();
+        try{ r314BindGoal(); }catch(e){}
       }, '删除单元目标');
     });
   }
 
-  /* ---------- 摘抄积累本（与大阅读好词好句互通） ---------- */
+  /* ---------- 摘抄积累本（R321：仅本板块数据，不与大阅读互通） ---------- */
   var _r314ExType = '好词';
 
   function r314ExcerptList(){
+    /* R321-2：摘抄内容不再与大阅读好词好句交叉展示/写入。
+       旧实现把 S.getReading('cnWords') 里 source='user' 的词条伪装成「来自大阅读」插进列表，
+       用户在大阅读改一条，摘抄本就跟着变；现在只返回本板块自己的 excerpts。 */
     const r = r314St();
-    const mine = (Array.isArray(r.excerpts) ? r.excerpts : []).slice();
-    let shared = [];
-    try{
-      shared = (S.getReading('cnWords') || []).filter(x => x && x.source === 'user' && x.from !== 'r314');
-    }catch(e){}
-    const seen = {};
-    mine.forEach(x => seen[String(x.text || '').trim()] = 1);
-    const extra = shared.map(x => ({
-      id:'rd-' + String(x.body || '').slice(0, 8),
-      type: x.meta === '好词' ? '好词' : '好句',
-      text: String(x.body || ''),
-      source: '大阅读',
-      img: '',
-      date: '',
-      readonly: true
-    })).filter(x => x.text && !seen[x.text]);
-    return mine.map(x => Object.assign({}, x, { readonly:false })).concat(extra);
+    return (Array.isArray(r.excerpts) ? r.excerpts : []).slice()
+      .map(x => Object.assign({}, x, { readonly:false }));
   }
 
   function r314ExcerptHtml(){
     const list = r314ExcerptList();
     const types = ['好词', '好句', '段落'];
     const typeBtns = types.map(t => '<button class="r314-extype' + (_r314ExType === t ? ' active' : '') + '" data-gtype="' + t + '">' + t + '</button>').join('');
-    const rows = list.map(x =>
-      '<div class="r314-ex' + (x.readonly ? ' shared' : '') + '">' +
-        '<div class="r314-ex-head"><span class="r314-ex-type">' + r314Esc(x.type || '好句') + '</span>' +
+    const rowHtml = (x)=>{
+      const type = types.indexOf(x.type) >= 0 ? x.type : '好句';
+      return '<div class="r314-ex">' +
+        '<div class="r314-ex-head"><span class="r314-ex-type">' + r314Esc(type) + '</span>' +
         '<span class="r314-ex-src">' + r314Esc(x.source || '') + '</span>' +
-        (x.readonly ? '<span class="r314-ex-from">来自大阅读</span>'
-          : '<button class="r314-ex-del" data-gex-del="' + r314Esc(x.id) + '" title="删除这条摘抄">×</button>') + '</div>' +
+        '<button class="r314-ex-del" data-gex-del="' + r314Esc(x.id) + '" title="删除这条摘抄">×</button></div>' +
         '<div class="r314-ex-text">' + r314Esc(x.text || '') + '</div>' +
         (x.img ? '<img class="r314-ex-img" src="' + r314Esc(x.img) + '" alt="摘抄图片" />' : '') +
-      '</div>').join('') || '<div class="r314-empty">还没有摘抄内容，写一句试试～</div>';
+      '</div>';
+    };
+    // R321-2：摘抄本按「好词 / 好句 / 段落」分版块，次标题复用新增摘抄的同类胶囊样式，展示口径一致
+    const groups = types.map(t=>{
+      const arr = list.filter(x => (types.indexOf(x.type) >= 0 ? x.type : '好句') === t);
+      if(!arr.length) return '';
+      return '<div class="r314-ex-group" data-ex-group="' + t + '">' +
+        '<div class="r314-ex-subtitle"><span class="r314-extype active">' + t + '</span>' +
+        '<span class="r314-ex-count">' + arr.length + ' 条</span></div>' +
+        arr.map(rowHtml).join('') + '</div>';
+    }).join('');
 
     return '<div class="r314-card"><div class="r314-card-head">📝 新增摘抄</div>' +
       '<div class="r314-extypes">' + typeBtns + '</div>' +
-      '<textarea id="growExText" class="r314-ex-input" maxlength="600" placeholder="摘抄好词 / 好句 / 段落…（会同步到大阅读·好词好句）"></textarea>' +
+      '<textarea id="growExText" class="r314-ex-input" maxlength="600" placeholder="摘抄好词 / 好句 / 段落…"></textarea>' +
       '<div class="r314-form r314-form-2">' +
         '<label>出处<input id="growExSource" maxlength="30" placeholder="书名 / 篇名"></label>' +
         '<label class="r314-file">图片<input type="file" id="growExImg" accept="image/*"></label>' +
       '</div>' +
       '<button class="pbtn r314-add" id="growExAdd">＋ 收录到摘抄本</button>' +
-      '<div class="r314-tip">手动录入或拍照上传均可；收录后自动同步到大阅读「好词好句」，两处共享同一份数据。</div>' +
+      '<div class="r314-tip">手动录入或拍照上传均可；摘抄内容只保存在摘抄本，不与大阅读板块互通。</div>' +
     '</div>' +
-    '<div class="r314-card"><div class="r314-card-head">📚 已收录（' + list.length + '）</div>' + rows + '</div>';
+    '<div class="r314-card"><div class="r314-card-head">📚 摘抄本（' + list.length + '）</div>' +
+      (groups || '<div class="r314-empty">还没有摘抄内容，写一句试试～</div>') + '</div>';
   }
 
   var _r314ExImg = '';
@@ -61266,19 +61459,11 @@ function init(){
         type: _r314ExType, text: text, source: src, img: _r314ExImg || '', date: S.todayStr()
       });
       S.setR314({ excerpts: list });
-      /* 与大阅读好词好句互通：同一段文字写进大阅读用户词条，两边都能看到 */
-      try{
-        S.addUserReading('cnWords', {
-          body: text,
-          meta: _r314ExType === '好词' ? '好词' : '好句',
-          detail: src,
-          from: 'r314'
-        });
-      }catch(e){}
+      // R321-2：摘抄只写本板块，不再写入大阅读（也不再从大阅读反向聚合）
       _r314ExImg = '';
       if(ta) ta.value = '';
       playZooSound('pop');
-      toast('✍️ 已收录，并同步到大阅读');
+      toast('✍️ 已加入摘抄本');
       refresh();
     };
     $$(scope + ' [data-gex-del]').forEach(b => b.onclick = function(){
@@ -61711,21 +61896,33 @@ function init(){
     try{ r315RenderReportExtra(); }catch(e){}
     const ch = document.getElementById('archiveChallengeHost');
     if(ch){ ch.innerHTML = r314ChallengeHtml(true); }
-    /* R320-6：阶段性挑战增减设置挂在「🔥 阶段性挑战」标题右侧，默认收起，家长模式可见 */
+    /* R321-4：标题右侧「＋新增」改为弹窗；旧内联宿主保留但不再使用（兼容旧断言/DOM 节点） */
     const chSetup = document.getElementById('r320ChSetupHost');
-    if(chSetup){
-      chSetup.innerHTML = r317ChallengeSetupHtml(true);
-      if(!chSetup.innerHTML){ chSetup.hidden = true; }
-    }
+    if(chSetup){ chSetup.hidden = true; }
+    const _parentOK = ()=> (typeof isParent === 'function') ? isParent() : true;
     const chBtn = document.getElementById('r320ChSetupBtn');
-    if(chBtn && !chBtn._r320Bound){
-      chBtn._r320Bound = true;
+    if(chBtn && !chBtn._r321Bound){
+      chBtn._r321Bound = true;
       chBtn.onclick = function(){
-        const host = document.getElementById('r320ChSetupHost');
-        if(!host) return;
-        host.hidden = !host.hidden;
-        chBtn.setAttribute('aria-expanded', host.hidden ? 'false' : 'true');
-        chBtn.textContent = host.hidden ? '⚙️ 增减设置' : '⚙️ 收起设置';
+        if(!_parentOK()){ toast('仅家长模式可新增阶段性挑战'); return; }
+        const body = document.getElementById('r321ChSetupBody');
+        if(!body) return;
+        body.innerHTML = r317ChallengeSetupHtml(true);
+        chBtn.setAttribute('aria-expanded', 'true');
+        showModal('#modalR321ChSetup');
+        try{ r317BindChallengeSetup(); }catch(e){}
+      };
+    }
+    const goalBtn = document.getElementById('r321GoalAddBtn');
+    if(goalBtn && !goalBtn._r321Bound){
+      goalBtn._r321Bound = true;
+      goalBtn.onclick = function(){
+        if(!_parentOK()){ toast('仅家长模式可新建单元目标'); return; }
+        const body = document.getElementById('r321GoalBody');
+        if(!body) return;
+        body.innerHTML = r321GoalModalHtml();
+        showModal('#modalR321GoalAdd');
+        try{ r314BindGoal(); }catch(e){}
       };
     }
     const gl = document.getElementById('archiveGoalHost');
@@ -61911,6 +62108,8 @@ function init(){
     window.__r319OpenBookList = r319OpenBookList;
     window.__r319RenderBookList = r319RenderBookList;
     window.__r319BaikeOrder = (S && S.r319BaikeOrder) ? S.r319BaikeOrder() : [];
+    /* R321 探针钩子：让测试在切到档案页后显式重绑定新增键 */
+    window.__r321RenderArchive = r315RenderArchive;
   }catch(e){}
   function r272BootInit(){
     const _P = window.R272P;
