@@ -11363,9 +11363,11 @@ body.r314-frame-gold .home-avatar{box-shadow:0 0 0 4px #f4dd97,0 6px 18px rgba(1
 .r324-ex-op:hover{background:var(--tone-100)}
 .r324-ex-op.del{border-color:var(--danger-line,#f0c4bd);background:var(--danger-soft,#fdeceb);color:var(--danger,#b5354b)}
 .r324-ex-op.del:hover{background:var(--danger-line,#f0c4bd);color:#fff}
-/* 统计数字置于摘抄本标题右侧 + 绿色（样式对齐好词好句段落计数）；
+/* 统计数字置于摘抄本标题右侧 + 绿色，做成与左侧「好词 / 好句 / 段落」标签同款的胶囊，
+   仅配色换成绿色（同 11.5px / 800 / 999px 圆角）；
    编辑键接手 margin-left:auto 把「编辑 / 新增」整组推到最右（覆盖 R322 旧 .pbtn 规则） */
-.r322-ex-head .r324-ex-count{margin-left:10px;color:#1e9e5a;font-weight:900;font-size:13px;white-space:nowrap}
+.r322-ex-head .r324-ex-count{margin-left:10px;color:#1e9e5a;font-weight:800;font-size:11.5px;white-space:nowrap;
+  padding:3px 10px;border:1px solid #bfe3c4;border-radius:999px;background:#eafaf0;line-height:1.45}
 .r322-ex-head .pbtn{margin-left:0}
 .r322-ex-head .r324-ex-editbtn{margin-left:auto}
 .r322-ex-head .r324-ex-editbtn.active{background:var(--tone-600);border-color:var(--tone-600);color:#fff}
