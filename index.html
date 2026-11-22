@@ -11270,20 +11270,9 @@ body.r314-frame-gold .home-avatar{box-shadow:0 0 0 4px #f4dd97,0 6px 18px rgba(1
   .r319-book-author{max-width:none}
 }
 
-/* ============ R321：摘抄本分版块 / 语文阅读 2mm 间距 / 古诗词应用蓝底卡 ============ */
-/* R321-2：摘抄本按好词 / 好句 / 段落分版块，次标题复用新增摘抄的同类胶囊 */
-.r314-ex-group + .r314-ex-group{margin-top:12px}
-.r314-ex-subtitle{display:flex;align-items:center;gap:8px;margin:6px 0}
-.r314-ex-subtitle .r314-extype{cursor:default}
-.r314-ex-count{font-size:11.5px;font-weight:800;color:var(--tone-600)}
-/* R321-3：语文阅读全部卡片间距统一 2mm（≈7.6px）；变量覆盖三卡行与行内网格 */
-.reading-cn{--r317-cn-gap:2mm}
-.reading-cn .reading-cols,
-.reading-cn .rd-cn-row,
-.reading-cn .reading-col-list,
-.reading-cn .ri-poem-cols,
-.reading-cn .haoci-use-grid{gap:2mm}
-/* R321-3：古诗词应用逐段蓝底卡，口径对齐鉴赏卡的「诗词大意 / 创作背景」 */
+/* ============ R321→R322：R322-5 大阅读回退 R320 展示；仅保留古诗词应用蓝底卡 ============ */
+/* R322-5：撤销 R321 的 2mm 覆盖，回到 R320 的 12px/8px 体系（见 10746、11186-11188 行）。
+   古诗词应用「逐段蓝底卡」是用户明确要求保留的唯一 R321 大阅读变更。 */
 .r316-pu-paras{display:flex;flex-direction:column;gap:2mm}
 .r316-pu-para{margin:0;padding:7px 9px;border-radius:0 8px 8px 0;
   background:var(--tone-050);border-left:3px solid var(--tone-400);
@@ -11291,21 +11280,18 @@ body.r314-frame-gold .home-avatar{box-shadow:0 0 0 4px #f4dd97,0 6px 18px rgba(1
 .r316-pu-para + .r316-pu-para{margin-top:0}
 .bs-item-poem-use .r316-pu-para{margin-bottom:2mm}
 
-/* ============ R321-4：单元目标 / 阶段性挑战 一行两卡 + 新增弹窗 ============ */
+/* ============ R321-4 / R322-6：单元目标 / 阶段性挑战卡片平铺到页面右边距 ============ */
 .r321-goal-add-btn{margin-left:auto;white-space:nowrap}
-#archiveChallengeHost{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;align-items:start}
+#archiveChallengeHost{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;align-items:start}
 #archiveChallengeHost .r314-goal{margin-bottom:0}
 #archiveChallengeHost .r314-tip{grid-column:1/-1}
-.r321-goal-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;align-items:start}
+.r321-goal-list{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;align-items:start}
 .r321-goal-list .r314-goal{margin-bottom:0}
 .r321-goal-list .r314-empty,.r321-goal-remove .r314-empty{grid-column:1/-1}
 .r321-setup-box{max-width:760px;width:min(760px,94vw)}
 .r321-setup-body{max-height:70vh;overflow:auto}
 .r321-goal-remove{margin-top:14px;padding-top:10px;border-top:1px dashed var(--tone-200)}
 .r321-goal-remove-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 0;border-bottom:1px solid var(--tone-100)}
-@media (max-width:900px){
-  #archiveChallengeHost,.r321-goal-list{grid-template-columns:minmax(0,1fr)}
-}
 
 /* ============ R321-5：书单书名详情 / 导出 / 返回键 ============ */
 .r319-book-name{background:none;border:0;padding:0;text-align:left;cursor:pointer;font-family:inherit}
@@ -11320,6 +11306,27 @@ body.r314-frame-gold .home-avatar{box-shadow:0 0 0 4px #f4dd97,0 6px 18px rgba(1
 .r321-export-body{padding:18px 20px}
 .r321-export-body p{font-size:13px;color:var(--tone-700);margin:0 0 14px}
 .r321-export-acts{display:flex;gap:12px;flex-wrap:wrap}
+
+/* ============ R322：打卡瞬时反馈 / 摘抄本分页 / 图片导出预览 ============ */
+/* R322-1：所有打卡键点击当帧视觉反馈，与同步落盘解耦 */
+.r322-checkin-tap{outline:3px solid rgba(64,150,255,.62);outline-offset:2px;filter:brightness(1.1)}
+/* R322-2/3：摘抄本 —— 标题右侧新增键 + 下方分页面切换键 */
+.r322-ex-head{display:flex;align-items:center;gap:8px}
+.r322-ex-head .pbtn{margin-left:auto;white-space:nowrap}
+.r322-ex-tabs{display:flex;gap:8px;align-items:center;margin:6px 0 12px;padding-bottom:9px;border-bottom:1px solid var(--tone-100)}
+.r322-ex-tabs .r314-extype{cursor:pointer}
+.r322-ex-page-empty{padding:18px 10px;text-align:center;font-size:12.5px;color:var(--tone-600)}
+.r322-ex-box{max-width:640px;width:min(640px,94vw)}
+.r322-ex-body{padding:16px 18px;max-height:72vh;overflow:auto}
+.r322-ex-choices{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:4px 0 16px}
+.r322-ex-choice{min-width:118px;padding:12px 18px;border:1px solid var(--tone-300);border-radius:12px;
+  background:var(--tone-050);color:var(--tone-900);font-size:14px;font-weight:900;cursor:pointer}
+.r322-ex-choice:hover{background:var(--tone-100)}
+.r322-ex-choice.active{background:var(--tone-600);border-color:var(--tone-600);color:#fff}
+/* R322-7：导出图片先预览、二次确认 */
+.r322-preview-img{display:block;max-width:100%;max-height:56vh;margin:0 auto;border:1px solid var(--tone-200);border-radius:10px;background:#fff}
+.r322-preview-tip{font-size:12px;color:var(--tone-700);text-align:center;margin:10px 0 0}
+.r322-preview-acts{display:flex;gap:12px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}
 
 </style>
 </head>
@@ -12118,6 +12125,41 @@ body.r314-frame-gold .home-avatar{box-shadow:0 0 0 4px #f4dd97,0 6px 18px rgba(1
           <button type="button" class="primary-btn" id="r321ExportExcel">📊 导出 Excel（XLS）</button>
         </div>
       </div>
+    </div>
+  </div>
+  <!-- R322-7：图片导出先阅览预览，二次确认后才下载 -->
+  <div class="modal-mask" id="modalR322ExportPreview" hidden>
+    <div class="modal-box r322-ex-box">
+      <div class="modal-head"><h3>🖼 书单图片预览</h3><button class="modal-x" data-close>×</button></div>
+      <div class="modal-body r322-ex-body">
+        <img id="r322ExportPreviewImg" class="r322-preview-img" alt="书单图片预览" />
+        <p class="r322-preview-tip">请确认图片内容，点击「确认导出」后保存到本机「下载」目录。</p>
+        <div class="r322-preview-acts">
+          <button type="button" class="primary-btn" id="r322ExportCancel">取消</button>
+          <button type="button" class="primary-btn" id="r322ExportConfirm">✅ 确认导出</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- R322-2：摘抄本新增入口 —— 先选类型，再进入与现有表单一致的新增页面 -->
+  <div class="modal-mask" id="modalR322ExType" hidden>
+    <div class="modal-box r322-ex-box">
+      <div class="modal-head"><h3>✍️ 新增摘抄</h3><button class="modal-x" data-close>×</button></div>
+      <div class="modal-body r322-ex-body">
+        <p class="r322-preview-tip">请选择要新增的内容类型</p>
+        <div class="r322-ex-choices">
+          <button type="button" class="r322-ex-choice" data-r322-ex-choice="好词">📖 好词</button>
+          <button type="button" class="r322-ex-choice" data-r322-ex-choice="好句">✒️ 好句</button>
+          <button type="button" class="r322-ex-choice" data-r322-ex-choice="段落">📄 段落</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-mask" id="modalR322ExAdd" hidden>
+    <div class="modal-box r322-ex-box">
+      <div class="modal-head"><h3>✍️ 新增摘抄</h3><button class="modal-x" data-close>×</button></div>
+      <div class="modal-body r322-ex-body" id="r322ExFormHost"></div>
     </div>
   </div>
 
@@ -21933,6 +21975,14 @@ window.XS_A2_VOCAB = [
       st._r314StarAlignV1 = true;
       save(st);
     }
+    /* R322-4：一次性清除历史上「摘抄本 → 大阅读好词好句」的同步副本。
+       只删带摘抄来源标记的条目（旧写入固定 from:'r314'），用户自己在大阅读录入的词条一律保留。
+       摘抄与大阅读的双向交互已在 R321 关闭，这里只处理历史存量。 */
+    if(!st._r322ExcerptDecoupleV1){
+      r322PurgeExcerptCopies(st);
+      st._r322ExcerptDecoupleV1 = true;
+      save(st);
+    }
     /* R314：成长中心数据容器（徽章 / 星星商城 / 阶段挑战 / 单元目标 / 摘抄本 / 作息健康 / 成长报告）。
        只补缺失结构，绝不覆盖用户已录入内容。 */
     st.r314 = (st.r314 && typeof st.r314 === 'object' && !Array.isArray(st.r314)) ? st.r314 : {};
@@ -25675,6 +25725,25 @@ window.XS_A2_VOCAB = [
   function getDailySpeaking(){
     const topic = getEnSpeakingDailyTopic();
     return topic ? [topic] : [];
+  }
+  /* R322-4：摘抄本与大阅读彻底解耦 —— 只清理由摘抄本同步过去的存量副本，
+     用户自己在大阅读录入的词条（无摘抄来源标记）一律保留。 */
+  function r322PurgeExcerptCopies(st){
+    try{
+      const ur = st.userReading || (st.userReading = {});
+      const before = Array.isArray(ur.cnWords) ? ur.cnWords.length : 0;
+      const isExcerptCopy = (x)=>{
+        if(!x || typeof x !== 'object') return false;
+        const from = String(x.from || '');
+        const src = String(x.source || '');
+        return from === 'r314' || from === 'jcb' || src === '摘抄本' || src === 'r314'
+          || x.r314 === true || x.excerpt === true
+          || (src === 'user' && ['好词','好句','段落'].indexOf(String(x.type || '')) >= 0);
+      };
+      ur.cnWords = (Array.isArray(ur.cnWords) ? ur.cnWords : []).filter(x=>!isExcerptCopy(x));
+      st._r322ExcerptDecoupleRemoved = before - ur.cnWords.length;
+      return st._r322ExcerptDecoupleRemoved;
+    }catch(e){ return 0; }
   }
   function addUserReading(kind, item){
     const st = load();
@@ -31600,6 +31669,8 @@ be 动词：am / is → was；are → were
     getR256, setR256, getStarLog, clearStarLog, setStarWhy,
     // R314：成长中心容器 + ⭐统一取数口径
     getR314, setR314, setR314Path, starOfTask, r314AddStars, r314SpendStars,
+    // R322-4：摘抄同步存量清理（一次性迁移 + 可手动复跑，保留用户自录词条）
+    r322PurgeExcerptCopies,
     // R319-3：百科顺序解锁
     R319_BAIKE_ORDER, r319BaikePrev, r319BaikeUnlocked, r319BaikeOrder,
     getRemindCfg, saveRemindCfg, getEyeCfg, saveEyeCfg,
@@ -41217,26 +41288,42 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     });
     return out;
   }
-  function r321ExportBooksPng(){
+  var _r322PngDataUrl = '';
+  function r322BuildBooksPngUrl(){
     const rows = _r321BookRows();
+    const c = document.createElement('canvas');
+    const W = 760, lineH = 30;
+    c.width = W; c.height = Math.max(220, 120 + rows.length * lineH);
+    const ctx = c.getContext('2d');
+    ctx.fillStyle = '#f4f9ff'; ctx.fillRect(0,0,c.width,c.height);
+    ctx.fillStyle = '#1e3a8a'; ctx.font = 'bold 28px sans-serif';
+    ctx.fillText('📖 我的书单（' + rows.length + ' 本）', 36, 52);
+    ctx.fillStyle = '#5a6b85'; ctx.font = '16px sans-serif';
+    ctx.fillText('分类 / 书名 / 作者 / 阅读状态', 36, 86);
+    ctx.font = '16px sans-serif';
+    rows.forEach((r,i)=>{
+      const txt = r.cat + ' ｜ 《' + r.title + '》' + (r.author ? ' · ' + r.author : '') + ' ｜ ' + r.read;
+      ctx.fillStyle = r.read === '已读' ? '#b5354b' : '#1c5fb8';
+      ctx.fillText(String(txt).slice(0,52), 36, 120 + i*lineH);
+    });
+    return c.toDataURL('image/png');
+  }
+  /* R322-7：点击「导出图片」只生成预览，用户二次确认后才真正下载 */
+  function r321ExportBooksPng(){
     try{
-      const c = document.createElement('canvas');
-      const W = 760, lineH = 30;
-      c.width = W; c.height = Math.max(220, 120 + rows.length * lineH);
-      const ctx = c.getContext('2d');
-      ctx.fillStyle = '#f4f9ff'; ctx.fillRect(0,0,c.width,c.height);
-      ctx.fillStyle = '#1e3a8a'; ctx.font = 'bold 28px sans-serif';
-      ctx.fillText('📖 我的书单（' + rows.length + ' 本）', 36, 52);
-      ctx.fillStyle = '#5a6b85'; ctx.font = '16px sans-serif';
-      ctx.fillText('分类 / 书名 / 作者 / 阅读状态', 36, 86);
-      ctx.font = '16px sans-serif';
-      rows.forEach((r,i)=>{
-        const txt = r.cat + ' ｜ 《' + r.title + '》' + (r.author ? ' · ' + r.author : '') + ' ｜ ' + r.read;
-        ctx.fillStyle = r.read === '已读' ? '#b5354b' : '#1c5fb8';
-        ctx.fillText(String(txt).slice(0,52), 36, 120 + i*lineH);
-      });
+      _r322PngDataUrl = r322BuildBooksPngUrl();
+      const img = document.getElementById('r322ExportPreviewImg');
+      if(img) img.src = _r322PngDataUrl;
+      hideModal('#modalR321Export');
+      showModal('#modalR322ExportPreview');
+    }catch(e){ toast('图片预览失败：' + (e && e.message ? e.message : '未知错误')); }
+  }
+  function r322ConfirmExportBooksPng(){
+    if(!_r322PngDataUrl){ toast('请先预览书单图片'); return; }
+    try{
       const a = document.createElement('a');
-      a.href = c.toDataURL('image/png'); a.download = '我的书单.png'; a.click();
+      a.href = _r322PngDataUrl; a.download = '我的书单.png'; a.click();
+      hideModal('#modalR322ExportPreview');
       toast('🖼 书单图片已导出');
     }catch(e){ toast('图片导出失败：' + (e && e.message ? e.message : '未知错误')); }
   }
@@ -41322,6 +41409,10 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     if(bExport && !bExport._r321Bound){ bExport._r321Bound = true; bExport.onclick = ()=>showModal('#modalR321Export'); }
     const bExpImg = document.getElementById('r321ExportImg');
     if(bExpImg && !bExpImg._r321Bound){ bExpImg._r321Bound = true; bExpImg.onclick = r321ExportBooksPng; }
+    const bExpConfirm = document.getElementById('r322ExportConfirm');
+    if(bExpConfirm && !bExpConfirm._r322Bound){ bExpConfirm._r322Bound = true; bExpConfirm.onclick = r322ConfirmExportBooksPng; }
+    const bExpCancel = document.getElementById('r322ExportCancel');
+    if(bExpCancel && !bExpCancel._r322Bound){ bExpCancel._r322Bound = true; bExpCancel.onclick = ()=>hideModal('#modalR322ExportPreview'); }
     const bExpXls = document.getElementById('r321ExportExcel');
     if(bExpXls && !bExpXls._r321Bound){ bExpXls._r321Bound = true; bExpXls.onclick = r321ExportBooksExcel; }
     const bBeSave = document.getElementById('btnR319BeSave');
@@ -52214,6 +52305,11 @@ function renderKMAdmin(){
      现统一为：全平台只有这一份打卡音效，打卡成功与取消打卡复用同一音效，由捕获阶段统一分发，
      不再依赖各模块 handler 是否记得调用。 */
   let _checkinSfxAt = 0;
+  /* R322-1：记录最近一次「真人打卡点击」的事件对象。
+     全站有 30+ 处 handler 仍以无参 playCheckinSound() 发声，它们与捕获分发的事件对象不同，
+     只靠 120ms 时间窗去重；iPad 上同步落盘常 >120ms，于是捕获一声 + handler 一声 = 双响。
+     现在无参调用在 2 秒内自动复用这个事件对象上的标记，与事件本身去抖，彻底与耗时解耦。 */
+  let _r322SfxEvt = null, _r322SfxEvtAt = 0;
   /* R315-D2：取消打卡（撤销）不再发声 —— 打卡类「遗憾/撤销」音效整体下线，
      只有真正完成打卡才有反馈音。_r315UndoSfxAt 由捕获阶段按「点击前的按键状态」写入。 */
   let _r315UndoSfxAt = 0;
@@ -52232,6 +52328,10 @@ function renderKMAdmin(){
   }
   function playCheckinSound(srcEvt){
     try{
+      /* R322-1：无参老调用（30+ 处）自动绑定最近一次打卡点击的事件对象。
+         这样「捕获阶段已发过一声」的信息能跨过任意时长的同步落盘传给 handler，
+         不再出现「有些按钮响 2 次」。超出 2 秒视为独立调用，保留原时间窗逻辑。 */
+      if(!srcEvt && _r322SfxEvt && (Date.now() - _r322SfxEvtAt) < 2000) srcEvt = _r322SfxEvt;
       /* R321-1：同一「物理点击」只发一声。原 120ms 时间窗在 iPad 上不够用 ——
          同步 save（主档+备份+轻档）常耗时 >120ms，捕获分发与 handler 调用落到窗口两侧，
          就响两声。改为按事件对象去重，与时间无关；无事件的老调用仍走下面的时间窗。 */
@@ -52260,6 +52360,9 @@ function renderKMAdmin(){
     }catch(e){}
   }
   window.playCheckinSound = playCheckinSound;
+  /* R322-1：探针钩子 —— 模拟「捕获阶段已记录本次点击」以验证无参调用的事件级去重 */
+  window.__r322BindSfxEvt = function(e){ _r322SfxEvt = e || null; _r322SfxEvtAt = Date.now(); };
+  window.__r322ResetSfxWindow = function(){ _checkinSfxAt = 0; };
   /* R315-D1：打卡成功主题动画（Nick 表情弹层）已按需求整体下线，统一入口保持原样，
      不再挂任何装饰器；R315-D2 起「取消打卡」也不再发声（见 _r315UndoSfxAt）。 */
   /* R293-2.1 中华通史（iframe）按键音效 —— 与学而思英语板块完全同源、同槽位、同预设。
@@ -52276,9 +52379,19 @@ function renderKMAdmin(){
           if(!e || e.isTrusted === false) return;
           const t = e.target; if(!t || !t.closest) return;
           if(t.closest('[disabled],[aria-disabled="true"]')) return;
-          if(!t.closest(CHECKIN_SFX_SEL)) return;
+          const node = t.closest(CHECKIN_SFX_SEL);
+          if(!node) return;
+          /* R322-1：所有打卡键（不只首页）点击当帧即给按压反馈。
+             旧实现只有 handler 落盘后才改状态类，同步 save 期间界面毫无变化 = 用户感知「迟钝」。
+             这里只加纯视觉类，不动任何业务状态，260ms 后自动移除。 */
+          try{
+            node.classList.add('r322-checkin-tap');
+            setTimeout(()=>{ try{ node.classList.remove('r322-checkin-tap'); }catch(_){} }, 260);
+          }catch(_){}
           /* R315-D2：点击前已经是「已打卡」态 = 这次是撤销 → 全程静默（不再有遗憾/撤销音） */
           if(r315IsUndoClick(t)){ _r315UndoSfxAt = Date.now(); return; }
+          /* R322-1：记下本次点击事件，供 handler 内的无参发声调用复用去重标记 */
+          _r322SfxEvt = e; _r322SfxEvtAt = Date.now();
           playCheckinSound(e);
         }catch(_){}
       }, true);
@@ -61380,42 +61493,22 @@ function init(){
     });
   }
 
-  /* ---------- 摘抄积累本（R321：仅本板块数据，不与大阅读互通） ---------- */
-  var _r314ExType = '好词';
+  /* ---------- 摘抄积累本（R322：弹窗新增 + 分页面展示 + 仅本板块数据） ---------- */
+  var _r314ExType = '好词';   // 新增表单当前选中的类型
+  var _r322ExView  = '好词';   // 摘抄本当前展示的页面
 
   function r314ExcerptList(){
-    /* R321-2：摘抄内容不再与大阅读好词好句交叉展示/写入。
-       旧实现把 S.getReading('cnWords') 里 source='user' 的词条伪装成「来自大阅读」插进列表，
-       用户在大阅读改一条，摘抄本就跟着变；现在只返回本板块自己的 excerpts。 */
+    /* R321-2 / R322-4：摘抄内容只来自本板块 excerpts；
+       历史同步到大阅读 cnWords 的存量由 store 层 R322 一次性迁移清除，此处不再读取。 */
     const r = r314St();
     return (Array.isArray(r.excerpts) ? r.excerpts : []).slice()
       .map(x => Object.assign({}, x, { readonly:false }));
   }
 
-  function r314ExcerptHtml(){
-    const list = r314ExcerptList();
+  /* R322-2：新增表单内容/排版与原先页面内「新增摘抄」卡片保持一致，只改为弹窗承载 */
+  function r322ExFormHtml(){
     const types = ['好词', '好句', '段落'];
-    const typeBtns = types.map(t => '<button class="r314-extype' + (_r314ExType === t ? ' active' : '') + '" data-gtype="' + t + '">' + t + '</button>').join('');
-    const rowHtml = (x)=>{
-      const type = types.indexOf(x.type) >= 0 ? x.type : '好句';
-      return '<div class="r314-ex">' +
-        '<div class="r314-ex-head"><span class="r314-ex-type">' + r314Esc(type) + '</span>' +
-        '<span class="r314-ex-src">' + r314Esc(x.source || '') + '</span>' +
-        '<button class="r314-ex-del" data-gex-del="' + r314Esc(x.id) + '" title="删除这条摘抄">×</button></div>' +
-        '<div class="r314-ex-text">' + r314Esc(x.text || '') + '</div>' +
-        (x.img ? '<img class="r314-ex-img" src="' + r314Esc(x.img) + '" alt="摘抄图片" />' : '') +
-      '</div>';
-    };
-    // R321-2：摘抄本按「好词 / 好句 / 段落」分版块，次标题复用新增摘抄的同类胶囊样式，展示口径一致
-    const groups = types.map(t=>{
-      const arr = list.filter(x => (types.indexOf(x.type) >= 0 ? x.type : '好句') === t);
-      if(!arr.length) return '';
-      return '<div class="r314-ex-group" data-ex-group="' + t + '">' +
-        '<div class="r314-ex-subtitle"><span class="r314-extype active">' + t + '</span>' +
-        '<span class="r314-ex-count">' + arr.length + ' 条</span></div>' +
-        arr.map(rowHtml).join('') + '</div>';
-    }).join('');
-
+    const typeBtns = types.map(t => '<button type="button" class="r314-extype' + (_r314ExType === t ? ' active' : '') + '" data-gtype="' + t + '">' + t + '</button>').join('');
     return '<div class="r314-card"><div class="r314-card-head">📝 新增摘抄</div>' +
       '<div class="r314-extypes">' + typeBtns + '</div>' +
       '<textarea id="growExText" class="r314-ex-input" maxlength="600" placeholder="摘抄好词 / 好句 / 段落…"></textarea>' +
@@ -61423,22 +61516,39 @@ function init(){
         '<label>出处<input id="growExSource" maxlength="30" placeholder="书名 / 篇名"></label>' +
         '<label class="r314-file">图片<input type="file" id="growExImg" accept="image/*"></label>' +
       '</div>' +
-      '<button class="pbtn r314-add" id="growExAdd">＋ 收录到摘抄本</button>' +
+      '<button type="button" class="pbtn r314-add" id="growExAdd">＋ 收录到摘抄本</button>' +
       '<div class="r314-tip">手动录入或拍照上传均可；摘抄内容只保存在摘抄本，不与大阅读板块互通。</div>' +
-    '</div>' +
-    '<div class="r314-card"><div class="r314-card-head">📚 摘抄本（' + list.length + '）</div>' +
-      (groups || '<div class="r314-empty">还没有摘抄内容，写一句试试～</div>') + '</div>';
+    '</div>';
+  }
+
+  function r314ExcerptHtml(){
+    const list = r314ExcerptList();
+    const types = ['好词', '好句', '段落'];
+    const tabs = types.map(t => '<button type="button" class="r314-extype' + (_r322ExView === t ? ' active' : '') + '" data-r322-ex-view="' + t + '">' + t + '</button>').join('');
+    const arr = list.filter(x => (types.indexOf(x.type) >= 0 ? x.type : '好句') === _r322ExView);
+    const rows = arr.map(x => '<div class="r314-ex">' +
+        '<div class="r314-ex-head"><span class="r314-ex-type">' + r314Esc(_r322ExView) + '</span>' +
+        '<span class="r314-ex-src">' + r314Esc(x.source || '') + '</span>' +
+        '<button class="r314-ex-del" data-gex-del="' + r314Esc(x.id) + '" title="删除这条摘抄">×</button></div>' +
+        '<div class="r314-ex-text">' + r314Esc(x.text || '') + '</div>' +
+        (x.img ? '<img class="r314-ex-img" src="' + r314Esc(x.img) + '" alt="摘抄图片" />' : '') +
+      '</div>').join('');
+    return '<div class="r314-card"><div class="r314-card-head r322-ex-head">📚 摘抄本（' + list.length + '）' +
+        '<button type="button" class="pbtn r314-add" data-r322-ex-open>＋ 新增摘抄</button></div>' +
+      '<div class="r322-ex-tabs">' + tabs + '<span class="r314-ex-count">' + arr.length + ' 条</span></div>' +
+      (rows || '<div class="r322-ex-page-empty">这一页还没有「' + r314Esc(_r322ExView) + '」摘抄，点右上角新增吧～</div>') +
+    '</div>';
   }
 
   var _r314ExImg = '';
 
-  // R317-2：摘抄本从成长档案迁到语文专区，绑定范围与重渲染入口参数化（默认仍兼容旧宿主）
-  function r314BindExcerpt(scopeSel, rerender){
-    const scope = scopeSel || '#archiveExcerptHost';
-    const refresh = (typeof rerender === 'function') ? rerender : r314RenderTab;
-    $$(scope + ' [data-gtype]').forEach(b => b.onclick = function(){
-      _r314ExType = b.getAttribute('data-gtype');
-      refresh();
+  function r322BindExForm(refresh){
+    const host = document.getElementById('r322ExFormHost');
+    if(!host) return;
+    $$('#modalR322ExAdd [data-gtype]').forEach(b => b.onclick = function(){
+      _r314ExType = b.getAttribute('data-gtype') || '好词';
+      host.innerHTML = r322ExFormHtml();
+      r322BindExForm(refresh);
     });
     const file = document.getElementById('growExImg');
     if(file) file.onchange = function(){
@@ -61459,13 +61569,41 @@ function init(){
         type: _r314ExType, text: text, source: src, img: _r314ExImg || '', date: S.todayStr()
       });
       S.setR314({ excerpts: list });
-      // R321-2：摘抄只写本板块，不再写入大阅读（也不再从大阅读反向聚合）
       _r314ExImg = '';
-      if(ta) ta.value = '';
+      hideModal('#modalR322ExAdd');
       playZooSound('pop');
       toast('✍️ 已加入摘抄本');
       refresh();
     };
+  }
+
+  // R317-2 / R322：摘抄本绑定范围与重渲染入口参数化（默认仍兼容旧宿主）
+  function r314BindExcerpt(scopeSel, rerender){
+    const scope = scopeSel || '#archiveExcerptHost';
+    const refresh = (typeof rerender === 'function') ? rerender : r314RenderTab;
+    // R322-3：摘抄本下方「好词 / 好句 / 段落」分页面切换
+    $$(scope + ' [data-r322-ex-view]').forEach(b => b.onclick = function(){
+      _r322ExView = b.getAttribute('data-r322-ex-view') || '好词';
+      refresh();
+    });
+    // R322-2：标题右侧「新增摘抄」→ 选类型弹窗
+    const openBtn = document.querySelector(scope + ' [data-r322-ex-open]');
+    if(openBtn) openBtn.onclick = function(){ showModal('#modalR322ExType'); };
+    const typeModal = document.getElementById('modalR322ExType');
+    if(typeModal && !typeModal._r322Bound){
+      typeModal._r322Bound = true;
+      typeModal.addEventListener('click', function(e){
+        const b = e.target && e.target.closest ? e.target.closest('[data-r322-ex-choice]') : null;
+        if(!b) return;
+        _r314ExType = b.getAttribute('data-r322-ex-choice') || '好词';
+        _r322ExView = _r314ExType;
+        hideModal('#modalR322ExType');
+        const host = document.getElementById('r322ExFormHost');
+        if(host) host.innerHTML = r322ExFormHtml();
+        showModal('#modalR322ExAdd');
+        r322BindExForm(refresh);
+      });
+    }
     $$(scope + ' [data-gex-del]').forEach(b => b.onclick = function(){
       const id = b.getAttribute('data-gex-del');
       const r = r314St();
