@@ -11555,16 +11555,17 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
 .r327-press.r327-pressed{transform:scale(.965);filter:brightness(.97)}
 .r327-press.r327-pressed.wp-task-check,.r327-press.r327-pressed.task-check{transform:scale(.88)}
 
-/* ---------- R327-2：打卡成功 —— 红色闪烁文字 + 烟花 ---------- */
+/* ---------- R328-1：打卡成功 —— 绿色恭喜文字（可自定义）+ 烟花 ---------- */
 .r327-celebrate{position:fixed;inset:0;z-index:2100;pointer-events:none;overflow:hidden}
 .r327-celebrate-txt{
   position:absolute;left:50%;top:34%;transform:translate(-50%,-50%);
-  font-size:clamp(22px,3.2vw,34px);font-weight:900;letter-spacing:1px;color:#e53935;
-  text-shadow:0 2px 0 #fff,0 0 12px rgba(229,57,53,.55),0 6px 18px rgba(229,57,53,.35);
-  animation:r327Blink .55s steps(1,end) infinite,r327Pop .5s cubic-bezier(.2,1.5,.4,1) both;
-  white-space:nowrap;padding:10px 18px;border-radius:16px;background:rgba(255,255,255,.72);
-  border:2px solid rgba(229,57,53,.55);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
-@keyframes r327Blink{0%,49%{opacity:1}50%,100%{opacity:.18}}
+  font-size:clamp(22px,3.2vw,34px);font-weight:900;letter-spacing:1px;
+  color:var(--r328-cc,#2e9e5b);
+  text-shadow:0 2px 0 #fff,0 0 14px rgba(255,255,255,.95),0 6px 20px rgba(46,158,91,.30);
+  animation:r327Pop .45s cubic-bezier(.2,1.5,.4,1) both,r328Fade var(--r328-dur,1500ms) ease-out both;
+  white-space:nowrap;padding:10px 18px;border-radius:16px;background:rgba(255,255,255,.78);
+  border:2px solid var(--r328-cc,#2e9e5b);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+@keyframes r328Fade{0%,72%{opacity:1}100%{opacity:0}}
 @keyframes r327Pop{0%{transform:translate(-50%,-50%) scale(.55)}100%{transform:translate(-50%,-50%) scale(1)}}
 .r327-fw{position:absolute;width:0;height:0;display:block}
 .r327-fw-spark{position:absolute;left:0;top:0;width:7px;height:7px;border-radius:50%;
@@ -11693,6 +11694,65 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
    卡内蓝色内容卡的左右边距因此完全一致，右侧不再留半屏空白。 */
 #r316ArchiveGrid2{grid-template-columns:minmax(0,1fr)}
 #r316ArchiveGrid2>.card{min-width:0;width:100%}
+
+/* ---------- R328-1.2：音乐设置 · 打卡效果设置 ---------- */
+.r328-fx-title{margin-top:10px;padding-top:10px;border-top:1px dashed var(--tone-200)}
+.r328-fx-row{align-items:center;flex-wrap:wrap;gap:8px}
+.r328-fx-row .sfx-row-label{min-width:112px}
+.r328-fx-input{max-width:340px;min-width:160px;padding:5px 9px;font-size:12px;border:1px solid var(--tone-200);border-radius:8px;background:rgba(255,255,255,.9)}
+.r328-fx-color{width:52px;height:30px;padding:2px;border:1px solid var(--tone-200);border-radius:8px;background:#fff;cursor:pointer}
+.r328-fx-tip{font-size:11px;color:var(--tone-600,#64748b)}
+@media (max-width:680px){
+  .r328-fx-row .sfx-row-label{min-width:0;width:100%}
+  .r328-fx-input{max-width:100%;width:100%}
+}
+
+/* ---------- R328-2：我的书单页面调整 ---------- */
+.r319-bl-head .r319-bl-head-actions{margin-left:auto;justify-content:flex-end;flex-wrap:nowrap;order:3}
+.r319-bl-head .r319-bl-head-ops{margin-left:auto;justify-content:flex-end;order:4}
+.r319-bl-head .r328-bl-close{order:9;margin-left:10px;min-height:32px;padding:4px 14px;font-size:12px}
+.r327-cat-c8{--r327-c-bg:linear-gradient(180deg,#fff7f3,#ffe8dd);--r327-c-line:#f2cdb8;--r327-c-bar:#c2693f}
+.r327-cat-c9{--r327-c-bg:linear-gradient(180deg,#f3f7fb,#e4ecf5);--r327-c-line:#cbd8e7;--r327-c-bar:#5b7186}
+.r328-book-pager{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:8px;padding-top:8px;border-top:1px dashed var(--tone-200)}
+.r328-page-btn{min-height:28px;padding:3px 10px;font-size:12px}
+.r328-page-info{font-size:11px;color:var(--tone-600,#64748b);white-space:nowrap}
+.r328-star-picks{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}
+.r328-star-pick{min-width:40px;padding:5px 7px;font-size:12px;border:1px solid var(--tone-200);border-radius:8px;background:var(--tone-025);color:var(--tone-700,#334155);cursor:pointer;touch-action:manipulation}
+.r328-star-pick.active{background:#fff4d6;border-color:#e9b34a;color:#a16207;font-weight:800}
+@media (max-width:900px){
+  .r319-bl-head .r319-bl-head-actions{flex-wrap:wrap;justify-content:flex-end}
+  .r319-bl-head .r328-bl-close{margin-left:4px}
+}
+
+/* ---------- R328-3：摘抄本三个切换键与编辑键同规格 ---------- */
+.r322-ex-tabs .r314-extype{padding:4px 10px;font-size:12px;line-height:1.6;min-height:28px;border-radius:8px}
+.r322-ex-tabs{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+
+/* ---------- R328-4：大阅读 · 语文阅读次标题板块排版统一 ---------- */
+.reading-cn .rd-cn-row{align-items:stretch;gap:16px;row-gap:16px}
+.reading-cn .reading-col,.reading-cn .haoci-use-card{padding:12px;min-width:0;height:auto}
+.reading-cn .reading-col-head{padding-bottom:8px;margin-bottom:10px;border-bottom:1px dashed var(--tone-200)}
+.reading-cn .reading-col-list,.reading-cn .haoci-use-grid,.reading-cn .ri-poem-cols{gap:12px}
+.reading-cn .reading-col-list>*,.reading-cn .haoci-use-grid>*{min-width:0;overflow-wrap:anywhere;word-break:break-word}
+@media (max-width:900px){
+  .reading-cn .rd-cn-row-1,.reading-cn .rd-cn-row-2{grid-template-columns:minmax(0,1fr)}
+  .reading-cn .rd-cn-row>*{grid-column:1 / -1 !important}
+}
+
+/* ---------- R328-5.1：成长档案标题卡按键规格统一 ---------- */
+.page-archive .card-head .pbtn,
+.page-archive .r314-card-head .pbtn,
+.page-archive .r314-mini,
+.page-archive .report-export-btn{
+  min-height:30px;height:auto;padding:4px 12px;font-size:12px;line-height:1.5;border-radius:8px
+}
+
+/* ---------- R328-5.2：作息统计移到每日学习提醒下方，单列满宽 ---------- */
+.r317-health-cols.r328-health-cols{grid-template-columns:minmax(0,1fr);gap:0}
+.r328-health-cols .r317-health-main{width:100%;min-width:0}
+.r328-sleep-block{margin-top:2mm}
+.r328-sleep-block .r327-sleep-card{margin:0;padding:0;background:transparent;border:0;box-shadow:none}
+.r328-sleep-block .r327-sleep-stats{gap:10px}
 
 </style>
 </head>
@@ -12462,7 +12522,7 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
           <button type="button" class="primary-btn" id="btnR319AddCat">＋ 添加书单</button>
           <button type="button" class="primary-btn" id="btnR319AddBook">＋ 添加书籍</button>
         </div>
-        <button class="modal-x" data-close>×</button>
+        <button type="button" class="pbtn r328-bl-close" data-close>关闭</button>
       </div>
       <div class="modal-body r319-bl-body">
         <div class="r319-cat-grid" id="r319CatGrid"></div>
@@ -12487,8 +12547,8 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
         <label class="r319-be-label">推荐理由
           <textarea id="r324BeReason" class="nw-add-input r324-be-reason" maxlength="600" rows="3" placeholder="这本书为什么值得读？（可留空）"></textarea>
         </label>
-        <label class="r319-be-label">打卡奖励 ⭐
-          <input type="number" id="r327BeStars" class="nw-add-input" min="0" max="20" step="1" placeholder="留空按默认（漫画/绘本 2⭐，其余 5⭐）" />
+        <label class="r319-be-label">打卡奖励 ⭐（点选，不选则按默认：漫画/绘本 2⭐，其余 5⭐）
+          <span class="r328-star-picks" id="r327BeStars" data-value=""></span>
         </label>
         <div class="r319-be-err" id="r319BeErr"></div>
       </div>
@@ -12557,7 +12617,7 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
   <!-- R319-1：新增分类小弹窗 -->
   <div class="modal-mask" id="modalR319CatAdd" hidden>
     <div class="modal-box r319-catadd-box">
-      <div class="modal-head"><h3 id="r319CatTitle">添加书单</h3><button class="modal-x" data-close>×</button></div>
+      <div class="modal-head"><h3 id="r319CatTitle">添加书单</h3><button type="button" class="pbtn r328-bl-close" data-close>关闭</button></div>
       <div class="modal-body r319-be-body">
         <label class="r319-be-label">书单名称
           <input type="text" id="r319CatName" class="nw-add-input" maxlength="20" placeholder="如：科普" />
@@ -12574,7 +12634,7 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
   <!-- R327-4.9 / 4.11：借阅书目（借阅中 = 已加入、还没读完的书） -->
   <div class="modal-mask" id="modalR327Borrow" hidden>
     <div class="modal-box r327-borrow-box">
-      <div class="modal-head"><h3>📚 借阅书目</h3><button class="modal-x" data-close>×</button></div>
+      <div class="modal-head"><h3>📚 借阅书目</h3><button type="button" class="pbtn r328-bl-close" data-close>关闭</button></div>
       <div class="modal-body r327-borrow-body" id="r327BorrowBody"></div>
     </div>
   </div>
@@ -19924,7 +19984,7 @@ window.XS_A2_VOCAB = [
     'userReading','readingPanelDone','mathProblems','mathNotes','mathNoteStatus','mathGroups',
     'mathGallery','mathExerciseBank','plots','inventory','gifts','shop','stage','km','farmOpen',
     'music','farmLayout','en3500Marks','r314','nwWrong','homeGreets','homeBanner','sectionTitleTexts',
-    'schedule','memos','weekPlanColors','r319BookList','__r319BookListSeedV1','__r324BookImportV1','__r327BookCatsV1','r326','__schema','__seq','__commitAt','__tomb'];
+    'schedule','memos','weekPlanColors','r319BookList','__r319BookListSeedV1','__r324BookImportV1','__r327BookCatsV1','__r328OtherCatV1','r326','__schema','__seq','__commitAt','__tomb'];
   /* 轻档超预算时的「可牺牲顺序」：从体积最大且可再生 / 有主档兜底的字段开始丢 */
   const LIGHT_DROP_ORDER = ['calcBank','mathProblems','mathGallery','xueersiWordBank','km','calcWrongBook'];
   let _r318XsSrc = null, _r318XsDelta = null;
@@ -20388,7 +20448,7 @@ window.XS_A2_VOCAB = [
          否则「删完立刻切后台」这条路径写出去的仍是上一代的序号，刷新会被旧副本压回去。 */
       try{ _r318TombCapture(st); }catch(e){}
       _r318NextSeq(st);
-      const raw = JSON.stringify(_r320DiskView(st));
+      const raw = JSON.stringify(_r328DiskView(st));
       // R265-4：版本更新 / 关页面前同样留一份 IndexedDB 镜像（pagehide 在 iPad 上不一定触发）
       const _fts = Date.now();
       try{ _mirrorWrite(raw, _fts); }catch(e){}
@@ -21474,7 +21534,7 @@ window.XS_A2_VOCAB = [
     const done = _restoreFromBackup(st, bad);
     if(done.length){
       // 迁移造成的清零：把救回的数据立即落库，避免下次又读到坏值
-      try{ const raw = JSON.stringify(_r320DiskView(st)); if(_safeSet(KEY, raw)){ _rotateBackup(raw, true); _loadCachePut(st, raw); } }catch(e){}
+      try{ const raw = JSON.stringify(_r328DiskView(st)); if(_safeSet(KEY, raw)){ _rotateBackup(raw, true); _loadCachePut(st, raw); } }catch(e){}
     }
     return done;
   }
@@ -21720,6 +21780,14 @@ window.XS_A2_VOCAB = [
       if(!st.clickSfx) st.clickSfx = {nav:'a', theme:'l', sub:'k', third:'h', checkin:'q'};
       if(st.clickSfx.checkin === 'c' || !st.clickSfx.checkin) st.clickSfx.checkin = 'q';
       st._clickSfxSingleR320 = true;
+      save(st);
+    }
+    /* R328-1.1：打卡成功默认播放「烟花绽放」r —— 只升级仍停在上一版默认 q 的存档，
+       用户自己选过其他音效（含已手动选 r）的保持不动，不覆盖用户设置。 */
+    if(!st._r328FireworkSfxV1){
+      if(!st.clickSfx) st.clickSfx = {nav:'a', theme:'l', sub:'k', third:'h', checkin:'r'};
+      else if(st.clickSfx.checkin === 'q' || !st.clickSfx.checkin) st.clickSfx.checkin = 'r';
+      st._r328FireworkSfxV1 = true;
       save(st);
     }
     // R150-5：系统默认关闭所有按键音效；是否发声交由用户在设置中心自主开启（soundOn 缺省 false）
@@ -22061,6 +22129,25 @@ window.XS_A2_VOCAB = [
       }catch(e){}
       st.__r327BookCatsV1 = true;
       save(st);
+    }
+    /* R328-2.1：在「纪录片」右侧补一个「其他」书单作兜底。
+       只收无分类 / 分类已失效的书；用户已归类的书、已读、推荐理由、⭐设置和此后新增的数据一律不动。 */
+    if(!st.__r328OtherCatV1){
+      try{
+        if(!st.r319BookList || typeof st.r319BookList !== 'object' || Array.isArray(st.r319BookList)) st.r319BookList = {cats:[], books:[]};
+        if(!Array.isArray(st.r319BookList.cats)) st.r319BookList.cats = [];
+        if(!Array.isArray(st.r319BookList.books)) st.r319BookList.books = [];
+        let _r328Other = st.r319BookList.cats.filter(function(c){ return c && c.name === '其他'; })[0];
+        if(!_r328Other){
+          _r328Other = { id:'rc_其他', name:'其他', builtin:true, ts:Date.now() };
+          st.r319BookList.cats.push(_r328Other);
+        }
+        const _r328Ids = {};
+        st.r319BookList.cats.forEach(function(c){ if(c && c.id) _r328Ids[c.id] = true; });
+        st.r319BookList.books.forEach(function(b){ if(b && (!b.cat || !_r328Ids[b.cat])) b.cat = _r328Other.id; });
+        st.__r328OtherCatV1 = true;
+        save(st);
+      }catch(e){}
     }
     // V11.6：记录每日日常交流完成状态（5 条均完成 → +2⭐，仅一次）
     if(!st.speakingComplete) st.speakingComplete = {};
@@ -22717,7 +22804,7 @@ window.XS_A2_VOCAB = [
       st._r296WrongCleared = 1;
       st._r296WrongClearedAt = Date.now();
       st._r296WrongClearedN = _wbN;
-      try{ const _rawWb = JSON.stringify(st); if(_safeSet(KEY, _rawWb)){ _loadCachePut(st, _rawWb); } }catch(e){}
+      try{ const _rawWb = JSON.stringify(_r328DiskView(st)); if(_safeSet(KEY, _rawWb)){ _loadCachePut(st, _rawWb); } }catch(e){}
     }
     /* R298-3.1：计算小超市「重新统计」—— 一次性把已做本题目放回题库，并清空
        连续打卡 / 已做本 / 错题本 / 打卡日历（含当日批改快照与 calcDaily 打卡标记）。
@@ -22749,7 +22836,7 @@ window.XS_A2_VOCAB = [
       st._r298CalcReset = 1;
       st._r298CalcResetAt = Date.now();
       st._r298CalcBackCount = Array.isArray(st.calcBank) ? st.calcBank.length : 0;
-      try{ const _rawC = JSON.stringify(st); if(_safeSet(KEY, _rawC)){ _loadCachePut(st, _rawC); } }catch(e){}
+      try{ const _rawC = JSON.stringify(_r328DiskView(st)); if(_safeSet(KEY, _rawC)){ _loadCachePut(st, _rawC); } }catch(e){}
     }
     /* R299-3：首页「阅读」必做卡内移除「英语阅读 / 语文阅读」两项（R131 引入的默认任务）。
        ⚠️ 数据边界：只删「任务定义」（tasks 里 subject=阅读 且 名称恰为这两条 且 type=必做任务），
@@ -22767,7 +22854,7 @@ window.XS_A2_VOCAB = [
       st._r299ReadTaskAt = Date.now();
       st._r299ReadTaskN = _beforeReadTasks - st.tasks.length;
       st._r299ReadTaskKept = (st.records||[]).length;
-      try{ const _rawR = JSON.stringify(st); if(_safeSet(KEY, _rawR)){ _loadCachePut(st, _rawR); } }catch(e){}
+      try{ const _rawR = JSON.stringify(_r328DiskView(st)); if(_safeSet(KEY, _rawR)){ _loadCachePut(st, _rawR); } }catch(e){}
     }
     _persistedShape = _guardCapture(st);
     try{ _r318PrevStars = _r256StarsOf(st); }catch(e){}
@@ -22785,10 +22872,13 @@ window.XS_A2_VOCAB = [
       });
       _r318SyncSeq(st.__seq);
     }catch(e){}
+    /* R328-1.3：把落盘时被搬到 IndexedDB 的图片按路径回填，界面看到的仍是完整 dataURL；
+       缓存键仍是磁盘 raw，所以回填不会破坏命中判定。 */
+    try{ _r328RestoreImages(st); }catch(e){}
     _loadCachePut(st);   // R246-3：解析 + 迁移完成后写入缓存
     // R254-1：若本次是从备份救回来的，立即回写主存档，保证下次打开读的是完整数据
     if(_recoveredFrom){
-      try{ const raw2 = JSON.stringify(st); if(_safeSet(KEY, raw2)){ _rotateBackup(raw2, true); _loadCachePut(st, raw2); } }catch(e){}
+      try{ const raw2 = JSON.stringify(_r328DiskView(st)); if(_safeSet(KEY, raw2)){ _rotateBackup(raw2, true); _loadCachePut(st, raw2); } }catch(e){}
     }
     // R256-1.4：记下「当前已落库的成长星数」，作为下一次变更记账的基线
     try{ _r256LastStars = _r256StarsOf(st); }catch(e){}
@@ -22988,7 +23078,7 @@ window.XS_A2_VOCAB = [
     st.__pendingApplied = p.__at;
     // 叠加后立刻把完整状态写回主档；成功即清补丁（下次不会重复叠加）
     try{
-      const raw = JSON.stringify(_r320DiskView(st));
+      const raw = JSON.stringify(_r328DiskView(st));
       if(_writeMain(raw).ok){ _pendingClear(); _snapshotClear(); _rotateBackup(raw, true); }
     }catch(e){}
     return true;
@@ -23398,6 +23488,74 @@ window.XS_A2_VOCAB = [
       return out;
     }catch(e){ return st; }
   }
+  /* R328-1.3【图片占用根治】：所有超过 4KB 的内联 data:image 在落盘前搬到 IndexedDB 图片库，
+     主档 / 镜像 / 补丁只保留「路径 → imgRef」映射。这样无论用户在哪个板块导入了多少图，
+     localStorage 主档都不会被 base64 撑爆，打卡写入不再因图片占用失败。
+     · 内存镜像 _r328ImgMem 保证本会话恢复 100% 可用；IDB 保证刷新 / 版本更新后仍可回显。
+     · 图片搬运失败时保留原始值，绝不丢用户图片。 */
+  const _r328ImgMem = {};
+  function _r328DiskView(st){
+    const base = _r320DiskView(st);
+    try{
+      if(!base || typeof base !== 'object') return base;
+      const refs = {}, SEP = '\u0001';
+      let found = false;
+      (function scan(o, path){
+        if(!o || typeof o !== 'object') return;
+        const keys = Object.keys(o);
+        for(let i=0;i<keys.length;i++){
+          const k = keys[i], v = o[k];
+          if(typeof v === 'string'){
+            if(v.length > 4096 && v.slice(0, 11) === 'data:image/'){
+              const ref = 'r328_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8);
+              refs[path + SEP + k] = ref;
+              _r328ImgMem[ref] = v;
+              found = true;
+            }
+          }else if(v && typeof v === 'object') scan(v, path + SEP + k);
+        }
+      })(base, '');
+      if(!found) return base;
+      const out = JSON.parse(JSON.stringify(base));
+      Object.keys(refs).forEach(function(p){
+        const ref = refs[p], parts = p.split(SEP).filter(Boolean);
+        let cur = out;
+        for(let i=0;i<parts.length-1;i++){
+          if(!cur || typeof cur !== 'object') return;
+          cur = cur[parts[i]];
+        }
+        if(!cur || typeof cur !== 'object'){ delete refs[p]; delete _r328ImgMem[ref]; return; }
+        let ok = false;
+        try{ ok = !!(window.ImgStore && window.ImgStore.putSync && window.ImgStore.putSync(ref, _r328ImgMem[ref])); }catch(e){}
+        if(ok) cur[parts[parts.length-1]] = '';
+        else { delete refs[p]; delete _r328ImgMem[ref]; }
+      });
+      if(Object.keys(refs).length) out.__r328ImgRefs = refs;
+      return out;
+    }catch(e){ return base; }
+  }
+  function _r328RestoreImages(st){
+    try{
+      const refs = st && st.__r328ImgRefs;
+      if(!refs || !Object.keys(refs).length) return st;
+      const SEP = '\u0001';
+      Object.keys(refs).forEach(function(p){
+        const ref = refs[p], parts = p.split(SEP).filter(Boolean);
+        let data = null;
+        try{ data = window.ImgStore && window.ImgStore.getSync && window.ImgStore.getSync(ref); }catch(e){}
+        if(!data) data = _r328ImgMem[ref];
+        if(!data) return;
+        let cur = st;
+        for(let i=0;i<parts.length-1;i++){
+          if(!cur || typeof cur !== 'object') return;
+          cur = cur[parts[i]];
+        }
+        if(cur && typeof cur === 'object') cur[parts[parts.length-1]] = data;
+      });
+      delete st.__r328ImgRefs;
+    }catch(e){}
+    return st;
+  }
   /* R327-1：二级落库（轻档 / 双代备份）延迟到空闲时段。
      主档写成功 + 回读校验通过后，用户数据已经在最可信的位置；轻档与备份只是「附加保险」，
      没必要挡在点击当帧里（一次 130KB 轻档序列化 + 备份轮转在 iPad 上要几十毫秒）。
@@ -23430,6 +23588,11 @@ window.XS_A2_VOCAB = [
       _r327SecTimer = 0;
     }
     try{ f(); return true; }catch(e){ return false; }
+  }
+  /* R328-1.3：主动瘦身 —— 把内存态里仍内联的大图搬到 IndexedDB 后重写主档。
+     写失败时返回 false，调用方据此决定是否提示用户检查浏览器存储权限。 */
+  function r328SlimImages(){
+    try{ const st = load(); return !!save(st); }catch(e){ return false; }
   }
   /* R327-1：丢掉待办的二级写入 —— 卸载刷盘会完整落主档 / 轻档 / 备份，
      若让空闲回调随后再跑一次，反而可能用过期的 raw 轮转备份、盖掉最新快照。 */
@@ -23466,7 +23629,7 @@ window.XS_A2_VOCAB = [
     let raw;
     let _r256Entry = null;
     try{ _r256Entry = _r256Ledger(st); }catch(e){}
-    try{ raw = JSON.stringify(_r320DiskView(st)); }
+    try{ raw = JSON.stringify(_r328DiskView(st)); }
     catch(e){ _saveError = 'serialize'; _loadCachePut(st); return false; }
     /* R318：业务内容与上一次落库完全一致 → 不重复写盘（只把序号还原，保证内存与磁盘同代）。
        iPad 上「同一处反复点击」原本每次都要重写 300KB+ 并连带刷新三份副本，
@@ -24826,7 +24989,9 @@ window.XS_A2_VOCAB = [
     const r = saveVerified(st, function(d){
       return !!(d && Array.isArray(d.mathExerciseBank) && d.mathExerciseBank.length >= want);
     });
-    if(!r.ok){ _saveError = 'quota'; }
+    /* R328-1.3：回读失败可能是权限 / 校验 / 配额中的任一种，不能一律记成 quota，
+       否则打卡会误报「删图片再试」（删图片对 blocked / verify 完全无效）。 */
+    if(!r.ok){ _saveError = 'save-verify'; }
     return st.mathExerciseBank.slice();
   }
   function addMathExercise(item){
@@ -32757,6 +32922,8 @@ be 动词：am / is → was；are → were
     backupInfo, flushPersistence,
     // R327-1：把空闲时段待办的轻档 / 备份写入立即做完（同代一致性校验用）
     r327FlushSecondary,
+    // R328-1.3：强制把内联大图搬到 IndexedDB 并重存主档（存储体检 / 写入失败自愈用）
+    r328SlimImages,
     // R264-2.1：本机存储用量诊断（核验是否真的空间紧张、由哪些副本占用）
     storageUsage,
     // R265-4：IndexedDB 镜像恢复 / 存储健康自检 / 事件驱动兜底刷盘
@@ -38130,6 +38297,9 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
   /* R301-1.7：打卡成功动画 —— 漂浮红色文字「恭喜你完成打卡！」+ 烟花爆竹粒子。
      纯 DOM + CSS 关键帧，不依赖任何库；pointer-events:none 不拦截点击，3.6s 后自动移除。 */
   function calcCelebrate(){
+    /* R328-1.1：计算小超市旧版专属庆祝并入全平台统一反馈（绿色恭喜 + 烟花 + 单响音效） */
+    r327CheckinSuccess(2);
+    return;
     try{
       const old = document.querySelector('.calc-celebrate');
       if(old && old.parentNode) old.parentNode.removeChild(old);
@@ -38154,17 +38324,58 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       setTimeout(()=>{ if(box && box.parentNode) box.parentNode.removeChild(box); }, 3600);
     }catch(e){}
   }
-  /* R327-2：打卡成功提示 —— 红色闪烁文字「NICK，恭喜获得2⭐」+ 烟花绽放。
-     纯 DOM + CSS 关键帧，pointer-events:none 不拦点击，2.6s 后自动移除。 */
+  /* R328-1.3：写入失败分级提示 + 自愈。
+     旧版一律提示「删图片」是误判：blocked（无痕 / 禁站点数据）与 verify（回读不一致）
+     删图片永远无效。这里先自动把内联大图搬进 IndexedDB 并重试，再按真实原因给提示。 */
+  function r328SaveFailNotice(code){
+    let h = {}; try{ h = (S.storageHealth && S.storageHealth()) || {}; }catch(e){}
+    const verdict = h.verdict || '';
+    let slim = false;
+    try{ slim = !!(S.r328SlimImages && S.r328SlimImages()); }catch(e){}
+    if(slim){
+      let left = ''; try{ left = (S.getSaveError && S.getSaveError()) || ''; }catch(e){}
+      if(!left){ toast('✅ 已自动整理图片占用并保存成功'); return; }
+    }
+    if(verdict === 'blocked' || code === 'blocked'){
+      toast('⚠️ 浏览器阻止了本机存储，请检查站点数据权限或退出无痕模式');
+    }else if(code === 'quota' || verdict === 'quota'){
+      toast('⚠️ 本机存储紧张，图片已转入图库；可在「🩺 存储体检」查看详情');
+    }else if(code === 'verify' || code === 'save-verify' || code === 'serialize'){
+      toast('⚠️ 数据校验未通过，原记录已保留；可在「🩺 存储体检」修复');
+    }else{
+      toast('⚠️ 这次改动暂未写入本机（' + esc(code || 'unknown') + '），可在「🩺 存储体检」查看原因');
+    }
+  }
+  /* R328-1.2：打卡效果自定义设置（音乐设置内可改文案 / 颜色 / 时长 / 烟花音效）。
+     {nick} / {stars} 为模板变量；所有值都做范围校验，坏数据自动回退默认值。 */
+  function r328CheckinCfg(){
+    const DEF = { text:'{nick}！恭喜获得 {stars}⭐', color:'#2e9e5b', duration:1500, sfx:'r' };
+    try{
+      const st = S.load() || {};
+      const c = st.checkinEffect || {};
+      const sfxId = ((st.clickSfx || {}).checkin) || c.sfx || 'r';
+      return {
+        text: (typeof c.text === 'string' && c.text.trim()) ? c.text.slice(0, 60) : DEF.text,
+        color: /^#[0-9a-f]{6}$/i.test(c.color || '') ? c.color : DEF.color,
+        duration: Math.max(500, Math.min(8000, parseInt(c.duration, 10) || DEF.duration)),
+        sfx: SFX_PRESETS[sfxId] ? sfxId : DEF.sfx
+      };
+    }catch(e){ return DEF; }
+  }
+  /* R328-1.1：全平台统一打卡成功反馈 —— 绿色恭喜文字「NICK！恭喜获得 N⭐」，
+     默认 1.5 秒后消失，同步播放一次烟花绽放音效。pointer-events:none 不拦点击。 */
   function r327CheckinSuccess(stars){
     try{
+      const cfg = r328CheckinCfg();
       const nm = ((S.load().profile || {}).nickname || 'Nick');
       const n = Math.max(0, parseInt(stars, 10) || 0);
       const old = document.querySelector('.r327-celebrate');
       if(old && old.parentNode) old.parentNode.removeChild(old);
       const box = document.createElement('div');
       box.className = 'r327-celebrate';
-      const hues = ['#e53935','#ff7a18','#ffca28','#43a047','#29b6f6','#ab47bc'];
+      box.style.setProperty('--r328-dur', cfg.duration + 'ms');
+      box.style.setProperty('--r328-cc', cfg.color);
+      const hues = [cfg.color,'#ffca28','#43a047','#29b6f6','#ab47bc','#ff7a18'];
       let bursts = '';
       const spots = [{x:'28%',y:'36%'},{x:'50%',y:'26%'},{x:'72%',y:'38%'},{x:'38%',y:'58%'},{x:'64%',y:'60%'}];
       spots.forEach(function(s, bi){
@@ -38174,13 +38385,22 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
           const dist = 58 + (i % 4) * 20;
           const dx = Math.round(Math.cos(ang) * dist);
           const dy = Math.round(Math.sin(ang) * dist);
-          sparks += '<i class="r327-fw-spark" style="--dx:' + dx + 'px;--dy:' + dy + 'px;--hue:' + hues[(i + bi * 2) % hues.length] + ';animation-delay:' + (bi * 220 + (i % 6) * 40) + 'ms"></i>';
+          sparks += '<i class="r327-fw-spark" style="--dx:' + dx + 'px;--dy:' + dy + 'px;--hue:' + hues[(i + bi * 2) % hues.length] + ';animation-delay:' + (bi * 140 + (i % 6) * 26) + 'ms"></i>';
         }
         bursts += '<span class="r327-fw" style="left:' + s.x + ';top:' + s.y + '">' + sparks + '</span>';
       });
-      box.innerHTML = '<div class="r327-celebrate-txt">' + esc(nm) + '，恭喜获得' + n + '⭐</div>' + bursts;
+      const raw = cfg.text.replace(/\{nick\}/g, '\u0001').replace(/\{stars\}/g, '\u0002');
+      const label = esc(raw).replace(/\u0001/g, esc(nm)).replace(/\u0002/g, String(n));
+      box.innerHTML = '<div class="r327-celebrate-txt">' + label + '</div>' + bursts;
       document.body.appendChild(box);
-      setTimeout(function(){ if(box && box.parentNode) box.parentNode.removeChild(box); }, 2600);
+      setTimeout(function(){ if(box && box.parentNode) box.parentNode.removeChild(box); }, cfg.duration);
+      /* 打卡音效单响：捕获阶段若已响过（间隔 < 160ms）就不再补播；其余打卡路径在这里补一次 */
+      try{
+        if(isCheckinSfxOn() && Date.now() - (_checkinSfxAt || 0) > 160){
+          const p = SFX_PRESETS[cfg.sfx]; if(p && p.play) p.play();
+          _checkinSfxAt = Date.now();
+        }
+      }catch(e){}
     }catch(e){}
   }
 
@@ -42331,7 +42551,10 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   }
   /* R327-4：编辑态开关（只有进入「编辑书单」后，添加书单 / 添加书籍 / 分类改名删除 / 书籍编辑删除才出现） */
   let _r327BookEdit = false;
-  const R327_CAT_COLORS = 8;
+  const R327_CAT_COLORS = 10;
+  /* R328-2.2：书单卡片内翻页，每页固定 10 本；页码按书单 id 独立记忆，切页不影响数据 */
+  const R328_BOOK_PAGE_SIZE = 10;
+  const _r328BookPages = {};
   function r327BookStarsOf(b){
     try{ return (S.r327BookStarsOf ? S.r327BookStarsOf(b) : 5); }catch(e){ return 5; }
   }
@@ -42358,7 +42581,11 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     grid.className = 'r319-cat-grid' + (_r327BookEdit ? ' r327-editing' : '');
     grid.innerHTML = cats.map((c, ci)=>{
       const list = books.filter(b=>b.cat === c.id);
-      const rows = list.map(b=>{
+      const pageCount = Math.max(1, Math.ceil(list.length / R328_BOOK_PAGE_SIZE));
+      const pi = Math.max(1, Math.min(pageCount, _r328BookPages[c.id] || 1));
+      _r328BookPages[c.id] = pi;
+      const pageList = list.slice((pi - 1) * R328_BOOK_PAGE_SIZE, pi * R328_BOOK_PAGE_SIZE);
+      const rows = pageList.map(b=>{
         const stars = r327BookStarsOf(b);
         /* R327-4.10：借阅中（未读）橙色；已读绿色；其余白色 */
         const cls = 'r319-book-row' + (b.read ? ' is-read' : (b.borrow ? ' is-borrow' : ''));
@@ -42374,7 +42601,12 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
           </span>` : ''}
         </div>`;
       }).join('') || '<div class="r319-cat-empty">暂无书籍' + (_r327BookEdit ? '，点上方「添加书籍」新增' : '') + '</div>';
-      /* R327-4.7：每个书单卡用不同配色区分（8 色循环，仅视觉，不影响数据） */
+      const pager = pageCount > 1 ? `<div class="r328-book-pager">
+        <button type="button" class="pbtn r328-page-btn" data-r328-page="${esc(c.id)}" data-r328-dir="-1" ${pi<=1?'disabled':''}>← 上一页</button>
+        <span class="r328-page-info">${pi} / ${pageCount} 页 · 共 ${list.length} 本</span>
+        <button type="button" class="pbtn r328-page-btn" data-r328-page="${esc(c.id)}" data-r328-dir="1" ${pi>=pageCount?'disabled':''}>下一页 →</button>
+      </div>` : '';
+      /* R327-4.7 / R328-2.1：每个书单卡用不同配色区分（10 色循环，仅视觉，不影响数据） */
       return `
         <div class="r319-cat-card r327-cat-c${ci % R327_CAT_COLORS}" data-r319-cat="${esc(c.id)}">
           <div class="r319-cat-head">
@@ -42386,6 +42618,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
             </span>` : (c.builtin?'':'')}
           </div>
           <div class="r319-book-list">${rows}</div>
+          ${pager}
         </div>`;
     }).join('') || '<div class="nw-zone-empty">还没有书单</div>';
   }
@@ -42438,8 +42671,26 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     nameEl.value = book ? book.title : '';
     auEl.value = book ? (book.author||'') : '';
     if(reasonEl) reasonEl.value = book ? (book.reason||'') : '';
-    /* R327-4.12：单本打卡⭐（留空 = 按书单类型默认：漫画/绘本 2⭐，其余 5⭐） */
-    if(starsEl) starsEl.value = (book && book.stars != null) ? String(book.stars) : '';
+    /* R328-2.3：单本打卡⭐改为点击选择（0~20）；不选 = 按书单类型默认（漫画/绘本 2⭐，其余 5⭐）。
+       再点一次已选项可取消，恢复默认。 */
+    if(starsEl){
+      const cur = (book && book.stars != null) ? parseInt(book.stars, 10) : -1;
+      let picks = '';
+      for(let i=0;i<=20;i++) picks += '<button type="button" class="r328-star-pick' + (cur===i?' active':'') + '" data-star="' + i + '">' + i + '⭐</button>';
+      starsEl.innerHTML = picks;
+      starsEl.dataset.value = cur >= 0 ? String(cur) : '';
+      if(!starsEl._r328Bound){
+        starsEl._r328Bound = true;
+        starsEl.addEventListener('click', e=>{
+          const pick = e.target.closest('[data-star]');
+          if(!pick) return;
+          e.preventDefault();
+          const v = pick.getAttribute('data-star');
+          starsEl.dataset.value = (starsEl.dataset.value === v) ? '' : v;
+          starsEl.querySelectorAll('.r328-star-pick').forEach(x=>x.classList.toggle('active', x.getAttribute('data-star') === starsEl.dataset.value));
+        });
+      }
+    }
     showModal('#modalR319BookEdit');
     setTimeout(()=>{ try{ nameEl.focus(); }catch(e){} }, 30);
   }
@@ -42455,9 +42706,9 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     const title = nameEl ? nameEl.value.trim() : '';
     const author = auEl ? auEl.value.trim() : '';
     const reason = reasonEl ? reasonEl.value.trim() : '';
-    const starsRaw = starsEl ? String(starsEl.value || '').trim() : '';
+    const starsRaw = starsEl ? String(starsEl.dataset.value || '').trim() : '';
     if(!title){ fail('请填写书名'); return; }
-    if(starsRaw && !/^\d{1,2}$/.test(starsRaw)){ fail('打卡⭐请填 0~20 的整数（留空按默认）'); return; }
+    if(starsRaw && !/^\d{1,2}$/.test(starsRaw)){ fail('打卡⭐请选择 0~20（不选按默认）'); return; }
     const stars = starsRaw ? parseInt(starsRaw, 10) : undefined;
     if(stars !== undefined && stars > 20){ fail('打卡⭐请填 0~20 的整数（留空按默认）'); return; }
     let r;
@@ -42601,6 +42852,20 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       bEdit._r327Bound = true;
       bEdit.onclick = ()=>{ _r327BookEdit = !_r327BookEdit; r319RenderBookList(); };
     }
+    /* R328-2.2：书单卡片内翻页 —— 只改前端页码，不动任何书籍数据 */
+    const pagerGrid = document.getElementById('r319CatGrid');
+    if(pagerGrid && !pagerGrid._r328PagerBound){
+      pagerGrid._r328PagerBound = true;
+      pagerGrid.addEventListener('click', e=>{
+        const btn = e.target.closest('[data-r328-page]');
+        if(!btn || btn.disabled) return;
+        e.preventDefault(); e.stopPropagation();
+        const cid = btn.getAttribute('data-r328-page');
+        const dir = parseInt(btn.getAttribute('data-r328-dir'), 10) || 0;
+        _r328BookPages[cid] = Math.max(1, (_r328BookPages[cid] || 1) + dir);
+        r319RenderBookList();
+      });
+    }
     // R327-4.9：借阅书目
     const bBorrow = document.getElementById('btnR327Borrow');
     if(bBorrow && !bBorrow._r327Bound){
@@ -42663,7 +42928,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
           const r = S.r319ToggleRead(bid);
           if(r && r.ok){
             /* R327-4.12：打卡完成得⭐（漫画 / 绘本按轻阅读，默认 2⭐，可逐本改写） */
-            if(!wasRead && r.read && n > 0){ addStars(n); toast('🎉 已读 +' + n + '⭐'); }
+            if(!wasRead && r.read && n > 0){ addStars(n, true); toast('🎉 已读 +' + n + '⭐'); r327CheckinSuccess(n); }
             else if(wasRead && !r.read && n > 0){ addStars(-n, true); toast('↩ 已取消已读，扣回 ' + n + '⭐'); }
             else if(!wasRead && r.read){ toast('✅ 已读，这本书不设打卡⭐'); }
             r319RenderBookList();
@@ -45762,7 +46027,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         if(!r || r.completed !== _goOn || _saveErr) _setVisual(!!(r && r.completed));
         if(r && _saveErr){
           // R320-2：保存失败必须让用户看见，绝不能再「界面打了勾、刷新全没了」
-          toast('⚠️ 这次打卡没能写入本机（' + _saveErr + '），请先删掉部分图片再试');
+          r328SaveFailNotice(_saveErr);
         } else if(r) {
           if(r.completed){
             /* R327-2：打卡成功提示改为红色闪烁文字 + 烟花，文案带昵称与本次获得的星数 */
@@ -46366,7 +46631,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         const t = st.tasks.find(x=>x.id===tid);
         if(!t) return;
         if(!isChild()){ openTaskEdit(t); }
-        else { const ck=S.toggleCheckIn(dateStr, tid); toast(ck.completed?'打卡成功 +'+(ck.stars||1)+'⭐':'已取消'); if(ck.completed) playCheckinSound(); openDayPlan(dateStr); renderHome(); }
+        else { const ck=S.toggleCheckIn(dateStr, tid); toast(ck.completed?'打卡成功 +'+(ck.stars||1)+'⭐':'已取消'); if(ck.completed) r327CheckinSuccess(ck.stars||1); openDayPlan(dateStr); renderHome(); }
       };
     });
     showModal('#modalDayPlan');
@@ -50841,7 +51106,7 @@ function renderKMAdmin(){
   }
   function xsexSave(arr){
     try{ if(window.Store && window.Store.setNwZone) window.Store.setNwZone(XSEX_KEY, arr); }
-    catch(e){ toast('⚠️ 保存失败，可能存储空间不足，请先删除部分图片'); }
+    catch(e){ try{ if(S.r328SlimImages) S.r328SlimImages(); }catch(_){} toast('⚠️ 保存失败，已尝试自动整理图片占用；可在「🩺 存储体检」查看原因'); }
   }
   function xsexFileInput(){
     if(_xsexFileInput && _xsexFileInput.parentNode) return _xsexFileInput;
@@ -51234,11 +51499,12 @@ function renderKMAdmin(){
             try{
               const r = (window.Store && window.Store.addEnKeyPoint) ? window.Store.addEnKeyPoint(nk, { img:dataUrl, t:'' }) : null;
               if(r === null){
-                toast('⚠️ 存储空间已满，这张图片导入失败，请先删除部分旧图片再试');
+                try{ if(S.r328SlimImages) S.r328SlimImages(); }catch(_){}
+                toast('⚠️ 图片暂存失败，已尝试自动整理占用；可在「🩺 存储体检」查看原因');
               }else{
                 added++;
               }
-            }catch(e){ toast('⚠️ 存储空间不足，请先删除部分图片'); }
+            }catch(e){ try{ if(S.r328SlimImages) S.r328SlimImages(); }catch(_){} toast('⚠️ 图片保存失败，已尝试自动整理占用；可在「🩺 存储体检」查看原因'); }
           }
           done();
         });
@@ -53550,7 +53816,13 @@ function renderKMAdmin(){
     /* R320-1：打卡专用「单响清音」—— 一次打卡只发一个音。
        旧的 c「打卡上行琶音」一次点击连发 4 个音符（523/659/784/1046Hz 每隔 70ms），
        听感就是「音效响两三次」，这才是用户反复反馈「打卡音效响 2 次」的真正原因。 */
-    q:  { group:'经典', label:'打卡清音（单响）', play(){ sfxTone(1046.5, 0.20, 0.26, 'sine', 0, 0); } }
+    q:  { group:'经典', label:'打卡清音（单响）', play(){ sfxTone(1046.5, 0.20, 0.26, 'sine', 0, 0); } },
+    /* R328-1.1：烟花绽放 —— 爆裂噪声 + 三音上冲，一次打卡只响一遍。
+       复用 Web Audio 实时合成，不新增音频文件，兼容 iPad / 手机。 */
+    r:  { group:'经典', label:'烟花绽放', play(){
+      sfxSeq([[180,0.10,0.20,'sawtooth',0,-120],[1320,0.11,0.13,'triangle',0,260]]);
+      sfxSeq(sfxNotes(['G5','C6','E6'], 0.10, 0.15, 'sine', 0.055));
+    } }
   };
   // R60-2：试听 —— 先恢复 AudioContext（部分浏览器挂起态会吞掉首帧声音），放大音量并保证只响当前一个
   function stopSfxPreview(){
@@ -53575,7 +53847,7 @@ function renderKMAdmin(){
   //         音高由高到低、音色由亮到闷（导航最清脆 → 第三档最轻短），点得越深声音越轻；
   //         打卡（checkin）保留独立的庆祝琶音。四档均可在「设置中心 · 系统设置 · 点击音效设置」里单独更换/试听。
   const SFX_SLOTS = ['nav', 'theme', 'sub', 'third', 'checkin'];
-  function defaultClickSfx(){ return { nav:'a', theme:'l', sub:'k', third:'h', checkin:'q' }; }
+  function defaultClickSfx(){ return { nav:'a', theme:'l', sub:'k', third:'h', checkin:'r' }; }
   // 读取某槽位当前音效预设 id（缺省回退默认）
   function getClickSfx(slot){ const st=(window.Store&&window.Store.load)?window.Store.load():null; const cfg=(st&&st.clickSfx)||defaultClickSfx(); return cfg[slot] || defaultClickSfx()[slot] || 'f'; }
   // 播放某槽位音效
@@ -55101,6 +55373,18 @@ function renderKMAdmin(){
     /* R327：性能探针需要量「一次打卡之后的重渲染成本」 */
     window.__r327RenderHome = function(){ try{ renderHome(); }catch(e){} };
     window.__r327RenderToday = function(){ try{ renderToday(); }catch(e){} };
+    /* R328：本轮探针钩子（只读调用，不改变业务逻辑） */
+    window.__r328Parts = {
+      cfg: r328CheckinCfg,
+      celebrate: r327CheckinSuccess,
+      sfxSettings: renderSfxSettings,
+      bookList: r319RenderBookList,
+      openBookList: r319OpenBookList,
+      openBookEdit: r319OpenBookEdit,
+      health: r314HealthHtml,
+      pages: _r328BookPages,
+      saveNotice: r328SaveFailNotice
+    };
     window.__r327Parts = {
       home: function(){ renderHome(); },
       today: function(){ renderToday(); },
@@ -55383,7 +55667,7 @@ function renderKMAdmin(){
     }catch(e){}
     hideModal('#modalWrong');
     toast('错题复盘已打卡 +1⭐' + (_r314WProofs.length ? ' · 凭证 ' + _r314WProofs.length + ' 张' : ''));
-    playCheckinSound();
+    r327CheckinSuccess(1);
     r314ResetWrongProof();
     renderToday(); renderHome();
   }
@@ -55398,8 +55682,8 @@ function renderKMAdmin(){
     // R170-1：围棋对弈打卡成功 → 获得⭐（数量取「围棋」任务的 stars 配置，默认 2）
     const goTask = (S.load().tasks||[]).find(t=>t.subject==='围棋');
     const goStars = (goTask && typeof goTask.stars==='number') ? goTask.stars : 2;
-    addStars(goStars);
-    playCheckinSound();
+    addStars(goStars, true);
+    r327CheckinSuccess(goStars);
     toast('对弈已记录 🏆 +'+goStars+'⭐');
     renderToday(); renderArchive();
   }
@@ -55586,6 +55870,66 @@ function renderKMAdmin(){
     renderSfxSettings(); // R51-2：点击音效设置（导航栏/主题卡/次级主题卡/打卡）
   }
   // R51-2：点击音效设置块（注入「任务设置」系统设置面板）
+  /* R328-1.2：音乐设置里的「打卡效果设置」—— 文案 / 颜色 / 时长 / 烟花音效，
+     修改即写主档（S.save），刷新与版本更新后保持；音效选择复用打卡槽位，保证单响。 */
+  function r328EffectSettingsHtml(opts){
+    const c = r328CheckinCfg();
+    return `
+      <div class="sfx-set-title r328-fx-title">🎆 打卡效果设置</div>
+      <div class="sfx-set-hint">打卡成功时弹出恭喜文字 + 烟花；{nick} 为昵称，{stars} 为本次星星数，修改后立即生效。</div>
+      <div class="sfx-row r328-fx-row">
+        <span class="sfx-row-label">恭喜文字内容</span>
+        <input type="text" id="r328FxText" class="nw-add-input r328-fx-input" maxlength="60" value="${esc(c.text)}" />
+      </div>
+      <div class="sfx-row r328-fx-row">
+        <span class="sfx-row-label">文字颜色</span>
+        <input type="color" id="r328FxColor" class="r328-fx-color" value="${esc(c.color)}" />
+        <span class="r328-fx-tip">点色块自选</span>
+      </div>
+      <div class="sfx-row r328-fx-row">
+        <span class="sfx-row-label">弹窗持续时间</span>
+        <input type="number" id="r328FxDuration" class="nw-add-input r328-fx-input" min="500" max="8000" step="100" value="${c.duration}" />
+        <span class="r328-fx-tip">毫秒（500~8000）</span>
+      </div>
+      <div class="sfx-row r328-fx-row">
+        <span class="sfx-row-label">烟花绽放音效</span>
+        <select id="r328FxSfx" class="r328-fx-input">${opts}</select>
+        <button type="button" class="pbtn r328-fx-preview" id="r328FxPreview">▶ 预览</button>
+        <button type="button" class="pbtn" id="r328FxReset">↩ 恢复默认</button>
+      </div>`;
+  }
+  function r328BindEffectSettings(box){
+    const fx = id => box.querySelector('#' + id);
+    const put = patch => {
+      try{
+        const st = S.load();
+        st.checkinEffect = Object.assign({}, st.checkinEffect || {}, patch);
+        S.save(st);
+      }catch(e){}
+    };
+    const txt = fx('r328FxText'), color = fx('r328FxColor'), dur = fx('r328FxDuration'), sfx = fx('r328FxSfx');
+    const cur = r328CheckinCfg();
+    if(sfx){
+      sfx.value = cur.sfx;
+      sfx.onchange = ()=>{ put({ sfx:sfx.value }); const slotSel = box.querySelector('.sfx-sel[data-sfx-slot="checkin"]'); if(slotSel) slotSel.value = sfx.value; setClickSfxConfig('checkin', sfx.value); };
+    }
+    if(txt) txt.onchange = ()=>put({ text:txt.value });
+    if(color) color.onchange = ()=>put({ color:color.value });
+    if(dur) dur.onchange = ()=>put({ duration:Math.max(500, Math.min(8000, parseInt(dur.value,10) || 1500)) });
+    const pv = fx('r328FxPreview');
+    if(pv) pv.onclick = ()=>{ try{ if(window.__r322ResetSfxWindow) window.__r322ResetSfxWindow(); }catch(_){} r327CheckinSuccess(2); };
+    const rs = fx('r328FxReset');
+    if(rs) rs.onclick = ()=>{
+      try{
+        const st = S.load();
+        st.checkinEffect = { text:'{nick}！恭喜获得 {stars}⭐', color:'#2e9e5b', duration:1500, sfx:'r' };
+        if(!st.clickSfx) st.clickSfx = defaultClickSfx();
+        st.clickSfx.checkin = 'r';
+        S.save(st);
+        if(typeof renderSfxSettings === 'function') renderSfxSettings('settingsSfxBody');
+      }catch(e){}
+    };
+  }
   function renderSfxSettings(containerId){
     const body = document.getElementById(containerId || 'setSystemBody'); if(!body) return;
     let box = document.getElementById('sfxSettingsBlock');
@@ -55619,11 +55963,13 @@ function renderKMAdmin(){
           <select class="sfx-sel" data-sfx-slot="${slot}" ${(slot==='checkin' ? (soundOn||checkinOn) : soundOn)?'':'disabled'}>${opts}</select>
           <button class="pbtn sfx-preview" data-sfx-preview="${slot}" ${(slot==='checkin' ? (soundOn||checkinOn) : soundOn)?'':'disabled'}>▶ 试听</button>
         </div>`).join('')}
+      ${r328EffectSettingsHtml(opts)}
     `;
+    r328BindEffectSettings(box);
     const master = box.querySelector('#sfxMasterOn');
     if(master){
       master.onchange = ()=>{
-        const st = S.load(); st.soundOn = !!master.checked; save(st);
+        const st = S.load(); st.soundOn = !!master.checked; S.save(st);
         const txt = box.querySelector('.sfx-switch-txt'); if(txt) txt.textContent = master.checked?'已开启':'已关闭';
         const ck = box.querySelector('#sfxCheckinOn');
         const ckOn = !!(ck && ck.checked);
@@ -55638,7 +55984,7 @@ function renderKMAdmin(){
     const ckBox = box.querySelector('#sfxCheckinOn');
     if(ckBox){
       ckBox.onchange = ()=>{
-        const st = S.load(); st.checkinSfxOn = !!ckBox.checked; save(st);
+        const st = S.load(); st.checkinSfxOn = !!ckBox.checked; S.save(st);
         const wrap = ckBox.closest('.sfx-switch');
         const txt = wrap ? wrap.querySelector('.sfx-switch-txt') : null;
         if(txt) txt.textContent = ckBox.checked ? '已开启' : '已关闭';
@@ -57496,7 +57842,7 @@ function renderKMAdmin(){
       const _st = (window.Store && window.Store.load) ? window.Store.load() : null;
       if(_st && _st._clickSfxReset !== 'R143'){
         // R246-2：与「按卡片层级区别化」保持一致 —— 导航/主题卡/次级主题卡/三级主题卡四档各不相同，打卡音独立
-        _st.clickSfx = { nav:'a', theme:'l', sub:'k', third:'h', checkin:'q' };
+        _st.clickSfx = { nav:'a', theme:'l', sub:'k', third:'h', checkin:'r' };  /* R328：默认烟花绽放 */
         _st._clickSfxReset = 'R143';
         if(window.Store && window.Store.save) window.Store.save(_st);
       }
@@ -57721,7 +58067,7 @@ function renderKMAdmin(){
           const t0 = S.load().tasks.find(x=>x.id===tid);
           if(isCalcDailyTask(t0)){ toggleCalcDailyFromHome(); return; }
           const r = S.toggleCheckIn(S.todayStr(), tid);
-          if(r && r.completed){ toast('打卡成功 +'+(r.stars||0)+'⭐'); playCheckinSound(); }
+          if(r && r.completed){ toast('打卡成功 +'+(r.stars||0)+'⭐'); r327CheckinSuccess(r.stars||0); }
           else toast('已取消打卡');
           renderToday(); renderHome();
           return;
@@ -58399,8 +58745,8 @@ function renderKMAdmin(){
         if(r && r.ok){
           // R211：打卡成功弹窗仅显示「✅已打卡＋⭐️数量」，去掉分类名与奖励文案冗余
           const starTxt = (r.reward && r.reward>0) ? ('＋⭐️' + r.reward) : '';
-          try{ playCheckinSound(); }catch(_){ }
           toast('✅已打卡' + starTxt);
+          r327CheckinSuccess(r.reward || 0);
         }
       }
       // V17-2：英语日常交流全部打卡 → 额外奖励 +2⭐（取消时若未集齐则扣回）
@@ -58489,7 +58835,7 @@ function renderKMAdmin(){
         const r = S.markBaikeCheckin(cat);
         if(r && r.ok){
           toast(r.justAllCompleted ? '🎉 9 主题全打卡完成 +5⭐！' : '🦥 已打卡 ' + cat);
-          playCheckinSound();
+          r327CheckinSuccess(r.justAllCompleted ? 5 : 1);
           renderBaike(); renderBaikeLib(); renderHome();
         } else if(r && r.locked){
           toast('🔒 ' + (r.msg || '请先完成上一张卡片的打卡'));
@@ -63130,14 +63476,16 @@ function init(){
         '<div class="r327-sleep-block">' + todayCard + '</div>' +
         '<div class="r327-sleep-block">' + weekCard + '</div>' +
       '</div></div>';
+    /* R328-5.2：作息统计整体移到「每日学习提醒」下方展示，作息健康改为单列满宽，
+       不再左右分栏；三块内容顺序 = 用眼休息提醒 → 每日学习提醒 → 作息统计。 */
     const eyeRemCard = '<div class="r314-card r327-eye-card"><div class="r314-card-head">🌙 作息健康</div>' +
       '<div class="r327-sleep-stats">' +
         '<div class="r327-sleep-block">' + eyeCard + '</div>' +
         '<div class="r327-sleep-block">' + remCard + '</div>' +
+        '<div class="r328-sleep-block">' + sleepCard + '</div>' +
       '</div></div>';
-    return '<div class="r317-health-cols r327-health-cols">' +
-      '<div class="r317-health-side">' + eyeRemCard + '</div>' +
-      '<div class="r317-health-main">' + sleepCard + '</div>' +
+    return '<div class="r317-health-cols r328-health-cols">' +
+      '<div class="r317-health-main">' + eyeRemCard + '</div>' +
     '</div>';
   }
 
@@ -64170,6 +64518,7 @@ function init(){
       const done = S.r326MarkDayDone();
       q.active = false;
       toast('🎉 今日温故完成' + (done && !done.already ? '，今日错题复盘已打卡' : ''));
+      r327CheckinSuccess(1);
       try{ renderToday(); renderHome(); }catch(e){}
     }
     renderMistakes();
