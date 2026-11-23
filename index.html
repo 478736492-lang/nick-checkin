@@ -11538,6 +11538,162 @@ body.r314-frame-gold .home-avatar{box-shadow:0 0 0 4px #f4dd97,0 6px 18px rgba(1
   .r326-print-line{margin-top:22px;border-bottom:1px solid #999;height:1px}
 }
 
+/* ============================================================
+   R327：全局点击灵敏度 / 打卡成功提示 / 摘抄本按键 / 我的书单 / 成长档案
+   配色一律走 --tone-* 与语义令牌，和平台既有卡片保持一致
+   ============================================================ */
+/* ---------- R327-1：全局点击手感 ----------
+   ① touch-action:manipulation 去掉 iOS 的 300ms 双击缩放等待；
+   ② pointerdown 当帧加 .r327-press（按压回弹），不用等 click 派发；
+   ③ 只做 transform / opacity，不触发布局，不拦事件。 */
+button,.pbtn,.nav-btn,.primary-btn,[role="button"],.r314-extype,.r322-ex-choice,
+.task-check,.wp-task-check{-webkit-tap-highlight-color:transparent}
+button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
+[data-r324-ex-editmode],[data-r322-ex-open],[data-zx-checkin],[data-sc-checkin]{
+  touch-action:manipulation;-webkit-user-select:none;user-select:none}
+.r327-press{transition:transform .06s ease,filter .06s ease}
+.r327-press.r327-pressed{transform:scale(.965);filter:brightness(.97)}
+.r327-press.r327-pressed.wp-task-check,.r327-press.r327-pressed.task-check{transform:scale(.88)}
+
+/* ---------- R327-2：打卡成功 —— 红色闪烁文字 + 烟花 ---------- */
+.r327-celebrate{position:fixed;inset:0;z-index:2100;pointer-events:none;overflow:hidden}
+.r327-celebrate-txt{
+  position:absolute;left:50%;top:34%;transform:translate(-50%,-50%);
+  font-size:clamp(22px,3.2vw,34px);font-weight:900;letter-spacing:1px;color:#e53935;
+  text-shadow:0 2px 0 #fff,0 0 12px rgba(229,57,53,.55),0 6px 18px rgba(229,57,53,.35);
+  animation:r327Blink .55s steps(1,end) infinite,r327Pop .5s cubic-bezier(.2,1.5,.4,1) both;
+  white-space:nowrap;padding:10px 18px;border-radius:16px;background:rgba(255,255,255,.72);
+  border:2px solid rgba(229,57,53,.55);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+@keyframes r327Blink{0%,49%{opacity:1}50%,100%{opacity:.18}}
+@keyframes r327Pop{0%{transform:translate(-50%,-50%) scale(.55)}100%{transform:translate(-50%,-50%) scale(1)}}
+.r327-fw{position:absolute;width:0;height:0;display:block}
+.r327-fw-spark{position:absolute;left:0;top:0;width:7px;height:7px;border-radius:50%;
+  background:var(--hue,#e53935);box-shadow:0 0 8px var(--hue,#e53935);
+  animation:r327Spark 1.05s ease-out forwards;opacity:0}
+@keyframes r327Spark{
+  0%{opacity:1;transform:translate(0,0) scale(.4)}
+  70%{opacity:1}
+  100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.2)}
+}
+
+/* ---------- R327-3.2：摘抄本按键同一水平线 + 编辑键在内容下方 ---------- */
+.r322-ex-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.r327-ex-headops{display:flex;align-items:center;gap:8px;margin-left:auto;flex-wrap:nowrap}
+.r327-ex-headops .pbtn{margin:0;white-space:nowrap}
+.r322-ex-head .r324-ex-count{margin-left:0}
+.r324-ex-editops{display:flex;gap:6px;align-items:center;margin-top:6px;padding-top:6px;
+  border-top:1px dashed var(--tone-200);width:100%}
+.r324-ex-op{border:1px solid var(--tone-200);background:#fff;border-radius:8px;padding:3px 10px;
+  font-size:11.5px;font-weight:800;color:var(--tone-800);cursor:pointer;font-family:inherit;line-height:1.6}
+.r324-ex-op.del{color:var(--danger);border-color:var(--danger-line);background:var(--danger-soft)}
+@media (max-width:560px){
+  .r327-ex-headops{width:100%;margin-left:0}
+}
+
+/* ---------- R327-4：我的书单 ---------- */
+/* 4.8 毛玻璃 */
+#modalR319BookList .r319-booklist-box{
+  background:rgba(255,255,255,.62);
+  backdrop-filter:blur(18px) saturate(160%);-webkit-backdrop-filter:blur(18px) saturate(160%);
+  border:1px solid rgba(255,255,255,.75);
+  box-shadow:0 24px 70px rgba(14,40,90,.28)}
+#modalR319BookList .r319-bl-body{background:transparent}
+#modalR319BookList .modal-head{background:transparent;border-bottom:1px solid rgba(255,255,255,.6)}
+/* 4.5 统计信息跟在标题右侧 */
+.r319-bl-head h3{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.r319-bl-head h3 .r319-bl-stat{margin:0}
+/* 4.3 添加书单 / 添加书籍：上一行按键下方 */
+.r319-bl-head-ops{display:flex;gap:10px;flex-wrap:wrap;width:100%;order:5;margin-top:2px}
+.r319-bl-head-ops[hidden]{display:none}
+.r319-bl-head-actions{order:2}
+.r319-bl-head .modal-x{order:9;margin-left:auto}
+/* 4.7 书单卡配色（8 色循环，仅视觉） */
+.r327-cat-c0{--r327-c-bg:linear-gradient(180deg,#f4f9ff,var(--tone-100));--r327-c-line:var(--tone-200);--r327-c-bar:var(--tone-500)}
+.r327-cat-c1{--r327-c-bg:linear-gradient(180deg,#fff8ef,#fff0dd);--r327-c-line:#f2d9b2;--r327-c-bar:#c98a2e}
+.r327-cat-c2{--r327-c-bg:linear-gradient(180deg,#f3fcf6,#e6f8ee);--r327-c-line:#bfe3c4;--r327-c-bar:#2f9e5f}
+.r327-cat-c3{--r327-c-bg:linear-gradient(180deg,#f8f4ff,#f0e9ff);--r327-c-line:#d6c8f2;--r327-c-bar:#7c5bd0}
+.r327-cat-c4{--r327-c-bg:linear-gradient(180deg,#fff5f6,#ffe9ec);--r327-c-line:#f3c6cd;--r327-c-bar:#c94b62}
+.r327-cat-c5{--r327-c-bg:linear-gradient(180deg,#f2fbfd,#e4f6fa);--r327-c-line:#bfe0e8;--r327-c-bar:#2b8fa8}
+.r327-cat-c6{--r327-c-bg:linear-gradient(180deg,#fbfaef,#f6f3d8);--r327-c-line:#e2dcae;--r327-c-bar:#9a8f2c}
+.r327-cat-c7{--r327-c-bg:linear-gradient(180deg,#f5f7fa,#e9edf4);--r327-c-line:#ccd6e4;--r327-c-bar:#5a6b85}
+.r319-cat-card{background:var(--r327-c-bg,var(--tone-025));border-color:var(--r327-c-line,var(--tone-200))}
+.r319-cat-card .r319-cat-head{border-bottom-color:var(--r327-c-line,var(--tone-200))}
+.r319-cat-card .r319-cat-name::before{content:'';display:inline-block;width:4px;height:14px;border-radius:2px;
+  background:var(--r327-c-bar,var(--tone-500));margin-right:7px;vertical-align:-2px}
+.r327-cat-ops{display:flex;gap:4px;margin-left:auto}
+/* 4.10 借阅中 = 橙色；已读 = 绿色 */
+.r319-book-row.is-borrow{background:linear-gradient(135deg,#fff6ea,#ffe6c7);border-color:#e9b06a}
+.r319-book-row.is-borrow .r319-book-name{color:#a35a12}
+.r319-book-row.is-borrow .r319-book-author{color:#a8763f}
+.r319-book-row.is-read{background:linear-gradient(135deg,#f2fcf6,#dcf5e6);border-color:#a9dcbd}
+.r319-book-row.is-read .r319-book-name{color:#1e7a45}
+.r319-book-row.is-read .r319-book-author{color:#4d8a68}
+.r319-row-btn.r319-read.done{background:#2f9e5f;border-color:#2f9e5f;color:#fff}
+/* 4.12 每本书的打卡⭐标记 */
+.r327-book-star{flex:0 0 auto;font-size:11px;font-weight:900;color:#b45309;background:rgba(255,255,255,.72);
+  border:1px solid var(--tone-150);border-radius:999px;padding:1px 7px;white-space:nowrap}
+.r327-detail-ops{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
+.r327-borrow-flag{color:#b45309}
+/* 4.9 / 4.11 借阅书目弹窗 */
+.r327-borrow-box{width:min(680px,94vw);max-height:80vh;display:flex;flex-direction:column}
+.r327-borrow-body{overflow:auto}
+.r327-borrow-list{display:flex;flex-direction:column;gap:8px}
+.r327-borrow-row{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:11px;
+  background:linear-gradient(135deg,#fff6ea,#ffe6c7);border:1px solid #e9b06a}
+.r327-borrow-name{flex:1;min-width:0;font-size:13px;font-weight:800;color:#a35a12;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.r327-borrow-cat{font-size:11px;font-weight:800;color:#a8763f;background:rgba(255,255,255,.6);
+  border-radius:999px;padding:1px 8px;white-space:nowrap}
+.r327-borrow-row .r319-del{flex:0 0 auto}
+@media (max-width:680px){
+  .r327-borrow-name{white-space:normal}
+}
+
+/* ---------- R327-7：成长档案 ---------- */
+/* 7.1 阶段挑战：一行 2 个（窄屏自动回落单列） */
+#archiveChallengeHost{grid-template-columns:repeat(2,minmax(0,1fr))}
+#archiveChallengeHost .r314-tip{grid-column:1/-1}
+/* 7.1 / 7.2：蓝色内容卡左右边距一致，右侧不留白 */
+#archiveChallengeHost,#archiveChallengeHost .r314-goal,
+.r321-goal-list,.r321-goal-list .r314-goal{min-width:0;margin-left:0;margin-right:0;width:100%;box-sizing:border-box}
+/* 7.3 作息统计：今日作息 / 最近 7 天作息 收进同一张统计卡 */
+.r327-sleep-stats{display:flex;flex-direction:column;gap:10px}
+.r327-sleep-stats>.r314-card{margin:0}
+.r327-sleep-stats .r314-card-head{margin-bottom:6px}
+@media (max-width:900px){
+  #archiveChallengeHost{grid-template-columns:minmax(0,1fr)}
+}
+
+/* ---------- R327-6：大阅读·语文阅读卡片间距（对齐英语阅读板块） ----------
+   英语阅读：栏与栏 12px、卡内条目 8px，卡片各自独立不重叠。
+   语文原来两行之间只有 12px 且卡片高度被拉伸，视觉上贴在一起；这里统一放大到 16px，
+   并让每张卡「按自身内容高度排列、不互相压叠」（align-items:start + min-width:0 + 断词）。 */
+.reading-cn{--r317-cn-gap:16px}
+.reading-cn .reading-cols{gap:16px;align-items:start}
+.reading-cn .rd-cn-row{align-items:start;row-gap:16px}
+.reading-cn .rd-cn-row-1{margin-bottom:0}
+.reading-cn .rd-cn-row-1 + .rd-cn-row-2{margin-top:0}
+.reading-cn .reading-col,.reading-cn .haoci-use-card,.reading-cn .rc-poem-use,.reading-cn .rc-essay{
+  margin-top:0;margin-bottom:0;min-width:0;height:auto;overflow-wrap:anywhere;word-break:break-word}
+.reading-cn .reading-col-list{gap:10px}
+@media (max-width:900px){
+  .reading-cn{--r317-cn-gap:14px}
+}
+
+/* R327-7.3：作息健康左栏 + 作息统计右栏，两栏等宽、左右边距一致 */
+.r317-health-cols.r327-health-cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start}
+.r327-health-cols .r317-health-side,.r327-health-cols .r317-health-main{min-width:0;display:block}
+.r327-sleep-block>.r314-card{margin:0;box-shadow:none;border:1px solid var(--tone-150);background:#fff}
+.r327-sleep-block + .r327-sleep-block{margin-top:2mm}
+@media (max-width:900px){
+  .r317-health-cols.r327-health-cols{grid-template-columns:minmax(0,1fr)}
+}
+
+/* R327-7.1/7.2：成长档案第二栅格改单列 —— 阶段挑战 / 单元目标 / 作息健康三张卡都铺满页面宽度，
+   卡内蓝色内容卡的左右边距因此完全一致，右侧不再留半屏空白。 */
+#r316ArchiveGrid2{grid-template-columns:minmax(0,1fr)}
+#r316ArchiveGrid2>.card{min-width:0;width:100%}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -12294,19 +12450,21 @@ body.r314-frame-gold .home-avatar{box-shadow:0 0 0 4px #f4dd97,0 6px 18px rgba(1
   <div class="modal-mask" id="modalR319BookList" hidden>
     <div class="modal-box r319-booklist-box">
       <div class="modal-head r319-bl-head">
-        <h3>📖 我的书单</h3>
+        <h3>📖 我的书单<span class="r319-bl-stat" id="r319BlStat"></span></h3>
         <div class="r319-bl-head-actions">
+          <!-- R327-4.9：借阅书目在「导出书单」左侧 -->
+          <button type="button" class="primary-btn" id="btnR327Borrow">📚 借阅书目</button>
           <button type="button" class="primary-btn" id="btnR321Export">📤 导出书单</button>
-          <button type="button" class="primary-btn" id="btnR319AddCat">➕ 新建分类</button>
-          <button type="button" class="primary-btn" id="btnR319AddBook">➕ 添加书籍</button>
+          <button type="button" class="primary-btn" id="btnR327Edit">✏️ 编辑书单</button>
+        </div>
+        <!-- R327-4.3 / 4.4：添加书单 / 添加书籍挪到上一行按键的下方，且仅在「编辑书单」后显示 -->
+        <div class="r319-bl-head-ops" id="r327BookOps" hidden>
+          <button type="button" class="primary-btn" id="btnR319AddCat">＋ 添加书单</button>
+          <button type="button" class="primary-btn" id="btnR319AddBook">＋ 添加书籍</button>
         </div>
         <button class="modal-x" data-close>×</button>
       </div>
       <div class="modal-body r319-bl-body">
-        <div class="r319-bl-toolbar">
-          <span class="r319-bl-tip">按分类收纳 · 点「已读」变绿 · 预设分类不可删</span>
-          <span class="r319-bl-stat" id="r319BlStat"></span>
-        </div>
         <div class="r319-cat-grid" id="r319CatGrid"></div>
       </div>
     </div>
@@ -12328,6 +12486,9 @@ body.r314-frame-gold .home-avatar{box-shadow:0 0 0 4px #f4dd97,0 6px 18px rgba(1
         </label>
         <label class="r319-be-label">推荐理由
           <textarea id="r324BeReason" class="nw-add-input r324-be-reason" maxlength="600" rows="3" placeholder="这本书为什么值得读？（可留空）"></textarea>
+        </label>
+        <label class="r319-be-label">打卡奖励 ⭐
+          <input type="number" id="r327BeStars" class="nw-add-input" min="0" max="20" step="1" placeholder="留空按默认（漫画/绘本 2⭐，其余 5⭐）" />
         </label>
         <div class="r319-be-err" id="r319BeErr"></div>
       </div>
@@ -12396,9 +12557,9 @@ body.r314-frame-gold .home-avatar{box-shadow:0 0 0 4px #f4dd97,0 6px 18px rgba(1
   <!-- R319-1：新增分类小弹窗 -->
   <div class="modal-mask" id="modalR319CatAdd" hidden>
     <div class="modal-box r319-catadd-box">
-      <div class="modal-head"><h3>新建分类</h3><button class="modal-x" data-close>×</button></div>
+      <div class="modal-head"><h3 id="r319CatTitle">添加书单</h3><button class="modal-x" data-close>×</button></div>
       <div class="modal-body r319-be-body">
-        <label class="r319-be-label">分类名称
+        <label class="r319-be-label">书单名称
           <input type="text" id="r319CatName" class="nw-add-input" maxlength="20" placeholder="如：科普" />
         </label>
         <div class="r319-be-err" id="r319CatErr"></div>
@@ -12407,6 +12568,14 @@ body.r314-frame-gold .home-avatar{box-shadow:0 0 0 4px #f4dd97,0 6px 18px rgba(1
         <button class="pbtn" data-close>取消</button>
         <button class="pbtn primary" id="btnR319CatSave">💾 新建</button>
       </div>
+    </div>
+  </div>
+
+  <!-- R327-4.9 / 4.11：借阅书目（借阅中 = 已加入、还没读完的书） -->
+  <div class="modal-mask" id="modalR327Borrow" hidden>
+    <div class="modal-box r327-borrow-box">
+      <div class="modal-head"><h3>📚 借阅书目</h3><button class="modal-x" data-close>×</button></div>
+      <div class="modal-body r327-borrow-body" id="r327BorrowBody"></div>
     </div>
   </div>
 
@@ -19755,7 +19924,7 @@ window.XS_A2_VOCAB = [
     'userReading','readingPanelDone','mathProblems','mathNotes','mathNoteStatus','mathGroups',
     'mathGallery','mathExerciseBank','plots','inventory','gifts','shop','stage','km','farmOpen',
     'music','farmLayout','en3500Marks','r314','nwWrong','homeGreets','homeBanner','sectionTitleTexts',
-    'schedule','memos','weekPlanColors','r319BookList','__r319BookListSeedV1','__r324BookImportV1','r326','__schema','__seq','__commitAt','__tomb'];
+    'schedule','memos','weekPlanColors','r319BookList','__r319BookListSeedV1','__r324BookImportV1','__r327BookCatsV1','r326','__schema','__seq','__commitAt','__tomb'];
   /* 轻档超预算时的「可牺牲顺序」：从体积最大且可再生 / 有主档兜底的字段开始丢 */
   const LIGHT_DROP_ORDER = ['calcBank','mathProblems','mathGallery','xueersiWordBank','km','calcWrongBook'];
   let _r318XsSrc = null, _r318XsDelta = null;
@@ -20199,6 +20368,8 @@ window.XS_A2_VOCAB = [
   // R254-2：离开页面 / 切后台时强制刷盘（含备份），保证最后一次操作不丢
   function flushPersistence(){
     try{
+      /* R327-1：卸载 / 切后台这次是完整落库，先丢掉空闲时段的二级写入任务 */
+      try{ _r327DropSecondary(); }catch(e){}
       // R261-5.1：暂存态下草稿才是最新内存态 —— 优先刷草稿，避免把旧缓存写回覆盖新修改
       let st = (_staging && _staged) ? _staged : (_loadCacheSt || _staged);
       if(!st) return false;
@@ -21841,6 +22012,56 @@ window.XS_A2_VOCAB = [
       st.__r324BookImportV1 = true;
       save(st);
     }
+    /* ===== R327-4.1：书单分类重构 =====
+       ① 新增「历史 / 科学 / 地理 / 纪录片」四个书单；
+       ② 下线「精选书单」：原有书籍按题材归入「历史」或「文学」，一本都不删；
+       ③ 任何书只要分类失效（被删 / 为空），统一回到「文学」，保证「全部书籍按分类展示」。
+       一次性闸 __r327BookCatsV1；用户已自建的分类、书籍、已读、推荐理由、⭐设置一律不动。 */
+    if(!st.__r327BookCatsV1){
+      try{
+        if(!st.r319BookList || typeof st.r319BookList !== 'object' || Array.isArray(st.r319BookList)) st.r319BookList = {cats:[], books:[]};
+        if(!Array.isArray(st.r319BookList.cats)) st.r319BookList.cats = [];
+        if(!Array.isArray(st.r319BookList.books)) st.r319BookList.books = [];
+        var _r327NewCats = ['历史','科学','地理','纪录片'];
+        _r327NewCats.forEach(function(n){
+          if(!st.r319BookList.cats.some(function(c){ return c && c.name === n; })){
+            st.r319BookList.cats.push({id:'rc_'+n, name:n, builtin:true, ts:Date.now()});
+          }
+        });
+        if(!st.r319BookList.cats.some(function(c){ return c && c.name === '文学'; })){
+          st.r319BookList.cats.push({id:'rc_文学', name:'文学', builtin:true, ts:Date.now()});
+        }
+        var _r327HistTitles = [
+          '如果历史是一群喵（系列）','漫画林汉达中国历史故事集（系列）','写给儿童的中国历史（系列）',
+          '写给孩子的史记（系列）','太史公驾到·趣读史记（系列）','汤小团漫游中国历史·东周列国卷',
+          '一看就懂的古代文化常识（系列）','中华上下五千年（系列）','甲骨文学校（系列）',
+          '一看就停不下来的中国史（系列）','明朝那些事儿（系列）','秦二世必须死',
+          '写给孩子的世界历史','少年世界史','一战全史','二战全史','第二次世界大战回忆录'
+        ];
+        var _r327CatByName = function(n){
+          return st.r319BookList.cats.filter(function(c){ return c && c.name === n; })[0] || null;
+        };
+        var _r327Old = _r327CatByName('精选书单');
+        if(_r327Old){
+          var _r327Hist = _r327CatByName('历史'), _r327Lit = _r327CatByName('文学');
+          st.r319BookList.books.forEach(function(b){
+            if(!b || b.cat !== _r327Old.id) return;
+            var isHist = _r327HistTitles.indexOf(String(b.title || '')) >= 0;
+            b.cat = isHist && _r327Hist ? _r327Hist.id : (_r327Lit ? _r327Lit.id : '');
+          });
+          st.r319BookList.cats = st.r319BookList.cats.filter(function(c){ return c && c.id !== _r327Old.id; });
+        }
+        var _r327Lit2 = _r327CatByName('文学');
+        var _r327Ids = {};
+        st.r319BookList.cats.forEach(function(c){ if(c && c.id) _r327Ids[c.id] = 1; });
+        st.r319BookList.books.forEach(function(b){
+          if(!b) return;
+          if(!b.cat || !_r327Ids[b.cat]) b.cat = _r327Lit2 ? _r327Lit2.id : '';
+        });
+      }catch(e){}
+      st.__r327BookCatsV1 = true;
+      save(st);
+    }
     // V11.6：记录每日日常交流完成状态（5 条均完成 → +2⭐，仅一次）
     if(!st.speakingComplete) st.speakingComplete = {};
     if(!st.goRecords) st.goRecords = [];
@@ -23177,6 +23398,50 @@ window.XS_A2_VOCAB = [
       return out;
     }catch(e){ return st; }
   }
+  /* R327-1：二级落库（轻档 / 双代备份）延迟到空闲时段。
+     主档写成功 + 回读校验通过后，用户数据已经在最可信的位置；轻档与备份只是「附加保险」，
+     没必要挡在点击当帧里（一次 130KB 轻档序列化 + 备份轮转在 iPad 上要几十毫秒）。
+     页面卸载前 flushPersistence 仍会同步写主档 / 轻档 / 备份，跨刷新安全边界不变。 */
+  let _r327SecTimer = 0, _r327SecPending = null;
+  function _r327DeferSecondary(fn){
+    _r327SecPending = fn;
+    if(_r327SecTimer) return;
+    const run = function(){
+      _r327SecTimer = 0;
+      const f = _r327SecPending; _r327SecPending = null;
+      if(!f) return;
+      try{ f(); }catch(e){}
+    };
+    try{
+      if(typeof requestIdleCallback === 'function'){ _r327SecTimer = requestIdleCallback(run, { timeout: 1200 }) || 1; }
+      else { _r327SecTimer = setTimeout(run, 32) || 1; }
+    }catch(e){ _r327SecTimer = setTimeout(run, 32) || 1; }
+  }
+  /* R327-1：立即执行待办的二级落库（pagehide / 需要「同代一致」时显式调用）。
+     返回是否真的补写了一次，供持久化探针在同步断言前对齐序号。 */
+  function r327FlushSecondary(){
+    if(!_r327SecPending) return false;
+    const f = _r327SecPending; _r327SecPending = null;
+    if(_r327SecTimer){
+      try{
+        if(typeof cancelIdleCallback === 'function') cancelIdleCallback(_r327SecTimer);
+        else clearTimeout(_r327SecTimer);
+      }catch(e){}
+      _r327SecTimer = 0;
+    }
+    try{ f(); return true; }catch(e){ return false; }
+  }
+  /* R327-1：丢掉待办的二级写入 —— 卸载刷盘会完整落主档 / 轻档 / 备份，
+     若让空闲回调随后再跑一次，反而可能用过期的 raw 轮转备份、盖掉最新快照。 */
+  function _r327DropSecondary(){
+    _r327SecPending = null;
+    if(!_r327SecTimer) return;
+    try{
+      if(typeof cancelIdleCallback === 'function') cancelIdleCallback(_r327SecTimer);
+      else clearTimeout(_r327SecTimer);
+    }catch(e){}
+    _r327SecTimer = 0;
+  }
   function save(st, _opts){
     /* R270-7.1：_opts.noBackup —— 首启「空档」不值得当备份（详见 load 首次落库处）*/
     const _skipBak = !!(_opts && _opts.noBackup);
@@ -23322,12 +23587,45 @@ window.XS_A2_VOCAB = [
     /* R318：记下本次成功落库的业务内容（已剔提交戳）用于写入去重；
        同时滚动刷新轻档 —— 主档某一次突然写不进时，跨刷新仍有一份完整的用户业务副本。 */
     try{ _r318LastRaw = raw; _r318LastLen = raw.length; _r318LastOk = true; }catch(e){}
-    try{ _r318LightWrite(st, false); }catch(e){}
-    // R255-5：备份属于「附加保险」，它失败绝不能让主存档被判定为失败
-    if(!_skipBak) try{ _rotateBackup(raw, false); }catch(e){}
+    /* R327-1：轻档 + 双代备份挪到空闲时段（见 _r327DeferSecondary 注释） */
+    _r327DeferSecondary(function(){
+      try{ _r318LightWrite(st, false); }catch(e){}
+      // R255-5：备份属于「附加保险」，它失败绝不能让主存档被判定为失败
+      if(!_skipBak) try{ _rotateBackup(raw, false); }catch(e){}
+    });
     return true;
   }
   function getSaveError(){ return _saveError; }
+  /* ============ R327-5：导入类写库「落盘后回读校验」 ============
+     问题：一键导入例句 / 词汇 / 练习题这类批量写入，旧实现只要 save() 没抛异常就返回 ok，
+           而 save() 在配额吃紧时可能走「补丁兜底」——内存里看着有，刷新后回到旧档。
+     做法：save 之后直接从 localStorage 读出主档并 JSON.parse，用调用方给的 test() 复核；
+           复核不过就再写一次（此时补丁已把差异落过一份），仍不过则把差异补丁写死并明确返回失败，
+           交给 UI 提示用户，绝不出现「提示导入成功、刷新后什么都没有」。 */
+  function _r327DiskState(){
+    try{
+      const raw = localStorage.getItem(KEY);
+      if(!raw) return null;
+      return JSON.parse(raw);
+    }catch(e){ return null; }
+  }
+  function saveVerified(st, test){
+    let saved = false;
+    try{ saved = !!save(st); }catch(e){ saved = false; }
+    let pass = true;
+    try{ pass = !test || !!test(_r327DiskState()); }catch(e){ pass = true; }
+    if(!pass){
+      /* 再写一次：上一轮可能刚好被配额回收链腾挪过，第二遍通常能进 */
+      try{ saved = !!save(st); }catch(e){}
+      try{ pass = !test || !!test(_r327DiskState()); }catch(e){ pass = true; }
+    }
+    if(!pass){
+      try{ _r318LightWrite(st, true); }catch(e){}
+      try{ _pendingWrite(st); }catch(e){}
+      return { ok:false, saved:false, msg:'写入本机失败（存储空间不足或被浏览器限制），请清理后再试' };
+    }
+    return { ok:true, saved:saved };
+  }
 
   // R131-2：设置中心「保存设置」暂存（staging）模型
   // 进入设置中心 beginSettings() 克隆当前状态为草稿；编辑期间所有 saveX 经 save() 仅写入草稿；
@@ -23933,13 +24231,18 @@ window.XS_A2_VOCAB = [
     _r319WriteBookList(list);
     return {ok:true, list};
   }
-  function r319DelCat(id){
+  function r319DelCat(id, force){
     const list = getR319BookList();
     const cat = list.cats.filter(c=>c.id === id)[0];
-    if(!cat) return {ok:false, msg:'分类不存在'};
-    if(cat.builtin) return {ok:false, msg:'预设分类不可删除'};
+    if(!cat) return {ok:false, msg:'书单不存在'};
+    /* R327-4.4：编辑书单态下允许删除任意书单（含预设）；旧调用方不传 force 时行为不变 */
+    if(cat.builtin && !force) return {ok:false, msg:'预设分类不可删除'};
     const moved = list.books.filter(b=>b.cat === id);
     list.cats = list.cats.filter(c=>c.id !== id);
+    /* 删光了就补一个「待分类」，保证「全部书籍按书单展示」永远成立 */
+    if(!list.cats.length){
+      list.cats.push({id:'rc_待分类', name:'待分类', builtin:true, ts:Date.now()});
+    }
     // 该分类下的书移入「小说」（若无则第一个分类），不误删用户书籍
     const fallback = list.cats.filter(c=>c.name === '小说')[0] || list.cats[0];
     moved.forEach(b=>{ b.cat = fallback ? fallback.id : ''; });
@@ -23970,6 +24273,11 @@ window.XS_A2_VOCAB = [
     if(p.author !== undefined) b.author = String(p.author||'').trim().slice(0,40);
     if(p.reason !== undefined) b.reason = String(p.reason||'').trim().slice(0,300);
     if(p.cat !== undefined && list.cats.some(c=>c.id === p.cat)) b.cat = p.cat;
+    /* R327-4.12：编辑书单态下可单独改「这本书打卡得几⭐」 */
+    if(p.stars !== undefined){
+      const v = parseInt(p.stars, 10);
+      if(isFinite(v) && v >= 0 && v <= 20) b.stars = v;
+    }
     _r319WriteBookList(list);
     return {ok:true, list};
   }
@@ -23987,8 +24295,58 @@ window.XS_A2_VOCAB = [
     if(!b) return {ok:false, msg:'书籍不存在'};
     b.read = !b.read;
     b.readTs = b.read ? Date.now() : 0;
+    /* R327-4.10：已读即出借阅队列 —— 借阅书目只保留「还没读完」的书 */
+    if(b.read) b.borrow = false;
     _r319WriteBookList(list);
     return {ok:true, read:b.read, list};
+  }
+  /* ===== R327-4：书单分类改名 / 借阅书目 / 单本打卡⭐ ===== */
+  function r319RenameCat(id, name){
+    const list = getR319BookList();
+    const cat = list.cats.filter(c=>c.id === id)[0];
+    if(!cat) return {ok:false, msg:'书单不存在'};
+    const n = String(name||'').trim().slice(0,20);
+    if(!n) return {ok:false, msg:'书单名不能为空'};
+    if(list.cats.some(c=>c.id !== id && c.name === n)) return {ok:false, msg:'书单「'+n+'」已存在'};
+    cat.name = n;
+    _r319WriteBookList(list);
+    return {ok:true, list};
+  }
+  function r319ToggleBorrow(id){
+    const list = getR319BookList();
+    const b = list.books.filter(x=>x.id === id)[0];
+    if(!b) return {ok:false, msg:'书籍不存在'};
+    b.borrow = !b.borrow;
+    if(b.borrow) b.borrowAt = Date.now();
+    _r319WriteBookList(list);
+    return {ok:true, borrow:!!b.borrow, list};
+  }
+  /* R327-4.12：打卡⭐数量。漫画 / 绘本按轻阅读算（默认 2⭐），其余默认 5⭐；
+     编辑书单状态下可逐本改写（存 book.stars，0 表示不奖励）。 */
+  const R327_BOOK_STARS_DEF = 5;
+  const R327_BOOK_STARS_LIGHT = 2;
+  function r327BookStarsOf(book){
+    const b = book || {};
+    const n = parseInt(b.stars, 10);
+    if(isFinite(n) && n >= 0) return n;
+    const catName = (function(){
+      try{
+        const list = getR319BookList();
+        const c = (list.cats||[]).filter(x=>x && x.id === b.cat)[0];
+        return c ? String(c.name||'') : '';
+      }catch(e){ return ''; }
+    })();
+    return (catName === '漫画' || catName === '绘本') ? R327_BOOK_STARS_LIGHT : R327_BOOK_STARS_DEF;
+  }
+  function r319SetBookStars(id, n){
+    const list = getR319BookList();
+    const b = list.books.filter(x=>x.id === id)[0];
+    if(!b) return {ok:false, msg:'书籍不存在'};
+    const v = parseInt(n, 10);
+    if(!isFinite(v) || v < 0 || v > 20) return {ok:false, msg:'打卡⭐请填 0~20'};
+    b.stars = v;
+    _r319WriteBookList(list);
+    return {ok:true, stars:v, list};
   }
 
   /* ===== R326：分科错题集（统一错题链路） =====
@@ -24463,7 +24821,12 @@ window.XS_A2_VOCAB = [
     const st = load();
     mathExerciseBankRaw(st);
     st.mathExerciseBank = Array.isArray(arr) ? arr.slice() : [];
-    save(st);
+    const want = st.mathExerciseBank.length;
+    /* R327-5：练习题题库同样走「落盘 + 回读复核」 */
+    const r = saveVerified(st, function(d){
+      return !!(d && Array.isArray(d.mathExerciseBank) && d.mathExerciseBank.length >= want);
+    });
+    if(!r.ok){ _saveError = 'quota'; }
     return st.mathExerciseBank.slice();
   }
   function addMathExercise(item){
@@ -29903,7 +30266,14 @@ be 动词：am / is → was；are → were
       exist.add(_xsBankNorm(en));
       added++;
     });
-    if(added) save(st);
+    if(added){
+      /* R327-5：词汇批量导入同样「写到磁盘能读回」才算成功 */
+      const r = saveVerified(st, function(d){
+        const items = (d && d.xueersiWordBank && Array.isArray(d.xueersiWordBank.items)) ? d.xueersiWordBank.items : [];
+        return items.length >= b.items.length;
+      });
+      if(!r.ok) return { ok:false, added:0, skipped:0, msg:r.msg };
+    }
     return { ok:true, added, skipped };
   }
   // ===== R253-3：巩固打卡历次作答记录（正确 / 错误全量留痕，供「已默写」弹窗归集）=====
@@ -29942,7 +30312,13 @@ be 动词：am / is → was；are → were
       title: String((item && item.title) || '').trim(),
       en, zh, kind:'translate', fromSeed:false
     };
-    b.items.push(it); save(st); return {ok:true, item:it};
+    b.items.push(it);
+    const _n = b.items.length;
+    const _sv = saveVerified(st, function(d){
+      return !!(d && d.xsGramBank && Array.isArray(d.xsGramBank.items) && d.xsGramBank.items.length >= _n);
+    });
+    if(!_sv.ok) return {ok:false, msg:_sv.msg};
+    return {ok:true, item:it};
   }
   /* R267-1.1：一键导入例句改为「一次读档 + 一次落库」。
      旧实现对每条例句都调 xsGramBankAdd()，而它内部每次都 load() + save()，
@@ -29973,7 +30349,14 @@ be 动词：am / is → was；are → were
       });
       seen.add(key); added++;
     });
-    if(added) save(st);   // 整批只写一次
+    if(added){
+      /* R327-5：批量导入必须「写到磁盘并能读回」才算成功 */
+      const r = saveVerified(st, function(d){
+        const items = (d && d.xsGramBank && Array.isArray(d.xsGramBank.items)) ? d.xsGramBank.items : [];
+        return items.length >= b.items.length;
+      });
+      if(!r.ok) return { ok:false, added:0, skipped:0, msg:r.msg };
+    }
     return {ok:true, added, skipped, total:src.length};
   }
   function xsGramBankUpdate(id, patch){
@@ -30098,7 +30481,13 @@ be 动词：am / is → was；are → were
       en, zh, kind:'pretest', fromSeed:false
     };
     it.grammarId = it.id;
-    b.items.push(it); save(st); return {ok:true, item:it};
+    b.items.push(it);
+    const _sv = saveVerified(st, function(d){
+      return !!(d && d.xsPretestBank && Array.isArray(d.xsPretestBank.items) &&
+        d.xsPretestBank.items.some(function(x){ return x && x.id === it.id; }));
+    });
+    if(!_sv.ok) return {ok:false, msg:_sv.msg};
+    return {ok:true, item:it};
   }
   function xsPretestBankUpdate(id, patch){
     const st = load(); const b = _xsPretestBankState(st);
@@ -31410,8 +31799,11 @@ be 动词：am / is → was；are → were
     rec.cat = (p.cat && CALC_BANK_CATS.indexOf(p.cat) >= 0) ? p.cat : '口算';
     st.calcBank.push(rec);
     st.calcBankSeeded = true;
-    save(st);
-    return {ok:true, item:calcBankItem(rec), total:st.calcBank.length};
+    const total = st.calcBank.length;
+    /* R327-5：计算小超市题库「添加 / 改题」也要求落盘可读回，避免刷新后回到旧题库 */
+    const _sv = saveVerified(st, function(d){ return !!(d && Array.isArray(d.calcBank) && d.calcBank.length >= total); });
+    if(!_sv.ok) return {ok:false, msg:_sv.msg};
+    return {ok:true, item:calcBankItem(rec), total:total};
   }
   function updateCalcProblem(idx, p){
     const st = load();
@@ -32363,6 +32755,8 @@ be 动词：am / is → was；are → were
     load, save, resetData,
     // R254-1/2：数据保护 —— 备份信息 / 强制刷盘
     backupInfo, flushPersistence,
+    // R327-1：把空闲时段待办的轻档 / 备份写入立即做完（同代一致性校验用）
+    r327FlushSecondary,
     // R264-2.1：本机存储用量诊断（核验是否真的空间紧张、由哪些副本占用）
     storageUsage,
     // R265-4：IndexedDB 镜像恢复 / 存储健康自检 / 事件驱动兜底刷盘
@@ -32493,6 +32887,8 @@ be 动词：am / is → was；are → were
     getNwZone, addNwZone, delNwZone, setNwZone, // R181-6c：补导出（R179 漏导出致拖拽排序静默不落库）
     // R319-1：我的书单
     getR319BookList, r319AddCat, r319DelCat, r319AddBook, r319EditBook, r319DelBook, r319ToggleRead,
+    r319RenameCat, r319ToggleBorrow, r319SetBookStars, r327BookStarsOf,
+    R327_BOOK_STARS_DEF, R327_BOOK_STARS_LIGHT,
     // R326：分科错题集（统一错题数据 / 间隔重复 / 汇总导入 / 统计导出）
     getR326, r326Add, r326Update, r326Del, r326Answer, r326Review,
     r326SyncSources, r326Counts, r326DueList, r326Stats, r326MarkDayDone, r326ExportRows,
@@ -32622,7 +33018,16 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     st.archive.totalStars = Math.max(0, (st.archive.totalStars||0) + n);
     st.archive.exp = st.archive.totalStars;
     S.save(st);
-    if(typeof renderHome === 'function') renderHome();
+    /* R327-1：不在首页时绝不整页重渲染首页（首页一次 renderHome 要重建日历 / 周图 / 三张任务卡，
+       iPad 上是实打实的几百毫秒）。这里只同步顶部数字；回到首页时 goPage('home') 会完整渲染。 */
+    try{
+      if(typeof renderHome === 'function'){
+        const hp = document.querySelector('.page[data-page="home"]');
+        const homeVisible = !!(hp && !hp.hidden);
+        if(homeVisible) renderHome();
+        else if(typeof r327SyncHomeNumbers === 'function') r327SyncHomeNumbers();
+      }
+    }catch(e){}
     // V15-T2：加星即成功，播放恭喜音效（取消打卡等扣减场景静默）
     try { if(!silent && n > 0 && typeof playCongrats === 'function') playCongrats(); } catch(e){}
   }
@@ -33714,14 +34119,12 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     { page:'newworld-math',     tag:'数学专区', corner:'数学', icon:'➗', color:'blue',
       mods:[
         {t:'同步课时练习', icon:'📁', items:['课本同步','应用题专项']},
-        {t:'思维拓展',     icon:'📚', items:['校内思维题','奥数思维题']},
-        {t:'错题本',       icon:'📓', items:['错题本']}
+        {t:'思维拓展',     icon:'📚', items:['校内思维题','奥数思维题']}
       ] },
     { page:'newworld-english',  tag:'英语专区', corner:'英语', icon:'🔤', color:'orange',
       mods:[
         {t:'同步课时练习', icon:'📁', items:['书本课文','重点知识']},
-        {t:'拓展练习',     icon:'💬', items:['英文作文','英语小知识']},
-        {t:'错题本',       icon:'📓', items:['错题本']}
+        {t:'拓展练习',     icon:'💬', items:['英文作文','英语小知识']}
       ] },
     { page:'newworld-suzhi',    tag:'拓展素养', corner:'素养', icon:'🎧', color:'green', wide:true,
       mods:[
@@ -33740,8 +34143,8 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     let src = null, ico = {};
     try{
       if(page==='newworld-yuwen'){ src = YW_TOP_CARDS; ico = {'课文同步':'📖','小学古诗文':'📜','作文专项':'✏️'}; }
-      else if(page==='newworld-math'){ src = SX_TOP_CARDS; ico = {'同步课时练习':'📁','思维拓展':'📚','错题本':'📓'}; }
-      else if(page==='newworld-english'){ src = EN_TOP_CARDS; ico = {'同步课时练习':'📁','课外扩展':'💬','错题本':'📓'}; }
+      else if(page==='newworld-math'){ src = SX_TOP_CARDS; ico = {'同步课时练习':'📁','思维拓展':'📚'}; }
+      else if(page==='newworld-english'){ src = EN_TOP_CARDS; ico = {'同步课时练习':'📁','课外扩展':'💬'}; }
       else if(page==='newworld-suzhi'){ src = SZ_TOP_CARDS; ico = {'拓展阅读':'📚','人文拓展':'🏛️','综合素养':'🔬'}; }
     }catch(e){ src = null; } // 常量尚未初始化时安全回退
     if(!src || !Array.isArray(src)) return (cd && Array.isArray(cd.mods)) ? cd.mods : [];
@@ -37283,10 +37686,9 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     { title:'思维拓展', items:[
       { key:'xnmt', icon:'🤔', label:'校内思维题' },
       { key:'asmst', icon:'🏆', label:'奥数思维题' }
-    ] },
-    { title:'错题本', items:[
-      { key:'ctb', icon:'📒', label:'错题笔记' }
     ] }
+    /* R327-3.1：错题本板块下线 —— 错题统一收进导航一级入口「错题集」，
+       原有 st.nwWrong 数据不清空，汇入逻辑照旧（见 r326SyncSources）。 */
   ];
   // ---------- R28：数学专区「课本同步」8 单元 × 6 分卡（单元次标题 + 分卡展示 + 整卡打卡） ----------
   let _kbUnit = 0;
@@ -37752,6 +38154,36 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       setTimeout(()=>{ if(box && box.parentNode) box.parentNode.removeChild(box); }, 3600);
     }catch(e){}
   }
+  /* R327-2：打卡成功提示 —— 红色闪烁文字「NICK，恭喜获得2⭐」+ 烟花绽放。
+     纯 DOM + CSS 关键帧，pointer-events:none 不拦点击，2.6s 后自动移除。 */
+  function r327CheckinSuccess(stars){
+    try{
+      const nm = ((S.load().profile || {}).nickname || 'Nick');
+      const n = Math.max(0, parseInt(stars, 10) || 0);
+      const old = document.querySelector('.r327-celebrate');
+      if(old && old.parentNode) old.parentNode.removeChild(old);
+      const box = document.createElement('div');
+      box.className = 'r327-celebrate';
+      const hues = ['#e53935','#ff7a18','#ffca28','#43a047','#29b6f6','#ab47bc'];
+      let bursts = '';
+      const spots = [{x:'28%',y:'36%'},{x:'50%',y:'26%'},{x:'72%',y:'38%'},{x:'38%',y:'58%'},{x:'64%',y:'60%'}];
+      spots.forEach(function(s, bi){
+        let sparks = '';
+        for(let i=0;i<16;i++){
+          const ang = (i/16) * Math.PI * 2;
+          const dist = 58 + (i % 4) * 20;
+          const dx = Math.round(Math.cos(ang) * dist);
+          const dy = Math.round(Math.sin(ang) * dist);
+          sparks += '<i class="r327-fw-spark" style="--dx:' + dx + 'px;--dy:' + dy + 'px;--hue:' + hues[(i + bi * 2) % hues.length] + ';animation-delay:' + (bi * 220 + (i % 6) * 40) + 'ms"></i>';
+        }
+        bursts += '<span class="r327-fw" style="left:' + s.x + ';top:' + s.y + '">' + sparks + '</span>';
+      });
+      box.innerHTML = '<div class="r327-celebrate-txt">' + esc(nm) + '，恭喜获得' + n + '⭐</div>' + bursts;
+      document.body.appendChild(box);
+      setTimeout(function(){ if(box && box.parentNode) box.parentNode.removeChild(box); }, 2600);
+    }catch(e){}
+  }
+
   // 错题本「批改」判对后：同步当日快照与主面板该题（作答改为正确答案、标 ✓）
   function _syncCalcBoardWrongFixed(key){
     try{
@@ -39504,10 +39936,9 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       { key:'w3500', icon:'🔠', label:'3500 词' },
       { key:'yyxzs', icon:'📖', label:'英语小知识' },
       { key:'zw',  icon:'✍️', label:'英文作文' }
-    ] },
-    { title:'错题本', items:[
-      { key:'ctb', icon:'📓', label:'错题本' }
     ] }
+    /* R327-3.1：错题本板块下线 —— 错题统一收进导航一级入口「错题集」，
+       原有 st.nwWrong 数据不清空，汇入逻辑照旧（见 r326SyncSources）。 */
   ];
   // ===== R24-5：英语小知识（整个英语语法体系）=====
   let _egCurSec = 0;               // 当前章节索引（16 章语法 + 第 17 项顺口溜）
@@ -41898,6 +42329,12 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   function _r319Bl(){
     return (S && S.getR319BookList) ? S.getR319BookList() : {cats:[], books:[]};
   }
+  /* R327-4：编辑态开关（只有进入「编辑书单」后，添加书单 / 添加书籍 / 分类改名删除 / 书籍编辑删除才出现） */
+  let _r327BookEdit = false;
+  const R327_CAT_COLORS = 8;
+  function r327BookStarsOf(b){
+    try{ return (S.r327BookStarsOf ? S.r327BookStarsOf(b) : 5); }catch(e){ return 5; }
+  }
   function r319RenderBookList(){
     const grid = document.getElementById('r319CatGrid');
     if(!grid) return;
@@ -41907,35 +42344,78 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     const stat = document.getElementById('r319BlStat');
     if(stat){
       const readN = books.filter(b=>b.read).length;
-      stat.textContent = cats.length + ' 个分类 · ' + books.length + ' 本书 · 已读 ' + readN;
+      /* R327-4.5：统计挪到「我的书单」标题右侧，文案「分类」改为「书单」 */
+      stat.textContent = cats.length + ' 个书单 · ' + books.length + ' 本书 · 已读 ' + readN;
     }
-    const parentMode = (typeof isParent === 'function') ? isParent() : true;
-    grid.innerHTML = cats.map(c=>{
+    /* R327-4.4：添加入口只在编辑书单态出现 */
+    const ops = document.getElementById('r327BookOps');
+    if(ops) ops.hidden = !_r327BookEdit;
+    const editBtn = document.getElementById('btnR327Edit');
+    if(editBtn){
+      editBtn.textContent = _r327BookEdit ? '✅ 完成编辑' : '✏️ 编辑书单';
+      editBtn.classList.toggle('on', _r327BookEdit);
+    }
+    grid.className = 'r319-cat-grid' + (_r327BookEdit ? ' r327-editing' : '');
+    grid.innerHTML = cats.map((c, ci)=>{
       const list = books.filter(b=>b.cat === c.id);
-      const rows = list.map(b=>`
-        <div class="r319-book-row${b.read?' is-read':''}" data-r319-bid="${esc(b.id)}">
+      const rows = list.map(b=>{
+        const stars = r327BookStarsOf(b);
+        /* R327-4.10：借阅中（未读）橙色；已读绿色；其余白色 */
+        const cls = 'r319-book-row' + (b.read ? ' is-read' : (b.borrow ? ' is-borrow' : ''));
+        return `
+        <div class="${cls}" data-r319-bid="${esc(b.id)}">
           <button type="button" class="r319-book-name" data-r319-act="detail" title="查看书本详情">《${esc(b.title)}》</button>
           <span class="r319-book-author">${b.author?esc(b.author)+' 著':''}</span>
+          <span class="r327-book-star" title="打卡完成可得 ${stars}⭐（编辑书单可改）">⭐${stars}</span>
           <button type="button" class="r319-row-btn r319-read${b.read?' done':''}" data-r319-act="read" title="${b.read?'取消已读':'标记已读'}">${b.read?'✓ 已读':'已读'}</button>
-          ${parentMode ? `<span class="r319-book-ops">
-            <button type="button" class="r319-row-btn r319-edit" data-r319-act="edit" title="编辑书名/作者/分类">✏️</button>
+          ${_r327BookEdit ? `<span class="r319-book-ops">
+            <button type="button" class="r319-row-btn r319-edit" data-r319-act="edit" title="编辑书名/作者/分类/⭐">✏️</button>
             <button type="button" class="r319-row-btn r319-del" data-r319-act="del" title="删除这本书">🗑</button>
           </span>` : ''}
-        </div>`).join('') || '<div class="r319-cat-empty">暂无书籍，点右上「添加书籍」新增</div>';
+        </div>`;
+      }).join('') || '<div class="r319-cat-empty">暂无书籍' + (_r327BookEdit ? '，点上方「添加书籍」新增' : '') + '</div>';
+      /* R327-4.7：每个书单卡用不同配色区分（8 色循环，仅视觉，不影响数据） */
       return `
-        <div class="r319-cat-card" data-r319-cat="${esc(c.id)}">
+        <div class="r319-cat-card r327-cat-c${ci % R327_CAT_COLORS}" data-r319-cat="${esc(c.id)}">
           <div class="r319-cat-head">
             <span class="r319-cat-name">${esc(c.name)}</span>
             <span class="r319-cat-count">${list.length} 本</span>
-            ${c.builtin?'<span class="r319-cat-badge">预设</span>':'<button type="button" class="r319-cat-del" data-r319-catdel="'+esc(c.id)+'" title="删除自定义分类">🗑</button>'}
+            ${_r327BookEdit ? `<span class="r327-cat-ops">
+              <button type="button" class="r319-row-btn" data-r319-catrename="${esc(c.id)}" title="重命名书单">✏️</button>
+              <button type="button" class="r319-row-btn r319-del" data-r319-catdel="${esc(c.id)}" title="删除书单">🗑</button>
+            </span>` : (c.builtin?'':'')}
           </div>
           <div class="r319-book-list">${rows}</div>
         </div>`;
-    }).join('') || '<div class="nw-zone-empty">还没有分类</div>';
+    }).join('') || '<div class="nw-zone-empty">还没有书单</div>';
   }
   function r319OpenBookList(){
+    _r327BookEdit = false;
     r319RenderBookList();
     showModal('#modalR319BookList');
+  }
+  /* R327-4.9 / 4.11：借阅书目弹窗（借阅中 = 已加入但还没读完的书） */
+  function r327RenderBorrow(){
+    const body = document.getElementById('r327BorrowBody');
+    if(!body) return;
+    const data = _r319Bl();
+    const list = (data.books || []).filter(b=>b && b.borrow && !b.read);
+    const catName = cid=>{
+      const c = (data.cats||[]).filter(x=>x.id === cid)[0];
+      return c ? c.name : '未分类';
+    };
+    body.innerHTML = list.length
+      ? '<div class="r327-borrow-list">' + list.map(b=>`
+          <div class="r327-borrow-row" data-r327-borrow-bid="${esc(b.id)}">
+            <span class="r327-borrow-name">《${esc(b.title)}》</span>
+            <span class="r327-borrow-cat">${esc(catName(b.cat))}</span>
+            <button type="button" class="r319-row-btn r319-del" data-r327-borrow-del="${esc(b.id)}" title="从借阅书目移除">🗑 删除</button>
+          </div>`).join('') + '</div>'
+      : '<div class="nw-zone-empty">借阅书目还是空的 —— 点书名打开详情，选「加入借阅书目」即可。</div>';
+  }
+  function r327OpenBorrow(){
+    r327RenderBorrow();
+    showModal('#modalR327Borrow');
   }
   // 书籍新增 / 编辑弹窗：mode='add' 或 'edit'
   let _r319EditBid = '';
@@ -41946,6 +42426,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     const nameEl = document.getElementById('r319BeName');
     const auEl = document.getElementById('r319BeAuthor');
     const reasonEl = document.getElementById('r324BeReason');
+    const starsEl = document.getElementById('r327BeStars');
     const titleEl = document.getElementById('r319BeTitle');
     const errEl = document.getElementById('r319BeErr');
     if(!sel || !nameEl || !auEl) return;
@@ -41957,6 +42438,8 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     nameEl.value = book ? book.title : '';
     auEl.value = book ? (book.author||'') : '';
     if(reasonEl) reasonEl.value = book ? (book.reason||'') : '';
+    /* R327-4.12：单本打卡⭐（留空 = 按书单类型默认：漫画/绘本 2⭐，其余 5⭐） */
+    if(starsEl) starsEl.value = (book && book.stars != null) ? String(book.stars) : '';
     showModal('#modalR319BookEdit');
     setTimeout(()=>{ try{ nameEl.focus(); }catch(e){} }, 30);
   }
@@ -41965,18 +42448,28 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     const nameEl = document.getElementById('r319BeName');
     const auEl = document.getElementById('r319BeAuthor');
     const reasonEl = document.getElementById('r324BeReason');
+    const starsEl = document.getElementById('r327BeStars');
     const errEl = document.getElementById('r319BeErr');
     const fail = m=>{ if(errEl) errEl.textContent = m; };
     const cat = sel ? sel.value : '';
     const title = nameEl ? nameEl.value.trim() : '';
     const author = auEl ? auEl.value.trim() : '';
     const reason = reasonEl ? reasonEl.value.trim() : '';
+    const starsRaw = starsEl ? String(starsEl.value || '').trim() : '';
     if(!title){ fail('请填写书名'); return; }
+    if(starsRaw && !/^\d{1,2}$/.test(starsRaw)){ fail('打卡⭐请填 0~20 的整数（留空按默认）'); return; }
+    const stars = starsRaw ? parseInt(starsRaw, 10) : undefined;
+    if(stars !== undefined && stars > 20){ fail('打卡⭐请填 0~20 的整数（留空按默认）'); return; }
     let r;
     if(_r319EditBid && S.r319EditBook){
-      r = S.r319EditBook(_r319EditBid, {title, author, cat, reason});
+      r = S.r319EditBook(_r319EditBid, {title, author, cat, reason, stars});
     } else if(S.r319AddBook){
       r = S.r319AddBook(cat, title, author, reason);
+      if(r && r.ok && stars !== undefined){
+        const list = _r319Bl();
+        const nb = (list.books||[]).filter(x=>x.title === title)[0];
+        if(nb && S.r319SetBookStars) S.r319SetBookStars(nb.id, stars);
+      }
     } else { fail('存储不可用'); return; }
     if(r && r.ok === false){ fail(r.msg || '保存失败'); return; }
     hideModal('#modalR319BookEdit');
@@ -41990,13 +42483,20 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     const host = document.getElementById('r321BookDetailBody');
     if(!b || !host) return;
     const cat = (data.cats||[]).filter(c=>c.id === b.cat)[0];
+    const stars = r327BookStarsOf(b);
     host.innerHTML = '<div class="r321-detail-grid">' +
       '<div class="r321-detail-ico">📖</div><div>' +
       '<div class="r321-detail-title">《' + esc(b.title) + '》</div>' +
       '<div class="r321-detail-line">作者：' + esc(b.author || '未填写') + '</div>' +
-      '<div class="r321-detail-line">分类：' + esc(cat ? cat.name : '未分类') + '</div>' +
+      '<div class="r321-detail-line">书单：' + esc(cat ? cat.name : '未分类') + '</div>' +
       (b.reason ? '<div class="r321-detail-reason"><b>推荐理由：</b>' + esc(b.reason) + '</div>' : '') +
-      '<div class="r321-detail-line">阅读状态：' + (b.read ? '✅ 已读' : '📌 未读') + '</div>' +
+      '<div class="r321-detail-line">阅读状态：' + (b.read ? '✅ 已读' : '📌 未读') +
+        (b.borrow && !b.read ? ' · <b class="r327-borrow-flag">📚 借阅中</b>' : '') + '</div>' +
+      '<div class="r321-detail-line">打卡奖励：<b>' + stars + '⭐</b></div>' +
+      '<div class="r327-detail-ops">' +
+        (b.read ? '' : '<button type="button" class="pbtn' + (b.borrow ? ' on' : '') + '" data-r327-borrow-toggle="' + esc(b.id) + '">' +
+          (b.borrow ? '📚 移出借阅书目' : '📚 加入借阅书目') + '</button>') +
+      '</div>' +
       '</div></div>';
     showModal('#modalR321BookDetail');
   }
@@ -42062,6 +42562,27 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       toast('📊 书单表格已导出');
     }catch(e){ toast('Excel 导出失败：' + (e && e.message ? e.message : '未知错误')); }
   }
+  let _r327CatEditId = '';
+  function r327OpenCatModal(id){
+    _r327CatEditId = id || '';
+    const err = document.getElementById('r319CatErr');
+    const inp = document.getElementById('r319CatName');
+    const tt = document.getElementById('r319CatTitle');
+    const bs = document.getElementById('btnR319CatSave');
+    if(err) err.textContent = '';
+    if(inp) inp.value = '';
+    if(_r327CatEditId){
+      const c = (_r319Bl().cats || []).filter(x=>x.id === _r327CatEditId)[0];
+      if(inp) inp.value = c ? c.name : '';
+      if(tt) tt.textContent = '重命名书单';
+      if(bs) bs.textContent = '💾 保存';
+    } else {
+      if(tt) tt.textContent = '添加书单';
+      if(bs) bs.textContent = '💾 新建';
+    }
+    showModal('#modalR319CatAdd');
+    setTimeout(()=>{ try{ inp.focus(); inp.select(); }catch(e){} }, 30);
+  }
   function r319BindBookList(){
     // 打开书单入口
     const slotBody = document.getElementById('szSlotBody');
@@ -42074,19 +42595,55 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         r319OpenBookList();
       });
     }
-    // 弹窗内分类卡操作（事件委托）
+    // R327-4：编辑书单开关 —— 只有进入编辑态，添加 / 改名 / 删除类按键才出现
+    const bEdit = document.getElementById('btnR327Edit');
+    if(bEdit && !bEdit._r327Bound){
+      bEdit._r327Bound = true;
+      bEdit.onclick = ()=>{ _r327BookEdit = !_r327BookEdit; r319RenderBookList(); };
+    }
+    // R327-4.9：借阅书目
+    const bBorrow = document.getElementById('btnR327Borrow');
+    if(bBorrow && !bBorrow._r327Bound){
+      bBorrow._r327Bound = true;
+      bBorrow.onclick = ()=> r327OpenBorrow();
+    }
+    const borrowBody = document.getElementById('r327BorrowBody');
+    if(borrowBody && !borrowBody._r327Bound){
+      borrowBody._r327Bound = true;
+      borrowBody.addEventListener('click', e=>{
+        const del = e.target.closest('[data-r327-borrow-del]');
+        if(!del) return;
+        const bid = del.getAttribute('data-r327-borrow-del');
+        const b = (_r319Bl().books || []).filter(x=>x.id === bid)[0];
+        r307DangerConfirm('将《' + ((b && b.title) || '这本书') + '》从借阅书目移除。\n书还在「我的书单」里，卡片会恢复白色。', ()=>{
+          const r = S.r319ToggleBorrow ? S.r319ToggleBorrow(bid) : {ok:false};
+          if(r && r.ok){
+            r327RenderBorrow();
+            r319RenderBookList();
+            toast('📚 已从借阅书目移除');
+          } else toast((r && r.msg) || '移除失败');
+        }, '移除借阅');
+      });
+    }
+    // 弹窗内书单卡 / 书籍行操作（事件委托）
     const grid = document.getElementById('r319CatGrid');
     if(grid && !grid._r319Bound){
       grid._r319Bound = true;
       grid.addEventListener('click', e=>{
+        const renameBtn = e.target.closest('[data-r319-catrename]');
+        if(renameBtn){
+          r327OpenCatModal(renameBtn.getAttribute('data-r319-catrename'));
+          return;
+        }
         const delCat = e.target.closest('[data-r319-catdel]');
         if(delCat){
           const cid = delCat.getAttribute('data-r319-catdel');
-          r307DangerConfirm('将删除该自定义分类，分类下的书籍会移入「小说」分类（不会删除书籍）。\n确认删除吗？', ()=>{
-            const r = S.r319DelCat(cid);
-            if(r && r.ok){ toast('🗑 已删除分类'); r319RenderBookList(); }
+          const c = (_r319Bl().cats || []).filter(x=>x.id === cid)[0];
+          r307DangerConfirm('将删除书单「' + ((c && c.name) || '') + '」，该分类下的书籍会移入其它书单（不会删除书籍）。\n确认删除吗？', ()=>{
+            const r = S.r319DelCat(cid, true);
+            if(r && r.ok){ toast('🗑 已删除书单'); r319RenderBookList(); }
             else toast((r&&r.msg)||'删除失败');
-          }, '删除分类');
+          }, '删除书单');
           return;
         }
         const opBtn = e.target.closest('[data-r319-act]');
@@ -42098,8 +42655,22 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         if(act === 'detail'){
           r321OpenBookDetail(bid);
         } else if(act === 'read'){
+          const data = _r319Bl();
+          const b0 = (data.books||[]).filter(x=>x.id === bid)[0];
+          if(!b0) return;
+          const wasRead = !!b0.read;
+          const n = r327BookStarsOf(b0);
           const r = S.r319ToggleRead(bid);
-          if(r && r.ok) r319RenderBookList();
+          if(r && r.ok){
+            /* R327-4.12：打卡完成得⭐（漫画 / 绘本按轻阅读，默认 2⭐，可逐本改写） */
+            if(!wasRead && r.read && n > 0){ addStars(n); toast('🎉 已读 +' + n + '⭐'); }
+            else if(wasRead && !r.read && n > 0){ addStars(-n, true); toast('↩ 已取消已读，扣回 ' + n + '⭐'); }
+            else if(!wasRead && r.read){ toast('✅ 已读，这本书不设打卡⭐'); }
+            r319RenderBookList();
+            /* R327-4.10：已读即出借阅队列，借阅弹窗若开着同步刷新 */
+            const bm = document.getElementById('modalR327Borrow');
+            if(bm && !bm.hidden) r327RenderBorrow();
+          }
         } else if(act === 'edit'){
           r319OpenBookEdit('edit', bid);
         } else if(act === 'del'){
@@ -42113,18 +42684,27 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         }
       });
     }
+    // 书本详情里的「加入 / 移出借阅书目」
+    const detailBody = document.getElementById('r321BookDetailBody');
+    if(detailBody && !detailBody._r327Bound){
+      detailBody._r327Bound = true;
+      detailBody.addEventListener('click', e=>{
+        const btn = e.target.closest('[data-r327-borrow-toggle]');
+        if(!btn) return;
+        const bid = btn.getAttribute('data-r327-borrow-toggle');
+        const r = S.r319ToggleBorrow ? S.r319ToggleBorrow(bid) : {ok:false};
+        if(r && r.ok){
+          toast(r.borrow ? '📚 已加入借阅书目' : '📚 已移出借阅书目');
+          r321OpenBookDetail(bid);
+          r319RenderBookList();
+        } else toast((r && r.msg) || '操作失败');
+      });
+    }
     // 顶部按钮
     const bAddCat = document.getElementById('btnR319AddCat');
     if(bAddCat && !bAddCat._r319Bound){
       bAddCat._r319Bound = true;
-      bAddCat.onclick = ()=>{
-        const err = document.getElementById('r319CatErr');
-        const inp = document.getElementById('r319CatName');
-        if(err) err.textContent = '';
-        if(inp) inp.value = '';
-        showModal('#modalR319CatAdd');
-        setTimeout(()=>{ try{ inp.focus(); }catch(e){} }, 30);
-      };
+      bAddCat.onclick = ()=> r327OpenCatModal('');
     }
     const bAddBook = document.getElementById('btnR319AddBook');
     if(bAddBook && !bAddBook._r319Bound){ bAddBook._r319Bound = true; bAddBook.onclick = ()=>r319OpenBookEdit('add', ''); }
@@ -42147,12 +42727,21 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         const inp = document.getElementById('r319CatName');
         const err = document.getElementById('r319CatErr');
         const name = inp ? inp.value.trim() : '';
-        if(!name){ if(err) err.textContent = '请填写分类名'; return; }
+        if(!name){ if(err) err.textContent = '请填写书单名'; return; }
+        if(_r327CatEditId){
+          const r = S.r319RenameCat ? S.r319RenameCat(_r327CatEditId, name) : {ok:false, msg:'存储不可用'};
+          if(r && r.ok === false){ if(err) err.textContent = r.msg; return; }
+          hideModal('#modalR319CatAdd');
+          r319RenderBookList();
+          toast('✏️ 书单已重命名为「' + name + '」');
+          _r327CatEditId = '';
+          return;
+        }
         const r = S.r319AddCat(name);
         if(r && r.ok === false){ if(err) err.textContent = r.msg; return; }
         hideModal('#modalR319CatAdd');
         r319RenderBookList();
-        toast('📂 已新建分类「'+name+'」');
+        toast('📂 已添加书单「'+name+'」');
       };
     }
   }
@@ -42380,6 +42969,46 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     if(count>0){ el.textContent = count>99?'99+':String(count); el.hidden = false; el.title = '今日 / 次日还有 '+count+' 项待办未完成'; }
     else { el.hidden = true; }
   }
+  /* ============ R327-1：打卡后的「只刷新该刷新的部分」 ============
+     背景：首页 renderHome 会重建日历、近 7 天图、三张任务卡与最近记录；
+     打卡一次就整页重建，在 iPad 上表现为「点下去要等一会儿才动」。
+     这里拆成两档：
+       ① 每次打卡都更新：顶部数字 / 今日完成度 / 三张任务卡 / 最近记录；
+       ② 只有当天「从 0 到 1」或「从 1 回到 0」才重算日历与周图（其余情况它们的结果不变）。 */
+  function r327SyncHomeNumbers(){
+    try{
+      const st = S.load();
+      const a = st.archive || {};
+      const expEl = document.getElementById('homeExp');
+      if(expEl) expEl.textContent = (a.exp || 0) + ' 经验';
+      const fill = document.getElementById('homeExpFill');
+      if(fill) fill.style.width = Math.min(100, (a.exp || 0) % 100) + '%';
+      const se = document.getElementById('homeStars'); if(se) se.textContent = a.totalStars || 0;
+      const ce = document.getElementById('homeCoins'); if(ce) ce.textContent = a.totalCoins || 0;
+      const ke = document.getElementById('homeStreak'); if(ke) ke.textContent = a.consecutiveDays || 0;
+    }catch(e){}
+  }
+  function r327RefreshHomeAfterCheckin(crossedZero){
+    try{ r327SyncHomeNumbers(); }catch(e){}
+    let st = null;
+    try{ st = S.load(); }catch(e){ st = null; }
+    if(!st) return;
+    try{ renderTodayRate(st); }catch(e){}
+    try{ renderWallpaperCards(st); }catch(e){}
+    try{ renderRecent(st); }catch(e){}
+    if(crossedZero){
+      try{ renderCalendar(st); }catch(e){}
+      try{ renderWeekChart(st); }catch(e){}
+      try{ r314RenderHomeBadges(); }catch(e){}
+    }
+  }
+  function r327TodayDoneCount(){
+    try{
+      const st = S.load(), d = S.todayStr();
+      return (st.records || []).filter(r=>r && r.date === d && r.completed).length;
+    }catch(e){ return 0; }
+  }
+
   function renderHome(){
     const st = S.load();
     // 顶部 Nick 信息（"Hi, I'm Nick!" 已置于头像下方居中显示 — 此处不再需要 nickname 文本节点）
@@ -45127,6 +45756,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         };
         _setVisual(_goOn);
         if(_goOn) playCheckinSound(e);
+        const _doneBefore = r327TodayDoneCount();
         const r = S.toggleCheckIn(S.todayStr(), ck.dataset.check);
         const _saveErr = (S.getSaveError && S.getSaveError()) || '';
         if(!r || r.completed !== _goOn || _saveErr) _setVisual(!!(r && r.completed));
@@ -45134,14 +45764,23 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
           // R320-2：保存失败必须让用户看见，绝不能再「界面打了勾、刷新全没了」
           toast('⚠️ 这次打卡没能写入本机（' + _saveErr + '），请先删掉部分图片再试');
         } else if(r) {
-          toast(r.completed ? ('打卡成功 +'+(r.stars||0)+'⭐') : (r.isSuspicious ? '⚠️ 疑似无效打卡（过快）' : '已取消'));
+          if(r.completed){
+            /* R327-2：打卡成功提示改为红色闪烁文字 + 烟花，文案带昵称与本次获得的星数 */
+            r327CheckinSuccess(r.stars || 0);
+          } else {
+            toast(r.isSuspicious ? '⚠️ 疑似无效打卡（过快）' : '已取消');
+          }
         } else {
           toast('这项任务已不存在');
         }
-        // R320-2b：rAF 可能被节流/暂停（iPad 切后台、省电模式、测试桩），必须补一个定时器兜底，
-        // 否则「落盘成功但界面不重绘」——用户会以为没打上卡。两者只生效一次。
+        /* R327-1：只刷新受影响的部分（旧版在这里重渲染「今日任务」整页 —— 它在别的页面，
+           对首页毫无作用，却要花掉一次完整列表构建的时间）。 */
         let _redrawn = false;
-        const _redraw = ()=>{ if(_redrawn) return; _redrawn = true; renderHome(); renderToday(); };
+        const _redraw = ()=>{
+          if(_redrawn) return; _redrawn = true;
+          const _doneAfter = r327TodayDoneCount();
+          r327RefreshHomeAfterCheckin((_doneBefore === 0) !== (_doneAfter === 0));
+        };
         if(typeof requestAnimationFrame === 'function') requestAnimationFrame(_redraw);
         setTimeout(_redraw, 60);
         return;
@@ -54459,6 +55098,21 @@ function renderKMAdmin(){
   try{
     window.__r313GoPage = goPage;
     window.__r313OpenXsBank = function(){ try{ return openXsGramBank(); }catch(e){} };
+    /* R327：性能探针需要量「一次打卡之后的重渲染成本」 */
+    window.__r327RenderHome = function(){ try{ renderHome(); }catch(e){} };
+    window.__r327RenderToday = function(){ try{ renderToday(); }catch(e){} };
+    window.__r327Parts = {
+      home: function(){ renderHome(); },
+      today: function(){ renderToday(); },
+      wallpaperCards: function(){ renderWallpaperCards(S.load()); },
+      calendar: function(){ renderCalendar(S.load()); },
+      weekChart: function(){ renderWeekChart(S.load()); },
+      recent: function(){ renderRecent(S.load()); },
+      rate: function(){ renderTodayRate(S.load()); },
+      badges: function(){ r314RenderHomeBadges(); },
+      todayReq: function(){ renderTodayReq(S.load(), S.todayStr()); },
+      todayOpt: function(){ renderTodayOpt(S.load(), S.todayStr()); }
+    };
   }catch(e){}
   // R170-2：完成奖励 ⭐ 改为弹窗选择数字（0~20）；底层值仍存于隐藏 #tStars，兼容 openTaskEdit/saveTaskFromModal
   function buildStarsGrid(){
@@ -62273,19 +62927,22 @@ function init(){
     const tabs = types.map(t => '<button type="button" class="r314-extype' + (_r322ExView === t ? ' active' : '') + '" data-r322-ex-view="' + t + '">' + t + '</button>').join('');
     const arr = list.filter(x => (types.indexOf(x.type) >= 0 ? x.type : '好句') === _r322ExView);
     /* R324-1：卡片只展示摘抄内容（删除原第一行分类/来源标题），宽度随字数自适应。
-       编辑模式下每条卡片右上角出现「修改 / 删除」键，供家长统一管理全部摘抄。 */
+       R327-3.2：编辑模式下「修改 / 删除」改到该条摘抄内容的下方（原在卡片右上角），
+       避免与文字抢位、也不再压住短词卡。 */
     const rows = arr.map(x => '<div class="r314-ex r324-ex-card' + (_r324ExEdit ? ' editing' : '') + '">' +
-        (_r324ExEdit ? '<span class="r324-ex-editops"><button type="button" class="r324-ex-op" data-r324-ex-edit="' + r314Esc(x.id) + '">修改</button>' +
-          '<button type="button" class="r324-ex-op del" data-gex-del="' + r314Esc(x.id) + '">删除</button></span>' : '') +
         '<div class="r314-ex-text">' + r314Esc(x.text || '') + '</div>' +
         (x.img ? '<img class="r314-ex-img" src="' + r314Esc(x.img) + '" alt="摘抄图片" />' : '') +
+        (_r324ExEdit ? '<span class="r324-ex-editops"><button type="button" class="r324-ex-op" data-r324-ex-edit="' + r314Esc(x.id) + '">修改</button>' +
+          '<button type="button" class="r324-ex-op del" data-gex-del="' + r314Esc(x.id) + '">删除</button></span>' : '') +
       '</div>').join('');
     /* R324-1：统计数字移到标题右侧、绿色显示，样式与左侧分类计数一致（统一 .r324-ex-count）。
-       编辑键放在「新增摘抄」左边；编辑中改为「完成」。 */
+       R327-3.2：「编辑」与「＋ 新增摘抄」放进同一行按钮组，任何宽度下都保持同一水平线。 */
     return '<div class="r314-card"><div class="r314-card-head r322-ex-head">📚 摘抄本' +
         '<span class="r324-ex-count">' + list.length + ' 条 / 本页 ' + arr.length + ' 条</span>' +
-        '<button type="button" class="pbtn r324-ex-editbtn' + (_r324ExEdit ? ' active' : '') + '" data-r324-ex-editmode>' + (_r324ExEdit ? '完成' : '编辑') + '</button>' +
-        '<button type="button" class="pbtn r314-add" data-r322-ex-open>＋ 新增摘抄</button></div>' +
+        '<span class="r327-ex-headops">' +
+          '<button type="button" class="pbtn r324-ex-editbtn' + (_r324ExEdit ? ' active' : '') + '" data-r324-ex-editmode>' + (_r324ExEdit ? '完成' : '编辑') + '</button>' +
+          '<button type="button" class="pbtn r314-add" data-r322-ex-open>＋ 新增摘抄</button>' +
+        '</span></div>' +
       '<div class="r322-ex-tabs">' + tabs + '</div>' +
       (rows || '<div class="r322-ex-page-empty">这一页还没有「' + r314Esc(_r322ExView) + '」摘抄，点右上角新增吧～</div>') +
     '</div>';
@@ -62466,9 +63123,21 @@ function init(){
         '<button class="pbtn r314-mini" id="growRemTest">发送测试通知</button></div>' +
       '<div class="r314-tip">到点后若还有必做任务未完成，会弹出通知提醒今日待办（同一天只提醒一次）。</div>' +
     '</div>';
-    return '<div class="r317-health-cols">' +
-      '<div class="r317-health-side">' + eyeCard + remCard + '</div>' +
-      '<div class="r317-health-main">' + todayCard + weekCard + '</div>' +
+    /* R327-7.3：新增【作息统计】卡，把「今日作息 + 最近 7 天作息」收进同一张卡内部；
+       左栏保留「作息健康」（用眼休息提醒 + 每日学习提醒），两栏等宽、左右边距一致。 */
+    const sleepCard = '<div class="r314-card r327-sleep-card"><div class="r314-card-head">📊 作息统计</div>' +
+      '<div class="r327-sleep-stats">' +
+        '<div class="r327-sleep-block">' + todayCard + '</div>' +
+        '<div class="r327-sleep-block">' + weekCard + '</div>' +
+      '</div></div>';
+    const eyeRemCard = '<div class="r314-card r327-eye-card"><div class="r314-card-head">🌙 作息健康</div>' +
+      '<div class="r327-sleep-stats">' +
+        '<div class="r327-sleep-block">' + eyeCard + '</div>' +
+        '<div class="r327-sleep-block">' + remCard + '</div>' +
+      '</div></div>';
+    return '<div class="r317-health-cols r327-health-cols">' +
+      '<div class="r317-health-side">' + eyeRemCard + '</div>' +
+      '<div class="r317-health-main">' + sleepCard + '</div>' +
     '</div>';
   }
 
@@ -63676,6 +64345,33 @@ function init(){
     window.__r326Self = r326Self;
     window.__r326Tab = function(s, t){ if(s) _r326Subject = s; if(t) _r326Tab = t; renderMistakes(); };
   }catch(e){}
+  /* R327-1：全局按压反馈 —— 手指 / 鼠标按下当帧就给视觉回弹，
+     不等 click 事件、也不依赖任何业务 handler，避免「按下去像没反应」。 */
+  (function initR327Press(){
+    if(typeof document === 'undefined' || window.__r327PressBound) return;
+    window.__r327PressBound = true;
+    const SEL = 'button,.pbtn,.primary-btn,.nav-btn,[role="button"],[data-check],[data-r319-act],' +
+      '[data-r324-ex-editmode],[data-r322-ex-open],[data-zx-checkin],[data-sc-checkin],[data-ggoal-claim]';
+    let cur = null;
+    function clear(){
+      if(!cur) return;
+      try{ cur.classList.remove('r327-pressed'); }catch(e){}
+      cur = null;
+    }
+    try{
+      document.addEventListener('pointerdown', function(e){
+        const el = (e.target && e.target.closest) ? e.target.closest(SEL) : null;
+        if(!el || el.disabled || el.classList.contains('is-disabled')) return;
+        clear();
+        cur = el;
+        el.classList.add('r327-press');
+        el.classList.add('r327-pressed');
+      }, { passive:true });
+      ['pointerup','pointercancel','pointerleave','dragstart','scroll'].forEach(function(t){
+        document.addEventListener(t, clear, { passive:true });
+      });
+    }catch(e){}
+  })();
   function r272BootInit(){
     const _P = window.R272P;
     const _boot = function(){
