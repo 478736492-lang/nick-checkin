@@ -12023,6 +12023,63 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
   .r330-q-body{padding:2px 12px 14px}
 }
 
+/* ================= R331：设置中心 · 数据存储方式选择 + 整合排版 ================= */
+/* 数据同步弹窗：卡片更紧凑，去除大留白
+   根因：.modal-body 为 flex column + gap:10px，.set-card 又带 margin-bottom:12px，
+   两者叠加成 22px 间距；此处把 margin 归零，间距统一由 gap 控制；外框 padding 由 .modal-box 提供。 */
+#settingsSyncBody{gap:10px}
+#settingsSyncBody .set-card{padding:12px 14px;margin:0}
+#settingsSyncBody .form-warn{line-height:1.5}
+
+/* 存储方式选择卡 */
+.r331-store-card .set-card-title{justify-content:flex-start}
+.r331-store-badge{margin-left:auto;font-size:11px;font-weight:800;color:var(--tone-700);
+  background:var(--tone-100);border:1px solid var(--tone-200);border-radius:999px;padding:3px 10px}
+.r331-store-modes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:4px 0 10px}
+.r331-store-mode{position:relative;display:flex;align-items:flex-start;gap:9px;text-align:left;cursor:pointer;
+  font-family:inherit;padding:11px 12px;border:1.5px solid var(--tone-200);border-radius:12px;
+  background:var(--tone-025);color:var(--tone-900);transition:border-color .15s,background .15s,box-shadow .15s}
+.r331-store-mode:hover{border-color:var(--tone-350);background:var(--tone-050)}
+.r331-store-mode.is-on{border-color:var(--tone-500);background:var(--tone-100);
+  box-shadow:0 2px 10px rgba(30,58,138,.10)}
+.r331-mode-ico{font-size:22px;line-height:1;flex:0 0 auto}
+.r331-mode-body{display:flex;flex-direction:column;gap:3px;min-width:0}
+.r331-mode-body b{font-size:13px;font-weight:800;color:var(--tone-900)}
+.r331-mode-body small{font-size:11px;line-height:1.5;color:var(--tone-700)}
+.r331-mode-check{position:absolute;top:8px;right:10px;width:18px;height:18px;border-radius:50%;
+  border:1.5px solid var(--tone-300);color:transparent;font-size:11px;font-weight:900;
+  display:flex;align-items:center;justify-content:center;line-height:1}
+.r331-store-mode.is-on .r331-mode-check{background:var(--tone-500);border-color:var(--tone-500);color:#fff}
+.r331-save-guard{font-size:11.5px;line-height:1.55;color:var(--tone-800);
+  background:var(--tone-050);border:1px dashed var(--tone-250);border-radius:9px;padding:7px 10px;margin-bottom:10px}
+.r331-save-guard b{color:var(--tone-900)}
+.r331-mini-tools{display:flex;flex-wrap:wrap;gap:8px}
+
+/* 云备份折叠区 */
+.r331-cloud-fold{margin-top:10px;border:1px solid var(--tone-200);border-radius:10px;background:var(--tone-025)}
+.r331-cloud-fold>summary{cursor:pointer;list-style:none;padding:8px 12px;font-size:12px;font-weight:700;
+  color:var(--tone-700);user-select:none}
+.r331-cloud-fold>summary::-webkit-details-marker{display:none}
+.r331-cloud-fold>summary:hover{color:var(--tone-900)}
+.r331-cloud-fold[open]>summary{border-bottom:1px solid var(--tone-200);border-radius:10px 10px 0 0;background:var(--tone-050)}
+.r331-cloud-body{display:flex;flex-direction:column;gap:8px;padding:10px 12px}
+.r331-cloud-body label{display:flex;flex-direction:column;gap:4px;font-size:11.5px;color:var(--tone-700)}
+.r331-cloud-body input[type=text]{width:100%;box-sizing:border-box}
+.r331-cloud-btns{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.r331-cloud-btns #cloudStatus{font-size:11px;color:var(--muted)}
+
+@media (max-width:760px){
+  .r331-store-modes{grid-template-columns:minmax(0,1fr)}
+  .r331-mode-body small{white-space:normal}
+}
+/* 手机 / 窄屏：解除弹窗 640px 固定最小宽度，避免横向溢出 */
+@media (max-width:680px){
+  #modalSyncSettings .modal-box{min-width:0;width:96vw;max-width:96vw;padding:14px}
+  #settingsSyncBody .set-card{padding:11px 12px}
+  .r331-mini-tools{gap:6px}
+  .r331-mini-tools .pbtn{flex:1 1 auto;justify-content:center}
+}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -14689,39 +14746,46 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
       <button class="modal-x" data-close data-page-node-id="R85modalSyncX">×</button>
     </div>
     <div class="modal-body" style="overflow-y:auto" id="settingsSyncBody" data-page-node-id="R85modalSyncBody">
-      <div class="set-card" data-page-node-id="R85syncCard">
-        <div class="set-card-title" data-page-node-id="R85syncTitle">☁️ 数据同步（多平台共享）</div>
-        <div class="form-warn" style="margin-bottom:8px" data-page-node-id="R85syncWarn">
-          默认数据存在本机（localStorage）。<b data-page-node-id="R85syncBold">导为 JSON 文件</b>可在另一台设备上导入。开通腾讯云开发 CloudBase 后，填环境 ID 自动启用云同步。
+      <!-- R331：数据存储方式选择（默认浏览器本地存储）+ 精简备份工具 + 云备份折叠区 -->
+      <div class="set-card r331-store-card" data-page-node-id="R85syncCard">
+        <div class="set-card-title" data-page-node-id="R85syncTitle">💾 数据存储方式 <span class="r331-store-badge" id="r331StoreBadge">浏览器本地存储</span></div>
+        <div class="r331-store-modes" id="r331StoreModes" data-page-node-id="R331storeModes">
+          <button type="button" class="r331-store-mode is-on" data-r331-mode="local" id="r331ModeLocal">
+            <span class="r331-mode-ico">📱</span>
+            <span class="r331-mode-body"><b>浏览器本地存储（默认）</b><small>数据实时写入本机，离线可用；刷新 / 更新 / 断网都不丢</small></span>
+            <span class="r331-mode-check">✓</span>
+          </button>
+          <button type="button" class="r331-store-mode" data-r331-mode="cloud" id="r331ModeCloud">
+            <span class="r331-mode-ico">☁️</span>
+            <span class="r331-mode-body"><b>本地存储 + 云备份（可选）</b><small>本地照常实时保存，额外把数据同步到云端多设备共享</small></span>
+            <span class="r331-mode-check">✓</span>
+          </button>
         </div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap" data-page-node-id="R85syncBtns">
-          <button class="pbtn" id="btnExportJson" data-page-node-id="R85btnExportJson">📤 导出所有数据(JSON)</button>
-          <button class="pbtn" id="btnImportJson" data-page-node-id="R85btnImportJson">📥 导入 JSON</button>
+        <div class="r331-save-guard" id="r331SaveGuard" data-page-node-id="R331saveGuard">✅ 本地实时保存始终开启、不可关闭：每一次操作都会立即写入本机主库与多重备份。</div>
+        <div class="r331-mini-tools" data-page-node-id="R85syncBtns">
+          <button class="pbtn" id="btnExportJson" data-page-node-id="R85btnExportJson">📤 导出备份</button>
+          <button class="pbtn" id="btnImportJson" data-page-node-id="R85btnImportJson">📥 导入备份</button>
           <input type="file" id="importJsonFile" accept=".json" hidden data-page-node-id="R85importJsonFile">
         </div>
-        <div style="margin-top:10px;background:#eef7f6;padding:8px;border-radius:8px;border:1px solid #cfeae7" data-page-node-id="R85cloudBox">
-          <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px" data-page-node-id="R85cloudRow">
-            <label style="display:flex;align-items:center;gap:6px;flex:1" data-page-node-id="R85cloudLbl">
-              <input type="checkbox" id="cloudEnabled" style="width:auto" data-page-node-id="R85cloudEnabled"> 启用 CloudBase 云同步
-            </label>
+        <details class="r331-cloud-fold" id="r331CloudFold">
+          <summary>☁️ 云备份设置（可选 · 需 CloudBase 环境）</summary>
+          <div class="r331-cloud-body" data-page-node-id="R85cloudBox">
+            <label data-page-node-id="R85cloudEnvLbl">环境 ID <input type="text" id="cloudEnvId" placeholder="your-env-id-xxxxx" data-page-node-id="R85cloudEnvId"></label>
+            <input type="checkbox" id="cloudEnabled" hidden data-page-node-id="R85cloudEnabled">
+            <input type="text" id="ocrUrl" hidden data-page-node-id="R85ocrUrl">
+            <div class="r331-cloud-btns" data-page-node-id="R85cloudTestRow">
+              <button class="pbtn" id="btnCloudTest" data-page-node-id="R85btnCloudTest">🔍 测试连接</button>
+              <button class="pbtn" id="btnCloudSave" data-page-node-id="R85btnCloudSave">💾 保存</button>
+              <span id="cloudStatus" data-page-node-id="R85cloudStatus"></span>
+            </div>
           </div>
-          <label data-page-node-id="R85cloudEnvLbl">CloudBase 环境 ID <input type="text" id="cloudEnvId" placeholder="your-env-id-xxxxx" data-page-node-id="R85cloudEnvId"></label>
-          <label data-page-node-id="R85ocrLbl">OCR 云函数地址 <input type="text" id="ocrUrl" placeholder="https://service-xxx.ap-shanghai.run.app/ocr" data-page-node-id="R85ocrUrl"></label>
-          <div style="margin-top:6px" data-page-node-id="R85cloudTestRow">
-            <button class="pbtn" id="btnCloudTest" data-page-node-id="R85btnCloudTest">🔍 测试连接</button>
-            <button class="pbtn" id="btnCloudSave" data-page-node-id="R85btnCloudSave">💾 保存</button>
-            <span id="cloudStatus" style="font-size:11px;color:var(--muted);margin-left:6px" data-page-node-id="R85cloudStatus"></span>
-          </div>
-        </div>
+        </details>
       </div>
       <div id="pinSettingsBox" data-page-node-id="R85pinBox"></div>
       <!-- R270-7.2：本地数据库管理（手动本地化入口：备份导出 / 导入恢复 / 占用 / 校验 / 修复） -->
       <div class="set-card localdb-card" id="localDbCard" data-page-node-id="R270localDbCard">
-        <div class="set-card-title" data-page-node-id="R270localDbTitle">🗄️ 本地数据库管理</div>
-        <div class="form-warn" style="margin-bottom:10px" data-page-node-id="R270localDbWarn">
-          所有打卡记录、⭐、水 / 阳光 / 化肥、错题本、已做本、题库、笔记、导入图片、课程表、任务配置都会<b>自动持久保存在本机</b>；
-          版本更新 / 页面刷新 / 后台迭代都不会覆盖或清空。下面是手动兜底入口，导入采用<b>合并</b>策略，不会清空已有数据。
-        </div>
+        <div class="set-card-title" data-page-node-id="R270localDbTitle">🗄️ 备份与恢复（手动兜底）</div>
+        <div class="form-warn" style="margin-bottom:8px" data-page-node-id="R270localDbWarn">全部数据已实时保存在本机；导入采用<b>合并</b>策略，不清空现有数据。</div>
         <div class="localdb-actions" data-page-node-id="R270localDbActions">
           <button type="button" class="pbtn localdb-btn" id="btnLocalBackup" data-page-node-id="R270btnLocalBackup"><i>⬇️</i><b>一键全量备份导出</b><span>导出完整本地数据为 JSON 备份文件</span></button>
           <button type="button" class="pbtn localdb-btn" id="btnLocalRestore" data-page-node-id="R270btnLocalRestore"><i>⬆️</i><b>从备份文件导入恢复</b><span>与现有数据合并，不覆盖、不清空</span></button>
@@ -14735,7 +14799,7 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
       <!-- R270-6.1：原「分类导出文件」独立卡片并入本弹窗（独立卡片已移除），控件 ID 保持不变 -->
       <div class="set-card" data-page-node-id="R85exportCard">
         <div class="set-card-title" data-page-node-id="R85exportTitle">📤 分类导出文件</div>
-        <div class="form-warn" style="margin-bottom:8px" data-page-node-id="R85exportWarn">先选「板块」，再选「分版块」（选「全部」即该板块所有内容），可单独导出，也可用「导出全部板块」一次性整体导出。支持 JSON / 表格(CSV) / 文本(MD) / Excel / Word / PDF 六种格式。</div>
+        <div class="form-warn" style="margin-bottom:8px" data-page-node-id="R85exportWarn">选板块与分版块后导出，支持 JSON / CSV / MD / Excel / Word / PDF 六种格式。</div>
         <div class="export-row" data-page-node-id="R85exportRow">
           <label class="export-label">板块
             <select id="exportBoard" class="export-select" data-page-node-id="R85selBoard"></select>
@@ -62719,9 +62783,7 @@ function init(){
         ['btnR272Logs','logs','📜','调试日志','仅在此面板可见：读写 / 版本更新 / 恢复快照事件']
       ];
       card.innerHTML = '<div class="set-card-title">🛡️ 持久化数据库（R272）</div>'
-        + '<div class="form-warn">主存储已切换为 <b>IndexedDB 主库</b>，localStorage 仅保留轻量标记与同步桥梁快照；'
-        + '每次保存同时写主库事务与桥梁快照，并按需留存历史快照。任意一层损坏会自动从其它层恢复，'
-        + '版本更新 / 页面刷新只换静态页面代码，<b>绝不覆盖或清空用户业务数据表</b>。</div>'
+        + '<div class="form-warn">IndexedDB 主库 + 桥梁快照多重保护，任意一层损坏自动从其它层恢复，<b>版本更新 / 刷新不清空数据</b>。</div>'
         + '<div class="r272-pwa-tip" id="r272PwaTip"></div>'
         + '<div class="r272-stat" id="r272Stat">正在读取存储状态…</div>'
         + '<div class="localdb-actions">' + acts.map(function(a){
@@ -62919,6 +62981,112 @@ function init(){
     });
     if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function(){ setTimeout(mount, 0); });
     else setTimeout(mount, 0);
+  })();
+
+  /* ==========================================================================
+     R331：设置中心 → 数据同步 → 数据存储方式选择
+     · 默认「浏览器本地存储」：本地实时保存始终开启、不可关闭
+     · 可选「本地存储 + 云备份」：仅在此模式下展开 CloudBase 配置区
+     · 存储偏好落在独立键（kvSet/kvGet），刷新 / 版本更新不丢；不触碰主档业务数据
+     · 数据同步弹窗的重复备份/导入入口已在 HTML 层整合，本段只负责方式选择交互
+     ========================================================================== */
+  (function(){
+    'use strict';
+    var KEY = 'nick_checkin_r331_storage_mode';
+    var VALID = { local:1, cloud:1 };
+    function getMode(){
+      var v = '';
+      try{ v = S.kvGet(KEY, ''); }catch(e){ v = ''; }
+      if(VALID[v]) return v;
+      /* 无偏好键（首次升级到 R331）：沿用用户已有的云同步配置，避免把老配置判成「未启用」 */
+      try{
+        var st = S.load();
+        if(st && st.cloud && st.cloud.enabled && st.cloud.envId) return 'cloud';
+      }catch(e){}
+      return 'local';
+    }
+    function setMode(v){
+      if(!VALID[v]) return false;
+      var ok = false;
+      try{ ok = S.kvSet(KEY, v); }catch(e){ ok = false; }
+      return ok;
+    }
+    function applyUI(mode){
+      var btns = document.querySelectorAll('[data-r331-mode]');
+      for(var i=0;i<btns.length;i++){
+        btns[i].classList.toggle('is-on', btns[i].getAttribute('data-r331-mode') === mode);
+      }
+      var badge = document.getElementById('r331StoreBadge');
+      if(badge) badge.textContent = (mode === 'cloud') ? '本地存储 + 云备份' : '浏览器本地存储';
+      var fold = document.getElementById('r331CloudFold');
+      if(fold) fold.open = (mode === 'cloud');
+      /* 让旧「保存」按钮读到正确意图：云备份模式视为启用，本地模式视为未启用 */
+      var ce = document.getElementById('cloudEnabled');
+      if(ce) ce.checked = (mode === 'cloud');
+    }
+    function refreshGuard(){
+      var el = document.getElementById('r331SaveGuard');
+      if(!el) return;
+      var engine = '本机主库';
+      try{ var info = S.r272Info ? S.r272Info() : null; if(info && info.engine) engine = String(info.engine); }catch(e){}
+      el.innerHTML = '✅ <b>本地实时保存始终开启、不可关闭</b>：每一次操作都立即写入本机主库与多重备份'
+        + '（当前引擎：' + esc(engine) + '），刷新 / 更新 / 断网都不丢。';
+    }
+    function onPick(mode){
+      var prev = getMode();
+      if(mode === prev){ applyUI(mode); return; }
+      setMode(mode);
+      applyUI(mode);
+      try{
+        if(mode === 'local' && typeof setupCloud === 'function'){
+          /* 只关闭云同步，保留用户已填的环境 ID —— 下次切回云备份不用重填 */
+          var envKeep = '';
+          try{ var st0 = S.load(); envKeep = (st0 && st0.cloud && st0.cloud.envId) || ''; }catch(e){}
+          setupCloud(false, envKeep);
+        }
+      }catch(e){}
+      if(mode === 'cloud'){
+        try{ toast('☁️ 已切换到「本地 + 云备份」，请展开下方云备份设置填写环境 ID 并保存'); }catch(e){}
+      }else{
+        try{ toast('📱 已切换到「浏览器本地存储」，数据继续实时保存在本机'); }catch(e){}
+      }
+    }
+    function mount(){
+      var box = document.getElementById('r331StoreModes');
+      if(!box || box.__r331Bound) return;
+      box.__r331Bound = true;
+      var btns = box.querySelectorAll('[data-r331-mode]');
+      for(var i=0;i<btns.length;i++){
+        (function(b){
+          b.addEventListener('click', function(){ onPick(b.getAttribute('data-r331-mode')); });
+        })(btns[i]);
+      }
+      applyUI(getMode());
+      refreshGuard();
+    }
+    /* 打开同步弹窗时刷新一次状态（云同步环境ID可能刚被保存） */
+    document.addEventListener('click', function(e){
+      var t = e.target && e.target.closest ? e.target.closest('#cardSyncSettings') : null;
+      if(t){ setTimeout(function(){ mount(); applyUI(getMode()); refreshGuard(); }, 0); }
+    }, true);
+    /* btnCloudSave 保存成功后同步徽标：包一层，不破坏原有绑定 */
+    function wrapCloudSave(){
+      var b = document.getElementById('btnCloudSave');
+      if(!b || b.__r331Wrapped) return;
+      b.__r331Wrapped = true;
+      b.addEventListener('click', function(){ setTimeout(function(){ applyUI(getMode()); }, 120); });
+    }
+    if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function(){ setTimeout(function(){ mount(); wrapCloudSave(); }, 30); });
+    else setTimeout(function(){ mount(); wrapCloudSave(); }, 30);
+
+    /* R331 探针钩子（只读 + 受控切换，供 jsdom 回归调用） */
+    window.__r331State = function(){
+      return { mode:getMode(), badge:(document.getElementById('r331StoreBadge')||{}).textContent || '',
+        foldOpen:!!(document.getElementById('r331CloudFold')||{}).open,
+        guard:(document.getElementById('r331SaveGuard')||{}).textContent || '' };
+    };
+    window.__r331SetMode = function(m){ onPick(m); return getMode(); };
+    window.__r331Refresh = function(){ mount(); applyUI(getMode()); refreshGuard(); wrapCloudSave(); return getMode(); };
   })();
 
   /* R272-1.5 / 2.5：启动屏障 —— 等 IndexedDB 主库完成旧存量迁移 / 损坏恢复再初始化页面，
