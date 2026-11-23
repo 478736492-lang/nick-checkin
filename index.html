@@ -11754,6 +11754,275 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
 .r328-sleep-block .r327-sleep-card{margin:0;padding:0;background:transparent;border:0;box-shadow:none}
 .r328-sleep-block .r327-sleep-stats{gap:10px}
 
+/* ============================================================
+   R329-2：大阅读 · 语文阅读「所有次标题板块」统一版式
+   五个次标题（好词好句 / 好词使用 / 古诗词鉴赏 / 古诗词应用 / 优秀作文）
+   统一卡体、卡头、间距与断点：同行等高、列宽恒定、长文本不断行溢出。
+   ============================================================ */
+.page-reading .reading-cn .reading-cols{display:flex;flex-direction:column;gap:16px;align-items:stretch}
+.page-reading .reading-cn .rd-cn-row{display:grid;gap:16px;align-items:stretch;width:100%;min-width:0}
+.page-reading .reading-cn .rd-cn-row-1{grid-template-columns:minmax(0,1fr) minmax(0,2fr)}
+.page-reading .reading-cn .rd-cn-row-2{grid-template-columns:repeat(3,minmax(0,1fr))}
+.page-reading .reading-cn .rd-cn-row>*{grid-column:auto !important;width:100%;min-width:0}
+.page-reading .reading-cn .rd-cn-row>.reading-col,
+.page-reading .reading-cn .rd-cn-row>.haoci-use-card{
+  box-sizing:border-box;height:100%;margin:0;padding:14px;
+  background:#fff;border:1px solid var(--tone-150);border-radius:14px;
+  box-shadow:0 4px 14px rgba(30,58,138,.06);
+  display:flex;flex-direction:column;min-width:0
+}
+.page-reading .reading-cn .reading-col-head{
+  display:flex;flex-wrap:wrap;align-items:center;gap:8px;
+  margin:0 0 12px !important;padding:0 0 9px !important;
+  border-bottom:1px dashed var(--tone-200) !important;
+  font-size:14px;font-weight:900;color:var(--tone-800);line-height:1.5
+}
+.page-reading .reading-cn .haoci-use-hint{font-size:11px;font-weight:700;color:var(--tone-600,#64748b)}
+.page-reading .reading-cn .haoci-use-count{margin-left:auto;font-size:11px;font-weight:800;color:var(--tone-700,#334155)}
+.page-reading .reading-cn .reading-col-list,
+.page-reading .reading-cn .ri-poem-cols{display:flex;flex-direction:column;flex:1 1 auto;gap:12px;min-width:0}
+.page-reading .reading-cn .haoci-use-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));flex:1 1 auto;gap:12px;min-width:0}
+.page-reading .reading-cn .reading-col-list>*,
+.page-reading .reading-cn .haoci-use-grid>*,
+.page-reading .reading-cn .ri-poem-cols>*{min-width:0;overflow-wrap:anywhere;word-break:break-word}
+@media (max-width:900px){
+  .page-reading .reading-cn .rd-cn-row-1,
+  .page-reading .reading-cn .rd-cn-row-2{grid-template-columns:minmax(0,1fr)}
+  .page-reading .reading-cn .rd-cn-row>*{grid-column:1 / -1 !important}
+}
+@media (max-width:560px){
+  .page-reading .reading-cn .reading-cols,
+  .page-reading .reading-cn .rd-cn-row{gap:12px}
+  .page-reading .reading-cn .haoci-use-grid{grid-template-columns:minmax(0,1fr)}
+}
+
+/* ============================================================
+   R329-3：作息健康（左：用眼休息提醒 + 每日学习提醒）
+                作息统计（右：今日作息 + 最近 7 天作息）
+   两栏等宽对齐、卡头同规格；窄屏自动回落单列。
+   ============================================================ */
+.r317-health-cols.r329-health-cols{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:14px;align-items:start}
+.r329-health-cols>.r317-health-main,
+.r329-health-cols>.r317-health-side{width:100%;min-width:0}
+.r329-health-cols .r327-eye-card{margin:0}
+.r329-health-cols .r327-sleep-stats{gap:12px}
+.r329-health-cols .r317-health-side .r327-sleep-card{margin:0}
+.r329-health-cols .r317-health-side .r327-sleep-card>.r314-card-head{
+  margin:0 0 12px;padding-bottom:9px;border-bottom:1px dashed var(--tone-200);font-weight:900
+}
+.r329-health-cols .r327-sleep-block + .r327-sleep-block{margin-top:0}
+.r329-health-cols .r327-sleep-block>.r314-card{
+  margin:0;padding:12px;background:#fff;border:1px solid var(--tone-150);
+  border-radius:14px;box-shadow:0 4px 14px rgba(30,58,138,.06);min-width:0
+}
+@media (max-width:900px){
+  .r317-health-cols.r329-health-cols{grid-template-columns:minmax(0,1fr)}
+}
+
+/* ============================================================
+   R330：错题集内部重塑（参照《我的电子错题集》）
+   冷蓝应用框 + 四张浅色统计卡 + 卡片化学科条 + 折叠错题
+   + 知识点归纳 + 四类图表 + 分步编辑弹窗（全部走 --tone-* 令牌）
+   ============================================================ */
+.r330-app{background:var(--tone-025);border:1.5px solid var(--tone-150);border-radius:var(--card-r-lg);
+  box-shadow:var(--card-sh-lg);overflow:hidden}
+.r330-tabs{display:flex;gap:10px;padding:12px 16px;background:var(--tone-100);border-bottom:1.5px solid var(--tone-150);
+  overflow-x:auto;-webkit-overflow-scrolling:touch;align-items:center}
+.r330-tab{flex:0 0 auto;min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  border:1.5px solid var(--tone-200);background:var(--tone-025);color:var(--tone-800);
+  border-radius:12px;padding:8px 15px;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;
+  box-shadow:var(--card-sh-sm)}
+.r330-tab:hover{background:var(--tone-150)}
+.r330-tab.active{background:var(--tone-150);border-color:var(--tone-600);color:var(--tone-900);
+  box-shadow:inset 0 0 0 1px var(--tone-300);font-weight:900}
+.r330-search{margin-left:auto;flex:0 1 260px;min-width:170px;display:flex;align-items:center;gap:8px;
+  background:var(--tone-025);border:1.5px solid var(--tone-200);border-radius:999px;padding:0 14px;height:42px;
+  color:var(--tone-600);font-size:18px}
+.r330-search input{border:none;background:transparent;width:100%;height:100%;font-size:14px;color:var(--tone-900);outline:none}
+.r330-search input::placeholder{color:var(--tone-600);opacity:.75}
+.r330-content{padding:16px 18px 24px;min-width:0}
+.r330-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.r330-stat{border:1.5px solid var(--tone-150);border-radius:14px;padding:12px 14px;min-height:86px;background:var(--tone-025)}
+.r330-stat-lab{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--tone-800);font-weight:700}
+.r330-stat-num{font-size:26px;font-weight:900;margin-top:4px;color:var(--tone-900);font-variant-numeric:tabular-nums}
+.r330-stat-num small{font-size:13px;font-weight:700;margin-left:2px;color:var(--tone-700)}
+.r330-stat.c-all{background:var(--z-home-pale);border-color:var(--z-home-pale2)}
+.r330-stat.c-all .r330-stat-num{color:var(--z-home-deep)}
+.r330-stat.c-re{background:var(--z-math-pale);border-color:var(--z-math-pale2)}
+.r330-stat.c-re .r330-stat-num{color:var(--z-math-deep)}
+.r330-stat.c-ok{background:var(--z-xs-pale);border-color:var(--z-xs-pale2)}
+.r330-stat.c-ok .r330-stat-num{color:var(--z-xs-deep)}
+.r330-stat.c-rate{background:var(--z-baike-pale);border-color:var(--z-baike-pale2)}
+.r330-stat.c-rate .r330-stat-num{color:var(--z-baike-deep)}
+.r330-rate-bar{height:8px;border-radius:999px;background:var(--tone-150);overflow:hidden;margin-top:8px}
+.r330-rate-bar i{display:block;height:100%;border-radius:999px;background:var(--z-baike-main);transition:width .35s}
+.r330-subject-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:16px 0 12px}
+.r330-subject{display:inline-flex;align-items:center;gap:8px;min-height:44px;border:1.5px solid transparent;
+  border-radius:12px;padding:8px 18px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;
+  box-shadow:var(--card-sh-sm)}
+.r330-subject:hover{box-shadow:var(--card-sh-md)}
+.r330-subj-cnt{font-size:12px;opacity:.8;font-variant-numeric:tabular-nums}
+.r330-review-entry{display:inline-flex;align-items:center;gap:6px;min-height:44px;border:1.5px solid var(--tone-200);
+  border-radius:12px;padding:8px 16px;font-size:14px;font-weight:800;background:var(--tone-100);
+  color:var(--tone-700);cursor:pointer;font-family:inherit;box-shadow:var(--card-sh-sm)}
+.r330-review-entry:hover{background:var(--tone-150)}
+.r330-review-entry.active{background:var(--tone-150);border-color:var(--tone-600);color:var(--tone-900)}
+.r330-bar-tools{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.r330-blue-card{margin-top:14px;background:var(--tone-100);border:1.5px solid var(--tone-200);border-radius:14px;
+  padding:11px 15px;font-size:13px;color:var(--tone-800);line-height:1.7}
+.r330-list-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.r330-chips,.r330-subtabs{display:flex;gap:8px;flex-wrap:wrap}
+.r330-chip{min-height:32px;border:1.5px solid var(--tone-200);border-radius:10px;background:var(--tone-025);
+  color:var(--tone-800);font-size:12.5px;font-weight:700;padding:4px 12px;cursor:pointer;font-family:inherit}
+.r330-chip.active{background:var(--tone-150);border-color:var(--tone-600);color:var(--tone-900)}
+.r330-batch{margin-left:auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px;color:var(--tone-800)}
+.r330-list-meta{font-size:13px;color:var(--tone-700);margin:0 0 12px}
+.r330-q-list{display:flex;flex-direction:column;gap:10px}
+.r330-q-item,.r330-review-card{background:#fff;border:1.5px solid var(--tone-150);border-radius:14px;overflow:hidden;
+  box-shadow:var(--card-sh-sm)}
+.r330-q-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;width:100%;min-height:52px;border:none;
+  background:transparent;padding:10px 14px;cursor:pointer;font-family:inherit;text-align:left;font-size:14px;color:var(--tone-900)}
+.r330-q-item:hover,.r330-review-card:hover{box-shadow:var(--card-sh-md)}
+.r330-pick{display:inline-flex;align-items:center;flex:none;cursor:pointer}
+.r330-pick input{width:16px;height:16px;accent-color:var(--tone-600)}
+.r330-tag{flex:none;font-size:12px;font-weight:800;border-radius:8px;padding:3px 9px;border:1px solid transparent}
+.r330-q-title{flex:1 1 180px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700}
+.r330-q-date{font-size:12px;color:var(--tone-700);font-variant-numeric:tabular-nums}
+.r330-status{flex:none;font-size:12px;font-weight:800;border-radius:999px;padding:3px 11px}
+.r330-status.review{background:var(--z-math-pale);color:var(--z-math-deep)}
+.r330-status.mastered{background:var(--z-xs-pale);color:var(--z-xs-deep)}
+.r330-caret{flex:none;width:18px;text-align:center;font-size:20px;line-height:1;color:var(--tone-600);transition:transform .2s}
+.r330-q-item.open .r330-caret{transform:rotate(90deg)}
+.r330-q-body{display:none;padding:2px 16px 16px;border-top:1px dashed var(--tone-200)}
+.r330-q-item.open .r330-q-body{display:block}
+.r330-row,.r330-rc-row{margin-top:12px}
+.r330-row h4,.r330-rc-row h4{font-size:12.5px;color:var(--tone-700);font-weight:800;margin-bottom:4px}
+.r330-row p,.r330-rc-row p{font-size:14px;color:var(--tone-900);line-height:1.7;white-space:pre-wrap;word-break:break-word}
+.r330-q-actions,.r330-rc-actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;align-items:center}
+.r330-tip{font-size:12px;color:var(--tone-700)}
+.r330-ktags{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.r330-ktags span{font-size:12px;color:var(--tone-800);background:var(--tone-100);border:1.5px solid var(--tone-200);
+  border-radius:999px;padding:2px 10px}
+.r330-q-imgs,.r330-thumbs{display:flex;gap:8px;flex-wrap:wrap}
+.r330-q-img{width:88px;height:88px;object-fit:cover;border:1.5px solid var(--tone-200);border-radius:10px}
+.r330-rightans,.r330-fb{margin-top:10px;padding:8px 12px;border-radius:10px;font-size:13px}
+.r330-rightans{background:var(--tone-100);color:var(--tone-900)}
+.r330-fb.ok{background:var(--z-xs-pale);color:var(--z-xs-deep)}
+.r330-fb.no{background:var(--z-home-pale);color:var(--z-home-deep)}
+.r330-ans{min-height:36px;border:1.5px solid var(--tone-200);border-radius:10px;padding:6px 10px;font-size:14px;flex:1 1 160px}
+.r330-empty{text-align:center;color:var(--tone-700);padding:28px 0;font-size:14px}
+.r330-review-card{padding:14px 16px;margin-bottom:10px}
+.r330-rc-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.r330-view-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.r330-view-head h2,.r330-content>h2{font-size:18px;font-weight:900;color:var(--tone-900);margin:0}
+.r330-subtab{min-height:40px;border:1.5px solid transparent;border-radius:12px;padding:7px 18px;font-size:14px;font-weight:800;
+  cursor:pointer;font-family:inherit}
+.r330-subtab.active{box-shadow:inset 0 0 0 1.5px currentColor}
+.r330-desc{font-size:13px;color:var(--tone-700);margin:10px 0 14px;line-height:1.7}
+.r330-tag-group{margin-bottom:16px}
+.r330-tg-head{margin-bottom:8px}
+.r330-tg-head .r330-ktags span{cursor:pointer}
+.r330-tag-group ul{list-style:none;display:flex;flex-direction:column;gap:6px}
+.r330-tag-group li button{width:100%;min-height:40px;text-align:left;border:1.5px solid var(--tone-150);background:var(--tone-025);
+  border-radius:9px;padding:8px 12px;font-size:13.5px;cursor:pointer;font-family:inherit;color:var(--tone-900)}
+.r330-tag-group li button:hover{background:var(--tone-100)}
+.r330-anchor-row{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
+.r330-anchor-row button{min-height:34px;border:1.5px solid var(--tone-200);background:var(--tone-100);color:var(--tone-800);
+  border-radius:999px;padding:4px 14px;font-size:12.5px;font-weight:800;cursor:pointer;font-family:inherit}
+.r330-anchor-row button:hover{background:var(--tone-150)}
+.r330-panel{background:#fff;border:1.5px solid var(--tone-150);border-radius:14px;padding:16px;margin-top:14px;box-shadow:var(--card-sh-sm)}
+.r330-panel h3{font-size:15px;font-weight:900;color:var(--tone-900);margin:0 0 12px}
+.r330-chart-note{font-size:12.5px;color:var(--tone-700);margin:-6px 0 10px}
+.r330-h-chart{display:flex;flex-direction:column;gap:12px;padding:2px}
+.r330-h-row{display:grid;grid-template-columns:56px minmax(0,1fr) auto;align-items:center;gap:10px}
+.r330-h-lab{font-size:14px;font-weight:800;text-align:right;color:var(--tone-900)}
+.r330-h-track{height:18px;border-radius:999px;background:var(--tone-150);overflow:hidden}
+.r330-h-track i{display:block;height:100%;border-radius:999px;transition:width .35s}
+.r330-h-pct{font-size:12.5px;color:var(--tone-700);white-space:nowrap;font-variant-numeric:tabular-nums}
+.r330-charts-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.r330-charts-row .r330-panel{margin-top:14px}
+.r330-v-chart{display:flex;align-items:flex-end;gap:14px;height:190px;padding:4px 6px 0;overflow-x:auto}
+.r330-v-group{display:flex;flex-direction:column;align-items:center;gap:6px;flex:none}
+.r330-v-bars{display:flex;align-items:flex-end;gap:5px;height:132px}
+.r330-v-col{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
+.r330-v-val{font-size:11px;color:var(--tone-700);margin-bottom:2px;font-variant-numeric:tabular-nums}
+.r330-v-bar{width:16px;border-radius:6px 6px 0 0;min-height:3px;display:block}
+.r330-v-label{font-size:11px;color:var(--tone-700);white-space:nowrap}
+.r330-chart-legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px;font-size:12px;color:var(--tone-700)}
+.r330-chart-legend span{display:inline-flex;align-items:center;gap:5px}
+.r330-chart-legend i,.r330-pie-legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.r330-donut-row,.r330-pie-row{display:flex;gap:22px;flex-wrap:wrap;padding:6px 2px 0}
+.r330-donut-item{display:flex;flex-direction:column;align-items:center;gap:6px}
+.r330-donut-item svg{width:118px;height:118px}
+.r330-donut-center{font-size:22px;font-weight:900;fill:var(--tone-900)}
+.r330-donut-sub{font-size:10px;fill:var(--tone-700)}
+.r330-donut-label{font-size:12px;color:var(--tone-700);white-space:nowrap}
+.r330-seg{cursor:pointer}
+.r330-donut-pct{font-size:11px;font-weight:900;fill:#fff;pointer-events:none;opacity:0}
+.r330-seg:hover+.r330-donut-pct,.r330-donut-pct.show{opacity:1}
+.r330-pie-item{display:flex;align-items:center;gap:12px}
+.r330-pie-item svg{width:110px;height:110px;flex:none}
+.r330-pie-legend{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--tone-700)}
+.r330-pie-legend span{display:inline-flex;align-items:center;gap:6px}
+.r330-pie-subject{font-size:14px;font-weight:900;color:var(--tone-900)}
+/* 编辑弹窗 + 日期滚轮 */
+.r330-overlay{position:fixed;inset:0;background:rgba(22,48,107,.45);display:flex;align-items:center;justify-content:center;
+  z-index:1200;padding:16px}
+.r330-overlay[hidden]{display:none}
+.r330-modal,.r330-wheel-box{background:#fff;border-radius:16px;max-width:560px;width:100%;max-height:88vh;overflow:auto;
+  padding:20px 22px;box-shadow:0 24px 60px rgba(22,48,107,.25)}
+.r330-modal h3,.r330-wheel-box h3{font-size:17px;font-weight:900;color:var(--tone-900);margin-bottom:14px}
+.r330-menu-row{display:flex;gap:10px;margin-bottom:10px}
+.r330-menu-row .pbtn{flex:1;min-height:42px}
+.r330-menu-cancel{width:100%}
+.r330-field{margin-bottom:12px}
+.r330-field label{display:block;font-size:12.5px;color:var(--tone-700);font-weight:800;margin-bottom:4px}
+.r330-field input,.r330-field textarea,.r330-field select{width:100%;min-height:42px;border:1.5px solid var(--tone-200);
+  border-radius:10px;padding:9px 12px;font-size:14px;font-family:inherit;color:var(--tone-900);background:#fff}
+.r330-field textarea{min-height:62px;resize:vertical}
+.r330-form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.r330-opt-group{display:flex;gap:8px;flex-wrap:wrap}
+.r330-opt{flex:1;min-height:38px;border:1.5px solid var(--tone-200);border-radius:10px;background:#fff;
+  color:var(--tone-900);font-size:13px;font-weight:700;padding:6px 10px;cursor:pointer;font-family:inherit}
+.r330-opt:hover{background:var(--tone-100)}
+.r330-opt.active{background:var(--tone-150);border-color:var(--tone-600);color:var(--tone-900)}
+.r330-pick-wrap{position:relative}
+.r330-pick-field{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;min-height:42px;
+  border:1.5px solid var(--tone-200);border-radius:10px;padding:9px 12px;font-size:14px;background:#fff;
+  cursor:pointer;color:var(--tone-900);font-family:inherit}
+.r330-pick-pop{position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:30;background:#fff;
+  border:1.5px solid var(--tone-200);border-radius:10px;box-shadow:var(--card-sh-lg);max-height:180px;overflow-y:auto;padding:4px}
+.r330-pick-pop[hidden]{display:none}
+.r330-pick-pop button{display:block;width:100%;text-align:left;border:none;background:transparent;padding:9px 12px;
+  font-size:14px;cursor:pointer;font-family:inherit;border-radius:8px;color:var(--tone-900)}
+.r330-pick-pop button:hover{background:var(--tone-100)}
+.r330-file{display:inline-block;cursor:pointer}
+.r330-thumb{position:relative;display:inline-flex}
+.r330-thumb img{width:64px;height:64px;object-fit:cover;border:1.5px solid var(--tone-200);border-radius:9px}
+.r330-thumb button{position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;border:1.5px solid var(--tone-600);
+  background:#fff;color:var(--tone-900);font-weight:900;line-height:1;cursor:pointer}
+.r330-wheel-box{max-width:420px}
+.r330-wheel-cols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px}
+.r330-wheel-col{height:180px;overflow-y:auto;scrollbar-width:none;border:1.5px solid var(--tone-200);border-radius:10px;
+  background:var(--tone-025);padding:70px 0}
+.r330-wheel-col::-webkit-scrollbar{display:none}
+.r330-wheel-col button{display:flex;align-items:center;justify-content:center;height:36px;width:100%;border:none;
+  background:transparent;font-size:14px;cursor:pointer;font-family:inherit;color:var(--tone-900)}
+.r330-wheel-col button.sel{background:var(--tone-150);color:var(--tone-900);font-weight:900}
+@media (max-width:900px){
+  .r330-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .r330-charts-row{grid-template-columns:minmax(0,1fr)}
+  .r330-content{padding:14px 14px 22px}
+  .r330-search{flex:1 1 100%;order:5;min-width:0;margin-left:0}
+}
+@media (max-width:640px){
+  .r330-q-title{white-space:normal}
+  .r330-form-row{grid-template-columns:minmax(0,1fr)}
+  .r330-subject{padding:8px 12px}
+  .r330-bar-tools{margin-left:0}
+  .r330-q-body{padding:2px 12px 14px}
+}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -20294,8 +20563,13 @@ window.XS_A2_VOCAB = [
       _autoFlushSweepAt = now;
       const st = (_staging && _staged) ? _staged : _loadCacheSt;
       if(!st || typeof st !== 'object') return;
+      /* R329-1.3：必须与「落盘用的磁盘视图」同口径比对。
+         R328 这里直接 stringify 内存态（图片已按 __r328ImgRefs 回填成 base64），
+         而 _loadCacheRaw 存的是剥离图片后的磁盘串 —— 两者永远不相等，
+         导致每次 click/change 都触发一次完整 save + 把全部图片重搬进 IDB，
+         图片副本越堆越多，正是打卡写入失败的根因。 */
       let raw;
-      try{ raw = JSON.stringify(st); }catch(e){ return; }
+      try{ raw = JSON.stringify(_r328DiskView(st)); }catch(e){ return; }
       if(raw === _loadCacheRaw) return;
       let ok = false;
       try{ ok = save(st); }catch(e){ ok = false; }
@@ -23494,11 +23768,26 @@ window.XS_A2_VOCAB = [
      · 内存镜像 _r328ImgMem 保证本会话恢复 100% 可用；IDB 保证刷新 / 版本更新后仍可回显。
      · 图片搬运失败时保留原始值，绝不丢用户图片。 */
   const _r328ImgMem = {};
+  /* R329-1.3：内容签名 → 稳定 imgRef。
+     R328 每次落盘都用 Date.now()+random 生成新 ref，同一张图片每保存一次就在 IDB 里多存一份，
+     旧 ref 永不回收；再叠加 R328 的自动刷盘误判（见 startAutoFlush.sweep），点一次就整份重写，
+     图片副本无限膨胀，最终连 IndexedDB 也写不进 —— 这才是「图片占用导致打卡失败」的真正根因。
+     这里按图片内容生成稳定 ref：同一张图无论存多少次、出现在几个字段，都只占 IDB 一条。 */
+  const _r328RefBySig = {};
+  function _r328ImgSig(v){
+    try{
+      const len = v.length;
+      let h = 0;
+      const step = Math.max(1, Math.floor(len / 64));
+      for(let i = 0; i < len; i += step) h = (h * 31 + v.charCodeAt(i)) | 0;
+      return len + '_' + h + '_' + v.slice(0, 48) + '_' + v.slice(-48);
+    }catch(e){ return String(v.length) + '_' + v.slice(0, 48); }
+  }
   function _r328DiskView(st){
     const base = _r320DiskView(st);
     try{
       if(!base || typeof base !== 'object') return base;
-      const refs = {}, SEP = '\u0001';
+      const refs = {}, sigs = {}, SEP = '\u0001';
       let found = false;
       (function scan(o, path){
         if(!o || typeof o !== 'object') return;
@@ -23507,8 +23796,14 @@ window.XS_A2_VOCAB = [
           const k = keys[i], v = o[k];
           if(typeof v === 'string'){
             if(v.length > 4096 && v.slice(0, 11) === 'data:image/'){
-              const ref = 'r328_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8);
+              const sig = _r328ImgSig(v);
+              let ref = _r328RefBySig[sig];
+              if(!ref){
+                ref = 'r328_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8);
+                _r328RefBySig[sig] = ref;
+              }
               refs[path + SEP + k] = ref;
+              sigs[sig] = ref;
               _r328ImgMem[ref] = v;
               found = true;
             }
@@ -23530,14 +23825,22 @@ window.XS_A2_VOCAB = [
         if(ok) cur[parts[parts.length-1]] = '';
         else { delete refs[p]; delete _r328ImgMem[ref]; }
       });
-      if(Object.keys(refs).length) out.__r328ImgRefs = refs;
+      if(Object.keys(refs).length){
+        out.__r328ImgRefs = refs;
+        out.__r328ImgSigs = sigs;   // 刷新后重建「内容 → ref」映射，避免再次生成副本
+      }
       return out;
     }catch(e){ return base; }
   }
   function _r328RestoreImages(st){
     try{
+      const sigs = st && st.__r328ImgSigs;
+      if(sigs) Object.keys(sigs).forEach(function(s){ if(!_r328RefBySig[s]) _r328RefBySig[s] = sigs[s]; });
       const refs = st && st.__r328ImgRefs;
-      if(!refs || !Object.keys(refs).length) return st;
+      if(!refs || !Object.keys(refs).length){
+        try{ delete st.__r328ImgSigs; }catch(e){}
+        return st;
+      }
       const SEP = '\u0001';
       Object.keys(refs).forEach(function(p){
         const ref = refs[p], parts = p.split(SEP).filter(Boolean);
@@ -23553,6 +23856,7 @@ window.XS_A2_VOCAB = [
         if(cur && typeof cur === 'object') cur[parts[parts.length-1]] = data;
       });
       delete st.__r328ImgRefs;
+      delete st.__r328ImgSigs;
     }catch(e){}
     return st;
   }
@@ -23591,8 +23895,14 @@ window.XS_A2_VOCAB = [
   }
   /* R328-1.3：主动瘦身 —— 把内存态里仍内联的大图搬到 IndexedDB 后重写主档。
      写失败时返回 false，调用方据此决定是否提示用户检查浏览器存储权限。 */
+  let _r328Slimming = false;
   function r328SlimImages(){
-    try{ const st = load(); return !!save(st); }catch(e){ return false; }
+    /* R329-1.3：load() 内的迁移本身会 save()，若不加闸会递归调用瘦身。 */
+    if(_r328Slimming) return false;
+    _r328Slimming = true;
+    try{ const st = load(); return !!save(st); }
+    catch(e){ return false; }
+    finally{ _r328Slimming = false; }
   }
   /* R327-1：丢掉待办的二级写入 —— 卸载刷盘会完整落主档 / 轻档 / 备份，
      若让空闲回调随后再跑一次，反而可能用过期的 raw 轮转备份、盖掉最新快照。 */
@@ -23778,14 +24088,22 @@ window.XS_A2_VOCAB = [
     let pass = true;
     try{ pass = !test || !!test(_r327DiskState()); }catch(e){ pass = true; }
     if(!pass){
-      /* 再写一次：上一轮可能刚好被配额回收链腾挪过，第二遍通常能进 */
+      /* 再写一次：上一轮可能刚好被配额回收链腾挪过，第二遍通常能进。
+         R329-1.3：先主动瘦身（残留内联大图搬入 IDB），不再默认归咎于「空间不足」。 */
+      try{ r328SlimImages(); }catch(e){}
       try{ saved = !!save(st); }catch(e){}
       try{ pass = !test || !!test(_r327DiskState()); }catch(e){ pass = true; }
     }
     if(!pass){
       try{ _r318LightWrite(st, true); }catch(e){}
       try{ _pendingWrite(st); }catch(e){}
-      return { ok:false, saved:false, msg:'写入本机失败（存储空间不足或被浏览器限制），请清理后再试' };
+      const code = (typeof getSaveError === 'function' && getSaveError()) || 'verify';
+      let reason = '本机存储暂时不可写';
+      if(code === 'quota') reason = '本机存储空间不足';
+      else if(code === 'blocked') reason = '浏览器禁止本站写入数据（隐私模式 / 站点数据被禁）';
+      else if(code === 'verify' || code === 'save-verify') reason = '写入后回读校验未通过';
+      return { ok:false, saved:false, code:code,
+        msg:'写入本机失败（' + reason + '），本次改动已存入安全副本，可到「🩺 存储体检」查看' };
     }
     return { ok:true, saved:saved };
   }
@@ -24558,6 +24876,10 @@ window.XS_A2_VOCAB = [
       if(!Array.isArray(it.tries)) it.tries = [];
       if(!Array.isArray(it.imgs)) it.imgs = [];
       if(!it.nextReview) it.nextReview = '';
+      /* R330：参考电子错题集的题型 / 错因详述 / 巩固思路，旧档一律补空串，不影响原字段 */
+      if(typeof it.type !== 'string') it.type = '';
+      if(typeof it.wrongNote !== 'string') it.wrongNote = '';
+      if(typeof it.fixNote !== 'string') it.fixNote = '';
     });
     return r;
   }
@@ -24627,11 +24949,16 @@ window.XS_A2_VOCAB = [
         myAnswer: String(q.myAnswer || '').slice(0, 200),
         rightAnswer: String(q.rightAnswer || '').slice(0, 200),
         reason: R326_REASONS.indexOf(q.reason) >= 0 ? q.reason : (String(q.reason || '').slice(0, 20) || ''),
-        kp: String(q.kp || '').trim().slice(0, 40),
+        kp: String(q.kp || '').trim().slice(0, 120),
+        type: String(q.type || '').slice(0, 20),
+        wrongNote: String(q.wrongNote || '').slice(0, 400),
+        fixNote: String(q.fixNote || '').slice(0, 400),
         source: String(q.source || 'manual').slice(0, 12),
         srcKey: String(q.srcKey || ''),
         imgs: imgs,
-        status:'pending', createdAt: Date.now(), fixedAt:0, masteredAt:0,
+        status:'pending', createdAt: (function(v){
+          const t = Number(v); return isFinite(t) && t > 0 ? Math.min(t, Date.now() + 86400000) : Date.now();
+        })(q.createdAt), fixedAt:0, masteredAt:0,
         reviewCount:0, stage:0, fixStreak:0, nextReview:'', lastReview:'', tries:[]
       };
       r.items.unshift(it);
@@ -24650,7 +24977,14 @@ window.XS_A2_VOCAB = [
       if(p.myAnswer !== undefined) it.myAnswer = String(p.myAnswer || '').slice(0, 200);
       if(p.rightAnswer !== undefined) it.rightAnswer = String(p.rightAnswer || '').slice(0, 200);
       if(p.reason !== undefined) it.reason = R326_REASONS.indexOf(p.reason) >= 0 ? p.reason : String(p.reason || '').slice(0, 20);
-      if(p.kp !== undefined) it.kp = String(p.kp || '').trim().slice(0, 40);
+      if(p.kp !== undefined) it.kp = String(p.kp || '').trim().slice(0, 120);
+      if(p.type !== undefined) it.type = String(p.type || '').slice(0, 20);
+      if(p.wrongNote !== undefined) it.wrongNote = String(p.wrongNote || '').slice(0, 400);
+      if(p.fixNote !== undefined) it.fixNote = String(p.fixNote || '').slice(0, 400);
+      if(p.createdAt !== undefined){
+        const t = Number(p.createdAt);
+        if(isFinite(t) && t > 0) it.createdAt = Math.min(t, Date.now() + 86400000);
+      }
       if(p.subject !== undefined && R326_SUBJECTS.indexOf(p.subject) >= 0) it.subject = p.subject;
       if(p.imgs !== undefined && Array.isArray(p.imgs)) it.imgs = p.imgs.slice(0, 4);
     });
@@ -24719,6 +25053,27 @@ window.XS_A2_VOCAB = [
         it.masteredAt = 0;
       }
       out = { ok:true, correct: !!ok, stage: it.stage, nextReview: it.nextReview, status: it.status };
+    });
+    return out;
+  }
+  /* R330：参考「我的电子错题集」的掌握状态一键切换（只改状态与复习安排，不覆盖作答历史） */
+  function r326SetStatus(id, status){
+    const want = status === 'mastered' ? 'mastered' : 'pending';
+    let out = { ok:false };
+    _r326Write(function(r){
+      const it = _r326Find(r, id);
+      if(!it) return;
+      it.status = want;
+      if(want === 'mastered'){
+        it.fixedAt = it.fixedAt || Date.now();
+        it.masteredAt = it.masteredAt || Date.now();
+        it.fixStreak = Math.max(2, it.fixStreak || 0);
+        it.stage = 4;
+        it.nextReview = r326AddDays(15);
+      }else{
+        it.fixStreak = 0; it.stage = 0; it.masteredAt = 0; it.nextReview = '';
+      }
+      out = { ok:true, status:want, nextReview:it.nextReview };
     });
     return out;
   }
@@ -33058,7 +33413,7 @@ be 动词：am / is → was；are → were
     R327_BOOK_STARS_DEF, R327_BOOK_STARS_LIGHT,
     // R326：分科错题集（统一错题数据 / 间隔重复 / 汇总导入 / 统计导出）
     getR326, r326Add, r326Update, r326Del, r326Answer, r326Review,
-    r326SyncSources, r326Counts, r326DueList, r326Stats, r326MarkDayDone, r326ExportRows,
+    r326SyncSources, r326Counts, r326DueList, r326Stats, r326MarkDayDone, r326ExportRows, r326SetStatus,
     R326_SUBJECTS, R326_REASONS,
     // R315-A1：新世界各板块错题本（题干 / 备注 / 解题思路 / 图片凭证）
     getNwWrong, addNwWrong, delNwWrong, countNwWrong, NW_WRONG_SUBJECTS,
@@ -38335,6 +38690,12 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     if(slim){
       let left = ''; try{ left = (S.getSaveError && S.getSaveError()) || ''; }catch(e){}
       if(!left){ toast('✅ 已自动整理图片占用并保存成功'); return; }
+    }
+    /* R329-1.3：介质本身可写（verdict=ok）说明这一次是瞬时写失败 / 回读抖动，
+       数据已进轻档 + 小账本 + IDB 镜像，刷新不会丢 —— 绝不能再暗示用户「没写进去、去删图片」。 */
+    if(h.writable && verdict === 'ok'){
+      toast('✅ 已自动重试，本次改动已存进安全副本，刷新不会丢；可在「🩺 存储体检」查看');
+      return;
     }
     if(verdict === 'blocked' || code === 'blocked'){
       toast('⚠️ 浏览器阻止了本机存储，请检查站点数据权限或退出无痕模式');
@@ -55385,6 +55746,12 @@ function renderKMAdmin(){
       pages: _r328BookPages,
       saveNotice: r328SaveFailNotice
     };
+    /* R329：本轮探针钩子（只读调用，不改变业务逻辑） */
+    window.__r329Parts = {
+      health: r314HealthHtml,
+      saveNotice: r328SaveFailNotice,
+      readingDom: function(){ try{ return document.querySelector('#rdPanelCn').innerHTML; }catch(e){ return ''; } }
+    };
     window.__r327Parts = {
       home: function(){ renderHome(); },
       today: function(){ renderToday(); },
@@ -60622,6 +60989,10 @@ function init(){
         try{ toast('⚠️ 本机存储不可用，改动可能无法保留，请在浏览器设置中允许本站存储数据'); }catch(e){}
       }
     }catch(e){}
+    /* R329-1.3：启动阶段静默瘦身一次 —— 老版本（R328 之前）遗留在 localStorage 主档里的
+       内联 base64 大图，只有发生 save 才会被剥离。这里主动搬进 IndexedDB 并重写主档，
+       避免用户还没打卡就已经顶着一份膨胀的存档。save guard 此时尚未 booted，失败不弹提示。 */
+    try{ if(S.r328SlimImages) S.r328SlimImages(); }catch(e){}
     /* R267-3.1：页面从这里才算真正就绪。启动/迁移阶段的写盘失败只记进
        storageHealth().lastError，不再弹「本机存储已满」吓人提示。 */
     window.__appBooted = true;
@@ -63476,16 +63847,17 @@ function init(){
         '<div class="r327-sleep-block">' + todayCard + '</div>' +
         '<div class="r327-sleep-block">' + weekCard + '</div>' +
       '</div></div>';
-    /* R328-5.2：作息统计整体移到「每日学习提醒」下方展示，作息健康改为单列满宽，
-       不再左右分栏；三块内容顺序 = 用眼休息提醒 → 每日学习提醒 → 作息统计。 */
+    /* R329-3：作息统计回到「用眼休息提醒 + 每日学习提醒」的右侧，恢复左右两栏。
+       左栏 = 🌙 作息健康（用眼提醒 / 每日学习提醒），右栏 = 📊 作息统计（今日 / 近 7 天）。
+       所有输入项 id 与绑定逻辑不变，用户已保存的作息与提醒数据原样读取。 */
     const eyeRemCard = '<div class="r314-card r327-eye-card"><div class="r314-card-head">🌙 作息健康</div>' +
       '<div class="r327-sleep-stats">' +
         '<div class="r327-sleep-block">' + eyeCard + '</div>' +
         '<div class="r327-sleep-block">' + remCard + '</div>' +
-        '<div class="r328-sleep-block">' + sleepCard + '</div>' +
       '</div></div>';
-    return '<div class="r317-health-cols r328-health-cols">' +
+    return '<div class="r317-health-cols r329-health-cols">' +
       '<div class="r317-health-main">' + eyeRemCard + '</div>' +
+      '<div class="r317-health-side">' + sleepCard + '</div>' +
     '</div>';
   }
 
@@ -64111,14 +64483,10 @@ function init(){
     const root = document.getElementById('r326Root');
     if(!root) return;
     r326Sync();
-    const c = r326Cnt();
-    if(!_r326Subject){
-      root.innerHTML = r326OverviewHtml(c);
-    } else {
-      root.innerHTML = r326WorkbenchHtml(c);
-    }
-    r326Bind();
     r326Badge();
+    /* R330：错题集内部整体重塑为「我的错题集 / 知识点归纳 / 数据分析」三视图，
+       原 R326 数据层 / 订正 / 温故 / 汇入 / 导出 API 全部保持不变。 */
+    r330Render();
   }
 
   function r326OverviewHtml(c){
@@ -64662,6 +65030,852 @@ function init(){
   }
   var _r326CropCtx = null;
 
+  /* ============================================================
+     R330：错题集内部重塑（参照《我的电子错题集 · 线上整理 随时复盘》）
+     - 三视图：我的错题集 / 知识点归纳 / 数据分析 + 全局搜索
+     - 我的错题集：四张统计卡 + 横向学科条 + 今日复习就地切换 + 折叠详情
+     - 知识点归纳：按知识点归堆，点标签/题目回到列表并定位
+     - 数据分析：掌握横条 / 按周柱图 / 按月环形图 / 错因饼图 + 锚点导航
+     - 编辑弹窗：菜单二选一 + 学科/题型/状态/错因点选 + 年月日滚轮
+     - 数据层仍走 R326（同一份 items、srcKey 去重、订正与温故规则不变）
+     ============================================================ */
+  var _r330View = 'mistakes';
+  var _r330Subject = '语文';
+  var _r330Search = '';
+  var _r330Expanded = null;
+  var _r330Review = false;
+  var _r330Skipped = [];
+  var _r330TagSubject = '语文';
+  var _r330Filter = 'all';
+  var _r330Picked = {};
+  var _r330EditId = '';
+  var _r330Form = null;
+  var _r330TypeOpen = false;
+  var _r330Wheel = { y:0, m:1, d:1 };
+  var R330_TYPES = {
+    '语文': ['选择题','填空题','解答题','默写','写作'],
+    '数学': ['选择题','填空题','解答题'],
+    '英语': ['选择题','填空题','完形填空','阅读理解','写作题']
+  };
+  var R330_COLORS = {
+    '语文': ['var(--tone-100)','var(--z-home-deep)'],
+    '数学': ['var(--tone-150)','var(--tone-800)'],
+    '英语': ['var(--z-baike-pale)','var(--z-baike-deep)']
+  };
+  function r330Subjects(){
+    const base = ['语文','数学','英语'];
+    const all = (S.getR326().items || []).map(function(x){ return x.subject; });
+    return base.concat(all.filter(function(s){ return base.indexOf(s) < 0; }))
+      .filter(function(s, i, arr){ return arr.indexOf(s) === i; });
+  }
+  function r330Color(s){ return R330_COLORS[s] || ['var(--tone-150)','var(--tone-800)']; }
+  function r330Types(sub){ return R330_TYPES[sub] || ['选择题','填空题','解答题']; }
+  function r330Date(ts){
+    if(!ts) return '';
+    const d = new Date(ts);
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+  function r330Status(it){
+    if(it.status === 'mastered') return 'mastered';
+    if(it.status !== 'pending' && it.nextReview && it.nextReview <= r326Today()) return 'review';
+    return 'review';
+  }
+  function r330StatusText(it){ return it.status === 'mastered' ? '已掌握' : '待复习'; }
+  function r330ReasonOpts(){
+    return (S.R326_REASONS || []).concat(['其他']);
+  }
+  function r330TagList(it){
+    return String(it.kp || '').split(/[,，、]/).map(function(x){ return x.trim(); }).filter(Boolean);
+  }
+  function r330Items(){ try{ return (S.getR326().items || []).slice(); }catch(e){ return []; } }
+  function r330Toast(msg){ try{ toast(msg); }catch(e){} }
+
+  /* ---------- 主渲染 ---------- */
+  function r330Render(){
+    const root = document.getElementById('r326Root');
+    if(!root) return;
+    const items = r330Items();
+    const subs = r330Subjects();
+    if(subs.indexOf(_r330Subject) < 0) _r330Subject = subs[0] || '语文';
+    if(subs.indexOf(_r330TagSubject) < 0) _r330TagSubject = _r330Subject;
+    root.innerHTML = '<div class="r330-app">' +
+      r330TabsHtml() +
+      '<section class="r330-content">' +
+        (_r330View === 'mistakes' ? r330MistakesHtml(items) :
+         _r330View === 'tags' ? r330TagsHtml(items) : r330AnalysisHtml(items)) +
+      '</section>' +
+    '</div>' +
+    r330ModalHtml() + r330WheelHtml();
+    r330Bind();
+    try{ r326Badge(); }catch(e){}
+  }
+  function r330TabsHtml(){
+    const tabs = [['mistakes','📕 我的错题集'],['tags','🏷️ 知识点归纳'],['analysis','📊 数据分析']];
+    return '<nav class="r330-tabs" aria-label="错题集功能导航">' +
+      tabs.map(function(t){
+        return '<button type="button" class="r330-tab' + (_r330View === t[0] ? ' active' : '') +
+          '" data-r330-view="' + t[0] + '" aria-pressed="' + (_r330View === t[0]) + '">' + t[1] + '</button>';
+      }).join('') +
+      '<label class="r330-search"><span aria-hidden="true">⌕</span>' +
+        '<input id="r330Search" type="search" placeholder="搜索错题、知识点或错因" aria-label="搜索错题、知识点或错因" value="' + esc(_r330Search) + '">' +
+      '</label>' +
+    '</nav>';
+  }
+
+  /* ---------- 视图一：我的错题集 ---------- */
+  function r330MistakesHtml(items){
+    return r330StatsHtml(items) + r330SubjectBarHtml(items) + r330ListHtml(items) +
+      '<div class="r330-blue-card" id="r330Info"></div>';
+  }
+  function r330StatsHtml(items){
+    const ok = items.filter(function(x){ return x.status === 'mastered'; }).length;
+    const all = items.length;
+    const rate = all ? Math.round(ok / all * 100) : 0;
+    const cards = [
+      ['c-all','📕','全部错题',all,'道'],
+      ['c-re','⏰','待复习',all - ok,'道'],
+      ['c-ok','✅','已掌握',ok,'道'],
+      ['c-rate','📈','掌握率',rate,'%']
+    ];
+    return '<div class="r330-stats">' + cards.map(function(c){
+      return '<div class="r330-stat ' + c[0] + '"><div class="r330-stat-lab">' + c[1] + ' ' + c[2] + '</div>' +
+        '<div class="r330-stat-num">' + c[3] + '<small>' + c[4] + '</small></div>' +
+        (c[0] === 'c-rate' ? '<div class="r330-rate-bar"><i style="width:' + rate + '%"></i></div>' : '') +
+      '</div>';
+    }).join('') + '</div>';
+  }
+  function r330SubjectBarHtml(items){
+    const subs = r330Subjects();
+    const btns = subs.map(function(s){
+      const col = r330Color(s);
+      const n = items.filter(function(x){ return x.subject === s; }).length;
+      return '<button type="button" class="r330-subject' + (!_r330Review && _r330Subject === s ? ' active' : '') +
+        '" data-r330-subject="' + esc(s) + '" style="background:' + col[0] + ';color:' + col[1] +
+        ';border-color:' + (!_r330Review && _r330Subject === s ? col[1] : 'transparent') + '">' +
+        esc(s) + '<span class="r330-subj-cnt">' + n + '</span></button>';
+    }).join('');
+    return '<div class="r330-subject-bar">' + btns +
+      '<button type="button" class="r330-review-entry' + (_r330Review ? ' active' : '') +
+        '" data-r330-review aria-pressed="' + _r330Review + '">⏰ 今日复习</button>' +
+      '<div class="r330-bar-tools">' +
+        '<button type="button" class="pbtn" data-r330-edit-open>✎ 编辑</button>' +
+        '<button type="button" class="pbtn" data-r330-export>⬇ 导出</button>' +
+        '<button type="button" class="pbtn" data-r330-quick>▶ 快速温故</button>' +
+        '<button type="button" class="pbtn" data-r330-paper>🖨 重练卷</button>' +
+      '</div>' +
+    '</div>';
+  }
+  function r330VisibleItems(items){
+    const kw = String(_r330Search || '').trim().toLowerCase();
+    let list = items.filter(function(x){
+      if(_r330Review) return r330Status(x) === 'review';
+      if(x.subject !== _r330Subject) return false;
+      if(_r330Filter === 'pending') return x.status === 'pending';
+      if(_r330Filter === 'fixed') return x.status === 'fixed';
+      if(_r330Filter === 'mastered') return x.status === 'mastered';
+      return true;
+    });
+    if(kw){
+      list = list.filter(function(x){
+        return [x.title, x.kp, x.reason, x.wrongNote, x.fixNote, x.myAnswer, x.type]
+          .join(' ').toLowerCase().indexOf(kw) >= 0;
+      });
+    }
+    return list.sort(function(a, b){ return (b.createdAt || 0) - (a.createdAt || 0); });
+  }
+  function r330ReviewList(items){
+    const kw = String(_r330Search || '').trim().toLowerCase();
+    let due = items.filter(function(x){
+      if(r330Status(x) !== 'review' || _r330Skipped.indexOf(x.id) >= 0) return false;
+      if(!kw) return true;
+      return [x.title, x.kp, x.reason, x.wrongNote, x.fixNote, x.myAnswer, x.type].join(' ').toLowerCase().indexOf(kw) >= 0;
+    });
+    due.sort(function(a, b){ return String(a.nextReview || '').localeCompare(String(b.nextReview || '')) || (a.createdAt || 0) - (b.createdAt || 0); });
+    return due.slice(0, 5);
+  }
+  function r330ListHtml(items){
+    if(_r330Review){
+      const batch = r330ReviewList(items);
+      const total = items.filter(function(x){ return r330Status(x) === 'review'; }).length;
+      return '<div class="r330-list-meta" id="r330ListMeta">今日复习 · 从待复习里挑了最早的 ' + batch.length +
+        ' 道（待复习共 ' + total + ' 道）' + (_r330Search ? ' · 关键词「' + esc(_r330Search) + '」' : '') + '</div>' +
+        '<div class="r330-q-list" id="r330List">' + (batch.length ? batch.map(r330ReviewCardHtml).join('') :
+          '<div class="r330-empty">今日复习已清零，继续保持！</div>') + '</div>';
+    }
+    const list = r330VisibleItems(items);
+    const by = { all:items.filter(function(x){ return x.subject === _r330Subject; }).length, pending:0, fixed:0, mastered:0 };
+    items.forEach(function(x){ if(x.subject === _r330Subject && by[x.status] !== undefined) by[x.status]++; });
+    const chips = [['all','全部'],['pending','待订正'],['fixed','已订正'],['mastered','已掌握']].map(function(f){
+      return '<button type="button" class="r330-chip' + (_r330Filter === f[0] ? ' active' : '') +
+        '" data-r330-filter="' + f[0] + '">' + f[1] + ' ' + (by[f[0]] || 0) + '</button>';
+    }).join('');
+    const picked = Object.keys(_r330Picked).filter(function(k){ return _r330Picked[k]; });
+    const batch = picked.length ? '<div class="r330-batch">已选 ' + picked.length + ' 道' +
+      '<button type="button" class="pbtn" data-r330-batch-export>导出所选</button>' +
+      '<button type="button" class="pbtn danger" data-r330-batch-del>批量删除</button>' +
+      '<button type="button" class="pbtn" data-r330-batch-clear>取消选择</button></div>' : '';
+    return '<div class="r330-list-head"><div class="r330-chips">' + chips + '</div>' + batch + '</div>' +
+      '<div class="r330-list-meta" id="r330ListMeta">' + esc(_r330Subject) + '共 ' + list.length + ' 道错题' +
+        (_r330Search ? ' · 关键词「' + esc(_r330Search) + '」' : '') + '</div>' +
+      '<div class="r330-q-list" id="r330List">' + (list.length ? list.map(r330CardHtml).join('') :
+        '<div class="r330-empty">没有符合条件的错题，换个关键词试试～<br><button type="button" class="pbtn primary" data-r330-empty-add>＋ 录入第一道错题</button></div>') + '</div>';
+  }
+  function r330CardHtml(it){
+    const col = r330Color(it.subject);
+    const open = _r330Expanded === it.id;
+    const tags = r330TagList(it).map(function(t){ return '<span>' + esc(t) + '</span>'; }).join('');
+    const imgs = (it.imgs || []).map(function(ref, i){
+      const src = r326ImgSrc(ref);
+      return src ? '<img class="r330-q-img" src="' + src + '" alt="错题凭证' + (i + 1) + '">' : '';
+    }).join('');
+    const ansOps = it.status === 'pending'
+      ? (it.rightAnswer
+        ? '<div class="r330-q-actions"><input class="r330-ans" data-r330-ans="' + esc(it.id) + '" placeholder="重新作答…">' +
+          '<button type="button" class="pbtn primary" data-r330-check="' + esc(it.id) + '">批改</button></div>'
+        : '<div class="r330-q-actions"><span class="r330-tip">没有标准答案，核对后自行判定：</span>' +
+          '<button type="button" class="pbtn" data-r330-mark="' + esc(it.id) + '" data-ok="1">我答对了</button>' +
+          '<button type="button" class="pbtn" data-r330-mark="' + esc(it.id) + '" data-ok="0">我答错了</button></div>')
+      : '';
+    return '<div class="r330-q-item' + (open ? ' open' : '') + '">' +
+      '<button type="button" class="r330-q-head" data-r330-toggle="' + esc(it.id) + '" aria-expanded="' + open + '">' +
+        '<label class="r330-pick"><input type="checkbox" data-r330-pick="' + esc(it.id) + '"' + (_r330Picked[it.id] ? ' checked' : '') + '></label>' +
+        '<span class="r330-tag" style="background:' + col[0] + ';color:' + col[1] + '">' + esc(it.subject) + '</span>' +
+        '<span class="r330-q-title">' + esc(it.title) + '</span>' +
+        '<time class="r330-q-date">' + esc(r330Date(it.createdAt)) + '</time>' +
+        '<span class="r330-status ' + r330Status(it) + '">' + r330StatusText(it) + '</span>' +
+        '<span class="r330-caret" aria-hidden="true">›</span>' +
+      '</button>' +
+      '<div class="r330-q-body">' +
+        '<div class="r330-row"><h4>题型 · 录入时间</h4><p>' + esc(it.type || '未分类') + ' · ' + esc(r330Date(it.createdAt)) + '</p></div>' +
+        '<div class="r330-row"><h4>我的错因</h4><p>' + esc(it.reason || '其他') + (it.wrongNote ? ' · ' + esc(it.wrongNote) : '') + '</p></div>' +
+        '<div class="r330-row"><h4>巩固思路</h4><p>' + esc(it.fixNote || '暂未记录巩固思路') + '</p></div>' +
+        (tags ? '<div class="r330-row"><h4>知识点</h4><div class="r330-ktags">' + tags + '</div></div>' : '') +
+        (imgs ? '<div class="r330-row"><h4>题目照片</h4><div class="r330-q-imgs">' + imgs + '</div></div>' : '') +
+        (it.myAnswer ? '<div class="r330-row"><h4>我的答案</h4><p>' + esc(it.myAnswer) + '</p></div>' : '') +
+        '<div class="r330-rightans" id="r330Right_' + esc(it.id) + '" hidden>正确答案：' + esc(it.rightAnswer || '（未填写）') + '</div>' +
+        ansOps +
+        '<div class="r330-q-actions">' +
+          '<button type="button" class="pbtn" data-r330-reveal="' + esc(it.id) + '">看答案</button>' +
+          '<button type="button" class="pbtn" data-r330-set="' + esc(it.id) + '" data-status="' + (it.status === 'mastered' ? 'pending' : 'mastered') + '">' +
+            (it.status === 'mastered' ? '↩ 改回待复习' : '✓ 标记为已掌握') + '</button>' +
+          '<button type="button" class="pbtn" data-r330-edit="' + esc(it.id) + '">修改</button>' +
+          '<button type="button" class="pbtn danger" data-r330-del="' + esc(it.id) + '">删除</button>' +
+          '<button type="button" class="pbtn" data-r330-toggle="' + esc(it.id) + '">收起</button>' +
+        '</div>' +
+        '<div class="r330-fb" id="r330Fb_' + esc(it.id) + '" hidden></div>' +
+      '</div>' +
+    '</div>';
+  }
+  function r330ReviewCardHtml(it){
+    const col = r330Color(it.subject);
+    return '<div class="r330-review-card">' +
+      '<div class="r330-rc-head"><span class="r330-tag" style="background:' + col[0] + ';color:' + col[1] + '">' + esc(it.subject) + '</span>' +
+        '<span class="r330-q-title">' + esc(it.title) + '</span><time class="r330-q-date">' + esc(r330Date(it.createdAt)) + '</time></div>' +
+      '<div class="r330-rc-row"><h4>题型 · 录入时间</h4><p>' + esc(it.type || '未分类') + ' · ' + esc(r330Date(it.createdAt)) + '</p></div>' +
+      '<div class="r330-rc-row"><h4>我的错因</h4><p>' + esc(it.reason || '其他') + (it.wrongNote ? ' · ' + esc(it.wrongNote) : '') + '</p></div>' +
+      '<div class="r330-rc-row"><h4>巩固思路</h4><p>' + esc(it.fixNote || '暂未记录巩固思路') + '</p></div>' +
+      '<div class="r330-rc-actions">' +
+        '<button type="button" class="pbtn primary" data-r330-set="' + esc(it.id) + '" data-status="mastered">✓ 掌握了</button>' +
+        '<button type="button" class="pbtn" data-r330-next="' + esc(it.id) + '">下一道 →</button>' +
+      '</div>' +
+    '</div>';
+  }
+
+  /* ---------- 视图二：知识点归纳 ---------- */
+  function r330TagsHtml(items){
+    const subs = r330Subjects();
+    if(subs.indexOf(_r330TagSubject) < 0) _r330TagSubject = subs[0] || '语文';
+    const subtabs = subs.map(function(s){
+      const col = r330Color(s);
+      return '<button type="button" role="tab" class="r330-subtab' + (_r330TagSubject === s ? ' active' : '') +
+        '" data-r330-tagsub="' + esc(s) + '" style="background:' + col[0] + ';color:' + col[1] +
+        ';border-color:' + (_r330TagSubject === s ? col[1] : 'transparent') + '">' + esc(s) + '</button>';
+    }).join('');
+    const pool = items.filter(function(x){ return x.subject === _r330TagSubject; });
+    const map = {};
+    pool.forEach(function(it){
+      r330TagList(it).forEach(function(t){
+        (map[t] = map[t] || []).push(it);
+      });
+    });
+    const groups = Object.keys(map).sort(function(a, b){ return map[b].length - map[a].length; });
+    const body = groups.length ? groups.map(function(t){
+      return '<div class="r330-tag-group"><div class="r330-tg-head"><span class="r330-ktags">' +
+        '<span data-r330-gotag="' + esc(t) + '">' + esc(t) + ' · ' + map[t].length + ' 道</span></span></div>' +
+        '<ul>' + map[t].map(function(it){
+          return '<li><button type="button" data-r330-goto="' + esc(it.id) + '">' + esc(it.subject) + ' · ' +
+            esc(it.title) + '（' + esc(r330Date(it.createdAt)) + '，' + r330StatusText(it) + '）</button></li>';
+        }).join('') + '</ul></div>';
+    }).join('') : '<div class="r330-panel"><div class="r330-empty">这个学科暂时没有知识点标签。</div></div>';
+    return '<div class="r330-view-head"><h2>知识点归纳</h2><div class="r330-subtabs" role="tablist">' + subtabs + '</div></div>' +
+      '<p class="r330-desc">按知识点把错题归堆；点知识点或题目，会回到错题列表并定位到对应内容。</p>' +
+      '<div id="r330TagGroups">' + body + '</div>' +
+      '<div class="r330-blue-card">知识点只是把错题换个角度归堆；点上面的知识点或题目，会回到错题列表并自动填好搜索词。</div>';
+  }
+
+  /* ---------- 视图三：数据分析 ---------- */
+  function r330WeekKey(ts){
+    const d = new Date(ts || Date.now());
+    d.setHours(12, 0, 0, 0);
+    const monday = d.getDate() - ((d.getDay() + 6) % 7);
+    const w = new Date(d.getFullYear(), d.getMonth(), monday);
+    return w.getFullYear() + '-' + String(w.getMonth() + 1).padStart(2, '0') + '-' + String(w.getDate()).padStart(2, '0');
+  }
+  function r330Md(key){
+    const p = String(key).split('-');
+    return p.length >= 3 ? (Number(p[1]) + '/' + Number(p[2])) : key;
+  }
+  function r330DonutSvg(per, total, idx){
+    const r = 40, C = 2 * Math.PI * r;
+    let offset = 0;
+    const segs = r330Subjects().map(function(s, si){
+      const v = per[s] || 0;
+      const len = total ? v / total * C : 0;
+      let out = '';
+      if(len > 0){
+        const mid = -Math.PI / 2 + (offset + len / 2) / C * 2 * Math.PI;
+        const tx = (60 + r * Math.cos(mid)).toFixed(1);
+        const ty = (60 + r * Math.sin(mid) + 4).toFixed(1);
+        const key = idx + '-' + si;
+        out = '<circle class="r330-seg" data-r330-seg="' + key + '" cx="60" cy="60" r="' + r +
+          '" fill="none" stroke="' + r330Color(s)[1] + '" stroke-width="16" stroke-dasharray="' + len.toFixed(2) + ' ' + (C - len).toFixed(2) +
+          '" stroke-dashoffset="' + (-offset).toFixed(2) + '" transform="rotate(-90 60 60)"><title>' + esc(s) + '：' + v + ' 道</title></circle>' +
+          '<text class="r330-donut-pct" data-r330-pct="' + key + '" x="' + tx + '" y="' + ty + '" text-anchor="middle">' + Math.round(v / total * 100) + '%</text>';
+      }
+      offset += len;
+      return out;
+    }).join('');
+    return '<svg viewBox="0 0 120 120" role="img" aria-label="当月错题学科分布">' +
+      '<circle cx="60" cy="60" r="' + r + '" fill="none" stroke="var(--tone-150)" stroke-width="16"></circle>' + segs +
+      '<text x="60" y="58" text-anchor="middle" class="r330-donut-center">' + total + '</text>' +
+      '<text x="60" y="74" text-anchor="middle" class="r330-donut-sub">道错题</text></svg>';
+  }
+  function r330PieSvg(items){
+    const total = items.reduce(function(a, x){ return a + x[0]; }, 0);
+    if(!total) return '<svg viewBox="0 0 120 120" role="img" aria-label="暂无错因数据"><circle cx="60" cy="60" r="48" fill="var(--tone-150)"/></svg>';
+    let a0 = -Math.PI / 2;
+    const paths = items.map(function(x){
+      const a1 = a0 + x[0] / total * 2 * Math.PI;
+      const large = (a1 - a0) > Math.PI ? 1 : 0;
+      const x0 = (60 + 48 * Math.cos(a0)).toFixed(2), y0 = (60 + 48 * Math.sin(a0)).toFixed(2);
+      const x1 = (60 + 48 * Math.cos(a1)).toFixed(2), y1 = (60 + 48 * Math.sin(a1)).toFixed(2);
+      const d = 'M 60 60 L ' + x0 + ' ' + y0 + ' A 48 48 0 ' + large + ' 1 ' + x1 + ' ' + y1 + ' Z';
+      a0 = a1;
+      return '<path d="' + d + '" fill="' + x[1] + '"><title>' + esc(x[2]) + '：' + x[0] + ' 道</title></path>';
+    }).join('');
+    return '<svg viewBox="0 0 120 120" role="img" aria-label="错因分布">' + paths + '</svg>';
+  }
+  function r330AnalysisHtml(items){
+    const subs = r330Subjects();
+    const okAll = items.filter(function(x){ return x.status === 'mastered'; }).length;
+    const subjectRows = subs.map(function(s){
+      const pool = items.filter(function(x){ return x.subject === s; });
+      const ok = pool.filter(function(x){ return x.status === 'mastered'; }).length;
+      return { s:s, total:pool.length, ok:ok, pct:pool.length ? Math.round(ok / pool.length * 100) : 0 };
+    });
+    const subjectChart = '<div class="r330-h-chart">' + subjectRows.map(function(r){
+      return '<div class="r330-h-row"><span class="r330-h-lab">' + esc(r.s) + '</span>' +
+        '<span class="r330-h-track"><i style="width:' + r.pct + '%;background:' + r330Color(r.s)[1] + '"></i></span>' +
+        '<span class="r330-h-pct">' + r.ok + '/' + r.total + ' · ' + r.pct + '%</span></div>';
+    }).join('') + '</div>';
+
+    /* 按周：近 8 周，每周按学科分色柱 */
+    const weeks = {};
+    for(let i = 7; i >= 0; i--){
+      const d = new Date(); d.setDate(d.getDate() - i * 7);
+      weeks[r330WeekKey(d.getTime())] = {};
+    }
+    items.forEach(function(it){
+      const wk = r330WeekKey(it.createdAt);
+      if(weeks[wk]) weeks[wk][it.subject] = (weeks[wk][it.subject] || 0) + 1;
+    });
+    const weekKeys = Object.keys(weeks).sort();
+    const maxWeek = Math.max(1, ...weekKeys.map(function(k){
+      return subs.reduce(function(a, s){ return a + (weeks[k][s] || 0); }, 0);
+    }));
+    const weekChart = weekKeys.map(function(k){
+      const cols = subs.map(function(s){
+        const v = weeks[k][s] || 0;
+        return '<div class="r330-v-col" title="' + esc(s) + '：' + v + '"><span class="r330-v-val">' + (v || '') + '</span>' +
+          '<i class="r330-v-bar" style="height:' + (v ? Math.max(4, Math.round(v / maxWeek * 100)) : 2) + '%;background:' + r330Color(s)[1] + '"></i></div>';
+      }).join('');
+      return '<div class="r330-v-group"><div class="r330-v-bars">' + cols + '</div><span class="r330-v-label">' + r330Md(k) + '</span></div>';
+    }).join('');
+    const legend = subs.map(function(s){
+      return '<span><i style="background:' + r330Color(s)[1] + '"></i>' + esc(s) + '</span>';
+    }).join('');
+
+    /* 按月：每月一个环形图 */
+    const months = {};
+    items.forEach(function(it){
+      const k = r330Date(it.createdAt).slice(0, 7);
+      if(!/^\d{4}-\d{2}$/.test(k)) return;
+      (months[k] = months[k] || {})[it.subject] = ((months[k] || {})[it.subject] || 0) + 1;
+    });
+    const monthKeys = Object.keys(months).sort();
+    const monthChart = monthKeys.length ? monthKeys.map(function(k, i){
+      const total = subs.reduce(function(a, s){ return a + (months[k][s] || 0); }, 0);
+      return '<div class="r330-donut-item">' + r330DonutSvg(months[k], total, i) +
+        '<span class="r330-donut-label">' + Number(k.slice(0, 4)) + '年' + Number(k.slice(5)) + '月</span></div>';
+    }).join('') : '<div class="r330-empty">录入错题后这里会出现月度分布。</div>';
+
+    /* 错因饼图：每科一张 */
+    const reasonPalette = ['var(--z-home-main)','var(--tone-700)','var(--z-math-main)','var(--z-baike-main)','var(--z-xs-main)','var(--tone-500)'];
+    const reasonChart = subs.map(function(s, si){
+      const pool = items.filter(function(x){ return x.subject === s; });
+      const map = {};
+      pool.forEach(function(x){ const k = x.reason || '其他'; map[k] = (map[k] || 0) + 1; });
+      const keys = Object.keys(map).sort(function(a, b){ return map[b] - map[a]; });
+      const pieItems = keys.map(function(k, i){ return [map[k], reasonPalette[i % reasonPalette.length], k]; });
+      const leg = keys.map(function(k, i){
+        return '<span><i style="background:' + reasonPalette[i % reasonPalette.length] + '"></i>' + esc(k) + ' ' + map[k] + ' 道 · ' + Math.round(map[k] / pool.length * 100) + '%</span>';
+      }).join('');
+      return '<div class="r330-pie-item">' + r330PieSvg(pieItems) +
+        '<div class="r330-pie-legend"><span class="r330-pie-subject">' + esc(s) + '</span>' + leg + '</div></div>';
+    }).join('');
+
+    const weakest = subjectRows.slice().sort(function(a, b){ return a.pct - b.pct; })[0];
+    const info = subjectRows.length > 1 && weakest
+      ? '目前掌握率最低的是「' + weakest.s + '」（' + weakest.ok + '/' + weakest.total + '），建议优先巩固这一科。'
+      : '继续录入错题并完成订正，就能看到更完整的学情分析。';
+    return '<h2>数据分析</h2>' +
+      '<p class="r330-desc">共收录 ' + items.length + ' 道错题，已掌握 ' + okAll + ' 道；横条越长，说明这一科掌握得越好。</p>' +
+      '<div class="r330-anchor-row">' +
+        [['r330PanelSubject','掌握情况'],['r330PanelWeek','按周统计'],['r330PanelMonth','按月统计'],['r330PanelReason','错因分析']]
+          .map(function(a){ return '<button type="button" data-r330-anchor="' + a[0] + '">' + a[1] + '</button>'; }).join('') +
+      '</div>' +
+      '<div class="r330-panel" id="r330PanelSubject"><h3>各学科掌握情况</h3>' + subjectChart + '</div>' +
+      '<div class="r330-charts-row">' +
+        '<div class="r330-panel" id="r330PanelWeek"><h3>按周统计</h3><p class="r330-chart-note">每周按语文、数学、英语分开统计新增错题</p>' +
+          '<div class="r330-v-chart">' + weekChart + '</div><div class="r330-chart-legend">' + legend + '</div></div>' +
+        '<div class="r330-panel" id="r330PanelMonth"><h3>按月统计</h3><p class="r330-chart-note">中间是当月错题总数，点色块查看该学科占比</p>' +
+          '<div class="r330-donut-row">' + monthChart + '</div><div class="r330-chart-legend">' + legend + '</div></div>' +
+      '</div>' +
+      '<div class="r330-panel" id="r330PanelReason"><h3>各学科错因分析</h3><p class="r330-chart-note">每个学科一张饼图，看看错因都出在哪里</p>' +
+        '<div class="r330-pie-row">' + reasonChart + '</div></div>' +
+      '<div class="r330-blue-card">' + esc(info) + '</div>';
+  }
+
+  /* ---------- 编辑弹窗：菜单 → 表单 ---------- */
+  function r330NewForm(){
+    const today = r326Today();
+    return { id:'', subject:_r330Subject, type:r330Types(_r330Subject)[0], date:today,
+      status:'review', reason:'', kp:'', wrong:'', fix:'', imgs:[], show:false };
+  }
+  function r330ModalHtml(){
+    const f = _r330Form;
+    let inner = '';
+    if(!f || !f.show){
+      inner = '<div id="r330Menu"><h3>编辑错题</h3>' +
+        '<div class="r330-menu-row"><button type="button" class="pbtn primary" data-r330-form-mode="edit">修改已有错题</button>' +
+        '<button type="button" class="pbtn primary" data-r330-form-mode="add">＋ 添加错题</button></div>' +
+        '<button type="button" class="pbtn r330-menu-cancel" data-r330-modal-close>取消</button></div>';
+    } else {
+      const subs = r330Subjects();
+      const types = r330Types(f.subject);
+      if(types.indexOf(f.type) < 0) f.type = types[0];
+      const pool = r330Items().filter(function(x){ return x.subject === f.subject; });
+      const pick = f.id || (pool.length ? 'pick' : '');
+      const subjChips = subs.map(function(s){
+        return '<button type="button" class="r330-opt' + (f.subject === s ? ' active' : '') + '" data-r330-f-sub="' + esc(s) + '">' + esc(s) + '</button>';
+      }).join('');
+      const statusChips = [['review','待复习'],['mastered','已掌握']].map(function(x){
+        return '<button type="button" class="r330-opt' + (f.status === x[0] ? ' active' : '') + '" data-r330-f-status="' + x[0] + '">' + x[1] + '</button>';
+      }).join('');
+      const reasonChips = r330ReasonOpts().map(function(r){
+        return '<button type="button" class="r330-opt' + (f.reason === r ? ' active' : '') + '" data-r330-f-reason="' + esc(r) + '">' + esc(r) + '</button>';
+      }).join('');
+      const thumbs = (f.imgs || []).map(function(ref, i){
+        const src = r326ImgSrc(ref);
+        return '<span class="r330-thumb">' + (src ? '<img src="' + src + '" alt="凭证' + (i + 1) + '">' : '') +
+          '<button type="button" data-r330-imgdel="' + i + '">×</button></span>';
+      }).join('');
+      inner = '<h3>' + (f.id ? '修改错题' : '添加错题') + '</h3>' +
+        '<form id="r330Form" novalidate>' +
+          (pick ? '<div class="r330-field' + (f.id ? ' hidden' : '') + '" id="r330PickWrap"><label>选择要修改的错题（' + esc(f.subject) + '）</label>' +
+            '<select id="r330Pick">' + pool.map(function(x){
+              return '<option value="' + esc(x.id) + '">' + esc(x.title) + '（' + esc(r330Date(x.createdAt)) + '）</option>';
+            }).join('') + '</select></div>' : '') +
+          '<div class="r330-field"><label>学科</label><div class="r330-opt-group">' + subjChips + '</div></div>' +
+          '<div class="r330-form-row">' +
+            '<div class="r330-field"><label>题型</label>' +
+              '<div class="r330-pick-wrap"><button type="button" class="r330-pick-field" data-r330-type-field aria-expanded="' + _r330TypeOpen + '">' +
+                '<span>' + esc(f.type) + '</span><span aria-hidden="true">▾</span></button>' +
+                '<div class="r330-pick-pop' + (_r330TypeOpen ? '' : ' hidden') + '" id="r330TypePop">' +
+                  types.map(function(t){ return '<button type="button" data-r330-f-type="' + esc(t) + '">' + esc(t) + '</button>'; }).join('') +
+                '</div></div></div>' +
+            '<div class="r330-field"><label>状态</label><div class="r330-opt-group">' + statusChips + '</div></div>' +
+          '</div>' +
+          '<div class="r330-field"><label for="r330FTitle">题目名称</label><input id="r330FTitle" maxlength="400" value="' + esc(f.title || '') + '" placeholder="如：两位数乘法竖式"></div>' +
+          '<div class="r330-form-row">' +
+            '<div class="r330-field"><label>添加日期</label><button type="button" class="r330-pick-field" data-r330-date-field>' +
+              '<span>' + esc(f.date || '请选择日期') + '</span><span aria-hidden="true">▦</span></button></div>' +
+            '<div class="r330-field"><label for="r330FKp">知识点标签（逗号分隔）</label><input id="r330FKp" maxlength="120" value="' + esc(f.kp || '') + '" placeholder="如：乘法,进位"></div>' +
+          '</div>' +
+          '<div class="r330-field"><label>错因分类</label><div class="r330-opt-group">' + reasonChips + '</div></div>' +
+          '<div class="r330-field"><label for="r330FWrong">我的错因</label><textarea id="r330FWrong" maxlength="400" placeholder="写写当时为什么做错">' + esc(f.wrong || '') + '</textarea></div>' +
+          '<div class="r330-field"><label for="r330FFix">巩固思路</label><textarea id="r330FFix" maxlength="400" placeholder="写写以后怎么避免再错">' + esc(f.fix || '') + '</textarea></div>' +
+          '<div class="r330-form-row">' +
+            '<div class="r330-field"><label for="r330FMyAns">我的答案</label><input id="r330FMyAns" maxlength="200" value="' + esc(f.myAnswer || '') + '" placeholder="写错的答案"></div>' +
+            '<div class="r330-field"><label for="r330FRightAns">正确答案</label><input id="r330FRightAns" maxlength="200" value="' + esc(f.rightAnswer || '') + '" placeholder="用于自动批改"></div>' +
+          '</div>' +
+          '<div class="r330-field"><label class="r330-file">题目照片（最多 4 张，自动压缩）<input type="file" id="r330Files" accept="image/*" multiple></label>' +
+            (thumbs ? '<div class="r330-thumbs">' + thumbs + '</div>' : '') + '</div>' +
+          '<div class="r330-menu-row"><button type="submit" class="pbtn primary">保存</button>' +
+            '<button type="button" class="pbtn" data-r330-modal-close>取消</button></div>' +
+        '</form>';
+    }
+    return '<div class="r330-overlay" id="r330Modal" hidden><div class="r330-modal" role="dialog" aria-modal="true" aria-label="编辑错题">' + inner + '</div></div>';
+  }
+  /* ---------- 年月日滚轮 ---------- */
+  function r330WheelHtml(){
+    const w = _r330Wheel;
+    const years = [];
+    const nowY = new Date().getFullYear();
+    for(let y = nowY - 8; y <= nowY + 1; y++) years.push(y);
+    if(years.indexOf(w.y) < 0) years.push(w.y);
+    years.sort(function(a, b){ return a - b; });
+    const months = []; for(let m = 1; m <= 12; m++) months.push(m);
+    const days = []; const dim = new Date(w.y, w.m, 0).getDate();
+    for(let d = 1; d <= dim; d++) days.push(d);
+    const col = function(id, list, sel, suffix){
+      return '<div class="r330-wheel-col" id="' + id + '">' + list.map(function(v){
+        return '<button type="button" data-r330-wheel-v="' + v + '" class="' + (v === sel ? ' sel' : '') + '">' + v + suffix + '</button>';
+      }).join('') + '</div>';
+    };
+    return '<div class="r330-overlay" id="r330Wheel" hidden><div class="r330-wheel-box" role="dialog" aria-modal="true" aria-label="选择添加日期">' +
+      '<h3>选择添加日期</h3><div class="r330-wheel-cols">' +
+        col('r330WheelYear', years, w.y, '年') + col('r330WheelMonth', months, w.m, '月') + col('r330WheelDay', days, w.d, '日') +
+      '</div><div class="r330-menu-row"><button type="button" class="pbtn" data-r330-wheel-close>取消</button>' +
+        '<button type="button" class="pbtn primary" data-r330-wheel-ok>确认</button></div></div></div>';
+  }
+
+  /* ---------- 表单动作 ---------- */
+  function r330OpenModal(mode){
+    if(!_r330Form) _r330Form = r330NewForm();
+    if(mode === 'menu') _r330Form.show = false;
+    else _r330Form.show = true;
+    r330Render();
+    const box = document.getElementById('r330Modal');
+    if(box) box.hidden = false;
+  }
+  function r330CloseModal(){
+    const box = document.getElementById('r330Modal');
+    if(box) box.hidden = true;
+    _r330TypeOpen = false;
+    _r330Form = null;
+  }
+  function r330ShowForm(mode){
+    if(!_r330Form) _r330Form = r330NewForm();
+    _r330Form.show = true;
+    if(mode === 'edit'){
+      const pool = r330Items().filter(function(x){ return x.subject === _r330Form.subject; });
+      if(!pool.length){ r330Toast('当前学科还没有错题，先添加一道吧'); return; }
+      const first = pool[0];
+      r330FillForm(first);
+    }else{
+      const keepSubject = _r330Form.subject;
+      _r330Form = r330NewForm();
+      _r330Form.subject = keepSubject;
+      _r330Form.show = true;
+    }
+    _r330TypeOpen = false;
+    r330Render();
+    const box = document.getElementById('r330Modal');
+    if(box) box.hidden = false;
+  }
+  function r330FillForm(it){
+    if(!it || !_r330Form) return;
+    const f = _r330Form;
+    f.id = it.id; f.subject = it.subject; f.type = it.type || r330Types(it.subject)[0];
+    f.date = r330Date(it.createdAt) || r326Today();
+    f.status = it.status === 'mastered' ? 'mastered' : 'review';
+    f.reason = it.reason || ''; f.kp = it.kp || '';
+    f.wrong = it.wrongNote || ''; f.fix = it.fixNote || '';
+    f.myAnswer = it.myAnswer || ''; f.rightAnswer = it.rightAnswer || '';
+    f.imgs = (it.imgs || []).slice();
+    f.title = it.title || '';
+  }
+  function r330FormValue(id){
+    const el = document.getElementById(id);
+    return el ? String(el.value || '') : '';
+  }
+  /* 表单里的点选 / 滚轮操作会整块重绘，先把用户已输的文字收进 state，避免内容丢失 */
+  function r330SyncFormInputs(){
+    const f = _r330Form;
+    if(!f || !f.show) return;
+    [['r330FTitle','title'],['r330FKp','kp'],['r330FWrong','wrong'],['r330FFix','fix'],
+      ['r330FMyAns','myAnswer'],['r330FRightAns','rightAnswer']].forEach(function(p){
+      const el = document.getElementById(p[0]);
+      if(el) f[p[1]] = String(el.value || '');
+    });
+  }
+  function r330SaveForm(){
+    const f = _r330Form;
+    if(!f) return;
+    const title = r330FormValue('r330FTitle').trim();
+    if(!title){ r330Toast('题目名称不能为空，填一下再保存～'); return; }
+    const kp = r330FormValue('r330FKp').trim();
+    const wrong = r330FormValue('r330FWrong').trim();
+    const fix = r330FormValue('r330FFix').trim();
+    const myAns = r330FormValue('r330FMyAns').trim();
+    const rightAns = r330FormValue('r330FRightAns').trim();
+    const ts = (function(d){
+      const t = Date.parse(String(d || '') + 'T12:00:00');
+      return isFinite(t) ? t : Date.now();
+    })(f.date);
+    const data = { subject:f.subject, type:f.type, title:title, createdAt:ts,
+      reason:f.reason || '', kp:kp, wrongNote:wrong, fixNote:fix,
+      myAnswer:myAns, rightAnswer:rightAns, imgs:(f.imgs || []).slice(),
+      source:(f.imgs && f.imgs.length) ? 'photo' : 'manual' };
+    let id = f.id;
+    if(id){
+      const r = S.r326Update(id, data);
+      if(!r.ok){ r330Toast(r.msg || '保存失败'); return; }
+    }else{
+      const r = S.r326Add(data);
+      if(!r.ok){ r330Toast(r.msg || '录入失败'); return; }
+      id = r.item && r.item.id;
+    }
+    if(id){
+      const cur = r330Items().filter(function(x){ return x.id === id; })[0];
+      const want = f.status === 'mastered' ? 'mastered' : (cur && cur.status === 'fixed' ? 'fixed' : 'pending');
+      if(!cur || cur.status !== want) S.r326SetStatus(id, want === 'fixed' ? 'pending' : want);
+    }
+    _r330Expanded = id;
+    r330CloseModal();
+    r330Render();
+    try{ renderToday(); }catch(e){}
+    r330Toast(id ? '修改已保存！' : '新错题已添加！');
+  }
+  function r330WheelOpen(){
+    const f = _r330Form;
+    const parts = String((f && f.date) || r326Today()).split('-');
+    _r330Wheel = { y:Number(parts[0]) || new Date().getFullYear(), m:Number(parts[1]) || 1, d:Number(parts[2]) || 1 };
+    const box = document.getElementById('r330Wheel');
+    if(!box){ r330Render(); }
+    const el = document.getElementById('r330Wheel');
+    if(el) el.hidden = false;
+    /* 滚动到当前选项附近 */
+    ['r330WheelYear','r330WheelMonth','r330WheelDay'].forEach(function(id){
+      const col = document.getElementById(id);
+      if(!col) return;
+      const cur = col.querySelector('.sel');
+      if(cur && col.scrollTop === 0) col.scrollTop = Math.max(0, cur.offsetTop - col.clientHeight / 2);
+    });
+  }
+  function r330WheelRebuild(){
+    const box = document.getElementById('r330Wheel');
+    if(box){
+      const html = r330WheelHtml();
+      const tmp = document.createElement('div');
+      tmp.innerHTML = html;
+      const fresh = tmp.firstChild;
+      box.parentNode.replaceChild(fresh, box);
+      fresh.hidden = false;
+    }
+  }
+  function r330WheelOk(){
+    const f = _r330Form;
+    if(f) f.date = _r330Wheel.y + '-' + String(_r330Wheel.m).padStart(2, '0') + '-' + String(_r330Wheel.d).padStart(2, '0');
+    const el = document.getElementById('r330Wheel');
+    if(el) el.hidden = true;
+    r330Render();
+    const modal = document.getElementById('r330Modal');
+    if(modal) modal.hidden = false;
+  }
+
+  /* ---------- 列表动作 ---------- */
+  function r330SetStatus(id, status){
+    const r = S.r326SetStatus(id, status);
+    if(!r || !r.ok){ r330Toast('状态更新失败'); return; }
+    r330Toast(status === 'mastered' ? '已标记为「已掌握」，继续加油！' : '已改回「待复习」，记得安排重做。');
+    r330Render();
+    try{ renderToday(); renderHome(); }catch(e){}
+  }
+  function r330Check(id){
+    const inp = document.querySelector('[data-r330-ans="' + id + '"]');
+    const val = inp ? inp.value : '';
+    if(!String(val).trim()){ r330Toast('先写下你的答案再批改'); return; }
+    const r = S.r326Answer(id, val, null);
+    r330Render();
+    const fb = document.getElementById('r330Fb_' + id);
+    if(fb){
+      fb.hidden = false;
+      fb.className = 'r330-fb ' + (r && r.correct ? 'ok' : 'no');
+      fb.textContent = r && r.correct
+        ? ('✅ 订正正确' + (r.status === 'mastered' ? '，连续两次答对 → 已掌握' : '，下次复习 ' + r.nextReview))
+        : '❌ 还是不对，答案已隐藏，再想一想；复习周期已重置';
+    }
+    r326Badge();
+    try{ renderToday(); }catch(e){}
+  }
+  function r330Mark(id, ok){
+    const r = S.r326Answer(id, '', ok);
+    r330Toast(r && r.correct ? '已标记订正正确' : '已标记为待订正');
+    r330Render();
+    try{ renderToday(); }catch(e){}
+  }
+  function r330Export(ids){
+    let rows = [];
+    if(ids && ids.length){
+      rows = r330Items().filter(function(x){ return ids.indexOf(String(x.id)) >= 0; }).map(function(x){
+        return { 学科:x.subject, 题干:x.title, 我的答案:x.myAnswer || '', 正确答案:x.rightAnswer || '',
+          错因:x.reason || '', 知识点:x.kp || '', 题型:x.type || '', 我的错因:x.wrongNote || '', 巩固思路:x.fixNote || '',
+          状态:r326StatusLabel(x.status), 来源:r326SrcLabel(x.source), 复习次数:x.reviewCount || 0, 下次复习:x.nextReview || '' };
+      });
+    }else{
+      rows = S.r326ExportRows(_r330Review ? '' : _r330Subject);
+    }
+    if(!rows.length){ r330Toast('没有可导出的错题'); return; }
+    r326DownloadCsv(rows, (_r330Review ? '今日复习' : _r330Subject) + '-错题集');
+  }
+  function r330BatchDel(){
+    const ids = Object.keys(_r330Picked).filter(function(k){ return _r330Picked[k]; });
+    if(!ids.length){ r330Toast('先勾选要删除的错题'); return; }
+    r307DangerConfirm('将删除所选 ' + ids.length + ' 道错题，删除后不可恢复。\n其它错题与打卡记录不受影响。', function(){
+      S.r326Del(ids);
+      _r330Picked = {};
+      r330Toast('已删除 ' + ids.length + ' 道');
+      r330Render();
+      try{ renderToday(); }catch(e){}
+    }, '批量删除错题');
+  }
+
+  /* ---------- 事件委托（一次绑定，重渲染不重复） ---------- */
+  function r330Bind(){
+    const root = document.getElementById('r326Root');
+    if(!root || root.dataset.r330Bound) return;
+    root.dataset.r330Bound = '1';
+    root.addEventListener('click', function(e){
+      const t = e.target;
+      if(!t || !t.closest) return;
+      if(t.closest('.r330-pick')) return;
+      if(t.id === 'r330Modal' || t.id === 'r330Wheel'){ if(t.id === 'r330Modal') r330CloseModal(); else t.hidden = true; return; }
+      r330SyncFormInputs();
+      const hit = function(a){ return t.closest('[' + a + ']'); };
+      let el;
+      if((el = hit('data-r330-view'))){ _r330View = el.getAttribute('data-r330-view'); _r330Review = false; r330Render(); return; }
+      if((el = hit('data-r330-subject'))){ _r330Subject = el.getAttribute('data-r330-subject'); _r330Review = false; _r330Filter = 'all'; _r330Picked = {}; r330Render(); return; }
+      if(hit('data-r330-review')){
+        _r330Review = !_r330Review; _r330Skipped = []; _r330Expanded = null; r330Render();
+        const info = document.getElementById('r330Info');
+        if(info) info.textContent = _r330Review ? '从待复习里挑最早的五道；标记掌握或点「下一道」继续。' : '';
+        return;
+      }
+      if((el = hit('data-r330-filter'))){ _r330Filter = el.getAttribute('data-r330-filter'); r330Render(); return; }
+      if((el = hit('data-r330-toggle'))){ const id = el.getAttribute('data-r330-toggle'); _r330Expanded = (_r330Expanded === id ? null : id); r330Render(); return; }
+      if((el = hit('data-r330-set'))){ r330SetStatus(el.getAttribute('data-r330-set'), el.getAttribute('data-status')); return; }
+      if((el = hit('data-r330-next'))){ const id = el.getAttribute('data-r330-next'); if(_r330Skipped.indexOf(id) < 0) _r330Skipped.push(id); r330Render(); return; }
+      if((el = hit('data-r330-check'))){ r330Check(el.getAttribute('data-r330-check')); return; }
+      if((el = hit('data-r330-mark'))){ r330Mark(el.getAttribute('data-r330-mark'), el.getAttribute('data-ok') === '1'); return; }
+      if((el = hit('data-r330-reveal'))){ const box = document.getElementById('r330Right_' + el.getAttribute('data-r330-reveal')); if(box) box.hidden = !box.hidden; return; }
+      if((el = hit('data-r330-edit'))){ const id = el.getAttribute('data-r330-edit'); const it = r330Items().filter(function(x){ return x.id === id; })[0]; if(it){ _r330Form = r330NewForm(); r330FillForm(it); r330OpenModal('form'); } return; }
+      if((el = hit('data-r330-del'))){ const id = el.getAttribute('data-r330-del'); r307DangerConfirm('将删除这道错题，删除后不可恢复。\n其它错题与打卡记录不受影响。', function(){ S.r326Del(id); r330Render(); r330Toast('已删除'); try{ renderToday(); }catch(e){} }, '删除错题'); return; }
+      if(hit('data-r330-empty-add')){ _r330Form = r330NewForm(); r330OpenModal('form'); return; }
+      if(hit('data-r330-edit-open')){ _r330Form = r330NewForm(); r330OpenModal('menu'); return; }
+      if((el = hit('data-r330-form-mode'))){ r330ShowForm(el.getAttribute('data-r330-form-mode')); return; }
+      if(hit('data-r330-modal-close')){ r330CloseModal(); return; }
+      if((el = hit('data-r330-f-sub'))){
+        const f = _r330Form; if(!f) return;
+        f.subject = el.getAttribute('data-r330-f-sub'); f.type = r330Types(f.subject)[0];
+        r330Render(); const m = document.getElementById('r330Modal'); if(m) m.hidden = false; return;
+      }
+      if((el = hit('data-r330-f-type'))){
+        const f = _r330Form; if(!f) return;
+        f.type = el.getAttribute('data-r330-f-type'); _r330TypeOpen = false;
+        r330Render(); const m = document.getElementById('r330Modal'); if(m) m.hidden = false; return;
+      }
+      if(hit('data-r330-type-field')){ _r330TypeOpen = !_r330TypeOpen; const pop = document.getElementById('r330TypePop'); if(pop) pop.hidden = !_r330TypeOpen; return; }
+      if((el = hit('data-r330-f-status'))){ if(_r330Form) _r330Form.status = el.getAttribute('data-r330-f-status'); r330Render(); const m = document.getElementById('r330Modal'); if(m) m.hidden = false; return; }
+      if((el = hit('data-r330-f-reason'))){ if(_r330Form) _r330Form.reason = el.getAttribute('data-r330-f-reason'); r330Render(); const m = document.getElementById('r330Modal'); if(m) m.hidden = false; return; }
+      if(hit('data-r330-date-field')){ r330WheelOpen(); return; }
+      if((el = hit('data-r330-wheel-v'))){
+        const v = Number(el.getAttribute('data-r330-wheel-v'));
+        if(el.parentNode.id === 'r330WheelYear'){ _r330Wheel.y = v; }
+        else if(el.parentNode.id === 'r330WheelMonth'){ _r330Wheel.m = v; }
+        else { _r330Wheel.d = v; }
+        const dim = new Date(_r330Wheel.y, _r330Wheel.m, 0).getDate();
+        if(_r330Wheel.d > dim) _r330Wheel.d = dim;
+        r330WheelRebuild();
+        return;
+      }
+      if((el = hit('data-r330-seg'))){
+        const svg = el.closest ? el.closest('svg') : null;
+        if(svg){
+          const txt = svg.querySelector('[data-r330-pct="' + el.getAttribute('data-r330-seg') + '"]');
+          const was = txt && txt.classList.contains('show');
+          svg.querySelectorAll('.r330-donut-pct').forEach(function(x){ x.classList.remove('show'); });
+          if(txt && !was) txt.classList.add('show');
+        }
+        return;
+      }
+      if(hit('data-r330-wheel-ok')){ r330WheelOk(); return; }
+      if(hit('data-r330-wheel-close')){ const w = document.getElementById('r330Wheel'); if(w) w.hidden = true; return; }
+      if((el = hit('data-r330-imgdel'))){ if(_r330Form){ _r330Form.imgs.splice(Number(el.getAttribute('data-r330-imgdel')), 1); r330Render(); const m = document.getElementById('r330Modal'); if(m) m.hidden = false; } return; }
+      if((el = hit('data-r330-anchor'))){ const p = document.getElementById(el.getAttribute('data-r330-anchor')); if(p && p.scrollIntoView) p.scrollIntoView({ behavior:'smooth', block:'start' }); return; }
+      if((el = hit('data-r330-tagsub'))){ _r330TagSubject = el.getAttribute('data-r330-tagsub'); r330Render(); return; }
+      if((el = hit('data-r330-gotag'))){
+        _r330Subject = _r330TagSubject; _r330Search = el.getAttribute('data-r330-gotag');
+        _r330View = 'mistakes'; _r330Review = false; r330Render(); return;
+      }
+      if((el = hit('data-r330-goto'))){
+        const id = el.getAttribute('data-r330-goto');
+        const it = r330Items().filter(function(x){ return x.id === id; })[0];
+        if(it){ _r330Subject = it.subject; _r330Search = ''; _r330Expanded = id; _r330View = 'mistakes'; _r330Review = false; r330Render(); }
+        return;
+      }
+      if(hit('data-r330-export')){ r330Export(); return; }
+      if(hit('data-r330-batch-export')){ r330Export(Object.keys(_r330Picked).filter(function(k){ return _r330Picked[k]; })); return; }
+      if(hit('data-r330-batch-clear')){ _r330Picked = {}; r330Render(); return; }
+      if(hit('data-r330-batch-del')){ r330BatchDel(); return; }
+      if(hit('data-r330-quick')){ _r326Subject = _r330Subject; r326StartQuick(_r330Subject); return; }
+      if(hit('data-r330-paper')){ _r326Subject = _r330Subject; r326Paper(); return; }
+    });
+    root.addEventListener('input', function(e){
+      const t = e.target;
+      if(t && t.id === 'r330Search'){
+        _r330Search = String(t.value || '');
+        const list = document.getElementById('r330List');
+        if(list){
+          const items = r330Items();
+          list.innerHTML = _r330Review ? (r330ReviewList(items).map(r330ReviewCardHtml).join('') || '<div class="r330-empty">没有符合条件的错题</div>')
+            : (r330VisibleItems(items).map(r330CardHtml).join('') || '<div class="r330-empty">没有符合条件的错题</div>');
+          const meta = document.getElementById('r330ListMeta');
+          if(meta) meta.textContent = (_r330Review ? '今日复习' : _r330Subject + '共 ' + r330VisibleItems(items).length + ' 道错题') + ' · 关键词「' + _r330Search + '」';
+        }
+      }
+    });
+    root.addEventListener('change', function(e){
+      const t = e.target;
+      if(!t) return;
+      if(t.hasAttribute && t.hasAttribute('data-r330-pick')){
+        const id = t.getAttribute('data-r330-pick');
+        if(t.checked) _r330Picked[id] = 1; else delete _r330Picked[id];
+        r330Render(); return;
+      }
+      if(t.id === 'r330Files'){
+        const files = Array.prototype.slice.call(t.files || []);
+        if(!files.length) return;
+        const room = 4 - ((_r330Form && _r330Form.imgs.length) || 0);
+        if(room <= 0){ r330Toast('最多 4 张图片'); return; }
+        files.slice(0, room).forEach(function(f){
+          r326Compress(f, function(dataUrl){
+            if(_r330Form && dataUrl){ r330SyncFormInputs(); _r330Form.imgs.push(r326PutImg(dataUrl)); r330Render(); const m = document.getElementById('r330Modal'); if(m) m.hidden = false; }
+          });
+        });
+        t.value = ''; return;
+      }
+      if(t.id === 'r330Pick' && _r330Form){
+        const it = r330Items().filter(function(x){ return x.id === t.value; })[0];
+        if(it){ r330FillForm(it); r330Render(); const m = document.getElementById('r330Modal'); if(m) m.hidden = false; }
+      }
+    });
+    root.addEventListener('submit', function(e){
+      if(e.target && e.target.id === 'r330Form'){ e.preventDefault(); r330SaveForm(); }
+    });
+  }
+
   /* R326：今日任务卡数据（与错题集双向互通） */
   function r326SyncTaskCard(){
     try{ r326Badge(); }catch(e){}
@@ -64692,7 +65906,26 @@ function init(){
     window.__r326Check = r326Check;
     window.__r326StartQuick = r326StartQuick;
     window.__r326Self = r326Self;
-    window.__r326Tab = function(s, t){ if(s) _r326Subject = s; if(t) _r326Tab = t; renderMistakes(); };
+    window.__r326Tab = function(s, t){
+      if(s) _r330Subject = s;
+      if(t === 'stats') _r330View = 'analysis';
+      else if(t === 'review'){ _r330View = 'mistakes'; _r330Review = true; }
+      else { _r330View = 'mistakes'; _r330Review = false; }
+      r330Render();
+    };
+    /* R330 错题集重塑探针钩子 */
+    window.__r330Render = r330Render;
+    window.__r330State = function(){ return { view:_r330View, subject:_r330Subject, search:_r330Search,
+      review:_r330Review, expanded:_r330Expanded, filter:_r330Filter }; };
+    window.__r330SetView = function(v){ _r330View = v; _r330Review = false; r330Render(); };
+    window.__r330SetSubject = function(s){ _r330Subject = s; _r330Review = false; r330Render(); };
+    window.__r330Search = function(kw){ _r330Search = String(kw || ''); r330Render(); };
+    window.__r330Form = function(){ return _r330Form ? Object.assign({}, _r330Form) : null; };
+    window.__r330OpenForm = function(mode){ _r330Form = r330NewForm(); r330OpenModal(mode || 'form'); };
+    window.__r330Save = r330SaveForm;
+    window.__r330Items = r330Items;
+    window.__r330SetStatus = r330SetStatus;
+    window.__r330Wheel = function(y, m, d){ _r330Wheel = { y:y, m:m, d:d }; };
   }catch(e){}
   /* R327-1：全局按压反馈 —— 手指 / 鼠标按下当帧就给视觉回弹，
      不等 click 事件、也不依赖任何业务 handler，避免「按下去像没反应」。 */
