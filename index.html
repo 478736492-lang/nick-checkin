@@ -12080,6 +12080,37 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
   .r331-mini-tools .pbtn{flex:1 1 auto;justify-content:center}
 }
 
+/* ================= R332 ================= */
+/* R332-5：设置中心不再作为一级导航入口（按钮保留供 goPage 复用，仅视觉隐藏） */
+.nav-btn.nav-btn-hidden{display:none !important}
+
+/* R332-4：错题集学科主题卡尺寸对齐大阅读板块标题卡（同高、同圆角、同字号字重） */
+.r330-subject{min-height:44px;box-sizing:border-box;padding:8px 14px;border-radius:14px;
+  font-size:14px;font-weight:900;line-height:1.5;gap:8px}
+.r330-subject:hover{transform:translateY(-1px)}
+
+/* R332-1.2：英语写作 · 作文300篇 */
+.r332-e300-chips{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 12px}
+.r332-e300-chip{border:1px solid var(--tone-200);background:#fff;color:var(--tone-800);
+  border-radius:999px;padding:5px 14px;font-size:12.5px;font-weight:800;font-family:inherit;
+  cursor:pointer;touch-action:manipulation;transition:background .15s,color .15s,border-color .15s}
+.r332-e300-chip.on{background:var(--tone-500);border-color:var(--tone-500);color:#fff}
+.r332-e300-count{margin-left:auto;font-size:12px;color:var(--muted)}
+.r332-e300-lv{font-size:11px;font-weight:800;border-radius:999px;padding:2px 8px;flex:0 0 auto}
+.r332-e300-lv.lv1{background:var(--tone-050);color:var(--tone-800)}
+.r332-e300-lv.lv2{background:#fff4d6;color:#8a5a00}
+.r332-e300-lv.lv3{background:#ffe4e6;color:#a11a2b}
+.r332-e300-card .en-essay-title{flex:1 1 auto;min-width:0}
+.r332-e300-vocab{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.r332-e300-vw{display:inline-flex;align-items:baseline;gap:4px;background:var(--tone-025);
+  border:1px solid var(--tone-150);border-radius:8px;padding:3px 8px;font-size:12px;color:var(--tone-800)}
+.r332-e300-vw i{font-style:normal;color:var(--muted);font-size:11px}
+.r332-e300-empty{padding:18px;text-align:center;color:var(--muted);font-size:13px}
+@media (max-width:640px){
+  .r332-e300-chip{padding:4px 11px;font-size:12px}
+  .r332-e300-count{margin-left:0;width:100%}
+}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -12108,7 +12139,8 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
     <button data-page="farm" class="nav-btn" data-page-node-id="ILnFRXZgyFt6KUIHjdMjpi"><span class="ico" data-page-node-id="L91QcPKV3apQubouy8iHof">🌱</span><span class="lbl" data-page-node-id="3RvFnrBWk6gsLhpSANuJ0o">种植园</span></button>
     <button data-page="archive" class="nav-btn" data-page-node-id="71DCFRcIT0GWGt2QoPlIPE"><span class="ico" data-page-node-id="1fYFy0rpBdufGRwWSdwWAP">🏆</span><span class="lbl" data-page-node-id="Gkt7ejoiCugArdTvMAn8BU">成长档案</span></button>
     <!-- R315-G1：成长中心已并入「成长档案」，独立导航键与独立页整体下线 -->
-    <button class="nav-btn" data-page="settings" data-page-node-id="R85navSettings"><span class="ico" data-page-node-id="R85navSetIco">⚙️</span><span class="lbl" data-page-node-id="R85navSetLbl">设置中心</span></button>
+    <!-- R332-5：设置中心不再作为独立一级导航入口，入口收进 ⚡ 快捷键托盘（按钮保留，仅视觉隐藏） -->
+    <button class="nav-btn nav-btn-hidden" data-page="settings" data-page-node-id="R85navSettings"><span class="ico" data-page-node-id="R85navSetIco">⚙️</span><span class="lbl" data-page-node-id="R85navSetLbl">设置中心</span></button>
   </nav>
 </aside>
 
@@ -15337,6 +15369,7 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
 <!-- 大阅读·日常交流种子数据（先于 store.js 加载，getEnSpeakingTopics 读取 window.EN_SPEAKING_SEED） -->
 <script src="./assets/seed_en_speaking_seed.js"></script>
 <script src="./assets/seed_en_essay_seed.js"></script>
+<script src="./assets/seed_en_essay_300_seed.js"></script>
 <!-- 新世界·语文专区「作文素材」种子数据（先于 app.js 加载，ywSucai 读取 window.ZUOWEN_SC_SEED） -->
 <script src="./assets/seed_zuowen_sc_seed.js"></script>
 <!-- V73-Req4：上海(统编版) 1-5 年级课内古诗文（先于 app.js 加载，ywGushi/ywWenyan 读取 window.YW_SH_GUSHICI） -->
@@ -20317,7 +20350,7 @@ window.XS_A2_VOCAB = [
     'userReading','readingPanelDone','mathProblems','mathNotes','mathNoteStatus','mathGroups',
     'mathGallery','mathExerciseBank','plots','inventory','gifts','shop','stage','km','farmOpen',
     'music','farmLayout','en3500Marks','r314','nwWrong','homeGreets','homeBanner','sectionTitleTexts',
-    'schedule','memos','weekPlanColors','r319BookList','__r319BookListSeedV1','__r324BookImportV1','__r327BookCatsV1','__r328OtherCatV1','r326','__schema','__seq','__commitAt','__tomb'];
+    'schedule','memos','weekPlanColors','r319BookList','__r319BookListSeedV1','__r324BookImportV1','__r327BookCatsV1','__r328OtherCatV1','__r332BookImportV1','readCursor','r326','__schema','__seq','__commitAt','__tomb'];
   /* 轻档超预算时的「可牺牲顺序」：从体积最大且可再生 / 有主档兜底的字段开始丢 */
   const LIGHT_DROP_ORDER = ['calcBank','mathProblems','mathGallery','xueersiWordBank','km','calcWrongBook'];
   let _r318XsSrc = null, _r318XsDelta = null;
@@ -20619,6 +20652,9 @@ window.XS_A2_VOCAB = [
     _autoFlushOn = true;
     const sweep = function(){
       const now = Date.now();
+      /* R332-6.3：刚成功落盘过就跳过本轮比对 —— 状态与磁盘一致，
+         没必要再整份 stringify（图片多的存档这一项最贵）。 */
+      if(now - _r332SaveAt < 500) return;
       if(now - _autoFlushAt < 120) return;
       _autoFlushAt = now;
       /* R273-5.1：连续快速点击时只保留一次全量序列化比对，避免每次点击都同步
@@ -22487,8 +22523,41 @@ window.XS_A2_VOCAB = [
         save(st);
       }catch(e){}
     }
+
+    /* ===== R332-3：《我的书单.docx》批量导入 =====
+       428 条书目按文档分类归入现有书单卡片（童话/小说/散文/历史/纪录片/其他）。
+       一次性闸 __r332BookImportV1；只补新书，已有书目、已读、推荐理由、⭐ 设置一律不动。 */
+    if(!st.__r332BookImportV1){
+      try{
+        if(!st.r319BookList || typeof st.r319BookList !== 'object' || Array.isArray(st.r319BookList)) st.r319BookList = {cats:[], books:[]};
+        if(!Array.isArray(st.r319BookList.cats)) st.r319BookList.cats = [];
+        if(!Array.isArray(st.r319BookList.books)) st.r319BookList.books = [];
+        var _r332Books = [["童话","安徒生童话","[丹麦] 安徒生"],["童话","一个豆荚里的五粒豆","[丹麦] 安徒生"],["童话","海的女儿","[丹麦] 安徒生"],["童话","小狗钱钱","[德] 博多·舍费尔"],["童话","小狗钱钱2","[德] 博多·舍费尔"],["童话","格林童话","[德] 格林兄弟"],["童话","吹牛大王历险记","[德] 拉斯伯"],["童话","希腊神话故事","[德] 施瓦布"],["童话","克雷洛夫寓言","[俄] 克雷洛夫"],["童话","昆虫记","[法] 法布尔"],["童话","蟋蟀的住宅","[法] 法布尔"],["童话","小王子","[法] 圣埃克苏佩里"],["童话","松鼠","[法] 布封"],["童话","伊索寓言","[古希腊] 伊索"],["童话","我讨厌书","[加] 玛秋莎·帕基"],["童话","绿山墙的安妮","[加] 蒙哥马利"],["童话","绿野仙踪","[美] 鲍姆"],["童话","假如给我三天光明","[美] 海伦·凯勒"],["童话","草原上的小木屋","[美] 劳拉"],["童话","不老泉","[美] 娜塔莉·巴比特"],["童话","一只有教养的狼","[美] 珍·阿诺德"],["童话","十二岁的旅程","[美] 赖清河"],["童话","想赢的男孩","[美] 杰里·斯皮内利"],["童话","惊风的山","[美] 珍·克雷赫德·乔治"],["童话","远山深处","[美] 珍·克雷赫德·乔治"],["童话","山居岁月","[美] 珍·克雷赫德·乔治"],["童话","鹿苑长春","[美] 玛·金·罗琳斯"],["童话","下雨的书店","[日] 日向理惠子"],["童话","下雨的书店：远方的童话","[日] 日向理惠子"],["童话","下雨的书店：世上最好的书","[日] 日向理惠子"],["童话","下雨的书店：雨中森林","[日] 日向理惠子"],["童话","去年的树","[日] 新美南吉"],["童话","四季之美","[日] 清少纳言"],["童话","长袜子皮皮","[瑞典] 林格伦"],["童话","七色花","[苏] 瓦·卡达耶夫"],["童话","森林报","[苏联] 比安基"],["童话","爱的教育","[意] 亚米契斯"],["童话","愿望的实现","[印] 泰戈尔"],["童话","花的学校","[印] 泰戈尔"],["童话","了不起的狐狸爸爸","[英] 罗尔德·达尔"],["童话","水孩子","[英] 金斯利"],["童话","柳林风声","[英] 肯尼斯·格雷厄姆"],["童话","鲁滨逊漂流记","[英] 笛福"],["童话","寄小读者","冰心"],["童话","千人糕","冰波"],["童话","月光下的肚肚狼","冰波"],["童话","听听，秋的声音","毕国瑛"],["童话","琥珀","柏吉尔"],["童话","我的妈妈是精灵","陈丹燕"],["童话","我的妈妈是精灵2","陈丹燕"],["童话","青禾已秀","方冠晴"],["童话","二月谣","方冠晴"],["童话","红裳","方冠晴"],["童话","细菌世界历险记","高士其"],["童话","小英雄雨来","管桦"],["童话","我变成了一棵树","顾鹰"],["童话","中国古代寓言","宫利勤（编写）"],["童话","长鼻子大仙","葛冰"],["童话","神笔马良","洪汛涛"],["童话","守株待兔","韩非"],["童话","一起长大的玩具","金波"],["童话","湖边的雕像","金波"],["童话","成语故事","李新武（编）"],["童话","将军令","李志刚"],["童话","江上谁家少年","李春雷"],["童话","穿过地平线","李四光"],["童话","海滨小城","林遐"],["童话","花钟","林奈"],["童话","三月桃花水","刘湛秋"],["童话","慈母情深","梁晓声"],["童话","赵州桥","茅以升"],["童话","笋芽儿","倪树根"],["童话","将相和","司马迁"],["童话","海底世界","石友"],["童话","小柳树和小枣树","孙幼军"],["童话","秋天的雨","陶金鸿"],["童话","走月亮","吴然"],["童话","西游记","吴承恩"],["童话","圆明园的毁灭","王英琦"],["童话","胡萝卜先生的长胡子","王一梅"],["童话","鼹鼠的月亮河","王一梅"],["童话","小游击队员","王愿坚"],["童话","外婆2：外婆的私房菜","伍剑"],["童话","九岁红","伍剑"],["童话","西大街","伍剑"],["童话","幸福巷","伍剑"],["童话","外婆","伍剑"],["童话","山海经","徐客（编著）"],["童话","飞向蓝天的恐龙","徐星"],["童话","稻草人","叶圣陶"],["童话","荷花","叶圣陶"],["童话","爬山虎的脚","叶圣陶"],["童话","牛郎织女","叶圣陶（改编）"],["童话","致成长中的你","殷健灵"],["童话","废墟上的白鸽","殷健灵"],["童话","野芒坡","殷健灵"],["童话","三十六只蜂箱","余闲"],["童话","中国神话传说","袁珂（编著）"],["童话","中国古代神话","袁珂（编著）"],["童话","宝葫芦的秘密","张天翼"],["童话","狐狸，半蹲半走","张炜"],["童话","少年与海","张炜"],["童话","描花的日子","张炜"],["童话","小巴掌童话","张秋生"],["童话","铺满金色巴掌的水泥道","张秋生"],["童话","童年河","赵丽宏"],["童话","黑木头","赵丽宏"],["童话","渔童","赵丽宏"],["童话","月光蟋蟀","赵丽宏"],["童话","纵有疾风起","赵丽宏"],["童话","树孩","赵丽宏"],["童话","飞来树","赵丽宏"],["童话","给母亲打电话","赵丽宏"],["童话","音乐的翅膀","赵丽宏"],["童话","观潮","赵宗成、朱明元"],["童话","大头儿子和小头爸爸","郑春华"],["小说","无敌路易莎","[美] 科妮莉亚·梅格斯"],["小说","给温妮的96封信","[美] 珍妮特·李·凯里"],["小说","外婆的记忆","[法] 埃尔韦·茹昂"],["小说","最后的夏天","[美] 洛伊丝·劳里"],["小说","你那样勇敢","[美] 阿姆斯特朗·斯佩里"],["小说","追梦的孩子","[美] 帕姆·穆尼奥兹·瑞恩"],["小说","一点点机会","[美] 辛西娅·洛德"],["小说","作文里的奇案","[法] 伊夫·格勒韦"],["小说","秘密写在群星间","[美] 安·诺兰·克拉克"],["小说","宇宙飞船返回苹果树下","[美] 露西·斯通博尔（大致确认）"],["小说","公园里有艘宇宙飞船","[美] 露西·斯通博尔（大致确认）"],["小说","三个座位的宇宙飞船","[美] 露西·斯通博尔（大致确认）"],["小说","宇宙飞船的太空之旅","[美] 露西·斯通博尔（大致确认）"],["小说","苹果树下的宇宙飞船","[美] 露西·斯通博尔（大致确认）"],["小说","好运街①","[英] 尼克·沙拉特"],["小说","好运街②","[英] 尼克·沙拉特"],["小说","好运街③","[英] 尼克·沙拉特"],["小说","好运街④","[英] 尼克·沙拉特"],["小说","树上掉下个宝贝龙：养龙日常","[英] 安德鲁·奥唐奈"],["小说","树上掉下个宝贝龙：乘龙飞翔","[英] 安德鲁·奥唐奈"],["小说","树上掉下个宝贝龙：神龙男孩","[英] 安德鲁·奥唐奈"],["小说","尼姆的老鼠：胜利大逃亡","[美] 罗伯特·奥布莱恩"],["小说","尼姆的老鼠：真相大白","[美] 罗伯特·奥布莱恩"],["小说","尼姆的老鼠：新生报到","[美] 罗伯特·奥布莱恩"],["小说","蟋蟀的骑鹅之旅","[美] 乔治·塞尔登"],["小说","蟋蟀的新家","[美] 乔治·塞尔登"],["小说","亨利猫和塔克鼠","[美] 乔治·塞尔登"],["小说","时代广场的蟋蟀","[美] 乔治·塞尔登"],["小说","老牧场","[美] 乔治·塞尔登"],["小说","宇宙里星之河","未标明"],["小说","迷途的星星","未标明"],["小说","追光的翅膀","未标明"],["小说","高飞","未标明"],["小说","提灯的天使","未标明"],["小说","35公斤的希望","未标明"],["小说","橡树上的逃亡","未标明"],["小说","爱丽莎的眼睛","未标明"],["小说","弗罗拉与松鼠侠","未标明"],["小说","魔术师的小象","未标明"],["小说","金龟虫在黄昏飞起","未标明"],["小说","傻狗温迪克","未标明"],["小说","天使雕像","未标明"],["小说","天才少年维克多","[美] 乔辛·迪·波沙达、[韩] 全芝恩 等｜简介：世界顶级智商俱乐部主席的成长故事"],["小说","小猪的城市冒险","[美] 约迪·肯德尔"],["小说","小猪的城市冒险2","[美] 约迪·肯德尔"],["小说","和导盲猩猩一起历险","[英] 麦克·莫波格"],["小说","岛王","[英] 麦克·莫波格"],["小说","柑橘与柠檬啊","[英] 麦克·莫波格"],["小说","报童的夏天","[美] 文斯·沃特"],["小说","男孩与熊漂流记","[英] 戴夫·谢尔顿"],["小说","远山的呼唤","[英] 劳伦·沃克"],["小说","丑八怪","[俄] 弗拉基米尔·热列兹尼科夫"],["小说","喝月亮的女孩","[美] 凯莉·巴恩希尔"],["小说","少年小树之歌","[美] 福里斯特·卡特"],["小说","在冬天感谢夏天","[匈] 朱迪特·贝格"],["小说","周末图书馆","[美] 加里·施密特"],["小说","黑色棉花田","[美] 米尔德里德·泰勒"],["小说","驭风少年","[马拉维] 威廉·坎宽巴、[美] 布赖恩·米勒"],["小说","采摘幻想的女孩：邓肯自传","[美] 伊莎多拉·邓肯"],["小说","魔法师的学徒","[美] 凯特·班克斯"],["小说","魔鬼的故事","[美] 娜塔莉·巴比特"],["小说","沉船的眼睛","[美] 娜塔莉·巴比特"],["小说","怪兽山","[美] 娜塔莉·巴比特"],["小说","找寻美味","[美] 娜塔莉·巴比特"],["小说","银顶针的夏天","[美] 伊丽莎白·恩赖特"],["小说","我的朋友扎卡里","[美] 金·威·霍尔特"],["小说","人间有晴天","[美] 金·威·霍尔特"],["小说","贝拉的儿子","[美] 露丝·怀特"],["小说","寻找贝拉","[美] 露丝·怀特"],["小说","妮尔的天空","[美] 凯伦·海瑟"],["小说","丽芙卡的信","[美] 凯伦·海瑟"],["小说","熊猫小四","叶广芩"],["小说","猴子老曹","叶广芩"],["小说","花猫三丫上房了","叶广芩"],["小说","耗子大爷起晚了","叶广芩"],["小说","土狗老黑闯祸了","叶广芩"],["小说","水神的孩子","李学武"],["小说","寻找林木森书店","汤素兰"],["小说","小兵雄赳赳","刘海栖"],["小说","那时月光","吴然"],["小说","贼船","曹文轩"],["小说","煎饼花","马瑞芳"],["小说","1937少年的征途","许敏球"],["小说","雄狮崛起 少年发光","未标明"],["小说","鲸鱼","未标明"],["小说","老船长的行李箱","未标明"],["小说","北国少年行","未标明"],["小说","洞","[美] 路易斯·萨奇尔"],["小说","神奇的收费亭","[美] 诺顿·贾斯特 著 / [美] 朱尔斯·费弗 绘"],["小说","佐贺的超级阿嬷：夏天时要感谢冬天","[日] 岛田洋七"],["小说","佐贺的超级阿嬷：冬天时要感谢夏天","[日] 岛田洋七"],["小说","寻找阿加莎","[美] 埃米莉·阿诺德·麦考利"],["小说","教堂老鼠的大冒险","[美] 洛伊丝·劳里"],["小说","神秘的日落山","[美] 卡罗尔·肯德尔"],["小说","明天会有好运气","[美] 辛西娅·角畑"],["小说","我和外公的战争","[美] 罗伯特·基梅尔·史密斯"],["小说","丘比特之谜","[美] 济尔法·基特利·斯奈德"],["小说","妖精的小孩","[美] 埃洛伊塞·麦格劳"],["小说","芒果猫","[美] 温迪·马斯"],["小说","骑狼女孩","[英] 凯瑟琳·朗德尔"],["小说","野姑娘","[英] 凯瑟琳·朗德尔"],["小说","屋顶上的索菲","[英] 凯瑟琳·朗德尔"],["小说","乔希的球场","[美] 夸迈·亚历山大"],["小说","明日香，生日快乐","[日] 青木和雄"],["小说","我家没有英雄","[法] 约·维特克"],["小说","蓝莓季节","[美] 波莉·霍华斯"],["小说","怪物农场","[英] 韦罗妮卡·科桑特利"],["小说","从天而降的幸运","[美] 希拉·图尼"],["散文","青铜葵花","曹文轩"],["散文","芦花鞋","曹文轩"],["散文","草房子","曹文轩"],["散文","孩子与海","曹文轩"],["散文","泥鳅","曹文轩"],["散文","少年王","曹文轩"],["散文","孤独之旅","曹文轩"],["散文","乌船","曹文轩"],["散文","小木船","曹文轩"],["散文","青塔","曹文轩"],["散文","柠檬蝶","曹文轩"],["散文","鱼鹰","曹文轩"],["散文","童年","曹文轩"],["散文","蝙蝠香","曹文轩"],["散文","草鞋湾","曹文轩"],["散文","寻找一只鸟","曹文轩"],["散文","穿堂风","曹文轩"],["散文","萤王","曹文轩"],["散文","没有街道的城市","曹文轩"],["散文","青瓦大街","曹文轩"],["散文","麦子的嚎叫","曹文轩"],["散文","城边有家小酒店","曹文轩"],["散文","黑魂灵","曹文轩"],["散文","六十六道弯","曹文轩"],["散文","甜橙树","曹文轩"],["散文","沉默的小号","曹文轩"],["散文","野风车","曹文轩"],["散文","再见了，我的小星星","曹文轩"],["散文","细米","曹文轩"],["散文","山羊不吃天堂草","曹文轩"],["散文","单行街","曹文轩"],["散文","马戏团","曹文轩"],["散文","天黑了","曹文轩"],["散文","小酒店里的怪客","曹文轩"],["散文","白栅栏","曹文轩"],["散文","莺莺庄","曹文轩"],["散文","十四声枪响","曹文轩"],["散文","龙珠的暗根","曹文轩"],["散文","秃鹤","曹文轩"],["散文","艾香墓","曹文轩"],["散文","野鸭河","曹文轩"],["散文","谁为奶奶哭泣","曹文轩"],["散文","夜狼","曹文轩"],["散文","老铜匠的儿子","曹文轩"],["散文","瞎子的长夜","曹文轩"],["散文","瞎眼山羊把歌唱","曹文轩"],["散文","愤怒的浴室","曹文轩"],["散文","橡树湾","曹文轩"],["散文","冰项链","曹文轩"],["散文","独角牛","曹文轩"],["散文","金波四季童话 春天卷：花瓣儿鱼","金波"],["散文","金波四季童话 秋天卷：古古丢先生的遭遇","金波"],["散文","金波四季童话 冬天卷：铜铃儿小丁当","金波"],["散文","金波四季童话 夏天卷：神奇的小银蛇","金波"],["散文","金波四季美文 夏天卷：沙滩上的童话","金波"],["散文","金波四季美文 秋天卷：雨点儿","金波"],["散文","金波四季美文 冬天卷：阳光","金波"],["散文","金波四季美文 春天卷：树和喜鹊","金波"],["散文","做一片美的叶子","金波"],["散文","和树谈心","金波"],["散文","唤醒童年","金波"],["散文","会唱歌的小窗口","金波"],["散文","让太阳长上翅膀","金波"],["散文","想念红叶林","金波"],["散文","影子人","金波"],["散文","乌丢丢的奇遇","金波"],["散文","婷婷的树","金波"],["散文","等你敲门","金波"],["散文","春风带我去散步","金波"],["散文","常常想起的朋友","金波"],["散文","我们都是小绿人","金波"],["散文","又见小绿人","金波"],["散文","追踪小绿人","金波"],["历史","哲学的慰藉","阿兰·德波顿"],["历史","银河帝国：基地与帝国","艾萨克·阿西莫夫"],["历史","双城记","查尔斯·狄更斯"],["历史","写给儿童的中国历史","陈卫平"],["历史","林肯传","戴尔·卡耐基"],["历史","了不起的盖茨比","F.斯科特·菲茨杰拉德"],["历史","骆驼祥子","老舍"],["历史","济南的冬天","老舍"],["历史","中华上下五千年（青少年彩图版）","林汉达"],["历史","林汉达中国历史故事集（美绘版）","林汉达"],["历史","三体2：黑暗森林","刘慈欣"],["历史","呐喊","鲁迅"],["历史","彷徨","鲁迅"],["历史","红岩","罗广斌、杨益言"],["历史","三国演义","罗贯中"],["历史","哲学启蒙","罗伯特·所罗门"],["历史","格列佛游记","乔纳森·斯威夫特"],["历史","从一到无穷大","乔治·伽莫夫"],["历史","哈姆雷特","莎士比亚"],["历史","沈石溪动物小说精选（二）","沈石溪"],["历史","沈石溪动物小说精选（三）","沈石溪"],["历史","你当像鸟飞往你的山","塔拉·韦斯特弗"],["历史","生命的故事","维吉尼亚·李·伯顿"],["历史","爱因斯坦传","沃尔特·艾萨克森"],["历史","简·爱","夏洛蒂·勃朗特"],["历史","兄弟俩","肖复兴"],["历史","小放牛","肖复兴"],["历史","雪莱诗选","雪莱"],["历史","冷湖上的拥抱","于潇湉"],["历史","听听那冷雨","余光中"],["历史","DK儿童自然大百科","未标明"],["历史","DK奇妙动物大百科","未标明"],["历史","这就是物理","未标明"],["历史","这就是化学","未标明"],["历史","身边的科学","未标明"],["历史","万物运转的秘密","未标明"],["历史","DK儿童太空百科","未标明"],["历史","DK儿童海洋百科","未标明"],["历史","写给儿童的中国地理","未标明"],["历史","揭秘地球","未标明"],["历史","万物简史","未标明"],["历史","写给孩子的人类简史","未标明"],["历史","希利尔讲世界史","未标明"],["散文","戴望舒诗选","戴望舒"],["散文","张晓风散文精选","张晓风"],["散文","林清玄散文精选","林清玄"],["散文","琦君散文精选","琦君"],["散文","冯骥才散文精选","冯骥才"],["散文","宗璞散文精选","宗璞"],["散文","余光中散文精选","余光中"],["散文","汪曾祺散文精选","汪曾祺"],["散文","原来姹紫嫣红开遍","迟子建"],["散文","我的世界下雪了","迟子建"],["散文","云烟过客","迟子建"],["散文","会唱歌的火炉","迟子建"],["散文","当时实在年纪小","郁雨君"],["散文","放大的时间","王安忆"],["散文","烟斗上小人儿的话","宗璞"],["散文","自行车之歌","苏童"],["散文","文学少年","叶兆言"],["散文","侯家路","周国平"],["散文","林中小屋","张梅溪"],["散文","苏北少年“堂吉诃德”","毕飞宇"],["其他","大世界趣味通识365","波点童趣（编著）"],["其他","大中华趣味通识365","波点童趣（编著）"],["其他","大语文那些事儿：字词魔法课","赵旭"],["其他","大语文那些事儿：写作点睛课1","赵旭"],["其他","大语文那些事儿：写作点睛课2","赵旭"],["其他","大语文那些事儿：古诗线索课","赵旭"],["其他","大语文那些事儿：古文串烧课","赵旭"],["其他","大语文那些事儿：阅读洋葱课","赵旭"],["其他","开花的心事","小溪流编辑部/主编"],["其他","蔷薇谷的小精灵","小溪流编辑部/主编"],["其他","开往青蛙王国的公交车","小溪流编辑部/主编"],["其他","花格子背心在散步","小溪流编辑部/主编"],["其他","没有鼻子的小狗","小溪流编辑部/主编"],["其他","沿绿光追赶的流年","小溪流编辑部/主编"],["其他","淡淡的白梅","小溪流编辑部/主编"],["其他","烛光里的奶奶","小溪流编辑部/主编"],["散文","漂来的狗儿","黄蓓佳"],["散文","余宝的世界","黄蓓佳"],["散文","奔跑的岱二牛","黄蓓佳"],["散文","你是我的宝贝","黄蓓佳"],["散文","太平洋，大西洋","黄蓓佳"],["散文","野蜂飞舞","黄蓓佳"],["散文","艾晚的水仙球","黄蓓佳"],["散文","有鸽子的夏天","刘海栖"],["散文","你好，海鸥班","梅瑜"],["散文","小飞侠彼得·潘","J.M.巴里"],["纪录片","何以中国","简介：用考古实证串联起文明发展的关键节点，每一个文物、每一处遗址都在诉说“中国”二字背后的厚重历史，看完你会对这片土地的文明变迁有全新认知。"],["纪录片","假如颜色会说话","简介：那些你以为熟悉的东方色彩，在镜头里有了情绪与故事。以色彩拟人的叙事，搭建起古今审美对话的通道，温柔滋养你的日常审美。"],["纪录片","敦煌","简介：聚焦丝路文明的交融璀璨，千年壁画承载的不仅是艺术，更是文明互鉴的鲜活见证。看完会被古老艺术的震撼力深深折服。"],["纪录片","文物守护人","简介：一群匠人用一生坚守，守护着国宝文脉的传承。他们平凡的执着里，藏着最动人的文化力量。"],["纪录片","了不起的中国颜色","简介：传统色彩里藏着千年美学的密码。从朴素到热烈，每一种中国色都带着故事，是当代美学创作的灵感源泉。"],["纪录片","园林","简介：方寸山水间藏尽东方哲思，亭台草木皆是诗意。在喧嚣生活中看它，能让你瞬间静心，感悟园林里的山水哲学。"],["纪录片","中国通史","100集，每集45分钟"],["纪录片","世界历史","100集，每集45分钟"],["纪录片","河西走廊","10集，每集60分钟"],["纪录片","故宫100","100集，每集7分钟"],["纪录片","从秦始皇到汉武帝","6集，每集50分钟"],["纪录片","典籍里的中国","2季共21集，每集90分钟"],["纪录片","航拍中国","4季共34集，每集50分钟"],["纪录片","地球脉动","3季共25集，每集60分钟"],["纪录片","美丽中国","6集，每集60分钟"],["纪录片","跟着书本去旅行","已更新至855集，每集20分钟"],["纪录片","地球的力量","5集，每集60分钟"],["纪录片","太阳系的奇迹","5集，每集60分钟"],["纪录片","植物王国","3集，每集52分钟"],["纪录片","工作细胞","2季共22集，每集25分钟"],["纪录片","生命","10集，每集60分钟"],["纪录片","种出个地球","3集，每集60分钟"],["纪录片","影响世界的中国植物","10集，每集50分钟"],["纪录片","我的牛顿教练","6集，每集25分钟"],["纪录片","宇宙时空之旅","13集，每集45分钟"],["纪录片","旅行到宇宙边缘","90分钟"],["纪录片","平博士密码","52集，每集13分钟"],["纪录片","科学大实验","40集，每集10分钟"],["纪录片","CCTV10 实验现场","周六日晚23:16更新，每期30分钟"],["纪录片","门捷列夫很忙","5集，每集25分钟"],["纪录片","美丽化学","24集，每集2-3分钟"],["纪录片","化学史","3集，每集60分钟"],["纪录片","现代炼金术士","3集，每集60分钟"],["纪录片","我们需要化学","6集，每集15分钟"],["纪录片","你最想知道的科学","6集，每集45分钟"],["纪录片","大国崛起","12集，每集45分钟"],["纪录片","大国外交","6集，每集45分钟"],["纪录片","辉煌中国","6集，每集50分钟"],["纪录片","货币","10集，每集45分钟"],["纪录片","创新中国","5集，每集50分钟"],["纪录片","中国式现代化","5集，每集45分钟"]];
+        var _r332CatId = function(n){
+          var c = st.r319BookList.cats.filter(function(x){ return x && x.name === n; })[0];
+          if(!c){ c = {id:'rc_'+n, name:n, builtin:true, ts:Date.now()}; st.r319BookList.cats.push(c); }
+          return c.id;
+        };
+        var _r332Has = {};
+        st.r319BookList.books.forEach(function(b){ if(b && b.title) _r332Has[b.title] = 1; });
+        _r332Books.forEach(function(b, i){
+          if(_r332Has[b[1]]) return;
+          _r332Has[b[1]] = 1;
+          st.r319BookList.books.push({
+            id: 'rb332_' + i + '_' + (b[1].length),
+            cat: _r332CatId(b[0]),
+            title: b[1], author: b[2] || '',
+            read: false, ts: Date.now() + i
+          });
+        });
+      }catch(e){}
+      st.__r332BookImportV1 = true;
+      save(st);
+    }
     // V11.6：记录每日日常交流完成状态（5 条均完成 → +2⭐，仅一次）
     if(!st.speakingComplete) st.speakingComplete = {};
+    // R332-2.2：英语短文阅读游标（打卡后次日切下一篇）
+    if(!st.readCursor || typeof st.readCursor !== 'object' || Array.isArray(st.readCursor)) st.readCursor = {};
     if(!st.goRecords) st.goRecords = [];
     // R117：首页备忘录（朱迪小提示），用户自建事项列表
     if(!st.memos) st.memos = [];
@@ -23226,6 +23295,11 @@ window.XS_A2_VOCAB = [
   // 原实现直接抛 QuotaExceededError，会让本次及其后所有 save 调用连锁抛错、页面写操作全站崩溃。
   // 改为捕获并记录错误（getSaveError 可读），返回 false 供调用方感知；内存态保持不变。
   let _saveError = '';
+  /* R332-6.1：最近一次提交是否已落到主档或任一兜底层（轻档 / 小账本 / 补丁）。
+     主档写不进但兜底成功时数据依然跨刷新可恢复，UI 不应再报「存储紧张」。 */
+  let _lastSaveRecoverable = true;
+  /* R332-6.3：最近一次成功落盘时间 —— 自动刷盘的 sweep 据此跳过无意义整档序列化 */
+  let _r332SaveAt = 0;
   /* ============ R256-1.4：成长星流水自动记账 ============
      星星的增减散落在 60+ 处（打卡 / 商店 / 撤销 / 种植 / 秘境 …），逐处埋点极易漏。
      这里改为在保存落库前与「上一笔已落库的值」做差：任何模块只要改了 archive.totalStars，
@@ -23958,15 +24032,19 @@ window.XS_A2_VOCAB = [
     try{ f(); return true; }catch(e){ return false; }
   }
   /* R328-1.3：主动瘦身 —— 把内存态里仍内联的大图搬到 IndexedDB 后重写主档。
-     写失败时返回 false，调用方据此决定是否提示用户检查浏览器存储权限。 */
+     R332-6.1：返回值改为「本次真正搬进图库的图片张数」（0 = 没有可搬的图），
+     调用方据此判断要不要提示「已自动整理」，避免无图用户也收到假提示。 */
   let _r328Slimming = false;
+  let _r328SlimMoved = 0;
   function r328SlimImages(){
     /* R329-1.3：load() 内的迁移本身会 save()，若不加闸会递归调用瘦身。 */
-    if(_r328Slimming) return false;
+    if(_r328Slimming) return 0;
     _r328Slimming = true;
-    try{ const st = load(); return !!save(st); }
-    catch(e){ return false; }
+    _r328SlimMoved = 0;
+    try{ save(load()); }
+    catch(e){ return 0; }
     finally{ _r328Slimming = false; }
+    return _r328SlimMoved;
   }
   /* R327-1：丢掉待办的二级写入 —— 卸载刷盘会完整落主档 / 轻档 / 备份，
      若让空闲回调随后再跑一次，反而可能用过期的 raw 轮转备份、盖掉最新快照。 */
@@ -24075,11 +24153,16 @@ window.XS_A2_VOCAB = [
       _r318LastOk = false;
       /* R318：主档写不进时，先落一份「轻档」（只含用户业务字段，约 130KB，不含内置素材），
          它比 300KB 的小账本更可能写进、又比主档小得多，是业务数据跨刷新的第二落点。 */
-      try{ _r318LightWrite(st, true); }catch(e){}
-      try{ _journalWrite(st, _ts); }catch(e){}
+      /* R332-6.1：记录「本次提交是否已落到任一兜底层」。
+         主档写不进但轻档 / 小账本 / 补丁任一成功时，业务数据仍可跨刷新恢复，
+         UI 不应再弹「存储紧张」吓人（这是用户反复反馈的误报弹窗）。 */
+      let _fb = false;
+      try{ _fb = !!_r318LightWrite(st, true); }catch(e){}
+      try{ if(_journalWrite(st, _ts)) _fb = true; }catch(e){}
       // R261-5.1：主档写不进 → 立刻留差异补丁，刷新 / 版本更新后能把修改捞回来
       _r256LedgerRollback(st, _r256Entry);
-      try{ _pendingWrite(st); }catch(e){}
+      try{ if(_pendingWrite(st)) _fb = true; }catch(e){}
+      _lastSaveRecoverable = _fb;
       _loadCachePut(st);
       return false;
     }
@@ -24096,11 +24179,14 @@ window.XS_A2_VOCAB = [
         try{ _r318LightWrite(st, true); }catch(e){}   // R318：读回不一致同样先落轻档
         try{ _journalWrite(st, _ts); }catch(e){}   // R266：读回不一致同样先落小账本
         try{ _pendingWrite(st); }catch(e){}   // R261-5.1：回读不一致同样留补丁
+        _lastSaveRecoverable = true;          // R332-6.1：兜底三层已尽力写入，数据可恢复
         _loadCachePut(st);
         return false;
       }
     }catch(e){ /* 读不到（隐私模式/受限）时不推翻已返回成功的写入 */ }
     _saveError = '';
+    _lastSaveRecoverable = true;              // R332-6.1：主档已完整落库
+    _r332SaveAt = _ts;                        // R332-6.3：记录成功时间，供 sweep 跳过
     /* R274-1.1：主档同步写成功 → 明确告诉持久化层「这份内容已经安全落地」。
        IndexedDB 事务即便因 Safari 偶发原因失败，也不会再弹「写入未完成」。 */
     try{
@@ -24133,6 +24219,8 @@ window.XS_A2_VOCAB = [
     return true;
   }
   function getSaveError(){ return _saveError; }
+  /* R332-6.1：本次提交是否已安全落地（主档或轻档 / 小账本 / 补丁任一层） */
+  function isSaveRecoverable(){ return !!_lastSaveRecoverable; }
   /* ============ R327-5：导入类写库「落盘后回读校验」 ============
      问题：一键导入例句 / 词汇 / 练习题这类批量写入，旧实现只要 save() 没抛异常就返回 ok，
            而 save() 在配额吃紧时可能走「补丁兜底」——内存里看着有，刷新后回到旧档。
@@ -27461,8 +27549,23 @@ window.XS_A2_VOCAB = [
       st.archive.totalStars = (st.archive.totalStars||0) + reward;
       st.archive.exp = (st.archive.exp||0) + reward;
     }
+    /* R332-2.2：英语短文打卡后记录阅读游标 —— 次日自动切换到下一篇。
+       只存「标题 + 打卡日期」，渲染时按标题在当前篇目里的位置 +1，列表变化也不会错位。 */
+    if(kind === 'enPassage'){
+      if(!st.readCursor || typeof st.readCursor !== 'object') st.readCursor = {};
+      st.readCursor.enPassage = { title: title, date: todayStr() };
+    }
     save(st);
     return {ok:true, reward, rewardLabel};
+  }
+  /* R332-2.2：读取阅读游标（英语短文） */
+  function getReadingCursor(kind){
+    try{
+      const st = load();
+      const c = st.readCursor && st.readCursor[kind];
+      if(!c || typeof c !== 'object' || !c.title) return null;
+      return { title: c.title, date: c.date || '' };
+    }catch(e){ return null; }
   }
   // V12.1：取消阅读打卡 → 扣回对应 ⭐
   function unmarkReadingRead(kind, title){
@@ -27489,6 +27592,11 @@ window.XS_A2_VOCAB = [
     if(refund > 0){
       st.archive.totalStars = Math.max(0, (st.archive.totalStars||0) - refund);
       st.archive.exp = Math.max(0, (st.archive.exp||0) - refund);
+    }
+    // R332-2.2：撤销英语短文打卡 → 游标回退到本篇，明天仍从这一篇续接
+    if(kind === 'enPassage' && st.readCursor && st.readCursor.enPassage
+       && st.readCursor.enPassage.title === title){
+      delete st.readCursor.enPassage;
     }
     save(st);
     return {ok:true, refund, kind};
@@ -27685,6 +27793,11 @@ window.XS_A2_VOCAB = [
       st.archive = st.archive || {};
       st.archive.totalStars = Math.max(0, (st.archive.totalStars||0) - refund);
       st.archive.exp = Math.max(0, (st.archive.exp||0) - refund);
+    }
+    // R332-2.2：撤销英语短文打卡 → 游标回退到本篇，明天仍从这一篇续接
+    if(kind === 'enPassage' && st.readCursor && st.readCursor.enPassage
+       && st.readCursor.enPassage.title === title){
+      delete st.readCursor.enPassage;
     }
     // R300：撤销最后一条打卡时 readFlags / readLog 会合法变空，放行一次写盘闸，
     // 否则会被「疑似清空」保护回填，出现「⭐扣回了、卡片仍显示已打卡」的错位
@@ -33395,7 +33508,7 @@ be 动词：am / is → was；are → were
     getMathGroups, addMathGroup, addMathTypeToGroup, assignMathTypeToGroup, groupIdOfMathType, getDefaultMathGroupName,
     // R232-2/3：题型讲义（外置图片；R242 已删除本地 PDF 上传/展示）
     getMathTypeImgs, getMathLectureStat, setMathLectureStatus, setMathLectureCap,
-    getReading, getDailySpeaking, addUserReading, markReadingRead, unmarkReadingRead, isReadingRead, logCheckin, unlogCheckin, markSpeakingComplete, unmarkSpeakingComplete, unmarkXueersiDailyReward, refundReadingStars,
+    getReading, getDailySpeaking, addUserReading, markReadingRead, unmarkReadingRead, isReadingRead, getReadingCursor, logCheckin, unlogCheckin, markSpeakingComplete, unmarkSpeakingComplete, unmarkXueersiDailyReward, refundReadingStars,
     // R300-2：阅读面板当日全部打卡完成（语文 +5⭐ / 英语 +3⭐）
     markReadingPanelComplete, unmarkReadingPanelComplete, isReadingPanelComplete, readingPanelStarOf,
     // R232-1：计算小超市打卡（首页必做卡 ⇄ 乐读数学 今日打卡 共用）
@@ -33497,7 +33610,7 @@ be 动词：am / is → was；are → were
     // R316-1：增删类操作统一落库复核（放行合法删空 + 回读校验 + 失败重试）
     r316ReadFresh, r316VerifiedSave, r316DeleteSave,
     // R126：存储写入错误状态（配额超限感知）
-    getSaveError,
+    getSaveError, isSaveRecoverable,
     // R131-2：设置中心「保存设置」暂存模型
     beginSettings, commitSettings, discardSettings, isStaging, setProfileMode,
     // R52：结构化自定义内容
@@ -33572,6 +33685,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       const _origSave = S.save;
       S.save = function(st){
         const ok = _origSave.apply(S, arguments);
+        try{ sfxInvalidate(); }catch(e){}   // R332-6.3：设置改动后音效缓存立即失效
         if(!ok){
           const code = (S.getSaveError && S.getSaveError()) || 'error';
           if(window.__appBooted === true){
@@ -37864,6 +37978,16 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         if(card) card.classList.toggle('is-done', S.isReadingRead('enEssayRead', id));
       });
     });
+    // R332-1.2：作文300篇难度筛选
+    slotBody.querySelectorAll('[data-en-essay300-level]').forEach(btn=>{
+      if(btn._e300LBound) return; btn._e300LBound = true;
+      btn.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        _enEssay300Level = parseInt(btn.getAttribute('data-en-essay300-level'), 10) || 0;
+        _enEssayPage = 0;
+        rerender();
+      });
+    });
     // V116：英语专区两板块分页按钮（阻止冒泡，避免触发整卡变绿）
     slotBody.querySelectorAll('[data-en-page-step]').forEach(btn=>{
       if(btn._enPagerBound) return; btn._enPagerBound = true;
@@ -38749,12 +38873,17 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
   function r328SaveFailNotice(code){
     let h = {}; try{ h = (S.storageHealth && S.storageHealth()) || {}; }catch(e){}
     const verdict = h.verdict || '';
-    let slim = false;
-    try{ slim = !!(S.r328SlimImages && S.r328SlimImages()); }catch(e){}
-    if(slim){
+    /* R332-6.1：只有「真的搬走了图片」才提示整理成功；
+       旧实现 r328SlimImages() 只要 save() 成功就返回真，无图用户也会收到假提示。 */
+    let slimN = 0;
+    try{ slimN = (S.r328SlimImages && Number(S.r328SlimImages())) || 0; }catch(e){}
+    if(slimN > 0){
       let left = ''; try{ left = (S.getSaveError && S.getSaveError()) || ''; }catch(e){}
-      if(!left){ toast('✅ 已自动整理图片占用并保存成功'); return; }
+      if(!left){ toast('✅ 已自动整理 ' + slimN + ' 张图片并保存成功'); return; }
     }
+    /* R332-6.1 根治：主档没写进但轻档 / 小账本 / 差异补丁任一落盘成功时，
+       数据依然跨刷新可恢复 —— 此时不该再弹「存储紧张」，打卡交互保持安静正常。 */
+    try{ if(S.isSaveRecoverable && S.isSaveRecoverable()) return; }catch(e){}
     /* R329-1.3：介质本身可写（verdict=ok）说明这一次是瞬时写失败 / 回读抖动，
        数据已进轻档 + 小账本 + IDB 镜像，刷新不会丢 —— 绝不能再暗示用户「没写进去、去删图片」。 */
     if(h.writable && verdict === 'ok'){
@@ -38763,8 +38892,9 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     }
     if(verdict === 'blocked' || code === 'blocked'){
       toast('⚠️ 浏览器阻止了本机存储，请检查站点数据权限或退出无痕模式');
-    }else if(code === 'quota' || verdict === 'quota'){
-      toast('⚠️ 本机存储紧张，图片已转入图库；可在「🩺 存储体检」查看详情');
+    }else if(code === 'quota' && verdict === 'quota'){
+      // R332-6.1：不再提「图片已转入图库」—— 该动作与配额判定无关，属于误导文案
+      toast('⚠️ 本机存储空间紧张；可在「🩺 存储体检」查看占用与清理建议');
     }else if(code === 'verify' || code === 'save-verify' || code === 'serialize'){
       toast('⚠️ 数据校验未通过，原记录已保留；可在「🩺 存储体检」修复');
     }else{
@@ -40433,9 +40563,62 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       ${enPager('essay', p, totalPages)}
       <div class="en-oxford-foot">本页第 ${all.length?start+1:0}–${start+items.length} 篇 · 每页 ${per} 篇 · 共 ${totalPages} 页（共 ${all.length} 篇 · 已学 ${all.filter(x=>S.isReadingRead('enEssayRead', x.id||x.title)).length} 篇）</div>`;
   }
+  /* ===== R332-1.2：英语写作 · 作文300篇 =====
+     数据源 window.EN_ESSAY_300_SEED（收录书屋英语短文 + 原「英文作文」100 篇整合去重后保留 300 篇）；
+     未加载时回退旧的 EN_ESSAY_SEED，保证任何情况下板块不空白。 */
+  const EN_ESSAY300_PER_PAGE = 6;
+  let _enEssay300Level = 0;          // 0=全部 1/2/3=按难度
+  function enEssay300All(){
+    const a = window.EN_ESSAY_300_SEED;
+    if(a && a.length) return a;
+    return (window.EN_ESSAY_SEED || []);
+  }
+  function renderEnEssay300(page){
+    const all = enEssay300All();
+    const list = _enEssay300Level ? all.filter(x=>Number(x.level) === _enEssay300Level) : all;
+    const per = EN_ESSAY300_PER_PAGE;
+    const totalPages = Math.max(1, Math.ceil(list.length / per));
+    let p = page || 0;
+    if(p < 0) p = 0;
+    if(p > totalPages-1) p = totalPages-1;
+    _enEssayPage = p;
+    const start = p * per;
+    const items = list.slice(start, start + per);
+    const cards = items.map((it, i)=>{
+      const no = start + i + 1;
+      const done = S.isReadingRead('enEssayRead', it.id || it.title);
+      const lv = Number(it.level) || 1;
+      return `
+      <div class="en-essay-card r332-e300-card${done?' is-done':''}">
+        <div class="en-essay-head">
+          <span class="en-essay-no">${('000'+no).slice(-3)}</span>
+          <span class="en-essay-title en-tap-speak" data-en-speak="${esc(it.title + '. ' + it.en)}">${esc(it.title)}</span>
+          <span class="en-essay-zh-title">${esc(it.titleZh || '')}</span>
+          <span class="r332-e300-lv lv${lv}">${lv===1?'基础':lv===2?'进阶':'挑战'}</span>
+          <button class="en-essay-done-btn${done?' is-done':''}" data-en-essay-done="${esc(it.id||it.title)}" title="${done?'已学（点击取消）':'点击标记已学'}">${done?'✅已学':'□未学'}</button>
+        </div>
+        <div class="en-essay-body en-tap-speak" data-en-speak="${esc(it.en)}">${esc(it.en)}</div>
+        ${it.zh ? `<div class="en-essay-zh"><b>译文：</b>${esc(it.zh)}</div>` : ''}
+        ${Array.isArray(it.vocab) && it.vocab.length ? `<div class="r332-e300-vocab">${it.vocab.slice(0,8).map(v=>`<span class="r332-e300-vw">${esc(v.w||v)}<i>${esc(v.m||'')}</i></span>`).join('')}</div>` : ''}
+      </div>`;
+    }).join('');
+    const chips = [[0,'全部'],[1,'基础'],[2,'进阶'],[3,'挑战']].map(([v,l])=>
+      `<button class="r332-e300-chip${_enEssay300Level===v?' on':''}" data-en-essay300-level="${v}">${l}</button>`
+    ).join('');
+    return `
+      <div class="yw-comp-head">作文300篇 <span class="yw-sub">上海中小学 · KET 写作范文 · 共 ${all.length} 篇</span></div>
+      <div class="en-oxford-tip">整合「收录书屋·英语短文」与「英文作文」去重精选；点英文可自动朗读，右下角「未学」可打卡。</div>
+      <div class="r332-e300-chips">${chips}<span class="r332-e300-count">当前 ${list.length} 篇</span></div>
+      <div class="en-essay-list">${cards || '<div class="r332-e300-empty">该难度暂无篇目</div>'}</div>
+      ${enPager('essay', p, totalPages)}
+      <div class="en-oxford-foot">本页第 ${list.length?start+1:0}–${start+items.length} 篇 · 每页 ${per} 篇 · 共 ${totalPages} 页（共 ${list.length} 篇 · 已学 ${list.filter(x=>S.isReadingRead('enEssayRead', x.id||x.title)).length} 篇）</div>`;
+  }
+  /* R332：作文300篇 / 英语短文游标的调试钩子（门禁探针使用） */
+  window.__r332Essay300 = renderEnEssay300;
+  window.__r332EssayAll = enEssay300All;
+  window.__r332ColContent = function(kind, win, offset, everyN){ return colContent(kind, win, offset, everyN); };
   // 拼接单元朗读文本（供 TTS 整段朗读：核心词汇 + 重点短语 + 常用表达）
-  function vocabTts(u){
-    const parts = [u.unit + ' ' + u.title];
+  function vocabTts(u){    const parts = [u.unit + ' ' + u.title];
     (u.words||[]).forEach(v=>parts.push(v.w));
     (u.phrases||[]).forEach(v=>parts.push(v.en));
     (u.exprs||[]).forEach(v=>parts.push(v.en));
@@ -40573,14 +40756,19 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       { key:'gd',  icon:'📌', label:'重点知识' }
       // R206-2：句型练习卡片已下线，其重点句型已并入书本课文各单元
     ] },
+    /* R332-1.1：新增「英语写作」板块（位于同步课时练习与课外扩展之间），
+       原「课外扩展 → 英文作文」整体迁入；R332-1.2：收录书屋英语短文一并整合去重后
+       收进「作文300篇」。 */
+    { title:'英语写作', items:[
+      { key:'essay300', icon:'✍️', label:'作文300篇' }
+    ] },
     // R24-5：「听力训练」改为「英语小知识」（整个英语语法体系）
-    // R204：句型练习移出后，原位置新建「英文作文」（上海市优秀小学英语作文 100 篇，分页展示）
-    // R260-6.1：板块名「拓展练习」→「课外扩展」；板块内「英文作文」与「3500 词」按键位置互换
+    // R260-6.1：板块名「拓展练习」→「课外扩展」
+    // R332-1.1：英文作文已迁入新板块「英语写作」，本板块只保留 3500 词与英语小知识
     { title:'课外扩展', items:[
       // R247-2：导入「3500 个高频常用英语单词（分类版）」PDF，按分类生成卡片并分页
       { key:'w3500', icon:'🔠', label:'3500 词' },
-      { key:'yyxzs', icon:'📖', label:'英语小知识' },
-      { key:'zw',  icon:'✍️', label:'英文作文' }
+      { key:'yyxzs', icon:'📖', label:'英语小知识' }
     ] }
     /* R327-3.1：错题本板块下线 —— 错题统一收进导航一级入口「错题集」，
        原有 st.nwWrong 数据不清空，汇入逻辑照旧（见 r326SyncSources）。 */
@@ -41112,7 +41300,8 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     // R122：书本课文 / 重点知识 改为单元卡片切换，不再用 _enCurPage 分页
     if(key === 'dd') return renderOxfordBook(_enBookUnit);
     if(key === 'gd') return renderEnKeyPoints(_enKpUnit);
-    if(key === 'zw') return renderEnEssay(_enEssayPage);      // R204：英文作文（每页 2 篇）
+    if(key === 'zw') return renderEnEssay(_enEssayPage);      // R204：英文作文（历史入口，已迁入「英语写作」）
+    if(key === 'essay300') return renderEnEssay300(_enEssayPage);  // R332-1.2：英语写作 · 作文300篇
     if(key === 'yyxzs') return enGrammar();               // R24-5：英语小知识（语法体系）
     if(key === 'w3500') return renderEnWords3500();        // R247-2：3500 词（每页 2 张分类卡片）
     // R315-A1：英语错题本与数学错题本同款（题干 / 备注 / 解题思路 / 图片凭证）
@@ -48331,6 +48520,19 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     const all = S.getReading(kind).filter(x=>x.source!=='archived');
     const user = all.filter(x=>x.source==='user');
     const sys = all.filter(x=>x.source!=='user');
+    /* R332-2.2：英语短文改为「打卡驱动」—— 当天打卡后不再跳篇，
+       次日自动切换到下一篇；未打过卡（无游标）时仍按日期轮换，保证首次可见。 */
+    if(kind === 'enPassage' && sys.length && S.getReadingCursor){
+      let c = null;
+      try{ c = S.getReadingCursor('enPassage'); }catch(e){}
+      if(c && c.title){
+        const i = sys.findIndex(x => x.title === c.title);
+        if(i >= 0){
+          const adv = (c.date && c.date < S.todayStr()) ? 1 : 0;
+          return [...user, sys[(i + adv) % sys.length]];
+        }
+      }
+    }
     return [...user, ...dailyRotate(sys, win, offset, everyN)];
   }
   // R295-2.1：好词逐词详解查询（194 词内置详解；自定义词回退成语库；均无则只显示原词）
@@ -48720,11 +48922,19 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       ? `<div class="bs-item-zh"><b>中文翻译：</b>${esc(it.zh)}</div>` : '';
     const analysisHtml = it.analysis
       ? `<div class="bs-item-analysis">💡 <b>赏析：</b>${esc(it.analysis)}</div>` : '';
+    /* R332-2.1：英语短文在书屋里补齐「中文标题 + 单词表」，与 PDF 原书信息一致；
+       正文 en 内用 \n 分段，CSS white-space:pre-wrap 保留原书段落排版。 */
+    const zhTitleHtml = (kind==='enPassage' && it.titleZh)
+      ? `<div class="bs-item-zhtitle">${esc(it.titleZh)}</div>` : '';
+    const vocabHtml = (kind==='enPassage' && Array.isArray(it.vocab) && it.vocab.length)
+      ? `<div class="bs-item-vocab">${it.vocab.map(v=>`<span class="bs-vw">${esc(v.w||'')}${v.m?`<i>${esc(v.m)}</i>`:''}</span>`).join('')}</div>` : '';
     return `<div class="bs-item">
       <div class="ri-title">${esc(it.title||it.theme||'')} <span class="ri-meta" style="background:${tagBg}">${tagTxt}</span>${dateHtml}</div>
+      ${zhTitleHtml}
       ${it.meta?`<div class="ri-meta">${esc(it.meta)}</div>`:''}
       ${mainText?`<div class="ri-body">${esc(mainText)}</div>`:''}
       ${zhHtml}
+      ${vocabHtml}
       ${analysisHtml}
     </div>`;
   }
@@ -54273,14 +54483,32 @@ function renderKMAdmin(){
   //         打卡（checkin）保留独立的庆祝琶音。四档均可在「设置中心 · 系统设置 · 点击音效设置」里单独更换/试听。
   const SFX_SLOTS = ['nav', 'theme', 'sub', 'third', 'checkin'];
   function defaultClickSfx(){ return { nav:'a', theme:'l', sub:'k', third:'h', checkin:'r' }; }
+  /* R332-6.3：音效配置短缓存 —— 旧实现每次点击要 S.load() 2~3 次（isSoundOn / getClickSfx /
+     isCheckinSfxOn 各一次），是「点击迟钝」的固定开销。这里缓存 1.2s，
+     任何 save() 后立即失效（见下方包装），设置改动仍然即时生效。 */
+  var _sfxCfgCache = null, _sfxCfgAt = 0;   // var：save 包装器可能早于此处执行
+  function sfxInvalidate(){ _sfxCfgCache = null; _sfxCfgAt = 0; }
+  function sfxCfg(){
+    const now = Date.now();
+    if(_sfxCfgCache && (now - _sfxCfgAt) < 1200) return _sfxCfgCache;
+    let st = null;
+    try{ st = (window.Store && window.Store.load) ? window.Store.load() : null; }catch(e){}
+    _sfxCfgCache = {
+      on: !!(st && st.soundOn),
+      checkinOn: !!st && st.checkinSfxOn !== false,
+      click: (st && st.clickSfx) || {}
+    };
+    _sfxCfgAt = now;
+    return _sfxCfgCache;
+  }
   // 读取某槽位当前音效预设 id（缺省回退默认）
-  function getClickSfx(slot){ const st=(window.Store&&window.Store.load)?window.Store.load():null; const cfg=(st&&st.clickSfx)||defaultClickSfx(); return cfg[slot] || defaultClickSfx()[slot] || 'f'; }
+  function getClickSfx(slot){ const cfg = sfxCfg().click || defaultClickSfx(); return cfg[slot] || defaultClickSfx()[slot] || 'f'; }
   // 播放某槽位音效
-  function isSoundOn(){ try{ const st=(window.Store&&window.Store.load)?window.Store.load():null; return !!(st && st.soundOn); }catch(e){ return false; } }
+  function isSoundOn(){ return !!sfxCfg().on; }
   /* R300-3：打卡音效独立开关（默认开启）—— 「打卡成功 / 取消打卡」是学习平台的核心反馈音，
      不应因为总开关默认关闭（R150-5 针对的是按键点击音）而整体失声；
      用户在设置中心显式关掉 checkinSfxOn 时才静音。 */
-  function isCheckinSfxOn(){ try{ const st=(window.Store&&window.Store.load)?window.Store.load():null; if(!st) return false; return st.checkinSfxOn !== false; }catch(e){ return false; } }
+  function isCheckinSfxOn(){ return !!sfxCfg().checkinOn; }
   // R150-5：系统默认不播放任何按键音效；仅当用户在设置中心主动开启 soundOn 后才发声
   // R217-5：按槽位去抖——同一槽位 80ms 内只真正播放一次，彻底杜绝「单次点击重复播放 / 多次触发」音效
   let _sfxLastPlay = {};
@@ -60996,6 +61224,8 @@ function init(){
                 不说「已满」，也不再让用户去删图片；
              ④ 其余错误码（verify / error …）一律静默，详情统一去「🩺 存储体检」看。 */
           if(window.__saveFailToastShown) return;
+          /* R332-6.1：轻档 / 小账本 / 补丁已落盘 → 数据可恢复，不再弹存储告警 */
+          try{ if(S.isSaveRecoverable && S.isSaveRecoverable()) return; }catch(e){}
           const h = (S.storageHealth && S.storageHealth()) || {};
           const verdict = h.verdict || (h.writable ? 'ok' : 'blocked');
           if(verdict === 'ok') return;
@@ -61806,7 +62036,9 @@ function init(){
     { act:'pomo', ico:'🍅', label:'番茄专注' },
     { act:'help', ico:'❓', label:'使用说明' },
     { act:'font', ico:'Aa', label:'字号档位' },
-    { act:'top',  ico:'⬆️', label:'回到顶部' }
+    { act:'top',  ico:'⬆️', label:'回到顶部' },
+    /* R332-5：设置中心不再作为一级导航入口，收进 ⚡ 快捷托盘 */
+    { act:'settings', ico:'⚙️', label:'设置中心' }
   ];
   const DOCK_ACTS = DOCK_SHORTCUTS.map(function(x){ return x.act; });
   let dockMenuOpen = false;
@@ -62263,6 +62495,8 @@ function init(){
       }
       case 'open': open('tasks'); break;
       case 'close': close(); break;
+      /* R332-5：⚡ 托盘里的设置中心入口 */
+      case 'settings': go(()=>{ if(typeof goPage === 'function') goPage('settings'); }); break;
       case 'tab': curTab = v; render(); break;
       case 'pomo': open('tools'); setTimeout(()=>{ try{ const el = q('#r271PomoBox'); if(el) el.scrollIntoView({block:'center'}); }catch(e){} }, 60); break;
       case 'top': scrollTop(); break;
