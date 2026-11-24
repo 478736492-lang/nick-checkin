@@ -12375,10 +12375,11 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
 }
 
 /* ================= R336《学习平台功能整改需求》 ================= */
-/* ---- R336-1.1：闪电键固定靠边，托盘与 ⚡ 按键右缘对齐 ---- */
-.r271-dock.r336-dock-edge{right:14px!important;bottom:18px!important;left:auto!important;top:auto!important}
-.r271-dock.r336-dock-edge .r271-dock-tray{right:0!important;left:auto!important;transform-origin:bottom right}
-.r271-dock.r336-dock-edge .r271-dock-shortcut{cursor:pointer}
+/* ---- R336-1.1 / R337-1：闪电键水平锁定右侧，托盘右缘对齐；垂直方向可拖动 ---- */
+.r271-dock.r336-dock-edge.r337-dock-vdrag{right:14px!important;left:auto!important}
+.r271-dock.r336-dock-edge.r337-dock-vdrag .r271-dock-tray{right:0!important;left:auto!important;transform-origin:bottom right}
+.r271-dock.r336-dock-edge.r337-dock-vdrag .r271-dock-shortcut{cursor:grab;touch-action:none}
+.r271-dock.r336-dock-edge.r337-dock-vdrag.r307-dock-dragging .r271-dock-shortcut{cursor:grabbing}
 /* ---- R336-2.1：重点单词弹窗=现有 2/3 宽（480px）+ 居中 + 毛玻璃 + 一行 4 个 ---- */
 #modalR335Vocab.r336-vocab-mask{align-items:center;justify-content:center;background:rgba(18,42,74,.38);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 #modalR335Vocab .r335-vocab-modal.r336-vocab-modal{max-width:480px;width:calc(100% - 32px);background:rgba(255,255,255,.9);backdrop-filter:blur(16px) saturate(1.2);-webkit-backdrop-filter:blur(16px) saturate(1.2);border:1px solid rgba(255,255,255,.7);box-shadow:0 18px 48px rgba(20,50,90,.28)}
@@ -12430,6 +12431,38 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
 }
 /* ---- R336-6.1：取消打卡复用书单庆祝动画，仅中性色文案 ---- */
 .r327-celebrate.r336-checkin-cancel .r327-celebrate-txt{font-weight:800}
+
+/* ================= R337《学习平台功能整改需求》 ================= */
+/* ---- R337-2.1：英语短文卡固定 3:4，内容按卡片尺寸自适应滚动 ---- */
+#enColPassage .reading-item.ri-en{
+  width:100%;aspect-ratio:3/4;flex:0 0 auto;height:auto;max-height:none;
+  overflow-y:auto;overflow-x:hidden;box-sizing:border-box;
+}
+#enColPassage .reading-item.ri-en .ri-body{white-space:normal;overflow-wrap:anywhere}
+/* ---- R337-2.2：重点单词一行 5 个；点词朗读、点卡打卡后变绿 ---- */
+#modalR335Vocab .r335-vocab-modal.r336-vocab-modal .r335-vocab-modal-grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+#modalR335Vocab .r335-vocab-item{position:relative;cursor:pointer;touch-action:manipulation}
+#modalR335Vocab .r335-vocab-item b{cursor:pointer}
+#modalR335Vocab .r335-vocab-item.is-checked{
+  background:linear-gradient(135deg,var(--z-read-pale),var(--z-read-pale2));
+  border-color:var(--z-read-main);box-shadow:0 2px 10px rgba(var(--z-read-rgb),.22);
+}
+#modalR335Vocab .r335-vocab-item.is-checked b,
+#modalR335Vocab .r335-vocab-item.is-checked span{color:var(--z-read-deep)}
+@media (max-width:640px){
+  #modalR335Vocab .r335-vocab-modal.r336-vocab-modal .r335-vocab-modal-grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}
+  #modalR335Vocab .r335-vocab-item{padding:5px 2px;min-height:48px}
+  #modalR335Vocab .r335-vocab-item b{font-size:11.5px}
+  #modalR335Vocab .r335-vocab-item span{font-size:9.5px}
+}
+/* ---- R337-5.1：导航栏日期/星期/时间自适应栏宽，三行各自单行不换行 ---- */
+.sidebar-clock{flex-wrap:nowrap;min-width:0;overflow:hidden}
+.sidebar-clock .rt-date,
+.sidebar-clock .rt-week,
+.sidebar-clock .rt-time{
+  flex:0 0 100%;flex-basis:100%;max-width:100%;box-sizing:border-box;min-width:0;
+  white-space:nowrap;overflow:hidden;text-overflow:clip;
+}
 
 </style>
 </head>
@@ -20385,6 +20418,10 @@ window.XS_A2_VOCAB = [
   let _r318LastOk = false;
   let _r318LightAt = 0;
   let _r318LightSeq = 0;
+  /* R337-4：一次渲染内的 readFlags 快照。新世界专区一屏要查几十次打卡态，
+     每次 isReadingRead() 都走 load()→_r318Pick() 读 3~4 份 MB 级存档，点击明显迟钝。
+     渲染前 withReadFlags() 只 load 一次，渲染期间全部命中这份快照；save() 时作废。 */
+  let _r337ReadFlagsSnapshot = null;
   /* --- A：轻量头部解析 —— 只取顶层 __seq / __commitAt，不做整份 JSON.parse --- */
   /* 定位「真正的顶层戳字段」：用户正文里万一出现同名字面量，要求数字后面紧跟 , 或 } 才认，
      不满足就继续往后找。带次数上限，绝不因为脏数据变成慢查询。 */
@@ -24478,6 +24515,8 @@ window.XS_A2_VOCAB = [
     _r327SecTimer = 0;
   }
   function save(st, _opts){
+    /* R337-4：任何写入都让当前渲染快照失效，避免同一批次里先写后读拿到旧打卡态。 */
+    _r337ReadFlagsSnapshot = null;
     /* R270-7.1：_opts.noBackup —— 首启「空档」不值得当备份（详见 load 首次落库处）*/
     const _skipBak = !!(_opts && _opts.noBackup);
     /* R263-3.1 持久化丢失根治：暂存态也必须「立即落库」。
@@ -28226,8 +28265,19 @@ window.XS_A2_VOCAB = [
     return {ok:true, stars:2};
   }
   function isReadingRead(kind, title){
+    const key = `${kind}::${title}`;
+    if(_r337ReadFlagsSnapshot) return !!_r337ReadFlagsSnapshot[key];
     const st = load();
-    return !!st.readFlags[`${kind}::${title}`];
+    return !!st.readFlags[key];
+  }
+  /* R337-4：只读渲染批处理入口——回调内所有 isReadingRead() 共用一次 load() 结果。
+     可重入（嵌套直接透传），save() 会清空快照，写入后不会读到旧态。 */
+  function withReadFlags(fn){
+    if(_r337ReadFlagsSnapshot) return fn();
+    let snap = {};
+    try{ snap = (load().readFlags) || {}; }catch(e){}
+    _r337ReadFlagsSnapshot = snap;
+    try{ return fn(); }finally{ _r337ReadFlagsSnapshot = null; }
   }
   // 注意：此为生效版本（后者覆盖前者同名声明）；R59-1 拓展素养取消打卡需同步回退按天解锁进度
   // R248-4：合并「退星 + 流水回滚 + 返回值」——原生效版只删 readFlags，导致
@@ -33976,7 +34026,7 @@ be 动词：am / is → was；are → were
     getMathGroups, addMathGroup, addMathTypeToGroup, assignMathTypeToGroup, groupIdOfMathType, getDefaultMathGroupName,
     // R232-2/3：题型讲义（外置图片；R242 已删除本地 PDF 上传/展示）
     getMathTypeImgs, getMathLectureStat, setMathLectureStatus, setMathLectureCap,
-    getReading, getDailySpeaking, addUserReading, markReadingRead, unmarkReadingRead, isReadingRead, getReadingCursor, logCheckin, unlogCheckin, markSpeakingComplete, unmarkSpeakingComplete, unmarkXueersiDailyReward, refundReadingStars,
+    getReading, getDailySpeaking, addUserReading, markReadingRead, unmarkReadingRead, isReadingRead, withReadFlags, getReadingCursor, logCheckin, unlogCheckin, markSpeakingComplete, unmarkSpeakingComplete, unmarkXueersiDailyReward, refundReadingStars,
     // R300-2：阅读面板当日全部打卡完成（语文 +5⭐ / 英语 +3⭐）
     markReadingPanelComplete, unmarkReadingPanelComplete, isReadingPanelComplete, readingPanelStarOf,
     // R232-1：计算小超市打卡（首页必做卡 ⇄ 乐读数学 今日打卡 共用）
@@ -34968,8 +35018,53 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     $$('.rt-time').forEach(el=> el.textContent = timeStr);
     $$('.sidebar-clock .rt-date').forEach(el=> el.textContent = dateStr);
     $$('.sidebar-clock .rt-week').forEach(el=> el.textContent = weekStr);
+    /* R337-5.1：日期 / 星期变化时（每天一次）重新贴合栏宽；时间串长度恒定，无需每秒测量 */
+    const _ckKey = dateStr + '|' + weekStr;
+    if(_r337ClockFitKey !== _ckKey){ _r337ClockFitKey = _ckKey; r337FitClock(); }
     requestAnimationFrame(tickClock);
   }
+
+  /* R337-5.1：导航栏日期 / 星期 / 时间自适应栏宽。
+     侧栏只有 92~114px，完整日期「2026年11月24日」在 15px 下必然溢出（旧表现：换行或被截断）。
+     这里按容器实际宽度逐级收缩字号（下限 9px），保证三行各自一行放得下、不跳行；
+     只在日期变化与窗口尺寸变化时测量，不参与每秒时钟刷新，避免布局抖动。 */
+  var _r337ClockFitKey = '';
+  var _r337ClockFitTimer = 0;
+  var _r337ClockFitRetry = 0;
+  function r337FitClock(){
+    const box = document.getElementById('sidebarClock');
+    if(!box) return;
+    if(!box.clientWidth){
+      /* 首帧布局尚未就绪（隐藏态 / 样式未生效）：最多再试 3 次，绝不无限轮询 */
+      if(_r337ClockFitRetry < 3){
+        _r337ClockFitRetry++;
+        setTimeout(r337FitClock, 300);
+      }
+      return;
+    }
+    _r337ClockFitRetry = 0;
+    const avail = box.clientWidth - 8;   // 左右各 4px padding
+    if(avail <= 0) return;
+    const els = box.querySelectorAll('.rt-date,.rt-week,.rt-time');
+    Array.prototype.forEach.call(els, function(el){
+      el.style.fontSize = '';
+      const cs = window.getComputedStyle ? window.getComputedStyle(el) : null;
+      let size = parseFloat((cs && cs.fontSize) || '15') || 15;
+      for(let i=0; i<26 && size > 9 && el.scrollWidth > avail; i++){
+        size -= 0.5;
+        el.style.fontSize = size + 'px';
+      }
+    });
+  }
+  function r337FitClockSoon(){
+    if(_r337ClockFitTimer) return;
+    _r337ClockFitTimer = setTimeout(function(){
+      _r337ClockFitTimer = 0;
+      r337FitClock();
+    }, 120);
+  }
+  window.addEventListener('resize', r337FitClockSoon);
+  window.addEventListener('orientationchange', r337FitClockSoon);
 
   // ============ 闲置提醒 ============
   let idleTimer=null;
@@ -36762,6 +36857,11 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
   // 插槽内容渲染（外层通栏卡不变，仅替换 slotBody 并淡入）
   function renderYuwenSlot(key, label, slotBody){
     if(!slotBody) return;
+    // R337-4：语文专区次标题切换同样共用一次 readFlags 快照
+    if(S && typeof S.withReadFlags === 'function'){ S.withReadFlags(()=>_r337YuwenSlotPaint(key, label, slotBody)); return; }
+    _r337YuwenSlotPaint(key, label, slotBody);
+  }
+  function _r337YuwenSlotPaint(key, label, slotBody){
     let html = '';
     const pg = _ywPages[key] || 0;
     switch(key){
@@ -38706,6 +38806,8 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     });
   }
   // CARDS: [{title, items:[{key,icon,label}]}]；slotFn(key,label) 返回插槽 HTML 字符串
+  /* R337-4：次标题重绘序号 —— 连续切换时只让最后一次落在下一帧，避免排队重绘 */
+  var _r337SlotSeq = 0;
   function renderSlotPage(topId, slotBodyId, slotHintId, CARDS, slotFn, defaultKey){
     const top = document.getElementById(topId);
     const slotBody = document.getElementById(slotBodyId);
@@ -38729,9 +38831,12 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     const _memLast = _uiMem(_memKey);
     const _defKey = (_memLast && top.querySelector('.yw-round-btn[data-key="' + _memLast + '"]')) ? _memLast : defaultKey;
     top.querySelectorAll('.yw-round-btn').forEach(btn=>{
-      btn.addEventListener('click', ()=>{
+      btn.addEventListener('click', (e)=>{
         top.querySelectorAll('.yw-round-btn').forEach(b=>b.classList.remove('active'));
         btn.classList.add('active');
+        /* R337-4：真人点击时先让「次标题选中态」绘制一帧，再做整块插槽重绘。
+           此前点击后同步构建上百个卡片节点，主线程被占满，视觉上就是「点了没反应」。 */
+        const _r337UserClick = !!(e && e.isTrusted) && _NW_REAL;
         if(slotHint) slotHint.style.display = 'none';
         const key = btn.getAttribute('data-key');
         const label = btn.getAttribute('data-label');
@@ -38745,7 +38850,10 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         if(key === 'zw') _enEssayPage = 0;   // R204：进入英文作文回到第一页
         if(key === 'w3500') _en3500Page = 1; // R247-2：进入 3500 词回到第一页
         if(slotBody){
+          const _r337Seq = _r337UserClick ? (++_r337SlotSeq) : _r337SlotSeq;
           let rerender = ()=>{
+            // R337-4：整块插槽渲染期间只 load 一次存档，次标题切换不再被反复读盘拖慢。
+            const _paint = ()=>{
             // R234-7：记下当前板块的局部刷新函数 —— 图片导入后原地重渲染，不再退回默认板块/Unit 1
             window.__slotRerender = rerender;
             slotBody.innerHTML = `<div class="yw-fade">${slotFn(key,label)}</div>`;
@@ -38822,8 +38930,20 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
                 });
               });
             }
+            };
+            if(S && typeof S.withReadFlags === 'function') S.withReadFlags(_paint); else _paint();
           };
-          rerender();
+          if(_r337UserClick && typeof requestAnimationFrame === 'function'){
+            try{
+              requestAnimationFrame(()=>{
+                /* 连续快速切换次标题：只渲染最后一次，避免排队重绘越点越卡 */
+                if(_r337Seq !== _r337SlotSeq) return;
+                try{ rerender(); }catch(err){}
+              });
+            }catch(e2){ rerender(); }
+          } else {
+            rerender();
+          }
         }
       });
     });
@@ -44249,6 +44369,13 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     'newworld-suzhi':      renderSuzhiPage,
     'newworld-schedule':   renderScheduleAll
   };
+  /* R337-4：每页渲染共用一次 readFlags 快照，避免一屏几十次 load() 读 MB 级存档。 */
+  function _nwRenderOne(k){
+    try{
+      if(S && typeof S.withReadFlags === 'function') S.withReadFlags(()=>NW_RENDERERS[k]());
+      else NW_RENDERERS[k]();
+    }catch(e){}
+  }
   function renderNewWorldAll(page){
     // 返回键是静态 DOM，全站只绑定一次（R61-4 去重继续生效）
     $$('[data-nw-back]').forEach(b=>{
@@ -44256,25 +44383,22 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       b.addEventListener('click', ()=> goPage(b.getAttribute('data-nw-back')));
     });
     const target = NW_RENDERERS[page] ? page : 'newworld';
-    try{ NW_RENDERERS[target](); }catch(e){}
+    _nwRenderOne(target);
+    /* R337-4：真实浏览器取消「其余子页预渲染」。
+       原来首次点开任一新世界二级页时，会在空闲帧里把另外 5 个大页面（语文/数学/英语/
+       素养/课程表，含 300 篇作文、全课程表等重 DOM）逐一渲染，空闲帧被占满，
+       表现就是「点了专区卡片后整页卡死、后续点击没反应」。
+       现在一律按需渲染：进哪页渲染哪页，配合 withReadFlags 快照，单页渲染已足够快。
+       jsdom / 回归环境仍保留一次性同步渲染，保证既有断言能查到各子页 DOM。 */
     if(!_nwWarmDone){
       _nwWarmDone = true;
-      const rest = Object.keys(NW_RENDERERS).filter(k => k !== target);
       if(!_NW_REAL){
-        setTimeout(()=>{
-          rest.forEach(k=>{ try{ NW_RENDERERS[k](); }catch(e){} });
-        }, 0);
-        return;
+        const rest = Object.keys(NW_RENDERERS).filter(k => k !== target);
+        setTimeout(()=>{ rest.forEach(_nwRenderOne); }, 0);
       }
-      const step = ()=>{
-        const k = rest.shift();
-        if(!k) return;
-        try{ NW_RENDERERS[k](); }catch(e){}
-        if(rest.length) _nwIdleStep(step);
-      };
-      _nwIdleStep(step);
     }
   }
+  window.__r337RenderNewWorld = renderNewWorldAll;
 
   // R104：首页介绍卡里的「学段」文字（默认三年级）—— 仅家长模式可编辑修改，普通用户模式只读
   const DEFAULT_HOME_GRADE = '三年级';
@@ -49681,7 +49805,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
               '<div class="reading-translation r334-zh-panel"' + (open?'':' hidden') + '>' + esc(it.zh) + '</div>';
           })()
         : '';
-      /* R335-1.2：重点单词不再铺在短文下方，改由卡片内【重点单词】键唤起弹窗（一行 3 个）。 */
+      /* R335-1.2 / R337-2.2：重点单词由卡片内【重点单词】键唤起弹窗（一行 5 个，点卡打卡变绿）。 */
       const vocabHtml = '';
       // 文库排版优化：英语短文标题下补充「难度 + 主题分类」标签（复用蓝系配色）
       const catTagHtml = (kind==='enPassage' && it.category)
@@ -60002,7 +60126,7 @@ function renderKMAdmin(){
       if(sep<0) return;
       const kind = raw.slice(0, sep);
       const title = raw.slice(sep+2);
-      const KIND_LABEL = {cnWords:'好词好句',cnWordUse:'好词使用',cnLore:'文学小常识',cnPoem:'古诗词鉴赏',cnPoemUse:'古诗词应用',cnEssay:'优秀作文',enPassage:'英语短文',enSpeaking:'英语日常交流',cnChengyu:'成语学习'};
+      const KIND_LABEL = {cnWords:'好词好句',cnWordUse:'好词使用',cnLore:'文学小常识',cnPoem:'古诗词鉴赏',cnPoemUse:'古诗词应用',cnEssay:'优秀作文',enPassage:'英语短文',enSpeaking:'英语日常交流',cnChengyu:'成语学习',enVocab:'重点单词'};
       // R300-1.2：卡片自带 data-ri-label 时优先用它（每日成语 / 文学小常识虽复用 cnWords 键，提示语仍准确）
       const kindLabel = btn.getAttribute('data-ri-label') || KIND_LABEL[kind] || kind;
       if(S.isReadingRead(kind, title)){
@@ -60022,6 +60146,15 @@ function renderKMAdmin(){
           toast('✅已打卡' + starTxt);
           r336CheckinFx(true, r.reward || 0);
         }
+      }
+      // R337-2.2：重点单词弹窗内就地同步绿色勾选态，不重绘弹窗（避免吃掉朗读绑定）
+      if(kind === 'enVocab'){
+        document.querySelectorAll('#r335VocabList [data-ri-checkin]').forEach(function(card){
+          const raw2 = card.dataset.riCheckin || '';
+          const s2 = raw2.indexOf('::');
+          if(s2 < 0) return;
+          card.classList.toggle('is-checked', S.isReadingRead('enVocab', raw2.slice(s2+2)));
+        });
       }
       // V17-2：英语日常交流全部打卡 → 额外奖励 +2⭐（取消时若未集齐则扣回）
       if(kind === 'enSpeaking') checkSpeakingAllDone();
@@ -60049,7 +60182,7 @@ function renderKMAdmin(){
     }
     // R60-3：补上 cnColPoem —— 此前漏绑「古诗词鉴赏」列，导致该栏打卡键点击无反应（打卡失效）
     // R300-1.2：补上 haociUseGrid —— 好词使用每张卡新增打卡键，与大阅读其余卡片同一套委托
-    ['cnColWords','cnColPoem','cnColPoemUse','cnColEssay','enColSpeak','enColPassage','haociUseGrid'].forEach(id=>{
+    ['cnColWords','cnColPoem','cnColPoemUse','cnColEssay','enColSpeak','enColPassage','haociUseGrid','r335VocabList'].forEach(id=>{
       const el = document.getElementById(id);
       if(el && !el._riCheckinBound){ el._riCheckinBound = true; el.addEventListener('click', onRiCheckin); }
     });
@@ -60077,7 +60210,7 @@ function renderKMAdmin(){
       if(!enPassageCol._r334ZhBound){
         enPassageCol._r334ZhBound = true;
         enPassageCol.addEventListener('click', function(e){
-          /* R335-1.2：【重点单词】唤起弹窗，只取当前这一篇的单词表，一行 3 个；点词仍可朗读。 */
+          /* R335-1.2 / R337-2.2：【重点单词】弹窗取当前篇目词表，一行 5 个；点词朗读、点卡打卡变绿。 */
           const vb = e.target.closest('[data-r335-vocab-open]');
           if(vb){
             e.preventDefault(); e.stopPropagation();
@@ -60091,8 +60224,12 @@ function renderKMAdmin(){
                 const w = String((v && v.w) || v || '').trim();
                 const m = String((v && v.m) || '').trim();
                 if(!w) return '';
-                return '<button type="button" class="r335-vocab-item en-tap-speak" data-en-speak="' + esc(w) + '" title="点击单词朗读">' +
-                  '<b>' + esc(w) + '</b><span>' + (m ? esc(m) : '—') + '</span></button>';
+                /* R337-2.2：单词文本点朗读（stopPropagation），卡片其余区域点打卡；完成后整卡变绿。 */
+                const vKey = title + '::' + w;
+                const done = S.isReadingRead('enVocab', vKey);
+                return '<button type="button" class="r335-vocab-item' + (done?' is-checked':'') + '"' +
+                  ' data-ri-checkin="enVocab::' + esc(vKey) + '" data-ri-label="重点单词" title="点单词朗读；点卡片打卡">' +
+                  '<b class="en-tap-speak" data-en-speak="' + esc(w) + '">' + esc(w) + '</b><span>' + (m ? esc(m) : '—') + '</span></button>';
               }).join('') || '<div class="r335-vocab-empty">本篇暂无重点单词</div>';
               if(head) head.textContent = '🔤 ' + title + ' · 重点单词';
               showModal('#modalR335Vocab');
@@ -62733,7 +62870,7 @@ function init(){
   function shell(){
     if(root) return root;
     root = D.createElement('div'); root.id = 'r271Root';
-    root.innerHTML = '<div class="r271-dock r336-dock-edge" id="r271Dock">'
+    root.innerHTML = '<div class="r271-dock r336-dock-edge r337-dock-vdrag" id="r271Dock">'
       /* 五个功能按键不再常驻：收进托盘，点 ⚡ 才展开 */
       + '<div class="r271-dock-tray" id="r271DockMenu" hidden aria-expanded="false">'
       + DOCK_SHORTCUTS.map(function(x){
@@ -62766,76 +62903,66 @@ function init(){
     const dock = q('#r271Dock'), handle = q('#r271DockShortcutBtn');
     if(!dock || !handle || dock._r307DragBound) return;
     dock._r307DragBound = true;
-    /* R313-8：⚡ 快捷键默认固定在平台右下角 —— 换用新的位置键，
-       旧键（r307DockPos）里历史拖拽留下的坐标不再生效，首次进入即回到 CSS 默认右下角。 */
+    /* R337-1：水平仍锁右侧 14px，只放开垂直拖拽；位置存独立小键，
+       默认没有坐标时回到 CSS 的右下角，历史 x 坐标直接忽略，不碰业务数据。 */
     const KEY = 'r313DockPos';
-    const clamp=(x,y)=>{
-      const w=dock.offsetWidth||56, h=dock.offsetHeight||56;
-      const maxX=Math.max(4,(window.innerWidth||1024)-w-4);
-      const maxY=Math.max(4,(window.innerHeight||768)-h-4);
-      return { x:Math.max(4,Math.min(maxX,x)), y:Math.max(4,Math.min(maxY,y)) };
+    const clampY = y=>{
+      const h = dock.offsetHeight || 56;
+      const maxY = Math.max(4, (window.innerHeight || 768) - h - 4);
+      return Math.max(4, Math.min(maxY, y));
     };
-    const place=(x,y)=>{
-      /* R336-1.1：闪电键固定靠边展示——拖拽不再改变位置，始终回到右下角 */
-      if(dock.classList.contains('r336-dock-edge')){
-        dock.style.left=''; dock.style.top=''; dock.style.right=''; dock.style.bottom='';
-        dock.classList.remove('r307-dock-moved');
-        return {x:0,y:0};
-      }
-      const p=clamp(x,y);
-      dock.style.left=p.x+'px'; dock.style.top=p.y+'px';
-      dock.style.right='auto'; dock.style.bottom='auto';
+    const place = y=>{
+      const yy = clampY(Number.isFinite(y) ? y : dock.getBoundingClientRect().top);
+      dock.style.left = '';
+      dock.style.right = '';
+      dock.style.bottom = 'auto';
+      dock.style.top = yy + 'px';
       dock.classList.add('r307-dock-moved');
-      return p;
+      return {y:yy};
     };
-    const persist=p=>{ try{ _uiMem(KEY, JSON.stringify(p)); }catch(e){} };
-    // 恢复上次拖拽位置（独立键，不动任何打卡 / 私有数据）
+    const persist = p=>{ try{ _uiMem(KEY, JSON.stringify(p)); }catch(e){} };
+    // 恢复上次垂直位置（独立键，不动任何打卡 / 私有数据）
     try{
-      const p=JSON.parse(_uiMem(KEY)||'null');
-      if(p && Number.isFinite(p.x) && Number.isFinite(p.y)) place(p.x,p.y);
+      const p = JSON.parse(_uiMem(KEY) || 'null');
+      if(p && Number.isFinite(p.y)) place(p.y);
     }catch(e){}
-    let dragging=false, moved=false, sx=0, sy=0, ox=0, oy=0, snap=null;
-    const px=e=>(e.touches && e.touches[0]) ? e.touches[0].clientX : e.clientX;
-    const py=e=>(e.touches && e.touches[0]) ? e.touches[0].clientY : e.clientY;
-    const onStart=e=>{
+    let dragging=false, moved=false, sy=0, oy=0, snap=null;
+    const py = e=>(e.touches && e.touches[0]) ? e.touches[0].clientY : e.clientY;
+    const onStart = e=>{
       if(e.button != null && e.button !== 0) return;
       if(e.touches && e.touches.length > 1) return;
-      /* R336-1.1：固定靠边模式下指针拖拽不启动，避免写入内联坐标 */
-      if(dock.classList.contains('r336-dock-edge')) return;
-      const r=dock.getBoundingClientRect();
-      dragging=true; moved=false; sx=px(e); sy=py(e); ox=r.left; oy=r.top;
-      snap={ left:dock.style.left, top:dock.style.top, right:dock.style.right, bottom:dock.style.bottom,
+      const r = dock.getBoundingClientRect();
+      dragging=true; moved=false; sy=py(e); oy=r.top;
+      snap={ top:dock.style.top, bottom:dock.style.bottom,
              moved:dock.classList.contains('r307-dock-moved') };
-      dock.style.left=r.left+'px'; dock.style.top=r.top+'px';
-      dock.style.right='auto'; dock.style.bottom='auto';
+      dock.style.top = r.top+'px';
+      dock.style.bottom = 'auto';
       dock.classList.add('r307-dock-dragging');
       try{ if(e.pointerId != null && handle.setPointerCapture) handle.setPointerCapture(e.pointerId); }catch(err){}
     };
-    const onMove=e=>{
+    const onMove = e=>{
       if(!dragging) return;
-      const dx=px(e)-sx, dy=py(e)-sy;
-      if(!moved && Math.abs(dx)+Math.abs(dy) < 6) return;   // 6px 阈值，点按不误判为拖拽
+      const dy = py(e) - sy;
+      if(!moved && Math.abs(dy) < 6) return;   // 6px 阈值，点按不误判为拖拽
       moved=true;
       if(e.cancelable) e.preventDefault();
-      const p=clamp(ox+dx, oy+dy);
-      dock.style.left=p.x+'px'; dock.style.top=p.y+'px';
+      const yy = clampY(oy + dy);
+      dock.style.top = yy + 'px';
     };
-    const onEnd=()=>{
+    const onEnd = ()=>{
       if(!dragging) return;
       dragging=false;
       dock.classList.remove('r307-dock-dragging');
       if(!moved){
         // 纯点按：原样还原定位方式，仍展开托盘
         if(snap){
-          dock.style.left=snap.left; dock.style.top=snap.top;
-          dock.style.right=snap.right; dock.style.bottom=snap.bottom;
+          dock.style.top = snap.top; dock.style.bottom = snap.bottom;
           dock.classList.toggle('r307-dock-moved', !!snap.moved);
         }
         return;
       }
-      const r=dock.getBoundingClientRect();
-      persist(place(r.left, r.top));
-      dock._r307SuppressClick=true;
+      persist(place(parseFloat(dock.style.top)));
+      dock._r307SuppressClick = true;
       setTimeout(()=>{ dock._r307SuppressClick=false; }, 150);
     };
     if(window.PointerEvent){
@@ -62858,8 +62985,7 @@ function init(){
     // 横竖屏 / 窗口变化后把已保存位置重新夹紧，避免跑到屏幕外
     window.addEventListener('resize', ()=>{
       if(!dock.classList.contains('r307-dock-moved')) return;
-      const r=dock.getBoundingClientRect();
-      persist(place(r.left, r.top));
+      persist(place(dock.getBoundingClientRect().top));
     });
     /* R308-3.1：窗口尺寸变化时若托盘展开，按新视口重新夹取，避免旋转/缩放后溢出 */
     window.addEventListener('resize', ()=>{ if(dockMenuOpen) r308FitDockTray(); });
@@ -65971,8 +66097,8 @@ function init(){
     r326Badge();
   }
 
-  /* R336-4.5：重练卷不再需要点击生成/打印，改为页面右侧裸屏常驻展示。
-     数据口径沿用原 r326Paper（当前学科 + 错题重练范围），每次渲染实时同步。 */
+  /* R337-3.1/3.2：重练卷恢复为【快速温故】右侧按键触发，页面不再常驻右侧面板。
+     数据口径仍为当前学科 + 当前统计范围，点击后生成可打印卷面。 */
   function r336PaperItems(){
     const days = Number(_r326Range) || 0;
     const from = days ? Date.now() - days * 86400000 : 0;
@@ -65980,22 +66106,24 @@ function init(){
     try{ items = S.getR326().items.filter(function(x){ return x.subject === _r326Subject && Number(x.createdAt || 0) >= from; }); }catch(e){}
     return items;
   }
-  function r336PaperPanelHtml(){
+  function r326Paper(){
     const items = r336PaperItems();
-    return '<aside class="r336-paper-panel" id="r336PaperPanel" aria-label="错题重练卷">'
-      + '<div class="r336-paper-hd"><h3>📝 ' + esc(_r326Subject) + '错题重练卷</h3>'
-      + '<span class="r336-paper-count">共 ' + items.length + ' 题</span></div>'
-      + '<div class="r336-paper-body">'
-      + (items.length ? items.map(function(it, i){
+    if(!items.length){ toast('这个范围内还没有错题'); return; }
+    let area = document.getElementById('r326PrintArea');
+    if(!area){ area = document.createElement('div'); area.id = 'r326PrintArea'; document.body.appendChild(area); }
+    area.className = 'r326-print';
+    area.innerHTML = '<h2>' + esc(_r326Subject || '全学科') + '错题重练卷</h2>'
+      + '<div class="r326-print-sub">共 ' + items.length + ' 题 · ' + r326Today() + '</div>'
+      + items.map(function(it, i){
           return '<div class="r326-print-item"><div class="r326-print-q">' + (i + 1) + '. ' + esc(it.title) + '</div>'
             + (it.myAnswer ? '<div class="r326-print-old">上次答案：' + esc(it.myAnswer) + '</div>' : '')
             + '<div class="r326-print-line">答：</div></div>';
-        }).join('') : '<div class="r330-empty">这个范围内还没有错题</div>')
-      + '</div></aside>';
-  }
-  function r326Paper(){
-    /* R336-4.5：保留函数名兼容探针，行为改为就地刷新右侧裸屏面板，不再弹打印框 */
-    r330Render();
+        }).join('');
+    document.body.classList.add('r326-printing');
+    try{ window.print(); }finally{
+      document.body.classList.remove('r326-printing');
+      if(area.parentNode) area.parentNode.removeChild(area);
+    }
   }
 
   function r326Export(subject){
@@ -66122,9 +66250,7 @@ function init(){
      - 数据层仍走 R326（同一份 items、srcKey 去重、订正与温故规则不变）
      ============================================================ */
   var _r330View = 'mistakes';
-  /* R336-4.3：每条错题「标准解法」默认隐藏，按键切换；展开状态按错题 id 记忆 */
-  var _r336FixOpen = {};
-  window.__r336FixOpen = _r336FixOpen;
+  /* R337-3.4：原独立「标准解法」折叠按键与状态已移除；解法统一并入看答案区 */
   var _r330Subject = '语文';
   var _r330Search = '';
   var _r330Expanded = null;
@@ -66205,15 +66331,12 @@ function init(){
     if(subs.indexOf(_r330TagSubject) < 0) _r330TagSubject = _r330Subject;
     root.innerHTML = '<div class="r330-app">' +
       r330TabsHtml() +
-      '<div class="r336-r330-layout">' +
-        '<section class="r330-content">' +
-          (_r330View === 'mistakes' ? r330MistakesHtml(items) :
-           _r330View === 'summary' ? r330SummaryHtml(items) :
-           _r330View === 'tags' ? r330TagsHtml(items) : r330AnalysisHtml(items)) +
-        '</section>' +
-        /* R336-4.5：重练卷直接在右侧裸屏常驻展示，无需点击生成 */
-        r336PaperPanelHtml() +
-      '</div>' +
+      /* R337-3.2：四个页面统一单栏，移除右侧固定重练卷区域 */
+      '<section class="r330-content">' +
+        (_r330View === 'mistakes' ? r330MistakesHtml(items) :
+         _r330View === 'summary' ? r330SummaryHtml(items) :
+         _r330View === 'tags' ? r330TagsHtml(items) : r330AnalysisHtml(items)) +
+      '</section>' +
     '</div>' +
     r330ModalHtml() + r330WheelHtml() + r333ReasonPickerHtml();
     r330Bind();
@@ -66272,6 +66395,8 @@ function init(){
         '<button type="button" class="pbtn" data-r330-edit-open>✎ 编辑</button>' +
         '<button type="button" class="pbtn" data-r330-export>⬇ 导出</button>' +
         '<button type="button" class="pbtn" data-r330-quick>▶ 快速温故</button>' +
+        /* R337-3.1：重练卷恢复按键形式，紧邻【快速温故】右侧 */
+        '<button type="button" class="pbtn" data-r330-paper>📝 重练卷</button>' +
       '</div>' +
     '</div>';
   }
@@ -66325,17 +66450,6 @@ function init(){
       '<div class="r330-q-list" id="r330List">' + (list.length ? list.map(r330CardHtml).join('') :
         '<div class="r330-empty">没有符合条件的错题，换个关键词试试～<br><button type="button" class="pbtn primary" data-r330-empty-add>＋ 录入第一道错题</button></div>') + '</div>';
   }
-  /* R336-4.3：标准解法行——默认隐藏，点【标准解法】按键展开，再点收起 */
-  function r336FixRowHtml(it, cls){
-    const id = esc(it.id || it.title || '');
-    const open = !!_r336FixOpen[it.id];
-    const rowCls = cls || 'r330-row';
-    return '<div class="' + rowCls + ' r336-fix-row">'
-      + '<button type="button" class="r336-fix-toggle' + (open?' is-open':'') + '" data-r336-fix-toggle="' + id + '" aria-expanded="' + open + '">'
-      + (open?'▾ 收起标准解法':'▸ 标准解法') + '</button>'
-      + '<p class="r336-fix-body"' + (open?'':' hidden') + '>' + esc(it.fixNote || '暂未记录标准解法') + '</p>'
-      + '</div>';
-  }
   function r330CardHtml(it){
     const col = r330Color(it.subject);
     const open = _r330Expanded === it.id;
@@ -66364,14 +66478,14 @@ function init(){
       '<div class="r330-q-body">' +
         '<div class="r330-row"><h4>题型 · 录入时间</h4><p>' + esc(it.type || '未分类') + ' · ' + esc(r330Date(it.createdAt)) + '</p></div>' +
         '<div class="r330-row"><h4>错误原因总结</h4><p>' + esc(it.wrongNote || it.reason || '未填写') + (it.reason ? '（' + esc(it.reason) + '）' : '') + '</p></div>' +
-        r336FixRowHtml(it) +
         (tags ? '<div class="r330-row"><h4>知识点</h4><div class="r330-ktags">' + tags + '</div></div>' : '') +
         (imgs ? '<div class="r330-row"><h4>题目照片</h4><div class="r330-q-imgs">' + imgs + '</div></div>' : '') +
         (it.myAnswer ? '<div class="r330-row"><h4>错误答案</h4><p>' + esc(it.myAnswer) + '</p></div>' : '') +
-        '<div class="r330-rightans" id="r330Right_' + esc(it.id) + '" hidden>正确答案：' + esc(it.rightAnswer || '（未填写）') + '</div>' +
+        /* R337-3.3：标准解法并入看答案区，原独立折叠行已移除 */
+        '<div class="r330-rightans" id="r330Right_' + esc(it.id) + '" hidden>标准解法：' + esc(it.fixNote || it.rightAnswer || '（未填写）') + '</div>' +
         ansOps +
         '<div class="r330-q-actions">' +
-          '<button type="button" class="pbtn" data-r330-reveal="' + esc(it.id) + '">看答案</button>' +
+          '<button type="button" class="pbtn" data-r330-reveal="' + esc(it.id) + '">点击看答案</button>' +
           '<button type="button" class="pbtn" data-r330-set="' + esc(it.id) + '" data-status="' + (it.status === 'mastered' ? 'pending' : 'mastered') + '">' +
             (it.status === 'mastered' ? '↩ 改回待复习' : '✓ 标记为已掌握') + '</button>' +
           '<button type="button" class="pbtn" data-r330-edit="' + esc(it.id) + '">修改</button>' +
@@ -66389,8 +66503,9 @@ function init(){
         '<span class="r330-q-title">' + esc(it.title) + '</span><time class="r330-q-date">' + esc(r330Date(it.createdAt)) + '</time></div>' +
       '<div class="r330-rc-row"><h4>题型 · 录入时间</h4><p>' + esc(it.type || '未分类') + ' · ' + esc(r330Date(it.createdAt)) + '</p></div>' +
       '<div class="r330-rc-row"><h4>错误原因总结</h4><p>' + esc(it.wrongNote || it.reason || '未填写') + (it.reason ? '（' + esc(it.reason) + '）' : '') + '</p></div>' +
-      r336FixRowHtml(it, 'r330-rc-row') +
+      '<div class="r330-rightans" id="r330Right_' + esc(it.id) + '" hidden>标准解法：' + esc(it.fixNote || it.rightAnswer || '（未填写）') + '</div>' +
       '<div class="r330-rc-actions">' +
+        '<button type="button" class="pbtn" data-r330-reveal="' + esc(it.id) + '">点击看答案</button>' +
         '<button type="button" class="pbtn primary" data-r330-set="' + esc(it.id) + '" data-status="mastered">✓ 掌握了</button>' +
         '<button type="button" class="pbtn" data-r330-next="' + esc(it.id) + '">下一道 →</button>' +
       '</div>' +
@@ -67031,22 +67146,7 @@ function init(){
       r330SyncFormInputs();
       const hit = function(a){ return t.closest('[' + a + ']'); };
       let el;
-      /* R336-4.3：标准解法按键就地展开/收起（不整页重绘，避免折叠态与浮层被吃掉） */
-      if((el = hit('data-r336-fix-toggle'))){
-        e.preventDefault(); e.stopPropagation();
-        const id = el.getAttribute('data-r336-fix-toggle');
-        const row = el.closest('.r336-fix-row');
-        const body = row ? row.querySelector('.r336-fix-body') : null;
-        if(body){
-          const open = body.hasAttribute('hidden');
-          if(open){ body.removeAttribute('hidden'); _r336FixOpen[id] = true; }
-          else { body.setAttribute('hidden',''); delete _r336FixOpen[id]; }
-          el.classList.toggle('is-open', open);
-          el.setAttribute('aria-expanded', open ? 'true' : 'false');
-          el.textContent = open ? '▾ 收起标准解法' : '▸ 标准解法';
-        }
-        return;
-      }
+      /* R337-3.4：原标准解法折叠分支已移除，统一由 data-r330-reveal 展开答案区 */
       /* R334-4.3：错因两级 —— 点框弹列表，选一级后自动接二级，也可只留一级 */
       if(hit('data-r334-reason-close')){ const pb = document.getElementById('r334ReasonPick'); if(pb) pb.hidden = true; return; }
       if((el = hit('data-r333-reason-pick'))){ r333OpenReasonPick(el.getAttribute('data-r333-reason-pick')); return; }
