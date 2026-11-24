@@ -12374,6 +12374,63 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
   .r330-modal{max-width:96vw}
 }
 
+/* ================= R336《学习平台功能整改需求》 ================= */
+/* ---- R336-1.1：闪电键固定靠边，托盘与 ⚡ 按键右缘对齐 ---- */
+.r271-dock.r336-dock-edge{right:14px!important;bottom:18px!important;left:auto!important;top:auto!important}
+.r271-dock.r336-dock-edge .r271-dock-tray{right:0!important;left:auto!important;transform-origin:bottom right}
+.r271-dock.r336-dock-edge .r271-dock-shortcut{cursor:pointer}
+/* ---- R336-2.1：重点单词弹窗=现有 2/3 宽（480px）+ 居中 + 毛玻璃 + 一行 4 个 ---- */
+#modalR335Vocab.r336-vocab-mask{align-items:center;justify-content:center;background:rgba(18,42,74,.38);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+#modalR335Vocab .r335-vocab-modal.r336-vocab-modal{max-width:480px;width:calc(100% - 32px);background:rgba(255,255,255,.9);backdrop-filter:blur(16px) saturate(1.2);-webkit-backdrop-filter:blur(16px) saturate(1.2);border:1px solid rgba(255,255,255,.7);box-shadow:0 18px 48px rgba(20,50,90,.28)}
+#modalR335Vocab .r335-vocab-modal-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.r336-vocab-back{appearance:none;border:1.5px solid var(--tone-300);background:#fff;color:var(--tone-800);border-radius:999px;padding:5px 16px;font-size:13px;font-weight:800;font-family:inherit;cursor:pointer;touch-action:manipulation}
+.r336-vocab-back:hover{background:var(--tone-050);border-color:var(--tone-400)}
+@media (max-width:640px){
+  #modalR335Vocab .r335-vocab-modal-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+  #modalR335Vocab .r335-vocab-item{padding:6px 4px;min-height:52px}
+  #modalR335Vocab .r335-vocab-item b{font-size:12px}
+  #modalR335Vocab .r335-vocab-item span{font-size:10px}
+}
+/* ---- R336-3.1：作文300篇译文展开/收起（同一套 r334-zh-toggle 视觉，右置动作行） ---- */
+.r336-essay-actions{display:flex;align-items:center;justify-content:flex-end;margin-top:6px}
+.r336-essay-zh[hidden]{display:none}
+/* ---- R336-4.3 / 4.5：标准解法按键 + 右侧裸屏重练卷 ---- */
+.r336-fix-row{display:flex;flex-direction:column;gap:6px}
+.r336-fix-toggle{align-self:flex-start;appearance:none;border:1.5px solid var(--tone-300);background:var(--tone-050);color:var(--tone-800);
+  border-radius:10px;padding:5px 12px;font-size:12.5px;font-weight:800;font-family:inherit;cursor:pointer;touch-action:manipulation}
+.r336-fix-toggle:hover{border-color:var(--tone-500)}
+.r336-fix-body{margin:0;line-height:1.6}
+.r336-fix-body[hidden]{display:none}
+.r336-r330-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,320px);gap:0;align-items:start}
+.r336-r330-layout>.r330-content{min-width:0}
+.r336-paper-panel{position:sticky;top:8px;max-height:calc(100dvh - 24px);overflow:auto;
+  border-left:1.5px solid var(--tone-150);background:var(--tone-025);padding:14px 16px 22px;min-width:0}
+.r336-paper-hd{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding-bottom:10px;margin-bottom:10px;border-bottom:1.5px dashed var(--tone-300)}
+.r336-paper-hd h3{font-size:15px;font-weight:900;color:var(--tone-900);margin:0}
+.r336-paper-count{font-size:12px;font-weight:700;color:var(--tone-700);white-space:nowrap}
+.r336-paper-body .r326-print-item{margin-bottom:14px;page-break-inside:auto}
+.r336-paper-body .r326-print-q{font-size:13px;font-weight:700;color:var(--tone-900);margin-bottom:4px}
+.r336-paper-body .r326-print-old{font-size:11px;color:var(--tone-600)}
+.r336-paper-body .r326-print-line{margin-top:18px;border-bottom:1px solid var(--tone-300);height:1px}
+@media (max-width:1000px){
+  .r336-r330-layout{grid-template-columns:minmax(0,1fr)}
+  .r336-paper-panel{position:static;max-height:none;border-left:0;border-top:1.5px dashed var(--tone-300);margin-top:8px}
+}
+/* ---- R336-5.1：书单作者靠右、自适应完整展示、消除留白 ---- */
+.r319-book-row .r319-book-author{
+  text-align:right;overflow:visible;text-overflow:clip;white-space:normal;line-height:1.2;
+  min-width:0;word-break:break-word;
+}
+.r319-book-row{grid-template-columns:30px minmax(0,1fr) minmax(0,1fr) 62px;gap:6px}
+@media (max-width:640px){
+  .r319-book-row{grid-template-columns:26px minmax(0,1fr) 58px;
+    grid-template-areas:"no name read" "no author read"}
+  .r319-book-row .r319-book-author{text-align:right}
+}
+/* ---- R336-6.1：取消打卡复用书单庆祝动画，仅中性色文案 ---- */
+.r327-celebrate.r336-checkin-cancel .r327-celebrate-txt{font-weight:800}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -20618,7 +20675,7 @@ window.XS_A2_VOCAB = [
     'userReading','readingPanelDone','mathProblems','mathNotes','mathNoteStatus','mathGroups',
     'mathGallery','mathExerciseBank','plots','inventory','gifts','shop','stage','km','farmOpen',
     'music','farmLayout','en3500Marks','r314','nwWrong','homeGreets','homeBanner','sectionTitleTexts',
-    'schedule','memos','weekPlanColors','r319BookList','__r319BookListSeedV1','__r324BookImportV1','__r327BookCatsV1','__r328OtherCatV1','__r332BookImportV1','__r334BookCatsV1','readCursor','r326','__schema','__seq','__commitAt','__tomb'];
+    'schedule','memos','weekPlanColors','r319BookList','__r319BookListSeedV1','__r324BookImportV1','__r327BookCatsV1','__r328OtherCatV1','__r332BookImportV1','__r334BookCatsV1','__r336BookImportV1','readCursor','r326','__schema','__seq','__commitAt','__tomb'];
   /* 轻档超预算时的「可牺牲顺序」：从体积最大且可再生 / 有主档兜底的字段开始丢 */
   const LIGHT_DROP_ORDER = ['calcBank','mathProblems','mathGallery','xueersiWordBank','km','calcWrongBook'];
   let _r318XsSrc = null, _r318XsDelta = null;
@@ -22846,6 +22903,75 @@ window.XS_A2_VOCAB = [
         }
       }catch(e){}
       st.__r334BookCatsV1 = true;
+      save(st);
+    }
+    /* ===== R336-5.2：指定书籍导入 + 分类整理 + 按适配阅读年龄排序 =====
+       一次性闸 __r336BookImportV1：
+       ① 按书名去重导入下列 17 本（已存在的《金篮子旅店》《兔子坡》只补推荐理由/适读年龄，
+          已读键 read / ⭐ / 借阅 / 用户字段一律不动）；
+       ② 给全部书籍补 age（适读年龄，默认按分类兜底），供书单按年龄从小到大排序；
+       ③ 只新增字段、不删任何书、不改用户自建分类。 */
+    if(!st.__r336BookImportV1){
+      try{
+        if(!st.r319BookList || typeof st.r319BookList !== 'object' || Array.isArray(st.r319BookList)) st.r319BookList = {cats:[], books:[]};
+        if(!Array.isArray(st.r319BookList.cats)) st.r319BookList.cats = [];
+        if(!Array.isArray(st.r319BookList.books)) st.r319BookList.books = [];
+        var _r336CatId = function(n){
+          var c = st.r319BookList.cats.filter(function(x){ return x && x.name === n; })[0];
+          if(!c){ c = {id:'rc_'+n, name:n, builtin:true, ts:Date.now()}; st.r319BookList.cats.push(c); }
+          return c.id;
+        };
+        /* [分类, 书名, 作者, 推荐理由, 适读年龄] */
+        var _r336Books = [
+          ['文学','荒泉山','[美] 劳拉·亚当斯·阿默','作者长期深入纳瓦霍部落，记录原住民的叙事。小男孩一心想要成为族人的吟唱医者，独自攀登无水的荒泉山，完成精神历练。',10],
+          ['小说','克拉科夫的小号手','[美] 埃里克·凯利','约瑟一家背负古老誓言，要将各方势力觊觎的水晶球交给国王。克拉科夫塔楼的号声在一半截断，这个习俗今天仍在。',10],
+          ['文学','铁路边的孩子们','[英] 伊迪丝·内斯比特','父亲蒙冤入狱，妈妈带着三个孩子搬到铁路边茅屋，孩子们常和列车挥手，捎去父亲的思念，发生了很多温暖而惊险的故事。',9],
+          ['童话','银色大地的传说','[美] 约瑟夫·雅各布斯','19个独立短篇传说。雨林、大河、高原、星空，充满热带美洲的原始想象。',9],
+          ['文学','花颈鸽','[美] 丹·戈帕尔·穆克吉','一只天赋出众的信鸽，因重伤留下心理创伤害怕飞翔。少年带着它去喜马拉雅山间，在山野中找回勇气。',9],
+          ['童话','一只叫汉克的驼鹿','[美] 罗伯特·劳森','一只驼鹿饥寒交迫，躲进小镇的马厩里，搅乱秩序。孩子们说服大人，让驼鹿待到春天，回到森林。',8],
+          ['童话','胡桃木小姐','[美] 卡罗琳·舍温·贝利','胡桃木小姐是手工玩偶，被主人丢下必须独自熬过寒冬。路上结识乌鸦、土拨鼠等。春天来临前，松鼠吃掉了她的胡桃脑袋，她的苹果枝身躯嫁接在苹果树上，长出新芽以另一种生命形态延续。',9],
+          ['童话','城堡镇的蓝猫','[美] 凯瑟琳·瓦利·凯尼恩','蓝月夜降生的蓝小猫学会大河之歌，把歌声带回被魔咒笼罩的城堡镇。织毯姑娘织出著名的蓝猫地毯（原型是真实的古织物），魔咒破灭，小镇重新找回宁静。',9],
+          ['文学','月桂精灵','[美] 雷切尔·菲尔德','女孩玛吉接连失去家人，用智慧和勇气一次次度过危机。她在海岸岩石缝隙看见山月桂在贫瘠中绽开盛放。重获自由后，她选择留在海岸，心安之处便是家。',10],
+          ['文学','多伯瑞','[美] 门罗·利夫顿','乡间男孩多伯瑞有惊人的艺术天赋，妈妈认为画画雕刻不务正业。寒冬雪夜，多伯瑞完成一座大型雪雕，引来全村赞叹。妈妈被打动，送他去求学。农家少年，可以追寻远方，也可以心系故乡。',10],
+          ['漫画绘本','金篮子旅店','[美] 路德维格·贝梅尔曼斯','爸爸带着两个女儿去金篮子旅店度假，遇见形形色色好玩的人：半夜在床上吃黄瓜沙拉的上校，会预报天气的青蛙……',8],
+          ['童话','漂浮的岛','[英] 埃里克·林克莱特','玩偶版鲁滨逊漂流记。玩具店的玩偶，夜里会跳舞读书。无意中漂流到荒岛上，他们在岛上求生，适应荒岛生活。',8],
+          ['文学','木头娃娃的百年旅行','[美] 雷切尔·菲尔德','木头娃娃意外与主人分开，开启百年辗转漂泊。见证捕鲸时代、火车、飞机，见证时间的力量。',10],
+          ['童话','本和我','[美] 罗伯特·劳森','小老鼠阿莫斯是富兰克林背后的智囊，它帮助富兰克林设计发明，经历各种大事，从风筝引雷、独立战争到巴黎外交。一人一鼠吵吵闹闹，却彼此依靠。',9],
+          ['文学','兔子坡','[美] 罗伯特·罗素','山坡上要搬来新邻居，小动物们期待又忐忑，经历误解敌意，慢慢放下戒备，消除隔阂，善意换来善意。',8],
+          ['小说','森林王子','[英] 鲁德亚德·吉卜林','人类幼童莫格利在丛林里被老虎追杀，狼夫妻收养了他。他学会动物语言、狩猎和丛林法则，在野兽世界和人类文明之间摇摆。丛林残酷，人类村庄也有猜忌和狭隘。',10],
+          ['散文','人类的故事','[美] 亨德里克·房龙','纽伯瑞第一本金奖作品。写给青少年的人类文明简史，更适合六年级以上的孩子。以后会再说起它。',12]
+        ];
+        var _r336ByTitle = {};
+        st.r319BookList.books.forEach(function(b){
+          if(!b || !b.title) return;
+          _r336ByTitle[b.title] = b;
+          /* 仅补推荐理由与适读年龄，绝不动已读/⭐/借阅/用户自建字段 */
+          if(!b.reason && b.title === '金篮子旅店') b.reason = '爸爸带着两个女儿去金篮子旅店度假，遇见形形色色好玩的人：半夜在床上吃黄瓜沙拉的上校，会预报天气的青蛙……';
+          if(!b.reason && b.title === '兔子坡') b.reason = '山坡上要搬来新邻居，小动物们期待又忐忑，经历误解敌意，慢慢放下戒备，消除隔阂，善意换来善意。';
+        });
+        _r336Books.forEach(function(b, i){
+          var exist = _r336ByTitle[b[1]];
+          if(exist){
+            if(!exist.age) exist.age = b[4];
+            if(!exist.reason) exist.reason = b[3];
+            return;
+          }
+          var book = {
+            id:'rb336_'+i+'_'+b[1].length, cat:_r336CatId(b[0]), title:b[1], author:b[2],
+            reason:b[3], age:b[4], read:false, ts:Date.now()+i
+          };
+          st.r319BookList.books.push(book);
+          _r336ByTitle[b[1]] = book;
+        });
+        /* 全库兜底 age：按分类给默认适读年龄，已显式指定的不动 */
+        var _r336AgeByCat = {'漫画绘本':7,'童话':8,'散文':11,'文学':10,'小说':10};
+        st.r319BookList.books.forEach(function(b){
+          if(!b || b.age != null) return;
+          var cn = (st.r319BookList.cats.filter(function(c){ return c && c.id === b.cat; })[0] || {}).name || '';
+          b.age = _r336AgeByCat[cn] || 10;
+        });
+      }catch(e){}
+      st.__r336BookImportV1 = true;
       save(st);
     }
     // V11.6：记录每日日常交流完成状态（5 条均完成 → +2⭐，仅一次）
@@ -25296,7 +25422,7 @@ window.XS_A2_VOCAB = [
   const R326_REASON_TREE = [
     { name:'知识性错误', children:['知识点没掌握','概念不清','公式记错'] },
     { name:'审题性错误', children:['漏看条件','看错数字','理解偏差'] },
-    { name:'习惯性错误', children:['单位少写','步骤遗漏','格式不规范'] }
+    { name:'习惯性错误', children:['单位少写','步骤遗漏','格式不规范','书写错误'] }
   ];
   const R326_REASON_LEGACY = ['计算失误','审题偏差','方法不会','遗忘'];
   const R326_REASONS = R326_REASON_TREE.reduce(function(a, n){
@@ -25631,7 +25757,9 @@ window.XS_A2_VOCAB = [
       const day = r326Day(new Date(it.createdAt || 0));
       if(day >= wk) base.weekNew++;
       if(day >= mo) base.monthNew++;
-      if(it.reason) base.reasons[it.reason] = (base.reasons[it.reason] || 0) + 1;
+      /* R336-4.4：错因统计与「错误原因总结」同源，wrongNote 优先，保证编辑后实时同步 */
+      const _r336Reason = (it.wrongNote && String(it.wrongNote).trim()) ? String(it.wrongNote).trim() : it.reason;
+      if(_r336Reason) base.reasons[_r336Reason] = (base.reasons[_r336Reason] || 0) + 1;
       if(it.kp) base.kp[it.kp] = (base.kp[it.kp] || 0) + 1;
       const d0 = new Date(it.createdAt || 0); d0.setHours(12, 0, 0, 0);
       const ws = r326Day(new Date(d0.getFullYear(), d0.getMonth(), d0.getDate() - ((d0.getDay() + 6) % 7)));
@@ -39246,7 +39374,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
   }
   /* R328-1.1：全平台统一打卡成功反馈 —— 绿色恭喜文字「NICK！恭喜获得 N⭐」，
      默认 1.5 秒后消失，同步播放一次烟花绽放音效。pointer-events:none 不拦点击。 */
-  function r327CheckinSuccess(stars){
+  function r327CheckinSuccess(stars, isCancel){
     try{
       const cfg = r328CheckinCfg();
       const nm = ((S.load().profile || {}).nickname || 'Nick');
@@ -39256,7 +39384,9 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       const box = document.createElement('div');
       box.className = 'r327-celebrate';
       box.style.setProperty('--r328-dur', cfg.duration + 'ms');
-      box.style.setProperty('--r328-cc', cfg.color);
+      /* R336-6.1：取消打卡复用同一套动画，仅换成中性色与「已取消打卡」文案 */
+      box.style.setProperty('--r328-cc', isCancel ? '#94a3b8' : cfg.color);
+      if(isCancel) box.classList.add('r336-checkin-cancel');
       const hues = [cfg.color,'#ffca28','#43a047','#29b6f6','#ab47bc','#ff7a18'];
       let bursts = '';
       const spots = [{x:'28%',y:'36%'},{x:'50%',y:'26%'},{x:'72%',y:'38%'},{x:'38%',y:'58%'},{x:'64%',y:'60%'}];
@@ -39271,20 +39401,26 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         }
         bursts += '<span class="r327-fw" style="left:' + s.x + ';top:' + s.y + '">' + sparks + '</span>';
       });
-      const raw = cfg.text.replace(/\{nick\}/g, '\u0001').replace(/\{stars\}/g, '\u0002');
-      const label = esc(raw).replace(/\u0001/g, esc(nm)).replace(/\u0002/g, String(n));
+      const raw = isCancel ? '{nick}，已取消打卡' : cfg.text.replace(/\{nick\}/g, '\u0001').replace(/\{stars\}/g, '\u0002');
+      const label = isCancel ? esc(raw).replace(/\{nick\}/g, esc(nm))
+                             : esc(raw).replace(/\u0001/g, esc(nm)).replace(/\u0002/g, String(n));
       box.innerHTML = '<div class="r327-celebrate-txt">' + label + '</div>' + bursts;
       document.body.appendChild(box);
       setTimeout(function(){ if(box && box.parentNode) box.parentNode.removeChild(box); }, cfg.duration);
       /* 打卡音效单响：捕获阶段若已响过（间隔 < 160ms）就不再补播；其余打卡路径在这里补一次 */
-      try{
+      if(!isCancel){ try{
         if(isCheckinSfxOn() && Date.now() - (_checkinSfxAt || 0) > 160){
           const p = SFX_PRESETS[cfg.sfx]; if(p && p.play) p.play();
           _checkinSfxAt = Date.now();
         }
-      }catch(e){}
+      }catch(e){} }
     }catch(e){}
   }
+  /* R336-6.1：全平台打卡 / 取消打卡统一动画入口——打卡与取消都走书单那套 r327CheckinSuccess */
+  function r336CheckinFx(on, stars){
+    try{ r327CheckinSuccess(stars || 0, !on); }catch(e){}
+  }
+  window.__r336CheckinFx = r336CheckinFx;
 
   // 错题本「批改」判对后：同步当日快照与主面板该题（作答改为正确答案、标 ✓）
   function _syncCalcBoardWrongFixed(key){
@@ -40880,7 +41016,14 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
           <button class="en-essay-done-btn${essayDone?' is-done':''}" data-en-essay-done="${esc(it.id||it.title)}" title="${essayDone?'已学（点击取消）':'点击标记已学'}">${essayDone?'✅已学':'□未学'}</button>
         </div>
         <div class="en-essay-body en-tap-speak" data-en-speak="${esc(it.en)}">${esc(it.en)}</div>
-        <div class="en-essay-zh"><b>译文：</b>${esc(it.zh)}</div>
+        ${it.zh ? (function(){
+          const zKey = esc(it.id || it.title);
+          const zOpen = !!_r336EssayZhOpen[it.id || it.title];
+          return '<div class="r336-essay-actions">'
+            + '<button type="button" class="r334-zh-toggle' + (zOpen?' is-open':'') + '" data-r336-essay-zh="' + zKey + '" aria-expanded="' + zOpen + '">'
+            + '<span>' + (zOpen?'收起':'展开') + '</span><i aria-hidden="true">▾</i> 译文</button></div>'
+            + '<div class="en-essay-zh r336-essay-zh"' + (zOpen?'':' hidden') + '><b>译文：</b>' + esc(it.zh) + '</div>';
+        })() : ''}
       </div>`;
     }).join('');
     return `
@@ -40943,7 +41086,14 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
           <button class="en-essay-done-btn${done?' is-done':''}" data-en-essay-done="${esc(it.id||it.title)}" title="${done?'已学（点击取消）':'点击标记已学'}">${done?'✅已学':'□未学'}</button>
         </div>
         <div class="en-essay-body en-tap-speak" data-en-speak="${esc(it.en)}">${esc(it.en)}</div>
-        ${it.zh ? `<div class="en-essay-zh"><b>译文：</b>${esc(it.zh)}</div>` : ''}
+        ${it.zh ? (function(){
+          const zKey = esc(it.id || it.title);
+          const zOpen = !!_r336EssayZhOpen[it.id || it.title];
+          return '<div class="r336-essay-actions">'
+            + '<button type="button" class="r334-zh-toggle' + (zOpen?' is-open':'') + '" data-r336-essay-zh="' + zKey + '" aria-expanded="' + zOpen + '">'
+            + '<span>' + (zOpen?'收起':'展开') + '</span><i aria-hidden="true">▾</i> 译文</button></div>'
+            + '<div class="en-essay-zh r336-essay-zh"' + (zOpen?'':' hidden') + '><b>译文：</b>' + esc(it.zh) + '</div>';
+        })() : ''}
         ${Array.isArray(it.vocab) && it.vocab.length ? `<div class="r332-e300-vocab">${it.vocab.slice(0,8).map(v=>`<span class="r332-e300-vw">${esc(v.w||v)}<i>${esc(v.m||'')}</i></span>`).join('')}</div>` : ''}
       </div>`;
     }).join('');
@@ -43537,7 +43687,12 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     }
     grid.className = 'r319-cat-grid' + (_r327BookEdit ? ' r327-editing' : '');
     grid.innerHTML = cats.map((c, ci)=>{
-      const list = books.filter(b=>b.cat === c.id);
+      /* R336-5.2：书单内按适配阅读年龄从小到大排序（age 相同按书名），只看展示顺序，不改存储 */
+      const list = books.filter(b=>b.cat === c.id).sort(function(a, b){
+        const aa = Number(a.age != null ? a.age : 10), bb = Number(b.age != null ? b.age : 10);
+        if(aa !== bb) return aa - bb;
+        return String(a.title || '').localeCompare(String(b.title || ''), 'zh-CN');
+      });
       const pageCount = Math.max(1, Math.ceil(list.length / R328_BOOK_PAGE_SIZE));
       const pi = Math.max(1, Math.min(pageCount, _r328BookPages[c.id] || 1));
       _r328BookPages[c.id] = pi;
@@ -43932,8 +44087,8 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
           const r = S.r319ToggleRead(bid);
           if(r && r.ok){
             /* R327-4.12：打卡完成得⭐（漫画 / 绘本按轻阅读，默认 2⭐，可逐本改写） */
-            if(!wasRead && r.read && n > 0){ addStars(n, true); toast('🎉 已读 +' + n + '⭐'); r327CheckinSuccess(n); }
-            else if(wasRead && !r.read && n > 0){ addStars(-n, true); toast('↩ 已取消已读，扣回 ' + n + '⭐'); }
+            if(!wasRead && r.read && n > 0){ addStars(n, true); toast('🎉 已读 +' + n + '⭐'); r336CheckinFx(true, n); }
+            else if(wasRead && !r.read && n > 0){ addStars(-n, true); toast('↩ 已取消已读，扣回 ' + n + '⭐'); r336CheckinFx(false, 0); }
             else if(!wasRead && r.read){ toast('✅ 已读，这本书不设打卡⭐'); }
             r319RenderBookList();
             /* R327-4.10：已读即出借阅队列，借阅弹窗若开着同步刷新 */
@@ -49435,6 +49590,9 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
      R335-1.3：短文区一次只显示一篇；打卡后次日自动切到下一篇（游标读 st.readCursor.enPassage，
      只存标题+日期，列表增删不错位；用户数据一篇不删）。 */
   const _r334ZhOpen = {};
+  /* R336-3.1：作文300篇译文展开状态（按篇目 id/title 记忆，与大阅读英语短文同一套交互） */
+  const _r336EssayZhOpen = {};
+  window.__r336EssayZhOpen = _r336EssayZhOpen;
   function r334EnPassages(){
     try{
       return S.getReading('enPassage').filter(function(x){ return x && x.source !== 'archived'; });
@@ -59106,6 +59264,25 @@ function renderKMAdmin(){
     // 弹窗关闭
     $$('[data-close]').forEach(b=>b.onclick=()=>b.closest('.modal-mask').hidden=true);
     $$('.modal-mask').forEach(m=>m.onclick=e=>{ if(e.target===m) m.hidden=true; });
+    /* R336-3.1：作文300篇译文【展开/收起】——与大阅读英语短文同一套交互（按键切换 + 按篇目记忆） */
+    if(!document._r336EssayZhBound){
+      document._r336EssayZhBound = true;
+      document.addEventListener('click', function(e){
+        const btn = e.target && e.target.closest ? e.target.closest('[data-r336-essay-zh]') : null;
+        if(!btn) return;
+        e.preventDefault(); e.stopPropagation();
+        const key = btn.getAttribute('data-r336-essay-zh') || '';
+        const card = btn.closest('.en-essay-card');
+        const panel = card ? card.querySelector('.r336-essay-zh') : null;
+        if(!panel) return;
+        const open = panel.hasAttribute('hidden');
+        if(open){ panel.removeAttribute('hidden'); if(key) _r336EssayZhOpen[key] = true; }
+        else { panel.setAttribute('hidden',''); if(key) delete _r336EssayZhOpen[key]; }
+        btn.classList.toggle('is-open', open);
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        const sp = btn.querySelector('span'); if(sp) sp.textContent = open ? '收起' : '展开';
+      });
+    }
     // V98 课程表设置：入口与弹窗按钮
     const btnSchedGear = $('#btnSchedGear');
     if(btnSchedGear) btnSchedGear.onclick = ()=> openSchedManage();
@@ -59832,8 +60009,9 @@ function renderKMAdmin(){
         const r = S.unmarkReadingRead(kind, title);
         if(r && r.ok){
           const m = r.refund>0 ? `（已扣回 ${r.refund}⭐）` : '';
-          // R300-3：取消打卡与打卡成功播同一个音效（120ms 合并窗口会吸收捕获阶段那一声，不会双响）
+          // R336-6.1：取消打卡动画与打卡成功统一（同一套书单庆祝动画，取消态中性色文案）
           try{ playCheckinSound(); }catch(_){ }
+          r336CheckinFx(false, 0);
           toast('已取消打卡·' + kindLabel + m);
         }
       } else {
@@ -59842,7 +60020,7 @@ function renderKMAdmin(){
           // R211：打卡成功弹窗仅显示「✅已打卡＋⭐️数量」，去掉分类名与奖励文案冗余
           const starTxt = (r.reward && r.reward>0) ? ('＋⭐️' + r.reward) : '';
           toast('✅已打卡' + starTxt);
-          r327CheckinSuccess(r.reward || 0);
+          r336CheckinFx(true, r.reward || 0);
         }
       }
       // V17-2：英语日常交流全部打卡 → 额外奖励 +2⭐（取消时若未集齐则扣回）
@@ -62505,8 +62683,9 @@ function init(){
     { act:'pomo', ico:'🍅', label:'番茄专注' },
     { act:'help', ico:'❓', label:'使用说明' },
     /* R335-6.1：删除「字号档位」「回到顶部」两枚托盘键；
-       R335-6.2：在原「回到顶部」位置新增【学生/家长模式切换】。 */
-    { act:'mode', ico:'🔄', label:'学生/家长模式切换' },
+       R335-6.2：在原「回到顶部」位置新增模式切换键；
+       R336-1.2：名称精简为【模式切换】。 */
+    { act:'mode', ico:'🔄', label:'模式切换' },
     /* R332-5：设置中心不再作为一级导航入口，收进 ⚡ 快捷托盘 */
     { act:'settings', ico:'⚙️', label:'设置中心' }
   ];
@@ -62531,6 +62710,12 @@ function init(){
   function r308FitDockTray(){
     const dock=q('#r271Dock'), tray=q('#r271DockMenu');
     if(!dock||!tray||tray.hidden) return;
+    /* R336-1.1：闪电键固定靠边后，托盘直接右缘对齐 ⚡ 按键，不做反向翻转 */
+    if(dock.classList.contains('r336-dock-edge')){
+      tray.style.left=''; tray.style.right='0';
+      tray.classList.remove('r308-tray-flip');
+      return;
+    }
     const vw=window.innerWidth||1024, M=8;
     const dr=dock.getBoundingClientRect();
     const tw=tray.offsetWidth||190;
@@ -62548,7 +62733,7 @@ function init(){
   function shell(){
     if(root) return root;
     root = D.createElement('div'); root.id = 'r271Root';
-    root.innerHTML = '<div class="r271-dock" id="r271Dock">'
+    root.innerHTML = '<div class="r271-dock r336-dock-edge" id="r271Dock">'
       /* 五个功能按键不再常驻：收进托盘，点 ⚡ 才展开 */
       + '<div class="r271-dock-tray" id="r271DockMenu" hidden aria-expanded="false">'
       + DOCK_SHORTCUTS.map(function(x){
@@ -62591,6 +62776,12 @@ function init(){
       return { x:Math.max(4,Math.min(maxX,x)), y:Math.max(4,Math.min(maxY,y)) };
     };
     const place=(x,y)=>{
+      /* R336-1.1：闪电键固定靠边展示——拖拽不再改变位置，始终回到右下角 */
+      if(dock.classList.contains('r336-dock-edge')){
+        dock.style.left=''; dock.style.top=''; dock.style.right=''; dock.style.bottom='';
+        dock.classList.remove('r307-dock-moved');
+        return {x:0,y:0};
+      }
       const p=clamp(x,y);
       dock.style.left=p.x+'px'; dock.style.top=p.y+'px';
       dock.style.right='auto'; dock.style.bottom='auto';
@@ -62609,6 +62800,8 @@ function init(){
     const onStart=e=>{
       if(e.button != null && e.button !== 0) return;
       if(e.touches && e.touches.length > 1) return;
+      /* R336-1.1：固定靠边模式下指针拖拽不启动，避免写入内联坐标 */
+      if(dock.classList.contains('r336-dock-edge')) return;
       const r=dock.getBoundingClientRect();
       dragging=true; moved=false; sx=px(e); sy=py(e); ox=r.left; oy=r.top;
       snap={ left:dock.style.left, top:dock.style.top, right:dock.style.right, bottom:dock.style.bottom,
@@ -65538,7 +65731,7 @@ function init(){
           '<option value="7"' + (_r326Range === '7' ? ' selected' : '') + '>近 7 天</option>' +
           '<option value="30"' + (_r326Range === '30' ? ' selected' : '') + '>近 30 天</option>' +
           '<option value="0"' + (_r326Range === '0' ? ' selected' : '') + '>全部</option>' +
-        '</select><button type="button" class="pbtn" data-r326-paper>生成重练卷</button></div>' +
+        '</select></div>' +
       '</div>' +
       '<div class="r326-review-list">' + rows + '</div>' +
     '</div>';
@@ -65663,7 +65856,7 @@ function init(){
         t.value = '';
         return;
       }
-      if(t && t.id === 'r326Range'){ _r326Range = t.value; return; }
+      if(t && t.id === 'r326Range'){ _r326Range = t.value; try{ r330Render(); }catch(e){} return; }
     });
   }
 
@@ -65778,27 +65971,31 @@ function init(){
     r326Badge();
   }
 
-  function r326Paper(){
+  /* R336-4.5：重练卷不再需要点击生成/打印，改为页面右侧裸屏常驻展示。
+     数据口径沿用原 r326Paper（当前学科 + 错题重练范围），每次渲染实时同步。 */
+  function r336PaperItems(){
     const days = Number(_r326Range) || 0;
     const from = days ? Date.now() - days * 86400000 : 0;
     let items = [];
     try{ items = S.getR326().items.filter(function(x){ return x.subject === _r326Subject && Number(x.createdAt || 0) >= from; }); }catch(e){}
-    if(!items.length){ toast('这个范围内还没有错题'); return; }
-    let host = document.getElementById('r326PrintArea');
-    if(!host){ host = document.createElement('div'); host.id = 'r326PrintArea'; document.body.appendChild(host); }
-    host.innerHTML = '<div class="r326-print"><h2>' + esc(_r326Subject) + '错题重练卷</h2>' +
-      '<div class="r326-print-sub">生成时间：' + new Date().toLocaleString('zh-CN') + ' · 共 ' + items.length + ' 题</div>' +
-      items.map(function(it, i){
-        return '<div class="r326-print-item"><div class="r326-print-q">' + (i + 1) + '. ' + esc(it.title) + '</div>' +
-          (it.myAnswer ? '<div class="r326-print-old">上次答案：' + esc(it.myAnswer) + '</div>' : '') +
-          '<div class="r326-print-line">答：</div></div>';
-      }).join('') + '</div>';
-    document.body.classList.add('r326-printing');
-    const done = function(){ document.body.classList.remove('r326-printing'); window.removeEventListener('afterprint', done); };
-    window.addEventListener('afterprint', done);
-    try{ window.print(); }catch(e){ toast('当前环境不支持打印，已生成可打印区域'); }
-    setTimeout(done, 1200);
-    toast('已生成重练卷（共 ' + items.length + ' 题），可直接打印');
+    return items;
+  }
+  function r336PaperPanelHtml(){
+    const items = r336PaperItems();
+    return '<aside class="r336-paper-panel" id="r336PaperPanel" aria-label="错题重练卷">'
+      + '<div class="r336-paper-hd"><h3>📝 ' + esc(_r326Subject) + '错题重练卷</h3>'
+      + '<span class="r336-paper-count">共 ' + items.length + ' 题</span></div>'
+      + '<div class="r336-paper-body">'
+      + (items.length ? items.map(function(it, i){
+          return '<div class="r326-print-item"><div class="r326-print-q">' + (i + 1) + '. ' + esc(it.title) + '</div>'
+            + (it.myAnswer ? '<div class="r326-print-old">上次答案：' + esc(it.myAnswer) + '</div>' : '')
+            + '<div class="r326-print-line">答：</div></div>';
+        }).join('') : '<div class="r330-empty">这个范围内还没有错题</div>')
+      + '</div></aside>';
+  }
+  function r326Paper(){
+    /* R336-4.5：保留函数名兼容探针，行为改为就地刷新右侧裸屏面板，不再弹打印框 */
+    r330Render();
   }
 
   function r326Export(subject){
@@ -65925,6 +66122,9 @@ function init(){
      - 数据层仍走 R326（同一份 items、srcKey 去重、订正与温故规则不变）
      ============================================================ */
   var _r330View = 'mistakes';
+  /* R336-4.3：每条错题「标准解法」默认隐藏，按键切换；展开状态按错题 id 记忆 */
+  var _r336FixOpen = {};
+  window.__r336FixOpen = _r336FixOpen;
   var _r330Subject = '语文';
   var _r330Search = '';
   var _r330Expanded = null;
@@ -65939,7 +66139,8 @@ function init(){
   var _r330Wheel = { y:0, m:1, d:1 };
   var R330_TYPES = {
     '语文': ['选择题','填空题','解答题','默写','写作'],
-    '数学': ['选择题','填空题','解答题'],
+    /* R336-4.1：数学题型新增【计算题】，原【解答题】改为【应用题】；仅调整可选项，不动已录入数据 */
+    '数学': ['选择题','填空题','计算题','应用题'],
     '英语': ['选择题','填空题','完形填空','阅读理解','写作题']
   };
   var R330_COLORS = {
@@ -65955,6 +66156,12 @@ function init(){
   }
   function r330Color(s){ return R330_COLORS[s] || ['var(--tone-150)','var(--tone-800)']; }
   function r330Types(sub){ return R330_TYPES[sub] || ['选择题','填空题','解答题']; }
+  /* R336-4.4：错因分析/统计与「错误原因总结」实时同源——卡片展示与饼图取同一字段 */
+  function r336ReasonKey(it){
+    const w = it && String(it.wrongNote || '').trim();
+    return w || (it && it.reason) || '其他';
+  }
+  window.__r336ReasonKey = r336ReasonKey;
   function r330Date(ts){
     if(!ts) return '';
     const d = new Date(ts);
@@ -65998,11 +66205,15 @@ function init(){
     if(subs.indexOf(_r330TagSubject) < 0) _r330TagSubject = _r330Subject;
     root.innerHTML = '<div class="r330-app">' +
       r330TabsHtml() +
-      '<section class="r330-content">' +
-        (_r330View === 'mistakes' ? r330MistakesHtml(items) :
-         _r330View === 'summary' ? r330SummaryHtml(items) :
-         _r330View === 'tags' ? r330TagsHtml(items) : r330AnalysisHtml(items)) +
-      '</section>' +
+      '<div class="r336-r330-layout">' +
+        '<section class="r330-content">' +
+          (_r330View === 'mistakes' ? r330MistakesHtml(items) :
+           _r330View === 'summary' ? r330SummaryHtml(items) :
+           _r330View === 'tags' ? r330TagsHtml(items) : r330AnalysisHtml(items)) +
+        '</section>' +
+        /* R336-4.5：重练卷直接在右侧裸屏常驻展示，无需点击生成 */
+        r336PaperPanelHtml() +
+      '</div>' +
     '</div>' +
     r330ModalHtml() + r330WheelHtml() + r333ReasonPickerHtml();
     r330Bind();
@@ -66061,7 +66272,6 @@ function init(){
         '<button type="button" class="pbtn" data-r330-edit-open>✎ 编辑</button>' +
         '<button type="button" class="pbtn" data-r330-export>⬇ 导出</button>' +
         '<button type="button" class="pbtn" data-r330-quick>▶ 快速温故</button>' +
-        '<button type="button" class="pbtn" data-r330-paper>🖨 重练卷</button>' +
       '</div>' +
     '</div>';
   }
@@ -66115,6 +66325,17 @@ function init(){
       '<div class="r330-q-list" id="r330List">' + (list.length ? list.map(r330CardHtml).join('') :
         '<div class="r330-empty">没有符合条件的错题，换个关键词试试～<br><button type="button" class="pbtn primary" data-r330-empty-add>＋ 录入第一道错题</button></div>') + '</div>';
   }
+  /* R336-4.3：标准解法行——默认隐藏，点【标准解法】按键展开，再点收起 */
+  function r336FixRowHtml(it, cls){
+    const id = esc(it.id || it.title || '');
+    const open = !!_r336FixOpen[it.id];
+    const rowCls = cls || 'r330-row';
+    return '<div class="' + rowCls + ' r336-fix-row">'
+      + '<button type="button" class="r336-fix-toggle' + (open?' is-open':'') + '" data-r336-fix-toggle="' + id + '" aria-expanded="' + open + '">'
+      + (open?'▾ 收起标准解法':'▸ 标准解法') + '</button>'
+      + '<p class="r336-fix-body"' + (open?'':' hidden') + '>' + esc(it.fixNote || '暂未记录标准解法') + '</p>'
+      + '</div>';
+  }
   function r330CardHtml(it){
     const col = r330Color(it.subject);
     const open = _r330Expanded === it.id;
@@ -66143,7 +66364,7 @@ function init(){
       '<div class="r330-q-body">' +
         '<div class="r330-row"><h4>题型 · 录入时间</h4><p>' + esc(it.type || '未分类') + ' · ' + esc(r330Date(it.createdAt)) + '</p></div>' +
         '<div class="r330-row"><h4>错误原因总结</h4><p>' + esc(it.wrongNote || it.reason || '未填写') + (it.reason ? '（' + esc(it.reason) + '）' : '') + '</p></div>' +
-        '<div class="r330-row"><h4>标准解法</h4><p>' + esc(it.fixNote || '暂未记录标准解法') + '</p></div>' +
+        r336FixRowHtml(it) +
         (tags ? '<div class="r330-row"><h4>知识点</h4><div class="r330-ktags">' + tags + '</div></div>' : '') +
         (imgs ? '<div class="r330-row"><h4>题目照片</h4><div class="r330-q-imgs">' + imgs + '</div></div>' : '') +
         (it.myAnswer ? '<div class="r330-row"><h4>错误答案</h4><p>' + esc(it.myAnswer) + '</p></div>' : '') +
@@ -66168,7 +66389,7 @@ function init(){
         '<span class="r330-q-title">' + esc(it.title) + '</span><time class="r330-q-date">' + esc(r330Date(it.createdAt)) + '</time></div>' +
       '<div class="r330-rc-row"><h4>题型 · 录入时间</h4><p>' + esc(it.type || '未分类') + ' · ' + esc(r330Date(it.createdAt)) + '</p></div>' +
       '<div class="r330-rc-row"><h4>错误原因总结</h4><p>' + esc(it.wrongNote || it.reason || '未填写') + (it.reason ? '（' + esc(it.reason) + '）' : '') + '</p></div>' +
-      '<div class="r330-rc-row"><h4>标准解法</h4><p>' + esc(it.fixNote || '暂未记录标准解法') + '</p></div>' +
+      r336FixRowHtml(it, 'r330-rc-row') +
       '<div class="r330-rc-actions">' +
         '<button type="button" class="pbtn primary" data-r330-set="' + esc(it.id) + '" data-status="mastered">✓ 掌握了</button>' +
         '<button type="button" class="pbtn" data-r330-next="' + esc(it.id) + '">下一道 →</button>' +
@@ -66404,7 +66625,7 @@ function init(){
     const reasonChart = subs.map(function(s, si){
       const pool = items.filter(function(x){ return x.subject === s; });
       const map = {};
-      pool.forEach(function(x){ const k = x.reason || '其他'; map[k] = (map[k] || 0) + 1; });
+      pool.forEach(function(x){ const k = r336ReasonKey(x); map[k] = (map[k] || 0) + 1; });
       const keys = Object.keys(map).sort(function(a, b){ return map[b] - map[a]; });
       const pieItems = keys.map(function(k, i){ return [map[k], reasonPalette[i % reasonPalette.length], k]; });
       const leg = keys.map(function(k, i){
@@ -66810,6 +67031,22 @@ function init(){
       r330SyncFormInputs();
       const hit = function(a){ return t.closest('[' + a + ']'); };
       let el;
+      /* R336-4.3：标准解法按键就地展开/收起（不整页重绘，避免折叠态与浮层被吃掉） */
+      if((el = hit('data-r336-fix-toggle'))){
+        e.preventDefault(); e.stopPropagation();
+        const id = el.getAttribute('data-r336-fix-toggle');
+        const row = el.closest('.r336-fix-row');
+        const body = row ? row.querySelector('.r336-fix-body') : null;
+        if(body){
+          const open = body.hasAttribute('hidden');
+          if(open){ body.removeAttribute('hidden'); _r336FixOpen[id] = true; }
+          else { body.setAttribute('hidden',''); delete _r336FixOpen[id]; }
+          el.classList.toggle('is-open', open);
+          el.setAttribute('aria-expanded', open ? 'true' : 'false');
+          el.textContent = open ? '▾ 收起标准解法' : '▸ 标准解法';
+        }
+        return;
+      }
       /* R334-4.3：错因两级 —— 点框弹列表，选一级后自动接二级，也可只留一级 */
       if(hit('data-r334-reason-close')){ const pb = document.getElementById('r334ReasonPick'); if(pb) pb.hidden = true; return; }
       if((el = hit('data-r333-reason-pick'))){ r333OpenReasonPick(el.getAttribute('data-r333-reason-pick')); return; }
@@ -67351,12 +67588,12 @@ function init(){
 
 <!-- R257-10.1：朗读统一控制条已按需求撤销（朗读恢复 R255 之前的原生播放/暂停按钮行为） -->
 
-<!-- R335-1.2：英语短文「重点单词」弹窗（当前篇目单词表，一行 3 个，点词朗读） -->
-<div class="modal-mask" id="modalR335Vocab" hidden>
-  <div class="modal-box r335-vocab-modal" role="dialog" aria-modal="true" aria-labelledby="r335VocabTitle">
+<!-- R335-1.2：英语短文「重点单词」弹窗；R336-2：2/3 宽居中毛玻璃 + 一行 4 个 + 【返回】文字键 -->
+<div class="modal-mask r336-vocab-mask" id="modalR335Vocab" hidden>
+  <div class="modal-box r335-vocab-modal r336-vocab-modal" role="dialog" aria-modal="true" aria-labelledby="r335VocabTitle">
     <div class="modal-head">
       <h3 id="r335VocabTitle">🔤 重点单词</h3>
-      <button type="button" class="modal-x" data-close title="关闭">×</button>
+      <button type="button" class="r336-vocab-back" data-close title="返回">返回</button>
     </div>
     <div class="modal-body">
       <div class="r335-vocab-modal-grid" id="r335VocabList"></div>
