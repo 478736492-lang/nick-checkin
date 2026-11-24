@@ -12189,6 +12189,131 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
   .r333-sum-n{width:100%;margin-left:0}
 }
 
+/* ================= R334：英语短文同源 + 译文展开 + 单词卡 / 书单合并与检索 / 错题集弹窗选择 ================= */
+
+/* ---- R334-1.2：译文【展开 / 收起】按键 ---- */
+.r334-zh-toggle{
+  align-self:flex-start;display:inline-flex;align-items:center;gap:6px;
+  min-height:30px;padding:4px 14px;border-radius:999px;cursor:pointer;font-family:inherit;
+  border:1.5px solid var(--tone-300);background:#fff;color:var(--tone-800);
+  font-size:12.5px;font-weight:800;touch-action:manipulation;
+  transition:background .15s,border-color .15s,color .15s;
+}
+.r334-zh-toggle:hover{background:var(--tone-050)}
+.r334-zh-toggle i{font-style:normal;line-height:1;transition:transform .15s}
+.r334-zh-toggle.is-open{background:var(--tone-500);border-color:var(--tone-500);color:#fff}
+.r334-zh-toggle.is-open i{transform:rotate(180deg)}
+.r334-zh-panel[hidden]{display:none}
+
+/* ---- R334-1.3：译文下方重点单词 —— 白底蓝边小卡，一行 1~2 组 ---- */
+.r334-vocab{margin-top:8px;padding-top:8px;border-top:1px dashed var(--tone-200)}
+.r334-vocab-head{font-size:12px;font-weight:900;color:var(--tone-800);margin-bottom:6px}
+.r334-vocab-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.r334-vocab-card{
+  display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-width:0;
+  text-align:left;background:#fff;border:1.5px solid var(--tone-300);border-radius:10px;
+  padding:7px 10px;cursor:pointer;font-family:inherit;touch-action:manipulation;
+  transition:background .15s,border-color .15s,box-shadow .15s;
+}
+.r334-vocab-card:hover{background:var(--tone-050);border-color:var(--tone-400);box-shadow:0 2px 8px rgba(30,58,138,.08)}
+.r334-vocab-card b{font-size:13.5px;font-weight:900;color:var(--tone-900);line-height:1.3}
+.r334-vocab-card span{font-size:11.5px;line-height:1.45;color:var(--tone-700);overflow-wrap:anywhere}
+
+/* ---- R334-3.2：书单卡片只留「书名 / 作者 / 已读键」三列 ---- */
+.r319-book-row{
+  grid-template-columns:minmax(0,1fr) minmax(0,132px) 78px;
+  min-height:40px;padding:8px 10px;
+}
+.r327-editing .r319-book-row{grid-template-columns:minmax(0,1fr) minmax(0,110px) 72px auto}
+.r334-detail-cat{
+  display:inline-block;font-size:12px;font-weight:800;color:var(--tone-800);
+  background:var(--tone-050);border:1px solid var(--tone-150);border-radius:999px;
+  padding:2px 10px;margin-bottom:6px;
+}
+
+/* ---- R334-3.3 / 3.4：书单弹窗首行增高 + 关闭键靠右 + 书名作者检索 ---- */
+.r319-bl-head{padding-bottom:3mm}
+.r319-bl-head .r328-bl-close{margin-left:auto;align-self:flex-start}
+.r334-bl-search{position:relative;display:flex;align-items:center;min-width:0}
+.r334-bl-search-input{
+  width:176px;min-height:32px;padding:4px 12px;border-radius:999px;
+  border:1.5px solid var(--tone-200);background:#fff;font-size:12.5px;
+  font-family:inherit;color:var(--tone-900);box-sizing:border-box;
+}
+.r334-bl-search-input:focus{outline:none;border-color:var(--tone-500);box-shadow:0 0 0 3px rgba(74,144,226,.16)}
+.r334-bl-search-pop{
+  position:absolute;top:calc(100% + 6px);left:0;z-index:40;width:min(320px,86vw);
+  background:#fff;border:1.5px solid var(--tone-200);border-radius:12px;
+  box-shadow:0 12px 28px rgba(30,58,138,.18);padding:6px;max-height:320px;overflow-y:auto;
+}
+.r334-bl-search-pop[hidden]{display:none}
+.r334-bl-search-item{
+  display:flex;flex-direction:column;gap:2px;width:100%;text-align:left;
+  border:none;background:transparent;padding:8px 10px;border-radius:9px;
+  cursor:pointer;font-family:inherit;touch-action:manipulation;
+}
+.r334-bl-search-item:hover{background:var(--tone-050)}
+.r334-bl-search-item b{font-size:13px;font-weight:900;color:var(--tone-900)}
+.r334-bl-search-item span{font-size:11.5px;color:var(--tone-700)}
+.r334-bl-search-empty{padding:10px;font-size:12px;color:var(--muted);text-align:center}
+
+/* ---- R334-4.2：三个内容框与「题型」同高（42px），不再互相挤占 / 遮盖 ---- */
+.r330-field .r333-h42{
+  min-height:42px;height:42px;box-sizing:border-box;padding:10px 12px;
+  line-height:1.35;resize:none;
+}
+.r330-field textarea.r333-h42{overflow:auto}
+.r330-form-row>.r330-field{min-width:0}
+
+/* ---- R334-4.3：错因两级同行 + 点击弹出可滑动选择列表 ---- */
+.r333-reason-row{margin-top:2px}
+.r333-reason-cell{margin-bottom:0}
+.r333-reason-field{justify-content:space-between}
+.r333-reason-field>span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.r333-pick-box{
+  background:#fff;border-radius:16px;width:100%;max-width:440px;max-height:82vh;
+  display:flex;flex-direction:column;padding:20px 22px;
+  box-shadow:0 24px 60px rgba(30,58,138,.25);
+}
+.r333-pick-box h3{font-size:17px;font-weight:900;color:var(--tone-900);margin-bottom:12px}
+.r333-pick-list{display:flex;flex-direction:column;gap:8px;overflow-y:auto;max-height:54vh;padding:2px}
+.r333-pick-opt{
+  display:flex;flex-direction:column;gap:3px;width:100%;text-align:left;
+  border:1.5px solid var(--tone-200);background:#fff;border-radius:12px;
+  padding:11px 14px;cursor:pointer;font-family:inherit;touch-action:manipulation;
+}
+.r333-pick-opt b{font-size:14.5px;font-weight:900;color:var(--tone-900)}
+.r333-pick-opt span{font-size:12px;color:var(--tone-700);line-height:1.5}
+.r333-pick-opt.active{border-color:var(--tone-600);background:var(--tone-050);box-shadow:inset 0 0 0 1.5px var(--tone-400)}
+
+/* ---- R334-4.4：阶段性汇总范围键统一白底 ---- */
+.r333-sum-range .r330-subtab{background:#fff;border-color:var(--tone-200);color:var(--tone-800)}
+.r333-sum-range .r330-subtab.active{
+  background:#fff;border-color:var(--tone-600);color:var(--tone-900);
+  box-shadow:inset 0 0 0 1.5px var(--tone-400);
+}
+
+@media (max-width:900px){
+  .r319-bl-head .r328-bl-close{margin-left:auto}
+}
+@media (max-width:640px){
+  .r334-vocab-grid{grid-template-columns:minmax(0,1fr)}
+  .r319-book-row{
+    grid-template-columns:minmax(0,1fr) 66px;row-gap:2px;
+    grid-template-areas:"name read" "author read";
+  }
+  .r319-book-row .r319-book-name{grid-area:name}
+  .r319-book-row .r319-book-author{grid-area:author;font-size:10.5px}
+  .r319-book-row .r319-read{grid-area:read;align-self:center}
+  .r327-editing .r319-book-row{
+    grid-template-columns:minmax(0,1fr) 60px auto;
+    grid-template-areas:"name read ops" "author read ops";
+  }
+  .r319-book-row .r319-book-ops{grid-area:ops;align-self:center}
+  .r334-bl-search-input{width:100%}
+  .r334-bl-search{flex:1 1 100%}
+}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -12946,6 +13071,11 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
       <div class="modal-head r319-bl-head">
         <h3>📖 我的书单<span class="r319-bl-stat" id="r319BlStat"></span></h3>
         <div class="r319-bl-head-actions">
+          <!-- R334-3.4：借阅书目左侧新增书名 / 作者检索，点候选直接弹出书籍详情 -->
+          <div class="r334-bl-search">
+            <input type="search" id="r334BlSearch" class="r334-bl-search-input" placeholder="搜书名或作者" autocomplete="off" aria-label="搜索书名或作者">
+            <div class="r334-bl-search-pop" id="r334BlSearchPop" hidden></div>
+          </div>
           <!-- R327-4.9：借阅书目在「导出书单」左侧 -->
           <button type="button" class="primary-btn" id="btnR327Borrow">📚 借阅书目</button>
           <button type="button" class="primary-btn" id="btnR321Export">📤 导出书单</button>
@@ -15446,6 +15576,8 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
 <script src="./assets/seed_en_speaking_seed.js"></script>
 <script src="./assets/seed_en_essay_seed.js"></script>
 <script src="./assets/seed_en_essay_300_seed.js"></script>
+<!-- R334-2.1：作文300篇追加 70 篇（七年级范文 + 逐篇中文译文，app.js 的 enEssay300Raw 合并读取） -->
+<script src="./assets/seed_en_essay_r334_seed.js"></script>
 <!-- 新世界·语文专区「作文素材」种子数据（先于 app.js 加载，ywSucai 读取 window.ZUOWEN_SC_SEED） -->
 <script src="./assets/seed_zuowen_sc_seed.js"></script>
 <!-- V73-Req4：上海(统编版) 1-5 年级课内古诗文（先于 app.js 加载，ywGushi/ywWenyan 读取 window.YW_SH_GUSHICI） -->
@@ -20428,7 +20560,7 @@ window.XS_A2_VOCAB = [
     'userReading','readingPanelDone','mathProblems','mathNotes','mathNoteStatus','mathGroups',
     'mathGallery','mathExerciseBank','plots','inventory','gifts','shop','stage','km','farmOpen',
     'music','farmLayout','en3500Marks','r314','nwWrong','homeGreets','homeBanner','sectionTitleTexts',
-    'schedule','memos','weekPlanColors','r319BookList','__r319BookListSeedV1','__r324BookImportV1','__r327BookCatsV1','__r328OtherCatV1','__r332BookImportV1','readCursor','r326','__schema','__seq','__commitAt','__tomb'];
+    'schedule','memos','weekPlanColors','r319BookList','__r319BookListSeedV1','__r324BookImportV1','__r327BookCatsV1','__r328OtherCatV1','__r332BookImportV1','__r334BookCatsV1','readCursor','r326','__schema','__seq','__commitAt','__tomb'];
   /* 轻档超预算时的「可牺牲顺序」：从体积最大且可再生 / 有主档兜底的字段开始丢 */
   const LIGHT_DROP_ORDER = ['calcBank','mathProblems','mathGallery','xueersiWordBank','km','calcWrongBook'];
   let _r318XsSrc = null, _r318XsDelta = null;
@@ -22420,7 +22552,7 @@ window.XS_A2_VOCAB = [
     if(!Array.isArray(st.r319BookList.cats)) st.r319BookList.cats = [];
     if(!Array.isArray(st.r319BookList.books)) st.r319BookList.books = [];
     if(!st.__r319BookListSeedV1){
-      var _r319DefCats = ['绘本','童话','漫画','散文','文学','小说'];
+      var _r319DefCats = ['漫画绘本','童话','散文','文学','小说'];
       var _r319DefBooks = [
         ['金色的草地','米·普里什文','散文'],
         ['搭船的鸟','郭风','散文'],
@@ -22433,9 +22565,9 @@ window.XS_A2_VOCAB = [
         ['跟着小溪去远航','毛芦芦','散文'],
         ['我们抱山去','毛芦芦','散文'],
         ['我是大自然的孩子','毛芦芦','散文'],
-        ['獾和臭鼬','埃米·廷伯莱克','绘本'],
+        ['獾和臭鼬','埃米·廷伯莱克','漫画绘本'],
         ['银顶针的夏天','伊丽莎白·恩赖特','文学'],
-        ['金篮子旅店','路德维格','绘本'],
+        ['金篮子旅店','路德维格','漫画绘本'],
         ['万物的童话系列','肖定丽','童话'],
         ['万物的钥匙系列','肖定丽','童话'],
         ['奇妙的田螺','宗介华','童话'],
@@ -22446,7 +22578,7 @@ window.XS_A2_VOCAB = [
         ['会走路的雪人','金波','童话'],
         ['面对一棵树','金波','散文'],
         ['月亮湖','金波','童话'],
-        ['米小圈脑筋急转弯系列','','漫画'],
+        ['米小圈脑筋急转弯系列','','漫画绘本'],
         ['米小圈上学记系列','','小说']
       ];
       _r319DefCats.forEach(function(n){
@@ -22628,6 +22760,34 @@ window.XS_A2_VOCAB = [
         });
       }catch(e){}
       st.__r332BookImportV1 = true;
+      save(st);
+    }
+    /* ===== R334-3.1：书单「漫画」「绘本」合并为「漫画绘本」 =====
+       只改分类归属（书的书名 / 作者 / 已读 / 推荐理由 / ⭐ 一条不动），
+       其它自建分类更不受影响；重复命中时保留原有的「漫画绘本」分类本体。
+       一次性闸 __r334BookCatsV1，老用户与新装同时生效。 */
+    if(!st.__r334BookCatsV1){
+      try{
+        if(!st.r319BookList || typeof st.r319BookList !== 'object' || Array.isArray(st.r319BookList)) st.r319BookList = {cats:[], books:[]};
+        if(!Array.isArray(st.r319BookList.cats)) st.r319BookList.cats = [];
+        if(!Array.isArray(st.r319BookList.books)) st.r319BookList.books = [];
+        const _r334Cats = st.r319BookList.cats;
+        const _r334ByName = function(n){ return _r334Cats.filter(function(c){ return c && c.name === n; })[0] || null; };
+        const _r334Old = [_r334ByName('漫画'), _r334ByName('绘本')].filter(Boolean);
+        if(_r334Old.length){
+          let _r334Merged = _r334ByName('漫画绘本');
+          if(!_r334Merged){
+            _r334Merged = { id:'rc_漫画绘本', name:'漫画绘本', builtin:true, ts:Date.now() };
+            _r334Cats.push(_r334Merged);
+          }
+          const _r334Ids = _r334Old.map(function(c){ return c.id; });
+          st.r319BookList.books.forEach(function(b){
+            if(b && _r334Ids.indexOf(b.cat) >= 0) b.cat = _r334Merged.id;
+          });
+          st.r319BookList.cats = _r334Cats.filter(function(c){ return c && _r334Ids.indexOf(c.id) < 0; });
+        }
+      }catch(e){}
+      st.__r334BookCatsV1 = true;
       save(st);
     }
     // V11.6：记录每日日常交流完成状态（5 条均完成 → +2⭐，仅一次）
@@ -25047,7 +25207,9 @@ window.XS_A2_VOCAB = [
         return c ? String(c.name||'') : '';
       }catch(e){ return ''; }
     })();
-    return (catName === '漫画' || catName === '绘本') ? R327_BOOK_STARS_LIGHT : R327_BOOK_STARS_DEF;
+    /* R334-3.1：「漫画」「绘本」已合并为「漫画绘本」，轻阅读口径保持不变 */
+    return (catName === '漫画绘本' || catName === '漫画' || catName === '绘本')
+      ? R327_BOOK_STARS_LIGHT : R327_BOOK_STARS_DEF;
   }
   function r319SetBookStars(id, n){
     const list = getR319BookList();
@@ -40680,8 +40842,12 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
      归一后：基础 174 篇 + 挑战 56 篇 = 230 篇。 */
   const R333_PASSAGE_ID = /^p\d{2}_/;
   function enEssay300Raw(){
-    const a = window.EN_ESSAY_300_SEED;
-    return (a && a.length) ? a : (window.EN_ESSAY_SEED || []);
+    const a = (window.EN_ESSAY_300_SEED && window.EN_ESSAY_300_SEED.length)
+      ? window.EN_ESSAY_300_SEED : (window.EN_ESSAY_SEED || []);
+    /* R334-2.1：新导入的 70 篇（七年级范文 + 中文译文）排在最前，原有篇目顺序不变；
+       已学进度按 id 记忆，位置变化不影响。 */
+    const add = (window.EN_ESSAY_R334_SEED || []);
+    return add.length ? add.concat(a) : a.slice();
   }
   function enEssay300All(){
     return enEssay300Raw()
@@ -43319,16 +43485,13 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       _r328BookPages[c.id] = pi;
       const pageList = list.slice((pi - 1) * R328_BOOK_PAGE_SIZE, pi * R328_BOOK_PAGE_SIZE);
       const rows = pageList.map(b=>{
-        const stars = r327BookStarsOf(b);
-        /* R333-2.1：卡片只保留「书名 / 作者 / ⭐数 / 已读键」四要素；
-           借阅状态、所属书单、推荐理由、打卡奖励等其余信息一律收进详情弹窗。
-           旧版借阅中整行染橙 —— 属于把非展示字段透到卡片上，已移除。 */
+        /* R334-3.2：卡片只展示「书名 / 作者 / 已读键」三要素；
+           所属分类、推荐理由、打卡奖励等一律收进书籍详情弹窗（点书名或整行打开）。 */
         const cls = 'r319-book-row' + (b.read ? ' is-read' : '');
         return `
         <div class="${cls}" data-r319-bid="${esc(b.id)}">
           <button type="button" class="r319-book-name" data-r319-act="detail" title="查看书本详情">《${esc(b.title)}》</button>
           <span class="r319-book-author">${b.author?esc(b.author)+' 著':''}</span>
-          <span class="r327-book-star" title="打卡完成可得 ${stars}⭐（编辑书单可改）">⭐${stars}</span>
           <button type="button" class="r319-row-btn r319-read${b.read?' done':''}" data-r319-act="read" title="${b.read?'取消已读':'标记已读'}">${b.read?'✓ 已读':'已读'}</button>
           ${_r327BookEdit ? `<span class="r319-book-ops">
             <button type="button" class="r319-row-btn r319-edit" data-r319-act="edit" title="编辑书名/作者/分类/⭐">✏️</button>
@@ -43470,17 +43633,17 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     if(!b || !host) return;
     const cat = (data.cats||[]).filter(c=>c.id === b.cat)[0];
     const stars = r327BookStarsOf(b);
+    /* R334-3.2：详情弹窗固定展示「所属分类 / 书名 / 作者 / 推荐理由 / 打卡奖励」，
+       卡片上不再出现的字段全部在这里补齐；借阅开关保留（原 R327-4.9 功能不删）。 */
     host.innerHTML = '<div class="r321-detail-grid">' +
       '<div class="r321-detail-ico">📖</div><div>' +
+      '<div class="r321-detail-line r334-detail-cat">所属分类：' + esc(cat ? cat.name : '未分类') + '</div>' +
       '<div class="r321-detail-title">《' + esc(b.title) + '》</div>' +
       '<div class="r321-detail-line">作者：' + esc(b.author || '未填写') + '</div>' +
-      '<div class="r321-detail-line">书单：' + esc(cat ? cat.name : '未分类') + '</div>' +
-      (b.reason ? '<div class="r321-detail-reason"><b>推荐理由：</b>' + esc(b.reason) + '</div>' : '') +
-      '<div class="r321-detail-line">阅读状态：' + (b.read ? '✅ 已读' : '📌 未读') +
-        (b.borrow && !b.read ? ' · <b class="r327-borrow-flag">📚 借阅中</b>' : '') + '</div>' +
+      '<div class="r321-detail-reason"><b>推荐理由：</b>' + (b.reason ? esc(b.reason) : '暂未填写推荐理由') + '</div>' +
       '<div class="r321-detail-line">打卡奖励：<b>' + stars + '⭐</b></div>' +
       '<div class="r327-detail-ops">' +
-        (b.read ? '' : '<button type="button" class="pbtn' + (b.borrow ? ' on' : '') + '" data-r327-borrow-toggle="' + esc(b.id) + '">' +
+        (b.read ? '<span class="r321-detail-line">✅ 已读</span>' : '<button type="button" class="pbtn' + (b.borrow ? ' on' : '') + '" data-r327-borrow-toggle="' + esc(b.id) + '">' +
           (b.borrow ? '📚 移出借阅书目' : '📚 加入借阅书目') + '</button>') +
       '</div>' +
       '</div></div>';
@@ -43606,6 +43769,51 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     if(bBorrow && !bBorrow._r327Bound){
       bBorrow._r327Bound = true;
       bBorrow.onclick = ()=> r327OpenBorrow();
+    }
+    /* R334-3.4：书单弹窗内「书名 / 作者」检索 —— 输入即列候选，点候选打开书籍详情 */
+    const blSearch = document.getElementById('r334BlSearch');
+    const blSearchPop = document.getElementById('r334BlSearchPop');
+    if(blSearch && blSearchPop && !blSearch._r334Bound){
+      blSearch._r334Bound = true;
+      const closePop = ()=>{ blSearchPop.hidden = true; blSearchPop.innerHTML = ''; };
+      const renderPop = ()=>{
+        const kw = String(blSearch.value || '').trim().toLowerCase();
+        if(!kw){ closePop(); return; }
+        const data = _r319Bl();
+        const cats = data.cats || [];
+        const hits = (data.books || []).filter(function(b){
+          if(!b) return false;
+          return String(b.title || '').toLowerCase().indexOf(kw) >= 0
+            || String(b.author || '').toLowerCase().indexOf(kw) >= 0;
+        }).slice(0, 8);
+        if(!hits.length){
+          blSearchPop.innerHTML = '<div class="r334-bl-search-empty">没有找到相关书籍</div>';
+        } else {
+          blSearchPop.innerHTML = hits.map(function(b){
+            const c = cats.filter(function(x){ return x && x.id === b.cat; })[0];
+            return '<button type="button" class="r334-bl-search-item" data-r334-search-bid="' + esc(b.id) + '">' +
+              '<b>《' + esc(b.title) + '》</b><span>' + esc(b.author || '未填写') + ' · ' + esc(c ? c.name : '未分类') + '</span></button>';
+          }).join('');
+        }
+        blSearchPop.hidden = false;
+      };
+      blSearch.addEventListener('input', renderPop);
+      blSearch.addEventListener('focus', renderPop);
+      blSearch.addEventListener('keydown', function(e){
+        if(e.key === 'Escape'){ blSearch.value = ''; closePop(); }
+      });
+      blSearchPop.addEventListener('click', function(e){
+        const it = e.target.closest('[data-r334-search-bid]');
+        if(!it) return;
+        e.preventDefault(); e.stopPropagation();
+        const bid = it.getAttribute('data-r334-search-bid');
+        closePop();
+        blSearch.value = '';
+        if(typeof r321OpenBookDetail === 'function') r321OpenBookDetail(bid);
+      });
+      document.addEventListener('click', function(e){
+        if(!e.target.closest('.r334-bl-search')) closePop();
+      });
     }
     const borrowBody = document.getElementById('r327BorrowBody');
     if(borrowBody && !borrowBody._r327Bound){
@@ -48856,7 +49064,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     // V19-5：日常交流 = 每日 1 个主题对话（6-7 句）
     // R56-6：主视图恢复三栏并列（语文 3 栏 + 英语 2 栏），归档内容不在此展示
     fillCol('#enColSpeak',   colContent('enSpeaking',1, 4), 'enSpeaking','en', true);
-    fillCol('#enColPassage', colContent('enPassage', 1, 3, 2), 'enPassage', 'en');
+    fillCol('#enColPassage', r334EnPassages(), 'enPassage', 'en');
     fillCol('#cnColWords',   cnWordsItems, 'cnWords', 'cn');
     // R296-3.2/3.3：好词使用（释义 + 例句）独立卡
     renderHaociUseCard(sysWords);
@@ -49158,6 +49366,20 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   // R295-2.1：好词拆成逐词卡后单日可达 8 词 + 1 好句，分页放大到 12 以免好句被挤到下一页
   const RD_PER_PAGE = { cnWords:12, cnPoem:6, cnEssay:6, enPassage:4, enSpeaking:2 };
   let _rdPage = {};
+  /* ===== R334-1：英语阅读 · 英语短文 =====
+     1.1 内容与「收录书屋 · 英语短文」严格同源同序（都走 S.getReading('enPassage')），
+         不再按日期只轮换一篇，两处看到的篇目完全一致；
+     1.2 译文默认收起，卡片内【展开 / 收起】按键切换，展开状态按篇名记忆；
+     1.3 译文下方重点单词改白底蓝边小卡，一行一组或两组，点单词即朗读。 */
+  const _r334ZhOpen = {};
+  function r334EnPassages(){
+    try{
+      return S.getReading('enPassage').filter(function(x){ return x && x.source !== 'archived'; });
+    }catch(e){ return []; }
+  }
+  /* R334 门禁探针钩子（jsdom 取不到闭包内变量） */
+  window.__r334EnPassages = r334EnPassages;
+  window.__r334ZhOpen = _r334ZhOpen;
   function fillCol(sel, items, kind, scope, isSpeak){
     const el = document.querySelector(sel);
     if(!el) return;
@@ -49208,7 +49430,29 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
               .filter(Boolean).map(p=>'<div class="r316-pu-para">'+esc(p)+'</div>').join('')) + '</div>'
           : `<div class="ri-body">${esc(mainText)}</div>`);
       const translationHtml = (kind==='enPassage' && it.zh)
-        ? `<div class="reading-translation">${esc(it.zh)}</div>` : '';
+        ? (function(){
+            /* R334-1.2：译文默认收起，短文下方给【展开 / 收起】按键；展开状态按篇名记忆，翻页回来仍在 */
+            const open = !!_r334ZhOpen[it.title];
+            return '<button type="button" class="r334-zh-toggle' + (open?' is-open':'') + '" data-r334-zh-toggle="' + esc(it.title) + '" aria-expanded="' + open + '">' +
+                '<span>' + (open?'收起':'展开') + '</span><i aria-hidden="true">▾</i></button>' +
+              '<div class="reading-translation r334-zh-panel"' + (open?'':' hidden') + '>' + esc(it.zh) + '</div>';
+          })()
+        : '';
+      /* R334-1.3：译文下方的重点单词 —— 白底蓝边小卡，一行一组或两组，点单词即朗读 */
+      const vocabHtml = (kind==='enPassage' && Array.isArray(it.vocab) && it.vocab.length)
+        ? '<div class="r334-vocab">' +
+            '<div class="r334-vocab-head">🔤 重点单词</div>' +
+            '<div class="r334-vocab-grid">' +
+              it.vocab.map(function(v){
+                const w = String((v && v.w) || v || '').trim();
+                const m = String((v && v.m) || '').trim();
+                if(!w) return '';
+                return '<button type="button" class="r334-vocab-card en-tap-speak" data-en-speak="' + esc(w) + '" title="点击单词朗读">' +
+                  '<b>' + esc(w) + '</b>' + (m ? '<span>' + esc(m) + '</span>' : '') + '</button>';
+              }).join('') +
+            '</div>' +
+          '</div>'
+        : '';
       // 文库排版优化：英语短文标题下补充「难度 + 主题分类」标签（复用蓝系配色）
       const catTagHtml = (kind==='enPassage' && it.category)
         ? `<span class="ri-meta" style="background:#dbeafe;color:#1e3a8a;margin-left:4px">🏷 ${esc(it.category)}</span>` : '';
@@ -49233,7 +49477,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
           ${checkinBtn}
         </div>
         ${it.meta?`<div class="ri-meta">${esc(it.meta)}</div>`:''}${catTagHtml}
-        ${isPoem ? poemCols : (bodyHtml + translationHtml + poemMeaningHtml + poemBgHtml + analysisHtml)}
+        ${isPoem ? poemCols : (bodyHtml + translationHtml + vocabHtml + poemMeaningHtml + poemBgHtml + analysisHtml)}
       </div>`;
     }).join('');
   }
@@ -59579,6 +59823,28 @@ function renderKMAdmin(){
     if(enPassageCol){
       bindPassagePause(enPassageCol);
       _refreshPassageCards();
+      /* R334-1.2：译文展开 / 收起（委托绑定，重渲染后仍然有效） */
+      if(!enPassageCol._r334ZhBound){
+        enPassageCol._r334ZhBound = true;
+        enPassageCol.addEventListener('click', function(e){
+          const btn = e.target.closest('[data-r334-zh-toggle]');
+          if(!btn) return;
+          e.preventDefault(); e.stopPropagation();
+          const card = btn.closest('.reading-item');
+          const panel = card ? card.querySelector('.r334-zh-panel') : null;
+          if(!panel) return;
+          const key = btn.getAttribute('data-r334-zh-toggle') || '';
+          const open = panel.hasAttribute('hidden');
+          if(open){ panel.removeAttribute('hidden'); _r334ZhOpen[key] = true; }
+          else { panel.setAttribute('hidden',''); delete _r334ZhOpen[key]; }
+          btn.classList.toggle('is-open', open);
+          btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+          const lab = btn.querySelector('span');
+          if(lab) lab.textContent = open ? '收起' : '展开';
+        });
+      }
+      /* R334-1.3：单词卡点击朗读（[data-en-speak] 统一交互，自带 stopPropagation，不会触发整篇朗读） */
+      bindEnTapSpeak(enPassageCol);
     }
     // 大百科：每段内容后打卡标记 → ✓
     const baikeBoxes = document.getElementById('baikeBoxes');
@@ -65629,7 +65895,7 @@ function init(){
          _r330View === 'tags' ? r330TagsHtml(items) : r330AnalysisHtml(items)) +
       '</section>' +
     '</div>' +
-    r330ModalHtml() + r330WheelHtml();
+    r330ModalHtml() + r330WheelHtml() + r333ReasonPickerHtml();
     r330Bind();
     try{ r326Badge(); }catch(e){}
   }
@@ -65728,18 +65994,13 @@ function init(){
           '<div class="r330-empty">今日复习已清零，继续保持！</div>') + '</div>';
     }
     const list = r330VisibleItems(items);
-    const by = { all:items.filter(function(x){ return x.subject === _r330Subject; }).length, pending:0, fixed:0, mastered:0 };
-    items.forEach(function(x){ if(x.subject === _r330Subject && by[x.status] !== undefined) by[x.status]++; });
-    const chips = [['all','全部'],['pending','待订正'],['fixed','已订正'],['mastered','已掌握']].map(function(f){
-      return '<button type="button" class="r330-chip' + (_r330Filter === f[0] ? ' active' : '') +
-        '" data-r330-filter="' + f[0] + '">' + f[1] + ' ' + (by[f[0]] || 0) + '</button>';
-    }).join('');
     const picked = Object.keys(_r330Picked).filter(function(k){ return _r330Picked[k]; });
     const batch = picked.length ? '<div class="r330-batch">已选 ' + picked.length + ' 道' +
       '<button type="button" class="pbtn" data-r330-batch-export>导出所选</button>' +
       '<button type="button" class="pbtn danger" data-r330-batch-del>批量删除</button>' +
       '<button type="button" class="pbtn" data-r330-batch-clear>取消选择</button></div>' : '';
-    return '<div class="r330-list-head"><div class="r330-chips">' + chips + '</div>' + batch + '</div>' +
+    /* R334-4.1：按需求删除「待订正 / 已订正 / 已掌握」这一行统计筛选按键，只留选中后的批量操作条 */
+    return (batch ? '<div class="r330-list-head">' + batch + '</div>' : '') +
       '<div class="r330-list-meta" id="r330ListMeta">' + esc(_r330Subject) + '共 ' + list.length + ' 道错题' +
         (_r330Search ? ' · 关键词「' + esc(_r330Search) + '」' : '') + '</div>' +
       '<div class="r330-q-list" id="r330List">' + (list.length ? list.map(r330CardHtml).join('') :
@@ -65846,7 +66107,7 @@ function init(){
         '" data-r330-sumrange="' + r[0] + '">' + r[1] + '</button>';
     }).join('');
     const head = '<div class="r330-view-head"><h2>阶段性汇总</h2>' +
-        '<div class="r330-subtabs" role="tablist">' + rangeChips + '</div></div>' +
+        '<div class="r330-subtabs r333-sum-range" role="tablist">' + rangeChips + '</div></div>' +
       '<p class="r330-desc">统计范围：' + esc(r333SumRangeLabel()) + '，共 ' + pool.length + ' 道错题（已标注错因 ' + marked +
         ' 道）。下面按错因标签挑出最高频的 3 个，每个标签列 1–2 道典型错题，方便集中复盘。</p>';
     if(!pool.length){
@@ -66092,18 +66353,10 @@ function init(){
       const statusChips = [['review','待复习'],['mastered','已掌握']].map(function(x){
         return '<button type="button" class="r330-opt' + (f.status === x[0] ? ' active' : '') + '" data-r330-f-status="' + x[0] + '">' + x[1] + '</button>';
       }).join('');
-      /* R333-3.4：错因分类改为两级 —— 先选一级，二级随一级联动；选中一级本身也允许（暂不细分） */
+      /* R333-3.4 / R334-4.3：错因两级 —— 一级、二级各一个选择框，点框弹出可滑动的候选项列表 */
       const tree = (S.R326_REASON_TREE || []);
       const branch = r333ReasonBranch(f.reason);
-      const lv1Chips = tree.map(function(n){
-        return '<button type="button" class="r330-opt r333-reason-lv1' + (branch === n.name ? ' active' : '') +
-          '" data-r330-f-reason="' + esc(n.name) + '">' + esc(n.name) + '</button>';
-      }).join('');
       const node = tree.filter(function(n){ return n.name === branch; })[0];
-      const lv2Chips = node ? node.children.map(function(c){
-        return '<button type="button" class="r330-opt r333-reason-lv2' + (f.reason === c ? ' active' : '') +
-          '" data-r330-f-reason="' + esc(c) + '">' + esc(c) + '</button>';
-      }).join('') : '<span class="r333-reason-hint">先选一个一级分类，再挑具体表现（也可以只选一级）</span>';
       const legacyNote = (f.reason && !branch)
         ? '<span class="r333-reason-legacy">原标签：' + esc(f.reason) + '（旧分类，可重新选择）</span>' : '';
       const thumbs = (f.imgs || []).map(function(ref, i){
@@ -66134,14 +66387,21 @@ function init(){
           /* R333-3.4：题目名称 → 原题，位置紧接「添加日期」下一行 */
           '<div class="r330-field"><label for="r330FTitle">原题</label><textarea id="r330FTitle" class="r333-title-ta" maxlength="400" placeholder="把原题抄下来，或写清出处：练习册 P32 第 5 题">' + esc(f.title || '') + '</textarea></div>' +
           '<div class="r330-field"><label>错因分类</label>' +
-            '<div class="r330-opt-group r333-reason-lv1-row">' + lv1Chips + '</div>' +
-            '<div class="r330-opt-group r333-reason-lv2-row">' + lv2Chips + '</div>' + legacyNote + '</div>' +
+            '<div class="r330-form-row r333-reason-row">' +
+              '<div class="r330-field r333-reason-cell"><label>一级分类</label>' +
+                '<button type="button" class="r330-pick-field r333-reason-field" data-r333-reason-pick="lv1">' +
+                  '<span>' + esc(branch || '请选择') + '</span><span aria-hidden="true">▾</span></button></div>' +
+              '<div class="r330-field r333-reason-cell"><label>二级分类</label>' +
+                '<button type="button" class="r330-pick-field r333-reason-field" data-r333-reason-pick="lv2">' +
+                  '<span>' + esc((f.reason && node && node.children.indexOf(f.reason) >= 0) ? f.reason : (node ? '未细分' : '请先选一级')) + '</span>' +
+                  '<span aria-hidden="true">▾</span></button></div>' +
+            '</div>' + legacyNote + '</div>' +
           /* R333-3.4：新增「错误答案」，位于「错误原因总结」上方；正确答案同行保留 */
           '<div class="r330-form-row">' +
-            '<div class="r330-field"><label for="r330FMyAns">错误答案</label><input id="r330FMyAns" maxlength="200" value="' + esc(f.myAnswer || '') + '" placeholder="当时写错的答案"></div>' +
-            '<div class="r330-field"><label for="r330FRightAns">正确答案</label><input id="r330FRightAns" maxlength="200" value="' + esc(f.rightAnswer || '') + '" placeholder="用于自动批改"></div>' +
+            '<div class="r330-field"><label for="r330FMyAns">错误答案</label><input id="r330FMyAns" class="r333-h42" maxlength="200" value="' + esc(f.myAnswer || '') + '" placeholder="当时写错的答案"></div>' +
+            '<div class="r330-field"><label for="r330FRightAns">正确答案</label><input id="r330FRightAns" class="r333-h42" maxlength="200" value="' + esc(f.rightAnswer || '') + '" placeholder="用于自动批改"></div>' +
           '</div>' +
-          '<div class="r330-field"><label for="r330FWrong">错误原因总结</label><textarea id="r330FWrong" maxlength="400" placeholder="一句话概括为什么错、哪里错">' + esc(f.wrong || '') + '</textarea></div>' +
+          '<div class="r330-field"><label for="r330FWrong">错误原因总结</label><textarea id="r330FWrong" class="r333-h42" maxlength="400" placeholder="一句话概括为什么错、哪里错">' + esc(f.wrong || '') + '</textarea></div>' +
           '<div class="r330-field"><label for="r330FFix">标准解法</label><textarea id="r330FFix" maxlength="400" placeholder="写清这道题的正确思路与关键步骤">' + esc(f.fix || '') + '</textarea></div>' +
           '<div class="r330-field"><label class="r330-file">题目照片（最多 4 张，自动压缩）<input type="file" id="r330Files" accept="image/*" multiple></label>' +
             (thumbs ? '<div class="r330-thumbs">' + thumbs + '</div>' : '') + '</div>' +
@@ -66174,6 +66434,59 @@ function init(){
         '<button type="button" class="pbtn primary" data-r330-wheel-ok>确认</button></div></div></div>';
   }
 
+  /* ---------- R334-4.3：错因分类选择弹窗（点击弹出、列表可滑动） ---------- */
+  let _r334ReasonPick = '';   // '' | 'lv1' | 'lv2'
+  function r333ReasonPickerHtml(){
+    return '<div class="r330-overlay" id="r334ReasonPick" hidden><div class="r333-pick-box" role="dialog" aria-modal="true" aria-label="选择错因分类">' +
+      '<h3 id="r334ReasonPickTitle">选择一级分类</h3>' +
+      '<div class="r333-pick-list" id="r334ReasonPickList"></div>' +
+      '<div class="r330-menu-row"><button type="button" class="pbtn" data-r334-reason-close>取消</button></div>' +
+    '</div></div>';
+  }
+  /* 选完后即时更新两个框的文案（不整页重绘，避免弹窗被重绘吃掉） */
+  function r333SyncReasonFields(){
+    const f = _r330Form;
+    if(!f) return;
+    const tree = (S.R326_REASON_TREE || []);
+    const branch = r333ReasonBranch(f.reason);
+    const node = tree.filter(function(n){ return n.name === branch; })[0];
+    const b1 = document.querySelector('[data-r333-reason-pick="lv1"] span');
+    const b2 = document.querySelector('[data-r333-reason-pick="lv2"] span');
+    if(b1) b1.textContent = branch || '请选择';
+    if(b2) b2.textContent = (f.reason && node && node.children.indexOf(f.reason) >= 0)
+      ? f.reason : (node ? '未细分' : '请先选一级');
+  }
+  function r333OpenReasonPick(level){
+    const box = document.getElementById('r334ReasonPick');
+    const f = _r330Form;
+    if(!box || !f) return;
+    const tree = (S.R326_REASON_TREE || []);
+    const branch = r333ReasonBranch(f.reason);
+    const node = tree.filter(function(n){ return n.name === branch; })[0];
+    if(level === 'lv2' && !node){
+      r330Toast('请先选择一级分类');
+      return;
+    }
+    _r334ReasonPick = level;
+    const opts = level === 'lv1'
+      ? tree.map(function(n){ return { v:n.name, sub:(n.children || []).join(' / ') }; })
+      : node.children.map(function(c){ return { v:c, sub:'' }; });
+    const titleEl = document.getElementById('r334ReasonPickTitle');
+    if(titleEl) titleEl.textContent = level === 'lv1' ? '选择一级分类' : ('选择二级分类 · ' + branch);
+    const listEl = document.getElementById('r334ReasonPickList');
+    if(listEl){
+      listEl.innerHTML = opts.map(function(o){
+        const on = level === 'lv1' ? (branch === o.v) : (f.reason === o.v);
+        return '<button type="button" class="r333-pick-opt' + (on ? ' active' : '') + '" data-r334-reason-v="' + esc(o.v) + '" data-r334-reason-lv="' + level + '">' +
+          '<b>' + esc(o.v) + '</b>' + (o.sub ? '<span>' + esc(o.sub) + '</span>' : '') + '</button>';
+      }).join('') + (level === 'lv2' ? '<button type="button" class="r333-pick-opt" data-r334-reason-v="" data-r334-reason-lv="lv2"><b>暂不细分</b><span>只保留一级分类</span></button>' : '');
+    }
+    box.hidden = false;
+    if(listEl && listEl.scrollTop) listEl.scrollTop = 0;
+  }
+
+  window.__r334OpenReasonPick = function(lv){ r333OpenReasonPick(lv); };
+
   /* ---------- 表单动作 ---------- */
   function r330OpenModal(mode){
     if(!_r330Form) _r330Form = r330NewForm();
@@ -66186,6 +66499,10 @@ function init(){
   function r330CloseModal(){
     const box = document.getElementById('r330Modal');
     if(box) box.hidden = true;
+    /* R334-4.3：关闭表单时一并收起错因选择弹窗 */
+    const pk = document.getElementById('r334ReasonPick');
+    if(pk) pk.hidden = true;
+    _r334ReasonPick = '';
     _r330TypeOpen = false;
     _r330Form = null;
   }
@@ -66375,10 +66692,32 @@ function init(){
       const t = e.target;
       if(!t || !t.closest) return;
       if(t.closest('.r330-pick')) return;
-      if(t.id === 'r330Modal' || t.id === 'r330Wheel'){ if(t.id === 'r330Modal') r330CloseModal(); else t.hidden = true; return; }
+      if(t.id === 'r330Modal' || t.id === 'r330Wheel' || t.id === 'r334ReasonPick'){
+        if(t.id === 'r330Modal') r330CloseModal();
+        else t.hidden = true;
+        return;
+      }
       r330SyncFormInputs();
       const hit = function(a){ return t.closest('[' + a + ']'); };
       let el;
+      /* R334-4.3：错因两级 —— 点框弹列表，选一级后自动接二级，也可只留一级 */
+      if(hit('data-r334-reason-close')){ const pb = document.getElementById('r334ReasonPick'); if(pb) pb.hidden = true; return; }
+      if((el = hit('data-r333-reason-pick'))){ r333OpenReasonPick(el.getAttribute('data-r333-reason-pick')); return; }
+      if((el = hit('data-r334-reason-v')) && el.hasAttribute('data-r334-reason-lv')){
+        const lv = el.getAttribute('data-r334-reason-lv');
+        const v = el.getAttribute('data-r334-reason-v');
+        const f = _r330Form;
+        if(f){
+          if(lv === 'lv1'){ f.reason = v; }
+          else { f.reason = v || r333ReasonBranch(f.reason); }
+          const legacy = document.querySelector('.r333-reason-legacy');
+          if(legacy) legacy.remove();
+          r333SyncReasonFields();
+        }
+        if(lv === 'lv1'){ r333OpenReasonPick('lv2'); }
+        else { const pb = document.getElementById('r334ReasonPick'); if(pb) pb.hidden = true; }
+        return;
+      }
       if((el = hit('data-r330-view'))){ _r330View = el.getAttribute('data-r330-view'); _r330Review = false; r330Render(); return; }
       if((el = hit('data-r330-subject'))){ _r330Subject = el.getAttribute('data-r330-subject'); _r330Review = false; _r330Filter = 'all'; _r330Picked = {}; r330Render(); return; }
       if(hit('data-r330-review')){
