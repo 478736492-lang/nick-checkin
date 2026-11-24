@@ -12314,6 +12314,66 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
   .r334-bl-search{flex:1 1 100%}
 }
 
+/* ================= R335《学习平台功能整改需求》 ================= */
+/* ---- R335-1.1 / 1.2：短文动作行靠右 + 重点单词弹窗（一行 3 个） ---- */
+.r335-passage-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-top:8px}
+.r335-vocab-open{
+  display:inline-flex;align-items:center;gap:5px;min-height:28px;padding:4px 12px;
+  border:1.5px solid var(--tone-300);border-radius:999px;background:#fff;color:var(--tone-800);
+  font-size:12.5px;font-weight:800;cursor:pointer;font-family:inherit;touch-action:manipulation;
+}
+.r335-vocab-open:hover{background:var(--tone-050);border-color:var(--tone-400)}
+.r335-vocab-modal{max-width:720px}
+.r335-vocab-modal .modal-head h3{font-size:16px;font-weight:900;color:var(--tone-900);margin:0}
+.r335-vocab-modal-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:2px}
+.r335-vocab-item{
+  display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-width:0;min-height:56px;
+  padding:8px 10px;background:#fff;border:1.5px solid var(--tone-300);border-radius:10px;
+  cursor:pointer;font-family:inherit;text-align:left;touch-action:manipulation;
+}
+.r335-vocab-item:hover{background:var(--tone-050);border-color:var(--tone-400)}
+.r335-vocab-item b{font-size:13.5px;font-weight:900;color:var(--tone-900);overflow-wrap:anywhere}
+.r335-vocab-item span{font-size:11.5px;line-height:1.4;color:var(--tone-700);overflow-wrap:anywhere}
+.r335-vocab-empty{grid-column:1 / -1;text-align:center;color:var(--tone-600);padding:18px 0;font-size:13px}
+
+/* ---- R335-3.1 / 3.2：书单卡片编号 + 书名完整展示 + 已读键原尺寸 + 高度 2/3 ---- */
+.r319-book-row{
+  grid-template-columns:30px minmax(0,1fr) minmax(0,110px) 62px;
+  min-height:27px;padding:4px 8px;gap:6px;
+}
+.r327-editing .r319-book-row{grid-template-columns:30px minmax(0,1fr) minmax(0,100px) 58px auto}
+.r335-book-no{font-size:12px;font-weight:900;color:var(--tone-600);white-space:nowrap;text-align:right}
+.r319-book-row .r319-book-name{overflow:visible;text-overflow:clip;white-space:normal;line-height:1.25}
+.r319-book-row .r319-read{width:auto;min-width:48px;justify-self:center;padding:3px 8px}
+@media (max-width:640px){
+  .r319-book-row{
+    grid-template-columns:26px minmax(0,1fr) 58px;
+    grid-template-areas:"no name read" "no author read";
+  }
+  .r335-book-no{grid-area:no;align-self:center}
+  .r327-editing .r319-book-row{
+    grid-template-columns:26px minmax(0,1fr) 54px auto;
+    grid-template-areas:"no name read ops" "no author read ops";
+  }
+}
+
+/* ---- R335-5.2 / 5.3：错题弹窗加宽 + 知识点标签同高 + 页面平铺 ---- */
+.r330-modal{max-width:820px}
+.r330-field input.r335-kp-field{min-height:42px;height:42px;box-sizing:border-box}
+.page-mistakes > .page-content{
+  padding:8px 10px;margin:0;border:0;border-radius:0;box-shadow:none;background:transparent;
+}
+.page-mistakes .r330-tabs{padding:8px 10px}
+.page-mistakes .r330-subject-bar{margin:8px 0 6px}
+.page-mistakes .r330-blue-card{margin-top:8px}
+@media (max-width:640px){
+  .r335-vocab-modal-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+  .r335-vocab-item{padding:6px 5px;min-height:50px}
+  .r335-vocab-item b{font-size:12px}
+  .r335-vocab-item span{font-size:10.5px}
+  .r330-modal{max-width:96vw}
+}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -12335,8 +12395,9 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
     <!-- R333-3.1：一级入口「错题集」移到「学而思英语」与「中华通史」之间；右侧角标展示待订正 + 待复习总数 -->
     <button data-page="mistakes" class="nav-btn" id="r326NavBtn"><span class="ico">🧾</span><span class="lbl">错题集</span><span class="nav-badge" id="r326NavBadge" hidden>0</span></button>
     <!-- R276-3.1：中华通史导航入口，位置严格在「学而思英语」与「大阅读」之间（R333 后前插了错题集） -->
-    <button data-page="zhts" class="nav-btn" data-page-node-id="R276ZhtsNav"><span class="ico" data-page-node-id="R276ZhtsNavIco">🏯</span><span class="lbl" data-page-node-id="R276ZhtsNavLbl">中华通史</span></button>
+    <!-- R335-4.1：中华通史 与 大阅读 导航位置互换 -->
     <button data-page="reading" class="nav-btn" data-page-node-id="VZgtNxjHHs0rkBTKRjvvxZ"><span class="ico" data-page-node-id="VW668B5FWjJUjBe8JMjhiJ">📖</span><span class="lbl" data-page-node-id="seIa3xLifgrjNdHHaczFD1">大阅读</span></button>
+    <button data-page="zhts" class="nav-btn" data-page-node-id="R276ZhtsNav"><span class="ico" data-page-node-id="R276ZhtsNavIco">🏯</span><span class="lbl" data-page-node-id="R276ZhtsNavLbl">中华通史</span></button>
     <button data-page="baike" class="nav-btn" data-page-node-id="evo6QZa2tkcM0lA8uNKEMj"><span class="ico" data-page-node-id="laD5znAMk1QJKKcu4Ff11U">🌍</span><span class="lbl" data-page-node-id="MeiwZ3Yc7jHE5hBBjnPXFC">百科讲堂</span></button>
     <button data-page="knowledge" class="nav-btn" data-page-node-id="dgvyriSBjRdIUt8IN5czeu"><span class="ico" data-page-node-id="KLxDkQogyEnhpWCUb0SkTf">🗺️</span><span class="lbl" data-page-node-id="0yzSgv0ZsfU7DUC3iBV5IU">知识秘境</span></button>
     <button data-page="farm" class="nav-btn" data-page-node-id="ILnFRXZgyFt6KUIHjdMjpi"><span class="ico" data-page-node-id="L91QcPKV3apQubouy8iHof">🌱</span><span class="lbl" data-page-node-id="3RvFnrBWk6gsLhpSANuJ0o">种植园</span></button>
@@ -12578,10 +12639,7 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
   </section>
   <!-- ================= R326：分科错题集（总览 / 学科工作台） ================= -->
   <section class="page page-mistakes" data-page="mistakes" hidden id="r326Page">
-    <div class="page-title">
-      <h2>🧾 分科错题集</h2>
-      <!-- R333-3.2：按需求删除主题卡内的「← 返回首页」按键（导航栏首页键仍可返回） -->
-    </div>
+    <!-- R335-5.3：删除顶部分科错题集主题栏，内容平铺展示、消除大面积留白 -->
     <div class="page-content">
       <div id="r326Root"></div>
     </div>
@@ -40835,7 +40893,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   /* ===== R332-1.2：英语写作 · 作文300篇 =====
      数据源 window.EN_ESSAY_300_SEED（收录书屋英语短文 + 原「英文作文」100 篇整合去重后保留 300 篇）；
      未加载时回退旧的 EN_ESSAY_SEED，保证任何情况下板块不空白。 */
-  const EN_ESSAY300_PER_PAGE = 6;
+  const EN_ESSAY300_PER_PAGE = 2; // R335-2.1：作文300篇一页展示两篇
   /* R333-1.2 / 1.3：作文300篇按新口径归一（种子文件一字未改，随时可回退）
      ① 挑战区第 1–70 篇（id 前缀 pNN_）已整体移入「大阅读 · 收录书屋 · 英语短文」，这里不再重复出现；
      ② 「进阶」分类整体并入「基础」—— level 2 一律按 level 1 呈现。
@@ -43484,12 +43542,15 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       const pi = Math.max(1, Math.min(pageCount, _r328BookPages[c.id] || 1));
       _r328BookPages[c.id] = pi;
       const pageList = list.slice((pi - 1) * R328_BOOK_PAGE_SIZE, pi * R328_BOOK_PAGE_SIZE);
-      const rows = pageList.map(b=>{
+      const rows = pageList.map((b, bi)=>{
         /* R334-3.2：卡片只展示「书名 / 作者 / 已读键」三要素；
-           所属分类、推荐理由、打卡奖励等一律收进书籍详情弹窗（点书名或整行打开）。 */
+           所属分类、推荐理由、打卡奖励等一律收进书籍详情弹窗（点书名或整行打开）。
+           R335-3.2：卡片最左增加全局顺序编号（跨页连续，不随翻页重置）。 */
         const cls = 'r319-book-row' + (b.read ? ' is-read' : '');
+        const bookNo = (pi - 1) * R328_BOOK_PAGE_SIZE + bi + 1;
         return `
         <div class="${cls}" data-r319-bid="${esc(b.id)}">
+          <span class="r335-book-no">${bookNo}.</span>
           <button type="button" class="r319-book-name" data-r319-act="detail" title="查看书本详情">《${esc(b.title)}》</button>
           <span class="r319-book-author">${b.author?esc(b.author)+' 著':''}</span>
           <button type="button" class="r319-row-btn r319-read${b.read?' done':''}" data-r319-act="read" title="${b.read?'取消已读':'标记已读'}">${b.read?'✓ 已读':'已读'}</button>
@@ -49064,7 +49125,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     // V19-5：日常交流 = 每日 1 个主题对话（6-7 句）
     // R56-6：主视图恢复三栏并列（语文 3 栏 + 英语 2 栏），归档内容不在此展示
     fillCol('#enColSpeak',   colContent('enSpeaking',1, 4), 'enSpeaking','en', true);
-    fillCol('#enColPassage', r334EnPassages(), 'enPassage', 'en');
+    fillCol('#enColPassage', r335TodayPassage(), 'enPassage', 'en');
     fillCol('#cnColWords',   cnWordsItems, 'cnWords', 'cn');
     // R296-3.2/3.3：好词使用（释义 + 例句）独立卡
     renderHaociUseCard(sysWords);
@@ -49364,22 +49425,40 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   }
   // R53-6：收录书屋主题内容分页（每类独立页码；每日轮换窗口内容通常单页，超出后自动分页）
   // R295-2.1：好词拆成逐词卡后单日可达 8 词 + 1 好句，分页放大到 12 以免好句被挤到下一页
-  const RD_PER_PAGE = { cnWords:12, cnPoem:6, cnEssay:6, enPassage:4, enSpeaking:2 };
+  const RD_PER_PAGE = { cnWords:12, cnPoem:6, cnEssay:6, enPassage:1, enSpeaking:2 };
   let _rdPage = {};
   /* ===== R334-1：英语阅读 · 英语短文 =====
      1.1 内容与「收录书屋 · 英语短文」严格同源同序（都走 S.getReading('enPassage')），
          不再按日期只轮换一篇，两处看到的篇目完全一致；
      1.2 译文默认收起，卡片内【展开 / 收起】按键切换，展开状态按篇名记忆；
-     1.3 译文下方重点单词改白底蓝边小卡，一行一组或两组，点单词即朗读。 */
+     1.3 译文下方重点单词改白底蓝边小卡，一行一组或两组，点单词即朗读。
+     R335-1.3：短文区一次只显示一篇；打卡后次日自动切到下一篇（游标读 st.readCursor.enPassage，
+     只存标题+日期，列表增删不错位；用户数据一篇不删）。 */
   const _r334ZhOpen = {};
   function r334EnPassages(){
     try{
       return S.getReading('enPassage').filter(function(x){ return x && x.source !== 'archived'; });
     }catch(e){ return []; }
   }
-  /* R334 门禁探针钩子（jsdom 取不到闭包内变量） */
+  /* R335-1.3：按阅读游标挑当日唯一一篇。当天已打卡→仍显示该篇；游标为昨天或更早→顺延下一篇；
+     当天未打卡且无游标→第一篇。取消打卡会由 store 删除游标，次日回到下一篇。 */
+  function r335TodayPassage(){
+    const all = r334EnPassages();
+    if(!all.length) return [];
+    let cur = null;
+    try{ cur = S.getReadingCursor('enPassage'); }catch(e){}
+    if(!cur || !cur.title) return [all[0]];
+    const d = new Date();
+    const today = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    const idx = all.findIndex(x=>x && x.title === cur.title);
+    if(idx < 0) return [all[0]];
+    if(cur.date && cur.date >= today) return [all[idx]];
+    return [all[(idx+1) % all.length]];
+  }
+  /* 门禁探针钩子（jsdom 取不到闭包内变量） */
   window.__r334EnPassages = r334EnPassages;
   window.__r334ZhOpen = _r334ZhOpen;
+  window.__r335TodayPassage = r335TodayPassage;
   function fillCol(sel, items, kind, scope, isSpeak){
     const el = document.querySelector(sel);
     if(!el) return;
@@ -49433,26 +49512,19 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         ? (function(){
             /* R334-1.2：译文默认收起，短文下方给【展开 / 收起】按键；展开状态按篇名记忆，翻页回来仍在 */
             const open = !!_r334ZhOpen[it.title];
-            return '<button type="button" class="r334-zh-toggle' + (open?' is-open':'') + '" data-r334-zh-toggle="' + esc(it.title) + '" aria-expanded="' + open + '">' +
-                '<span>' + (open?'收起':'展开') + '</span><i aria-hidden="true">▾</i></button>' +
+            /* R335-1.1：动作行靠右；【重点单词】在【展开】左侧，只有本篇有单词表时才出现。 */
+            const vocabBtn = (Array.isArray(it.vocab) && it.vocab.length)
+              ? '<button type="button" class="r335-vocab-open" data-r335-vocab-open="' + esc(it.title) + '">🔤 重点单词</button>'
+              : '';
+            return '<div class="r335-passage-actions">' + vocabBtn +
+                '<button type="button" class="r334-zh-toggle' + (open?' is-open':'') + '" data-r334-zh-toggle="' + esc(it.title) + '" aria-expanded="' + open + '">' +
+                  '<span>' + (open?'收起':'展开') + '</span><i aria-hidden="true">▾</i></button>' +
+              '</div>' +
               '<div class="reading-translation r334-zh-panel"' + (open?'':' hidden') + '>' + esc(it.zh) + '</div>';
           })()
         : '';
-      /* R334-1.3：译文下方的重点单词 —— 白底蓝边小卡，一行一组或两组，点单词即朗读 */
-      const vocabHtml = (kind==='enPassage' && Array.isArray(it.vocab) && it.vocab.length)
-        ? '<div class="r334-vocab">' +
-            '<div class="r334-vocab-head">🔤 重点单词</div>' +
-            '<div class="r334-vocab-grid">' +
-              it.vocab.map(function(v){
-                const w = String((v && v.w) || v || '').trim();
-                const m = String((v && v.m) || '').trim();
-                if(!w) return '';
-                return '<button type="button" class="r334-vocab-card en-tap-speak" data-en-speak="' + esc(w) + '" title="点击单词朗读">' +
-                  '<b>' + esc(w) + '</b>' + (m ? '<span>' + esc(m) + '</span>' : '') + '</button>';
-              }).join('') +
-            '</div>' +
-          '</div>'
-        : '';
+      /* R335-1.2：重点单词不再铺在短文下方，改由卡片内【重点单词】键唤起弹窗（一行 3 个）。 */
+      const vocabHtml = '';
       // 文库排版优化：英语短文标题下补充「难度 + 主题分类」标签（复用蓝系配色）
       const catTagHtml = (kind==='enPassage' && it.category)
         ? `<span class="ri-meta" style="background:#dbeafe;color:#1e3a8a;margin-left:4px">🏷 ${esc(it.category)}</span>` : '';
@@ -59827,6 +59899,29 @@ function renderKMAdmin(){
       if(!enPassageCol._r334ZhBound){
         enPassageCol._r334ZhBound = true;
         enPassageCol.addEventListener('click', function(e){
+          /* R335-1.2：【重点单词】唤起弹窗，只取当前这一篇的单词表，一行 3 个；点词仍可朗读。 */
+          const vb = e.target.closest('[data-r335-vocab-open]');
+          if(vb){
+            e.preventDefault(); e.stopPropagation();
+            const title = vb.getAttribute('data-r335-vocab-open') || '';
+            const cur = r334EnPassages().filter(function(x){ return x && x.title === title; })[0];
+            const list = document.getElementById('r335VocabList');
+            const head = document.getElementById('r335VocabTitle');
+            if(cur && list){
+              const voc = Array.isArray(cur.vocab) ? cur.vocab : [];
+              list.innerHTML = voc.map(function(v){
+                const w = String((v && v.w) || v || '').trim();
+                const m = String((v && v.m) || '').trim();
+                if(!w) return '';
+                return '<button type="button" class="r335-vocab-item en-tap-speak" data-en-speak="' + esc(w) + '" title="点击单词朗读">' +
+                  '<b>' + esc(w) + '</b><span>' + (m ? esc(m) : '—') + '</span></button>';
+              }).join('') || '<div class="r335-vocab-empty">本篇暂无重点单词</div>';
+              if(head) head.textContent = '🔤 ' + title + ' · 重点单词';
+              showModal('#modalR335Vocab');
+              bindEnTapSpeak(list);
+            }
+            return;
+          }
           const btn = e.target.closest('[data-r334-zh-toggle]');
           if(!btn) return;
           e.preventDefault(); e.stopPropagation();
@@ -62409,8 +62504,9 @@ function init(){
     { act:'open', ico:'🧰', label:'功能中心' },
     { act:'pomo', ico:'🍅', label:'番茄专注' },
     { act:'help', ico:'❓', label:'使用说明' },
-    { act:'font', ico:'Aa', label:'字号档位' },
-    { act:'top',  ico:'⬆️', label:'回到顶部' },
+    /* R335-6.1：删除「字号档位」「回到顶部」两枚托盘键；
+       R335-6.2：在原「回到顶部」位置新增【学生/家长模式切换】。 */
+    { act:'mode', ico:'🔄', label:'学生/家长模式切换' },
     /* R332-5：设置中心不再作为一级导航入口，收进 ⚡ 快捷托盘 */
     { act:'settings', ico:'⚙️', label:'设置中心' }
   ];
@@ -62873,8 +62969,21 @@ function init(){
       case 'settings': go(()=>{ if(typeof goPage === 'function') goPage('settings'); }); break;
       case 'tab': curTab = v; render(); break;
       case 'pomo': open('tools'); setTimeout(()=>{ try{ const el = q('#r271PomoBox'); if(el) el.scrollIntoView({block:'center'}); }catch(e){} }, 60); break;
-      case 'top': scrollTop(); break;
-      case 'font': cycleFont(); break;
+      case 'top': scrollTop(); break;      /* 功能中心内仍保留此入口，仅托盘键按 R335-6.1 下线 */
+      case 'font': cycleFont(); break;     /* 字号档位同上 */
+      /* R335-6.2：学生 / 家长模式切换 —— 只写 profile.mode，不动任何业务数据 */
+      case 'mode': go(function(){
+        const st = S.load();
+        st.profile = st.profile || {};
+        const to = (st.profile.mode === 'parent') ? 'child' : 'parent';
+        if(typeof S.setProfileMode === 'function') S.setProfileMode(to);
+        else { const s2 = S.load(); s2.profile = s2.profile || {}; s2.profile.mode = to; S.save(s2); }
+        if(typeof setModeUI === 'function') setModeUI(to);
+        if(typeof renderHome === 'function') renderHome();
+        if(typeof renderToday === 'function') renderToday();
+        if(typeof updateModeLabel === 'function') updateModeLabel();
+        tip(to === 'child' ? '已切换为学生模式' : '已切换为家长模式');
+      }); break;
       case 'help': showHelp(); break;
       /* 任务模板 / 规则 / 假期 / 请假 */
       case 'tpl-save': go(()=>{ const r = saveCurrentAsTemplate(val('tplName')); tip('✅ 已保存模板「' + r.name + '」（' + r.count + ' 项）'); render(); }); break;
@@ -65900,8 +66009,8 @@ function init(){
     try{ r326Badge(); }catch(e){}
   }
   function r330TabsHtml(){
-    /* R333-3.5：【阶段性汇总】插在【我的错题集】与【知识点归纳】之间 */
-    const tabs = [['mistakes','📕 我的错题集'],['summary','📈 阶段性汇总'],['tags','🏷️ 知识点归纳'],['analysis','📊 数据分析']];
+    /* R333-3.5：【阶段性汇总】插在【分科错题集】与【知识点归纳】之间；R335-5.1 首签改名 */
+    const tabs = [['mistakes','📕 分科错题集'],['summary','📈 阶段性汇总'],['tags','🏷️ 知识点归纳'],['analysis','📊 数据分析']];
     return '<nav class="r330-tabs" aria-label="错题集功能导航">' +
       tabs.map(function(t){
         return '<button type="button" class="r330-tab' + (_r330View === t[0] ? ' active' : '') +
@@ -66382,7 +66491,8 @@ function init(){
           '<div class="r330-form-row">' +
             '<div class="r330-field"><label>添加日期</label><button type="button" class="r330-pick-field" data-r330-date-field>' +
               '<span>' + esc(f.date || '请选择日期') + '</span><span aria-hidden="true">▦</span></button></div>' +
-            '<div class="r330-field"><label for="r330FKp">知识点标签（逗号分隔）</label><input id="r330FKp" maxlength="120" value="' + esc(f.kp || '') + '" placeholder="如：乘法,进位"></div>' +
+            /* R335-5.2：知识点标签输入框与「添加日期」选择框同高（42px） */
+            '<div class="r330-field"><label for="r330FKp">知识点标签（逗号分隔）</label><input id="r330FKp" class="r335-kp-field" maxlength="120" value="' + esc(f.kp || '') + '" placeholder="如：乘法,进位"></div>' +
           '</div>' +
           /* R333-3.4：题目名称 → 原题，位置紧接「添加日期」下一行 */
           '<div class="r330-field"><label for="r330FTitle">原题</label><textarea id="r330FTitle" class="r333-title-ta" maxlength="400" placeholder="把原题抄下来，或写清出处：练习册 P32 第 5 题">' + esc(f.title || '') + '</textarea></div>' +
@@ -67240,6 +67350,19 @@ function init(){
 <div class="r256-stack" id="r256Stack" aria-live="polite"></div>
 
 <!-- R257-10.1：朗读统一控制条已按需求撤销（朗读恢复 R255 之前的原生播放/暂停按钮行为） -->
+
+<!-- R335-1.2：英语短文「重点单词」弹窗（当前篇目单词表，一行 3 个，点词朗读） -->
+<div class="modal-mask" id="modalR335Vocab" hidden>
+  <div class="modal-box r335-vocab-modal" role="dialog" aria-modal="true" aria-labelledby="r335VocabTitle">
+    <div class="modal-head">
+      <h3 id="r335VocabTitle">🔤 重点单词</h3>
+      <button type="button" class="modal-x" data-close title="关闭">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="r335-vocab-modal-grid" id="r335VocabList"></div>
+    </div>
+  </div>
+</div>
 
 <!-- 护眼暖色遮罩（只做视觉，不拦截点击） -->
 <div class="r256-eye-overlay" id="r256EyeOverlay" hidden></div>
