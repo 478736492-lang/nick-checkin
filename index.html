@@ -5782,7 +5782,7 @@ select.peg-input{min-width:110px;max-width:210px;cursor:pointer}
   --title-bg-newworld:url('./assets/d451830c2499.jpg');
   --title-bg-knowledge:url('./assets/d2b5c0facee0.jpg');
   /* R339-2.2：分科错题集主题卡背景图（整块铺图，标题文字与图标已移除） */
-  --title-bg-mistakes:url('./assets/9aaee6c97a7c.jpg');
+  --title-bg-mistakes:url('./assets/6582f19916f0.jpg');
 }
 /* CSS 兜底默认（用户无上传图、且 JS 未注入时的纯样式默认；JS 默认分支会注入对应 var 以 inline 形式生效） */
 .page[data-page="math"] .page-title{--title-bg-image:var(--title-bg-math)}
@@ -12505,7 +12505,9 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
 .page-mistakes > .page-title{width:auto;margin-left:10px;margin-right:10px}
 
 /* ---- R339-2.2：主题卡整块铺背景图；标题文字与图标已从 DOM 移除（此处兜底不再显示） ---- */
-.page-mistakes > .r339-mistakes-title{--title-bg-image:var(--title-bg-mistakes);background-color:#fff}
+/* R340-2.1：换用用户新提供的「错题集横幅」（1920×194，自带标题与四个功能图标），
+   卡片高度沿用 2cm，背景图改为等比铺满整块（避免 cover 把上下裁掉）。 */
+.page-mistakes > .r339-mistakes-title{--title-bg-image:var(--title-bg-mistakes);background-color:#fff;background-size:100% 100%}
 .page-mistakes > .r339-mistakes-title h2{display:none}
 
 /* ---- R339-3.1：拓展素养「我的书单」板块 ---- */
@@ -12563,6 +12565,101 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
 .en-sec-wrap{content-visibility:auto;contain-intrinsic-size:auto 340px}
 .en-vrow{contain:content;transition:none}
 .en-vrow:hover{transform:none;box-shadow:0 2px 8px rgba(30,58,138,.08)}
+
+/* ================= R340《学习平台功能整改需求》 ================= */
+/* ---- R340-1.2：书单卡片只留「编号 / 书名 / 作者」三要素 ----
+   已读键移入书籍详情弹窗（【加入借阅书目】右侧）；作者靠右、优先单行，超长才省略。 */
+.r319-book-row{grid-template-columns:30px minmax(0,1fr) minmax(0,32%);gap:6px 8px}
+/* 书名最多两行（超出才省略），避免长书名整条被截成一个词头 */
+.r319-book-row .r319-book-name{
+  min-width:0;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;
+  overflow:hidden;white-space:normal;line-height:1.25;
+}
+.r319-book-row .r319-book-author{
+  justify-self:end;width:auto;max-width:100%;text-align:right;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  font-size:12px;line-height:1.3;margin-left:0;
+}
+.r327-editing .r319-book-row{grid-template-columns:30px minmax(0,1fr) minmax(0,34%) auto}
+@media (max-width:640px){
+  .r319-book-row{grid-template-columns:24px minmax(0,1fr);grid-template-areas:"no name" "no author";row-gap:1px}
+  .r319-book-row .r335-book-no{grid-area:no;align-self:center}
+  .r319-book-row .r319-book-name{grid-area:name}
+  .r319-book-row .r319-book-author{grid-area:author;justify-self:start;text-align:left;font-size:11px}
+  .r327-editing .r319-book-row{grid-template-columns:24px minmax(0,1fr) auto;grid-template-areas:"no name ops" "no author ops"}
+  .r319-book-row .r319-book-ops{grid-area:ops;align-self:center}
+}
+
+/* ---- R340-1.4：导出书单 / 添加书单 / 添加书籍 —— 落在「编辑书单」下一行并整体靠右 ---- */
+.r319-bl-head-ops{justify-content:flex-end;margin-left:auto;width:100%}
+/* 拓展素养板块里 ops 是 .r339-bl 的直接子元素，R319 给它排了 order:5 会掉到卡片下方，
+   这里显式排到标题行之后、卡片之前。 */
+.r339-bl .r319-bl-head-ops{justify-content:flex-end;order:1;margin-top:0}
+.r339-bl .r319-cat-grid{order:2}
+.r319-bl-head-ops[hidden]{display:none}
+
+/* ---- R340-1.2：详情弹窗内的已读键（原卡片键） ---- */
+.r340-read-btn.on{background:linear-gradient(135deg,var(--tone-100),var(--tone-150));border-color:var(--tone-600);color:var(--tone-900)}
+.r340-read-btn.is-read{background:linear-gradient(135deg,var(--tone-150),var(--tone-250));border-color:var(--tone-700)}
+
+/* ---- R340-1.6：书本详情弹窗 —— 内容居中 + 蓝色毛玻璃卡片底 ---- */
+#modalR321BookDetail .r321-detail-box{
+  width:min(760px,94vw);max-width:min(760px,94vw);aspect-ratio:auto;height:auto;
+  max-height:88vh;display:flex;flex-direction:column;
+  background:linear-gradient(158deg,rgba(234,246,255,.93) 0%,rgba(203,229,255,.89) 52%,rgba(178,214,250,.92) 100%);
+  -webkit-backdrop-filter:blur(16px) saturate(1.18);
+  backdrop-filter:blur(16px) saturate(1.18);
+  border:1.5px solid rgba(143,193,247,.85);
+  box-shadow:0 20px 48px rgba(30,58,138,.22),inset 0 1px 0 rgba(255,255,255,.7);
+}
+#modalR321BookDetail .modal-head{border-bottom:1px solid rgba(143,193,247,.5)}
+#modalR321BookDetail .r321-detail-body{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:20px 22px}
+#modalR321BookDetail .r321-detail-grid{flex-direction:column;align-items:center;text-align:center;gap:6px}
+#modalR321BookDetail .r321-detail-ico{font-size:38px;line-height:1;margin-bottom:2px}
+#modalR321BookDetail .r321-detail-line{text-align:center}
+#modalR321BookDetail .r321-detail-title{text-align:center;margin-bottom:6px}
+#modalR321BookDetail .r321-detail-reason{text-align:left;width:100%;box-sizing:border-box;background:rgba(255,255,255,.66);border-color:rgba(143,193,247,.7);line-height:1.8}
+#modalR321BookDetail .r327-detail-ops{justify-content:center;margin-top:14px}
+
+/* ---- R340-1.5：导出书单弹窗 + 预览弹窗 ---- */
+#modalR340Export .r340-ex-box{width:min(760px,94vw);max-width:min(760px,94vw);display:flex;flex-direction:column;max-height:88vh}
+.r340-ex-body{padding:16px 20px;overflow-y:auto;display:flex;flex-direction:column;gap:18px}
+.r340-ex-sec{display:flex;flex-direction:column;gap:8px}
+.r340-ex-t{font-size:13px;font-weight:800;color:var(--tone-900)}
+.r340-ex-scopes,.r340-ex-fmts{display:flex;gap:8px;flex-wrap:wrap}
+.r340-ex-scope,.r340-ex-fmt{
+  appearance:none;border:1.5px solid var(--tone-300);background:#fff;color:var(--tone-800);
+  border-radius:999px;padding:7px 16px;font-size:13px;font-weight:800;font-family:inherit;
+  cursor:pointer;touch-action:manipulation;transition:background .15s,border-color .15s,color .15s;
+}
+.r340-ex-scope:hover,.r340-ex-fmt:hover{background:var(--tone-050);border-color:var(--tone-400)}
+.r340-ex-scope.is-on,.r340-ex-fmt.is-on{background:linear-gradient(135deg,var(--tone-600),var(--tone-700));border-color:var(--tone-800);color:#fff}
+.r340-ex-cats{display:flex;flex-wrap:wrap;gap:8px;max-height:190px;overflow-y:auto;padding:2px}
+.r340-ex-cat{
+  appearance:none;border:1.5px solid var(--tone-200);background:var(--tone-050);color:var(--tone-800);
+  border-radius:10px;padding:6px 12px;font-size:12.5px;font-weight:800;font-family:inherit;cursor:pointer;
+  display:inline-flex;align-items:center;gap:6px;touch-action:manipulation;
+}
+.r340-ex-cat:hover{border-color:var(--tone-400)}
+.r340-ex-cat.is-on{background:linear-gradient(135deg,var(--tone-100),var(--tone-250));border-color:var(--tone-600);color:var(--tone-900)}
+.r340-ex-cat[data-r340-cat-lock]{cursor:default}
+.r340-ex-cat-n{font-size:11px;font-weight:700;color:var(--muted)}
+.r340-ex-empty{font-size:12.5px;color:var(--muted);padding:8px 0}
+#modalR340ExportPreview .r340-exp-box{width:min(780px,94vw);max-width:min(780px,94vw);display:flex;flex-direction:column;max-height:90vh}
+.r340-exp-body{padding:14px 18px 16px;overflow-y:auto}
+.r340-exp-thumb{max-height:48vh;overflow:auto;background:#fff;border:1px dashed var(--tone-300);border-radius:12px;padding:10px}
+.r340-exp-img{width:100%;height:auto;display:block;border-radius:8px}
+.r340-exp-doc{font-size:12px}
+.r340-exp-doc-top{font-size:13px;font-weight:800;color:var(--tone-900);margin-bottom:6px}
+.r340-exp-table{width:100%;border-collapse:collapse;font-size:12px}
+.r340-exp-table th,.r340-exp-table td{border:1px solid var(--tone-200);padding:4px 6px;text-align:left;color:var(--tone-800)}
+.r340-exp-table th{background:var(--tone-100);color:var(--tone-900)}
+.r340-exp-table tr.cat-start td{border-top:2px solid var(--tone-700);font-weight:800;color:var(--tone-900)}
+.r340-exp-tip{font-size:12.5px;color:var(--muted);margin:10px 0 0}
+.r340-exp-acts{display:flex;gap:10px;justify-content:flex-end;margin-top:12px}
+@media (max-width:640px){
+  .r340-exp-acts .primary-btn{flex:1 1 auto}
+}
 
 </style>
 </head>
@@ -13328,13 +13425,14 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
             <input type="search" id="r334BlSearch" class="r334-bl-search-input" placeholder="搜书名或作者" autocomplete="off" aria-label="搜索书名或作者">
             <div class="r334-bl-search-pop" id="r334BlSearchPop" hidden></div>
           </div>
-          <!-- R327-4.9：借阅书目在「导出书单」左侧 -->
+          <!-- R327-4.9：借阅书目在「编辑书单」左侧 -->
           <button type="button" class="primary-btn" id="btnR327Borrow">📚 借阅书目</button>
-          <button type="button" class="primary-btn" id="btnR321Export">📤 导出书单</button>
           <button type="button" class="primary-btn" id="btnR327Edit">✏️ 编辑书单</button>
         </div>
-        <!-- R327-4.3 / 4.4：添加书单 / 添加书籍挪到上一行按键的下方，且仅在「编辑书单」后显示 -->
+        <!-- R340-1.4 / 1.5：导出书单 + 添加书单 + 添加书籍 统一放到「编辑书单」下一行并靠右，
+             整行只在编辑态可见；导出书单在「添加书单」左侧 -->
         <div class="r319-bl-head-ops" id="r327BookOps" hidden>
+          <button type="button" class="primary-btn" id="btnR321Export">📤 导出书单</button>
           <button type="button" class="primary-btn" id="btnR319AddCat">＋ 添加书单</button>
           <button type="button" class="primary-btn" id="btnR319AddBook">＋ 添加书籍</button>
         </div>
@@ -13404,6 +13502,50 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
         <div class="r322-preview-acts">
           <button type="button" class="primary-btn" id="r322ExportCancel">取消</button>
           <button type="button" class="primary-btn" id="r322ExportConfirm">✅ 确认导出</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- R340-1.5：编辑书单态【导出书单】—— 单本 / 多选 / 全书单 × 图片 / Word / Excel，先预览再下载 -->
+  <div class="modal-mask" id="modalR340Export" hidden>
+    <div class="modal-box r340-ex-box">
+      <div class="modal-head"><h3>📤 导出书单</h3><button class="modal-x" data-close>×</button></div>
+      <div class="modal-body r340-ex-body">
+        <div class="r340-ex-sec">
+          <div class="r340-ex-t">① 选择导出范围</div>
+          <div class="r340-ex-scopes" id="r340ExScopes">
+            <button type="button" class="r340-ex-scope" data-r340-scope="one">单本书单</button>
+            <button type="button" class="r340-ex-scope" data-r340-scope="multi">多选书单</button>
+            <button type="button" class="r340-ex-scope is-on" data-r340-scope="all">全书单</button>
+          </div>
+          <div class="r340-ex-cats" id="r340ExCats"></div>
+        </div>
+        <div class="r340-ex-sec">
+          <div class="r340-ex-t">② 选择文件格式</div>
+          <div class="r340-ex-fmts">
+            <button type="button" class="r340-ex-fmt is-on" data-r340-fmt="png">🖼 图片</button>
+            <button type="button" class="r340-ex-fmt" data-r340-fmt="word">📄 Word</button>
+            <button type="button" class="r340-ex-fmt" data-r340-fmt="excel">📊 Excel</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button type="button" class="pbtn" data-close>取消</button>
+        <button type="button" class="pbtn primary" id="r340ExPreview">👀 预览</button>
+      </div>
+    </div>
+  </div>
+  <!-- R340-1.5：导出预览（缩略图确认后才下载） -->
+  <div class="modal-mask" id="modalR340ExportPreview" hidden>
+    <div class="modal-box r340-exp-box">
+      <div class="modal-head"><h3>👀 导出预览</h3><button class="modal-x" data-close>×</button></div>
+      <div class="modal-body r340-exp-body">
+        <div class="r340-exp-thumb" id="r340ExpThumb"></div>
+        <p class="r340-exp-tip" id="r340ExpTip">请确认导出内容。</p>
+        <div class="r340-exp-acts">
+          <button type="button" class="primary-btn" id="r340ExpCancel">取消</button>
+          <button type="button" class="primary-btn" id="r340ExpConfirm">✅ 确认导出</button>
         </div>
       </div>
     </div>
@@ -20816,7 +20958,7 @@ window.XS_A2_VOCAB = [
     'userReading','readingPanelDone','mathProblems','mathNotes','mathNoteStatus','mathGroups',
     'mathGallery','mathExerciseBank','plots','inventory','gifts','shop','stage','km','farmOpen',
     'music','farmLayout','en3500Marks','r314','nwWrong','homeGreets','homeBanner','sectionTitleTexts',
-    'schedule','memos','weekPlanColors','r319BookList','__r319BookListSeedV1','__r324BookImportV1','__r327BookCatsV1','__r328OtherCatV1','__r332BookImportV1','__r334BookCatsV1','__r336BookImportV1','__r339BookImportV1','readCursor','r326','__schema','__seq','__commitAt','__tomb'];
+    'schedule','memos','weekPlanColors','r319BookList','__r319BookListSeedV1','__r324BookImportV1','__r327BookCatsV1','__r328OtherCatV1','__r332BookImportV1','__r334BookCatsV1','__r336BookImportV1','__r339BookImportV1','__r340BookImportV1','readCursor','r326','__schema','__seq','__commitAt','__tomb'];
   /* 轻档超预算时的「可牺牲顺序」：从体积最大且可再生 / 有主档兜底的字段开始丢 */
   const LIGHT_DROP_ORDER = ['calcBank','mathProblems','mathGallery','xueersiWordBank','km','calcWrongBook'];
   let _r318XsSrc = null, _r318XsDelta = null;
@@ -21165,20 +21307,27 @@ window.XS_A2_VOCAB = [
     return true;
   }
   // 判断一段原始串是否是「可用的存档对象」——必须能解析成非数组对象且带档案结构
-  /* R273-5.1：单值 memo —— _readMainRaw() 在每次 load() 的缓存判断之前都会调用本函数，
+  /* R273-5.1：_readMainRaw() 在每次 load() 的缓存判断之前都会调用本函数，
      全站一次点击可能 load() 十几次，等于把几 MB 的主档反复 JSON.parse。
      原始串不变时直接复用上次结论；_readMainRaw 读取的是同一份存储，命中率接近 100%。 */
-  let _rawMemoRaw = null, _rawMemoOk = false;
+  /* R340-3.1：原来是「单值 memo」—— 但 _r318Pick() 会依次检查
+     主库 / 桥梁(KEY) / bak1 / bak2 / 轻档 共 5 份原始串，单值 memo 被这 5 份轮着覆盖，
+     命中率恒为 0，实测每渲染一次英语「重点知识」就整档 JSON.parse 76 次、15.7MB、1.18 秒，
+     主线程被占住 → 表现就是「英语专区点了没反应、像卡死」。
+     改为小容量 Map（按原始串内容命中，最多 8 份），稳态下解析次数降为 0。 */
+  let _rawMemoMap = new Map();
   function _rawUsable(raw){
     if(!raw) return false;
-    if(raw === _rawMemoRaw) return _rawMemoOk;
+    const _hit = _rawMemoMap.get(raw);
+    if(_hit !== undefined) return _hit;
     let ok = false;
     try{
       const o = JSON.parse(raw);
       if(!o || typeof o !== 'object' || Array.isArray(o)) ok = false;
       else ok = !!(o.archive || o.records || o.tasks || o.readFlags);
     }catch(e){ ok = false; }
-    _rawMemoRaw = raw; _rawMemoOk = ok;
+    if(_rawMemoMap.size >= 8) _rawMemoMap.clear();
+    _rawMemoMap.set(raw, ok);
     return ok;
   }
   // 读取主存档；损坏则依次回退备份（绝不直接新建空档）
@@ -23175,6 +23324,69 @@ window.XS_A2_VOCAB = [
         });
       }catch(e){}
       st.__r339BookImportV1 = true;
+      save(st);
+    }
+    /* ===== R340-1：《英文书籍》书单新增 + 书单顺序调整 =====
+       一次性闸 __r340BookImportV1：
+       ① 在「历史」右侧新增「英文书籍」书单，导入 10 套主流英文分级读物；
+       ② 把「科学」「地理」两张卡片移到「漫画绘本」后面（只调整顺序，不动数据）；
+       ③ 按书名去重，已有的只补空字段，已读 / ⭐ / 借阅 / 用户自建内容一律不动。 */
+    if(!st.__r340BookImportV1){
+      try{
+        if(!st.r319BookList || typeof st.r319BookList !== 'object' || Array.isArray(st.r319BookList)) st.r319BookList = {cats:[], books:[]};
+        if(!Array.isArray(st.r319BookList.cats)) st.r319BookList.cats = [];
+        if(!Array.isArray(st.r319BookList.books)) st.r319BookList.books = [];
+        var _r340CatId = function(n){
+          var c = st.r319BookList.cats.filter(function(x){ return x && x.name === n; })[0];
+          if(!c){ c = {id:'rc_'+n, name:n, builtin:true, ts:Date.now()}; st.r319BookList.cats.push(c); }
+          return c.id;
+        };
+        var _r340En = _r340CatId('英文书籍');
+        /* [书名, 作者, 推荐理由, 适读年龄] */
+        var _r340Books = [
+          ['小侦探内特 Nate the Great','[美] 玛乔丽·温曼·沙马特','桥梁书入门首选：短句 + 重复句式 + 简单推理，孩子第一次用英文破案，读完特别有成就感。',7],
+          ['女巫温妮 Winnie the Witch','[澳] 瓦莱丽·托马斯','画面夸张好笑，句子不长，是孩子从图画书过渡到英文阅读最轻松的一本。',7],
+          ['神奇树屋 Magic Tree House','[美] 玛丽·波·奥斯本','一册一个历史/自然场景，故事驱动型章节书，读完英语顺带长见识。',8],
+          ['驯龙大师 Dragon Masters','[美] 特蕾西·韦斯特','每本围绕一条龙展开冒险，情节抓人，是章节书爬坡期最容易坚持的一套。',8],
+          ['A to Z 神秘案件 A to Z Mysteries','[美] 罗恩·罗伊','26 个字母对应 26 个案件，篇幅短、线索清楚，训练孩子边读边推理。',9],
+          ['棚车少年 The Boxcar Children','[美] 格特鲁德·钱德勒·沃纳','经典章节书，语言平实、情节温暖，适合作为第一套长篇英文书。',9],
+          ['疯狂学校 My Weird School','[美] 丹·古特曼','校园生活幽默故事，笑点密集，孩子愿意主动拿起来读的那种书。',8],
+          ['猫头鹰日记 Owl Diaries','[美] 丽贝卡·艾略特','全彩日记体桥梁书，图文比例高，低年级也能自己读完一整本。',7],
+          ['RAZ（I-M 级别）','Learning A-Z','I 到 M 五个级别正好覆盖三到四年级，科普与故事交替，拿来练阅读速度和词汇量最稳。',8],
+          ['牛津树 7-9 阶 Oxford Reading Tree','[英] 罗德里克·亨特','Biff 一家人的故事从图画书升到章节书，7-9 阶刚好接住三年级孩子的阅读能力。',8]
+        ];
+        var _r340ByTitle = {};
+        st.r319BookList.books.forEach(function(b){ if(b && b.title) _r340ByTitle[b.title] = b; });
+        _r340Books.forEach(function(b, i){
+          var exist = _r340ByTitle[b[0]];
+          if(exist){
+            if(!exist.author || exist.author === '未填写' || exist.author === '作者待补全') exist.author = b[1];
+            if(!exist.reason) exist.reason = b[2];
+            if(exist.age == null) exist.age = b[3];
+            /* 分类归位：只认内置分类，用户自建分类下的书一律不动 */
+            if(exist.cat !== _r340En){
+              var cur = st.r319BookList.cats.filter(function(c){ return c && c.id === exist.cat; })[0];
+              if(!cur || ['漫画绘本','童话','散文','文学','小说','历史','科学','地理','纪录片','其他'].indexOf(cur.name) >= 0) exist.cat = _r340En;
+            }
+            return;
+          }
+          var book = { id:'rb340_'+i+'_'+b[0].length, cat:_r340En, title:b[0], author:b[1], reason:b[2], age:b[3], read:false, ts:Date.now()+i };
+          st.r319BookList.books.push(book);
+          _r340ByTitle[b[0]] = book;
+        });
+        /* ② 卡片顺序：漫画绘本 → 科学 → 地理 → 童话 → 散文 → 文学 → 小说 → 历史 → 英文书籍 → 纪录片 → 其他，
+              其余（用户自建）书单保持原有相对顺序排在最后。 */
+        var _r340Order = ['漫画绘本','科学','地理','童话','散文','文学','小说','历史','英文书籍','纪录片','其他'];
+        var _r340All = st.r319BookList.cats.slice();
+        var _r340Picked = [];
+        _r340Order.forEach(function(n){
+          for(var i = 0; i < _r340All.length; i++){
+            if(_r340All[i] && _r340All[i].name === n){ _r340Picked.push(_r340All[i]); _r340All.splice(i, 1); break; }
+          }
+        });
+        st.r319BookList.cats = _r340Picked.concat(_r340All);
+      }catch(e){}
+      st.__r340BookImportV1 = true;
       save(st);
     }
     // V11.6：记录每日日常交流完成状态（5 条均完成 → +2⭐，仅一次）
@@ -35165,6 +35377,14 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
   // V15-T4：录音功能已删除（recDB/recPut/recGet/recDel 保留供种植园自定义音乐使用）
 
   // ============ 实时时钟 ============
+  /* R340-3.1：时钟曾是 requestAnimationFrame 长循环（每秒 60 次），且每次无条件重写
+     .rt-date / .rt-week / .rt-time 三组节点的 textContent —— 实测 3 秒内写 66/66/33 次，
+     整站持续 reflow，帧率被压到 19fps；在英语专区这类重内容页面上直接表现成
+     「所有按键、导航、闪电键点不动」（其实是被 reflow 卡住，不是遮罩拦截）。
+     现在改为：① 按秒对齐的 setTimeout（每秒最多一次）；② 文本未变化就不写 DOM；
+     ③ 定时器句柄去重，重复调用 init 不会叠加多条循环。 */
+  var _clockTimer = 0;
+  var _clockLast = { date:'', week:'', time:'' };
   function tickClock(){
     const d = new Date();
     const week = ['日','一','二','三','四','五','六'][d.getDay()];
@@ -35173,21 +35393,28 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     const dateStr = `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`;
     const weekStr = `星期${week}`;
     const timeStr = `${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
+    const dateChanged = _clockLast.date !== dateStr;
+    const weekChanged = _clockLast.week !== weekStr;
+    const timeChanged = _clockLast.time !== timeStr;
+    _clockLast.date = dateStr; _clockLast.week = weekStr; _clockLast.time = timeStr;
     // R40-3a：节日卡（.wp-card-shijianzhou）内的实时日期/时间已按需求删除，
     //         #rtDate / #rtTime 元素不再存在，下面两行为空操作（保留以兼容旧存档 DOM）。
-    const de = $('#rtDate'); if(de) de.textContent = dateStr;
-    const ti = $('#rtTime'); if(ti) ti.textContent = timeStr;
+    const de = $('#rtDate'); if(de && dateChanged) de.textContent = dateStr;
+    const ti = $('#rtTime'); if(ti && timeChanged) ti.textContent = timeStr;
     // R28-7：导航栏上方实时时钟（class 多实例同步）
     // R53-7：顶部日期区域固定三行展示 —— 年月日 / 星期 / 实时时间（取消短格式覆盖，统一完整格式）
-    $$('.rt-date').forEach(el=> el.textContent = dateStr);
-    $$('.rt-week').forEach(el=> el.textContent = weekStr);
-    $$('.rt-time').forEach(el=> el.textContent = timeStr);
-    $$('.sidebar-clock .rt-date').forEach(el=> el.textContent = dateStr);
-    $$('.sidebar-clock .rt-week').forEach(el=> el.textContent = weekStr);
+    // R340-3.1：只在值变化时写入，避免每秒几十次无意义 reflow
+    if(dateChanged) $$('.rt-date').forEach(el=> el.textContent = dateStr);
+    if(weekChanged) $$('.rt-week').forEach(el=> el.textContent = weekStr);
+    if(timeChanged) $$('.rt-time').forEach(el=> el.textContent = timeStr);
+    if(dateChanged) $$('.sidebar-clock .rt-date').forEach(el=> el.textContent = dateStr);
+    if(weekChanged) $$('.sidebar-clock .rt-week').forEach(el=> el.textContent = weekStr);
     /* R337-5.1：日期 / 星期变化时（每天一次）重新贴合栏宽；时间串长度恒定，无需每秒测量 */
     const _ckKey = dateStr + '|' + weekStr;
     if(_r337ClockFitKey !== _ckKey){ _r337ClockFitKey = _ckKey; r337FitClock(); }
-    requestAnimationFrame(tickClock);
+    // 对齐到下一个整秒（最长 1s），不再占用动画帧
+    if(_clockTimer) clearTimeout(_clockTimer);
+    _clockTimer = setTimeout(tickClock, 1000 - (Date.now() % 1000) + 8);
   }
 
   /* R338-1.1：导航栏日期 / 星期 / 时间恢复三行原状，并按栏宽自适应。
@@ -41465,6 +41692,14 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
      启动时先迁老数据再水合；若某次渲染时图片还没进内存，就地触发一次水合并重渲染，
      用户侧表现就是「图片稍后自己出现」，不会再出现「导入失败 / 图片空白」。 */
   let _kpHydrating = false;
+  /* R340-3.1：水合返回值改为「真正补回的图片张数」。
+     此前返回的是「待补数量」jobs.length —— 只要 IndexedDB 里取不到那张图
+     （换过域名/端口导致库为空、清理过浏览器数据、r328 瘦身把库里那一份也扫掉），
+     就会形成「渲染 → 水合 → 无结果 → 再渲染」的无限重渲染循环，
+     主线程被持续占满，表现就是「进英语专区后所有按键都点不动，只能重开网页」。
+     现在：① 只回报实际补回的张数；② 同一单元同一批 ref 只尝试一次，失败不再自动重试；
+     ③ 用户新导入/删除图片时签名变化，自动放行一次新的水合尝试。 */
+  var _kpHydrateTried = {};
   function enKpHydrate(){
     if(_kpHydrating) return Promise.resolve(0);
     const st = (window.Store && window.Store.load) ? window.Store.load() : null;
@@ -41477,15 +41712,19 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     const I = window.ImgStore;
     if(!I || !I.get) return Promise.resolve(0);
     _kpHydrating = true;
+    let got = 0;
     return Promise.all(jobs.map(function(it){
-      return I.get(it.imgRef).then(function(v){ if(v) it.img = v; }).catch(function(){});
-    })).then(function(){ _kpHydrating = false; return jobs.length; })
+      return I.get(it.imgRef).then(function(v){ if(v){ it.img = v; got++; } }).catch(function(){});
+    })).then(function(){ _kpHydrating = false; return got; })
       .catch(function(){ _kpHydrating = false; return 0; });
   }
   function enKpItems(unitId){
     const items = (window.Store && window.Store.getEnKeyPoints) ? window.Store.getEnKeyPoints(unitId) : [];
-    // 有引用但内存里还没有图 → 后台水合，完成后刷新当前单元（只刷一次，不会循环）
-    if(items.some(function(x){ return x && x.imgRef && !x.img; })){
+    // 有引用但内存里还没有图 → 后台水合，完成后刷新当前单元（同批 ref 只尝试一次，绝不循环）
+    const _pending = items.filter(function(x){ return x && x.imgRef && !x.img; })
+                          .map(function(x){ return String(x.imgRef); }).join('|');
+    if(_pending && _kpHydrateTried[unitId] !== _pending){
+      _kpHydrateTried[unitId] = _pending;
       enKpHydrate().then(function(n){
         if(!n) return;
         try{ if(document.getElementById('enSlotBody')) renderEnKeyPoints(_enKpUnit); }catch(e){}
@@ -42447,6 +42686,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
           </div>
         </div>
         <div class="r319-bl-head-ops" id="r339BookOps" hidden>
+          <button type="button" class="pbtn" id="btnR340Export">📤 导出书单</button>
           <button type="button" class="pbtn" id="btnR339AddCat">＋ 添加书单</button>
           <button type="button" class="pbtn" id="btnR339AddBook">＋ 添加书籍</button>
         </div>
@@ -44071,9 +44311,11 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       _r328BookPages[c.id] = pi;
       const pageList = list.slice((pi - 1) * R328_BOOK_PAGE_SIZE, pi * R328_BOOK_PAGE_SIZE);
       const rows = pageList.map((b, bi)=>{
-        /* R334-3.2：卡片只展示「书名 / 作者 / 已读键」三要素；
-           所属分类、推荐理由、打卡奖励等一律收进书籍详情弹窗（点书名或整行打开）。
-           R335-3.2：卡片最左增加全局顺序编号（跨页连续，不随翻页重置）。 */
+        /* R334-3.2：卡片只展示「书名 / 作者」两要素；
+           所属分类、推荐理由、打卡奖励等一律收进书籍详情弹窗（点书名打开）。
+           R335-3.2：卡片最左增加全局顺序编号（跨页连续，不随翻页重置）。
+           R340-1.2：已读键从卡片移入书籍详情弹窗（【加入借阅书目】右侧），
+                     卡片只保留编号 + 书名 + 作者；作者靠右、优先单行不换行。 */
         const cls = 'r319-book-row' + (b.read ? ' is-read' : '');
         const bookNo = (pi - 1) * R328_BOOK_PAGE_SIZE + bi + 1;
         return `
@@ -44081,7 +44323,6 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
           <span class="r335-book-no">${bookNo}.</span>
           <button type="button" class="r319-book-name" data-r319-act="detail" title="查看书本详情">《${esc(b.title)}》</button>
           <span class="r319-book-author">${b.author?esc(b.author):''}</span>
-          <button type="button" class="r319-row-btn r319-read${b.read?' done':''}" data-r319-act="read" title="${b.read?'取消已读':'标记已读'}">${b.read?'✓ 已读':'已读'}</button>
           ${_r327BookEdit ? `<span class="r319-book-ops">
             <button type="button" class="r319-row-btn r319-edit" data-r319-act="edit" title="编辑书名/作者/分类/⭐">✏️</button>
             <button type="button" class="r319-row-btn r319-del" data-r319-act="del" title="删除这本书">🗑</button>
@@ -44112,6 +44353,8 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   function r319OpenBookList(){
     _r327BookEdit = false;
     r319RenderBookList();
+    /* R340-1.5：弹窗内「导出书单 / 添加书单 / 添加书籍」的绑定也在这里补齐（幂等） */
+    if(typeof r319BindBookList === 'function') r319BindBookList();
     showModal('#modalR319BookList');
   }
   /* R327-4.9 / 4.11：借阅书目弹窗（借阅中 = 已加入但还没读完的书） */
@@ -44231,9 +44474,12 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       '<div class="r321-detail-line">作者：' + esc(b.author || '未填写') + '</div>' +
       '<div class="r321-detail-reason"><b>推荐理由：</b>' + (b.reason ? esc(b.reason) : '暂未填写推荐理由') + '</div>' +
       '<div class="r321-detail-line">打卡奖励：<b>' + stars + '⭐</b></div>' +
+      /* R340-1.2：已读键（原书单卡片上的那个）移到这里，紧挨【加入借阅书目】右侧 */
       '<div class="r327-detail-ops">' +
-        (b.read ? '<span class="r321-detail-line">✅ 已读</span>' : '<button type="button" class="pbtn' + (b.borrow ? ' on' : '') + '" data-r327-borrow-toggle="' + esc(b.id) + '">' +
-          (b.borrow ? '📚 移出借阅书目' : '📚 加入借阅书目') + '</button>') +
+        '<button type="button" class="pbtn' + (b.borrow ? ' on' : '') + '" data-r327-borrow-toggle="' + esc(b.id) + '">' +
+          (b.borrow ? '📚 移出借阅书目' : '📚 加入借阅书目') + '</button>' +
+        '<button type="button" class="pbtn r340-read-btn' + (b.read ? ' on is-read' : '') + '" data-r340-read-toggle="' + esc(b.id) + '">' +
+          (b.read ? '✅ 已读 · 取消' : '✓ 标记已读') + '</button>' +
       '</div>' +
       '</div></div>';
     showModal('#modalR321BookDetail');
@@ -44299,6 +44545,227 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       downloadText('我的书单.xls', html, 'application/vnd.ms-excel;charset=utf-8');
       toast('📊 书单表格已导出');
     }catch(e){ toast('Excel 导出失败：' + (e && e.message ? e.message : '未知错误')); }
+  }
+  /* ===== R340-1.5：编辑书单态【导出书单】 =====
+     支持「单本书单 / 多选书单 / 全书单」三种范围 × 「图片 / Word / Excel」三种格式，
+     选好格式后先弹预览缩略图，确认后才真正下载（与 R322-7 图片导出同一套二次确认习惯）。 */
+  var _r340Exp = { scope:'all', picked:{}, fmt:'png' };
+  var _r340ExpRows = [];
+  var _r340ExpBlobUrl = '';
+  function r340ExpCats(){
+    const data = _r319Bl();
+    const cats = (data.cats || []).filter(Boolean);
+    const books = data.books || [];
+    return cats.map(function(c){
+      return { id:c.id, name:c.name, n:books.filter(function(b){ return b && b.cat === c.id; }).length };
+    });
+  }
+  function r340ExpSelectedCats(){
+    const cats = r340ExpCats();
+    if(_r340Exp.scope === 'all') return cats.filter(function(c){ return c.n > 0; });
+    return cats.filter(function(c){ return _r340Exp.picked[c.id] && c.n > 0; });
+  }
+  function r340RenderExportCats(){
+    const box = document.getElementById('r340ExCats');
+    if(!box) return;
+    const cats = r340ExpCats();
+    if(!cats.length){ box.innerHTML = '<div class="r340-ex-empty">还没有书单分类</div>'; return; }
+    const allMode = _r340Exp.scope === 'all';
+    box.innerHTML = cats.map(function(c){
+      const on = allMode ? c.n > 0 : !!_r340Exp.picked[c.id];
+      return '<button type="button" class="r340-ex-cat' + (on ? ' is-on' : '') + '" data-r340-cat="' + esc(c.id) + '"' + (allMode ? ' data-r340-cat-lock="1"' : '') + '>' +
+        esc(c.name) + '<span class="r340-ex-cat-n">' + c.n + ' 本</span></button>';
+    }).join('');
+  }
+  function r340OpenExport(){
+    _r340Exp.scope = 'all'; _r340Exp.picked = {}; _r340Exp.fmt = 'png';
+    const modal = document.getElementById('modalR340Export');
+    if(!modal) return;
+    modal.querySelectorAll('[data-r340-scope]').forEach(function(b){ b.classList.toggle('is-on', b.getAttribute('data-r340-scope') === 'all'); });
+    modal.querySelectorAll('[data-r340-fmt]').forEach(function(b){ b.classList.toggle('is-on', b.getAttribute('data-r340-fmt') === 'png'); });
+    r340RenderExportCats();
+    showModal('#modalR340Export');
+  }
+  function r340BindExport(){
+    const modal = document.getElementById('modalR340Export');
+    if(modal && !modal._r340Bound){
+      modal._r340Bound = true;
+      modal.addEventListener('click', function(e){
+        const scopeBtn = e.target.closest('[data-r340-scope]');
+        if(scopeBtn){
+          const sc = scopeBtn.getAttribute('data-r340-scope');
+          _r340Exp.scope = sc;
+          if(sc === 'all') _r340Exp.picked = {};
+          if(sc === 'one') {
+            const first = r340ExpCats().filter(function(c){ return c.n > 0; })[0];
+            _r340Exp.picked = first ? (function(){ const o = {}; o[first.id] = 1; return o; })() : {};
+          }
+          modal.querySelectorAll('[data-r340-scope]').forEach(function(b){ b.classList.toggle('is-on', b === scopeBtn); });
+          r340RenderExportCats();
+          return;
+        }
+        const fmtBtn = e.target.closest('[data-r340-fmt]');
+        if(fmtBtn){
+          _r340Exp.fmt = fmtBtn.getAttribute('data-r340-fmt');
+          modal.querySelectorAll('[data-r340-fmt]').forEach(function(b){ b.classList.toggle('is-on', b === fmtBtn); });
+          return;
+        }
+        const catBtn = e.target.closest('[data-r340-cat]');
+        if(catBtn && !catBtn.hasAttribute('data-r340-cat-lock')){
+          const cid = catBtn.getAttribute('data-r340-cat');
+          if(_r340Exp.scope === 'one'){
+            _r340Exp.picked = {}; _r340Exp.picked[cid] = 1;
+          } else if(_r340Exp.picked[cid]) delete _r340Exp.picked[cid];
+          else _r340Exp.picked[cid] = 1;
+          r340RenderExportCats();
+        }
+      });
+    }
+    const bPrev = document.getElementById('r340ExPreview');
+    if(bPrev && !bPrev._r340Bound){ bPrev._r340Bound = true; bPrev.onclick = r340PreviewExport; }
+    const bOk = document.getElementById('r340ExpConfirm');
+    if(bOk && !bOk._r340Bound){ bOk._r340Bound = true; bOk.onclick = r340ConfirmExport; }
+    const bCancel = document.getElementById('r340ExpCancel');
+    if(bCancel && !bCancel._r340Bound){ bCancel._r340Bound = true; bCancel.onclick = function(){ hideModal('#modalR340ExportPreview'); }; }
+  }
+  function r340ExportRows(catList){
+    const data = _r319Bl();
+    const books = data.books || [];
+    const rows = [];
+    catList.forEach(function(c){
+      const list = books.filter(function(b){ return b && b.cat === c.id; }).sort(function(a, b){
+        const aa = Number(a.age != null ? a.age : 10), bb = Number(b.age != null ? b.age : 10);
+        if(aa !== bb) return aa - bb;
+        return String(a.title || '').localeCompare(String(b.title || ''), 'zh-CN');
+      });
+      list.forEach(function(b, i){
+        rows.push({ cat:c.name, no:i + 1, title:b.title || '', author:b.author || '', read:b.read ? '已读' : '未读', first:i === 0 });
+      });
+    });
+    return rows;
+  }
+  function r340BuildRowsPng(rows){
+    const W = 820, lineH = 28, pad = 36;
+    let h = 96;
+    rows.forEach(function(r){ h += r.first ? 40 : 0; h += lineH; });
+    h = Math.max(240, h + 34);
+    const c = document.createElement('canvas');
+    c.width = W; c.height = h;
+    const ctx = c.getContext('2d');
+    ctx.fillStyle = '#f2f8ff'; ctx.fillRect(0, 0, c.width, c.height);
+    ctx.fillStyle = '#1e3a8a'; ctx.font = 'bold 26px sans-serif';
+    ctx.fillText('📖 我的书单（' + rows.length + ' 本）', pad, 50);
+    ctx.fillStyle = '#5a6b85'; ctx.font = '14px sans-serif';
+    ctx.fillText('共 ' + rows.filter(function(r){ return r.first; }).length + ' 个书单 · 导出时间 ' + new Date().toLocaleDateString('zh-CN'), pad, 76);
+    let y = 110;
+    rows.forEach(function(r){
+      if(r.first){
+        ctx.fillStyle = '#1c5fb8'; ctx.font = 'bold 17px sans-serif';
+        ctx.fillText('▍' + r.cat, pad, y + 4);
+        y += 34;
+      }
+      ctx.fillStyle = r.read === '已读' ? '#b5354b' : '#20344f';
+      ctx.font = '15px sans-serif';
+      const txt = r.no + '. 《' + r.title + '》' + (r.author ? '  ' + r.author : '');
+      ctx.fillText(String(txt).slice(0, 54), pad + 8, y);
+      ctx.fillStyle = r.read === '已读' ? '#b5354b' : '#7c8ba1';
+      ctx.font = '13px sans-serif';
+      ctx.fillText(r.read, W - pad - 40, y);
+      y += lineH;
+    });
+    return c.toDataURL('image/png');
+  }
+  var _R340_XESC = function(s){
+    return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  };
+  function r340BuildRowsWordHtml(rows){
+    const body = rows.map(function(r){
+      return '<tr' + (r.first ? ' class="cat-start"' : '') + '>' +
+        '<td>' + _R340_XESC(r.first ? r.cat : '') + '</td>' +
+        '<td>《' + _R340_XESC(r.title) + '》</td>' +
+        '<td>' + _R340_XESC(r.author) + '</td>' +
+        '<td>' + _R340_XESC(r.read) + '</td></tr>';
+    }).join('');
+    return '\ufeff<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="utf-8">' +
+      '<title>我的书单</title><style>' +
+      'body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;padding:24px}' +
+      'h1{font-size:22px;color:#1e3a8a;margin:0 0 4px}' +
+      '.sub{font-size:12px;color:#5a6b85;margin-bottom:14px}' +
+      'table{border-collapse:collapse;width:100%;font-size:13px}' +
+      'th,td{border:1px solid #b9d3ee;padding:6px 8px;text-align:left}' +
+      'th{background:#e8f3ff;color:#1e3a8a}' +
+      'tr.cat-start td{border-top:2px solid #1e3a8a;font-weight:700;color:#1e3a8a}' +
+      '</style></head><body>' +
+      '<h1>📖 我的书单</h1><div class="sub">共 ' + rows.length + ' 本 · 导出时间 ' + new Date().toLocaleDateString('zh-CN') + '</div>' +
+      '<table><tr><th>书单</th><th>书名</th><th>作者</th><th>阅读状态</th></tr>' + body + '</table></body></html>';
+  }
+  function r340BuildRowsExcelHtml(rows){
+    const body = rows.map(function(r){
+      return '<tr>' + (r.first ? '<td rowspan="' + rows.filter(function(x){ return x.cat === r.cat; }).length + '">' + _R340_XESC(r.cat) + '</td>' : '') +
+        '<td>' + _R340_XESC(r.title) + '</td><td>' + _R340_XESC(r.author) + '</td><td>' + _R340_XESC(r.read) + '</td></tr>';
+    }).join('');
+    return '\ufeff<html><head><meta charset="utf-8"></head><body><table border="1">' +
+      '<tr><th>书单</th><th>书名</th><th>作者</th><th>阅读状态</th></tr>' + body + '</table></body></html>';
+  }
+  function r340PreviewExport(){
+    const cats = r340ExpSelectedCats();
+    if(!cats.length){ toast('请先选择要导出的书单'); return; }
+    const rows = r340ExportRows(cats);
+    if(!rows.length){ toast('所选书单里还没有书籍'); return; }
+    _r340ExpRows = rows;
+    const thumb = document.getElementById('r340ExpThumb');
+    const tip = document.getElementById('r340ExpTip');
+    if(thumb){
+      if(_r340Exp.fmt === 'png'){
+        thumb.innerHTML = '<img class="r340-exp-img" alt="书单预览" src="' + r340BuildRowsPng(rows) + '" />';
+        if(tip) tip.textContent = '图片预览：共 ' + rows.length + ' 本 · 确认后下载 PNG 文件。';
+      } else {
+        const t = rows.slice(0, 400).map(function(r){
+          return '<tr' + (r.first ? ' class="cat-start"' : '') + '><td>' + (r.first ? _R340_XESC(r.cat) : '') + '</td><td>《' + _R340_XESC(r.title) + '》</td><td>' + _R340_XESC(r.author) + '</td><td>' + _R340_XESC(r.read) + '</td></tr>';
+        }).join('');
+        thumb.innerHTML = '<div class="r340-exp-doc"><div class="r340-exp-doc-top">📖 我的书单 · 共 ' + rows.length + ' 本</div>' +
+          '<table class="r340-exp-table"><tr><th>书单</th><th>书名</th><th>作者</th><th>阅读状态</th></tr>' + t + '</table></div>';
+        if(tip) tip.textContent = (_r340Exp.fmt === 'word' ? 'Word' : 'Excel') + ' 预览：确认后按上表内容生成文件。';
+      }
+    }
+    hideModal('#modalR340Export');
+    showModal('#modalR340ExportPreview');
+  }
+  function r340ConfirmExport(){
+    const rows = _r340ExpRows;
+    if(!rows || !rows.length){ toast('请先预览导出内容'); return; }
+    try{
+      if(_r340Exp.fmt === 'png'){
+        const url = r340BuildRowsPng(rows);
+        const a = document.createElement('a');
+        a.href = url; a.download = '我的书单.png'; a.click();
+      } else if(_r340Exp.fmt === 'word'){
+        downloadText('我的书单.doc', r340BuildRowsWordHtml(rows), 'application/msword;charset=utf-8');
+      } else {
+        downloadText('我的书单.xls', r340BuildRowsExcelHtml(rows), 'application/vnd.ms-excel;charset=utf-8');
+      }
+      hideModal('#modalR340ExportPreview');
+      toast(_r340Exp.fmt === 'png' ? '🖼 书单图片已导出' : (_r340Exp.fmt === 'word' ? '📄 书单 Word 已导出' : '📊 书单表格已导出'));
+    }catch(e){ toast('导出失败：' + (e && e.message ? e.message : '未知错误')); }
+  }
+  /* R340-1.2：已读开关（原书单卡片按钮 → 移入书籍详情弹窗） */
+  function r340ToggleBookRead(bid){
+    const data = _r319Bl();
+    const b0 = (data.books || []).filter(function(x){ return x.id === bid; })[0];
+    if(!b0) return;
+    const wasRead = !!b0.read;
+    const n = r327BookStarsOf(b0);
+    const r = S.r319ToggleRead(bid);
+    if(!(r && r.ok)){ toast((r && r.msg) || '操作失败'); return; }
+    if(!wasRead && r.read && n > 0){ addStars(n, true); toast('🎉 已读 +' + n + '⭐'); r336CheckinFx(true, n); }
+    else if(wasRead && !r.read && n > 0){ addStars(-n, true); toast('↩ 已取消已读，扣回 ' + n + '⭐'); r336CheckinFx(false, 0); }
+    else if(!wasRead && r.read){ toast('✅ 已读，这本书不设打卡⭐'); }
+    r319RenderBookList();
+    /* 详情弹窗若开着，就地刷新按钮状态 */
+    const dm = document.getElementById('modalR321BookDetail');
+    if(dm && !dm.hidden) r321OpenBookDetail(bid);
+    const bm = document.getElementById('modalR327Borrow');
+    if(bm && !bm.hidden) r327RenderBorrow();
   }
   let _r327CatEditId = '';
   function r327OpenCatModal(id){
@@ -44452,22 +44919,8 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         if(act === 'detail'){
           r321OpenBookDetail(bid);
         } else if(act === 'read'){
-          const data = _r319Bl();
-          const b0 = (data.books||[]).filter(x=>x.id === bid)[0];
-          if(!b0) return;
-          const wasRead = !!b0.read;
-          const n = r327BookStarsOf(b0);
-          const r = S.r319ToggleRead(bid);
-          if(r && r.ok){
-            /* R327-4.12：打卡完成得⭐（漫画 / 绘本按轻阅读，默认 2⭐，可逐本改写） */
-            if(!wasRead && r.read && n > 0){ addStars(n, true); toast('🎉 已读 +' + n + '⭐'); r336CheckinFx(true, n); }
-            else if(wasRead && !r.read && n > 0){ addStars(-n, true); toast('↩ 已取消已读，扣回 ' + n + '⭐'); r336CheckinFx(false, 0); }
-            else if(!wasRead && r.read){ toast('✅ 已读，这本书不设打卡⭐'); }
-            r319RenderBookList();
-            /* R327-4.10：已读即出借阅队列，借阅弹窗若开着同步刷新 */
-            const bm = document.getElementById('modalR327Borrow');
-            if(bm && !bm.hidden) r327RenderBorrow();
-          }
+          /* R340-1.2：卡片上的已读键已移入详情弹窗；此处保留旧入口以兼容历史 DOM 与探针 */
+          r340ToggleBookRead(bid);
         } else if(act === 'edit'){
           r319OpenBookEdit('edit', bid);
         } else if(act === 'del'){
@@ -44481,11 +44934,13 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         }
       });
     });
-    // 书本详情里的「加入 / 移出借阅书目」
+    // 书本详情里的「加入 / 移出借阅书目」+ R340-1.2 已读开关
     const detailBody = document.getElementById('r321BookDetailBody');
     if(detailBody && !detailBody._r327Bound){
       detailBody._r327Bound = true;
       detailBody.addEventListener('click', e=>{
+        const readBtn = e.target.closest('[data-r340-read-toggle]');
+        if(readBtn){ r340ToggleBookRead(readBtn.getAttribute('data-r340-read-toggle')); return; }
         const btn = e.target.closest('[data-r327-borrow-toggle]');
         if(!btn) return;
         const bid = btn.getAttribute('data-r327-borrow-toggle');
@@ -44508,8 +44963,13 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       bAddBook._r319Bound = true;
       bAddBook.onclick = ()=>r319OpenBookEdit('add', '');
     });
-    const bExport = document.getElementById('btnR321Export');
-    if(bExport && !bExport._r321Bound){ bExport._r321Bound = true; bExport.onclick = ()=>showModal('#modalR321Export'); }
+    /* R340-1.5：导出书单（弹窗与拓展素养新板块两个入口，均只在编辑态出现） */
+    [document.getElementById('btnR321Export'), document.getElementById('btnR340Export')].forEach(function(bExport){
+      if(!bExport || bExport._r321Bound) return;
+      bExport._r321Bound = true;
+      bExport.onclick = ()=> r340OpenExport();
+    });
+    r340BindExport();
     const bExpImg = document.getElementById('r321ExportImg');
     if(bExpImg && !bExpImg._r321Bound){ bExpImg._r321Bound = true; bExpImg.onclick = r321ExportBooksPng; }
     const bExpConfirm = document.getElementById('r322ExportConfirm');
@@ -66393,6 +66853,7 @@ function init(){
     const preview = document.getElementById('r326PaperPreview');
     if(preview) preview.innerHTML = r338PaperHtml(items);
     r338BindPaperModal();
+    r338BindPaperExportPreview();
     showModal('#modalR326Paper');
   }
   function r338PaperFileName(ext){
@@ -66456,12 +66917,12 @@ function init(){
     if(cur) lines.push(cur);
     return lines.length ? lines : [''];
   }
-  function r338PaperPng(){
-    if(!_r338PaperItems.length) return;
+  function r338PaperPngUrl(){
+    if(!_r338PaperItems.length) return '';
     const W = 900, pad = 56, lh = 26;
     const cv = document.createElement('canvas');
     const measure = cv.getContext('2d');
-    if(!measure){ toast('当前环境不支持导出图片'); return; }
+    if(!measure) return '';
     measure.font = 'bold 19px "PingFang SC","Microsoft YaHei",sans-serif';
     const blocks = _r338PaperItems.map(function(it, i){
       return {
@@ -66493,12 +66954,74 @@ function init(){
       ctx.beginPath(); ctx.moveTo(pad, y + 18); ctx.lineTo(W - pad, y + 18); ctx.stroke();
       y += 44;
     });
+    return cv.toDataURL('image/png');
+  }
+  function r338PaperPng(){
+    if(!_r338PaperItems.length) return;
+    const url = r338PaperPngUrl();
+    if(!url){ toast('当前环境不支持导出图片'); return; }
     const a = document.createElement('a');
-    a.href = cv.toDataURL('image/png');
+    a.href = url;
     a.download = r338PaperFileName('png');
     document.body.appendChild(a); a.click();
     if(a.parentNode) a.parentNode.removeChild(a);
     toast('已导出图片');
+  }
+  /* R340-2.2：重练卷导出预览 —— 图片给缩略图，Word / Excel 给同版式表格缩略图，确认后才下载 */
+  var _r338PaperPending = '';
+  var _r338PaperPngCache = '';
+  function r338PaperPreview(kind){
+    if(!_r338PaperItems.length){ toast('这个范围内还没有错题'); return; }
+    const thumb = document.getElementById('r326PaperPreviewThumb');
+    const tip = document.getElementById('r326PaperPreviewTip');
+    if(!thumb) return;
+    _r338PaperPending = kind;
+    if(kind === 'png'){
+      _r338PaperPngCache = r338PaperPngUrl();
+      if(!_r338PaperPngCache){ toast('当前环境不支持导出图片'); return; }
+      thumb.innerHTML = '<img class="r340-exp-img" alt="重练卷图片预览" src="' + _r338PaperPngCache + '" />';
+      if(tip) tip.textContent = '图片预览：共 ' + _r338PaperItems.length + ' 题 · 确认后下载 PNG 文件。';
+    } else {
+      const rows = _r338PaperItems.slice(0, 300).map(function(it, i){
+        return '<tr><td>' + (i + 1) + '</td><td>' + esc(it.title) + '</td>'
+          + '<td>' + esc(it.myAnswer || '') + '</td><td></td></tr>';
+      }).join('');
+      thumb.innerHTML = '<div class="r340-exp-doc"><div class="r340-exp-doc-top">' + esc((_r326Subject || '全学科') + '错题重练卷') + ' · 共 ' + _r338PaperItems.length + ' 题</div>'
+        + '<table class="r340-exp-table"><tr><th>序号</th><th>题目</th><th>上次答案</th><th>本次作答</th></tr>' + rows + '</table></div>';
+      if(tip) tip.textContent = (kind === 'word' ? 'Word' : 'Excel') + ' 预览：确认后按上表内容生成文件。';
+    }
+    hideModal('#modalR326Paper');
+    showModal('#modalR326PaperExport');
+  }
+  function r338PaperConfirmExport(){
+    const kind = _r338PaperPending;
+    if(!kind) return;
+    if(kind === 'png'){
+      if(!_r338PaperPngCache){ toast('请先预览图片'); return; }
+      const a = document.createElement('a');
+      a.href = _r338PaperPngCache;
+      a.download = r338PaperFileName('png');
+      document.body.appendChild(a); a.click();
+      if(a.parentNode) a.parentNode.removeChild(a);
+      toast('已导出图片');
+    } else if(kind === 'word'){
+      r338PaperWord();
+    } else {
+      r338PaperExcel();
+    }
+    hideModal('#modalR326PaperExport');
+    _r338PaperPending = '';
+  }
+  function r338BindPaperExportPreview(){
+    const mask = document.getElementById('modalR326PaperExport');
+    if(!mask || mask._r340Bound) return;
+    mask._r340Bound = true;
+    mask.addEventListener('click', function(e){
+      const t = e.target;
+      if(t && t.hasAttribute && t.hasAttribute('data-close')){ mask.hidden = true; return; }
+      const ok = t && t.closest ? t.closest('#r326PaperPreviewConfirm') : null;
+      if(ok){ e.preventDefault(); r338PaperConfirmExport(); }
+    });
   }
   function r338PaperPrint(){
     if(!_r338PaperItems.length) return;
@@ -66525,9 +67048,8 @@ function init(){
       e.preventDefault();
       if(btn.hasAttribute('data-r326-paper-print')){ r338PaperPrint(); return; }
       const kind = btn.getAttribute('data-r326-paper-export');
-      if(kind === 'png') r338PaperPng();
-      else if(kind === 'word') r338PaperWord();
-      else if(kind === 'excel') r338PaperExcel();
+      /* R340-2.2：点保存图片 / Word / Excel 先弹对应预览缩略图，确认后才真正下载 */
+      if(kind === 'png' || kind === 'word' || kind === 'excel'){ r338PaperPreview(kind); return; }
     });
   }
 
@@ -68121,6 +68643,23 @@ function init(){
       <button type="button" class="r338-paper-btn" data-r326-paper-export="excel">📊 Excel 表格</button>
       <button type="button" class="r338-paper-btn" data-r326-paper-print>🖨 打印</button>
       <button type="button" class="r338-paper-btn r338-paper-back" data-close>返回</button>
+    </div>
+  </div>
+</div>
+<!-- R340-2.2：重练卷导出预览 —— 先看缩略图，确认后才下载 -->
+<div class="modal-mask" id="modalR326PaperExport" hidden>
+  <div class="modal-box r340-exp-box" role="dialog" aria-modal="true" aria-labelledby="r340PaperExpTitle">
+    <div class="modal-head">
+      <h3 id="r340PaperExpTitle">👀 重练卷导出预览</h3>
+      <button type="button" class="modal-x" data-close title="关闭">×</button>
+    </div>
+    <div class="modal-body r340-exp-body">
+      <div class="r340-exp-thumb" id="r326PaperPreviewThumb"></div>
+      <p class="r340-exp-tip" id="r326PaperPreviewTip">请确认导出内容。</p>
+      <div class="r340-exp-acts">
+        <button type="button" class="primary-btn" data-close>取消</button>
+        <button type="button" class="primary-btn" id="r326PaperPreviewConfirm">✅ 确认导出</button>
+      </div>
     </div>
   </div>
 </div>
