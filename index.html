@@ -20958,7 +20958,7 @@ window.XS_A2_VOCAB = [
     'userReading','readingPanelDone','mathProblems','mathNotes','mathNoteStatus','mathGroups',
     'mathGallery','mathExerciseBank','plots','inventory','gifts','shop','stage','km','farmOpen',
     'music','farmLayout','en3500Marks','r314','nwWrong','homeGreets','homeBanner','sectionTitleTexts',
-    'schedule','memos','weekPlanColors','r319BookList','__r319BookListSeedV1','__r324BookImportV1','__r327BookCatsV1','__r328OtherCatV1','__r332BookImportV1','__r334BookCatsV1','__r336BookImportV1','__r339BookImportV1','__r340BookImportV1','readCursor','r326','__schema','__seq','__commitAt','__tomb'];
+    'schedule','memos','weekPlanColors','r319BookList','__r319BookListSeedV1','__r324BookImportV1','__r327BookCatsV1','__r328OtherCatV1','__r332BookImportV1','__r334BookCatsV1','__r336BookImportV1','__r339BookImportV1','__r340BookImportV1','__r341BookOrderV1','readCursor','r326','__schema','__seq','__commitAt','__tomb'];
   /* 轻档超预算时的「可牺牲顺序」：从体积最大且可再生 / 有主档兜底的字段开始丢 */
   const LIGHT_DROP_ORDER = ['calcBank','mathProblems','mathGallery','xueersiWordBank','km','calcWrongBook'];
   let _r318XsSrc = null, _r318XsDelta = null;
@@ -23374,9 +23374,9 @@ window.XS_A2_VOCAB = [
           st.r319BookList.books.push(book);
           _r340ByTitle[b[0]] = book;
         });
-        /* ② 卡片顺序：漫画绘本 → 科学 → 地理 → 童话 → 散文 → 文学 → 小说 → 历史 → 英文书籍 → 纪录片 → 其他，
+        /* ② 卡片顺序（R341 起为最终口径）：童话 → 散文 → 文学 → 小说 → 历史 → 英文书籍 → 纪录片 → 漫画绘本 → 科学 → 地理 → 其他，
               其余（用户自建）书单保持原有相对顺序排在最后。 */
-        var _r340Order = ['漫画绘本','科学','地理','童话','散文','文学','小说','历史','英文书籍','纪录片','其他'];
+        var _r340Order = ['童话','散文','文学','小说','历史','英文书籍','纪录片','漫画绘本','科学','地理','其他'];
         var _r340All = st.r319BookList.cats.slice();
         var _r340Picked = [];
         _r340Order.forEach(function(n){
@@ -23387,6 +23387,27 @@ window.XS_A2_VOCAB = [
         st.r319BookList.cats = _r340Picked.concat(_r340All);
       }catch(e){}
       st.__r340BookImportV1 = true;
+      save(st);
+    }
+    /* ===== R341-1.1：书单顺序调整 =====
+       一次性闸 __r341BookOrderV1：把「漫画绘本」「科学」「地理」三个书单移到「纪录片」之后，
+       最终顺序 童话 → 散文 → 文学 → 小说 → 历史 → 英文书籍 → 纪录片 → 漫画绘本 → 科学 → 地理 → 其他。
+       只重排 cats 顺序，不动 books / 已读 / ⭐ / 借阅，用户自建书单保持原相对顺序排最后。 */
+    if(!st.__r341BookOrderV1){
+      try{
+        if(st.r319BookList && Array.isArray(st.r319BookList.cats)){
+          var _r341Order = ['童话','散文','文学','小说','历史','英文书籍','纪录片','漫画绘本','科学','地理','其他'];
+          var _r341All = st.r319BookList.cats.slice();
+          var _r341Picked = [];
+          _r341Order.forEach(function(n){
+            for(var _i = 0; _i < _r341All.length; _i++){
+              if(_r341All[_i] && _r341All[_i].name === n){ _r341Picked.push(_r341All[_i]); _r341All.splice(_i, 1); break; }
+            }
+          });
+          st.r319BookList.cats = _r341Picked.concat(_r341All);
+        }
+      }catch(e){}
+      st.__r341BookOrderV1 = true;
       save(st);
     }
     // V11.6：记录每日日常交流完成状态（5 条均完成 → +2⭐，仅一次）
@@ -44644,15 +44665,24 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     });
     return rows;
   }
+  /* R341-1.2：导出图片高清化 —— 按 2 倍像素绘制（文字清晰不模糊），并守住 Canvas 像素/边长上限 */
+  function _r341HiDpi(w, h){
+    var s = 2;
+    while(s > 1 && (w * s * h * s > 16000000 || h * s > 8192 || w * s > 8192)) s = (s === 2 ? 1.5 : 1);
+    return s;
+  }
   function r340BuildRowsPng(rows){
     const W = 820, lineH = 28, pad = 36;
     let h = 96;
     rows.forEach(function(r){ h += r.first ? 40 : 0; h += lineH; });
     h = Math.max(240, h + 34);
+    const SS = _r341HiDpi(W, h);
     const c = document.createElement('canvas');
-    c.width = W; c.height = h;
+    c.width = Math.round(W * SS); c.height = Math.round(h * SS);
     const ctx = c.getContext('2d');
-    ctx.fillStyle = '#f2f8ff'; ctx.fillRect(0, 0, c.width, c.height);
+    if(!ctx) return '';
+    ctx.scale(SS, SS);
+    ctx.fillStyle = '#f2f8ff'; ctx.fillRect(0, 0, W, h);
     ctx.fillStyle = '#1e3a8a'; ctx.font = 'bold 26px sans-serif';
     ctx.fillText('📖 我的书单（' + rows.length + ' 本）', pad, 50);
     ctx.fillStyle = '#5a6b85'; ctx.font = '14px sans-serif';
@@ -66889,21 +66919,7 @@ function init(){
     r338PaperDownload('\ufeff' + html, r338PaperFileName('doc'), 'application/msword');
     toast('已导出 Word 文档');
   }
-  function r338PaperExcel(){
-    if(!_r338PaperItems.length) return;
-    const rows = _r338PaperItems.map(function(it, i){
-      return '<tr><td>' + (i + 1) + '</td><td>' + esc(it.title) + '</td>'
-        + '<td>' + esc(it.myAnswer || '') + '</td>'
-        + '<td style="height:36px"></td></tr>';
-    }).join('');
-    const html = '<html><head><meta charset="utf-8"></head><body>'
-      + '<table border="1" cellspacing="0" cellpadding="6" style="border-collapse:collapse;font-family:\'Microsoft YaHei\',sans-serif">'
-      + '<tr><th colspan="4" style="font-size:16px">' + esc((_r326Subject || '全学科') + '错题重练卷') + '</th></tr>'
-      + '<tr><th>序号</th><th>题目</th><th>上次答案</th><th>本次作答</th></tr>'
-      + rows + '</table></body></html>';
-    r338PaperDownload('\ufeff' + html, r338PaperFileName('xls'), 'application/vnd.ms-excel');
-    toast('已导出 Excel 表格');
-  }
+  /* R341-2.2：重练卷 Excel 导出方式已下线（函数与入口一并删除） */
   /* Canvas 手绘换行：中文无空格，按字符累加宽度断行 */
   function r338WrapText(ctx, text, maxWidth){
     const lines = [];
@@ -66933,8 +66949,12 @@ function init(){
     let H = pad + 66;
     blocks.forEach(function(b){ H += b.q.length * lh + b.old.length * 20 + 44; });
     H = Math.max(H, 320);
-    cv.width = W; cv.height = H;
+    /* R341-2.1：按 2 倍像素绘制，导出图片文字清晰（逻辑坐标不变，仅提高分辨率） */
+    const _ss = _r341HiDpi(W, H);
+    cv.width = Math.round(W * _ss); cv.height = Math.round(H * _ss);
     const ctx = cv.getContext('2d');
+    if(!ctx) return '';
+    ctx.scale(_ss, _ss);
     ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, W, H);
     let y = pad + 10;
     ctx.fillStyle = '#1c5fb8'; ctx.font = 'bold 30px "PingFang SC","Microsoft YaHei",sans-serif';
@@ -66988,7 +67008,7 @@ function init(){
       }).join('');
       thumb.innerHTML = '<div class="r340-exp-doc"><div class="r340-exp-doc-top">' + esc((_r326Subject || '全学科') + '错题重练卷') + ' · 共 ' + _r338PaperItems.length + ' 题</div>'
         + '<table class="r340-exp-table"><tr><th>序号</th><th>题目</th><th>上次答案</th><th>本次作答</th></tr>' + rows + '</table></div>';
-      if(tip) tip.textContent = (kind === 'word' ? 'Word' : 'Excel') + ' 预览：确认后按上表内容生成文件。';
+      if(tip) tip.textContent = 'Word 预览：确认后按上表内容生成文件。';
     }
     hideModal('#modalR326Paper');
     showModal('#modalR326PaperExport');
@@ -67006,8 +67026,6 @@ function init(){
       toast('已导出图片');
     } else if(kind === 'word'){
       r338PaperWord();
-    } else {
-      r338PaperExcel();
     }
     hideModal('#modalR326PaperExport');
     _r338PaperPending = '';
@@ -67048,8 +67066,8 @@ function init(){
       e.preventDefault();
       if(btn.hasAttribute('data-r326-paper-print')){ r338PaperPrint(); return; }
       const kind = btn.getAttribute('data-r326-paper-export');
-      /* R340-2.2：点保存图片 / Word / Excel 先弹对应预览缩略图，确认后才真正下载 */
-      if(kind === 'png' || kind === 'word' || kind === 'excel'){ r338PaperPreview(kind); return; }
+      /* R340-2.2：点保存图片 / Word 先弹对应预览缩略图，确认后才真正下载（R341-2.2 起 Excel 入口下线） */
+      if(kind === 'png' || kind === 'word'){ r338PaperPreview(kind); return; }
     });
   }
 
@@ -68640,7 +68658,6 @@ function init(){
     <div class="r338-paper-actions">
       <button type="button" class="r338-paper-btn" data-r326-paper-export="png">🖼 保存图片</button>
       <button type="button" class="r338-paper-btn" data-r326-paper-export="word">📄 Word 文档</button>
-      <button type="button" class="r338-paper-btn" data-r326-paper-export="excel">📊 Excel 表格</button>
       <button type="button" class="r338-paper-btn" data-r326-paper-print>🖨 打印</button>
       <button type="button" class="r338-paper-btn r338-paper-back" data-close>返回</button>
     </div>
