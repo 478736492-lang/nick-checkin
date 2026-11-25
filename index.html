@@ -12782,7 +12782,7 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
 .r321-detail-box .modal-head{display:flex;align-items:center;gap:10px}
 .r344-detail-headops{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
 .r344-detail-headops .pbtn{font-size:12px;padding:4px 10px}
-.r344-detail-close{font-size:12px;padding:4px 12px;white-space:nowrap}
+.r321-detail-box .modal-head .r344-detail-close{width:auto;height:auto;background:#fff;border:1.5px solid var(--orange);border-radius:8px;color:var(--orange);font-size:12px;font-weight:600;padding:4px 10px;line-height:normal;white-space:nowrap}
 .r344-detail-left{display:grid;gap:12px;min-width:0}
 /* 左侧详情下方白色底片：与右侧阅读记录区同款 */
 .r344-detail-foot{display:flex;align-items:center;justify-content:center;background:var(--tone-025);border:1px solid var(--tone-line-soft)}
@@ -12802,6 +12802,26 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
   .r321-detail-box .modal-head{flex-wrap:wrap}
   .r344-detail-headops{margin-left:0}
   .zx-head,.r342-mat-head{flex-wrap:wrap}
+}
+
+/* ===== R345：详情键尺寸 / 阅读页码分栏 / 读书轨迹搜索 / 左侧白色卡片 ===== */
+.r345-detail-foot-card{padding:12px;border-radius:13px;background:var(--tone-025);border:1px solid var(--tone-line-soft)}
+.r342-form .r345-date-row{align-items:end}
+.r342-form .r345-date-row .r344-date-btn{margin-left:6px}
+.r345-page-group{display:grid;gap:6px;padding:9px;border-radius:10px;background:var(--tone-050);border:1px solid var(--tone-line-soft)}
+.r345-page-title{font-size:12.5px;font-weight:700;color:var(--tone-800)}
+.r345-track-search{display:flex;justify-content:flex-start;margin-bottom:10px}
+.r345-track-search .nw-add-input{width:min(320px,100%);box-sizing:border-box}
+.r345-track-res{display:grid;gap:6px;margin-bottom:12px}
+.r345-track-hit{display:grid;grid-template-columns:minmax(72px,1fr) 34px minmax(0,1.5fr) minmax(0,1fr);gap:8px;align-items:center;padding:7px 9px;border-radius:9px;background:var(--tone-050);font-size:12px}
+.r345-track-hit span{color:var(--tone-700)}
+.r345-track-hit b{text-align:center;color:var(--tone-600)}
+.r345-track-hit strong{font-weight:700;color:var(--tone-900)}
+.r345-track-hit em{font-style:normal;color:var(--muted)}
+.r345-track-hit-head{background:var(--tone-100);color:var(--tone-800);font-weight:700}
+@media (max-width:760px){
+  .r345-track-hit{grid-template-columns:minmax(0,1fr) 30px}
+  .r345-track-hit strong,.r345-track-hit em{grid-column:1 / -1}
 }
 
 </style>
@@ -13622,7 +13642,7 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
     <div class="modal-box r321-detail-box">
       <div class="modal-head"><h3>📖 书本详情</h3>
         <span class="r344-detail-headops" id="r344DetailHeadOps"></span>
-        <button class="modal-x r344-detail-close" data-close>关闭</button>
+        <button class="modal-x pbtn r344-detail-close" data-close>关闭</button>
       </div>
       <div class="modal-body r321-detail-body" id="r321BookDetailBody"></div>
     </div>
@@ -44498,7 +44518,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         + '<button type="button" class="r319-book-name" data-r319-act="detail" title="查看书本详情">《' + esc(b.title) + '》</button>'
         + '<span class="r319-book-author">' + (b.author ? esc(b.author) : '') + '</span>'
         + '</div>';
-    }).join('') || '<div class="r319-cat-empty">借阅书目还是空的 —— 在书籍详情里点「加入借阅书目」即可。</div>';
+    }).join('') || '<div class="r319-cat-empty">借阅书目还是空的 —— 在书籍详情里点「移入借阅书目」即可。</div>';
     const borrowCardHtml = '<div class="r319-cat-card r343-borrow-card r327-cat-c' + (cats.length % R327_CAT_COLORS) + '" data-r343-borrow-card>'
       + '<div class="r319-cat-head"><span class="r319-cat-name">📚 借阅书目</span>'
       + '<button type="button" class="pbtn r343-borrow-finish" data-r343-borrow-finish title="移出书单内全部借阅书籍，打卡与阅读记录保留">✅ 本书单完成</button></div>'
@@ -44518,7 +44538,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         /* R334-3.2：卡片只展示「书名 / 作者」两要素；
            所属分类、推荐理由、打卡奖励等一律收进书籍详情弹窗（点书名打开）。
            R335-3.2：卡片最左增加全局顺序编号（跨页连续，不随翻页重置）。
-           R340-1.2：已读键从卡片移入书籍详情弹窗（【加入借阅书目】右侧），
+           R340-1.2：已读键从卡片移入书籍详情弹窗（【移入借阅书目】右侧），
                      卡片只保留编号 + 书名 + 作者；作者靠右、优先单行不换行。 */
         const cls = 'r319-book-row' + (b.read ? ' is-read' : '');
         const bookNo = (pi - 1) * R328_BOOK_PAGE_SIZE + bi + 1;
@@ -44667,10 +44687,12 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     let prev = 0, minutes = 0;
     const days = [];
     logs.forEach(function(x){
-      const end = Math.max(0, Number(x.page) || 0);
+      /* R345-5：兼容新「起始页数 / 结束页数」与旧 page 字段。 */
+      const rawStart = Math.max(0, Number(x.startPage || x.start || 0) || 0);
+      const end = Math.max(0, Number(x.endPage || x.page) || 0);
       minutes += Number(x.minutes) || 0;
       if(end > prev){
-        days.push({ date:x.date || '', start:prev + 1, end:end, pages:end - prev, minutes:Number(x.minutes) || 0 });
+        days.push({ date:x.date || '', start:rawStart || (prev + 1), end:end, pages:end - prev, minutes:Number(x.minutes) || 0 });
         prev = end;
       }
     });
@@ -44695,18 +44717,23 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       const h = Math.max(8, Math.round(d.pages / max * 100));
       return '<div class="r343-bar-col" title="' + esc(d.date) + '：P' + d.start + '-P' + d.end + '，' + d.pages + ' 页">'
         + '<i style="height:' + h + '%"></i><b>' + d.pages + '</b><span>' + esc(String(d.date).slice(5)) + '</span></div>';
-    }).join('') || '<div class="r342-empty">还没有阅读记录</div>';
-    /* R344-4：每日阅读记录区改为展示打卡保存的记录文本，原起止页表格已移除。 */
+    }).join('');
+    /* R344-4 / R345-3：每日阅读记录区展示打卡保存内容；空态说明文字已移除。 */
     const logs = ((r342R314().bookLog || []).filter(function(x){
       return x && (x.bookId === b.id || x.title === b.title);
     }).slice()).sort(function(a, c){
       return String(c.date || '').localeCompare(String(a.date || '')) || ((Number(c.at) || 0) - (Number(a.at) || 0));
     });
     const recs = logs.slice(0, 12).map(function(x){
-      return '<div class="r344-rec"><b>' + esc(x.date || '') + '</b>'
-        + '<span>' + (Number(x.minutes) ? (x.minutes + ' 分钟 · ') : '') + (Number(x.page) ? ('P' + x.page + ' · ') : '')
-        + esc(x.note || (x.title ? ('阅读《' + x.title + '》') : '已记录')) + '</span></div>';
-    }).join('') || '<div class="r342-empty">还没有阅读记录，点左下「阅读打卡」开始记录</div>';
+      const start = Math.max(0, Number(x.startPage || x.start || 0) || 0);
+      const end = Math.max(0, Number(x.endPage || x.page) || 0);
+      const pageTxt = end ? (start ? ('P' + start + '-P' + end) : ('P' + end)) : '';
+      const parts = [];
+      if(Number(x.minutes)) parts.push(x.minutes + ' 分钟');
+      if(pageTxt) parts.push(pageTxt);
+      parts.push(esc(x.note || (x.title ? ('阅读《' + x.title + '》') : '已记录')));
+      return '<div class="r344-rec"><b>' + esc(x.date || '') + '</b><span>' + parts.join(' · ') + '</span></div>';
+    }).join('');
     return '<aside class="r343-read-panel"><div class="r343-read-head">📊 阅读记录</div>'
       + '<div class="r343-kpis"><div><b>' + (s.total || '—') + '</b><span>书籍总页数</span></div>'
       + '<div><b>' + s.cumulative + '</b><span>累计阅读页数</span></div>'
@@ -44730,7 +44757,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     if(headOps){
       headOps.innerHTML =
         '<button type="button" class="pbtn' + (b.borrow ? ' on' : '') + '" data-r327-borrow-toggle="' + esc(b.id) + '">' +
-          (b.borrow ? '📚 移出借阅书目' : '📚 借阅书目') + '</button>' +
+          (b.borrow ? '📚 移出借阅书目' : '📚 移入借阅书目') + '</button>' +
         '<button type="button" class="pbtn r340-read-btn' + (b.read ? ' on is-read' : '') + '" data-r340-read-toggle="' + esc(b.id) + '"'
           + (canRead ? '' : ' disabled title="阅读进度达到100%后可选"') + '>' +
           (b.read ? '✅ 已读 · 取消' : '✓ 已读') + '</button>';
@@ -44744,7 +44771,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       '<div class="r321-detail-reason"><b>推荐理由：</b>' + (b.reason ? esc(b.reason) : '暂未填写推荐理由') + '</div>' +
       '<div class="r321-detail-line">打卡奖励：<b>' + stars + '⭐</b></div>' +
       '</div></div>' +
-      '<div class="r343-read-panel r344-detail-foot">' +
+      '<div class="r343-read-panel r344-detail-foot r345-detail-foot-card">' +
         '<button type="button" class="primary-btn r344-bookin-btn" data-r344-bookin="' + esc(b.id) + '" title="关联我的书单记录阅读时长与页码">📖 阅读打卡</button>' +
       '</div></div>' + r343ReadingHtml(b) + '</div>';
     showModal('#modalR321BookDetail');
@@ -45203,7 +45230,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
           const bid = btn.getAttribute('data-r327-borrow-toggle');
           const r = S.r319ToggleBorrow ? S.r319ToggleBorrow(bid) : {ok:false};
           if(r && r.ok){
-            toast(r.borrow ? '📚 已加入借阅书目' : '📚 已移出借阅书目');
+            toast(r.borrow ? '📚 已移入借阅书目' : '📚 已移出借阅书目');
             r321OpenBookDetail(bid);
             r319RenderBookList();
           } else toast((r && r.msg) || '操作失败');
@@ -68692,6 +68719,7 @@ function init(){
     /* R344-3：从书本详情进入时默认选中当前这本书 */
     if(bid && l.books.some(function(b){ return b.id === bid; })) sel.value = bid;
     const m = document.getElementById('r342Minutes'); if(m) m.value = 15;
+    const ps = document.getElementById('r342PageStart'); if(ps) ps.value = '';
     const p = document.getElementById('r342Page'); if(p) p.value = '';
     const n = document.getElementById('r342Note'); if(n) n.value = '';
     const d = document.getElementById('r342Done'); if(d) d.checked = false;
@@ -68783,7 +68811,10 @@ function init(){
     const book = ((st.r319BookList||{}).books||[]).filter(function(b){ return b.id === bid; })[0];
     if(!book){ toast('书籍不存在'); return; }
     const minutes = Math.max(1, Number((document.getElementById('r342Minutes')||{}).value) || 0);
-    const page = Math.max(1, Number((document.getElementById('r342Page')||{}).value) || 0);
+    /* R345-5：阅读页码拆成起始页数 / 结束页数，page 保留为结束页兼容旧数据。 */
+    const startPage = Math.max(0, Number((document.getElementById('r342PageStart')||{}).value) || 0);
+    const endPage = Math.max(0, Number((document.getElementById('r342Page')||{}).value) || 0);
+    const page = endPage;
     const note = String((document.getElementById('r342Note')||{}).value || '').trim().slice(0,300);
     const done = !!((document.getElementById('r342Done')||{}).checked);
     if(!(minutes > 0)){ toast('请填写阅读时长'); return; }
@@ -68791,7 +68822,7 @@ function init(){
     const log = Array.isArray(r.bookLog) ? r.bookLog.slice() : [];
     const logDate = _r344PickDate || S.todayStr();
     log.unshift({ id:'bk_'+Date.now(), bookId:bid, title:book.title, cat:book.cat||'', catName:r342CatName(book.cat),
-      minutes:minutes, page:page, note:note, date:logDate, at:Date.now() });
+      minutes:minutes, startPage:startPage, endPage:endPage, page:page, note:note, date:logDate, at:Date.now() });
     r342SaveR314({ bookLog: log });
     const prev = book.progress || {};
     book.progress = { minutes:(Number(prev.minutes)||0)+minutes, page:Math.max(Number(prev.page)||0, page),
@@ -68809,6 +68840,27 @@ function init(){
     try{ renderHome(); }catch(e){}
     toast('📚 已记录《'+book.title+'》'+minutes+' 分钟');
   }
+  let _r345TrackQuery = '';
+  function r345TrackSearchHtml(){
+    const q = String(_r345TrackQuery || '').trim().toLowerCase();
+    if(!q) return '';
+    const l = r342BookList();
+    const hits = [];
+    (l.cats || []).forEach(function(c){
+      (l.books || []).filter(function(b){ return b && b.cat === c.id; }).forEach(function(b, i){
+        const title = String(b.title || ''), author = String(b.author || '');
+        if(title.toLowerCase().indexOf(q) >= 0 || author.toLowerCase().indexOf(q) >= 0){
+          hits.push({ cat:c.name || '未分类', no:i + 1, title:title, author:author });
+        }
+      });
+    });
+    const rows = hits.map(function(x){
+      return '<div class="r345-track-hit"><span>' + esc(x.cat) + '</span><b>' + x.no + '</b>'
+        + '<strong>《' + esc(x.title) + '》</strong><em>' + esc(x.author || '未填写') + '</em></div>';
+    }).join('') || '<div class="r342-empty">没有找到匹配的书籍</div>';
+    const head = '<div class="r345-track-hit r345-track-hit-head"><span>所在书单</span><b>序号</b><strong>书名</strong><em>作者</em></div>';
+    return '<div class="r345-track-res"><div class="r342-track-h">🔎 搜索结果（' + hits.length + '）</div>' + head + rows + '</div>';
+  }
   function r342TrackHtml(){
     const r = r342R314();
     const log = Array.isArray(r.bookLog) ? r.bookLog.slice() : [];
@@ -68825,7 +68877,8 @@ function init(){
       .sort(function(a,b){ return b.minutes - a.minutes; });
     const total = rows.reduce(function(a,x){ return a + x.minutes; },0);
     const max = rows.length ? rows[0].minutes : 1;
-    let html = '<div class="r342-track-sum"><div><b>'+rows.length+'</b><span>在读书目</span></div><div><b>'+log.length+'</b><span>打卡次数</span></div><div><b>'+total+'</b><span>累计分钟</span></div></div>';
+    let html = r345TrackSearchHtml()
+      + '<div class="r342-track-sum"><div><b>'+rows.length+'</b><span>在读书目</span></div><div><b>'+log.length+'</b><span>打卡次数</span></div><div><b>'+total+'</b><span>累计分钟</span></div></div>';
     html += '<div class="r342-track-h">📊 阅读时长分布</div><div class="r342-chart">';
     html += rows.slice(0,10).map(function(x){
       return '<div class="r342-chart-row"><span class="r342-chart-name">'+esc(x.title)+'</span>'
@@ -68980,6 +69033,13 @@ function init(){
     r342BindWrongEntry();
     const b = document.getElementById('btnR342Track');
     if(b && !b._r342Bound){ b._r342Bound = true; b.onclick = r342OpenTrack; }
+    /* R345-6：读书轨迹左侧搜索框，按书名或作者即时匹配书单条目。 */
+    const ts = document.getElementById('r345TrackSearch');
+    if(ts && !ts._r345Bound){ ts._r345Bound = true; ts.addEventListener('input', function(){
+      _r345TrackQuery = this.value || '';
+      const body = document.getElementById('r342TrackBody');
+      if(body) body.innerHTML = r342TrackHtml();
+    }); }
     const sv = document.getElementById('r342BookSave');
     if(sv && !sv._r342Bound){ sv._r342Bound = true; sv.onclick = r342BookCheckinSave; }
     /* R344-3：阅读日期滑选入口 */
@@ -69373,10 +69433,16 @@ function init(){
       <label>正在阅读的书籍
         <select id="r342BookSel" class="nw-add-input"></select>
       </label>
-      <label>阅读日期<button type="button" class="pbtn r344-date-btn" id="r344DateBtn" title="上下滑动选择阅读日期">📅 今天</button></label>
-      <div class="r342-form-row">
+      <div class="r342-form-row r345-date-row">
+        <label>阅读日期<button type="button" class="pbtn r344-date-btn" id="r344DateBtn" title="上下滑动选择阅读日期">📅 今天</button></label>
         <label>阅读时长（分钟）<input type="number" id="r342Minutes" min="1" max="600" value="15" class="nw-add-input"></label>
-        <label>读到页码<input type="number" id="r342Page" min="1" max="9999" placeholder="如 36" class="nw-add-input"></label>
+      </div>
+      <div class="r345-page-group">
+        <div class="r345-page-title">阅读页码</div>
+        <div class="r342-form-row">
+          <label>起始页数<input type="number" id="r342PageStart" min="0" max="9999" placeholder="如 1" class="nw-add-input"></label>
+          <label>结束页数<input type="number" id="r342Page" min="0" max="9999" placeholder="如 36" class="nw-add-input"></label>
+        </div>
       </div>
       <label>阅读记录（选填）<textarea id="r342Note" maxlength="300" placeholder="今天读到哪里、有什么收获…"></textarea></label>
       <label class="r342-check"><input type="checkbox" id="r342Done"> 这本书已读完，同时在我的书单里标记已读</label>
@@ -69402,6 +69468,7 @@ function init(){
 <div class="modal-mask" id="modalR342Track" hidden>
   <div class="modal-box r342-track-box">
     <div class="modal-head"><h3>📈 读书轨迹</h3><button class="modal-x" data-close>×</button></div>
+    <div class="r345-track-search"><input type="search" id="r345TrackSearch" class="nw-add-input" placeholder="搜索书名或作者，自动展示对应书籍"></div>
     <div class="modal-body" id="r342TrackBody"></div>
     <div class="modal-foot"><button class="pbtn" data-close>关闭</button></div>
   </div>
