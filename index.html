@@ -12382,7 +12382,9 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
 .r271-dock.r336-dock-edge.r337-dock-vdrag.r307-dock-dragging .r271-dock-shortcut{cursor:grabbing}
 /* ---- R336-2.1：重点单词弹窗=现有 2/3 宽（480px）+ 居中 + 毛玻璃 + 一行 4 个 ---- */
 #modalR335Vocab.r336-vocab-mask{align-items:center;justify-content:center;background:rgba(18,42,74,.38);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
-#modalR335Vocab .r335-vocab-modal.r336-vocab-modal{max-width:480px;width:calc(100% - 32px);background:rgba(255,255,255,.9);backdrop-filter:blur(16px) saturate(1.2);-webkit-backdrop-filter:blur(16px) saturate(1.2);border:1px solid rgba(255,255,255,.7);box-shadow:0 18px 48px rgba(20,50,90,.28)}
+#modalR335Vocab .r335-vocab-modal.r336-vocab-modal{max-width:480px;width:calc(100% - 32px);aspect-ratio:4/3;max-height:86vh;display:flex;flex-direction:column;background:rgba(255,255,255,.9);backdrop-filter:blur(16px) saturate(1.2);-webkit-backdrop-filter:blur(16px) saturate(1.2);border:1px solid rgba(255,255,255,.7);box-shadow:0 18px 48px rgba(20,50,90,.28)}
+/* R338-2.1：弹窗固定 4:3 后，内容区在框内滚动，标题栏与返回键始终可见 */
+#modalR335Vocab .r335-vocab-modal.r336-vocab-modal .modal-body{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain}
 #modalR335Vocab .r335-vocab-modal-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
 .r336-vocab-back{appearance:none;border:1.5px solid var(--tone-300);background:#fff;color:var(--tone-800);border-radius:999px;padding:5px 16px;font-size:13px;font-weight:800;font-family:inherit;cursor:pointer;touch-action:manipulation}
 .r336-vocab-back:hover{background:var(--tone-050);border-color:var(--tone-400)}
@@ -12433,12 +12435,8 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
 .r327-celebrate.r336-checkin-cancel .r327-celebrate-txt{font-weight:800}
 
 /* ================= R337《学习平台功能整改需求》 ================= */
-/* ---- R337-2.1：英语短文卡固定 3:4，内容按卡片尺寸自适应滚动 ---- */
-#enColPassage .reading-item.ri-en{
-  width:100%;aspect-ratio:3/4;flex:0 0 auto;height:auto;max-height:none;
-  overflow-y:auto;overflow-x:hidden;box-sizing:border-box;
-}
-#enColPassage .reading-item.ri-en .ri-body{white-space:normal;overflow-wrap:anywhere}
+/* ---- R338-2.2：英语短文内容框恢复原有尺寸（撤销 R337 的 3:4 固定比例），
+       回到 .reading-item 自身内容高度 + 栏宽自适应 ---- */
 /* ---- R337-2.2：重点单词一行 5 个；点词朗读、点卡打卡后变绿 ---- */
 #modalR335Vocab .r335-vocab-modal.r336-vocab-modal .r335-vocab-modal-grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
 #modalR335Vocab .r335-vocab-item{position:relative;cursor:pointer;touch-action:manipulation}
@@ -12455,13 +12453,39 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
   #modalR335Vocab .r335-vocab-item b{font-size:11.5px}
   #modalR335Vocab .r335-vocab-item span{font-size:9.5px}
 }
-/* ---- R337-5.1：导航栏日期/星期/时间自适应栏宽，三行各自单行不换行 ---- */
-.sidebar-clock{flex-wrap:nowrap;min-width:0;overflow:hidden}
+/* ---- R338-1.1：导航栏日期/星期/时间恢复原三行布局，按栏宽自适应，不遮挡不溢出 ---- */
+/* 旧 R337 用 flex-wrap:nowrap + overflow:hidden 强行不换行，窄栏下文字被整段裁掉，
+   看起来就是「被导航栏遮挡」；这里恢复 wrap 让三行各占一行，溢出交给 JS 缩字号解决。 */
+.sidebar-clock{flex-wrap:wrap;min-width:0;overflow:visible;row-gap:1px}
 .sidebar-clock .rt-date,
 .sidebar-clock .rt-week,
 .sidebar-clock .rt-time{
   flex:0 0 100%;flex-basis:100%;max-width:100%;box-sizing:border-box;min-width:0;
-  white-space:nowrap;overflow:hidden;text-overflow:clip;
+  white-space:nowrap;overflow:visible;text-overflow:clip;
+}
+
+/* ================= R338《学习平台功能整改需求》 ================= */
+/* ---- R338-3.2：错题重练卷弹窗（预览 + 图片 / Word / Excel / 打印） ---- */
+#modalR326Paper .r338-paper-modal{max-width:720px;width:calc(100% - 28px);display:flex;flex-direction:column;max-height:86vh}
+#modalR326Paper .modal-body{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain}
+.r338-paper-preview{background:#fff;border:1px dashed var(--tone-300);border-radius:var(--card-r-sm,10px);padding:14px 16px;color:var(--text)}
+.r338-paper-preview h2{font-size:18px;font-weight:800;color:var(--tone-800);margin:0 0 4px}
+.r338-paper-preview .r326-print-sub{font-size:12px;color:var(--muted);margin-bottom:10px}
+.r338-paper-preview .r326-print-item{padding:8px 0;border-bottom:1px dashed var(--tone-200)}
+.r338-paper-preview .r326-print-item:last-child{border-bottom:0}
+.r338-paper-preview .r326-print-q{font-size:14px;font-weight:700;color:var(--tone-900);line-height:1.5;overflow-wrap:anywhere}
+.r338-paper-preview .r326-print-old{font-size:12px;color:var(--muted);margin-top:3px;overflow-wrap:anywhere}
+.r338-paper-preview .r326-print-line{margin-top:6px;font-size:13px;color:var(--tone-700)}
+.r338-paper-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;align-items:center;padding:10px 16px 14px;border-top:1px dashed var(--tone-200)}
+.r338-paper-btn{appearance:none;border:1.5px solid var(--tone-300);background:#fff;color:var(--tone-800);border-radius:999px;padding:6px 14px;font-size:13px;font-weight:800;font-family:inherit;cursor:pointer;touch-action:manipulation;transition:background .15s,border-color .15s}
+.r338-paper-btn:hover{background:var(--tone-050);border-color:var(--tone-400)}
+.r338-paper-btn:active{transform:translateY(1px)}
+.r338-paper-back{margin-left:auto}
+@media (max-width:640px){
+  #modalR326Paper .r338-paper-modal{max-height:90vh}
+  .r338-paper-actions{gap:6px;padding:8px 10px 12px;justify-content:center}
+  .r338-paper-btn{padding:6px 10px;font-size:12px}
+  .r338-paper-back{margin-left:0}
 }
 
 </style>
@@ -12729,7 +12753,11 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
   </section>
   <!-- ================= R326：分科错题集（总览 / 学科工作台） ================= -->
   <section class="page page-mistakes" data-page="mistakes" hidden id="r326Page">
-    <!-- R335-5.3：删除顶部分科错题集主题栏，内容平铺展示、消除大面积留白 -->
+    <!-- R338-3.1：恢复顶部主题栏，结构与尺寸与乐读数学（.page-title）完全一致 -->
+    <div class="page-title" id="r326TitleBar">
+      <h2>📝 分科错题集</h2>
+      <div class="page-actions"></div>
+    </div>
     <div class="page-content">
       <div id="r326Root"></div>
     </div>
@@ -35024,10 +35052,12 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     requestAnimationFrame(tickClock);
   }
 
-  /* R337-5.1：导航栏日期 / 星期 / 时间自适应栏宽。
-     侧栏只有 92~114px，完整日期「2026年11月24日」在 15px 下必然溢出（旧表现：换行或被截断）。
-     这里按容器实际宽度逐级收缩字号（下限 9px），保证三行各自一行放得下、不跳行；
-     只在日期变化与窗口尺寸变化时测量，不参与每秒时钟刷新，避免布局抖动。 */
+  /* R338-1.1：导航栏日期 / 星期 / 时间恢复三行原状，并按栏宽自适应。
+     侧栏固定 102px（可用约 94px），完整日期「2026年11月25日」在 15px 下必然超出。
+     R337 曾用 nowrap + overflow:hidden 硬裁，直接把字切掉（表现为被导航栏遮挡），
+     且读 el.scrollWidth 判断永远等于容器宽 → 字号从不收缩。
+     现在改为：CSS 恢复 wrap 三行 + 离屏节点量文本真实宽度，逐级收缩字号（下限 10px），
+     只在日期变化与窗口尺寸变化时测量，不参与每秒时钟刷新。 */
   var _r337ClockFitKey = '';
   var _r337ClockFitTimer = 0;
   var _r337ClockFitRetry = 0;
@@ -35046,14 +35076,34 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     const avail = box.clientWidth - 8;   // 左右各 4px padding
     if(avail <= 0) return;
     const els = box.querySelectorAll('.rt-date,.rt-week,.rt-time');
+    if(!els.length) return;
+    /* 离屏测量节点：复制真实字体与文本，量出「这一行完整显示需要多宽」 */
+    let probe = box.querySelector('.r338-clock-probe');
+    if(!probe){
+      probe = document.createElement('span');
+      probe.className = 'r338-clock-probe';
+      probe.setAttribute('aria-hidden', 'true');
+      probe.style.cssText = 'position:absolute;left:-9999px;top:0;visibility:hidden;white-space:nowrap;pointer-events:none';
+      box.appendChild(probe);
+    }
     Array.prototype.forEach.call(els, function(el){
       el.style.fontSize = '';
       const cs = window.getComputedStyle ? window.getComputedStyle(el) : null;
-      let size = parseFloat((cs && cs.fontSize) || '15') || 15;
-      for(let i=0; i<26 && size > 9 && el.scrollWidth > avail; i++){
+      const base = parseFloat((cs && cs.fontSize) || '15') || 15;
+      probe.style.fontFamily = (cs && cs.fontFamily) || 'inherit';
+      probe.style.fontWeight = (cs && cs.fontWeight) || '700';
+      probe.style.letterSpacing = (cs && cs.letterSpacing) || 'normal';
+      probe.textContent = el.textContent || '';
+      /* 星期胶囊自带左右 6px padding */
+      const pad = el.classList.contains('rt-week') ? 12 : 0;
+      const limit = Math.max(30, avail - pad);
+      let size = base;
+      probe.style.fontSize = size + 'px';
+      for(let i=0; i<30 && size > 10 && probe.offsetWidth > limit; i++){
         size -= 0.5;
-        el.style.fontSize = size + 'px';
+        probe.style.fontSize = size + 'px';
       }
+      el.style.fontSize = size + 'px';
     });
   }
   function r337FitClockSoon(){
@@ -36821,8 +36871,10 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     if(slotBody) slotBody.innerHTML = '';
 
     // 绑定子按钮点击 → 切换插槽
+    /* R338-4.1：与数学 / 英语 / 素养专区对齐 —— 真人点击先让「选中态」绘制一帧，
+       再做整块插槽重绘；连续快速切换用序号只渲染最后一次，避免排队重绘越点越卡。 */
     top.querySelectorAll('.yw-round-btn').forEach(btn=>{
-      btn.addEventListener('click', ()=>{
+      btn.addEventListener('click', (e)=>{
         top.querySelectorAll('.yw-round-btn').forEach(b=>b.classList.remove('active'));
         btn.classList.add('active');
         if(slotHint) slotHint.style.display = 'none';
@@ -36840,9 +36892,23 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
             kwRestoreScroll = true;
           }
         }
-        renderYuwenSlot(key, label, slotBody);
-        if(kwRestoreScroll){
-          try{ const el = slotBody.querySelector('.kw-acc.open'); if(el) el.scrollIntoView({behavior:'smooth', block:'start'}); }catch(_){}
+        const doPaint = ()=>{
+          renderYuwenSlot(key, label, slotBody);
+          if(kwRestoreScroll){
+            try{ const el = slotBody.querySelector('.kw-acc.open'); if(el) el.scrollIntoView({behavior:'smooth', block:'start'}); }catch(_){}
+          }
+        };
+        const realClick = !!(e && e.isTrusted) && _NW_REAL;
+        if(realClick && typeof requestAnimationFrame === 'function'){
+          const seq = ++_r337SlotSeq;
+          try{
+            requestAnimationFrame(()=>{
+              if(seq !== _r337SlotSeq) return;
+              try{ doPaint(); }catch(err){}
+            });
+          }catch(e2){ doPaint(); }
+        } else {
+          doPaint();
         }
       });
     });
@@ -36851,7 +36917,14 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     const _lastYw = _uiMem('nwSlot:newworld-yuwen');
     const _ywKey = (_lastYw && top.querySelector('.yw-round-btn[data-yw-key="' + _lastYw + '"]')) ? _lastYw : 'keda';
     const defYw = top.querySelector('.yw-round-btn[data-yw-key="' + _ywKey + '"]');
-    if(defYw) defYw.click();
+    /* R338-4.1：真机分两帧 —— 先画顶部次标题卡，再渲染默认子页内容 */
+    if(defYw){
+      if(_NW_REAL && typeof requestAnimationFrame === 'function'){
+        requestAnimationFrame(()=>{ try{ defYw.click(); }catch(e){} });
+      } else {
+        defYw.click();
+      }
+    }
   }
 
   // 插槽内容渲染（外层通栏卡不变，仅替换 slotBody 并淡入）
@@ -38951,7 +39024,15 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     // R254-7：已浏览过则停在上次退出的子页
     if(_defKey){
       const def = top.querySelector(`.yw-round-btn[data-key="${_defKey}"]`);
-      if(def) def.click();
+      /* R338-4.1：真机先把「顶部次标题卡」绘制出来，再渲染默认子页内容。
+         两个大步骤各占一帧，点击后视觉上立刻有响应，不会整页空白等 DOM 构建。 */
+      if(def){
+        if(_NW_REAL && typeof requestAnimationFrame === 'function'){
+          requestAnimationFrame(()=>{ try{ def.click(); }catch(e){} });
+        } else {
+          def.click();
+        }
+      }
       if(_defKey === 'kbtb') refreshKbSlotComplete();
     }
   }
@@ -44351,6 +44432,8 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   // 现在：本次点击只同步渲染「目标页」；其余子页在首次进入时于空闲帧预热一次。
   // V109 已删除的 newworld-science 保持不渲染（不进映射表）。
   let _nwWarmDone = false;
+  /* R338-4.1：新世界首屏渲染帧序号 —— 连续点不同专区时只渲染最后一次，避免排队重绘 */
+  var _r338NwSeq = 0;
   /* R275-1.2：真实浏览器把「其余 6 页」拆成一次空闲帧只渲染一页，
      避免首次点击后紧接着同步跑完 6 个大页面把主线程占满（表现就是「点了没反应」）。
      jsdom / 回归环境保持原来的同步批处理，确保既有断言在 150ms 后仍能查到各子页 DOM。 */
@@ -44383,7 +44466,23 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       b.addEventListener('click', ()=> goPage(b.getAttribute('data-nw-back')));
     });
     const target = NW_RENDERERS[page] ? page : 'newworld';
-    _nwRenderOne(target);
+    /* R338-4.1：真机把整页构建推迟到下一帧执行。
+       goPage 已同步切好页面（背景 / 主题栏立即可见），若紧接着同步构建整页 DOM
+       （课文朗读 26 课 / 3500 词 / 作文 300 篇 / 全课程表），浏览器当帧既画不出新页面、
+       也响应不了下一次点击 —— 表现就是「点专区卡片整页卡死」。
+       分帧后点击当帧即可完成视觉切换，重活在下一帧做；连续切换只渲染最后一页。 */
+    const _r338Paint = ()=>_nwRenderOne(target);
+    if(_NW_REAL && typeof requestAnimationFrame === 'function'){
+      const seq = ++_r338NwSeq;
+      try{
+        requestAnimationFrame(()=>{
+          if(seq !== _r338NwSeq) return;
+          _r338Paint();
+        });
+      }catch(e){ _r338Paint(); }
+    } else {
+      _r338Paint();
+    }
     /* R337-4：真实浏览器取消「其余子页预渲染」。
        原来首次点开任一新世界二级页时，会在空闲帧里把另外 5 个大页面（语文/数学/英语/
        素养/课程表，含 300 篇作文、全课程表等重 DOM）逐一渲染，空闲帧被占满，
@@ -66106,24 +66205,161 @@ function init(){
     try{ items = S.getR326().items.filter(function(x){ return x.subject === _r326Subject && Number(x.createdAt || 0) >= from; }); }catch(e){}
     return items;
   }
-  function r326Paper(){
-    const items = r336PaperItems();
-    if(!items.length){ toast('这个范围内还没有错题'); return; }
-    let area = document.getElementById('r326PrintArea');
-    if(!area){ area = document.createElement('div'); area.id = 'r326PrintArea'; document.body.appendChild(area); }
-    area.className = 'r326-print';
-    area.innerHTML = '<h2>' + esc(_r326Subject || '全学科') + '错题重练卷</h2>'
+  /* R338-3.2：重练卷改为「弹窗预览 + 导出图片 / Word / Excel（可选打印）」。
+     数据口径不变：当前学科 + 当前统计范围；导出全程只读，不写任何业务数据。 */
+  let _r338PaperItems = [];
+  function r338PaperHtml(items){
+    return '<h2>' + esc(_r326Subject || '全学科') + '错题重练卷</h2>'
       + '<div class="r326-print-sub">共 ' + items.length + ' 题 · ' + r326Today() + '</div>'
       + items.map(function(it, i){
           return '<div class="r326-print-item"><div class="r326-print-q">' + (i + 1) + '. ' + esc(it.title) + '</div>'
             + (it.myAnswer ? '<div class="r326-print-old">上次答案：' + esc(it.myAnswer) + '</div>' : '')
             + '<div class="r326-print-line">答：</div></div>';
         }).join('');
+  }
+  function r326Paper(){
+    const items = r336PaperItems();
+    if(!items.length){ toast('这个范围内还没有错题'); return; }
+    _r338PaperItems = items;
+    const preview = document.getElementById('r326PaperPreview');
+    if(preview) preview.innerHTML = r338PaperHtml(items);
+    r338BindPaperModal();
+    showModal('#modalR326Paper');
+  }
+  function r338PaperFileName(ext){
+    const d = new Date();
+    const p = n=>String(n).padStart(2,'0');
+    return '错题重练卷-' + (_r326Subject || '全学科') + '-' + d.getFullYear() + p(d.getMonth()+1) + p(d.getDate()) + '.' + ext;
+  }
+  function r338PaperDownload(content, filename, mime){
+    const blob = new Blob([content], {type: mime});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function(){
+      try{ URL.revokeObjectURL(a.href); }catch(e){}
+      if(a.parentNode) a.parentNode.removeChild(a);
+    }, 800);
+  }
+  function r338PaperWord(){
+    if(!_r338PaperItems.length) return;
+    const rows = _r338PaperItems.map(function(it, i){
+      return '<p style="font-weight:bold;margin:14px 0 4px">' + (i + 1) + '. ' + esc(it.title) + '</p>'
+        + (it.myAnswer ? '<p style="color:#888;margin:0 0 4px">上次答案：' + esc(it.myAnswer) + '</p>' : '')
+        + '<p style="margin:8px 0 0">答：</p>';
+    }).join('');
+    const html = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">'
+      + '<head><meta charset="utf-8"><title>错题重练卷</title></head>'
+      + '<body style="font-family:\'Microsoft YaHei\',sans-serif;font-size:12pt">'
+      + '<h1 style="font-size:16pt">' + esc((_r326Subject || '全学科') + '错题重练卷') + '</h1>'
+      + '<p style="color:#666">共 ' + _r338PaperItems.length + ' 题 · ' + esc(r326Today()) + '</p>'
+      + rows + '</body></html>';
+    r338PaperDownload('\ufeff' + html, r338PaperFileName('doc'), 'application/msword');
+    toast('已导出 Word 文档');
+  }
+  function r338PaperExcel(){
+    if(!_r338PaperItems.length) return;
+    const rows = _r338PaperItems.map(function(it, i){
+      return '<tr><td>' + (i + 1) + '</td><td>' + esc(it.title) + '</td>'
+        + '<td>' + esc(it.myAnswer || '') + '</td>'
+        + '<td style="height:36px"></td></tr>';
+    }).join('');
+    const html = '<html><head><meta charset="utf-8"></head><body>'
+      + '<table border="1" cellspacing="0" cellpadding="6" style="border-collapse:collapse;font-family:\'Microsoft YaHei\',sans-serif">'
+      + '<tr><th colspan="4" style="font-size:16px">' + esc((_r326Subject || '全学科') + '错题重练卷') + '</th></tr>'
+      + '<tr><th>序号</th><th>题目</th><th>上次答案</th><th>本次作答</th></tr>'
+      + rows + '</table></body></html>';
+    r338PaperDownload('\ufeff' + html, r338PaperFileName('xls'), 'application/vnd.ms-excel');
+    toast('已导出 Excel 表格');
+  }
+  /* Canvas 手绘换行：中文无空格，按字符累加宽度断行 */
+  function r338WrapText(ctx, text, maxWidth){
+    const lines = [];
+    let cur = '';
+    const chars = String(text == null ? '' : text).split('');
+    for(let i = 0; i < chars.length; i++){
+      const t = cur + chars[i];
+      if(ctx.measureText(t).width > maxWidth && cur){ lines.push(cur); cur = chars[i]; }
+      else cur = t;
+    }
+    if(cur) lines.push(cur);
+    return lines.length ? lines : [''];
+  }
+  function r338PaperPng(){
+    if(!_r338PaperItems.length) return;
+    const W = 900, pad = 56, lh = 26;
+    const cv = document.createElement('canvas');
+    const measure = cv.getContext('2d');
+    if(!measure){ toast('当前环境不支持导出图片'); return; }
+    measure.font = 'bold 19px "PingFang SC","Microsoft YaHei",sans-serif';
+    const blocks = _r338PaperItems.map(function(it, i){
+      return {
+        q: r338WrapText(measure, (i + 1) + '. ' + (it.title || ''), W - pad * 2),
+        old: it.myAnswer ? r338WrapText(measure, '上次答案：' + it.myAnswer, W - pad * 2) : []
+      };
+    });
+    let H = pad + 66;
+    blocks.forEach(function(b){ H += b.q.length * lh + b.old.length * 20 + 44; });
+    H = Math.max(H, 320);
+    cv.width = W; cv.height = H;
+    const ctx = cv.getContext('2d');
+    ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, W, H);
+    let y = pad + 10;
+    ctx.fillStyle = '#1c5fb8'; ctx.font = 'bold 30px "PingFang SC","Microsoft YaHei",sans-serif';
+    ctx.fillText((_r326Subject || '全学科') + '错题重练卷', pad, y);
+    y += 30;
+    ctx.fillStyle = '#6b7280'; ctx.font = '16px "PingFang SC","Microsoft YaHei",sans-serif';
+    ctx.fillText('共 ' + _r338PaperItems.length + ' 题 · ' + r326Today(), pad, y);
+    y += 32;
+    blocks.forEach(function(b){
+      ctx.fillStyle = '#111827'; ctx.font = 'bold 19px "PingFang SC","Microsoft YaHei",sans-serif';
+      b.q.forEach(function(line){ ctx.fillText(line, pad, y); y += lh; });
+      if(b.old.length){
+        ctx.fillStyle = '#9ca3af'; ctx.font = '15px "PingFang SC","Microsoft YaHei",sans-serif';
+        b.old.forEach(function(line){ ctx.fillText(line, pad, y); y += 20; });
+      }
+      ctx.strokeStyle = '#d1d5db'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(pad, y + 18); ctx.lineTo(W - pad, y + 18); ctx.stroke();
+      y += 44;
+    });
+    const a = document.createElement('a');
+    a.href = cv.toDataURL('image/png');
+    a.download = r338PaperFileName('png');
+    document.body.appendChild(a); a.click();
+    if(a.parentNode) a.parentNode.removeChild(a);
+    toast('已导出图片');
+  }
+  function r338PaperPrint(){
+    if(!_r338PaperItems.length) return;
+    let area = document.getElementById('r326PrintArea');
+    if(!area){ area = document.createElement('div'); area.id = 'r326PrintArea'; document.body.appendChild(area); }
+    area.className = 'r326-print';
+    area.innerHTML = r338PaperHtml(_r338PaperItems);
     document.body.classList.add('r326-printing');
     try{ window.print(); }finally{
       document.body.classList.remove('r326-printing');
       if(area.parentNode) area.parentNode.removeChild(area);
     }
+  }
+  /* R338-3.2：弹窗内三个导出键 + 打印键统一委托，重复打开也只会绑定一次 */
+  function r338BindPaperModal(){
+    const mask = document.getElementById('modalR326Paper');
+    if(!mask || mask._r338Bound) return;
+    mask._r338Bound = true;
+    mask.addEventListener('click', function(e){
+      const t = e.target;
+      if(t && t.hasAttribute && t.hasAttribute('data-close')){ mask.hidden = true; return; }
+      const btn = t && t.closest ? t.closest('[data-r326-paper-export],[data-r326-paper-print]') : null;
+      if(!btn) return;
+      e.preventDefault();
+      if(btn.hasAttribute('data-r326-paper-print')){ r338PaperPrint(); return; }
+      const kind = btn.getAttribute('data-r326-paper-export');
+      if(kind === 'png') r338PaperPng();
+      else if(kind === 'word') r338PaperWord();
+      else if(kind === 'excel') r338PaperExcel();
+    });
   }
 
   function r326Export(subject){
@@ -66485,7 +66721,7 @@ function init(){
         '<div class="r330-rightans" id="r330Right_' + esc(it.id) + '" hidden>标准解法：' + esc(it.fixNote || it.rightAnswer || '（未填写）') + '</div>' +
         ansOps +
         '<div class="r330-q-actions">' +
-          '<button type="button" class="pbtn" data-r330-reveal="' + esc(it.id) + '">点击看答案</button>' +
+          '<button type="button" class="pbtn" data-r330-reveal="' + esc(it.id) + '">答案</button>' +
           '<button type="button" class="pbtn" data-r330-set="' + esc(it.id) + '" data-status="' + (it.status === 'mastered' ? 'pending' : 'mastered') + '">' +
             (it.status === 'mastered' ? '↩ 改回待复习' : '✓ 标记为已掌握') + '</button>' +
           '<button type="button" class="pbtn" data-r330-edit="' + esc(it.id) + '">修改</button>' +
@@ -66505,7 +66741,7 @@ function init(){
       '<div class="r330-rc-row"><h4>错误原因总结</h4><p>' + esc(it.wrongNote || it.reason || '未填写') + (it.reason ? '（' + esc(it.reason) + '）' : '') + '</p></div>' +
       '<div class="r330-rightans" id="r330Right_' + esc(it.id) + '" hidden>标准解法：' + esc(it.fixNote || it.rightAnswer || '（未填写）') + '</div>' +
       '<div class="r330-rc-actions">' +
-        '<button type="button" class="pbtn" data-r330-reveal="' + esc(it.id) + '">点击看答案</button>' +
+        '<button type="button" class="pbtn" data-r330-reveal="' + esc(it.id) + '">答案</button>' +
         '<button type="button" class="pbtn primary" data-r330-set="' + esc(it.id) + '" data-status="mastered">✓ 掌握了</button>' +
         '<button type="button" class="pbtn" data-r330-next="' + esc(it.id) + '">下一道 →</button>' +
       '</div>' +
@@ -67697,6 +67933,26 @@ function init(){
     </div>
     <div class="modal-body">
       <div class="r335-vocab-modal-grid" id="r335VocabList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- R338-3.2：错题重练卷弹窗 —— 先预览卷面，再选择导出为图片 / Word / Excel 或直接打印 -->
+<div class="modal-mask" id="modalR326Paper" hidden>
+  <div class="modal-box r338-paper-modal" role="dialog" aria-modal="true" aria-labelledby="r338PaperTitle">
+    <div class="modal-head">
+      <h3 id="r338PaperTitle">📝 错题重练卷</h3>
+      <button type="button" class="modal-x" data-close title="关闭">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="r338-paper-preview" id="r326PaperPreview"></div>
+    </div>
+    <div class="r338-paper-actions">
+      <button type="button" class="r338-paper-btn" data-r326-paper-export="png">🖼 保存图片</button>
+      <button type="button" class="r338-paper-btn" data-r326-paper-export="word">📄 Word 文档</button>
+      <button type="button" class="r338-paper-btn" data-r326-paper-export="excel">📊 Excel 表格</button>
+      <button type="button" class="r338-paper-btn" data-r326-paper-print>🖨 打印</button>
+      <button type="button" class="r338-paper-btn r338-paper-back" data-close>返回</button>
     </div>
   </div>
 </div>
