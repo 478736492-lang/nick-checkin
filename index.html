@@ -13027,6 +13027,15 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
 .xs-card.xs-word:not(.checked) .xs-tap-speak:hover,
 .xs-card.xs-word:not(.checked) .xs-tap-speak:active{background:transparent;color:inherit}
 
+/* ===== R357-闪电1：⚡ 托盘三键只保留图标（圆形，无文字标签） ===== */
+.r271-dock-pill.r357-pill-icon{min-width:46px;width:46px;min-height:46px;justify-content:center;gap:0;padding:0;border-radius:50%}
+.r271-dock-pill.r357-pill-icon .r271-dock-pill-ico{flex:0 0 28px}
+@media (pointer:coarse){.r271-dock-pill.r357-pill-icon{min-width:50px;width:50px;min-height:50px}}
+
+/* ===== R357-功能1：设置中心内「安全与外观」（原设置与安全并入） ===== */
+.r357-merged-sec{margin-top:14px;padding-top:12px;border-top:1px solid var(--tone-150)}
+.r357-merged-sec .r357-sec-title{margin:0 0 8px}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -54502,7 +54511,8 @@ function renderKMAdmin(){
       target.innerHTML = list.map(w=>{
         const checked = S.xsIsChecked(xsCat, w.id);
         const chip = w.page ? ('读'+w.page) : (w.lesson ? ('L'+w.lesson) : '');
-        return `<div class="xs-card xs-word ${w.source==='user'?'user-added':''} ${checked?'checked':''}" data-xs-speak="${esc(w.en)}" data-xs-speak-zh="${esc(w.wordZh||w.zh||'')}" data-xs-readonly="1">
+        /* R357-英语1：整卡承载打卡（点空白变绿），单词 / 例句各自只朗读或暂停，不再由整卡朗读拦截打卡 */
+        return `<div class="xs-card xs-word ${w.source==='user'?'user-added':''} ${checked?'checked':''}" data-xs-check-card="${xsCat}::${esc(w.id)}">
           <div class="xs-card-head">
             <span class="xs-card-kind">${w.source==='user'?'我的':(xsCat==='ket'?'KET':'词汇')}</span>
             ${chip?`<span class="xs-card-chip">${chip}</span>`:''}
@@ -64210,22 +64220,24 @@ function init(){
      人文拓展栏目恢复为原有的「红色上海 / 华夏五千年」两项，szSlot 不再被包装。 */
 
   /* ---------------- 十、UI：悬浮工具条 + 功能中心 ---------------- */
+  /* R357-功能1：设置项按主题归类合并 ——
+     · 原「设置与安全」并入「设置中心·安全与外观」；
+     · 原「种植园」「知识秘境」两页签的设置已全部收在 设置中心 → 游戏设置；
+     · 备份增强并入「数据同步」、存储诊断并入「数据净化」、提醒并入提醒卡，重复项不再单列。
+     设置中心按键按需求放在「数据净化」右侧。 */
   const TABS = [
-    { id:'prefs', ico:'⚙️', name:'设置中心' },
     { id:'tasks', ico:'🗂️', name:'任务与请假' },
     { id:'poster', ico:'🖼️', name:'打卡海报' },
     { id:'wrong', ico:'📝', name:'错题复盘' },
     { id:'report', ico:'📊', name:'成长报表' },
-    { id:'farm', ico:'🌱', name:'种植园' },
-    { id:'km', ico:'🏛️', name:'知识秘境' },
     { id:'study', ico:'📚', name:'学科练习' },
-    { id:'settings', ico:'🔒', name:'设置与安全' },
     { id:'tools', ico:'🧰', name:'轻量工具' },
-    { id:'clean', ico:'🧹', name:'数据净化' }
+    { id:'clean', ico:'🧹', name:'数据净化' },
+    { id:'prefs', ico:'⚙️', name:'设置中心' }
   ];
   const HELP = {
     home:'首页：左侧是板块导航，卡片左边圆钮打卡，卡片主体点击会先确认再跳转。',
-    prefs:'设置中心：使用模式、打卡任务、游戏设置、提醒护眼家长管控、音乐、数据同步、版本与更新全部在这里（原独立设置中心已并入功能中心）。',
+    prefs:'设置中心：使用模式、打卡任务、游戏设置、提醒护眼家长管控、音乐、数据同步、版本与更新，以及安全与外观（家长 PIN / 孩子模式 / 主题字号）全部在这里。',
     tasks:'任务与请假：内置小学 2-6 年级模板可复制复用；循环规则控制任务在哪天出现；假期自动切换另一套任务；请假不计断签也不发星星。',
     farm:'种植园：浇水 / 阳光 / 化肥推进成长，成熟后收获点亮图鉴；市集道具先预览再兑换。',
     km:'知识秘境：选择难度档位答题，结束展示正确率，错题自动进错题池，通关可保存证书。',
@@ -64296,9 +64308,9 @@ function init(){
       /* 五个功能按键不再常驻：收进托盘，点 ⚡ 才展开 */
       + '<div class="r271-dock-tray" id="r271DockMenu" hidden aria-expanded="false">'
       + DOCK_SHORTCUTS.map(function(x){
-          return '<button class="r271-dock-pill" data-act="' + E(x.act) + '" title="' + E(x.label) + '">'
-            + '<span class="r271-dock-pill-ico">' + E(x.ico) + '</span>'
-            + '<span class="r271-dock-pill-lab">' + E(x.label) + '</span></button>';
+          /* R357-闪电1：托盘按键只保留图标，文字移到 title / aria-label，不再显示标签 */
+          return '<button class="r271-dock-pill r357-pill-icon" data-act="' + E(x.act) + '" title="' + E(x.label) + '" aria-label="' + E(x.label) + '">'
+            + '<span class="r271-dock-pill-ico">' + E(x.ico) + '</span></button>';
         }).join('')
       + '</div>'
       + '<button class="r271-dock-btn r271-dock-shortcut" id="r271DockShortcutBtn" data-act="shortcuts" title="快捷键" aria-expanded="false">⚡</button>'
@@ -64501,9 +64513,31 @@ function init(){
     }).join('') + '</select>';
   }
 
+  /* R357-功能1：原「设置与安全」页签并入设置中心，只保留其独有项（家长 PIN / 孩子模式 / 主题外观）；
+     备份增强归入「数据同步」、存储诊断归入「数据净化」、提醒归入设置中心的提醒卡，重复项已清除。 */
+  function r357SecHtml(){
+    const c = cfg(), pin = (() => { try{ return S.getPin(); }catch(e){ return ''; } })();
+    return '<div class="r357-merged-sec">'
+      + '<div class="r271-h3 r357-sec-title">🔐 安全与外观</div>'
+      + card('🔒 家长密码 PIN 锁（重置 / 导入备份 / 修改任务计划）',
+        row('<label class="r271-chk"><input type="checkbox" id="pinOn"' + (c.pin.enabled?' checked':'') + '/>启用家长锁</label>'
+          + input('pinVal','','设置 4 位数字密码','password') + btn('pin-save','保存 PIN', '', 'primary'))
+        + muted('当前 PIN：' + (pin ? '已设置' : '未设置') + '　孩子模式无法修改高危设置。'))
+      + card('👦 孩子模式界面（只显示今日任务 / 种植园 / 知识秘境）',
+        row('<label class="r271-chk"><input type="checkbox" id="childModeOn"' + (c.childMode?' checked':'') + '/>开启简化界面</label>' + btn('child-save','保存', '', 'primary'))
+        + muted('仅在「学生模式」下生效；家长模式仍展示完整设置菜单。'))
+      + card('🎨 主题 / 字号 / 触控 / Nick IP',
+        row(sel('themeSel', [['zoo','疯狂动物城（默认）'],['light','简约浅色']], c.ui.theme) + sel('fontSel', [[0.9,'小'],[1,'标准'],[1.1,'大'],[1.2,'超大']], c.ui.fontScale) + btn('ui-save','保存外观', '', 'primary'))
+        + row('<label class="r271-chk"><input type="checkbox" id="bigTouch"' + (c.ui.bigTouch?' checked':'') + '/>放大触控热区</label>'
+          + '<label class="r271-chk"><input type="checkbox" id="safeEdge"' + (c.ui.safeEdge?' checked':'') + '/>弹窗安全边距</label>'
+          + '<label class="r271-chk"><input type="checkbox" id="nickToast"' + (c.ui.nickToast?' checked':'') + '/>toast 带 Nick 头像</label>'
+          + '<label class="r271-chk"><input type="checkbox" id="autoCheer"' + (c.ui.autoCheer?' checked':'') + '/>完成必做弹鼓励</label>')
+        + muted('字号跟随系统缩放档位手动微调；主题切换不改动任何业务数据。'))
+      + '</div>';
+  }
   /* R354-功能2：设置中心页签 —— 整页内容内嵌到功能中心内容区，与其他页签展示方式一致 */
   RENDER.prefs = function(){
-    return '<div id="r349PrefsHost" class="r354-prefs-host"></div>';
+    return '<div id="r349PrefsHost" class="r354-prefs-host"></div>' + r357SecHtml();
   };
 
   RENDER.tasks = function(){
