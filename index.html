@@ -13009,6 +13009,24 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
   .r354-cal-range{grid-column:2 / 4;text-align:left}
 }
 
+/* ===== R356-书单1：读书轨迹弹窗加载占位（骨架 + 提示，替换单行纯文字） ===== */
+.r356-track-loading{padding:8px 2px 4px}
+.r356-skel-line{
+  height:12px;border-radius:8px;margin:0 0 10px;
+  background:linear-gradient(90deg,var(--tone-100) 0%,var(--tone-200) 45%,var(--tone-100) 90%);
+  background-size:200% 100%;animation:r356Skel 1.1s linear infinite;
+}
+.r356-skel-line.w70{width:70%}
+.r356-skel-line.w50{width:50%}
+.r356-loading-txt{margin-top:2px;font-size:12px;color:var(--tone-700);text-align:center;letter-spacing:.4px}
+@keyframes r356Skel{0%{background-position:0 0}100%{background-position:-200% 0}}
+
+/* ===== R356-英语1：词汇 / KET 词组卡片点击只朗读，卡片配色不变；仅打卡完成后（.checked）变绿 ===== */
+.xs-card.xs-word:not(.checked):hover,
+.xs-card.xs-word:not(.checked):active{border-color:var(--tone-150);transform:none;box-shadow:none}
+.xs-card.xs-word:not(.checked) .xs-tap-speak:hover,
+.xs-card.xs-word:not(.checked) .xs-tap-speak:active{background:transparent;color:inherit}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -34982,12 +35000,22 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
   }catch(e){}
   // R88：弹窗堆叠层级 —— 后打开的弹窗永远盖在之前打开的之上（修复「新增任务/编辑弹窗显示在下层」「设置中心嵌套弹窗被遮挡」）
   let _modalZ = 1000;
-  /* R352-功能1：设置中心置顶弹窗 z-index=12000，其内部各设置弹窗若沿用 1000+ 会被盖住。
-     showModal 检测到设置中心打开时把新弹窗抬到 12000 之上，关闭后自然回落到普通层。 */
+  /* R356-功能1：设置中心已并入功能中心页签，承载它的弹层 #r271Mask 的 z-index 是 9300。
+     其内部设置弹窗若仍按 1000+ 起跳，会永远被压在功能中心弹层下面（「弹窗一直在下层」的根因）。
+     这里按当前可见的承载弹层抬升起跳层级，保证设置弹窗始终显示在最上层；关闭后自然回落到普通层。 */
+  function _modalFloor(){
+    let floor = 1000;
+    try{
+      const embedded = document.querySelector('.r349-settings-embedded');
+      const host = document.getElementById('r271Mask');
+      if(embedded && host && !host.hidden) floor = Math.max(floor, 9300);
+      const sm = document.getElementById('r351SettingsMask'); // 兼容历史置顶弹窗结构
+      if(sm && !sm.hidden) floor = Math.max(floor, 12000);
+    }catch(e){}
+    return floor;
+  }
   const showModal = sel=>{ const el=$(sel); if(!el) return;
-    const sm = document.getElementById('r351SettingsMask');
-    const floor = (sm && !sm.hidden) ? 12000 : 1000;
-    _modalZ = Math.max(_modalZ, floor) + 1; el.style.zIndex = _modalZ; el.hidden=false; };
+    _modalZ = Math.max(_modalZ, _modalFloor()) + 1; el.style.zIndex = _modalZ; el.hidden=false; };
   const hideModal = sel=>{ const el=$(sel); if(!el) return; el.hidden=true; if(el.style.zIndex) el.style.zIndex=''; };
   // R9-REQ2：英语短文朗读状态机（每篇独立 idle/playing/paused）
   let _passagePlayingTitle = null;
@@ -54474,7 +54502,7 @@ function renderKMAdmin(){
       target.innerHTML = list.map(w=>{
         const checked = S.xsIsChecked(xsCat, w.id);
         const chip = w.page ? ('读'+w.page) : (w.lesson ? ('L'+w.lesson) : '');
-        return `<div class="xs-card ${w.source==='user'?'user-added':''} ${checked?'checked':''}" data-xs-speak="${esc(w.en)}" data-xs-speak-zh="${esc(w.wordZh||w.zh||'')}" data-xs-readonly="1">
+        return `<div class="xs-card xs-word ${w.source==='user'?'user-added':''} ${checked?'checked':''}" data-xs-speak="${esc(w.en)}" data-xs-speak-zh="${esc(w.wordZh||w.zh||'')}" data-xs-readonly="1">
           <div class="xs-card-head">
             <span class="xs-card-kind">${w.source==='user'?'我的':(xsCat==='ket'?'KET':'词汇')}</span>
             ${chip?`<span class="xs-card-chip">${chip}</span>`:''}
@@ -69440,9 +69468,40 @@ function init(){
       .sort(function(a,b){ return b.minutes - a.minutes; });
     const total = rows.reduce(function(a,x){ return a + x.minutes; },0);
     const max = rows.length ? rows[0].minutes : 1;
-    /* R352-书单1：每本书只算一次阅读统计（原实现每行重复过滤/排序整本 bookLog，轨迹弹窗明显卡顿） */
+    /* R356-书单1：一次遍历 bookLog 建立分组索引，替代「每本书都重读整份日志 + 重排」的 r343ReadStat 调用，
+       渲染耗时从「书目数 × 日志数」降为单次分组 + 每本书小范围排序，弹窗载入明显加快。 */
+    const r356Groups = {};
+    log.forEach(function(x){
+      if(!x) return;
+      if(x.bookId){ (r356Groups['id:' + x.bookId] || (r356Groups['id:' + x.bookId] = [])).push(x); }
+      if(x.title){ (r356Groups['ti:' + x.title] || (r356Groups['ti:' + x.title] = [])).push(x); }
+    });
+    const r356StatCache = {};
+    function r356StatFor(b){
+      if(!b) return null;
+      const key = b.id ? ('id:' + b.id) : ('ti:' + b.title);
+      if(r356StatCache[key]) return r356StatCache[key];
+      const src = [];
+      if(b.id && r356Groups['id:' + b.id]) src.push.apply(src, r356Groups['id:' + b.id]);
+      if(b.title && r356Groups['ti:' + b.title]){
+        r356Groups['ti:' + b.title].forEach(function(x){ if(src.indexOf(x) < 0) src.push(x); });
+      }
+      src.sort(function(a, c){
+        return String(a.date || '').localeCompare(String(c.date || '')) || ((Number(a.at) || 0) - (Number(c.at) || 0));
+      });
+      let prev = 0, minutes = 0;
+      src.forEach(function(x){
+        const end = Math.max(0, Number(x.endPage || x.page) || 0);
+        minutes += Number(x.minutes) || 0;
+        if(end > prev) prev = end;
+      });
+      const total = Math.max(0, Number(b.totalPages) || 0);
+      const stt = { total: total, cumulative: prev, minutes: minutes, pct: total > 0 ? Math.min(100, Math.round(prev / total * 100)) : 0 };
+      r356StatCache[key] = stt;
+      return stt;
+    }
     const statMap = {};
-    pool.forEach(function(b){ if(!b) return; const stt = r343ReadStat(b); statMap[b.id] = stt; if(b.title) statMap[b.title] = stt; });
+    pool.forEach(function(b){ if(!b) return; const stt = r356StatFor(b); statMap[b.id] = stt; if(b.title) statMap[b.title] = stt; });
     /* R351-书单2 / R352：累计已读书目 = 全部完成已读打卡的书籍（已读标记或阅读进度达 100%） */
     const doneBooks = pool.filter(function(b){ return b && (b.read || (statMap[b.id] && statMap[b.id].pct >= 100)); }).length;
     /* R355-书单1：预建索引，避免读书明细/最近轨迹逐行 pool.filter 造成弹窗加载迟缓 */
@@ -69501,18 +69560,43 @@ function init(){
     html += '</div>' + r349TrackCalHtml() + '</div>';
     return html;
   }
+  /* R356-书单1：轨迹内容按数据签名缓存；书籍/日志/已读状态未变时二次打开直接命中，不再重算 */
+  let _r356TrackCache = { sig: '', html: '' };
+  function r356TrackSig(){
+    try{
+      const log = (r342R314().bookLog || []);
+      const books = (r342BookList().books || []);
+      const last = log.length ? (log[log.length - 1].date || '') + (log[log.length - 1].at || '') + (log[log.length - 1].minutes || '') : '';
+      return [log.length, last, books.length,
+        books.filter(function(b){ return b && b.read; }).length,
+        books.reduce(function(a, b){ return a + (Number(b && b.totalPages) || 0); }, 0)].join('|');
+    }catch(e){ return ''; }
+  }
   function r342OpenTrack(){
     const body = document.getElementById('r342TrackBody');
     const mask = document.getElementById('modalR342Track');
     if(!body || !mask) return;
     /* R353-书单1：pointerdown 即弹窗；已打开时忽略重复事件，重内容延后计算 */
     if(!mask.hidden) return;
-    body.innerHTML = '<div class="r342-track-loading">正在加载读书轨迹…</div>';
+    const sig = r356TrackSig();
+    if(sig && _r356TrackCache.html && sig === _r356TrackCache.sig){
+      body.innerHTML = _r356TrackCache.html;
+      showModal('#modalR342Track');
+      return;
+    }
+    /* R356-书单1：先出骨架占位（不再一句纯文字），重内容等两帧后再算，点开即时有反馈 */
+    body.innerHTML = '<div class="r356-track-loading">'
+      + '<div class="r356-skel-line w70"></div><div class="r356-skel-line w50"></div><div class="r356-skel-line"></div>'
+      + '<div class="r356-loading-txt">正在加载读书轨迹…</div></div>';
     showModal('#modalR342Track');
     const raf = (typeof requestAnimationFrame === 'function') ? requestAnimationFrame : function(fn){ setTimeout(fn, 0); };
     raf(function(){ setTimeout(function(){
       if(mask.hidden) return;
-      try{ body.innerHTML = r342TrackHtml(); }
+      try{
+        const html = r342TrackHtml();
+        if(sig) _r356TrackCache = { sig: sig, html: html };
+        body.innerHTML = html;
+      }
       catch(e){ body.innerHTML = '<div class="r342-empty">轨迹加载失败，请重试</div>'; }
     }, 0); });
   }
