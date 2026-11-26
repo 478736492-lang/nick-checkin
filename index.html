@@ -12824,6 +12824,9 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
   .r345-track-hit strong,.r345-track-hit em{grid-column:1 / -1}
 }
 
+/* ===== R346：书本详情信息白卡（与右侧阅读记录同款） ===== */
+.r346-detail-info-card{display:grid;gap:8px;padding:12px;border-radius:13px;background:var(--tone-025);border:1px solid var(--tone-line-soft)}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -44763,14 +44766,14 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
           (b.read ? '✅ 已读 · 取消' : '✓ 已读') + '</button>';
     }
     /* R344-1/5：左侧原详情下方补白色底片，内放「阅读打卡」键；右侧为阅读记录区。 */
-    host.innerHTML = '<div class="r343-detail-wrap"><div class="r344-detail-left"><div class="r321-detail-grid">' +
+    host.innerHTML = '<div class="r343-detail-wrap"><div class="r344-detail-left"><div class="r343-read-panel r346-detail-info-card"><div class="r321-detail-grid">' +
       '<div class="r321-detail-ico">📖</div><div>' +
       '<div class="r321-detail-line r334-detail-cat">所属分类：' + esc(cat ? cat.name : '未分类') + '</div>' +
       '<div class="r321-detail-title">《' + esc(b.title) + '》</div>' +
       '<div class="r321-detail-line">作者：' + esc(b.author || '未填写') + '</div>' +
       '<div class="r321-detail-reason"><b>推荐理由：</b>' + (b.reason ? esc(b.reason) : '暂未填写推荐理由') + '</div>' +
       '<div class="r321-detail-line">打卡奖励：<b>' + stars + '⭐</b></div>' +
-      '</div></div>' +
+      '</div></div></div>' +
       '<div class="r343-read-panel r344-detail-foot r345-detail-foot-card">' +
         '<button type="button" class="primary-btn r344-bookin-btn" data-r344-bookin="' + esc(b.id) + '" title="关联我的书单记录阅读时长与页码">📖 阅读打卡</button>' +
       '</div></div>' + r343ReadingHtml(b) + '</div>';
