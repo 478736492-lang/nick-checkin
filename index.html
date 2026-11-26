@@ -12931,14 +12931,15 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
 /* ===== R352：功能中心主题栏背景图 / 年月按键 / 最近轨迹同行排版 ===== */
 /* R352-功能2：设置中心主题栏背景图(1920×200 横幅)迁移到功能中心主题栏，调整尺寸适配横幅 */
 .r271-head.r352-fc-head{
-  min-height:96px;
-  padding:16px 20px;
+  height:64px;min-height:64px;
+  padding:8px 20px;
   background-color:var(--tone-050);
   background-image:var(--title-bg-settings);
-  background-size:cover;
+  background-size:100% 100%;
   background-position:center center;
-  background-repeat:no-repeat;
+  background-repeat:repeat;
   align-items:center;
+  justify-content:flex-end;
 }
 .r271-head.r352-fc-head .r271-title{
   color:#fff;
@@ -12949,7 +12950,7 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
 .r271-head.r352-fc-head .r271-title small{color:rgba(255,255,255,.85)}
 .r271-head.r352-fc-head .r271-x{background:rgba(255,255,255,.9)}
 @media (max-width:680px){
-  .r271-head.r352-fc-head{min-height:76px;padding:10px 14px}
+  .r271-head.r352-fc-head{height:51px;min-height:51px;padding:5px 14px}
   .r271-head.r352-fc-head .r271-title{font-size:18px}
 }
 /* R352-书单2：每月统计年月按键 */
@@ -12984,6 +12985,21 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
 @media (max-width:560px){
   .r342-day-row{gap:4px;font-size:10.5px}
   .r352-day-range{font-size:10px}
+}
+/* R353-书单3：最近轨迹改为与读书明细一致的列表样式 */
+.r353-day-head,.r342-day-row.r353-day-row{
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr) auto auto auto!important;
+  gap:8px;align-items:center;
+}
+.r353-day-head{padding:0 10px 6px;color:var(--tone-700);font-size:11.5px;font-weight:800}
+.r342-day-row.r353-day-row .r342-day-date{white-space:nowrap;color:var(--tone-600);font-weight:800}
+.r342-day-row.r353-day-row .r342-day-name{white-space:nowrap!important;overflow:hidden;text-overflow:ellipsis;min-width:0}
+@media (max-width:760px){
+  .r353-day-head,.r342-day-row.r353-day-row{gap:5px;font-size:11px;padding-left:8px;padding-right:8px}
+}
+@media (max-width:560px){
+  .r353-day-head,.r342-day-row.r353-day-row{gap:4px;font-size:10.5px}
 }
 
 </style>
@@ -13267,9 +13283,7 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
          即主题卡下方、设置网格上方的独立横向条；原「使用模式」设置卡片仍保持移除状态。
          ID 与交互结构（#cardModeSettings / #modeSegSettings / #modeChildSettings / #modeParentSettings /
          #modeSliderSettings）全部保留，app.js 的 setModeUI / 模式点击绑定零改动。 -->
-    <div class="page-title settings-title-card" data-page-node-id="R85setTitle">
-      <h2 data-page-node-id="R85setTitleLbl"></h2>
-    </div><div class="page-content">
+    <div class="page-content">
     <div class="settings-card-mode r265-mode-between" id="cardModeSettings" data-page-node-id="R118cardMode">
         <div class="settings-card-main" data-page-node-id="R118cardModeMain">
           <div class="settings-card-body">
@@ -45339,7 +45353,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     // R343-1：大阅读两个入口已迁入我的书单板块，随书单重渲染补绑
     [document.getElementById('btnR342BookIn'), document.getElementById('btnR342Track')].forEach(function(b){
       if(!b) return;
-      b.onclick = (b.id === 'btnR342BookIn') ? r342OpenBookCheckin : r342OpenTrack;
+      if(b.id === 'btnR342BookIn') b.onclick = r342OpenBookCheckin; else r353BindTrackBtn();
     });
     /* R334-3.4：书单弹窗内「书名 / 作者」检索 —— 输入即列候选，点候选打开书籍详情 */
     const blSearch = document.getElementById('r334BlSearch');
@@ -53087,14 +53101,14 @@ function renderKMAdmin(){
     const url = bgs && bgs.settings;
     if(url){
       head.style.backgroundImage = "url('" + url + "')";
-      head.style.backgroundSize = 'cover';
+      head.style.backgroundSize = '100% 100%';
       head.style.backgroundPosition = 'center center';
-      head.style.backgroundRepeat = 'no-repeat';
+      head.style.backgroundRepeat = 'repeat';
     }else{
       head.style.backgroundImage = 'var(--title-bg-settings)';
-      head.style.backgroundSize = 'cover';
+      head.style.backgroundSize = '100% 100%';
       head.style.backgroundPosition = 'center center';
-      head.style.backgroundRepeat = 'no-repeat';
+      head.style.backgroundRepeat = 'repeat';
     }
   }
   // V25-4：标题区域独立背景图（每个板块 page-title 可单独设置）
@@ -64200,7 +64214,7 @@ function init(){
       + '<button class="r271-dock-btn r271-dock-shortcut" id="r271DockShortcutBtn" data-act="shortcuts" title="快捷键" aria-expanded="false">⚡</button>'
       + '</div>'
       + '<div class="r271-mask" id="r271Mask" hidden><div class="r271-modal" id="r271Modal">'
-      + '<div class="r271-head r352-fc-head"><div class="r271-title r351-main-title">🦊 Nick 学习乐园 · 功能中心 <small>R271</small></div>'
+      + '<div class="r271-head r352-fc-head">'
       + '<button class="r271-x" data-act="close" title="关闭">✕</button></div>'
       + '<div class="r271-tabs" id="r271Tabs"></div>'
       + '<div class="r271-body" id="r271Body"></div>'
@@ -68908,6 +68922,7 @@ function init(){
     /* R348 探针钩子：阅读记录 / 读书轨迹现算结果 */
     window.__r348TrackHtml = r342TrackHtml;
     window.__r348OpenTrack = r342OpenTrack;
+    window.__r353BindTrackBtn = r353BindTrackBtn;
     window.__r348ReadHtml = r343ReadingHtml;
     window.__r319BaikeOrder = (S && S.r319BaikeOrder) ? S.r319BaikeOrder() : [];
     /* R321 探针钩子：让测试在切到档案页后显式重绑定新增键 */
@@ -69401,7 +69416,7 @@ function init(){
         + '<span class="r342-chart-track"><i style="width:'+Math.max(3,Math.round(x.minutes/max*100))+'%"></i></span>'
         + '<span class="r342-chart-val">'+x.minutes+'′</span></div>';
     }).join('') || '<div class="r342-empty">还没有读书打卡，点「图书馆书打卡」开始记录吧</div>';
-    html += '</div><div class="r342-track-h">📋 读书明细</div><div class="r342-table-wrap"><table class="r342-table"><thead><tr><th>最近阅读</th><th>书名</th><th>所属书单</th><th>次数</th><th>已阅页数</th><th>阅读时长</th><th>总页数</th><th>是否完成阅读</th></tr></thead><tbody>';
+    html += '</div><div class="r342-track-h">📋 读书明细</div><div class="r342-table-wrap"><table class="r342-table"><thead><tr><th>阅读日期</th><th>书名</th><th>所属书单</th><th>次数</th><th>已阅页数</th><th>阅读时长</th><th>总页数</th><th>是否完成阅读</th></tr></thead><tbody>';
     /* R349-5：最近阅读时间移到书名左侧；最高页码改为该书设置的总页数，右侧新增完成状态。
        R351-书单3：次数与阅读时长中间补上已阅页数。 */
     html += rows.map(function(x){
@@ -69415,15 +69430,16 @@ function init(){
     }).join('');
     html += '</tbody></table></div>';
     if(log.length){
-      html += '<div class="r342-track-h">🕘 最近轨迹</div><div class="r342-day-list">'
+      html += '<div class="r342-track-h">🕘 最近轨迹</div><div class="r353-day-list">'
+        + '<div class="r353-day-head"><span>阅读日期</span><span>书名</span><span>起止页</span><span>阅读页数</span><span>阅读时间</span></div>'
         + log.slice(0,12).map(function(x){
           const s = Math.max(0, Number(x && (x.startPage || x.start)) || 0);
           const e = Math.max(0, Number(x && (x.endPage || x.page)) || 0);
           const range = e > 0 ? (s > 0 ? s : 1) + '-' + e + '页' : '—页';
-          return '<div class="r342-day-row"><span class="r342-day-name">《'+esc(x.title||'')+'》'+(x.note?' · '+esc(x.note):'')+'</span>'
+          return '<div class="r342-day-row r353-day-row"><span class="r342-day-date">'+esc(x.date)+'</span>'
+          + '<span class="r342-day-name">《'+esc(x.title||'')+'》'+(x.note?' · '+esc(x.note):'')+'</span>'
           + '<span class="r352-day-range">' + range + '</span>'
           + '<span class="r342-day-pages">'+r351ReadPageCount(x)+'页</span>'
-          + '<span class="r342-day-sub">'+esc(x.date)+'</span>'
           + '<span class="r342-day-mark">'+(Number(x.minutes)||0)+'分钟</span></div>'; }).join('') + '</div>';
     }
     html += '</div>' + r349TrackCalHtml() + '</div>';
@@ -69431,14 +69447,25 @@ function init(){
   }
   function r342OpenTrack(){
     const body = document.getElementById('r342TrackBody');
-    if(!body) return;
-    /* R352-书单1：先给占位并立刻弹窗，重内容放到下一帧计算，点击即时有反馈 */
+    const mask = document.getElementById('modalR342Track');
+    if(!body || !mask) return;
+    /* R353-书单1：pointerdown 即弹窗；已打开时忽略重复事件，重内容延后计算 */
+    if(!mask.hidden) return;
     body.innerHTML = '<div class="r342-track-loading">正在加载读书轨迹…</div>';
     showModal('#modalR342Track');
-    setTimeout(function(){
+    const raf = (typeof requestAnimationFrame === 'function') ? requestAnimationFrame : function(fn){ setTimeout(fn, 0); };
+    raf(function(){ setTimeout(function(){
+      if(mask.hidden) return;
       try{ body.innerHTML = r342TrackHtml(); }
       catch(e){ body.innerHTML = '<div class="r342-empty">轨迹加载失败，请重试</div>'; }
-    }, 0);
+    }, 0); });
+  }
+  function r353BindTrackBtn(){
+    const b = document.getElementById('btnR342Track');
+    if(!b || b._r353TrackBound) return;
+    b._r353TrackBound = true;
+    b.addEventListener('pointerdown', function(){ r342OpenTrack(); }, {passive:true});
+    b.onclick = function(){ r342OpenTrack(); };
   }
   /* R349-6：读书日历 —— 复用万年历弹窗（同一套 .navcal 样式），点日期看当天读书明细 */
   let _r349CalFrom = '';
@@ -69612,7 +69639,7 @@ function init(){
     r342BindDayEntries();
     r342BindWrongEntry();
     const b = document.getElementById('btnR342Track');
-    if(b && !b._r342Bound){ b._r342Bound = true; b.onclick = r342OpenTrack; }
+    r353BindTrackBtn();
     /* R349-4：轨迹搜索框已删除，不再绑定输入事件。 */
     const sv = document.getElementById('r342BookSave');
     if(sv && !sv._r342Bound){ sv._r342Bound = true; sv.onclick = r342BookCheckinSave; }
