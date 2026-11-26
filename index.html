@@ -40432,6 +40432,8 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         if(preset <= 0 && _r352LastNode) preset = r352StarsOfNode(_r352LastNode);
         if(preset > 0) n = preset;
       }
+      /* R355-全局1：没有设置奖励⭐️的打卡操作不弹成功动画；取消打卡仍走中性动画 */
+      if(!isCancel && n <= 0) return;
       const old = document.querySelector('.r327-celebrate');
       if(old && old.parentNode) old.parentNode.removeChild(old);
       const box = document.createElement('div');
@@ -54472,7 +54474,7 @@ function renderKMAdmin(){
       target.innerHTML = list.map(w=>{
         const checked = S.xsIsChecked(xsCat, w.id);
         const chip = w.page ? ('读'+w.page) : (w.lesson ? ('L'+w.lesson) : '');
-        return `<div class="xs-card ${w.source==='user'?'user-added':''} ${checked?'checked':''}" data-xs-check-card="${xsCat}::${esc(w.id)}">
+        return `<div class="xs-card ${w.source==='user'?'user-added':''} ${checked?'checked':''}" data-xs-speak="${esc(w.en)}" data-xs-speak-zh="${esc(w.wordZh||w.zh||'')}" data-xs-readonly="1">
           <div class="xs-card-head">
             <span class="xs-card-kind">${w.source==='user'?'我的':(xsCat==='ket'?'KET':'词汇')}</span>
             ${chip?`<span class="xs-card-chip">${chip}</span>`:''}
@@ -56755,13 +56757,16 @@ function renderKMAdmin(){
               try{
                 const _rw = (_r351CkStars > 0 && Date.now() - _r351CkAt < 2000) ? _r351CkStars
                   : ((_r352PresetStars > 0 && Date.now() - _r351CkAt < 2500) ? _r352PresetStars : 0);
-                if(Date.now() - (_r349FxAt || 0) > 400){
-                  r336CheckinFx(!_r349Undo, _rw);
-                }else if(_rw > 0 && !_r349Undo){
-                  /* R354-全局：同步 handler 已渲染 0⭐ 时直接纠正文案，不再被去重窗口跳过 */
-                  const _txt = document.querySelector('.r327-celebrate .r327-celebrate-txt');
-                  if(_txt && !/已取消打卡/.test(_txt.textContent || '')){
-                    _txt.innerHTML = _txt.innerHTML.replace(/恭喜获得\s*0\s*[⭐🌟]/, '恭喜获得 ' + _rw + '⭐');
+                /* R355-全局1：无奖励星数不弹动画，也不占用去重窗口 */
+                if(_rw > 0 || _r349Undo){
+                  if(Date.now() - (_r349FxAt || 0) > 400){
+                    r336CheckinFx(!_r349Undo, _rw);
+                  }else if(_rw > 0 && !_r349Undo){
+                    /* R354-全局：同步 handler 已渲染 0⭐ 时直接纠正文案，不再被去重窗口跳过 */
+                    const _txt = document.querySelector('.r327-celebrate .r327-celebrate-txt');
+                    if(_txt && !/已取消打卡/.test(_txt.textContent || '')){
+                      _txt.innerHTML = _txt.innerHTML.replace(/恭喜获得\s*0\s*[⭐🌟]/, '恭喜获得 ' + _rw + '⭐');
+                    }
                   }
                 }
               }catch(_){ }
@@ -64399,6 +64404,12 @@ function init(){
     try{ if(S && S.beginSettings && !S.isStaging()) S.beginSettings(); }catch(e){}
   }
   function r349UnmountSettings(){
+    /* R355-功能1：离开设置中心页签时收起其内部打开的高层级设置弹窗，避免残留遮挡新页签 */
+    try{
+      $$('.modal-mask').forEach(function(mm){
+        if(!mm.hidden && (parseInt(mm.style.zIndex,10)||0) > 12000) mm.hidden = true;
+      });
+    }catch(e){}
     if(!_r349SetMounted) return;
     _r349SetMounted = false;
     const page = document.querySelector('section.page-settings');
@@ -64410,26 +64421,18 @@ function init(){
     try{ if(S && S.isStaging && S.isStaging() && S.discardSettings) S.discardSettings(); }catch(e){}
   }
   /* R354-功能2：设置中心与 tasks/tools 等页签一致，直接在功能中心内容区展示 */
-  let _r351SetOpen = false, _r351SetFromTab = null;
+  let _r351SetFromTab = null; // R355：设置中心已普通页签化，不再需要弹窗态 _r351SetOpen
   function r351OpenSettings(from){
-    shell();
-    if(_r351SetOpen) return;
+    /* R355-功能1：设置中心统一走功能中心普通页签渲染；
+       不再提前 shell() 重建 DOM，也不再用弹窗态拦截（那是页签切换失效的根因）。 */
     _r351SetFromTab = (from === 'tab' && curTab !== 'prefs') ? curTab : null;
     const m = q('#r271Mask'); if(m) m.hidden = false;
     curTab = 'prefs';
     render();
-    _r351SetOpen = true;
   }
   function r351ReturnFromSettings(){
-    if(!_r351SetOpen) return;
-    /* R352-功能1：设置中心内部打开的设置类弹窗若未关，返回时一并收起，避免残留遮挡 */
-    try{
-      $$('.modal-mask').forEach(function(mm){
-        if(!mm.hidden && (parseInt(mm.style.zIndex,10)||0) > 12000) mm.hidden = true;
-      });
-    }catch(e){}
+    if(curTab !== 'prefs') return;
     r349UnmountSettings();
-    _r351SetOpen = false;
     if(_r351SetFromTab){ const back = _r351SetFromTab; _r351SetFromTab = null; curTab = back; render(); }
     else { close(); }
   }
@@ -64440,7 +64443,7 @@ function init(){
     const m = q('#r271Mask'); if(m) m.hidden = false;
     render();
   }
-  function close(){ if(_r351SetOpen) r351ReturnFromSettings(); r349UnmountSettings(); const m = q('#r271Mask'); if(m) m.hidden = true; }
+  function close(){ r349UnmountSettings(); const m = q('#r271Mask'); if(m) m.hidden = true; }
   /* R354-功能2：设置中心唯一对外入口改为功能中心普通页签 */
   window.__r349OpenPrefs = function(tab){ if(tab && tab !== 'prefs'){ shell(); curTab = tab; render(); } r351OpenSettings('direct'); };
   function render(){
@@ -69442,6 +69445,25 @@ function init(){
     pool.forEach(function(b){ if(!b) return; const stt = r343ReadStat(b); statMap[b.id] = stt; if(b.title) statMap[b.title] = stt; });
     /* R351-书单2 / R352：累计已读书目 = 全部完成已读打卡的书籍（已读标记或阅读进度达 100%） */
     const doneBooks = pool.filter(function(b){ return b && (b.read || (statMap[b.id] && statMap[b.id].pct >= 100)); }).length;
+    /* R355-书单1：预建索引，避免读书明细/最近轨迹逐行 pool.filter 造成弹窗加载迟缓 */
+    const bkByKey = {};
+    pool.forEach(function(b){
+      if(!b) return;
+      if(b.id) bkByKey['id:' + b.id] = b;
+      if(b.title) bkByKey['ti:' + b.title] = b;
+    });
+    function r355FindBook(x){
+      return bkByKey['id:' + (x && x.bookId)] || bkByKey['ti:' + (x && x.title)] || null;
+    }
+    const rangeMap = {};
+    log.forEach(function(x){
+      if(!x) return;
+      const k = x.bookId || x.title || '';
+      const g = rangeMap[k] || (rangeMap[k] = { s:0, e:0 });
+      const sv = Number(x.startPage) || 0, ev = Number(x.endPage || x.page) || 0;
+      if(sv > 0 && (!g.s || sv < g.s)) g.s = sv;
+      if(ev > 0 && ev > g.e) g.e = ev;
+    });
     let html = '<div class="r349-track-cols"><div class="r349-track-main">';
     html += '<div class="r342-track-sum"><div><b>'+borrowing+'</b><span>在读书目</span></div><div><b>'+log.length+'</b><span>打卡次数</span></div><div><b>'+total+'</b><span>累计分钟</span></div><div><b>'+doneBooks+'</b><span>累计已读书目</span></div></div>';
     html += '<div class="r342-track-h">📊 阅读时长分布</div><div class="r342-chart">';
@@ -69454,7 +69476,7 @@ function init(){
     /* R349-5：最近阅读时间移到书名左侧；最高页码改为该书设置的总页数，右侧新增完成状态。
        R351-书单3：次数与阅读时长中间补上已阅页数。 */
     html += rows.map(function(x){
-      const bk = pool.filter(function(b){ return b && (b.id === x.bookId || b.title === x.title); })[0];
+      const bk = r355FindBook(x);
       const totalPages = bk ? Math.max(0, Number(bk.totalPages) || 0) : 0;
       const done = !!(bk && bk.read);
       const stt = bk ? (statMap[bk.id] || statMap[bk.title]) : null;
@@ -69464,20 +69486,16 @@ function init(){
     }).join('');
     html += '</tbody></table></div>';
     if(log.length){
-      /* R354-书单1：最近轨迹表格化，字段/样式与「读书明细」一一对应 */
+      /* R355-书单2：统计事项还原，仅保持与读书明细一致的表格展示 */
       html += '<div class="r342-track-h">🕘 最近轨迹</div><div class="r342-table-wrap r354-recent-wrap">'
-        + '<table class="r342-table r354-recent-table"><thead><tr><th>阅读日期</th><th>书名</th><th>所属书单</th><th>次数</th><th>已阅页数</th><th>阅读时长</th><th>总页数</th><th>是否完成阅读</th></tr></thead><tbody>'
+        + '<table class="r342-table r354-recent-table"><thead><tr><th>阅读日期</th><th>书名</th><th>起止页</th><th>阅读页数</th><th>阅读时间</th></tr></thead><tbody>'
         + log.slice(0,12).map(function(x){
-          const bk = pool.filter(function(b){ return b && (b.id === x.bookId || b.title === x.title); })[0];
-          const totalPages = bk ? Math.max(0, Number(bk.totalPages) || 0) : 0;
-          const done = !!(bk && bk.read);
+          const bk = r355FindBook(x);
           const stt = bk ? (statMap[bk.id] || statMap[bk.title]) : null;
           const readPages = stt ? stt.cumulative : (Number(x.page) || 0);
-          const g = byBook[x.bookId || x.title || ''];
-          const times = g ? g.times : 1;
-          const cat = x.catName || r342CatName(bk && bk.cat) || '未分类';
-          return '<tr><td>'+esc(x.date)+'</td><td>《'+esc(x.title||'')+'》</td><td>'+esc(cat)+'</td><td>'+times+'</td><td>'+readPages+' 页</td><td>'+(Number(x.minutes)||0)+' 分钟</td>'
-            + '<td>'+(totalPages ? totalPages + ' 页' : '—')+'</td><td>'+(done ? '✅ 已完成' : '未完成')+'</td></tr>';
+          const rg = rangeMap[x.bookId || x.title || ''];
+          const rangeTxt = (rg && rg.e) ? ((rg.s || 1) + '-' + rg.e + '页') : '—';
+          return '<tr><td>'+esc(x.date)+'</td><td>《'+esc(x.title||'')+'》</td><td>'+rangeTxt+'</td><td>'+readPages+' 页</td><td>'+(Number(x.minutes)||0)+' 分钟</td></tr>';
         }).join('') + '</tbody></table></div>';
     }
     html += '</div>' + r349TrackCalHtml() + '</div>';
