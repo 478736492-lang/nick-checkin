@@ -12928,6 +12928,64 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
   .r351-settings-body{padding:8px}
 }
 
+/* ===== R352：功能中心主题栏背景图 / 年月按键 / 最近轨迹同行排版 ===== */
+/* R352-功能2：设置中心主题栏背景图(1920×200 横幅)迁移到功能中心主题栏，调整尺寸适配横幅 */
+.r271-head.r352-fc-head{
+  min-height:96px;
+  padding:16px 20px;
+  background-color:var(--tone-050);
+  background-image:var(--title-bg-settings);
+  background-size:cover;
+  background-position:center center;
+  background-repeat:no-repeat;
+  align-items:center;
+}
+.r271-head.r352-fc-head .r271-title{
+  color:#fff;
+  font-size:23px;
+  letter-spacing:.6px;
+  text-shadow:0 2px 8px rgba(12,36,72,.55),0 1px 2px rgba(12,36,72,.7);
+}
+.r271-head.r352-fc-head .r271-title small{color:rgba(255,255,255,.85)}
+.r271-head.r352-fc-head .r271-x{background:rgba(255,255,255,.9)}
+@media (max-width:680px){
+  .r271-head.r352-fc-head{min-height:76px;padding:10px 14px}
+  .r271-head.r352-fc-head .r271-title{font-size:18px}
+}
+/* R352-书单2：每月统计年月按键 */
+.r352-ym-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  border:1.5px solid var(--tone-300);border-radius:9px;
+  background:#fff;color:var(--tone-800);
+  padding:4px 10px;margin-bottom:8px;
+  font-size:13.5px;font-weight:800;cursor:pointer;
+}
+.r352-ym-btn:active{transform:scale(.97)}
+.r352-ym-caret{color:var(--tone-500);font-size:12px}
+/* R352-书单1：轨迹弹窗加载占位 */
+.r342-track-loading{padding:26px;text-align:center;color:var(--muted);font-size:13px}
+/* R352-书单3：最近轨迹信息卡 —— 书名 / 起止页 / 页数统计 / 时间 / 时长，全部同行展示 */
+.r342-day-row{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto auto auto auto!important;
+  grid-template-areas:none!important;
+  gap:8px;align-items:center;
+  padding:8px 10px;border:1px solid var(--tone-line-soft);border-radius:10px;
+  background:var(--tone-025);font-size:12.5px;
+}
+.r342-day-row .r342-day-name{grid-area:auto!important;white-space:nowrap!important;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.r342-day-row .r342-day-sub{grid-area:auto!important;white-space:nowrap}
+.r342-day-row .r342-day-pages{grid-area:auto!important;white-space:nowrap;color:var(--tone-700);font-weight:800}
+.r342-day-row .r342-day-mark{grid-area:auto!important;white-space:nowrap;color:var(--tone-700);font-weight:700}
+.r352-day-range{white-space:nowrap;color:var(--tone-600);font-weight:800;font-size:11.5px}
+@media (max-width:760px){
+  .r342-day-row{grid-template-columns:minmax(0,1fr) auto auto auto auto!important;gap:5px;font-size:11px;padding:7px 8px}
+}
+@media (max-width:560px){
+  .r342-day-row{gap:4px;font-size:10.5px}
+  .r352-day-range{font-size:10px}
+}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -34886,7 +34944,12 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
   }catch(e){}
   // R88：弹窗堆叠层级 —— 后打开的弹窗永远盖在之前打开的之上（修复「新增任务/编辑弹窗显示在下层」「设置中心嵌套弹窗被遮挡」）
   let _modalZ = 1000;
-  const showModal = sel=>{ const el=$(sel); if(!el) return; _modalZ = Math.max(_modalZ,1000)+1; el.style.zIndex = _modalZ; el.hidden=false; };
+  /* R352-功能1：设置中心置顶弹窗 z-index=12000，其内部各设置弹窗若沿用 1000+ 会被盖住。
+     showModal 检测到设置中心打开时把新弹窗抬到 12000 之上，关闭后自然回落到普通层。 */
+  const showModal = sel=>{ const el=$(sel); if(!el) return;
+    const sm = document.getElementById('r351SettingsMask');
+    const floor = (sm && !sm.hidden) ? 12000 : 1000;
+    _modalZ = Math.max(_modalZ, floor) + 1; el.style.zIndex = _modalZ; el.hidden=false; };
   const hideModal = sel=>{ const el=$(sel); if(!el) return; el.hidden=true; if(el.style.zIndex) el.style.zIndex=''; };
   // R9-REQ2：英语短文朗读状态机（每篇独立 idle/playing/paused）
   let _passagePlayingTitle = null;
@@ -40264,13 +40327,47 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
   let _r349FxAt = 0;
   /* R351-全局6：本次打卡点击窗口内由 addStars 实际发放的奖励星数 */
   let _r351CkAt = 0, _r351CkStars = 0;
+  /* R352-全局1：捕获阶段从被点打卡键推断的任务预设奖励星数（覆盖走 S.toggleCheckIn 等不经 addStars 的路径） */
+  let _r352PresetStars = 0;
+  function r352StarsOfNode(node){
+    try{
+      if(!node || !node.getAttribute) return 0;
+      /* ① 显式 data-stars（含各级父节点） */
+      let chain = node;
+      for(let i=0;i<4 && chain;i++){
+        const ds = chain.getAttribute && chain.getAttribute('data-stars');
+        if(ds && (parseInt(ds,10)||0) > 0) return parseInt(ds,10);
+        chain = chain.parentElement;
+      }
+      /* ② 按钮 title / 文案里的「+N⭐」 */
+      const src = [(node.getAttribute('title')||''), (node.textContent||'')];
+      for(let i=0;i<src.length;i++){
+        const m = src[i].match(/[+＋]\s*(\d+)\s*[⭐🌟]/);
+        if(m){ const v = parseInt(m[1],10); if(v > 0) return v; }
+      }
+      /* ③ 已知打卡键 → 任务星数设置 */
+      const MAP = [
+        ['data-kwqa-checkin','kwqa'], ['data-sc-checkin','sc'], ['data-zx-checkin','sc'],
+        ['data-nw-think-checkin','think'], ['data-kp-check','think'],
+        ['data-suzhi-checkin','ktxs'], ['data-ri-checkin','fest']
+      ];
+      for(let i=0;i<MAP.length;i++){
+        if(node.closest && node.closest('['+MAP[i][0]+']')){
+          const v = S.getTaskStars(MAP[i][1]); if(v > 0) return v;
+        }
+      }
+    }catch(e){}
+    return 0;
+  }
   function r327CheckinSuccess(stars, isCancel){
     try{
       /* R349-全局1：记录本次统一动画的时间，供捕获阶段去重（避免同一次点击播两遍） */
       _r349FxAt = Date.now();
       const cfg = r328CheckinCfg();
       const nm = ((S.load().profile || {}).nickname || 'Nick');
-      const n = Math.max(0, parseInt(stars, 10) || 0);
+      let n = Math.max(0, parseInt(stars, 10) || 0);
+      /* R352-全局1：传入 0 时在打卡点击窗口内回退到任务预设奖励星数，杜绝「恭喜获得 0⭐」 */
+      if(!isCancel && n === 0 && _r352PresetStars > 0 && Date.now() - (_r351CkAt||0) < 2500) n = _r352PresetStars;
       const old = document.querySelector('.r327-celebrate');
       if(old && old.parentNode) old.parentNode.removeChild(old);
       const box = document.createElement('div');
@@ -40313,6 +40410,8 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     try{ r327CheckinSuccess(stars || 0, !on); }catch(e){}
   }
   window.__r336CheckinFx = r336CheckinFx;
+  /* R352-全局1：测试钩子——设本次打卡预设奖励星数，供定向探针验证文案数值回退 */
+  window.__r352SetPreset = function(n){ _r351CkAt = Date.now(); _r352PresetStars = Math.max(0, parseInt(n,10)||0); };
 
   // 错题本「批改」判对后：同步当日快照与主面板该题（作答改为正确答案、标 ✓）
   function _syncCalcBoardWrongFixed(key){
@@ -47261,8 +47360,28 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   function wbYmPickConfirm(){
     if(!_wbYmPickY || !_wbYmPickM){ hideModal('#modalWbYmPick'); return; }
     const p2 = n => (n<10?'0':'')+n;
-    wbDpApplyYM(_wbYmPickY + '-' + p2(_wbYmPickM));
+    const ym = _wbYmPickY + '-' + p2(_wbYmPickM);
+    /* R352-书单2：读书轨迹的年月选择器只切换统计月份，不改周看板日期 */
+    if(_r352YmForStat){
+      _r352YmForStat = false; _r352StatYM = ym;
+      hideModal('#modalWbYmPick');
+      try{ const body = document.getElementById('r342TrackBody'); if(body) body.innerHTML = r342TrackHtml(); }catch(e){}
+      return;
+    }
+    wbDpApplyYM(ym);
     hideModal('#modalWbYmPick');
+  }
+  /* R352-书单2：打开读书轨迹专用年月选择器（沿用同一套上下滑动滚轮） */
+  let _r352YmForStat = false;
+  function r352OpenStatYmPick(){
+    _r352YmForStat = true;
+    const a = r352StatYM().split('-');
+    _wbYmPickY = +a[0] || new Date().getFullYear();
+    _wbYmPickM = +a[1] || (new Date().getMonth() + 1);
+    showModal('#modalWbYmPick');
+    wbYmPickRender();
+    const cancel = document.getElementById('btnWbYmPickCancel');
+    if(cancel) cancel.onclick = function(){ _r352YmForStat = false; hideModal('#modalWbYmPick'); };
   }
   function wbDatePickGo(iso){
     if(!iso) return;
@@ -52958,6 +53077,25 @@ function renderKMAdmin(){
     });
     // V25-4：应用每个板块标题区域独立背景图
     applySectionTitleBgs();
+    try{ r352ApplyFcHeadBg(); }catch(e){}
+  }
+  /* R352-功能2：把设置中心主题栏背景图迁移到功能中心主题栏（用户上传优先，否则用内置横幅） */
+  function r352ApplyFcHeadBg(){
+    const head = document.querySelector('.r271-head.r352-fc-head');
+    if(!head) return;
+    const bgs = S.getSectionTitleBgs ? S.getSectionTitleBgs() : {};
+    const url = bgs && bgs.settings;
+    if(url){
+      head.style.backgroundImage = "url('" + url + "')";
+      head.style.backgroundSize = 'cover';
+      head.style.backgroundPosition = 'center center';
+      head.style.backgroundRepeat = 'no-repeat';
+    }else{
+      head.style.backgroundImage = 'var(--title-bg-settings)';
+      head.style.backgroundSize = 'cover';
+      head.style.backgroundPosition = 'center center';
+      head.style.backgroundRepeat = 'no-repeat';
+    }
   }
   // V25-4：标题区域独立背景图（每个板块 page-title 可单独设置）
   function applySectionTitleBgs(){
@@ -56545,12 +56683,14 @@ function renderKMAdmin(){
              「批改」类按键（data-calc-check）不是打卡，不参与。 */
           if(!t.closest('[data-calc-check]')){
             const _r349Undo = r315IsUndoClick(t);
-            /* R351-全局6：捕获阶段开窗，处理器内 addStars 会记下该任务预设奖励 */
+            /* R351-全局6 / R352-全局1：捕获阶段开窗，同时从打卡键推断任务预设奖励 */
             _r351CkAt = Date.now(); _r351CkStars = 0;
+            _r352PresetStars = r352StarsOfNode(node);
             setTimeout(function(){
               try{
                 if(Date.now() - (_r349FxAt || 0) > 400){
-                  const _rw = (_r351CkStars > 0 && Date.now() - _r351CkAt < 2000) ? _r351CkStars : 0;
+                  const _rw = (_r351CkStars > 0 && Date.now() - _r351CkAt < 2000) ? _r351CkStars
+                    : ((_r352PresetStars > 0 && Date.now() - _r351CkAt < 2500) ? _r352PresetStars : 0);
                   r336CheckinFx(!_r349Undo, _rw);
                 }
               }catch(_){ }
@@ -64060,7 +64200,7 @@ function init(){
       + '<button class="r271-dock-btn r271-dock-shortcut" id="r271DockShortcutBtn" data-act="shortcuts" title="快捷键" aria-expanded="false">⚡</button>'
       + '</div>'
       + '<div class="r271-mask" id="r271Mask" hidden><div class="r271-modal" id="r271Modal">'
-      + '<div class="r271-head"><div class="r271-title r351-main-title">🦊 Nick 学习乐园 · 功能中心 <small>R271</small></div>'
+      + '<div class="r271-head r352-fc-head"><div class="r271-title r351-main-title">🦊 Nick 学习乐园 · 功能中心 <small>R271</small></div>'
       + '<button class="r271-x" data-act="close" title="关闭">✕</button></div>'
       + '<div class="r271-tabs" id="r271Tabs"></div>'
       + '<div class="r271-body" id="r271Body"></div>'
@@ -64072,6 +64212,7 @@ function init(){
       + '<div class="r351-settings-body" id="r349PrefsHost"></div>'
       + '</div></div>';
     D.body.appendChild(root);
+    try{ r352ApplyFcHeadBg(); }catch(e){}
     root.addEventListener('click', onAct);
     root.addEventListener('change', onChange);
     r307BindDockDrag();  /* R307-3.1：⚡ 快捷键开启拖拽移动 */
@@ -64209,6 +64350,8 @@ function init(){
     _r351SetFromTab = (from === 'tab' && curTab !== 'prefs') ? curTab : null;
     const head = q('#r351SettingsHead'), title = document.querySelector('.settings-title-card');
     if(head && title){
+      /* R352-功能1：若上一次未正常归还，先复位再搬移，防止重复挂载导致返回丢页 */
+      if(title.parentNode !== head && title._r351Home && title._r351Home.parent) r351ReturnFromSettings();
       if(!title._r351Home) title._r351Home = { parent:title.parentNode, next:title.nextSibling };
       title.hidden = false;
       title.classList.add('r351-moved-title');
@@ -64222,6 +64365,12 @@ function init(){
   }
   function r351ReturnFromSettings(){
     if(!_r351SetOpen) return;
+    /* R352-功能1：设置中心内部打开的设置类弹窗若未关，返回时一并收起，避免残留遮挡 */
+    try{
+      $$('.modal-mask').forEach(function(mm){
+        if(!mm.hidden && (parseInt(mm.style.zIndex,10)||0) > 12000) mm.hidden = true;
+      });
+    }catch(e){}
     const m = q('#r351SettingsMask'); if(m) m.hidden = true;
     r349UnmountSettings();
     const title = document.querySelector('.settings-title-card');
@@ -68908,6 +69057,7 @@ function init(){
     document.addEventListener('click', function(e){
       const t = e.target;
       if(!t || !t.closest) return;
+      if(t.closest('#r352MonthYmBtn')){ r352OpenStatYmPick(); return; }
       const el = t.closest('[data-r342-date]');
       /* R351-书单4：读书轨迹右侧日历点日期直接看当天明细 */
       if(el && el.closest('.r349-track-cal')){
@@ -69163,10 +69313,16 @@ function init(){
     const e = Math.max(0, Number(x && (x.endPage || x.page)) || 0);
     return e > 0 ? Math.max(0, e - (s > 0 ? s - 1 : 0)) : 0;
   }
-  /* R351-书单5：日历下方的每月统计（本月书籍数 / 累计页数 / 本月明细） */
-  function r351MonthStatHtml(){
+  /* R352-书单2：当前查看的统计年月（空 = 本月），由年月选择器确认后写入 */
+  let _r352StatYM = '';
+  function r352StatYM(){
+    if(_r352StatYM) return _r352StatYM;
     const now = new Date();
-    const ym = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+    return now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+  }
+  /* R351-书单5 / R352-书单2：日历下方的每月统计（本月书籍数 / 累计页数 / 本月明细） */
+  function r351MonthStatHtml(){
+    const ym = r352StatYM();
     const logs = ((r342R314().bookLog || []).filter(function(x){ return x && String(x.date || '').slice(0, 7) === ym; }).slice())
       .sort(function(a, b){ return String(b.date || '').localeCompare(String(a.date || '')) || ((Number(b.at) || 0) - (Number(a.at) || 0)); });
     const books = {};
@@ -69176,7 +69332,7 @@ function init(){
       return '<div class="r351-month-row"><b>' + esc(String(x.date || '').slice(5)) + '</b>'
         + '<span>《' + esc(x.title || '') + '》</span><em>' + r351ReadPageCount(x) + ' 页 · ' + (Number(x.minutes) || 0) + ' 分钟</em></div>';
     }).join('') || '<div class="r342-empty">本月还没有读书打卡</div>';
-    return '<div class="r351-month-card"><div class="r351-month-head">📈 每月统计 · ' + ym + '</div>'
+    return '<div class="r351-month-card"><button class="r352-ym-btn" id="r352MonthYmBtn" type="button" title="点击选择年月">📈 每月统计 · ' + ym + ' <span class="r352-ym-caret">▾</span></button>'
       + '<div class="r351-month-kpis"><div><b>' + Object.keys(books).length + '</b><span>本月阅读书籍</span></div>'
       + '<div><b>' + pages + '</b><span>累计阅读页数</span></div></div>'
       + '<div class="r351-month-h">本月读书明细</div><div class="r351-month-list">' + detail + '</div></div>';
@@ -69232,8 +69388,11 @@ function init(){
       .sort(function(a,b){ return b.minutes - a.minutes; });
     const total = rows.reduce(function(a,x){ return a + x.minutes; },0);
     const max = rows.length ? rows[0].minutes : 1;
-    /* R351-书单2：累计已读书目 = 全部完成已读打卡的书籍（已读标记或阅读进度达 100%） */
-    const doneBooks = pool.filter(function(b){ return b && (b.read || r343ReadStat(b).pct >= 100); }).length;
+    /* R352-书单1：每本书只算一次阅读统计（原实现每行重复过滤/排序整本 bookLog，轨迹弹窗明显卡顿） */
+    const statMap = {};
+    pool.forEach(function(b){ if(!b) return; const stt = r343ReadStat(b); statMap[b.id] = stt; if(b.title) statMap[b.title] = stt; });
+    /* R351-书单2 / R352：累计已读书目 = 全部完成已读打卡的书籍（已读标记或阅读进度达 100%） */
+    const doneBooks = pool.filter(function(b){ return b && (b.read || (statMap[b.id] && statMap[b.id].pct >= 100)); }).length;
     let html = '<div class="r349-track-cols"><div class="r349-track-main">';
     html += '<div class="r342-track-sum"><div><b>'+borrowing+'</b><span>在读书目</span></div><div><b>'+log.length+'</b><span>打卡次数</span></div><div><b>'+total+'</b><span>累计分钟</span></div><div><b>'+doneBooks+'</b><span>累计已读书目</span></div></div>';
     html += '<div class="r342-track-h">📊 阅读时长分布</div><div class="r342-chart">';
@@ -69249,17 +69408,23 @@ function init(){
       const bk = pool.filter(function(b){ return b && (b.id === x.bookId || b.title === x.title); })[0];
       const totalPages = bk ? Math.max(0, Number(bk.totalPages) || 0) : 0;
       const done = !!(bk && bk.read);
-      const readPages = bk ? r343ReadStat(bk).cumulative : (Number(x.page) || 0);
+      const stt = bk ? (statMap[bk.id] || statMap[bk.title]) : null;
+      const readPages = stt ? stt.cumulative : (Number(x.page) || 0);
       return '<tr><td>'+esc(x.last || '—')+'</td><td>《'+esc(x.title)+'》</td><td>'+esc(x.catName)+'</td><td>'+x.times+'</td><td>'+readPages+' 页</td><td>'+x.minutes+' 分钟</td>'
         + '<td>'+(totalPages ? totalPages + ' 页' : '—')+'</td><td>'+(done ? '✅ 已完成' : '未完成')+'</td></tr>';
     }).join('');
     html += '</tbody></table></div>';
     if(log.length){
       html += '<div class="r342-track-h">🕘 最近轨迹</div><div class="r342-day-list">'
-        + log.slice(0,12).map(function(x){ return '<div class="r342-day-row"><span class="r342-day-sub">'+esc(x.date)+'</span>'
-          + '<span class="r342-day-name">《'+esc(x.title||'')+'》'+(x.note?' · '+esc(x.note):'')+'</span>'
-          + '<span class="r342-day-pages">'+r351ReadPageCount(x)+' 页</span>'
-          + '<span class="r342-day-mark">'+esc(x.minutes)+'′</span></div>'; }).join('') + '</div>';
+        + log.slice(0,12).map(function(x){
+          const s = Math.max(0, Number(x && (x.startPage || x.start)) || 0);
+          const e = Math.max(0, Number(x && (x.endPage || x.page)) || 0);
+          const range = e > 0 ? (s > 0 ? s : 1) + '-' + e + '页' : '—页';
+          return '<div class="r342-day-row"><span class="r342-day-name">《'+esc(x.title||'')+'》'+(x.note?' · '+esc(x.note):'')+'</span>'
+          + '<span class="r352-day-range">' + range + '</span>'
+          + '<span class="r342-day-pages">'+r351ReadPageCount(x)+'页</span>'
+          + '<span class="r342-day-sub">'+esc(x.date)+'</span>'
+          + '<span class="r342-day-mark">'+(Number(x.minutes)||0)+'分钟</span></div>'; }).join('') + '</div>';
     }
     html += '</div>' + r349TrackCalHtml() + '</div>';
     return html;
@@ -69267,9 +69432,13 @@ function init(){
   function r342OpenTrack(){
     const body = document.getElementById('r342TrackBody');
     if(!body) return;
-    body.innerHTML = r342TrackHtml();
-    /* R351-书单4：日历日期由 document 级委托直接展示当日明细，不再唤起万年历弹窗 */
+    /* R352-书单1：先给占位并立刻弹窗，重内容放到下一帧计算，点击即时有反馈 */
+    body.innerHTML = '<div class="r342-track-loading">正在加载读书轨迹…</div>';
     showModal('#modalR342Track');
+    setTimeout(function(){
+      try{ body.innerHTML = r342TrackHtml(); }
+      catch(e){ body.innerHTML = '<div class="r342-empty">轨迹加载失败，请重试</div>'; }
+    }, 0);
   }
   /* R349-6：读书日历 —— 复用万年历弹窗（同一套 .navcal 样式），点日期看当天读书明细 */
   let _r349CalFrom = '';
