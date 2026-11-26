@@ -12909,29 +12909,10 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
 .r349-settings-embedded .page-content{margin:0;padding:0;border:none;box-shadow:none;background:transparent}
 .r349-settings-embedded .settings-grid{gap:12px}
 
-/* ===== R351-闪电3：设置中心置顶弹窗（标题卡在最上方，仅返回键，无 ×） ===== */
-.r351-settings-mask{position:fixed;inset:0;z-index:12000;background:rgba(16,38,68,.52);display:flex;align-items:center;justify-content:center;padding:20px}
-.r351-settings-mask[hidden]{display:none!important}
-.r351-settings-box{width:min(1080px,96vw);max-height:min(92dvh,900px);display:flex;flex-direction:column;overflow:hidden;background:#fff;border:2px solid var(--tone-200);border-radius:18px;box-shadow:0 18px 60px rgba(12,36,72,.38)}
-.r351-settings-head{position:relative;flex:0 0 auto;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:0 14px 0 0;background:var(--tone-050);border-bottom:1px solid var(--tone-200)}
-.r351-settings-head .settings-title-card{margin:0!important;border-radius:0!important;box-shadow:none!important;min-height:62px}
-.r351-settings-head .settings-title-card h2{margin:0;font-size:19px}
-.r351-settings-back{flex:0 0 auto;min-height:34px;padding:5px 14px;border:1.5px solid var(--tone-400);border-radius:10px;background:#fff;color:var(--tone-800);font-size:13px;font-weight:800;cursor:pointer;white-space:nowrap}
-.r351-settings-back:active{transform:scale(.96)}
-.r351-settings-body{flex:1 1 auto;overflow:auto;padding:14px}
-.r351-prefs-placeholder{padding:18px;text-align:center;color:var(--muted);font-size:13px}
-@media (max-width:680px){
-  .r351-settings-mask{padding:8px}
-  .r351-settings-box{width:100%;max-height:96dvh;border-radius:12px}
-  .r351-settings-head .settings-title-card h2{font-size:16px}
-  .r351-settings-back{padding:4px 10px;font-size:12px}
-  .r351-settings-body{padding:8px}
-}
-
 /* ===== R352：功能中心主题栏背景图 / 年月按键 / 最近轨迹同行排版 ===== */
 /* R352-功能2：设置中心主题栏背景图(1920×200 横幅)迁移到功能中心主题栏，调整尺寸适配横幅 */
 .r271-head.r352-fc-head{
-  height:64px;min-height:64px;
+  height:77px;min-height:77px;
   padding:8px 20px;
   background-color:var(--tone-050);
   background-image:var(--title-bg-settings);
@@ -12950,9 +12931,12 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
 .r271-head.r352-fc-head .r271-title small{color:rgba(255,255,255,.85)}
 .r271-head.r352-fc-head .r271-x{background:rgba(255,255,255,.9)}
 @media (max-width:680px){
-  .r271-head.r352-fc-head{height:51px;min-height:51px;padding:5px 14px}
+  .r271-head.r352-fc-head{height:61px;min-height:61px;padding:5px 14px}
   .r271-head.r352-fc-head .r271-title{font-size:18px}
 }
+/* R354-功能2：设置中心作为功能中心普通页签内嵌容器 */
+.r354-prefs-host{min-height:200px}
+.r354-prefs-host .settings-title-card{margin:0 0 10px}
 /* R352-书单2：每月统计年月按键 */
 .r352-ym-btn{
   display:inline-flex;align-items:center;gap:6px;
@@ -13000,6 +12984,29 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
 }
 @media (max-width:560px){
   .r353-day-head,.r342-day-row.r353-day-row{gap:4px;font-size:10.5px}
+}
+/* ===== R354：最近轨迹表格化 + 日历明细四列间距 ===== */
+.r354-recent-wrap{max-height:30vh}
+.r354-recent-table th,.r354-recent-table td{padding:9px 14px}
+/* 日历明细卡：日期 / 书名 / 时间 / 起止页 四列独立间距 */
+.r354-cal-list{display:grid;gap:8px}
+.r354-cal-row{
+  display:grid;grid-template-columns:92px minmax(0,1fr) 82px 94px;
+  gap:14px;align-items:center;
+  padding:10px 12px;border:1px solid var(--tone-line-soft);border-radius:10px;
+  background:var(--tone-100);font-size:12.5px;
+}
+.r354-cal-date{white-space:nowrap;color:var(--tone-600);font-weight:800}
+.r354-cal-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;color:var(--tone-900);font-weight:700}
+.r354-cal-time{white-space:nowrap;color:var(--tone-700);font-weight:800;text-align:right}
+.r354-cal-range{white-space:nowrap;color:var(--tone-700);font-weight:700;text-align:right}
+@media (max-width:760px){
+  .r354-cal-row{grid-template-columns:80px minmax(0,1fr) 70px 82px;gap:9px;padding:8px 10px;font-size:11.5px}
+  .r354-recent-table th,.r354-recent-table td{padding:7px 9px}
+}
+@media (max-width:560px){
+  .r354-cal-row{grid-template-columns:72px minmax(0,1fr) 64px;gap:7px;font-size:11px}
+  .r354-cal-range{grid-column:2 / 4;text-align:left}
 }
 
 </style>
@@ -14175,6 +14182,7 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
       <div class="xs-sub-tabs" data-page-node-id="GFq8A3j6UOj9r9lMpZmpGJ">
         <!-- R250-1：页签顺序调整 —— 课堂笔记移至「语法」与「学而思练习」之间；学而思练习与词汇语法巩固互换 -->
         <button class="sub-tab active" data-xs-cat="words" data-page-node-id="bIdFhDZ9zmRt3QscgXNna5">🔤 词汇</button>
+        <button class="sub-tab" data-xs-cat="ket" data-page-node-id="R354KetTab">🔗 KET词组</button>
         <button class="sub-tab" data-xs-cat="grammar" data-page-node-id="pk7ufwpxLS7x5Xj5vu8FRB">📐 语法</button>
         <button class="sub-tab" data-xs-cat="notes" data-page-node-id="R218xsNoteTab">📝 课堂笔记</button>
         <!-- R312-8：课堂笔记与每日巩固之间新增「课前测」子板块（学年 + Lesson，排版同课堂笔记） -->
@@ -19632,6 +19640,7 @@ window.XS_A2_VOCAB = [
 ];
 
 </script>
+<script src="./assets/seed_ket_phrases_seed.js"></script>
 <script>
 /* ============================================================
    R320：图片专用存储（IndexedDB）
@@ -21293,7 +21302,7 @@ window.XS_A2_VOCAB = [
     'userReading','readingPanelDone','mathProblems','mathNotes','mathNoteStatus','mathGroups',
     'mathGallery','mathExerciseBank','plots','inventory','gifts','shop','stage','km','farmOpen',
     'music','farmLayout','en3500Marks','r314','nwWrong','homeGreets','homeBanner','sectionTitleTexts',
-    'schedule','memos','weekPlanColors','r319BookList','__r319BookListSeedV1','__r324BookImportV1','__r327BookCatsV1','__r328OtherCatV1','__r332BookImportV1','__r334BookCatsV1','__r336BookImportV1','__r339BookImportV1','__r340BookImportV1','__r341BookOrderV1','readCursor','r326','__schema','__seq','__commitAt','__tomb'];
+    'schedule','memos','weekPlanColors','r319BookList','__r319BookListSeedV1','__r324BookImportV1','__r327BookCatsV1','__r328OtherCatV1','__r332BookImportV1','__r334BookCatsV1','__r336BookImportV1','__r339BookImportV1','__r340BookImportV1','__r341BookOrderV1','__r354KetPhrasesV1','readCursor','r326','__schema','__seq','__commitAt','__tomb'];
   /* 轻档超预算时的「可牺牲顺序」：从体积最大且可再生 / 有主档兜底的字段开始丢 */
   const LIGHT_DROP_ORDER = ['calcBank','mathProblems','mathGallery','xueersiWordBank','km','calcWrongBook'];
   let _r318XsSrc = null, _r318XsDelta = null;
@@ -24269,6 +24278,7 @@ window.XS_A2_VOCAB = [
       st.xueersiContent = { words:xsDefaultWords(), grammar:xsDefaultGrammar(), stories:xsDefaultStories(), sentences:xsDefaultSentences() };
     }
     if(!st.xueersiContent.words || !st.xueersiContent.words.length) st.xueersiContent.words = xsDefaultWords();
+    if(!Array.isArray(st.xueersiContent.ket)) st.xueersiContent.ket = []; // R354：KET词组容器
     if(!st.xueersiContent.grammar || !st.xueersiContent.grammar.length) st.xueersiContent.grammar = xsDefaultGrammar();
     if(!st.xueersiContent.stories || !st.xueersiContent.stories.length) st.xueersiContent.stories = xsDefaultStories();
     // v6 兼容：保留旧 sentences
@@ -24354,6 +24364,20 @@ window.XS_A2_VOCAB = [
         st.xueersiContent.words = userW.concat(add, restW);
       }
       st._r320A2VocabV1 = 1;
+      save(st);
+    })();
+    /* R354：KET 固定搭配 204 组（《KET固定搭配204组(1).docx》）导入学而思「KET词组」。
+       一次性、按 id 去重、用户新增/改过的条目优先，绝不覆盖用户数据。 */
+    (function mergeKetPhrases(){
+      if(st.__r354KetPhrasesV1) return;
+      const seed = (typeof window !== 'undefined' && Array.isArray(window.KET_PHRASES_SEED)) ? window.KET_PHRASES_SEED : [];
+      if(!seed.length){ st.__r354KetPhrasesV1 = 1; return; }
+      const ket = st.xueersiContent.ket || (st.xueersiContent.ket = []);
+      const have = new Set(ket.map(function(v){ return v && v.id; }));
+      const add = seed.filter(function(v){ return v && v.id && !have.has(v.id); })
+        .map(function(v){ return JSON.parse(JSON.stringify(v)); });
+      if(add.length) st.xueersiContent.ket = add.concat(ket); // 导入内容前置，用户词条不丢
+      st.__r354KetPhrasesV1 = 1;
       save(st);
     })();
     // R167-1：问候语知识库 20 条 → 365 条（六类）。未改过默认列表的用户自动升级；
@@ -35893,7 +35917,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     if(base === 'math'){
       if(['calc','note','exercise'].indexOf(s) >= 0){ try{ setLeiduTab(s); }catch(e){} }
     }else if(base === 'xueersi'){
-      if(['words','grammar','notes','exercise','checkin','done'].indexOf(s) >= 0) xsCat = s;
+      if(['words','ket','grammar','notes','exercise','checkin','done'].indexOf(s) >= 0) xsCat = s;
     }else if(base.indexOf('newworld-') === 0){
       /* R303-1：新世界专区三级标题落点 —— 把 sub 写入对应 slot 记忆键，
          后续 renderYuwenPage / renderSlotPage 会自动定位到该标题卡片。 */
@@ -40343,21 +40367,42 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
   let _r351CkAt = 0, _r351CkStars = 0;
   /* R352-全局1：捕获阶段从被点打卡键推断的任务预设奖励星数（覆盖走 S.toggleCheckIn 等不经 addStars 的路径） */
   let _r352PresetStars = 0;
+  /* R354-全局：记录最近一次打卡点击节点，供同步渲染时二次推断预设星数 */
+  let _r352LastNode = null;
+  function r354StarsByTaskId(id){
+    try{
+      id = String(id || ''); if(!id) return 0;
+      const tasks = (S.load().tasks || []);
+      let hit = null;
+      for(let i=0;i<tasks.length;i++){ if(tasks[i] && String(tasks[i].id) === id){ hit = tasks[i]; break; } }
+      if(hit && hit.stars != null){ const v = parseInt(hit.stars,10); if(!isNaN(v) && v > 0) return v; }
+      /* 内置任务 id 再走任务星数设置；未知 id 不取默认 2，避免误报 */
+      const defs = S.TASK_STAR_DEFS || [];
+      if(defs.some(function(d){ return String(d.id) === id; })){ const v = S.getTaskStars(id); if(v > 0) return v; }
+    }catch(e){}
+    return 0;
+  }
   function r352StarsOfNode(node){
     try{
       if(!node || !node.getAttribute) return 0;
-      /* ① 显式 data-stars（含各级父节点） */
+      /* ① 父链上显式星数属性 + 任务 id 属性（data-check 的值就是任务 id） */
       let chain = node;
-      for(let i=0;i<4 && chain;i++){
-        const ds = chain.getAttribute && chain.getAttribute('data-stars');
-        if(ds && (parseInt(ds,10)||0) > 0) return parseInt(ds,10);
+      for(let i=0;i<6 && chain;i++){
+        if(chain.getAttribute){
+          const ds = chain.getAttribute('data-stars') || chain.getAttribute('data-star') || chain.getAttribute('data-reward');
+          if(ds && (parseInt(ds,10)||0) > 0) return parseInt(ds,10);
+          const tid = chain.getAttribute('data-check') || chain.getAttribute('data-checkin')
+            || chain.getAttribute('data-task') || chain.getAttribute('data-task-id') || chain.getAttribute('data-tid');
+          if(tid){ const v = r354StarsByTaskId(tid); if(v > 0) return v; }
+        }
         chain = chain.parentElement;
       }
-      /* ② 按钮 title / 文案里的「+N⭐」 */
-      const src = [(node.getAttribute('title')||''), (node.textContent||'')];
+      /* ② 按钮 title / 文案 / aria-label 里的「+N⭐」或「N⭐」 */
+      const src = [(node.getAttribute('title')||''), (node.textContent||''), (node.getAttribute('aria-label')||'')];
       for(let i=0;i<src.length;i++){
-        const m = src[i].match(/[+＋]\s*(\d+)\s*[⭐🌟]/);
-        if(m){ const v = parseInt(m[1],10); if(v > 0) return v; }
+        let m = src[i].match(/[+＋]\s*(\d+)\s*[⭐🌟]/);
+        if(!m) m = src[i].match(/(^|[^\d])(\d+)\s*[⭐🌟]/);
+        if(m){ const v = parseInt(m[1] || m[2],10); if(v > 0) return v; }
       }
       /* ③ 已知打卡键 → 任务星数设置 */
       const MAP = [
@@ -40380,8 +40425,13 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       const cfg = r328CheckinCfg();
       const nm = ((S.load().profile || {}).nickname || 'Nick');
       let n = Math.max(0, parseInt(stars, 10) || 0);
-      /* R352-全局1：传入 0 时在打卡点击窗口内回退到任务预设奖励星数，杜绝「恭喜获得 0⭐」 */
-      if(!isCancel && n === 0 && _r352PresetStars > 0 && Date.now() - (_r351CkAt||0) < 2500) n = _r352PresetStars;
+      /* R354-全局：传入 0 时在打卡点击窗口内回退到任务预设奖励星数；
+         若捕获阶段未推断出，改用最近点击节点现算，杜绝「恭喜获得 0⭐」。 */
+      if(!isCancel && n === 0 && Date.now() - (_r351CkAt||0) < 2500){
+        let preset = _r352PresetStars;
+        if(preset <= 0 && _r352LastNode) preset = r352StarsOfNode(_r352LastNode);
+        if(preset > 0) n = preset;
+      }
       const old = document.querySelector('.r327-celebrate');
       if(old && old.parentNode) old.parentNode.removeChild(old);
       const box = document.createElement('div');
@@ -53911,13 +53961,13 @@ function renderKMAdmin(){
     const st = S.load();
     // R254-7：进入学而思英语时恢复上次浏览的页签（词汇 / 语法 / 课堂笔记 / 巩固打卡 / 练习题）
     const _xsLast = _uiMem('xsCat');
-    if(_xsLast && ['words','grammar','notes','exercise','checkin'].indexOf(_xsLast) >= 0) xsCat = _xsLast;
+    if(_xsLast && ['words','ket','grammar','notes','exercise','checkin'].indexOf(_xsLast) >= 0) xsCat = _xsLast;
     renderXueersiSummary();
   }
   // ---- 汇总（v10：词汇/语法 两子页） ----
   // 第十二轮：词汇每页 12 个、语法每页 4 个（分页展示）
   // R168-1：语法排版改「每页一行、每行 3 个条目」，分页大小同步 4 → 3
-  const XS_PAGE_SIZE = {words:12, grammar:3};
+  const XS_PAGE_SIZE = {words:12, ket:12, grammar:3};
   const xsPage = {words:1, grammar:1};
   // ============ R218-1：学而思英语 · 课堂笔记 ============
   // 需求：标题栏【词汇】左侧新增【课堂笔记】，内部页面功能 / 交互逻辑与
@@ -54403,30 +54453,30 @@ function renderKMAdmin(){
     const cur = xsPage[xsCat];
     const list = all.slice((cur-1)*size, cur*size);
     const hintEl = $('#xsSummaryHint');
-    const catLabel = xsCat === 'grammar' ? '📐 语法' : '🔤 词汇';
-    const unit = xsCat === 'grammar' ? '个语法知识点' : '组词汇';
+    const catLabel = xsCat === 'grammar' ? '📐 语法' : (xsCat === 'ket' ? '🔗 KET词组' : '🔤 词汇');
+    const unit = xsCat === 'grammar' ? '个语法知识点' : (xsCat === 'ket' ? '组固定搭配' : '组词汇');
     if(hintEl) hintEl.textContent = `📒 ${catLabel} · 共 ${all.length} ${unit}` + (size>=all.length ? '（已全部展开）' : `，每页 ${size} 条（第 ${cur}/${pages} 页）`);
     const target = $('#xsSummaryList');
     target.classList.toggle('xs-list-grammar', xsCat === 'grammar');
     target.classList.remove('xs-list-raz');
     target.classList.remove('notes-mode');   // R218-1：离开课堂笔记时还原网格布局
     if(!all.length){
-      const emptyMsg = xsCat === 'grammar' ? '暂无语法内容，可在词汇页面新增' : '暂无词汇，点击右下方"＋ 新增"添加';
+      const emptyMsg = xsCat === 'grammar' ? '暂无语法内容，可在词汇页面新增' : (xsCat === 'ket' ? '暂无KET词组' : '暂无词汇，点击右下方"＋ 新增"添加');
       target.innerHTML = `<div style="color:var(--muted);padding:30px 12px;text-align:center">${emptyMsg}</div>`;
       renderXsPager(0, 1, 1, xsCat);
       return;
     }
-    if(xsCat === 'words'){
+    if(xsCat === 'words' || xsCat === 'ket'){ // R354：KET词组复用词汇页面展示样式
       // V17-1：删除朗读按键 🔊，改为点击单词/例句自动朗读
       // R167-4：doc 导入词汇附带 音标/课次(L)/故事页(读)/英文释义/拓展，卡片一并展示
       target.innerHTML = list.map(w=>{
-        const checked = S.xsIsChecked('words', w.id);
+        const checked = S.xsIsChecked(xsCat, w.id);
         const chip = w.page ? ('读'+w.page) : (w.lesson ? ('L'+w.lesson) : '');
-        return `<div class="xs-card ${w.source==='user'?'user-added':''} ${checked?'checked':''}" data-xs-check-card="words::${esc(w.id)}">
+        return `<div class="xs-card ${w.source==='user'?'user-added':''} ${checked?'checked':''}" data-xs-check-card="${xsCat}::${esc(w.id)}">
           <div class="xs-card-head">
-            <span class="xs-card-kind">${w.source==='user'?'我的':'词汇'}</span>
+            <span class="xs-card-kind">${w.source==='user'?'我的':(xsCat==='ket'?'KET':'词汇')}</span>
             ${chip?`<span class="xs-card-chip">${chip}</span>`:''}
-            <button class="xs-card-del ${w.source==='user'?'':'hidden-in-child'}" data-xs-del="words::${esc(w.id)}" title="删除">✕</button>
+            <button class="xs-card-del ${w.source==='user'?'':'hidden-in-child'}" data-xs-del="${xsCat}::${esc(w.id)}" title="删除">✕</button>
           </div>
           <div class="xs-card-en xs-tap-speak" data-xs-speak="${esc(w.en)}" data-xs-speak-zh="${esc(w.wordZh||w.zh||'')}" title="点击朗读">${esc(w.en)}${w.phonetic?`<span class="xs-card-phon">/${esc(w.phonetic)}/</span>`:''}</div>
           <!-- R56-3：此处为「词汇翻译」（wordZh，兼容旧数据 zh） -->
@@ -56699,13 +56749,20 @@ function renderKMAdmin(){
             const _r349Undo = r315IsUndoClick(t);
             /* R351-全局6 / R352-全局1：捕获阶段开窗，同时从打卡键推断任务预设奖励 */
             _r351CkAt = Date.now(); _r351CkStars = 0;
+            _r352LastNode = node;
             _r352PresetStars = r352StarsOfNode(node);
             setTimeout(function(){
               try{
+                const _rw = (_r351CkStars > 0 && Date.now() - _r351CkAt < 2000) ? _r351CkStars
+                  : ((_r352PresetStars > 0 && Date.now() - _r351CkAt < 2500) ? _r352PresetStars : 0);
                 if(Date.now() - (_r349FxAt || 0) > 400){
-                  const _rw = (_r351CkStars > 0 && Date.now() - _r351CkAt < 2000) ? _r351CkStars
-                    : ((_r352PresetStars > 0 && Date.now() - _r351CkAt < 2500) ? _r352PresetStars : 0);
                   r336CheckinFx(!_r349Undo, _rw);
+                }else if(_rw > 0 && !_r349Undo){
+                  /* R354-全局：同步 handler 已渲染 0⭐ 时直接纠正文案，不再被去重窗口跳过 */
+                  const _txt = document.querySelector('.r327-celebrate .r327-celebrate-txt');
+                  if(_txt && !/已取消打卡/.test(_txt.textContent || '')){
+                    _txt.innerHTML = _txt.innerHTML.replace(/恭喜获得\s*0\s*[⭐🌟]/, '恭喜获得 ' + _rw + '⭐');
+                  }
                 }
               }catch(_){ }
             }, 260);
@@ -64219,12 +64276,8 @@ function init(){
       + '<div class="r271-tabs" id="r271Tabs"></div>'
       + '<div class="r271-body" id="r271Body"></div>'
       + '</div></div>'
-      /* R351-闪电3：设置中心独立置顶弹窗；标题卡移到最上方，右上角仅返回键、无关闭× */
-      + '<div class="r351-settings-mask" id="r351SettingsMask" hidden>'
-      + '<div class="r351-settings-box" id="r351SettingsBox">'
-      + '<div class="r351-settings-head" id="r351SettingsHead"><button class="r351-settings-back" type="button" data-act="r351-settings-back">← 返回</button></div>'
-      + '<div class="r351-settings-body" id="r349PrefsHost"></div>'
-      + '</div></div>';
+      /* R354-功能2：设置中心不再用独立弹窗，改为功能中心内普通页签 */
+      ;
     D.body.appendChild(root);
     try{ r352ApplyFcHeadBg(); }catch(e){}
     root.addEventListener('click', onAct);
@@ -64356,25 +64409,15 @@ function init(){
     /* R131-2：离开设置中心丢弃未提交草稿（与旧 goPage 离开设置中心一致） */
     try{ if(S && S.isStaging && S.isStaging() && S.discardSettings) S.discardSettings(); }catch(e){}
   }
-  /* R351-闪电2/3：设置中心标题卡移到置顶弹窗最上方；弹窗只有「返回」，没有 × */
+  /* R354-功能2：设置中心与 tasks/tools 等页签一致，直接在功能中心内容区展示 */
   let _r351SetOpen = false, _r351SetFromTab = null;
   function r351OpenSettings(from){
     shell();
     if(_r351SetOpen) return;
     _r351SetFromTab = (from === 'tab' && curTab !== 'prefs') ? curTab : null;
-    const head = q('#r351SettingsHead'), title = document.querySelector('.settings-title-card');
-    if(head && title){
-      /* R352-功能1：若上一次未正常归还，先复位再搬移，防止重复挂载导致返回丢页 */
-      if(title.parentNode !== head && title._r351Home && title._r351Home.parent) r351ReturnFromSettings();
-      if(!title._r351Home) title._r351Home = { parent:title.parentNode, next:title.nextSibling };
-      title.hidden = false;
-      title.classList.add('r351-moved-title');
-      head.insertBefore(title, head.firstChild);
-      const lbl = title.querySelector('h2'); if(lbl && !lbl.textContent.trim()) lbl.textContent = '设置中心';
-    }
-    const main = q('.r351-main-title'); if(main) main.hidden = true;
-    const m = q('#r351SettingsMask'); if(m) m.hidden = false;
-    r349MountSettingsTab();
+    const m = q('#r271Mask'); if(m) m.hidden = false;
+    curTab = 'prefs';
+    render();
     _r351SetOpen = true;
   }
   function r351ReturnFromSettings(){
@@ -64385,15 +64428,7 @@ function init(){
         if(!mm.hidden && (parseInt(mm.style.zIndex,10)||0) > 12000) mm.hidden = true;
       });
     }catch(e){}
-    const m = q('#r351SettingsMask'); if(m) m.hidden = true;
     r349UnmountSettings();
-    const title = document.querySelector('.settings-title-card');
-    if(title){
-      if(title._r351Home && title._r351Home.parent) title._r351Home.parent.insertBefore(title, title._r351Home.next || null);
-      title.classList.remove('r351-moved-title');
-      title.hidden = true;
-    }
-    const main = q('.r351-main-title'); if(main) main.hidden = false;
     _r351SetOpen = false;
     if(_r351SetFromTab){ const back = _r351SetFromTab; _r351SetFromTab = null; curTab = back; render(); }
     else { close(); }
@@ -64406,7 +64441,7 @@ function init(){
     render();
   }
   function close(){ if(_r351SetOpen) r351ReturnFromSettings(); r349UnmountSettings(); const m = q('#r271Mask'); if(m) m.hidden = true; }
-  /* R349-全局2 / R351-闪电3：设置中心唯一对外入口改为置顶弹窗 */
+  /* R354-功能2：设置中心唯一对外入口改为功能中心普通页签 */
   window.__r349OpenPrefs = function(tab){ if(tab && tab !== 'prefs'){ shell(); curTab = tab; render(); } r351OpenSettings('direct'); };
   function render(){
     shell();
@@ -64435,10 +64470,9 @@ function init(){
     }).join('') + '</select>';
   }
 
-  /* R349-全局2：设置中心页签 —— 内容为原来独立的设置中心整页（卡片 / 弹窗 / 模式切换全部保留） */
+  /* R354-功能2：设置中心页签 —— 整页内容内嵌到功能中心内容区，与其他页签展示方式一致 */
   RENDER.prefs = function(){
-    /* R351-闪电3：设置中心内容已搬到置顶弹窗 #r349PrefsHost，这里只留说明占位 */
-    return '<div class="r351-prefs-placeholder">设置中心已在新弹窗中打开，点右上角「← 返回」回到上一页。</div>';
+    return '<div id="r349PrefsHost" class="r354-prefs-host"></div>';
   };
 
   RENDER.tasks = function(){
@@ -69430,17 +69464,21 @@ function init(){
     }).join('');
     html += '</tbody></table></div>';
     if(log.length){
-      html += '<div class="r342-track-h">🕘 最近轨迹</div><div class="r353-day-list">'
-        + '<div class="r353-day-head"><span>阅读日期</span><span>书名</span><span>起止页</span><span>阅读页数</span><span>阅读时间</span></div>'
+      /* R354-书单1：最近轨迹表格化，字段/样式与「读书明细」一一对应 */
+      html += '<div class="r342-track-h">🕘 最近轨迹</div><div class="r342-table-wrap r354-recent-wrap">'
+        + '<table class="r342-table r354-recent-table"><thead><tr><th>阅读日期</th><th>书名</th><th>所属书单</th><th>次数</th><th>已阅页数</th><th>阅读时长</th><th>总页数</th><th>是否完成阅读</th></tr></thead><tbody>'
         + log.slice(0,12).map(function(x){
-          const s = Math.max(0, Number(x && (x.startPage || x.start)) || 0);
-          const e = Math.max(0, Number(x && (x.endPage || x.page)) || 0);
-          const range = e > 0 ? (s > 0 ? s : 1) + '-' + e + '页' : '—页';
-          return '<div class="r342-day-row r353-day-row"><span class="r342-day-date">'+esc(x.date)+'</span>'
-          + '<span class="r342-day-name">《'+esc(x.title||'')+'》'+(x.note?' · '+esc(x.note):'')+'</span>'
-          + '<span class="r352-day-range">' + range + '</span>'
-          + '<span class="r342-day-pages">'+r351ReadPageCount(x)+'页</span>'
-          + '<span class="r342-day-mark">'+(Number(x.minutes)||0)+'分钟</span></div>'; }).join('') + '</div>';
+          const bk = pool.filter(function(b){ return b && (b.id === x.bookId || b.title === x.title); })[0];
+          const totalPages = bk ? Math.max(0, Number(bk.totalPages) || 0) : 0;
+          const done = !!(bk && bk.read);
+          const stt = bk ? (statMap[bk.id] || statMap[bk.title]) : null;
+          const readPages = stt ? stt.cumulative : (Number(x.page) || 0);
+          const g = byBook[x.bookId || x.title || ''];
+          const times = g ? g.times : 1;
+          const cat = x.catName || r342CatName(bk && bk.cat) || '未分类';
+          return '<tr><td>'+esc(x.date)+'</td><td>《'+esc(x.title||'')+'》</td><td>'+esc(cat)+'</td><td>'+times+'</td><td>'+readPages+' 页</td><td>'+(Number(x.minutes)||0)+' 分钟</td>'
+            + '<td>'+(totalPages ? totalPages + ' 页' : '—')+'</td><td>'+(done ? '✅ 已完成' : '未完成')+'</td></tr>';
+        }).join('') + '</tbody></table></div>';
     }
     html += '</div>' + r349TrackCalHtml() + '</div>';
     return html;
@@ -69493,15 +69531,15 @@ function init(){
     let html = '<div class="r342-day-sum">当天阅读 <b>' + logs.length + '</b> 次　·　合计 <b>'
       + logs.reduce(function(a, x){ return a + (Number(x.minutes) || 0); }, 0) + '</b> 分钟</div>';
     if(logs.length){
-      html += '<div class="r342-day-h">📚 读书明细</div><div class="r342-day-list">'
+      html += '<div class="r342-day-h">📚 读书明细</div><div class="r354-cal-list">'
         + logs.map(function(x){
             const start = Math.max(0, Number(x.startPage || x.start) || 0);
             const end = Math.max(0, Number(x.endPage || x.page) || 0);
-            const pageTxt = end ? (start ? ('P' + start + '-P' + end) : ('P' + end)) : '';
-            const mark = [String(Number(x.minutes) || 0) + ' 分钟', pageTxt].filter(Boolean).join(' · ');
-            return '<div class="r342-day-row is-done"><span class="r342-day-sub">' + esc(x.date || '') + '</span>'
-              + '<span class="r342-day-name">《' + esc(x.title || '') + '》' + (x.note ? ' · ' + esc(x.note) : '') + '</span>'
-              + '<span class="r342-day-mark">' + esc(mark) + '</span></div>';
+            const pageTxt = end ? (start ? ('P' + start + '-P' + end) : ('P' + end)) : '—';
+            return '<div class="r354-cal-row"><span class="r354-cal-date">' + esc(x.date || '') + '</span>'
+              + '<span class="r354-cal-name">《' + esc(x.title || '') + '》' + (x.note ? ' · ' + esc(x.note) : '') + '</span>'
+              + '<span class="r354-cal-time">' + (Number(x.minutes) || 0) + ' 分钟</span>'
+              + '<span class="r354-cal-range">' + esc(pageTxt) + '</span></div>';
           }).join('') + '</div>';
     } else {
       html += '<div class="r342-empty">这一天还没有读书打卡记录</div>';
