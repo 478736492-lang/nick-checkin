@@ -12749,7 +12749,7 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
 .r319-book-row .r319-book-ops-line{grid-column:1 / -1;display:flex;justify-content:flex-end;gap:6px}
 .r319-book-row .r319-book-ops-line .r319-book-ops{display:inline-flex;gap:6px}
 /* 书籍详情：左侧原详情 + 右侧阅读记录 */
-.r343-detail-wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,42%);gap:14px;align-items:start}
+.r343-detail-wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,44%);gap:14px;align-items:start}
 #modalR321BookDetail .r321-detail-grid{text-align:left;align-items:flex-start}
 #modalR321BookDetail .r321-detail-line,#modalR321BookDetail .r321-detail-title{text-align:left}
 #modalR321BookDetail .r327-detail-ops{justify-content:flex-start}
@@ -12836,6 +12836,14 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
 .r347-bookin-btn{width:100%}
 @media (max-width:760px){
   .r343-kpis .r347-total-kpi b{font-size:15px}
+}
+
+/* ===== R348：书本详情两卡同行（阅读记录固定在书本详情卡片右侧） ===== */
+@media (max-width:760px){
+  .r343-detail-wrap{grid-template-columns:minmax(0,1fr) minmax(0,44%)}
+}
+@media (max-width:560px){
+  .r343-detail-wrap{grid-template-columns:1fr}
 }
 
 </style>
@@ -68552,6 +68560,10 @@ function init(){
     window.__r319OpenBookList = r319OpenBookList;
     window.__r319RenderBookList = r319RenderBookList;
     window.__r333OpenBookDetail = r321OpenBookDetail;
+    /* R348 探针钩子：阅读记录 / 读书轨迹现算结果 */
+    window.__r348TrackHtml = r342TrackHtml;
+    window.__r348OpenTrack = r342OpenTrack;
+    window.__r348ReadHtml = r343ReadingHtml;
     window.__r319BaikeOrder = (S && S.r319BaikeOrder) ? S.r319BaikeOrder() : [];
     /* R321 探针钩子：让测试在切到档案页后显式重绑定新增键 */
     window.__r321RenderArchive = r315RenderArchive;
@@ -68848,15 +68860,19 @@ function init(){
     const logDate = _r344PickDate || S.todayStr();
     log.unshift({ id:'bk_'+Date.now(), bookId:bid, title:book.title, cat:book.cat||'', catName:r342CatName(book.cat),
       minutes:minutes, startPage:startPage, endPage:endPage, page:page, note:note, date:logDate, at:Date.now() });
+    /* R348-1：先落盘打卡流水（setR314 内部自行 save 主档），再重新读取主档写书籍进度。
+       原实现用打卡前读出的 st 回写，会把刚写入的 bookLog 覆盖掉，导致每日阅读记录与读书轨迹统计不到本次打卡。 */
     r342SaveR314({ bookLog: log });
-    const prev = book.progress || {};
-    book.progress = { minutes:(Number(prev.minutes)||0)+minutes, page:Math.max(Number(prev.page)||0, page),
+    const st2 = S.load();
+    const book2 = ((st2.r319BookList||{}).books||[]).filter(function(b){ return b && b.id === bid; })[0] || book;
+    const prev = book2.progress || {};
+    book2.progress = { minutes:(Number(prev.minutes)||0)+minutes, page:Math.max(Number(prev.page)||0, page),
       last:logDate, sessions:(Number(prev.sessions)||0)+1 };
     /* R343-3：已读只能由 100% 进度触发，并统一走奖励入口，避免绕过 ⭐ 发放。 */
-    const stat = r343ReadStat(book);
-    const shouldRead = done && stat.pct >= 100 && !book.read;
+    const stat = r343ReadStat(book2);
+    const shouldRead = done && stat.pct >= 100 && !book2.read;
     if(done && stat.pct < 100) toast('阅读进度未达 100%，暂不能标记已读');
-    S.save(st);
+    S.save(st2);
     /* R347-5：本次阅读打卡同步完成首页「图书馆书」任务 */
     r347AutoLibraryTask(logDate);
     hideModal('#modalR342BookCheckin');
@@ -68865,7 +68881,7 @@ function init(){
     if(shouldRead){ r340ToggleBookRead(bid); return; }
     try{ r319RenderBookList(); }catch(e){}
     try{ renderHome(); }catch(e){}
-    toast('📚 已记录《'+book.title+'》'+minutes+' 分钟');
+    toast('📚 已记录《'+book2.title+'》'+minutes+' 分钟');
   }
   let _r345TrackQuery = '';
   function r345TrackSearchHtml(){
@@ -68892,11 +68908,15 @@ function init(){
     const r = r342R314();
     const log = Array.isArray(r.bookLog) ? r.bookLog.slice() : [];
     const l = r342BookList();
+    const pool = Array.isArray(l.books) ? l.books : [];
+    /* R348-2：在读书目数按「借阅书目」清单内的书籍数量统计 */
+    const borrowing = pool.filter(function(b){ return b && b.borrow; }).length;
     const byBook = {};
     log.forEach(function(x){
       if(!x) return;
       const k = x.bookId || x.title || '';
-      const g = byBook[k] || (byBook[k] = { title:x.title||'', catName:x.catName||'未分类', minutes:0, times:0, page:0, last:'' });
+      const bk = x.bookId ? pool.filter(function(b){ return b && b.id === x.bookId; })[0] : null;
+      const g = byBook[k] || (byBook[k] = { title:x.title || (bk && bk.title) || '', catName:x.catName || r342CatName(bk && bk.cat) || '未分类', minutes:0, times:0, page:0, last:'' });
       g.minutes += Number(x.minutes)||0; g.times++; g.page = Math.max(g.page, Number(x.page)||0);
       if(!g.last || String(x.date) > g.last) g.last = x.date || '';
     });
@@ -68905,7 +68925,7 @@ function init(){
     const total = rows.reduce(function(a,x){ return a + x.minutes; },0);
     const max = rows.length ? rows[0].minutes : 1;
     let html = r345TrackSearchHtml()
-      + '<div class="r342-track-sum"><div><b>'+rows.length+'</b><span>在读书目</span></div><div><b>'+log.length+'</b><span>打卡次数</span></div><div><b>'+total+'</b><span>累计分钟</span></div></div>';
+      + '<div class="r342-track-sum"><div><b>'+borrowing+'</b><span>在读书目</span></div><div><b>'+log.length+'</b><span>打卡次数</span></div><div><b>'+total+'</b><span>累计分钟</span></div></div>';
     html += '<div class="r342-track-h">📊 阅读时长分布</div><div class="r342-chart">';
     html += rows.slice(0,10).map(function(x){
       return '<div class="r342-chart-row"><span class="r342-chart-name">'+esc(x.title)+'</span>'
