@@ -34971,8 +34971,17 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
   const isParent = ()=> !isChild();
   const esc = s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const toast = (msg)=>{
-    const t=$('#toast'); t.textContent=msg; t.hidden=false;
-    clearTimeout(t._t); t._t=setTimeout(()=>t.hidden=true,1800);
+    const t=$('#toast'); if(!t) return;
+    t.textContent=msg; t.hidden=false;
+    /* R358-设置1：功能中心 / 设置中心的弹层是 z-index 9300，提示条固定 2000 会被完全遮住，
+       设置中心里被权限拦截的操作因此看起来「点了没有任何反应」。这里按当前弹层层级抬升。 */
+    try{
+      const f = (typeof _modalFloor === 'function') ? _modalFloor() : 0;
+      const mz = (typeof _modalZ === 'number') ? _modalZ : 0;
+      t.style.zIndex = String(Math.max(2000, f + 200, mz + 200));
+    }catch(e){}
+    clearTimeout(t._t);
+    t._t=setTimeout(function(){ t.hidden=true; try{ t.style.zIndex=''; }catch(e){} },1800);
   };
   /* R246-3 / R267-3.1 存档写入失败提示。
      旧版包装器是「本机储存已满」误报的总源头：
@@ -60720,12 +60729,24 @@ function renderKMAdmin(){
     // R85：设置中心 —— 7 张卡片点击路由
     // R150-7：除「使用模式」外，其余所有设置项仅在家长模式下开放编辑（学生模式点击拦截）
     const bindCard = (id, fn)=>{ const el = document.getElementById(id); if(el && !el._bound){ el._bound = true; el.onclick = fn; } };
-    const parentOnly = (fn)=> ()=>{ if(isChild()){ toast('该设置仅家长模式可编辑'); return; } fn(); };
-    bindCard('cardTaskSettings', parentOnly(openSettingsTask));
-    bindCard('cardGameSettings', parentOnly(()=>showModal('#modalGameSettings')));
-    bindCard('cardMusicSettings', parentOnly(openMusicSettings));
-    bindCard('cardSyncSettings', parentOnly(openSyncSettings));
-    bindCard('cardVersionSettings', parentOnly(openVersionSettings));
+    const parentOnly = (fn)=> ()=>{ if(isChild()){ toast('🔒 学生模式下不能修改设置：请点上方「使用模式」切到家长模式'); return; } fn(); };
+    /* R358-设置1：设置卡绑定收进函数 —— 设置中心每次挂载后再兜底重绑一次，
+       避免节点搬移 / 重绘后 onclick 丢失导致「点了没反应」。 */
+    function r358BindSettingsCards(){
+      const map = {
+        cardTaskSettings:    parentOnly(openSettingsTask),
+        cardGameSettings:    parentOnly(()=>showModal('#modalGameSettings')),
+        cardMusicSettings:   parentOnly(openMusicSettings),
+        cardSyncSettings:    parentOnly(openSyncSettings),
+        cardVersionSettings: parentOnly(openVersionSettings)
+      };
+      Object.keys(map).forEach(function(id){
+        const el = document.getElementById(id);
+        if(el){ el._bound = true; el.onclick = map[id]; }
+      });
+    }
+    r358BindSettingsCards();
+    window.__r358BindSettingsCards = r358BindSettingsCards;
     // R270-6.1：独立「分类导出文件」卡已移除（并入数据同步弹窗），不再单独绑定
     // 游戏设置弹窗内：种植园 / 知识秘境
     bindCard('btnSettingsFarmSet', parentOnly(openFarmSetting));
@@ -64440,6 +64461,8 @@ function init(){
     page.classList.add('r349-settings-embedded');
     host.appendChild(page);
     _r349SetMounted = true;
+    /* R358-设置1：挂载后重绑设置卡，保证每一张卡都能点开 */
+    try{ if(typeof window.__r358BindSettingsCards === 'function') window.__r358BindSettingsCards(); }catch(e){}
     /* R131-2：进入设置中心仍开启暂存态，与原「设置中心页」行为一致 */
     try{ if(S && S.beginSettings && !S.isStaging()) S.beginSettings(); }catch(e){}
   }
