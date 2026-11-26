@@ -12827,6 +12827,17 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
 /* ===== R346：书本详情信息白卡（与右侧阅读记录同款） ===== */
 .r346-detail-info-card{display:grid;gap:8px;padding:12px;border-radius:13px;background:var(--tone-025);border:1px solid var(--tone-line-soft)}
 
+/* ===== R347：总页数改按键 / 阅读打卡入阅读记录 ===== */
+.r343-kpis .r347-kpi-total{padding:0;background:transparent}
+.r343-kpis .r347-total-kpi{display:grid;gap:2px;width:100%;text-align:center;padding:8px 3px;border-radius:9px;background:var(--tone-100);border:1px dashed var(--tone-300);cursor:pointer;font:inherit}
+.r343-kpis .r347-total-kpi:active{background:var(--tone-200)}
+.r343-kpis .r347-total-kpi b{font-size:17px;color:var(--tone-700)}
+.r343-kpis .r347-total-kpi span{font-size:10.5px;color:var(--muted)}
+.r347-bookin-btn{width:100%}
+@media (max-width:760px){
+  .r343-kpis .r347-total-kpi b{font-size:15px}
+}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -44738,10 +44749,11 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       return '<div class="r344-rec"><b>' + esc(x.date || '') + '</b><span>' + parts.join(' · ') + '</span></div>';
     }).join('');
     return '<aside class="r343-read-panel"><div class="r343-read-head">📊 阅读记录</div>'
-      + '<div class="r343-kpis"><div><b>' + (s.total || '—') + '</b><span>书籍总页数</span></div>'
+      + '<div class="r343-kpis"><div class="r347-kpi-total"><button type="button" class="r347-total-kpi" data-r343-total="' + esc(b.id) + '" title="点击设置书籍总页数">'
+      + '<b>' + (s.total || '—') + '</b><span>书籍总页数 ✎</span></button></div>'
       + '<div><b>' + s.cumulative + '</b><span>累计阅读页数</span></div>'
       + '<div><b>' + s.pct + '%</b><span>阅读占比</span></div></div>'
-      + '<button type="button" class="pbtn r344-total-btn" data-r343-total="' + esc(b.id) + '" title="点击设置书籍总页数">📄 设置总页数' + (s.total ? '（当前 ' + s.total + ' 页）' : '') + '</button>'
+      + '<button type="button" class="primary-btn r347-bookin-btn" data-r344-bookin="' + esc(b.id) + '" title="关联我的书单记录阅读时长与页码">📖 阅读打卡</button>'
       + '<div class="r343-read-h">每日阅读记录</div><div class="r344-rec-list">' + recs + '</div>'
       + '<div class="r343-bars">' + bars + '</div>'
       + '</aside>';
@@ -44765,7 +44777,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
           + (canRead ? '' : ' disabled title="阅读进度达到100%后可选"') + '>' +
           (b.read ? '✅ 已读 · 取消' : '✓ 已读') + '</button>';
     }
-    /* R344-1/5：左侧原详情下方补白色底片，内放「阅读打卡」键；右侧为阅读记录区。 */
+    /* R347-1：阅读打卡键移入右侧阅读记录（原设置总页数按键位置），左侧仅保留信息白卡。 */
     host.innerHTML = '<div class="r343-detail-wrap"><div class="r344-detail-left"><div class="r343-read-panel r346-detail-info-card"><div class="r321-detail-grid">' +
       '<div class="r321-detail-ico">📖</div><div>' +
       '<div class="r321-detail-line r334-detail-cat">所属分类：' + esc(cat ? cat.name : '未分类') + '</div>' +
@@ -44773,10 +44785,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       '<div class="r321-detail-line">作者：' + esc(b.author || '未填写') + '</div>' +
       '<div class="r321-detail-reason"><b>推荐理由：</b>' + (b.reason ? esc(b.reason) : '暂未填写推荐理由') + '</div>' +
       '<div class="r321-detail-line">打卡奖励：<b>' + stars + '⭐</b></div>' +
-      '</div></div></div>' +
-      '<div class="r343-read-panel r344-detail-foot r345-detail-foot-card">' +
-        '<button type="button" class="primary-btn r344-bookin-btn" data-r344-bookin="' + esc(b.id) + '" title="关联我的书单记录阅读时长与页码">📖 阅读打卡</button>' +
-      '</div></div>' + r343ReadingHtml(b) + '</div>';
+      '</div></div></div>' + r343ReadingHtml(b) + '</div>';
     showModal('#modalR321BookDetail');
   }
   function _r321BookRows(){
@@ -68806,6 +68815,19 @@ function init(){
     const db = document.getElementById('r344DateBtn'); if(db) db.textContent = r344DateBtnText(_r344PickDate);
     hideModal('#modalR344DatePick');
   }
+  /* R347-5：阅读打卡完成后，首页「图书馆书」任务自动完成打卡（只补完成，不撤销用户已有勾选）。 */
+  function r347AutoLibraryTask(dateStr){
+    try{
+      const d = dateStr || S.todayStr();
+      const tasks = (S.tasksForDate ? S.tasksForDate(d) : ((S.load()||{}).tasks||[])) || [];
+      const st = S.load() || {};
+      tasks.filter(function(t){ return t && /图书馆/.test(String(t.name||'')); }).forEach(function(t){
+        const rec = (st.records||[]).filter(function(x){ return x && x.date === d && x.taskId === t.id; })[0];
+        if(rec && rec.completed) return;
+        try{ S.toggleCheckIn(d, t.id); }catch(e){}
+      });
+    }catch(e){}
+  }
   function r342BookCheckinSave(){
     const sel = document.getElementById('r342BookSel');
     const bid = sel ? sel.value : '';
@@ -68835,6 +68857,8 @@ function init(){
     const shouldRead = done && stat.pct >= 100 && !book.read;
     if(done && stat.pct < 100) toast('阅读进度未达 100%，暂不能标记已读');
     S.save(st);
+    /* R347-5：本次阅读打卡同步完成首页「图书馆书」任务 */
+    r347AutoLibraryTask(logDate);
     hideModal('#modalR342BookCheckin');
     const dm = document.getElementById('modalR321BookDetail');
     if(dm && !dm.hidden) r321OpenBookDetail(bid);
