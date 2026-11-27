@@ -13097,14 +13097,28 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
 
 /* ===== R363-学而思1：七个页签按键分两个区域卡片放置 =====
    词汇 / KET词组 / 语法 / 课堂笔记 一个区域卡；课前测 / 每日巩固 / 学而思练习 另一个区域卡。 */
-.xs-sub-tabs.r363-tabs{display:flex;flex-direction:row;align-items:stretch;gap:10px;margin:10px 0 12px;flex-wrap:nowrap}
-.xs-sub-tabs.r363-tabs .r363-tab-zone{
-  display:flex;flex-wrap:wrap;align-items:center;gap:8px;
-  box-sizing:border-box;flex:1 1 auto;min-width:0;
-  background:#f2f8ff;border:1px solid #cfe0f5;border-radius:14px;
-  padding:9px 10px;box-shadow:0 2px 8px rgba(30,58,138,.06);
+/* R365-学而思1：七个按键全部压在所在区域卡片的一行内 —— 不换行、不遮盖，
+   按键宽度按文字自适应并允许按比例收窄；容器极窄时整行横向滚动，绝不跳行。 */
+.xs-sub-tabs.r363-tabs{
+  display:flex;flex-direction:row;align-items:stretch;gap:8px;
+  margin:10px 0 12px;flex-wrap:nowrap;
+  box-sizing:border-box;max-width:100%;
+  overflow-x:auto;overflow-y:hidden;
+  scrollbar-width:none;-ms-overflow-style:none;
+  -webkit-overflow-scrolling:touch;
 }
-.xs-sub-tabs.r363-tabs .r363-tab-zone .sub-tab{flex:0 0 auto;margin:0}
+.xs-sub-tabs.r363-tabs::-webkit-scrollbar{display:none;width:0;height:0}
+.xs-sub-tabs.r363-tabs .r363-tab-zone{
+  display:flex;flex-wrap:nowrap;align-items:center;gap:6px;
+  box-sizing:border-box;flex:1 1 auto;min-width:max-content;
+  background:#f2f8ff;border:1px solid #cfe0f5;border-radius:14px;
+  padding:7px 9px;box-shadow:0 2px 8px rgba(30,58,138,.06);
+}
+.xs-sub-tabs.r363-tabs .r363-tab-zone .sub-tab{
+  flex:0 0 auto;margin:0;width:auto;
+  white-space:nowrap;
+  padding:6px 9px;font-size:12.5px;line-height:1.15;border-radius:14px;
+}
 
 /* ===== R363-学而思2：课堂笔记 / 课前测 —— 标题 + 新增 + 删除 放在页签上方的浅蓝色卡片内 ===== */
 .r363-note-head-host{display:block;margin:0 0 12px}
@@ -13129,10 +13143,17 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
   padding:5px 10px;font-size:12px;font-weight:700;line-height:1.15;min-height:30px;box-shadow:none;
 }
 .r363-note-head .xs-note-head-actions .pbtn.is-on{background:#ffe9c7;color:#8a5200;border-color:#f5c884}
+@media (max-width:960px){
+  .xs-sub-tabs.r363-tabs{gap:6px}
+  .xs-sub-tabs.r363-tabs .r363-tab-zone{padding:5px 6px;gap:4px}
+  .xs-sub-tabs.r363-tabs .r363-tab-zone .sub-tab{padding:4px 6px;font-size:11px;border-radius:12px}
+}
+@media (max-width:760px){
+  .xs-sub-tabs.r363-tabs{gap:5px}
+  .xs-sub-tabs.r363-tabs .r363-tab-zone{padding:4px 5px;gap:3px;border-radius:12px}
+  .xs-sub-tabs.r363-tabs .r363-tab-zone .sub-tab{padding:3px 5px;font-size:10px;border-radius:10px}
+}
 @media (max-width:820px){
-  .xs-sub-tabs.r363-tabs{gap:8px}
-  .xs-sub-tabs.r363-tabs .r363-tab-zone .sub-tab{padding:7px 12px;font-size:13px}
-  .xs-sub-tabs.r363-tabs .r363-tab-zone{padding:7px 8px;gap:6px}
   .r363-note-head{padding:7px 10px;min-height:44px;gap:8px}
   .r363-note-head .r363-note-title{font-size:14px}
   .r363-note-head .xs-note-head-actions .pbtn{font-size:11.5px;padding:4px 8px;min-height:28px}
@@ -35083,18 +35104,31 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
   const isChild = ()=> { try { return (S.load().profile.mode || 'child') === 'child'; } catch(e){ return true; } };
   const isParent = ()=> !isChild();
   const esc = s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-  /* R364-全局1：打卡完成 / 取消打卡的旧提示语不再直接弹出，统一换算成 R364 四条动画文案。
-     其余（操作类 / 异常类）提示保持原样。 */
+  /* R365-全局1：打卡旧提示语的识别范围扩到全平台实际文案 ——
+     成功侧：打卡成功 / 已打卡 / 打卡完成 / 打卡已完成 / 打卡 +N⭐ / 已学 +N⭐ / 已读 +N⭐ /
+             掌握 +N⭐ / 全部完成 +N⭐ / 完成 +N⭐；
+     取消侧：已取消打卡 / 已撤销…打卡 / 取消…奖励 / 扣回 N⭐ / N⭐ 收回。
+     其余操作类提示（如「已取消导入」「已标记已掌握」「撤销失败」）保持原样。 */
+  const _r365StarsOf = (s)=>{
+    let m = s.match(/扣回\s*[+＋]?\s*[⭐🌟]?\ufe0f?\s*(\d+)/);
+    if(!m) m = s.match(/[+＋]\s*[⭐🌟]?\ufe0f?\s*(\d+)/);
+    if(!m) m = s.match(/[⭐🌟]\ufe0f?\s*(\d+)/);
+    if(!m) m = s.match(/(\d+)\s*[⭐🌟]/);
+    if(!m) m = s.match(/获得\s*(\d+)/);
+    return m ? (parseInt(m[1], 10) || 0) : 0;
+  };
   const _r363CheckinTip = (msg)=>{
     const s = String(msg==null?'':msg);
     if(!s) return null;
-    const cancel = /已取消打卡/.test(s);
-    if(!cancel && !/打卡成功|已打卡|打卡完成/.test(s)) return null;
-    let n = 0, m = null;
-    if(cancel) m = s.match(/(?:已扣回|扣回)\s*[+＋]?\s*[⭐🌟]*\s*(\d+)/);
-    else m = s.match(/[+＋]\s*[⭐🌟]?\s*️?\s*(\d+)/) || s.match(/获得\s*[⭐🌟]?\s*(\d+)/);
-    if(m) n = parseInt(m[1], 10) || 0;
-    return { cancel: cancel, stars: n };
+    if(!/打卡|已学|已读|掌握|完成|奖励/.test(s)) return null;
+    const n = _r365StarsOf(s);
+    const cancel = /(?:取消|撤销|收回|扣回)[^。！!]*?(?:打卡|完成|奖励|已学|已读|掌握)/.test(s)
+                || /(?:打卡|完成|奖励)[^。！!]*?(?:取消|撤销|收回)/.test(s);
+    if(cancel) return { cancel: true, stars: n };
+    const success = /打卡成功|已打卡|打卡完成|打卡已完成|打卡\s*[+＋]/.test(s)
+                 || (/[+＋]\s*[⭐🌟]?\ufe0f?\s*\d/.test(s) && /打卡|已学|已读|掌握|完成/.test(s))
+                 || (/获得\s*\d+\s*[⭐🌟]/.test(s) && /打卡|已学|已读|掌握/.test(s));
+    return success ? { cancel: false, stars: n } : null;
   };
   const toast = (msg)=>{
     const _keep = _r363CheckinTip(msg);
@@ -35175,6 +35209,8 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     st.archive.totalStars = Math.max(0, (st.archive.totalStars||0) + n);
     st.archive.exp = st.archive.totalStars;
     S.save(st);
+    /* R365-全局1：打卡点击期间的 ⭐ 增减 → 走全平台统一文案出口 */
+    try{ r365StarChanged(n); }catch(e){}
     /* R327-1：不在首页时绝不整页重渲染首页（首页一次 renderHome 要重建日历 / 周图 / 三张任务卡，
        iPad 上是实打实的几百毫秒）。这里只同步顶部数字；回到首页时 goPage('home') 会完整渲染。 */
     try{
@@ -40529,14 +40565,17 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     if(cancel) return n > 0 ? ('取消打卡成功，扣回 ' + n + '⭐') : '取消打卡成功';
     return n > 0 ? (nm + '，恭喜打卡成功，获得 ' + n + '⭐') : (nm + '，恭喜打卡成功');
   }
-  /* R364-全局1/2：清掉旧提示语后按新规则重绘浮层；同一句 220ms 内只画一次 */
-  let _r363FxLast = '';
+  /* R365-全局1：同一次点击内（600ms）多处调用只保留信息最完整的一条 ——
+     先出的「无星」文案在随后拿到真实星数时升级重绘，不再叠两条、也不再少星。 */
+  let _r363FxLast = '', _r363FxAt = 0, _r363FxCn = false, _r363FxStars = 0;
   function r363CheckinFx(cancel, stars){
     try{
+      const _n0 = Math.max(0, parseInt(stars, 10) || 0);
+      const _now = Date.now();
+      if(_r363FxAt && _now - _r363FxAt < 600 && !!cancel === _r363FxCn && _n0 <= _r363FxStars) return;
       const text = r363CheckinText(cancel, stars);
-      const key = text + '|' + (cancel ? 'c' : 's');
-      if(key === _r363FxLast && Date.now() - (_r363FxAt || 0) < 220) return;
-      _r363FxLast = key; _r363FxAt = Date.now();
+      _r363FxCn = !!cancel; _r363FxStars = _n0; _r363FxAt = _now; _r365FxAt = _now;
+      _r363FxLast = text;
       const old = document.querySelector('.r327-celebrate');
       if(old && old.parentNode) old.parentNode.removeChild(old);
       const box = document.createElement('div');
@@ -40585,6 +40624,57 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
   }
   window.__r336CheckinFx = r336CheckinFx;
   window.__r364CheckinFx = r363CheckinFx;   // R364：打卡动画文字规则测试钩子
+  /* ================= R365-全局1：全平台打卡反馈兜底闸 =================
+     各板块打卡实现方式不同（toggleCheckIn / markReadingRead / markBaikeCheckin / uiFlag…），
+     逐个补动画必漏。这里改为一处兜底，保证「所有打卡」都走 R364 四条文案：
+       ① 捕获阶段记下本次点击的是打卡键、以及点击前是否已打卡（= 本次是取消）；
+       ② 板块落库时只要发生 ⭐ 增减（addStars），立刻按实际星数出对应文案；
+       ③ handler 完全不发反馈的打卡键，约 0.5s 后补一条「无星」文案，保证不漏。 */
+  var _r365Ck = null, _r365FxAt = 0;
+  /* 点击前是否已是「已打卡」态（= 本次是取消）—— 兼容各板块不同的完成类名 */
+  function r365PreChecked(el){
+    try{
+      if(r315IsUndoClick(el)) return true;
+      const cl = el && el.classList;
+      return !!(cl && (cl.contains('kewen-learned') || cl.contains('sh-learned') ||
+                       cl.contains('is-checked') || cl.contains('is-done') || cl.contains('active')));
+    }catch(e){ return false; }
+  }
+  /* 卡片内的功能键（朗读 / 新增 / 删除 / 文库 / 问答）不当作整卡打卡 */
+  function r365InnerCtrl(card, t){
+    try{
+      if(!card || !t || card === t) return false;
+      const inner = t.closest('button,a,input,label,select,textarea,[role="button"],.kw-paras,.kw-qa,[data-wenku],[data-gs-del],[data-gs-add]');
+      return !!(inner && card.contains(inner));
+    }catch(e){ return false; }
+  }
+  function r365BeginCheckinClick(cancel, el){
+    _r365Ck = { at: Date.now(), cancel: !!cancel, el: el || null,
+                was: !!(el && r365PreChecked(el)), served: false, fallback: false };
+    const rec = _r365Ck;
+    setTimeout(function(){
+      try{
+        if(_r365Ck !== rec || rec.served) return;
+        if(_r365FxAt && Date.now() - _r365FxAt < 380) return;   // 本次点击期间已有动画
+        /* 只有打卡态真的发生切换才补动画：点开弹窗 / 朗读 / 删除等非打卡操作不会误弹 */
+        if(rec.el && document.contains(rec.el) && r365PreChecked(rec.el) === rec.was) return;
+        rec.served = true; rec.fallback = true;
+        r363CheckinFx(rec.cancel, 0);
+      }catch(e){}
+    }, 500);
+  }
+  function r365StarChanged(n){
+    const v = parseInt(n, 10) || 0;
+    if(!v || !_r365Ck) return;
+    if(Date.now() - _r365Ck.at > 1500) return;
+    if(_r365Ck.served && !_r365Ck.fallback) return;   // 已有带星动画，不重复
+    _r365Ck.served = true; _r365Ck.fallback = false;
+    r363CheckinFx(v < 0, Math.abs(v));
+  }
+  window.__r365BeginCheckinClick = r365BeginCheckinClick;
+  window.__r365StarChanged = r365StarChanged;
+  window.__r365Toast = toast;                                   // 测试钩子：旧提示语拦截
+  window.__r365FxReset = function(){ _r363FxAt = 0; _r365FxAt = 0; _r363FxStars = -1; _r363FxCn = null; };
   /* R352-全局1：测试钩子——设本次打卡预设奖励星数，供定向探针验证文案数值回退 */
 
   // 错题本「批改」判对后：同步当日快照与主面板该题（作答改为正确答案、标 ✓）
@@ -56788,6 +56878,10 @@ function renderKMAdmin(){
      新增任何打卡键只需在此登记一次：① 捕获阶段自动播统一打卡音效（打卡 / 撤销都发声）；
      ② 自动从通用点击音效里剔除，杜绝「一次打卡响两个不同音效」。 */
   const CHECKIN_SFX_SEL = '[data-check],[data-checkin],[data-baike-checkin],[data-calc-check],[data-ri-checkin],[data-suzhi-checkin],[data-sc-checkin],[data-zx-checkin],[data-kw-checkin],[data-kwqa-checkin],[data-nw-think-checkin],[data-bs-checkin-sec],[data-en3500-check],[data-kp-check],[data-xs-check-card],[data-xs-note-check],[data-sfx-checkin],.ri-checkin-btn,.kw-checkin,.checkin-btn,.kp-check-btn';
+  /* R365-全局1：不在打卡音效清单里、但同样是「打卡 / 已学」语义的控件与卡片。
+     只用于登记打卡反馈（不改变它们原有的音效），确保这些板块也按四条文案出动画。 */
+  const R365_CK_BTN_SEL = '[data-kw-learn-toggle],[data-sh-learn],[data-en-oxford-theme],[data-en-essay-done]';
+  const R365_CK_CARD_SEL = '.kw-card,.sh-poem-card,.kb-card,[data-eg-card]';
   function sfxSlotOf(t){
     // 打卡类：统一走 playCheckinSound（下方捕获阶段分发），此处跳过避免重复
     // R155-1：补齐「新世界」各子页内部打卡键选择器，杜绝「内部按键音效重复触发（双音效）」
@@ -56903,7 +56997,24 @@ function renderKMAdmin(){
           const t = e.target; if(!t || !t.closest) return;
           if(t.closest('[disabled],[aria-disabled="true"]')) return;
           const node = t.closest(CHECKIN_SFX_SEL);
-          if(!node) return;
+          if(!node){
+            /* R365-全局1：扩展打卡控件（课文已学 / 古诗已学 / 英语主题已学 / 英语作文已学）
+               与整卡打卡（课文卡 / 古诗卡 / 百科卡 / 英语小知识卡）同样登记反馈；
+               原音效保持不动，卡内按钮（朗读 / 新增 / 删除 / 文库）不登记。 */
+            const _xb = t.closest(R365_CK_BTN_SEL);
+            if(_xb){
+              try{ r365BeginCheckinClick(r365PreChecked(_xb), _xb); }catch(_){}
+              return;
+            }
+            const _xc = t.closest(R365_CK_CARD_SEL);
+            if(_xc && !r365InnerCtrl(_xc, t)){
+              try{ r365BeginCheckinClick(r365PreChecked(_xc), _xc); }catch(_){}
+            }
+            return;
+          }
+          /* R365-全局1：登记本次打卡点击（是否取消），供星星变化 / 兜底闸出动画 */
+          const _r365Undo = r365PreChecked(node);
+          try{ r365BeginCheckinClick(_r365Undo, node); }catch(_){}
           /* R322-1：所有打卡键（不只首页）点击当帧即给按压反馈。
              旧实现只有 handler 落盘后才改状态类，同步 save 期间界面毫无变化 = 用户感知「迟钝」。
              这里只加纯视觉类，不动任何业务状态，260ms 后自动移除。 */
@@ -56912,7 +57023,7 @@ function renderKMAdmin(){
             setTimeout(()=>{ try{ node.classList.remove('r322-checkin-tap'); }catch(_){} }, 260);
           }catch(_){}
           /* R315-D2：点击前已经是「已打卡」态 = 这次是撤销 → 全程静默（不再有遗憾/撤销音） */
-          if(r315IsUndoClick(t)){ _r315UndoSfxAt = Date.now(); return; }
+          if(_r365Undo){ _r315UndoSfxAt = Date.now(); return; }
           /* R322-1：记下本次点击事件，供 handler 内的无参发声调用复用去重标记 */
           _r322SfxEvt = e; _r322SfxEvtAt = Date.now();
           playCheckinSound(e);
