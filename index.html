@@ -20144,6 +20144,32 @@ window.XS_A2_VOCAB = [
   function _lsSetMeta(ts, bytes){
     _lsSet(LS_META, JSON.stringify({schema:254, savedAt:ts||_now(), bytes:bytes||0, engine:'nick_checkin_main_db'}));
   }
+  /* R369-A：IDB 正常时，localStorage 桥梁只保留 <50KB 元信息 + 最近 180 条打卡摘要；
+     整份 state 仍只存于本库 main/chunks。degraded 时保持旧行为（整份镜像），
+     避免 jsdom / 隐私模式 / 旧运行时出现「桥梁不是完整档」的兼容问题。 */
+  function _r369BridgeWrite(raw, ts){
+    try{
+      if(_degraded || !raw || typeof raw !== 'string') return false;
+      var o = { __r369Bridge:1, __seq:_seqOf(raw), __commitAt:0,
+                __at:ts||_now(), savedAt:ts||_now(), bytes:raw.length, ck:[] };
+      try{
+        var st = JSON.parse(raw);
+        o.__commitAt = st.__commitAt || 0;
+        var rs = st.records || st.archive || [];
+        if(!Array.isArray(rs)) rs = [];
+        for(var i=rs.length-1; i>=0 && o.ck.length<180; i--){
+          var x = rs[i];
+          if(x) o.ck.push({d:x.date||'', t:x.taskId||x.id||'', c:x.completed?1:0, s:x.stars||0});
+        }
+      }catch(e){}
+      var out = JSON.stringify(o);
+      while(out.length > 50*1024 && o.ck.length){
+        o.ck.splice(0, Math.ceil(o.ck.length/2)); out = JSON.stringify(o);
+      }
+      if(out.length > 50*1024){ o.ck = []; out = JSON.stringify(o); }
+      return _lsSet(LS_KEY, out);
+    }catch(e){ return false; }
+  }
   /* 采样哈希：完整遍历 MB 级字符串会拖慢每次保存，按 1/1024 采样 + 长度 + 首尾，
      足够识别「被覆盖 / 被截断 / 被回滚」，且 O(n/1024)。 */
   function hash(raw){
@@ -20678,7 +20704,8 @@ window.XS_A2_VOCAB = [
     return _get(ST_SNAP, id).then(function(rec){
       if(!rec || !jsonOk(rec.raw)) return { ok:false, code:'snapshot-invalid' };
       _primaryRaw = rec.raw; _primaryTs = _now();
-      _lsSet(LS_KEY, rec.raw); _lsSetMeta(_primaryTs, rec.raw.length);
+      if(!_r369BridgeWrite(rec.raw, _primaryTs)) _lsSet(LS_KEY, rec.raw);
+      _lsSetMeta(_primaryTs, rec.raw.length);
       log('restore-snapshot', { id:id, bytes:rec.raw.length });
       return write(rec.raw, _primaryTs, { reason:'restore-snapshot' }).then(function(w){
         return { ok:true, raw:rec.raw, write:w };
@@ -20786,7 +20813,8 @@ window.XS_A2_VOCAB = [
         var ls = _lsGet(LS_KEY);
         if(!jsonOk(ls)){
           rep.issues.push({ lv:'warn', t:'localStorage 桥梁快照缺失 / 损坏' });
-          _lsSet(LS_KEY, rec.raw); _lsSetMeta(rec.ts, rec.raw.length);
+          if(!_r369BridgeWrite(rec.raw, rec.ts)) _lsSet(LS_KEY, rec.raw);
+          _lsSetMeta(rec.ts, rec.raw.length);
           rep.actions.push('已用 IndexedDB 主表重建 localStorage 桥梁快照');
           rep.ok = false;
         }
@@ -20882,10 +20910,12 @@ window.XS_A2_VOCAB = [
     var bts = _lsMetaTs();
     var mts = d ? (d.ts || 0) : 0;
     /* R318：降级副本与桥梁快照同样按提交序号裁决；都没有序号（老存档）时才退回时间戳 */
-    var _bs = jsonOk(bridge) ? _seqOf(bridge) : 0;
+    var _bridgeIsR369 = false;
+    try{ var _bo = JSON.parse(bridge || 'null'); _bridgeIsR369 = !!(_bo && _bo.__r369Bridge); }catch(e){}
+    var _bs = (jsonOk(bridge) && !_bridgeIsR369) ? _seqOf(bridge) : 0;
     var _ds = d ? _seqOf(d.raw) : 0;
     var _bridgeWin = d ? ((_bs || _ds) ? (_bs >= _ds) : (bts >= mts)) : true;
-    if(jsonOk(bridge) && _bridgeWin){
+    if(jsonOk(bridge) && _bridgeWin && !_bridgeIsR369){
       _primaryRaw = bridge;
       _primaryTs = bts || _now();
       _recoveredFrom = d ? 'localStorage-bridge' : '';
@@ -20980,7 +21010,8 @@ window.XS_A2_VOCAB = [
       .then(function(v){
         if(v && v.rolledBack && v.raw){
           _primaryRaw = v.raw;
-          _lsSet(LS_KEY, v.raw); _lsSetMeta(_now(), v.raw.length);
+          if(!_r369BridgeWrite(v.raw, _now())) _lsSet(LS_KEY, v.raw);
+          _lsSetMeta(_now(), v.raw.length);
           try{ if(W.Store && W.Store.r272Invalidate) W.Store.r272Invalidate(); }catch(e){}
         }
         _bindInteraction();
@@ -21069,7 +21100,14 @@ window.XS_A2_VOCAB = [
       var lt = _lsMetaTs();
       /* R318：序号能裁决时以序号为准 —— 只要主库带的提交序号不小于桥梁，它就是最新态；
          没有序号（老存档）才退回「savedAt 比主库时间新则让位」的旧规则。 */
-      var _ps = _seqOf(_primaryRaw), _bs = _seqOf(_lsGet(LS_KEY));
+      var _lb = _lsGet(LS_KEY);
+      try{
+        var _lo = JSON.parse(_lb || 'null');
+        /* R369-A：r369 桥梁不是完整存档，任何序号都不能让它盖过 IDB 主档，
+           否则版本更新后首次加载会拿 50KB 元信息当成整份 state。 */
+        if(_lo && _lo.__r369Bridge) return _primaryRaw;
+      }catch(e){}
+      var _ps = _seqOf(_primaryRaw), _bs = _seqOf(_lb);
       if(_ps || _bs) return (_ps >= _bs) ? _primaryRaw : null;
       if(lt && lt > _primaryTs) return null;
       return _primaryRaw;
@@ -21112,6 +21150,11 @@ window.XS_A2_VOCAB = [
 (function(){
   const SUBJECTS = ['语文','数学','英语','运动','围棋','习惯家务','错题'];
   const KEY = 'zoo_checkin_v3';
+  /* R369-A：整份 state 的唯一真相在 IndexedDB 主库（R272P / nick_checkin_main_db），
+     localStorage 只保留 <50KB 同步桥梁。IDB 不可用（jsdom / 隐私模式 / 旧运行时）时
+     仍走 R368 的整份主档 + 多层兜底，行为完全不变。 */
+  const KEY_BRIDGE = KEY + '_r369_bridge';
+  const BRIDGE_BUDGET = 50 * 1024;
   /* ============ R254-1 / R254-2：数据保护与持久化加固 ============
      规则（对应需求 1.1~1.3 / 2.1~2.2）：
        ① 版本更新只「补缺失字段」，绝不重置 / 清空 / 替换用户已有数据；
@@ -21485,7 +21528,7 @@ window.XS_A2_VOCAB = [
     };
     try{
       const _P = (typeof window !== 'undefined') ? window.R272P : null;
-      if(_P && typeof _P.recoveredRaw === 'function') push('nick_checkin_main_db', _P.recoveredRaw(), 2);
+      if(_P && typeof _P.recoveredRaw === 'function') push('nick_checkin_main_db', _P.recoveredRaw(), 0);
     }catch(e){}
     /* 桥梁快照是同步写的：老存档没有 __seq 时用 KEY_META.savedAt 作为它的时间 */
     const bridgeRaw = _safeGet(KEY);
@@ -21508,7 +21551,7 @@ window.XS_A2_VOCAB = [
             差别不大则仍按介质可信度排，避免把用户的合法删减误判成数据丢失。 */
       const _mx = Math.max(a.len, b.len, 1);
       if(Math.abs(b.len - a.len) / _mx > 0.25) return b.len - a.len;
-      return a.rank - b.rank;                        // ④ 同代时按介质可信度（桥梁 > 主库 > bak1 > bak2）
+      return a.rank - b.rank;                        // ④ 同代时按介质可信度（IDB 主库 > 桥梁 > bak1 > bak2）
     });
     const win = cands[0];
     if(win.src !== KEY && win.src !== 'nick_checkin_main_db') _recoveredFrom = win.src;
@@ -21928,6 +21971,40 @@ window.XS_A2_VOCAB = [
     _rawMemoMap.set(raw, ok);
     return ok;
   }
+  /* R369-A：只有 IndexedDB 主库真正可用且已完成启动迁移时，才把 localStorage 降级为桥梁。
+     jsdom / degraded 环境下返回 false，保留全部历史落盘与恢复链路。 */
+  function _r369IdbLive(){
+    try{
+      const _P = (typeof window !== 'undefined') ? window.R272P : null;
+      if(!_P || typeof _P.write !== 'function' || typeof _P.recoveredRaw !== 'function') return false;
+      const _inf = (typeof _P.info === 'function') ? _P.info() : null;
+      if(!_inf || _inf.degraded || !_inf.ready) return false;
+      return !!_P.recoveredRaw();
+    }catch(e){ return false; }
+  }
+  /* R369-A：<50KB 同步桥梁。带 __seq / savedAt 供 R272P 与 store 的序号裁决使用，
+     ck 只放最近 180 条打卡摘要；不放顶层 records/archive/tasks，
+     因此 _rawUsable() 不会把它误判成完整存档。 */
+  function _r369BridgeRaw(st, raw, ts){
+    const o = { __r369Bridge:1, __seq:(st && st.__seq) || 0,
+                __commitAt:(st && st.__commitAt) || ts, __at:ts, savedAt:ts,
+                bytes:(raw || '').length, ck:[] };
+    try{
+      const rs = (st && (st.records || st.archive)) || [];
+      const arr = Array.isArray(rs) ? rs : [];
+      for(let i = arr.length - 1; i >= 0 && o.ck.length < 180; i--){
+        const x = arr[i];
+        if(x) o.ck.push({ d:x.date || '', t:x.taskId || x.id || '', c:x.completed ? 1 : 0, s:x.stars || 0 });
+      }
+    }catch(e){}
+    let out = JSON.stringify(o);
+    while(out.length > BRIDGE_BUDGET && o.ck.length){
+      o.ck.splice(0, Math.ceil(o.ck.length / 2));
+      out = JSON.stringify(o);
+    }
+    if(out.length > BRIDGE_BUDGET){ o.ck = []; out = JSON.stringify(o); }
+    return out;
+  }
   // 读取主存档；损坏则依次回退备份（绝不直接新建空档）
   function _readMainRaw(){
     /* R318：读取裁决统一交给 _r318Pick —— 主库 / 桥梁 / 双代备份按提交序号对账。
@@ -22047,21 +22124,26 @@ window.XS_A2_VOCAB = [
         }
       }catch(e){}
       // R260-1.1：刷盘同样走配额回收链，避免「关页面最后一次操作因空间不足丢失」
-      if(!_writeMain(raw).ok){
+      /* R369-A：IDB 主库可用时，卸载刷盘也只写 <50KB 桥梁；整份由上面的 P.write 负责。 */
+      const _r369FLive = _r369IdbLive();
+      const _r369FRaw = _r369FLive ? _r369BridgeRaw(st, raw, _fts) : raw;
+      if(!_writeMain(_r369FRaw).ok){
         // R266：关页面/切后台这最后一次写入最不能丢 —— 先落小账本，再尽力写补丁
         _r318LastOk = false;
-        try{ _r318LightWrite(st, true); }catch(e){}   // R318：轻档优先，体积最小最容易写进
-        try{ _journalWrite(st, _fts); }catch(e){}
-        try{ _pendingWrite(st); }catch(e){}
-        return false;
+        if(!_r369FLive){
+          try{ _r318LightWrite(st, true); }catch(e){}   // R318：轻档优先，体积最小最容易写进
+          try{ _journalWrite(st, _fts); }catch(e){}
+          try{ _pendingWrite(st); }catch(e){}
+        }
+        if(!_r369FLive) return false;
       }
       try{ _r318LastRaw = raw; _r318LastLen = raw.length; _r318LastOk = true; }catch(e){}
-      try{ _r318LightWrite(st, false); }catch(e){}
+      if(!_r369FLive) try{ _r318LightWrite(st, false); }catch(e){}
       _touchSavedAt(raw.length, _fts);
       _snapshotClear();   // R258-1.1：主档已整体落盘，应急设置快照作废
       _pendingClear();    // R261-5.1：主档已整体落盘，差异补丁作废
       try{ _journalClear(); }catch(e){}   // R266：主档最新，账本作废
-      _rotateBackup(raw, true);
+      if(!_r369FLive) _rotateBackup(raw, true);
       _loadCachePut(st, raw);
       return true;
     }catch(e){ return false; }
@@ -24754,10 +24836,26 @@ window.XS_A2_VOCAB = [
     /* R328-1.3：把落盘时被搬到 IndexedDB 的图片按路径回填，界面看到的仍是完整 dataURL；
        缓存键仍是磁盘 raw，所以回填不会破坏命中判定。 */
     try{ _r328RestoreImages(st); }catch(e){}
+    /* R369-A：这里是唯一安全的规范化窗口 —— 60+ 条迁移、_guardRestore、图片回填、
+       _r318SyncSeq 全部完成。把规范化 raw 回写 IDB 主库（内部按内容去重），
+       下次刷新直接读它；localStorage 不再承担整份真相。 */
+    try{
+      const _P3 = (typeof window !== 'undefined') ? window.R272P : null;
+      if(_P3 && _r369IdbLive() && typeof _P3.write === 'function'){
+        const _norm = JSON.stringify(_r328DiskView(st));
+        if(typeof _P3.recoveredRaw !== 'function' || _P3.recoveredRaw() !== _norm){
+          _P3.write(_norm, (st && st.__commitAt) || Date.now(), { reason:'r369-load-normalize', dedup:true }).catch(function(){});
+        }
+      }
+    }catch(e){}
     _loadCachePut(st);   // R246-3：解析 + 迁移完成后写入缓存
     // R254-1：若本次是从备份救回来的，立即回写主存档，保证下次打开读的是完整数据
     if(_recoveredFrom){
-      try{ const raw2 = JSON.stringify(_r328DiskView(st)); if(_safeSet(KEY, raw2)){ _rotateBackup(raw2, true); _loadCachePut(st, raw2); } }catch(e){}
+      try{
+        const raw2 = JSON.stringify(_r328DiskView(st));
+        if(_r369IdbLive()){ _safeSet(KEY, _r369BridgeRaw(st, raw2, Date.now())); }
+        else if(_safeSet(KEY, raw2)){ _rotateBackup(raw2, true); _loadCachePut(st, raw2); }
+      }catch(e){}
     }
     // R256-1.4：记下「当前已落库的成长星数」，作为下一次变更记账的基线
     try{ _r256LastStars = _r256StarsOf(st); }catch(e){}
@@ -25656,6 +25754,9 @@ window.XS_A2_VOCAB = [
        iPad 上介质失效（配额满 / 隐私模式 / 内存 shim）时，这份镜像是唯一能跨刷新的副本。
        时间戳与成功落库时的 KEY_META.savedAt 共用，hydrateMirror 才能准确判断新旧。 */
     const _ts = Date.now();
+    /* R369-A：IDB 主库可用 → localStorage 写 <50KB 桥梁；否则保持 R368 整份主档行为。 */
+    const _r369Live = _r369IdbLive();
+    const _r369Raw = _r369Live ? _r369BridgeRaw(st, raw, _ts) : raw;
     try{ _mirrorWrite(raw, _ts); }catch(e){}
     /* R272-1.3 / 1.7：同一份状态同时写入 IndexedDB 主库（异步事务 + 最多 3 次重试）。
        localStorage 从此只承担「同步桥梁快照」角色，主库才是唯一真相；
@@ -25683,9 +25784,9 @@ window.XS_A2_VOCAB = [
        这样正常设备上不会再因为一次瞬时失败弹「本机写入未完成」。 */
     let _wr = { ok:false, err:'' };
     for(let _try = 0; _try < 2; _try++){
-      try{ localStorage.setItem(KEY, raw); _wr = { ok:true, err:'' }; break; }
+      try{ localStorage.setItem(KEY, _r369Raw); _wr = { ok:true, err:'' }; break; }
       catch(e){
-        _wr = _writeMain(raw);
+        _wr = _writeMain(_r369Raw);
         if(_wr.ok) break;
         if(_try === 0){
           try{ localStorage.removeItem(KEY_PRE_UPDATE); }catch(e1){}
@@ -25714,12 +25815,15 @@ window.XS_A2_VOCAB = [
          主档写不进但轻档 / 小账本 / 补丁任一成功时，业务数据仍可跨刷新恢复，
          UI 不应再弹「存储紧张」吓人（这是用户反复反馈的误报弹窗）。 */
       let _fb = false;
-      try{ _fb = !!_r318LightWrite(st, true); }catch(e){}
-      try{ if(_journalWrite(st, _ts)) _fb = true; }catch(e){}
+      /* R369-A：IDB 主库已接住整份 state，桥梁写失败不需要再往 localStorage 塞 380KB 副本。 */
+      if(!_r369Live){
+        try{ _fb = !!_r318LightWrite(st, true); }catch(e){}
+        try{ if(_journalWrite(st, _ts)) _fb = true; }catch(e){}
+      }
       // R261-5.1：主档写不进 → 立刻留差异补丁，刷新 / 版本更新后能把修改捞回来
       _r256LedgerRollback(st, _r256Entry);
-      try{ if(_pendingWrite(st)) _fb = true; }catch(e){}
-      _lastSaveRecoverable = _fb;
+      if(!_r369Live){ try{ if(_pendingWrite(st)) _fb = true; }catch(e){} }
+      _lastSaveRecoverable = _fb || _r369Live;
       _loadCachePut(st);
       return false;
     }
@@ -25729,13 +25833,15 @@ window.XS_A2_VOCAB = [
     //   R260-1.1：这里失败属于「读回不一致」，不再冒充 quota（否则 UI 会误报空间不足）。
     try{
       const _back = localStorage.getItem(KEY);
-      if(_back != null && _back !== raw){
+      if(_back != null && _back !== _r369Raw){
         _saveError = 'verify';
         _r256LedgerRollback(st, _r256Entry);
         _r318LastOk = false;
-        try{ _r318LightWrite(st, true); }catch(e){}   // R318：读回不一致同样先落轻档
-        try{ _journalWrite(st, _ts); }catch(e){}   // R266：读回不一致同样先落小账本
-        try{ _pendingWrite(st); }catch(e){}   // R261-5.1：回读不一致同样留补丁
+        if(!_r369Live){
+          try{ _r318LightWrite(st, true); }catch(e){}   // R318：读回不一致同样先落轻档
+          try{ _journalWrite(st, _ts); }catch(e){}   // R266：读回不一致同样先落小账本
+          try{ _pendingWrite(st); }catch(e){}   // R261-5.1：回读不一致同样留补丁
+        }
         _lastSaveRecoverable = true;          // R332-6.1：兜底三层已尽力写入，数据可恢复
         _loadCachePut(st);
         return false;
@@ -25768,7 +25874,7 @@ window.XS_A2_VOCAB = [
        同时滚动刷新轻档 —— 主档某一次突然写不进时，跨刷新仍有一份完整的用户业务副本。 */
     try{ _r318LastRaw = raw; _r318LastLen = raw.length; _r318LastOk = true; }catch(e){}
     /* R327-1：轻档 + 双代备份挪到空闲时段（见 _r327DeferSecondary 注释） */
-    _r327DeferSecondary(function(){
+    if(!_r369Live) _r327DeferSecondary(function(){
       try{ _r318LightWrite(st, false); }catch(e){}
       // R255-5：备份属于「附加保险」，它失败绝不能让主存档被判定为失败
       if(!_skipBak) try{ _rotateBackup(raw, false); }catch(e){}
@@ -26160,7 +26266,22 @@ window.XS_A2_VOCAB = [
     try{ return P.info(); }catch(e){ return local; }
   }
   function r272Estimate(){ const P=_r272P(); if(!P) return Promise.resolve({usage:0,quota:0,persisted:false,engine:'localStorage'}); try{ return P.estimate(); }catch(e){ return Promise.resolve({usage:0,quota:0,persisted:false}); } }
-  function r272Snapshot(reason){ const P=_r272P(); if(!P) return Promise.resolve({ok:false,code:'degraded'}); try{ return P.snapshot(_safeGet(KEY), reason||'manual'); }catch(e){ return Promise.resolve({ok:false,code:'exception'}); } }
+  function r272Snapshot(reason){
+    const P=_r272P(); if(!P) return Promise.resolve({ok:false,code:'degraded'});
+    try{
+      const _raw = (typeof P.recoveredRaw === 'function' && P.recoveredRaw()) || _safeGet(KEY);
+      return P.snapshot(_raw, reason||'manual');
+    }catch(e){ return Promise.resolve({ok:false,code:'exception'}); }
+  }
+  /* R369-A：方案 A 诊断入口 —— 桥梁体积 / IDB 引擎 / 当前是否走主档模式。
+     探针用它验证「刷新后真相来自 IDB，localStorage 不超过 50KB」。 */
+  function r369Diag(){
+    const P = _r272P();
+    let len = 0, marked = false;
+    try{ const b = _safeGet(KEY) || ''; len = b.length; const o = JSON.parse(b); marked = !!(o && o.__r369Bridge); }catch(e){}
+    return { live:_r369IdbLive(), bridge:marked, bridgeBytes:len, budget:BRIDGE_BUDGET, keyBridge:KEY_BRIDGE,
+             idb:(function(){ try{ return P ? P.info() : null; }catch(e){ return null; } })() };
+  }
   function r272ListSnapshots(){ const P=_r272P(); if(!P) return Promise.resolve([]); try{ return P.listSnapshots(); }catch(e){ return Promise.resolve([]); } }
   function r272Restore(id){ const P=_r272P(); if(!P) return Promise.resolve({ok:false,code:'degraded'}); try{ return P.restoreSnapshot(id).then(function(r){ if(r && r.ok) r272Invalidate(); return r; }); }catch(e){ return Promise.resolve({ok:false,code:'exception'}); } }
   function r272SelfCheck(){
@@ -35090,6 +35211,8 @@ be 动词：am / is → was；are → were
     r327FlushSecondary,
     // R368：打卡侧车 / 图片分片诊断
     KEY_CK, r368Diag,
+    // R369-A：方案 A（IDB 主档 + <50KB 桥梁）诊断
+    KEY_BRIDGE, BRIDGE_BUDGET, r369Diag,
     // R328-1.3：强制把内联大图搬到 IndexedDB 并重存主档（存储体检 / 写入失败自愈用）
     r328SlimImages,
     // R264-2.1：本机存储用量诊断（核验是否真的空间紧张、由哪些副本占用）
@@ -59858,6 +59981,38 @@ function renderKMAdmin(){
     const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=filename; a.click();
     setTimeout(()=>{ try{ URL.revokeObjectURL(a.href); }catch(e){} }, 2000);
   }
+  /* R369-B：每周自动导出全量 JSON。iPad Safari 不能静默写任意目录，
+     走 a.download 落到「文件 App / 下载项」；后台定时器会被节流，
+     因此每次启动都补跑一次「本周尚未导出」的备份，这才是 iPad 上真正可靠的触发点。 */
+  const R369_AUTO_KEY = 'nick_checkin_r369_auto_backup';
+  function r369AutoBackupEnabled(){
+    try{ const St = window.Store || S; return St.kvGet(R369_AUTO_KEY + '_enabled', '1') !== '0'; }
+    catch(e){ return true; }
+  }
+  function r369SetAutoBackup(on){
+    try{ const St = window.Store || S; St.kvSet(R369_AUTO_KEY + '_enabled', on ? '1' : '0'); }catch(e){}
+    return !!on;
+  }
+  function r369AutoBackupTick(force){
+    const St = window.Store || S;
+    if(!force && !r369AutoBackupEnabled()) return Promise.resolve({ skipped:'disabled' });
+    const _d = new Date(), _p = function(n){ return String(n).padStart(2, '0'); };
+    const day = _d.getFullYear() + '-' + _p(_d.getMonth() + 1) + '-' + _p(_d.getDate());
+    try{ if(!force && St.kvGet(R369_AUTO_KEY + '_last_day', '') === day) return Promise.resolve({ skipped:'today' }); }catch(e){}
+    let wait = Promise.resolve();
+    try{ if(St.r272PersistWait) wait = St.r272PersistWait(); }catch(e){}
+    return wait.then(function(){
+      let obj;
+      try{ obj = St.buildBackupPayload(); }catch(e){ return { ok:false, error:String((e && e.message) || e) }; }
+      try{
+        const txt = JSON.stringify(obj, null, 2);
+        saveBlob(new Blob([txt], { type:'application/json;charset=utf-8' }), 'Nick学习打卡_备份_' + day + '.json');
+        try{ St.kvSet(R369_AUTO_KEY + '_last_day', day); }catch(e){}
+        return { ok:true, day:day, bytes:txt.length };
+      }catch(e){ return { ok:false, error:String((e && e.message) || e) }; }
+    }).catch(function(e){ return { ok:false, error:String((e && e.message) || e) }; });
+  }
+  window.__r369AutoBackupTick = r369AutoBackupTick;
   function blocksToXlsx(blocks){
     const multi=blocks.length>1; const keySet=[];
     if(multi) keySet.push('板块','分版块');
@@ -63981,6 +64136,19 @@ function init(){
     /* R267-3.1：页面从这里才算真正就绪。启动/迁移阶段的写盘失败只记进
        storageHealth().lastError，不再弹「本机存储已满」吓人提示。 */
     window.__appBooted = true;
+    /* R369-B：每周自动备份。后台标签页定时器会被 Safari 节流，所以启动补跑是主触发点。 */
+    try{
+      if(!/jsdom/i.test(String(navigator.userAgent || ''))){
+        try{
+          if(typeof regAppTimer === 'function'){
+            regAppTimer(setInterval(function(){ if(!document.hidden) r369AutoBackupTick(false); }, 7 * 24 * 3600 * 1000));
+          }else{
+            setInterval(function(){ if(!document.hidden) r369AutoBackupTick(false); }, 7 * 24 * 3600 * 1000);
+          }
+        }catch(e){}
+        setTimeout(function(){ try{ r369AutoBackupTick(false); }catch(e){} }, 1800);
+      }
+    }catch(e){}
   }
 /* ============================================================================
    R271 增强层（任务模板 / 请假 / 海报 / 错题 / 报表 / 种植园 / 秘境 /
@@ -65814,7 +65982,8 @@ function init(){
         ['btnR272Export','export','⬇️','导出完整备份 JSON','文件名自带时间戳，含主库与快照摘要'],
         ['btnR272Import','import','⬆️','导入合并备份','只补不删；导入前自动留当前快照，出错可一键回退'],
         ['btnR272SelfCheck','selfcheck','🩺','一键数据自检','校验全部数据表、输出自检报告、严重损坏优先恢复'],
-        ['btnR272Logs','logs','📜','调试日志','仅在此面板可见：读写 / 版本更新 / 恢复快照事件']
+        ['btnR272Logs','logs','📜','调试日志','仅在此面板可见：读写 / 版本更新 / 恢复快照事件'],
+        ['btnR369Auto','auto','📅','每周自动备份（iPad 必开）','自动导出全量 JSON 到「文件 App」，点此开启 / 关闭并立即备份一次']
       ];
       card.innerHTML = '<div class="set-card-title">🛡️ 持久化数据库（R272）</div>'
         + '<div class="form-warn">IndexedDB 主库 + 桥梁快照多重保护，任意一层损坏自动从其它层恢复，<b>版本更新 / 刷新不清空数据</b>。</div>'
@@ -65907,6 +66076,22 @@ function init(){
         S.r272Snapshot('pre-restore').then(function(){ return S.r272Restore(id); }).then(function(r){
           if(r && r.ok){ afterStateChange(); report('<b>✅ 已从快照恢复</b>' + line('主库、localStorage 桥梁快照与页面状态已同步。'), 'ok'); }
           else report('<b>⚠️ 恢复未完成</b>' + line(esc(String((r && (r.code || r.error)) || '未知原因'))), 'bad');
+        });
+      } else if(act === 'auto'){
+        /* R369-B：开关 + 立即导出一次（用户手势触发，iPad Safari 才会放行下载）。 */
+        const _on = !r369AutoBackupEnabled();
+        r369SetAutoBackup(_on);
+        if(!_on){
+          report('<b>✅ 每周自动备份已关闭</b>' + line('仍可用「导出完整备份 JSON」手动备份。'), 'ok');
+          refresh(); return;
+        }
+        r369AutoBackupTick(true).then(function(r){
+          const msg = (r && r.ok)
+            ? '<b>✅ 每周自动备份已开启，并已立即导出一次</b>'
+              + line('文件：Nick学习打卡_备份_' + esc(r.day) + '.json　·　' + localDbFmtBytes(r.bytes))
+              + line('iPad 上请到「文件 App → 下载项」把它移到 iCloud Drive；之后每周自动导出，启动时会补跑。')
+            : '<b>⚠️ 已开启，但本次导出未完成</b>' + line(esc(String((r && r.error) || '未知原因')));
+          report(msg, r && r.ok ? 'ok' : 'warn'); refresh();
         });
       } else if(act === 'export'){
         /* R272-5.1 / 4.2：先等待最近一次写事务确认，再导出，保证备份是最新态 */
