@@ -13097,17 +13097,17 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
 
 /* ===== R363-学而思1：七个页签按键分两个区域卡片放置 =====
    词汇 / KET词组 / 语法 / 课堂笔记 一个区域卡；课前测 / 每日巩固 / 学而思练习 另一个区域卡。 */
-.xs-sub-tabs.r363-tabs{display:flex;flex-direction:column;gap:10px;margin:10px 0 12px;flex-wrap:nowrap}
+.xs-sub-tabs.r363-tabs{display:flex;flex-direction:row;align-items:stretch;gap:10px;margin:10px 0 12px;flex-wrap:nowrap}
 .xs-sub-tabs.r363-tabs .r363-tab-zone{
   display:flex;flex-wrap:wrap;align-items:center;gap:8px;
-  box-sizing:border-box;width:100%;
+  box-sizing:border-box;flex:1 1 auto;min-width:0;
   background:#f2f8ff;border:1px solid #cfe0f5;border-radius:14px;
   padding:9px 10px;box-shadow:0 2px 8px rgba(30,58,138,.06);
 }
 .xs-sub-tabs.r363-tabs .r363-tab-zone .sub-tab{flex:0 0 auto;margin:0}
 
 /* ===== R363-学而思2：课堂笔记 / 课前测 —— 标题 + 新增 + 删除 放在页签上方的浅蓝色卡片内 ===== */
-.r363-note-head-host{display:block;margin:8px 0 0}
+.r363-note-head-host{display:block;margin:0 0 12px}
 /* R363-学而思2：课堂笔记 / 课前测下工具条没有内容 → 显式收起（display:flex 会压过 [hidden]） */
 .xs-summary-pane .xs-summary-head[hidden]{display:none!important}
 
@@ -13131,6 +13131,7 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
 .r363-note-head .xs-note-head-actions .pbtn.is-on{background:#ffe9c7;color:#8a5200;border-color:#f5c884}
 @media (max-width:820px){
   .xs-sub-tabs.r363-tabs{gap:8px}
+  .xs-sub-tabs.r363-tabs .r363-tab-zone .sub-tab{padding:7px 12px;font-size:13px}
   .xs-sub-tabs.r363-tabs .r363-tab-zone{padding:7px 8px;gap:6px}
   .r363-note-head{padding:7px 10px;min-height:44px;gap:8px}
   .r363-note-head .r363-note-title{font-size:14px}
@@ -14307,8 +14308,6 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
 
     <!-- 学习汇总（词汇 + 语法） -->
     <div class="xs-pane xs-summary-pane" data-xs-pane="summary" data-page-node-id="V56WGpErSzMODzu1rxPD3h">
-      <!-- R363-学而思2：课堂笔记 / 课前测的「标题 + 新增 + 删除」统一上移到页签按键上方的浅蓝色卡片 -->
-      <div class="r363-note-head-host" id="xsNoteHeadHost" hidden></div>
       <div class="xs-sub-tabs r363-tabs" data-page-node-id="GFq8A3j6UOj9r9lMpZmpGJ">
         <!-- R250-1：页签顺序调整 —— 课堂笔记移至「语法」与「学而思练习」之间；学而思练习与词汇语法巩固互换 -->
         <!-- R363-学而思1：七个按键分两个区域卡片放置 —— 学习类（词汇/KET词组/语法/课堂笔记）+ 巩固类（课前测/每日巩固/学而思练习） -->
@@ -14329,6 +14328,8 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
         </div>
         <!-- R252-1：「📒 已默写」子页签已删除，功能移入「📚 语法题库」弹窗内 -->
       </div>
+      <!-- R364-学而思2：课堂笔记 / 课前测的「标题 + 新增 + 删除」卡片放在标题卡片（页签区）与内容卡片之间 -->
+      <div class="r363-note-head-host" id="xsNoteHeadHost" hidden></div>
       <div class="r360-xs-content">
       <div class="xs-summary-head" data-page-node-id="1NAcvcEaODAm6qmvuIldQ2">
         <span class="xs-summary-hint" id="xsSummaryHint" data-page-node-id="GGBLPthRlsOWDFK2qdMQw6">📒 点击右下方"新增"，可单条新增词汇 / 语法知识点</span>
@@ -19812,7 +19813,9 @@ window.XS_A2_VOCAB = [
     if(_openPromise) return _openPromise;
     _openPromise = new Promise(function(resolve){
       var done = false;
-      function finish(db){ if(done) return; done = true; _db = db || null; if(!db) _failed = true; resolve(_db); }
+      /* R364-英语1：打开失败 / 超时不再把失败结果永久缓存 —— 复位 _openPromise 允许后续重试，
+         否则首次冷启动一次超时会让整个会话的图片写入与读取全部失联（刷新后图片空白）。 */
+      function finish(db){ if(done) return; done = true; _db = db || null; if(!db){ _failed = true; _openPromise = null; } resolve(_db); }
       try{
         if(typeof indexedDB === 'undefined'){ finish(null); return; }
         var req = indexedDB.open(DB_NAME, DB_VER);
@@ -19825,8 +19828,8 @@ window.XS_A2_VOCAB = [
         req.onsuccess = function(){ finish(req.result); };
         req.onerror   = function(){ finish(null); };
         req.onblocked = function(){ finish(null); };
-        // 某些内核 open 既不 success 也不 error（被系统挂起）—— 800ms 后放弃，改走内联
-        setTimeout(function(){ finish(_db); }, 800);
+        // 某些内核 open 既不 success 也不 error（被系统挂起）—— 2.5s 后放弃（R364：800→2500，避免冷启动误判）
+        setTimeout(function(){ finish(_db); }, 2500);
       }catch(e){ finish(null); }
     });
     return _openPromise;
@@ -35080,17 +35083,22 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
   const isChild = ()=> { try { return (S.load().profile.mode || 'child') === 'child'; } catch(e){ return true; } };
   const isParent = ()=> !isChild();
   const esc = s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-  /* R363-全局1：打卡完成 / 取消打卡不再弹出任何提示文字。
-     全平台各板块仍按原逻辑调用 toast()，这里统一拦掉「打卡成功 / 已打卡 / 打卡完成 /
-     已取消打卡」这类反馈文案，只保留操作类与异常类提示。 */
+  /* R364-全局1：打卡完成 / 取消打卡的旧提示语不再直接弹出，统一换算成 R364 四条动画文案。
+     其余（操作类 / 异常类）提示保持原样。 */
   const _r363CheckinTip = (msg)=>{
     const s = String(msg==null?'':msg);
-    if(!s) return false;
-    if(/已取消打卡|打卡成功|已打卡|打卡完成/.test(s)) return true;
-    return /^已取消[。！!\s]*$/.test(s);
+    if(!s) return null;
+    const cancel = /已取消打卡/.test(s);
+    if(!cancel && !/打卡成功|已打卡|打卡完成/.test(s)) return null;
+    let n = 0, m = null;
+    if(cancel) m = s.match(/(?:已扣回|扣回)\s*[+＋]?\s*[⭐🌟]*\s*(\d+)/);
+    else m = s.match(/[+＋]\s*[⭐🌟]?\s*️?\s*(\d+)/) || s.match(/获得\s*[⭐🌟]?\s*(\d+)/);
+    if(m) n = parseInt(m[1], 10) || 0;
+    return { cancel: cancel, stars: n };
   };
   const toast = (msg)=>{
-    if(_r363CheckinTip(msg)) return;
+    const _keep = _r363CheckinTip(msg);
+    if(_keep){ try{ r363CheckinFx(_keep.cancel, _keep.stars); }catch(e){} return; }
     const t=$('#toast'); if(!t) return;
     t.textContent=msg; t.hidden=false;
     /* R358-设置1：功能中心 / 设置中心的弹层是 z-index 9300，提示条固定 2000 会被完全遮住，
@@ -40509,11 +40517,60 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
   }
   /* R362-全局1：打卡动画配置项已全部下线，动画固定使用内置默认值 */
   const R362_FX = { text:'{nick}！恭喜获得 {stars}⭐', color:'#2e9e5b', duration:1500, sfx:'r' };
-  /* R363-全局1：全平台「打卡完成 / 取消打卡」的弹窗动画与提示文字整体下线。
-     函数入口保留（数十处调用点不改），内部只保留打卡音效，不再生成任何浮层、
-     烟花粒子或恭喜 / 已取消文案。 */
+  /* R364-全局2：打卡动画文字规则（全平台唯一出口）
+     ① 打卡成功 + 有星：Nick，恭喜打卡成功，获得 N⭐
+     ② 打卡成功 + 无星：Nick，恭喜打卡成功
+     ③ 取消打卡 + 无星：取消打卡成功
+     ④ 取消打卡 + 有星：取消打卡成功，扣回 N⭐ */
+  let _r363FxSeq = 0;
+  function r363CheckinText(cancel, stars){
+    const nm = ((S.load().profile || {}).nickname || 'Nick');
+    const n = Math.max(0, parseInt(stars, 10) || 0);
+    if(cancel) return n > 0 ? ('取消打卡成功，扣回 ' + n + '⭐') : '取消打卡成功';
+    return n > 0 ? (nm + '，恭喜打卡成功，获得 ' + n + '⭐') : (nm + '，恭喜打卡成功');
+  }
+  /* R364-全局1/2：清掉旧提示语后按新规则重绘浮层；同一句 220ms 内只画一次 */
+  let _r363FxLast = '';
+  function r363CheckinFx(cancel, stars){
+    try{
+      const text = r363CheckinText(cancel, stars);
+      const key = text + '|' + (cancel ? 'c' : 's');
+      if(key === _r363FxLast && Date.now() - (_r363FxAt || 0) < 220) return;
+      _r363FxLast = key; _r363FxAt = Date.now();
+      const old = document.querySelector('.r327-celebrate');
+      if(old && old.parentNode) old.parentNode.removeChild(old);
+      const box = document.createElement('div');
+      box.className = 'r327-celebrate' + (cancel ? ' r336-checkin-cancel' : '');
+      box.style.setProperty('--r328-dur', '1500ms');
+      box.style.setProperty('--r328-cc', cancel ? '#94a3b8' : '#2e9e5b');
+      let bursts = '';
+      if(!cancel){
+        const hues = ['#2e9e5b','#ffca28','#43a047','#29b6f6','#ab47bc','#ff7a18'];
+        const spots = [{x:'32%',y:'34%'},{x:'50%',y:'26%'},{x:'68%',y:'36%'}];
+        spots.forEach(function(s, bi){
+          let sparks = '';
+          for(let i=0;i<14;i++){
+            const ang = (i/14) * Math.PI * 2;
+            const dist = 54 + (i % 4) * 18;
+            sparks += '<i class="r327-fw-spark" style="--dx:' + Math.round(Math.cos(ang)*dist) + 'px;--dy:' + Math.round(Math.sin(ang)*dist) + 'px;--hue:' + hues[(i+bi*2)%hues.length] + ';animation-delay:' + (bi*120 + (i%6)*24) + 'ms"></i>';
+          }
+          bursts += '<span class="r327-fw" style="left:' + s.x + ';top:' + s.y + '">' + sparks + '</span>';
+        });
+      }
+      box.innerHTML = '<div class="r327-celebrate-txt">' + esc(text) + '</div>' + bursts;
+      document.body.appendChild(box);
+      const seq = ++_r363FxSeq;
+      setTimeout(function(){
+        if(seq !== _r363FxSeq) return;
+        if(box && box.parentNode) box.parentNode.removeChild(box);
+      }, 1500);
+    }catch(e){}
+  }
+  /* R364-全局1：旧提示语「打卡成功 +N⭐ / 已打卡 / 已取消打卡」不再以文字条出现，
+     统一换算成上面四条规则里的动画文案。 */
   function r327CheckinSuccess(stars, isCancel){
     try{
+      r363CheckinFx(!!isCancel, stars || 0);
       if(isCancel) return;
       /* 打卡音效单响：捕获阶段若已响过（间隔 < 160ms）就不再补播；其余打卡路径在这里补一次 */
       if(isCheckinSfxOn() && Date.now() - (_checkinSfxAt || 0) > 160){
@@ -40527,6 +40584,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     try{ r327CheckinSuccess(stars || 0, !on); }catch(e){}
   }
   window.__r336CheckinFx = r336CheckinFx;
+  window.__r364CheckinFx = r363CheckinFx;   // R364：打卡动画文字规则测试钩子
   /* R352-全局1：测试钩子——设本次打卡预设奖励星数，供定向探针验证文案数值回退 */
 
   // 错题本「批改」判对后：同步当日快照与主面板该题（作答改为正确答案、标 ✓）
@@ -42239,6 +42297,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
      现在：① 只回报实际补回的张数；② 同一单元同一批 ref 只尝试一次，失败不再自动重试；
      ③ 用户新导入/删除图片时签名变化，自动放行一次新的水合尝试。 */
   var _kpHydrateTried = {};
+  var _kpHydrateRetry = {};   // R364-英语1：每单元一次延迟重试闸
   function enKpHydrate(){
     if(_kpHydrating) return Promise.resolve(0);
     const st = (window.Store && window.Store.load) ? window.Store.load() : null;
@@ -42259,6 +42318,14 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
   }
   function enKpItems(unitId){
     const items = (window.Store && window.Store.getEnKeyPoints) ? window.Store.getEnKeyPoints(unitId) : [];
+    /* R364-英语1：绘制前先用图片库同步缓存补齐 —— 本会话导入或已水合过的图片直接进 DOM，
+       不再出现「数据在、图片空白」的首帧。 */
+    try{
+      const _I = window.ImgStore;
+      if(_I && _I.getSync) items.forEach(function(it){
+        if(it && it.imgRef && !it.img){ const _v = _I.getSync(it.imgRef); if(_v) it.img = _v; }
+      });
+    }catch(e){}
     // 有引用但内存里还没有图 → 后台水合，完成后刷新当前单元（同批 ref 只尝试一次，绝不循环）
     const _pending = items.filter(function(x){ return x && x.imgRef && !x.img; })
                           .map(function(x){ return String(x.imgRef); }).join('|');
@@ -42269,7 +42336,22 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
            旧实现把返回值丢弃，图片从 IndexedDB 水合成功后界面仍是空白。
            改为走插槽重绘钩子，把水合到的图片真正画回当前板块。
            本次一张都没水合到（首次启动 IDB 未就绪）时清掉标记，下次渲染允许重试。 */
-        if(!n){ delete _kpHydrateTried[unitId]; return; }
+        if(!n){
+          delete _kpHydrateTried[unitId];
+          /* R364-英语1：首次启动 IndexedDB 可能尚未就绪（iPad 常见），延迟一次重试并重绘；
+             每个单元每个会话只补一次，不做循环重试。 */
+          if(!_kpHydrateRetry[unitId]){
+            _kpHydrateRetry[unitId] = 1;
+            setTimeout(function(){
+              _kpHydrateRetry[unitId] = 0;
+              try{
+                if(!document.getElementById('enSlotBody')) return;
+                if(typeof window.__slotRerender === 'function') window.__slotRerender();
+              }catch(e){}
+            }, 700);
+          }
+          return;
+        }
         try{
           if(!document.getElementById('enSlotBody')) return;
           if(typeof window.__slotRerender === 'function') window.__slotRerender();
@@ -42313,7 +42395,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
       const kpId = it && it.id ? it.id : ('i'+k);   // R317-1：稳定 id，供删除精确识别（同图不再混淆）
       return `
         <div class="kp-img-card${d?' is-checked':''}" data-kp-card="${k}" data-kp-id="${esc(kpId)}" title="${_enKpDelMode?'点击删除这张图片':'点击图片放大查看内容'}">
-          <img class="kp-img" src="${esc(it.img)}" alt="${esc(it.t||'重点知识')}" loading="lazy" decoding="async" />
+          <img class="kp-img" src="${esc(it.img)}" alt="${esc(it.t||'重点知识')}" decoding="async" />
           ${it.t ? `<div class="kp-img-cap">${esc(it.t)}</div>` : ''}
           <div class="kp-img-foot">
             <span class="kp-img-state">${d?'✅已学':'□未学'}</span>
@@ -45399,7 +45481,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     const r = S.r319ToggleRead(bid);
     if(!(r && r.ok)){ toast((r && r.msg) || '操作失败'); return; }
     if(!wasRead && r.read && n > 0){ addStars(n, true); toast('🎉 已读 +' + n + '⭐'); r336CheckinFx(true, n); }
-    else if(wasRead && !r.read && n > 0){ addStars(-n, true); toast('↩ 已取消已读，扣回 ' + n + '⭐'); r336CheckinFx(false, 0); }
+    else if(wasRead && !r.read && n > 0){ addStars(-n, true); toast('↩ 已取消已读，扣回 ' + n + '⭐'); r336CheckinFx(false, n); }
     else if(!wasRead && r.read){ toast('✅ 已读，这本书不设打卡⭐'); }
     r319RenderBookList();
     /* 详情弹窗若开着，就地刷新按钮状态 */
@@ -48704,10 +48786,12 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
           r328SaveFailNotice(_saveErr);
         } else if(r) {
           if(r.completed){
-            /* R327-2：打卡成功提示改为红色闪烁文字 + 烟花，文案带昵称与本次获得的星数 */
+            /* R364-全局2：按「获得星数」走统一文字规则 */
             r327CheckinSuccess(r.stars || 0);
           } else {
-            toast(r.isSuspicious ? '⚠️ 疑似无效打卡（过快）' : '已取消');
+            /* R364-全局2：取消打卡按该任务配置星数提示扣回 */
+            if(r.isSuspicious) toast('⚠️ 疑似无效打卡（过快）');
+            else r327CheckinSuccess(S.getTaskStars(ck.dataset.check) || 0, true);
           }
         } else {
           toast('这项任务已不存在');
@@ -49306,7 +49390,7 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         const t = st.tasks.find(x=>x.id===tid);
         if(!t) return;
         if(!isChild()){ openTaskEdit(t); }
-        else { const ck=S.toggleCheckIn(dateStr, tid); toast(ck.completed?'打卡成功 +'+(ck.stars||1)+'⭐':'已取消'); if(ck.completed) r327CheckinSuccess(ck.stars||1); openDayPlan(dateStr); renderHome(); }
+        else { const _cfg=S.getTaskStars(tid)||0; const ck=S.toggleCheckIn(dateStr, tid); if(ck.completed){ toast('打卡成功 +'+(ck.stars||1)+'⭐'); r327CheckinSuccess(ck.stars||1); } else { r327CheckinSuccess(_cfg, true); } openDayPlan(dateStr); renderHome(); }
       };
     });
     showModal('#modalDayPlan');
@@ -60847,9 +60931,10 @@ function renderKMAdmin(){
           const tid = raw.slice(6);
           const t0 = S.load().tasks.find(x=>x.id===tid);
           if(isCalcDailyTask(t0)){ toggleCalcDailyFromHome(); return; }
+          const _cfgR = S.getTaskStars(tid) || 0;
           const r = S.toggleCheckIn(S.todayStr(), tid);
           if(r && r.completed){ toast('打卡成功 +'+(r.stars||0)+'⭐'); r327CheckinSuccess(r.stars||0); }
-          else toast('已取消打卡');
+          else r327CheckinSuccess(_cfgR, true);
           renderToday(); renderHome();
           return;
         }
@@ -61519,7 +61604,7 @@ function renderKMAdmin(){
           const m = r.refund>0 ? `（已扣回 ${r.refund}⭐）` : '';
           // R336-6.1：取消打卡动画与打卡成功统一（同一套书单庆祝动画，取消态中性色文案）
           try{ playCheckinSound(); }catch(_){ }
-          r336CheckinFx(false, 0);
+          r336CheckinFx(false, r.refund || 0);
           toast('已取消打卡·' + kindLabel + m);
         }
       } else {
