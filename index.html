@@ -19902,8 +19902,15 @@ window.XS_A2_VOCAB = [
   function putSync(ref, dataUrl){
     var k = String(ref || ''), v = String(dataUrl || '');
     if(!k || !v) return false;
+    /* R367-持久化2：只有在 IndexedDB 已真正打开时才允许主档清空内联 base64。
+       旧版无条件 return true —— iPad Safari 打不开 IDB 时图片被清空且只留 ref，
+       刷新后连 ref 都取不到内容，表现为「导入的图片全部消失」。 */
+    if(!_db || _failed) return false;
     _mem[k] = v;
-    put(k, v);           // 异步落库，失败也不影响本次会话显示
+    var req = put(k, v);
+    if(req && typeof req.then === 'function'){
+      req.then(function(ok){ if(ok === false){ try{ delete _mem[k]; }catch(e){} } });
+    }
     return true;
   }
 
@@ -21094,7 +21101,14 @@ window.XS_A2_VOCAB = [
   let _usageCache = { at:0, v:0 };
   function _usageInvalidate(){ _usageCache = { at:0, v:0 }; }
   function _safeGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
-  function _safeSet(k,v){ try{ localStorage.setItem(k,v); _usageInvalidate(); return true; }catch(e){ return false; } }
+  function _safeSet(k,v){
+    try{ localStorage.setItem(k,v); _usageInvalidate(); return true; }
+    catch(e){
+      /* R367-持久化2：不再把 QuotaExceeded / Safari 拒绝写入静默吞掉 */
+      try{ window.__R367_STORE_ERR__ = String((e && e.name) || e); }catch(_e){}
+      return false;
+    }
+  }
   /* R267-2.1：读回独立提醒副本，带严格结构校验，任何异常都只当作「没有副本」 */
   function _remindSidecar(){
     try{
@@ -21402,6 +21416,9 @@ window.XS_A2_VOCAB = [
     push(KEY, bridgeRaw, 1);
     push(KEY_BAK1, _safeGet(KEY_BAK1), 3);
     push(KEY_BAK2, _safeGet(KEY_BAK2), 4);
+    /* R367-持久化2：主档解析失败时留下的原始快照也必须进入候选集。
+       旧版只写不读，iPad 上截断的主档再也回不来。 */
+    push(KEY + '_corrupt_backup', _safeGet(KEY + '_corrupt_backup'), 5);
     if(!cands.length) return { raw:bridgeRaw, from:KEY };
     const savedAt = _lastSavedAt();
     cands.forEach(function(c){
@@ -27886,7 +27903,15 @@ window.XS_A2_VOCAB = [
     const _streakShown = Math.max(0, streak + _streakAdj);
     st.archive.consecutiveDays = _streakShown;
     st.archive.maxConsecutive = Math.max(maxStreak, _streakShown, st.archive.maxConsecutive||0);
-    st.archive.totalStars = recs.reduce((s,r)=>s+((r && r.completed)?(r.stars||0):0),0) + (st.calcStreakBonusStars||0);
+    /* R367-全局1：总星账本不再被 recompute 整体重算抹平。
+       以「上一次重算基线」为锚，只把任务记录产生的增量应用到当前总星，
+       阅读 / 素养 / 百科 / 奖励等非记录类星数原样保留；首次升级时保留老账本不倒扣。 */
+    const _r367Base = recs.reduce((s,r)=>s+((r && r.completed)?(r.stars||0):0),0) + (st.calcStreakBonusStars||0);
+    const _r367Prev = (typeof st.archive.__r367BaseStars === 'number') ? st.archive.__r367BaseStars : null;
+    if(_r367Prev !== null){
+      st.archive.totalStars = Math.max(0, (st.archive.totalStars||0) + (_r367Base - _r367Prev));
+    }
+    st.archive.__r367BaseStars = _r367Base;
     st.archive.exp = st.archive.totalStars;
     const readSubj = ['语文','英语'];
     let _readDays=0, _sportDays=0;
@@ -35132,7 +35157,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
   };
   const toast = (msg)=>{
     const _keep = _r363CheckinTip(msg);
-    if(_keep){ try{ r363CheckinFx(_keep.cancel, _keep.stars); }catch(e){} return; }
+    if(_keep){ try{ r363CheckinFx(_keep.cancel, _keep.stars, 'text'); }catch(e){} return; }
     const t=$('#toast'); if(!t) return;
     t.textContent=msg; t.hidden=false;
     /* R358-设置1：功能中心 / 设置中心的弹层是 z-index 9300，提示条固定 2000 会被完全遮住，
@@ -35206,8 +35231,11 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     const st = S.load();
     st.archive = st.archive || {consecutiveDays:0,maxConsecutive:0,totalStars:0,exp:0,totalCoins:0};
     // 扣减时不允许变成负数
-    st.archive.totalStars = Math.max(0, (st.archive.totalStars||0) + n);
-    st.archive.exp = st.archive.totalStars;
+    /* R367-全局1：动画星数锁定 —— 总星账本按实际 delta 记，任何板块都不得脱离账本自报星数 */
+    const _r367Before = (st.archive.totalStars||0);
+    const _r367After = Math.max(0, _r367Before + n);
+    st.archive.totalStars = _r367After;
+    st.archive.exp = _r367After;
     S.save(st);
     /* R365-全局1：打卡点击期间的 ⭐ 增减 → 走全平台统一文案出口 */
     try{ r365StarChanged(n); }catch(e){}
@@ -36264,6 +36292,27 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
      只在首次进入时注入一次，之后切页复用同一 iframe，避免反复重载整套数据。
      jsdom 不加载 iframe（其 srcdoc 子上下文会拖垮测试进程），仅打就绪标记；
      真实浏览器（iPad Safari）走 srcdoc 完整渲染。 */
+  /* R367-持久化2：宿主侧通史存储代理（同源 localStorage 为唯一权威介质） */
+  const R367_ZHTS_KEYS = ['zhts_platform_v1','zhts_timeline_checkin_v1','zhts_timeline_edits_v1','zhts_timeline_edits_v1__r291bak','zhts_user_vault_v1'];
+  function r367DecorateZhtsHtml(html){
+    try{
+      const snap = {};
+      R367_ZHTS_KEYS.forEach(function(k){
+        try{ const v = localStorage.getItem(k); if(v != null) snap[k] = v; }catch(e){}
+      });
+      const pre = '<script>window.__R367_HOST_SNAPSHOT__=' + JSON.stringify(snap).replace(/</g,'\\u003c') + ';<\/script>';
+      const i = html.indexOf('<script');
+      if(i < 0) return html;
+      return html.slice(0, i) + pre + html.slice(i);
+    }catch(e){ return html; }
+  }
+  try{
+    window.addEventListener('message', function(e){
+      const d = e && e.data;
+      if(!d || d.__r367ZhtsStore !== 1) return;
+      try{ if(R367_ZHTS_KEYS.indexOf(String(d.key)) >= 0) localStorage.setItem(String(d.key), String(d.value)); }catch(_){}
+    });
+  }catch(e){}
   function renderZhts(){
     const f = document.getElementById('zhtsFrame');
     const fb = document.getElementById('zhtsFallback');
@@ -36282,7 +36331,11 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
       f.setAttribute('data-proto-len', String(html.length));
       return;
     }
-    if(f.getAttribute('srcdoc') !== html) f.setAttribute('srcdoc', html);
+    /* R367-持久化2：iPad Safari 里 srcdoc iframe 的存储域可能被隔离 / 拒绝。
+       进入通史前把宿主同源的 zhts_* 存档注入 iframe，并把 iframe 的每次写入
+       同步回宿主 localStorage（见 message 监听），刷新与版本更新都能读回同一份数据。 */
+    const _html = r367DecorateZhtsHtml(html);
+    if(f.getAttribute('srcdoc') !== _html) f.setAttribute('srcdoc', _html);
     applyZhtsJumpView();
   }
 
@@ -40572,17 +40625,46 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
      同一次点击里「toast 旧提示语 → 0 星」与「落库 → 真实星数」会先后到达，
      这里先收集最高优先级的那条（带星数 > 无星数），同一批只渲染一次，不再先弹一条
      无星、再换成带星，也不混杂任何其它文案。 */
-  var _r366FxQ = null, _r366FxTimer = null;
-  function r363CheckinFx(cancel, stars){
+  var _r366FxQ = null, _r366FxTimer = null, _r367FxId = 0;
+  const R367_FX_RANK = {fallback:0, text:1, explicit:2, actual:3};
+  function r367CurrentStars(){
+    try{ const a = (S.load() || {}).archive || {}; return Number(a.totalStars) || 0; }catch(e){ return null; }
+  }
+  /* R367-全局1：动画与任务卡⭐唯一锁定口径 —— 本次打卡点击前后的「总星账本实际增量」。
+     所有通道（旧文案拦截 / addStars / 显式调用 / 兜底）都必须服从这个增量，
+     任何板块硬编码的 +N⭐ 都不能越过它，取消态也由增量正负决定。 */
+  function r363CheckinFx(cancel, stars, source){
     try{
-      const _n0 = Math.max(0, parseInt(stars, 10) || 0), _now = Date.now();
-      if(!_r366FxQ || _now - _r366FxQ.at > 180) _r366FxQ = { at:_now, cancel:!!cancel, stars:_n0 };
-      else if(_n0 > _r366FxQ.stars){ _r366FxQ.stars = _n0; _r366FxQ.cancel = !!cancel; }
-      if(_r366FxTimer) return;
+      const _now = Date.now(), rec = _r365Ck;
+      let _cn = !!cancel, _n0 = Math.max(0, parseInt(stars,10) || 0);
+      let _rank = (R367_FX_RANK[source] != null) ? R367_FX_RANK[source] : R367_FX_RANK.explicit;
+      let _id = (rec && _now - rec.at < 1500) ? rec.id : (++_r367FxId);
+      if(rec && _now - rec.at < 1500 && typeof rec.beforeStars === 'number'){
+        const _cur = r367CurrentStars();
+        if(_cur != null){
+          const _delta = _cur - rec.beforeStars;
+          _n0 = Math.abs(_delta);
+          if(_delta !== 0){ _cn = _delta < 0; }
+          _rank = R367_FX_RANK.actual;
+          rec.served = true; rec.actual = true;
+        }
+      }
+      const q = _r366FxQ;
+      let _accept = true;
+      if(q && _now - q.at <= 180 && q.id === _id){
+        /* 同一次点击：高优先级覆盖低优先级；同级带星覆盖无星；取消 / 成功互不串批 */
+        if(_rank > q.rank || (_rank === q.rank && _n0 > q.stars)){
+          _r366FxQ = {at:_now, cancel:_cn, stars:_n0, rank:_rank, id:_id};
+        } else { _accept = false; }
+      } else {
+        /* 不同点击：新的替换旧的，绝不把两次打卡并成一条 */
+        _r366FxQ = {at:_now, cancel:_cn, stars:_n0, rank:_rank, id:_id};
+      }
+      if(!_accept || _r366FxTimer) return;
       _r366FxTimer = setTimeout(function(){
         _r366FxTimer = null;
-        const q = _r366FxQ; _r366FxQ = null;
-        if(q) r366RenderFx(q.cancel, q.stars);
+        const q2 = _r366FxQ; _r366FxQ = null;
+        if(q2) r366RenderFx(q2.cancel, q2.stars);
       }, 24);
     }catch(e){}
   }
@@ -40613,6 +40695,12 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         });
       }
       box.innerHTML = '<div class="r327-celebrate-txt">' + esc(text) + '</div>' + bursts;
+      /* R367-全局1：弹层内打卡的动画不能被 9300/12000 的遮罩压住 */
+      try{
+        const _f = (typeof _modalFloor === 'function') ? _modalFloor() : 1000;
+        const _mz = (typeof _modalZ === 'number') ? _modalZ : 0;
+        box.style.zIndex = String(Math.max(2100, _f + 200, _mz + 200));
+      }catch(e){}
       document.body.appendChild(box);
       const seq = ++_r363FxSeq;
       setTimeout(function(){
@@ -40625,7 +40713,7 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
      统一换算成上面四条规则里的动画文案。 */
   function r327CheckinSuccess(stars, isCancel){
     try{
-      r363CheckinFx(!!isCancel, stars || 0);
+      r363CheckinFx(!!isCancel, stars || 0, 'explicit');
       if(isCancel) return;
       /* 打卡音效单响：捕获阶段若已响过（间隔 < 160ms）就不再补播；其余打卡路径在这里补一次 */
       if(isCheckinSfxOn() && Date.now() - (_checkinSfxAt || 0) > 160){
@@ -40665,8 +40753,16 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     }catch(e){ return false; }
   }
   function r365BeginCheckinClick(cancel, el){
-    _r365Ck = { at: Date.now(), cancel: !!cancel, el: el || null,
-                was: !!(el && r365PreChecked(el)), served: false, fallback: false };
+    const _now = Date.now();
+    /* 卡片整卡点击会在 handler 里再合成一次 btn.click()：同一元素 / 父子元素
+       900ms 内只认第一次，否则第二次会把账本基线改成「已加星后」，动画被锁成 0 星。 */
+    if(_r365Ck && _now - _r365Ck.at < 900){
+      const old = _r365Ck.el;
+      if(!old || !el || old === el || old.contains(el) || el.contains(old)) return;
+    }
+    _r365Ck = { id: ++_r367FxId, at: _now, cancel: !!cancel, el: el || null,
+                was: !!(el && r365PreChecked(el)), beforeStars: r367CurrentStars(),
+                served: false, actual: false, fallback: false };
     const rec = _r365Ck;
     setTimeout(function(){
       try{
@@ -40674,8 +40770,9 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         if(_r365FxAt && Date.now() - _r365FxAt < 380) return;   // 本次点击期间已有动画
         /* 只有打卡态真的发生切换才补动画：点开弹窗 / 朗读 / 删除等非打卡操作不会误弹 */
         if(rec.el && document.contains(rec.el) && r365PreChecked(rec.el) === rec.was) return;
+        const _d = (r367CurrentStars() || 0) - (rec.beforeStars || 0);
         rec.served = true; rec.fallback = true;
-        r363CheckinFx(rec.cancel, 0);
+        r363CheckinFx(_d !== 0 ? _d < 0 : rec.cancel, Math.abs(_d), _d !== 0 ? 'actual' : 'fallback');
       }catch(e){}
     }, 500);
   }
@@ -40685,14 +40782,14 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     if(Date.now() - _r365Ck.at > 1500) return;
     if(_r365Ck.served && !_r365Ck.fallback) return;   // 已有带星动画，不重复
     _r365Ck.served = true; _r365Ck.fallback = false;
-    r363CheckinFx(v < 0, Math.abs(v));
+    r363CheckinFx(v < 0, Math.abs(v), 'explicit');
   }
   window.__r365BeginCheckinClick = r365BeginCheckinClick;
   window.__r365StarChanged = r365StarChanged;
   window.__r365Toast = toast;                                   // 测试钩子：旧提示语拦截
   window.__r365FxReset = function(){
     _r363FxAt = 0; _r365FxAt = 0; _r363FxStars = -1; _r363FxCn = null;
-    _r366FxQ = null;
+    _r366FxQ = null; _r365Ck = null;
     if(_r366FxTimer){ clearTimeout(_r366FxTimer); _r366FxTimer = null; }
     const b = document.querySelector('.r327-celebrate'); if(b && b.parentNode) b.parentNode.removeChild(b);
   };
@@ -48903,7 +49000,11 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
           } else {
             /* R364-全局2：取消打卡按该任务配置星数提示扣回 */
             if(r.isSuspicious) toast('⚠️ 疑似无效打卡（过快）');
-            else r327CheckinSuccess(S.getTaskStars(ck.dataset.check) || 0, true);
+            else {
+              let _lost = 0;
+              try{ const _t = (S.load().tasks||[]).find(x=>x.id===ck.dataset.check); if(_t && typeof _t.stars==='number') _lost = _t.stars; }catch(_){}
+              r327CheckinSuccess(_lost, true);
+            }
           }
         } else {
           toast('这项任务已不存在');
@@ -49502,7 +49603,13 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
         const t = st.tasks.find(x=>x.id===tid);
         if(!t) return;
         if(!isChild()){ openTaskEdit(t); }
-        else { const _cfg=S.getTaskStars(tid)||0; const ck=S.toggleCheckIn(dateStr, tid); if(ck.completed){ toast('打卡成功 +'+(ck.stars||1)+'⭐'); r327CheckinSuccess(ck.stars||1); } else { r327CheckinSuccess(_cfg, true); } openDayPlan(dateStr); renderHome(); }
+        else {
+          let _cfg = 0; try{ if(t && typeof t.stars==='number') _cfg = t.stars; }catch(_){}
+          const ck=S.toggleCheckIn(dateStr, tid);
+          if(ck.completed) r327CheckinSuccess(ck.stars||0);
+          else r327CheckinSuccess(_cfg, true);
+          openDayPlan(dateStr); renderHome();
+        }
       };
     });
     showModal('#modalDayPlan');
@@ -57015,7 +57122,8 @@ function renderKMAdmin(){
     if(typeof document !== 'undefined' && document.addEventListener){
       document.addEventListener('click', function(e){
         try{
-          if(!e || e.isTrusted === false) return;
+          if(!e) return;
+          const _trusted = e.isTrusted !== false;
           const t = e.target; if(!t || !t.closest) return;
           if(t.closest('[disabled],[aria-disabled="true"]')) return;
           const node = t.closest(CHECKIN_SFX_SEL);
@@ -57046,6 +57154,8 @@ function renderKMAdmin(){
           }catch(_){}
           /* R315-D2：点击前已经是「已打卡」态 = 这次是撤销 → 全程静默（不再有遗憾/撤销音） */
           if(_r365Undo){ _r315UndoSfxAt = Date.now(); return; }
+          /* R367-全局1：合成点击只登记反馈，不参与音效/按压（避免整卡点击双响） */
+          if(!_trusted) return;
           /* R322-1：记下本次点击事件，供 handler 内的无参发声调用复用去重标记 */
           _r322SfxEvt = e; _r322SfxEvtAt = Date.now();
           playCheckinSound(e);
@@ -58692,8 +58802,8 @@ function renderKMAdmin(){
       if(typeof r326Badge === 'function') r326Badge();
     }catch(e){}
     hideModal('#modalWrong');
-    toast('错题复盘已打卡 +1⭐' + (_r314WProofs.length ? ' · 凭证 ' + _r314WProofs.length + ' 张' : ''));
-    r327CheckinSuccess(1);
+    toast('错题复盘已打卡' + (_r314WProofs.length ? ' · 凭证 ' + _r314WProofs.length + ' 张' : ''));
+    r327CheckinSuccess(0);
     r314ResetWrongProof();
     renderToday(); renderHome();
   }
@@ -61900,7 +62010,7 @@ function renderKMAdmin(){
         const r = S.markBaikeCheckin(cat);
         if(r && r.ok){
           toast(r.justAllCompleted ? '🎉 9 主题全打卡完成 +5⭐！' : '🦥 已打卡 ' + cat);
-          r327CheckinSuccess(r.justAllCompleted ? 5 : 1);
+          r327CheckinSuccess(r.justAllCompleted ? 5 : 0);
           renderBaike(); renderBaikeLib(); renderHome();
         } else if(r && r.locked){
           toast('🔒 ' + (r.msg || '请先完成上一张卡片的打卡'));
@@ -67795,7 +67905,7 @@ function init(){
       const done = S.r326MarkDayDone();
       q.active = false;
       toast('🎉 今日温故完成' + (done && !done.already ? '，今日错题复盘已打卡' : ''));
-      r327CheckinSuccess(1);
+      r327CheckinSuccess(0);
       try{ renderToday(); renderHome(); }catch(e){}
     }
     renderMistakes();
