@@ -11695,17 +11695,6 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
 #r316ArchiveGrid2{grid-template-columns:minmax(0,1fr)}
 #r316ArchiveGrid2>.card{min-width:0;width:100%}
 
-/* ---------- R328-1.2：音乐设置 · 打卡效果设置 ---------- */
-.r328-fx-title{margin-top:10px;padding-top:10px;border-top:1px dashed var(--tone-200)}
-.r328-fx-row{align-items:center;flex-wrap:wrap;gap:8px}
-.r328-fx-row .sfx-row-label{min-width:112px}
-.r328-fx-input{max-width:340px;min-width:160px;padding:5px 9px;font-size:12px;border:1px solid var(--tone-200);border-radius:8px;background:rgba(255,255,255,.9)}
-.r328-fx-color{width:52px;height:30px;padding:2px;border:1px solid var(--tone-200);border-radius:8px;background:#fff;cursor:pointer}
-.r328-fx-tip{font-size:11px;color:var(--tone-600,#64748b)}
-@media (max-width:680px){
-  .r328-fx-row .sfx-row-label{min-width:0;width:100%}
-  .r328-fx-input{max-width:100%;width:100%}
-}
 
 /* ---------- R328-2：我的书单页面调整 ---------- */
 .r319-bl-head .r319-bl-head-actions{margin-left:auto;justify-content:flex-end;flex-wrap:nowrap;order:3}
@@ -13105,6 +13094,22 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
 [data-zone="newworld"] .sc-card.sc-read .sc-title,
 [data-zone="newworld"] .eg-block.is-checked .eg-block-h,
 [data-zone="newworld"] .eg-user-card.is-checked .eg-user-h{color:#277539!important}
+
+/* ===== R362-学而思1：学习板块卡片（词汇 / KET词组 / 语法 / 课堂笔记） ===== */
+.xs-summary-pane .r360-xs-content.r362-learn-card{border:1px solid #cfe0f5!important;border-top:3px solid #4a90e2!important;background:#fff!important;box-shadow:0 6px 18px rgba(30,58,138,.10)!important}
+
+/* ===== R362-学而思2：巩固板块卡片（课前测 / 每日巩固 / 学而思练习） ===== */
+.xs-summary-pane .r360-xs-content.r362-consol-card{border:1px solid #f5dcb4!important;border-top:3px solid #f0a742!important;background:#fffdf8!important;box-shadow:0 6px 18px rgba(196,137,32,.10)!important}
+
+/* ===== R362-学而思3：课堂笔记 / 课前测 标题 + 新增 + 删除 同排蓝色卡片 ===== */
+.xs-note-head.yw-comp-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:nowrap;box-sizing:border-box;background:linear-gradient(135deg,#4a90e2,#2f7ed8);border:1px solid #2f7ed8;border-radius:12px;padding:7px 12px;min-height:44px;margin:0 0 10px;color:#fff;font-size:15px;font-weight:800;line-height:1.2;box-shadow:0 4px 12px rgba(47,126,216,.22)}
+.xs-note-head.yw-comp-head .xs-note-head-actions{flex:0 0 auto;gap:8px;font-size:12px;font-weight:700;white-space:nowrap}
+.xs-note-head.yw-comp-head .xs-note-head-actions .pbtn{background:#fff;color:#1e3a8a;border:1px solid rgba(255,255,255,.92);border-radius:8px;padding:5px 10px;font-size:12px;font-weight:700;line-height:1.15;min-height:28px;box-shadow:none}
+.xs-note-head.yw-comp-head .xs-note-head-actions .pbtn.is-on{background:#ffe9c7;color:#8a5200;border-color:#f5c884}
+@media (max-width:820px){
+  .xs-note-head.yw-comp-head{padding:6px 10px;font-size:14px;min-height:42px;gap:8px}
+  .xs-note-head.yw-comp-head .xs-note-head-actions .pbtn{font-size:11.5px;padding:4px 8px;min-height:26px}
+}
 
 </style>
 </head>
@@ -35113,8 +35118,6 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
   // V14：本地通用加星工具（用于阅读、RAZ 等纯 +Stars 场景，不改任务记录）
   // R79-2：silent=true 时不播恭喜音（用于取消打卡扣回⭐的场景）
   function addStars(n, silent){
-    /* R351-全局6：记录一次打卡点击窗口内实际发放的星数，供统一动画文案显示预设奖励 */
-    try{ if(n > 0 && Date.now() - (_r351CkAt || 0) < 1500) _r351CkStars = (_r351CkStars || 0) + n; }catch(e){}
     const st = S.load();
     st.archive = st.archive || {consecutiveDays:0,maxConsecutive:0,totalStars:0,exp:0,totalCoins:0};
     // 扣减时不允许变成负数
@@ -40461,97 +40464,15 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
     }
     /* 其余错误码静默：详情统一去「🩺 存储体检」看，不打扰打卡 */
   }
-  /* R328-1.2：打卡效果自定义设置（音乐设置内可改文案 / 颜色 / 时长 / 烟花音效）。
-     {nick} / {stars} 为模板变量；所有值都做范围校验，坏数据自动回退默认值。 */
-  function r328CheckinCfg(){
-    const DEF = { text:'{nick}！恭喜获得 {stars}⭐', color:'#2e9e5b', duration:1500, sfx:'r' };
-    try{
-      const st = S.load() || {};
-      const c = st.checkinEffect || {};
-      const sfxId = ((st.clickSfx || {}).checkin) || c.sfx || 'r';
-      return {
-        text: (typeof c.text === 'string' && c.text.trim()) ? c.text.slice(0, 60) : DEF.text,
-        color: /^#[0-9a-f]{6}$/i.test(c.color || '') ? c.color : DEF.color,
-        duration: Math.max(500, Math.min(8000, parseInt(c.duration, 10) || DEF.duration)),
-        sfx: SFX_PRESETS[sfxId] ? sfxId : DEF.sfx
-      };
-    }catch(e){ return DEF; }
-  }
+  /* R362-全局1：打卡动画配置项已全部下线，动画固定使用内置默认值 */
+  const R362_FX = { text:'{nick}！恭喜获得 {stars}⭐', color:'#2e9e5b', duration:1500, sfx:'r' };
   /* R328-1.1：全平台统一打卡成功反馈 —— 绿色恭喜文字「NICK！恭喜获得 N⭐」，
      默认 1.5 秒后消失，同步播放一次烟花绽放音效。pointer-events:none 不拦点击。 */
-  /* R349-全局1：最近一次统一打卡动画的时间戳（捕获阶段用它判断是否已被卡片 handler 播过） */
-  let _r349FxAt = 0;
-  /* R351-全局6：本次打卡点击窗口内由 addStars 实际发放的奖励星数 */
-  let _r351CkAt = 0, _r351CkStars = 0;
-  /* R352-全局1：捕获阶段从被点打卡键推断的任务预设奖励星数（覆盖走 S.toggleCheckIn 等不经 addStars 的路径） */
-  let _r352PresetStars = 0;
-  /* R354-全局：记录最近一次打卡点击节点，供同步渲染时二次推断预设星数 */
-  let _r352LastNode = null;
-  function r354StarsByTaskId(id){
-    try{
-      id = String(id || ''); if(!id) return 0;
-      const tasks = (S.load().tasks || []);
-      let hit = null;
-      for(let i=0;i<tasks.length;i++){ if(tasks[i] && String(tasks[i].id) === id){ hit = tasks[i]; break; } }
-      if(hit && hit.stars != null){ const v = parseInt(hit.stars,10); if(!isNaN(v) && v > 0) return v; }
-      /* 内置任务 id 再走任务星数设置；未知 id 不取默认 2，避免误报 */
-      const defs = S.TASK_STAR_DEFS || [];
-      if(defs.some(function(d){ return String(d.id) === id; })){ const v = S.getTaskStars(id); if(v > 0) return v; }
-    }catch(e){}
-    return 0;
-  }
-  function r352StarsOfNode(node){
-    try{
-      if(!node || !node.getAttribute) return 0;
-      /* ① 父链上显式星数属性 + 任务 id 属性（data-check 的值就是任务 id） */
-      let chain = node;
-      for(let i=0;i<6 && chain;i++){
-        if(chain.getAttribute){
-          const ds = chain.getAttribute('data-stars') || chain.getAttribute('data-star') || chain.getAttribute('data-reward');
-          if(ds && (parseInt(ds,10)||0) > 0) return parseInt(ds,10);
-          const tid = chain.getAttribute('data-check') || chain.getAttribute('data-checkin')
-            || chain.getAttribute('data-task') || chain.getAttribute('data-task-id') || chain.getAttribute('data-tid');
-          if(tid){ const v = r354StarsByTaskId(tid); if(v > 0) return v; }
-        }
-        chain = chain.parentElement;
-      }
-      /* ② 按钮 title / 文案 / aria-label 里的「+N⭐」或「N⭐」 */
-      const src = [(node.getAttribute('title')||''), (node.textContent||''), (node.getAttribute('aria-label')||'')];
-      for(let i=0;i<src.length;i++){
-        let m = src[i].match(/[+＋]\s*(\d+)\s*[⭐🌟]/);
-        if(!m) m = src[i].match(/(^|[^\d])(\d+)\s*[⭐🌟]/);
-        if(m){ const v = parseInt(m[1] || m[2],10); if(v > 0) return v; }
-      }
-      /* ③ 已知打卡键 → 任务星数设置 */
-      const MAP = [
-        ['data-kwqa-checkin','kwqa'], ['data-sc-checkin','sc'], ['data-zx-checkin','sc'],
-        ['data-nw-think-checkin','think'], ['data-kp-check','think'],
-        ['data-suzhi-checkin','ktxs'], ['data-ri-checkin','fest']
-      ];
-      for(let i=0;i<MAP.length;i++){
-        if(node.closest && node.closest('['+MAP[i][0]+']')){
-          const v = S.getTaskStars(MAP[i][1]); if(v > 0) return v;
-        }
-      }
-    }catch(e){}
-    return 0;
-  }
   function r327CheckinSuccess(stars, isCancel){
     try{
-      /* R349-全局1：记录本次统一动画的时间，供捕获阶段去重（避免同一次点击播两遍） */
-      _r349FxAt = Date.now();
-      const cfg = r328CheckinCfg();
+      const cfg = R362_FX;
       const nm = ((S.load().profile || {}).nickname || 'Nick');
-      let n = Math.max(0, parseInt(stars, 10) || 0);
-      /* R354-全局：传入 0 时在打卡点击窗口内回退到任务预设奖励星数；
-         若捕获阶段未推断出，改用最近点击节点现算，杜绝「恭喜获得 0⭐」。 */
-      if(!isCancel && n === 0 && Date.now() - (_r351CkAt||0) < 2500){
-        let preset = _r352PresetStars;
-        if(preset <= 0 && _r352LastNode) preset = r352StarsOfNode(_r352LastNode);
-        if(preset > 0) n = preset;
-      }
-      /* R360-全局1：无星数配置、取消打卡场景一律不弹动画（动画星数跟随配置） */
-      if(isCancel || n <= 0) return;
+      const n = Math.max(0, parseInt(stars, 10) || 0);
       const old = document.querySelector('.r327-celebrate');
       if(old && old.parentNode) old.parentNode.removeChild(old);
       const box = document.createElement('div');
@@ -40595,7 +40516,6 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
   }
   window.__r336CheckinFx = r336CheckinFx;
   /* R352-全局1：测试钩子——设本次打卡预设奖励星数，供定向探针验证文案数值回退 */
-  window.__r352SetPreset = function(n){ _r351CkAt = Date.now(); _r352PresetStars = Math.max(0, parseInt(n,10)||0); };
 
   // 错题本「批改」判对后：同步当日快照与主面板该题（作答改为正确答案、标 ✓）
   function _syncCalcBoardWrongFixed(key){
@@ -54542,6 +54462,13 @@ function renderKMAdmin(){
   function renderXueersiSummary(){
     if(xsCat === 'stories') xsCat = 'words'; // V12.3：仅过滤绘本；恢复语法
     _uiMem('xsCat', xsCat); // R254-7：记住当前页签（下次进入直接回到这里）
+    /* R362-学而思1/2：按页签切换内容卡类型 —— 词汇/KET词组/语法/课堂笔记=学习板块卡，课前测/每日巩固/学而思练习=巩固板块卡 */
+    const _r362Card = document.querySelector('.xs-summary-pane .r360-xs-content');
+    if(_r362Card){
+      const _r362Learn = (xsCat === 'words' || xsCat === 'ket' || xsCat === 'grammar' || xsCat === 'notes');
+      _r362Card.classList.toggle('r362-learn-card', _r362Learn);
+      _r362Card.classList.toggle('r362-consol-card', !_r362Learn);
+    }
     $$('.xs-summary-pane .xs-sub-tabs [data-xs-cat]').forEach(b=>b.classList.toggle('active', b.dataset.xsCat===xsCat));
     // R218-1：课堂笔记子板块（与「新世界·英语专区·重点知识」功能/交互完全一致）
     if(xsCat === 'notes'){ _xsNoteMode = 'notes'; renderXsNotes(); return; }
@@ -56863,34 +56790,6 @@ function renderKMAdmin(){
           if(t.closest('[disabled],[aria-disabled="true"]')) return;
           const node = t.closest(CHECKIN_SFX_SEL);
           if(!node) return;
-          /* R349-全局1：全平台打卡 / 取消打卡动画统一 —— 与大阅读语文阅读板块同一套 r336CheckinFx。
-             卡片自身 handler 通常紧接着同步执行并自行播放，这里用 400ms 窗口去重，避免播两遍。
-             「批改」类按键（data-calc-check）不是打卡，不参与。 */
-          if(!t.closest('[data-calc-check]')){
-            const _r349Undo = r315IsUndoClick(t);
-            /* R351-全局6 / R352-全局1：捕获阶段开窗，同时从打卡键推断任务预设奖励 */
-            _r351CkAt = Date.now(); _r351CkStars = 0;
-            _r352LastNode = node;
-            _r352PresetStars = r352StarsOfNode(node);
-            setTimeout(function(){
-              try{
-                const _rw = (_r351CkStars > 0 && Date.now() - _r351CkAt < 2000) ? _r351CkStars
-                  : ((_r352PresetStars > 0 && Date.now() - _r351CkAt < 2500) ? _r352PresetStars : 0);
-                /* R360-全局1：无奖励星数 / 取消打卡都不弹动画，也不占用去重窗口 */
-                if(_rw > 0 && !_r349Undo){
-                  if(Date.now() - (_r349FxAt || 0) > 400){
-                    r336CheckinFx(!_r349Undo, _rw);
-                  }else if(_rw > 0 && !_r349Undo){
-                    /* R354-全局：同步 handler 已渲染 0⭐ 时直接纠正文案，不再被去重窗口跳过 */
-                    const _txt = document.querySelector('.r327-celebrate .r327-celebrate-txt');
-                    if(_txt && !/已取消打卡/.test(_txt.textContent || '')){
-                      _txt.innerHTML = _txt.innerHTML.replace(/恭喜获得\s*0\s*[⭐🌟]/, '恭喜获得 ' + _rw + '⭐');
-                    }
-                  }
-                }
-              }catch(_){ }
-            }, 260);
-          }
           /* R322-1：所有打卡键（不只首页）点击当帧即给按压反馈。
              旧实现只有 handler 落盘后才改状态类，同步 save 期间界面毫无变化 = 用户感知「迟钝」。
              这里只加纯视觉类，不动任何业务状态，260ms 后自动移除。 */
@@ -58249,7 +58148,7 @@ function renderKMAdmin(){
     window.__r327RenderToday = function(){ try{ renderToday(); }catch(e){} };
     /* R328：本轮探针钩子（只读调用，不改变业务逻辑） */
     window.__r328Parts = {
-      cfg: r328CheckinCfg,
+      cfg: ()=>R362_FX,
       celebrate: r327CheckinSuccess,
       sfxSettings: renderSfxSettings,
       bookList: r319RenderBookList,
@@ -58750,66 +58649,6 @@ function renderKMAdmin(){
     renderSfxSettings(); // R51-2：点击音效设置（导航栏/主题卡/次级主题卡/打卡）
   }
   // R51-2：点击音效设置块（注入「任务设置」系统设置面板）
-  /* R328-1.2：音乐设置里的「打卡效果设置」—— 文案 / 颜色 / 时长 / 烟花音效，
-     修改即写主档（S.save），刷新与版本更新后保持；音效选择复用打卡槽位，保证单响。 */
-  function r328EffectSettingsHtml(opts){
-    const c = r328CheckinCfg();
-    return `
-      <div class="sfx-set-title r328-fx-title">🎆 打卡效果设置</div>
-      <div class="sfx-set-hint">打卡成功时弹出恭喜文字 + 烟花；{nick} 为昵称，{stars} 为本次星星数，修改后立即生效。</div>
-      <div class="sfx-row r328-fx-row">
-        <span class="sfx-row-label">恭喜文字内容</span>
-        <input type="text" id="r328FxText" class="nw-add-input r328-fx-input" maxlength="60" value="${esc(c.text)}" />
-      </div>
-      <div class="sfx-row r328-fx-row">
-        <span class="sfx-row-label">文字颜色</span>
-        <input type="color" id="r328FxColor" class="r328-fx-color" value="${esc(c.color)}" />
-        <span class="r328-fx-tip">点色块自选</span>
-      </div>
-      <div class="sfx-row r328-fx-row">
-        <span class="sfx-row-label">弹窗持续时间</span>
-        <input type="number" id="r328FxDuration" class="nw-add-input r328-fx-input" min="500" max="8000" step="100" value="${c.duration}" />
-        <span class="r328-fx-tip">毫秒（500~8000）</span>
-      </div>
-      <div class="sfx-row r328-fx-row">
-        <span class="sfx-row-label">烟花绽放音效</span>
-        <select id="r328FxSfx" class="r328-fx-input">${opts}</select>
-        <button type="button" class="pbtn r328-fx-preview" id="r328FxPreview">▶ 预览</button>
-        <button type="button" class="pbtn" id="r328FxReset">↩ 恢复默认</button>
-      </div>`;
-  }
-  function r328BindEffectSettings(box){
-    const fx = id => box.querySelector('#' + id);
-    const put = patch => {
-      try{
-        const st = S.load();
-        st.checkinEffect = Object.assign({}, st.checkinEffect || {}, patch);
-        S.save(st);
-      }catch(e){}
-    };
-    const txt = fx('r328FxText'), color = fx('r328FxColor'), dur = fx('r328FxDuration'), sfx = fx('r328FxSfx');
-    const cur = r328CheckinCfg();
-    if(sfx){
-      sfx.value = cur.sfx;
-      sfx.onchange = ()=>{ put({ sfx:sfx.value }); const slotSel = box.querySelector('.sfx-sel[data-sfx-slot="checkin"]'); if(slotSel) slotSel.value = sfx.value; setClickSfxConfig('checkin', sfx.value); };
-    }
-    if(txt) txt.onchange = ()=>put({ text:txt.value });
-    if(color) color.onchange = ()=>put({ color:color.value });
-    if(dur) dur.onchange = ()=>put({ duration:Math.max(500, Math.min(8000, parseInt(dur.value,10) || 1500)) });
-    const pv = fx('r328FxPreview');
-    if(pv) pv.onclick = ()=>{ try{ if(window.__r322ResetSfxWindow) window.__r322ResetSfxWindow(); }catch(_){} r327CheckinSuccess(2); };
-    const rs = fx('r328FxReset');
-    if(rs) rs.onclick = ()=>{
-      try{
-        const st = S.load();
-        st.checkinEffect = { text:'{nick}！恭喜获得 {stars}⭐', color:'#2e9e5b', duration:1500, sfx:'r' };
-        if(!st.clickSfx) st.clickSfx = defaultClickSfx();
-        st.clickSfx.checkin = 'r';
-        S.save(st);
-        if(typeof renderSfxSettings === 'function') renderSfxSettings('settingsSfxBody');
-      }catch(e){}
-    };
-  }
   function renderSfxSettings(containerId){
     const body = document.getElementById(containerId || 'setSystemBody'); if(!body) return;
     let box = document.getElementById('sfxSettingsBlock');
@@ -58843,9 +58682,7 @@ function renderKMAdmin(){
           <select class="sfx-sel" data-sfx-slot="${slot}" ${(slot==='checkin' ? (soundOn||checkinOn) : soundOn)?'':'disabled'}>${opts}</select>
           <button class="pbtn sfx-preview" data-sfx-preview="${slot}" ${(slot==='checkin' ? (soundOn||checkinOn) : soundOn)?'':'disabled'}>▶ 试听</button>
         </div>`).join('')}
-      ${r328EffectSettingsHtml(opts)}
     `;
-    r328BindEffectSettings(box);
     const master = box.querySelector('#sfxMasterOn');
     if(master){
       master.onchange = ()=>{
