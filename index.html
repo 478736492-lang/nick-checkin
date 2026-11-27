@@ -13036,6 +13036,39 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
 .r357-merged-sec{margin-top:14px;padding-top:12px;border-top:1px solid var(--tone-150)}
 .r357-merged-sec .r357-sec-title{margin:0 0 8px}
 
+/* ===== R360-学而思1：七个页签下方新增内容卡片（词汇/KET/语法/课堂笔记 + 课前测/每日巩固/学而思练习 共用） ===== */
+.r360-xs-content{background:rgba(255,255,255,.96);border:1px solid rgba(255,255,255,.9);border-radius:16px;padding:12px;box-shadow:0 8px 20px rgba(30,58,138,.12);margin-top:4px}
+.r360-xs-content .xs-summary-head{margin-top:0}
+@media (max-width:820px){.r360-xs-content{padding:10px;border-radius:14px}}
+
+/* ===== R360-百科1：九张主题内容卡使用不同色彩 ===== */
+.baike-boxes>.bk-box:nth-child(1){--r360bg:#EAF3FF;--r360bd:#BFD8F5}
+.baike-boxes>.bk-box:nth-child(2){--r360bg:#E9F8F6;--r360bd:#BFE3DC}
+.baike-boxes>.bk-box:nth-child(3){--r360bg:#F3EEFF;--r360bd:#D8C9F5}
+.baike-boxes>.bk-box:nth-child(4){--r360bg:#FFF4E6;--r360bd:#FFD9A8}
+.baike-boxes>.bk-box:nth-child(5){--r360bg:#EAF8EE;--r360bd:#C4E6CF}
+.baike-boxes>.bk-box:nth-child(6){--r360bg:#FFF0F4;--r360bd:#FFC9D6}
+.baike-boxes>.bk-box:nth-child(7){--r360bg:#FFFBE6;--r360bd:#F2E29B}
+.baike-boxes>.bk-box:nth-child(8){--r360bg:#EEF7F8;--r360bd:#BFE0E4}
+.baike-boxes>.bk-box:nth-child(9){--r360bg:#F5F1E8;--r360bd:#E0D2BE}
+.baike-boxes>.bk-box{background:var(--r360bg,#f0f8ff)!important;border-color:var(--r360bd,#cfe0f5)!important}
+.baike-boxes>.bk-box>.bk-box-head{background:linear-gradient(135deg,rgba(255,255,255,.78),rgba(255,255,255,.30))!important;border-bottom-color:rgba(255,255,255,.9)!important}
+
+/* ===== R360-大阅读1：语文阅读 / 英语阅读各主题卡使用不同色彩 ===== */
+.reading-cn .reading-col.rc-words{--r360bg:#DDEBFF;--r360bd:#A9CBF2}
+.reading-cn .reading-col.rc-poem{--r360bg:#EDE3FF;--r360bd:#C9B4EE}
+.reading-cn .reading-col.rc-poem-use{--r360bg:#DCF3EF;--r360bd:#A9D9D1}
+.reading-cn .reading-col.rc-essay{--r360bg:#FFEBD5;--r360bd:#F5C689}
+.reading-cn .haoci-use-card{--r360bg:#FFF3CE;--r360bd:#EFD98D}
+.reading-en .reading-col.rc-essay{--r360bg:#DDF3E4;--r360bd:#A6D7B4}
+.reading-en .reading-col.rc-poem{--r360bg:#FFE3EA;--r360bd:#F5B3C4}
+.reading-area .reading-col,.reading-area .haoci-use-card{background:var(--r360bg,var(--tone-025))!important;border-color:var(--r360bd,var(--tone-150))!important}
+
+/* ===== R360-全局2：打卡成功后卡片变绿（百科讲堂 / 大阅读原为黄底，统一为完成绿） ===== */
+.bk-mini.checked{background:linear-gradient(135deg,#e7f9e8,#cef1d2)!important;border-color:#52bb67!important;box-shadow:0 2px 8px rgba(82,187,103,.20)!important}
+.bk-mini.checked .bk-mini-title{color:#277539!important}
+.reading-item.is-checked{background:linear-gradient(135deg,#e7f9e8,#cef1d2)!important;border-color:#52bb67!important}
+
 </style>
 </head>
 <body class="theme-zootopia" data-page-node-id="uEiqru0TBToe1GOXmNwiUh">
@@ -14221,6 +14254,7 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
         <button class="sub-tab" data-xs-cat="exercise" data-page-node-id="R247xsExerciseTab">📝 学而思练习</button>
         <!-- R252-1：「📒 已默写」子页签已删除，功能移入「📚 语法题库」弹窗内 -->
       </div>
+      <div class="r360-xs-content">
       <div class="xs-summary-head" data-page-node-id="1NAcvcEaODAm6qmvuIldQ2">
         <span class="xs-summary-hint" id="xsSummaryHint" data-page-node-id="GGBLPthRlsOWDFK2qdMQw6">📒 点击右下方"新增"，可单条新增词汇 / 语法知识点</span>
         <!-- R168-2：新增键右侧并列「筛选」键（仅语法 tab 显示；词汇/打卡/已默写子页隐藏） -->
@@ -14233,6 +14267,7 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
       </div>
       <div class="xs-list" id="xsSummaryList" data-page-node-id="YDjIvMVxlsL8Uek4SCYodG"></div>
       <div class="xs-pager" id="xsPager" data-page-node-id="Iu2e498LLOW7VFwmUNwkMS"></div>
+      </div>
     </div>
   </div></section>
 
@@ -40478,8 +40513,8 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
         if(preset <= 0 && _r352LastNode) preset = r352StarsOfNode(_r352LastNode);
         if(preset > 0) n = preset;
       }
-      /* R355-全局1：没有设置奖励⭐️的打卡操作不弹成功动画；取消打卡仍走中性动画 */
-      if(!isCancel && n <= 0) return;
+      /* R360-全局1：无星数配置、取消打卡场景一律不弹动画（动画星数跟随配置） */
+      if(isCancel || n <= 0) return;
       const old = document.querySelector('.r327-celebrate');
       if(old && old.parentNode) old.parentNode.removeChild(old);
       const box = document.createElement('div');
@@ -56804,8 +56839,8 @@ function renderKMAdmin(){
               try{
                 const _rw = (_r351CkStars > 0 && Date.now() - _r351CkAt < 2000) ? _r351CkStars
                   : ((_r352PresetStars > 0 && Date.now() - _r351CkAt < 2500) ? _r352PresetStars : 0);
-                /* R355-全局1：无奖励星数不弹动画，也不占用去重窗口 */
-                if(_rw > 0 || _r349Undo){
+                /* R360-全局1：无奖励星数 / 取消打卡都不弹动画，也不占用去重窗口 */
+                if(_rw > 0 && !_r349Undo){
                   if(Date.now() - (_r349FxAt || 0) > 400){
                     r336CheckinFx(!_r349Undo, _rw);
                   }else if(_rw > 0 && !_r349Undo){
