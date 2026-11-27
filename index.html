@@ -13037,7 +13037,7 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
 .r357-merged-sec .r357-sec-title{margin:0 0 8px}
 
 /* ===== R360-学而思1：七个页签下方新增内容卡片（词汇/KET/语法/课堂笔记 + 课前测/每日巩固/学而思练习 共用） ===== */
-.r360-xs-content{background:rgba(255,255,255,.96);border:1px solid rgba(255,255,255,.9);border-radius:16px;padding:12px;box-shadow:0 8px 20px rgba(30,58,138,.12);margin-top:4px}
+.r360-xs-content{background:#fff;border:1px solid #cfe0f5;border-radius:16px;padding:14px;box-shadow:0 6px 18px rgba(30,58,138,.10);margin-top:10px}
 .r360-xs-content .xs-summary-head{margin-top:0}
 @media (max-width:820px){.r360-xs-content{padding:10px;border-radius:14px}}
 
@@ -13068,6 +13068,43 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
 .bk-mini.checked{background:linear-gradient(135deg,#e7f9e8,#cef1d2)!important;border-color:#52bb67!important;box-shadow:0 2px 8px rgba(82,187,103,.20)!important}
 .bk-mini.checked .bk-mini-title{color:#277539!important}
 .reading-item.is-checked{background:linear-gradient(135deg,#e7f9e8,#cef1d2)!important;border-color:#52bb67!important}
+
+/* ===== R361-学而思1：七个页签（词汇/KET词组/语法/课堂笔记 + 课前测/每日巩固/学而思练习）下方板块卡片 ===== */
+.r360-xs-content{border-color:#cfe0f5!important;box-shadow:0 6px 18px rgba(30,58,138,.10)!important}
+@media (max-width:820px){.r360-xs-content{margin-top:8px}}
+
+/* ===== R361-全局2：打卡成功后对应卡片统一变为绿色（覆盖首页赤系 / 新世界橙系等分区完成态） ===== */
+[data-zone="home"] .wp-task-item.done,
+[data-zone="home"] .task-item.done,
+[data-zone="home"] .wp-task-check.on,
+.task-item.done,
+.type-group.type-req .task-item.done,
+.type-group.type-opt .task-item.done,
+[data-zone="newworld"] .eg-block.is-checked,
+[data-zone="newworld"] .eg-rhyme-card.is-checked,
+[data-zone="newworld"] .eg-user-card.is-checked,
+[data-zone="newworld"] .sz-daily-card.is-checked,
+[data-zone="newworld"] .sz-grid-card.is-checked,
+[data-zone="newworld"] .en-unit-page.is-done,
+[data-zone="newworld"] .kw-card.kewen-learned,
+[data-zone="newworld"] .sh-poem-card.sh-learned,
+[data-zone="newworld"] .sc-card.sc-read,
+[data-zone="newworld"] .kb-card.is-done,
+.sz-daily-card.is-checked{
+  background:linear-gradient(135deg,#e7f9e8,#cef1d2)!important;
+  border-color:#52bb67!important;
+  box-shadow:0 4px 14px rgba(82,187,103,.20)!important;
+}
+[data-zone="home"] .wp-task-item.done .wp-task-name,
+[data-zone="home"] .wp-task-item.done .wp-task-sub,
+[data-zone="newworld"] .sz-daily-card.is-checked .sz-daily-title,
+[data-zone="newworld"] .sz-daily-card.is-checked .sz-daily-body,
+[data-zone="newworld"] .kb-card.is-done .kb-card-name,
+[data-zone="newworld"] .kw-card.kewen-learned .kw-title,
+[data-zone="newworld"] .sh-poem-card.sh-learned .sh-poem-title,
+[data-zone="newworld"] .sc-card.sc-read .sc-title,
+[data-zone="newworld"] .eg-block.is-checked .eg-block-h,
+[data-zone="newworld"] .eg-user-card.is-checked .eg-user-h{color:#277539!important}
 
 </style>
 </head>
