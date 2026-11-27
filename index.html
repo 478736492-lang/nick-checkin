@@ -40568,14 +40568,30 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
   /* R365-全局1：同一次点击内（600ms）多处调用只保留信息最完整的一条 ——
      先出的「无星」文案在随后拿到真实星数时升级重绘，不再叠两条、也不再少星。 */
   let _r363FxLast = '', _r363FxAt = 0, _r363FxCn = false, _r363FxStars = 0;
+  /* R366-全局1：一次触发只出一条文案。
+     同一次点击里「toast 旧提示语 → 0 星」与「落库 → 真实星数」会先后到达，
+     这里先收集最高优先级的那条（带星数 > 无星数），同一批只渲染一次，不再先弹一条
+     无星、再换成带星，也不混杂任何其它文案。 */
+  var _r366FxQ = null, _r366FxTimer = null;
   function r363CheckinFx(cancel, stars){
     try{
-      const _n0 = Math.max(0, parseInt(stars, 10) || 0);
-      const _now = Date.now();
-      if(_r363FxAt && _now - _r363FxAt < 600 && !!cancel === _r363FxCn && _n0 <= _r363FxStars) return;
+      const _n0 = Math.max(0, parseInt(stars, 10) || 0), _now = Date.now();
+      if(!_r366FxQ || _now - _r366FxQ.at > 180) _r366FxQ = { at:_now, cancel:!!cancel, stars:_n0 };
+      else if(_n0 > _r366FxQ.stars){ _r366FxQ.stars = _n0; _r366FxQ.cancel = !!cancel; }
+      if(_r366FxTimer) return;
+      _r366FxTimer = setTimeout(function(){
+        _r366FxTimer = null;
+        const q = _r366FxQ; _r366FxQ = null;
+        if(q) r366RenderFx(q.cancel, q.stars);
+      }, 24);
+    }catch(e){}
+  }
+  function r366RenderFx(cancel, stars){
+    try{
       const text = r363CheckinText(cancel, stars);
-      _r363FxCn = !!cancel; _r363FxStars = _n0; _r363FxAt = _now; _r365FxAt = _now;
-      _r363FxLast = text;
+      const _now = Date.now();
+      _r363FxCn = !!cancel; _r363FxStars = Math.max(0, parseInt(stars,10)||0);
+      _r363FxAt = _now; _r365FxAt = _now; _r363FxLast = text;
       const old = document.querySelector('.r327-celebrate');
       if(old && old.parentNode) old.parentNode.removeChild(old);
       const box = document.createElement('div');
@@ -40674,7 +40690,13 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
   window.__r365BeginCheckinClick = r365BeginCheckinClick;
   window.__r365StarChanged = r365StarChanged;
   window.__r365Toast = toast;                                   // 测试钩子：旧提示语拦截
-  window.__r365FxReset = function(){ _r363FxAt = 0; _r365FxAt = 0; _r363FxStars = -1; _r363FxCn = null; };
+  window.__r365FxReset = function(){
+    _r363FxAt = 0; _r365FxAt = 0; _r363FxStars = -1; _r363FxCn = null;
+    _r366FxQ = null;
+    if(_r366FxTimer){ clearTimeout(_r366FxTimer); _r366FxTimer = null; }
+    const b = document.querySelector('.r327-celebrate'); if(b && b.parentNode) b.parentNode.removeChild(b);
+  };
+  window.__r366FxRender = r366RenderFx;
   /* R352-全局1：测试钩子——设本次打卡预设奖励星数，供定向探针验证文案数值回退 */
 
   // 错题本「批改」判对后：同步当日快照与主面板该题（作答改为正确答案、标 ✓）
