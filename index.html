@@ -19828,6 +19828,71 @@ window.XS_A2_VOCAB = [
   var _openPromise = null;
   var _mem = {};          // ref -> dataURL（本次会话内的同步缓存）
   var _failed = false;    // IndexedDB 不可用（隐私模式 / 老内核）→ 永久回退内联
+  /* R368：localStorage 同步分片 —— 图片字节的最后落点。
+     iPad Safari 上 IndexedDB 经常打不开 / 打开极慢；旧版 R367 在 _db 为空时
+     拒绝外置，base64 只能留在 zoo_checkin_v3 主档，几张图就撑满 5MB，
+     此后连打卡 / 取消打卡的 setItem 一起失败。分片把图片搬到独立键，
+     主档只留几十字节的 ref，配额压力与图片数量彻底解耦。 */
+  var CHUNK_PREFIX = 'nick_img_chunk_';
+  var CHUNK_INDEX  = 'nick_img_chunk_index';
+  var CHUNK_SIZE   = 48000;
+  var _chunkMap = null;
+
+  function _lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+  function _lsSet(k,v){
+    try{ localStorage.setItem(k,v); return localStorage.getItem(k) === v; }catch(e){ return false; }
+  }
+  function _lsDel(k){ try{ localStorage.removeItem(k); }catch(e){} }
+  function _chunkLoad(){
+    if(_chunkMap) return _chunkMap;
+    _chunkMap = {};
+    try{ var o = JSON.parse(_lsGet(CHUNK_INDEX) || 'null'); if(o && typeof o === 'object' && !Array.isArray(o)) _chunkMap = o; }catch(e){}
+    return _chunkMap;
+  }
+  function _chunkSave(){ try{ _lsSet(CHUNK_INDEX, JSON.stringify(_chunkMap || {})); }catch(e){} }
+  function putChunkSync(ref, dataUrl){
+    var k = String(ref || ''), v = String(dataUrl || '');
+    if(!k || !v || v.indexOf('data:image/') !== 0) return false;
+    var n = Math.ceil(v.length / CHUNK_SIZE), i;
+    for(i=0;i<n;i++){
+      if(!_lsSet(CHUNK_PREFIX + k + '_' + i, v.slice(i*CHUNK_SIZE, (i+1)*CHUNK_SIZE))){
+        for(var j=0;j<n;j++) _lsDel(CHUNK_PREFIX + k + '_' + j);
+        return false;
+      }
+    }
+    var m = _chunkLoad(); m[k] = n; _chunkSave();
+    return true;
+  }
+  function getChunkSync(ref){
+    var k = String(ref || ''), m = _chunkLoad(), n = Number(m[k]) || 0;
+    if(!n) return '';
+    var out = '';
+    for(var i=0;i<n;i++){
+      var part = _lsGet(CHUNK_PREFIX + k + '_' + i);
+      if(part === null) return '';
+      out += part;
+    }
+    return out;
+  }
+  function dropChunkSync(ref){
+    var k = String(ref || ''), m = _chunkLoad(), n = Number(m[k]) || 0;
+    for(var i=0;i<n;i++) _lsDel(CHUNK_PREFIX + k + '_' + i);
+    if(m[k] !== undefined){ delete m[k]; _chunkSave(); }
+  }
+  /* IDB 终于打开后，把分片里的图片迁进 IDB 再删分片，避免长期占用 localStorage。 */
+  function flushChunks(){
+    if(!_db) return Promise.resolve(0);
+    var m = _chunkLoad(), refs = Object.keys(m), moved = 0;
+    return Promise.all(refs.map(function(k){
+      var v = getChunkSync(k);
+      if(!v) return Promise.resolve(false);
+      return put(k, v).then(function(ok){
+        if(ok){ dropChunkSync(k); moved++; }
+        return ok;
+      });
+    })).then(function(){ return moved; }).catch(function(){ return moved; });
+  }
+  function open(){ return _open(); }
 
   function _open(){
     if(_db) return Promise.resolve(_db);
@@ -19901,17 +19966,20 @@ window.XS_A2_VOCAB = [
 
   function putSync(ref, dataUrl){
     var k = String(ref || ''), v = String(dataUrl || '');
-    if(!k || !v) return false;
-    /* R367-持久化2：只有在 IndexedDB 已真正打开时才允许主档清空内联 base64。
-       旧版无条件 return true —— iPad Safari 打不开 IDB 时图片被清空且只留 ref，
-       刷新后连 ref 都取不到内容，表现为「导入的图片全部消失」。 */
-    if(!_db || _failed) return false;
+    if(!k || !v || v.indexOf('data:image/') !== 0) return false;
     _mem[k] = v;
-    var req = put(k, v);
-    if(req && typeof req.then === 'function'){
-      req.then(function(ok){ if(ok === false){ try{ delete _mem[k]; }catch(e){} } });
+    /* R368：双通道同步落盘。IDB 已打开 → 写 IDB；否则立刻写 localStorage 分片。
+       只有两条通道都失败才返回 false，让主档保留内联字节作为最后兜底。 */
+    if(_db && !_failed){
+      var req = put(k, v);
+      if(req && typeof req.then === 'function'){
+        req.then(function(ok){ if(ok === false && !putChunkSync(k, v) && !getChunkSync(k)){ try{ delete _mem[k]; }catch(e){} } });
+      }
+      return true;
     }
-    return true;
+    if(putChunkSync(k, v)) return true;
+    delete _mem[k];
+    return false;
   }
 
   function del(ref){
@@ -19961,13 +20029,21 @@ window.XS_A2_VOCAB = [
   function stats(){
     var n = 0, bytes = 0;
     Object.keys(_mem).forEach(function(k){ n++; bytes += (_mem[k] || '').length; });
-    return { count:n, memBytes:bytes, available:available(), engine:DB_NAME };
+    var m = _chunkLoad(), cn = Object.keys(m).length, cb = 0;
+    Object.keys(m).forEach(function(k){ cb += (Number(m[k]) || 0) * CHUNK_SIZE; });
+    return { count:n, memBytes:bytes, available:available(), ready:!!_db, engine:DB_NAME,
+             chunks:cn, chunkBytes:cb, chunkIndex:CHUNK_INDEX };
   }
 
   window.ImgStore = {
     available: available,
+    open: open,
     put: put,
     putSync: putSync,
+    putChunkSync: putChunkSync,
+    getChunkSync: getChunkSync,
+    dropChunkSync: dropChunkSync,
+    flushChunks: flushChunks,
     get: get,
     getSync: getSync,
     del: del,
@@ -23179,6 +23255,9 @@ window.XS_A2_VOCAB = [
     try{ _pendingApply(st); }catch(e){}
     // R266：补丁之外的最后一道保险 —— 小账本（只有它比主档新时才叠加）
     try{ _journalApply(st); }catch(e){}
+    /* R368：打卡 / 取消打卡的最后落点。放在补丁与账本之后，只在代次更新时并集回填，
+       确保刷新、版本更新后打卡记录与扣回星数仍在。 */
+    try{ _r368CkApply(st); }catch(e){}
     /* R318：补丁 / 小账本 / 快照都只做「并集回填」，会把用户已经删掉的条目重新加回来。
        这里按状态自带的元素墓碑统一剔除一遍 —— 删除意图跨刷新、跨介质一致。 */
     try{ _r318StripStateTomb(st); }catch(e){}
@@ -24842,7 +24921,8 @@ window.XS_A2_VOCAB = [
     const out = {}; let used = 0;
     /* R269-2：题库（xueersiWordBank / xsGramBank）必须排在普通字段之前，
        它们体积小、不可再生；排在最后常被打卡记录 / 图片字段挤掉。 */
-    const PATCH_KEY_EARLY = ['xueersiWordBank','xsGramBank'];
+    /* R368：打卡 / 取消打卡排在题库之前，400KB 预算再紧张也不能把 records 挤掉。 */
+    const PATCH_KEY_EARLY = ['records','archive','checkinLog','r256','xueersiWordBank','xsGramBank'];
     const keys = Object.keys(patch).sort(function(a,b){
       const pa = SNAPSHOT_KEY_ALWAYS.indexOf(a) >= 0 ? 0 : (PATCH_KEY_EARLY.indexOf(a) >= 0 ? 1 : 2);
       const pb = SNAPSHOT_KEY_ALWAYS.indexOf(b) >= 0 ? 0 : (PATCH_KEY_EARLY.indexOf(b) >= 0 ? 1 : 2);
@@ -25377,6 +25457,9 @@ window.XS_A2_VOCAB = [
         const ref = refs[p], parts = p.split(SEP).filter(Boolean);
         let data = null;
         try{ data = window.ImgStore && window.ImgStore.getSync && window.ImgStore.getSync(ref); }catch(e){}
+        /* R368：IDB 打不开时图片落在 localStorage 分片，刷新后必须先从这里同步拼回，
+           否则「打卡记录回来了、图片却没了」。 */
+        if(!data){ try{ data = window.ImgStore && window.ImgStore.getChunkSync && window.ImgStore.getChunkSync(ref); }catch(e){} }
         if(!data) data = _r328ImgMem[ref];
         if(!data) return;
         let cur = st;
@@ -25390,6 +25473,82 @@ window.XS_A2_VOCAB = [
       delete st.__r328ImgSigs;
     }catch(e){}
     return st;
+  }
+  /* ============ R368：打卡 / 取消打卡的独立极小侧车 ============
+     为什么还要再加一层：主档、补丁、账本、轻档全在 localStorage 里。图片 base64
+     一旦留在主档（iPad Safari 打不开 IDB 时必然如此），主档 setItem 直接抛
+     QuotaExceededError；补丁和账本也会因为空间不足写不进去。于是「打卡」
+     这种最该留住的操作反而第一个蒸发。
+     侧车只装 records / archive / checkinLog / r256，体积极小（超预算只留最近
+     400 条），每次 save 先写它并回读确认；load 按 __seq 裁决并集回填。
+     它不参与配额回收，也绝不反向覆盖更新的主档。 */
+  const KEY_CK = KEY + '_r368_checkin';
+  const CK_BUDGET = 160 * 1024;
+  function _r368CkWrite(st){
+    try{
+      if(!st || typeof st !== 'object') return false;
+      const body = {
+        records: Array.isArray(st.records) ? st.records : [],
+        archive: (st.archive && typeof st.archive === 'object') ? st.archive : {},
+        checkinLog: (st.checkinLog && typeof st.checkinLog === 'object') ? st.checkinLog : {},
+        r256: (st.r256 && typeof st.r256 === 'object') ? st.r256 : {}
+      };
+      let raw = JSON.stringify({ __seq:(st.__seq|0)||0, __at:Date.now(), body:body });
+      if(raw.length > CK_BUDGET){
+        body.records = body.records.slice(-400);
+        body.checkinLog = {};
+        body.r256 = {};
+        raw = JSON.stringify({ __seq:(st.__seq|0)||0, __at:Date.now(), body:body, __trim:1 });
+      }
+      for(let i=0;i<3;i++){
+        if(_safeSet(KEY_CK, raw) && _safeGet(KEY_CK) === raw) return true;
+      }
+    }catch(e){}
+    return false;
+  }
+  function _r368CkApply(st){
+    try{
+      if(!st || typeof st !== 'object') return false;
+      const raw = _safeGet(KEY_CK);
+      if(!raw) return false;
+      const o = JSON.parse(raw);
+      if(!o || !o.body || typeof o.body !== 'object') return false;
+      const sq = (o.__seq|0)||0;
+      if(!sq || sq <= ((st.__seq|0)||0)) return false;   // 主档已同代或更新 → 侧车不插手
+      const b = o.body;
+      if(Array.isArray(b.records)){
+        const map = {};
+        (Array.isArray(st.records) ? st.records : []).forEach(function(r){
+          if(r && r.date && r.taskId) map[r.date + '|' + r.taskId] = r;
+        });
+        b.records.forEach(function(r){
+          if(!r || !r.date || !r.taskId) return;
+          const k = r.date + '|' + r.taskId, old = map[k];
+          if(!old || ((Number(r._ts)||0) >= (Number(old._ts)||0))) map[k] = r;
+        });
+        st.records = Object.keys(map).map(function(k){ return map[k]; });
+      }
+      /* 侧车代次更新 → 汇总字段以侧车为准（取消打卡会扣回星数） */
+      if(b.archive && typeof b.archive === 'object') st.archive = Object.assign({}, st.archive||{}, b.archive);
+      if(b.checkinLog && typeof b.checkinLog === 'object') st.checkinLog = b.checkinLog;
+      if(b.r256 && typeof b.r256 === 'object') st.r256 = b.r256;
+      st.__seq = sq;
+      return true;
+    }catch(e){ return false; }
+  }
+  function r368Diag(){
+    const ck = _safeGet(KEY_CK) || '';
+    let c = null;
+    try{ c = JSON.parse(ck); }catch(e){}
+    const im = window.ImgStore || {};
+    return {
+      key:KEY_CK, has:!!ck, bytes:ck.length,
+      seq:(c && (c.__seq|0)) || 0,
+      records:(c && c.body && Array.isArray(c.body.records)) ? c.body.records.length : 0,
+      imgChunks:(im.stats && im.stats().chunks) || 0,
+      imgReady:!!(im.stats && im.stats().ready),
+      saveError:_saveError, lastSaveRecoverable:!!_lastSaveRecoverable
+    };
   }
   /* R327-1：二级落库（轻档 / 双代备份）延迟到空闲时段。
      主档写成功 + 回读校验通过后，用户数据已经在最可信的位置；轻档与备份只是「附加保险」，
@@ -25490,6 +25649,9 @@ window.XS_A2_VOCAB = [
       _loadCachePut(st);   // 磁盘未变：缓存以磁盘原串为准，下次 load() 可直接命中
       return true;
     }
+    /* R368：先写打卡侧车再写主档 —— 主档因图片占用写不进时，这一份极小副本仍能落地。
+       侧车失败不影响主档流程；主档成功也不清侧车（它只在 load 里按 __seq 让位）。 */
+    try{ _r368CkWrite(st); }catch(e){}
     /* R265-4：无论本机 localStorage 写不写得进，都异步留一份 IndexedDB 全量镜像。
        iPad 上介质失效（配额满 / 隐私模式 / 内存 shim）时，这份镜像是唯一能跨刷新的副本。
        时间戳与成功落库时的 KEY_META.savedAt 共用，hydrateMirror 才能准确判断新旧。 */
@@ -27084,8 +27246,10 @@ window.XS_A2_VOCAB = [
        putSync 先写内存缓存保证本次会话立即可渲染，落库异步进行。 */
     let offloaded = false;
     try{
-      const _idbOK = (typeof indexedDB !== 'undefined');
-      if(rawImg && rawImg.length > 600 && _idbOK && window.ImgStore && window.ImgStore.available()){
+      /* R368：不再以「indexedDB 存在 / available()」为门槛。iPad Safari 上
+         indexedDB 对象存在但打不开是常态；putSync 内部会先试 IDB、再同步写分片，
+         只有两条路都失败才返回 false，那时才让 base64 留在主档。 */
+      if(rawImg && rawImg.length > 600 && window.ImgStore && window.ImgStore.putSync){
         const ref = 'enkp_' + added.id;
         if(window.ImgStore.putSync(ref, rawImg)){ added.imgRef = ref; added.img = ''; offloaded = true; }
       }
@@ -27108,6 +27272,9 @@ window.XS_A2_VOCAB = [
       try{
         window.ImgStore.put(added.imgRef, rawImg).then(function(wrote){
           if(wrote) return;
+          /* R368：IDB 事务失败不等于图片丢失 —— putSync 已经把字节写进同步分片。
+             此时回填内联只会重新撑爆主档，连带把打卡写入一起打死。 */
+          try{ if(window.ImgStore.getChunkSync && window.ImgStore.getChunkSync(added.imgRef)) return; }catch(e){}
           try{
             const s2 = load();
             const list = (s2.enKeyPoints && s2.enKeyPoints[unitId]) || [];
@@ -27123,8 +27290,9 @@ window.XS_A2_VOCAB = [
        老用户升级后不必重新导入图片，且迁移完成即刻释放数百 KB 到数 MB 配额。
        返回迁移张数；失败保持原样（不删原图，绝不因迁移丢数据）。 */
   function offloadEnKpImages(){
-    if(typeof indexedDB === 'undefined') return Promise.resolve(0);
-    if(!window.ImgStore || !window.ImgStore.available()) return Promise.resolve(0);
+    /* R368：老数据搬迁同样要走 putSync 双通道。旧版要求 indexedDB 存在且 available()，
+       iPad Safari 上 IDB 打不开时整批搬迁直接跳过，历史图片永远留在主档里撑配额。 */
+    if(!window.ImgStore || !window.ImgStore.putSync) return Promise.resolve(0);
     const st = load();
     const map = st.enKeyPoints || {};
     const jobs = [];
@@ -27142,9 +27310,11 @@ window.XS_A2_VOCAB = [
     return jobs.reduce(function(p, job){
       return p.then(function(){
         const ref = 'enkp_m_' + String(job.id || (Date.now().toString(36) + Math.random().toString(36).slice(2, 6)));
-        return window.ImgStore.put(ref, job.img).then(function(ok){
-          if(ok){ n++; done.push({ u:job.u, id:job.id, ref:ref }); }
-        });
+        /* R368：同步外置成功才算搬迁完成 —— 分片也是合法落点，刷新照样能拼回。 */
+        let ok = false;
+        try{ ok = !!window.ImgStore.putSync(ref, job.img); }catch(e){}
+        if(ok){ n++; done.push({ u:job.u, id:job.id, ref:ref }); }
+        return Promise.resolve(ok);
       });
     }, Promise.resolve()).then(function(){
       if(!done.length) return 0;
@@ -34918,6 +35088,8 @@ be 动词：am / is → was；are → were
     backupInfo, flushPersistence,
     // R327-1：把空闲时段待办的轻档 / 备份写入立即做完（同代一致性校验用）
     r327FlushSecondary,
+    // R368：打卡侧车 / 图片分片诊断
+    KEY_CK, r368Diag,
     // R328-1.3：强制把内联大图搬到 IndexedDB 并重存主档（存储体检 / 写入失败自愈用）
     r328SlimImages,
     // R264-2.1：本机存储用量诊断（核验是否真的空间紧张、由哪些副本占用）
@@ -63746,8 +63918,19 @@ function init(){
       /* 落库恢复后允许下一次真失败再提示一次，避免「只提示一次」变成永久静默 */
       window.__onSaveRecovered = function(){ window.__saveFailToastShown = false; };
     }catch(e){}
+    /* R368：主动打开图片库（不等首次 putSync 触发），IDB 就绪后把
+       localStorage 分片迁进 IDB 并删除分片，图片从此不再占用主档配额。 */
+    try{
+      if(window.ImgStore && typeof window.ImgStore.open === 'function'){
+        window.ImgStore.open().then(function(){
+          if(window.ImgStore.flushChunks) return window.ImgStore.flushChunks();
+          return 0;
+        }).catch(function(){});
+      }
+    }catch(e){}
     try{
       if(S.hydrateMirror) S.hydrateMirror(function(restored){
+        window.__r368MirrorDone = true;
         if(restored){
           try{ renderCurrentPage(); }catch(e){}
           try{ if(typeof renderHome==='function') renderHome(); }catch(e){}
@@ -63756,6 +63939,10 @@ function init(){
              需要用户处理的事件；每次都弹反而让人以为数据又丢了一次。
              数据已经回填并重新渲染，用户看到的就是正确内容，无需额外文字。 */
         }
+        /* R368：镜像 / 兜底合并完成后才做图片瘦身。原先在回调外同步执行，
+           hydrateMirror 的异步回填还没落地就被 save(load()) 用更高 __seq 固化，
+           刷新后旧状态反而压过刚恢复的数据。 */
+        try{ if(S.r328SlimImages) S.r328SlimImages(); }catch(e){}
       });
     }catch(e){}
     try{ bindStorageCheck(); }catch(e){}
@@ -63786,10 +63973,11 @@ function init(){
         try{ toast('⚠️ 本机存储不可用，改动可能无法保留，请在浏览器设置中允许本站存储数据'); }catch(e){}
       }
     }catch(e){}
-    /* R329-1.3：启动阶段静默瘦身一次 —— 老版本（R328 之前）遗留在 localStorage 主档里的
-       内联 base64 大图，只有发生 save 才会被剥离。这里主动搬进 IndexedDB 并重写主档，
-       避免用户还没打卡就已经顶着一份膨胀的存档。save guard 此时尚未 booted，失败不弹提示。 */
-    try{ if(S.r328SlimImages) S.r328SlimImages(); }catch(e){}
+    /* R368：启动瘦身已移到 hydrateMirror 回调内部；若镜像回调因异常未触发，
+       这里补一次，但必须等兜底合并结束。 */
+    try{
+      if(!window.__r368MirrorDone && S.r328SlimImages) S.r328SlimImages();
+    }catch(e){}
     /* R267-3.1：页面从这里才算真正就绪。启动/迁移阶段的写盘失败只记进
        storageHealth().lastError，不再弹「本机存储已满」吓人提示。 */
     window.__appBooted = true;
@@ -67464,7 +67652,10 @@ function init(){
   function r326PutImg(dataUrl){
     const ref = 'r326img_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 6);
     try{
-      if(window.ImgStore && window.ImgStore.available && window.ImgStore.available() && window.ImgStore.putSync){
+      /* R368：不要再用 available() 当闸门。IDB 未打开时 putSync 会同步写
+         localStorage 分片，图片照样跨刷新存活；旧闸门让图片退回内联主档，
+         撑爆配额后连打卡都写不进。 */
+      if(window.ImgStore && window.ImgStore.putSync){
         if(window.ImgStore.putSync(ref, dataUrl)) return ref;
       }
     }catch(e){}
