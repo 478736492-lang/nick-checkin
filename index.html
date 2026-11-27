@@ -13095,20 +13095,46 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
 [data-zone="newworld"] .eg-block.is-checked .eg-block-h,
 [data-zone="newworld"] .eg-user-card.is-checked .eg-user-h{color:#277539!important}
 
-/* ===== R362-学而思1：学习板块卡片（词汇 / KET词组 / 语法 / 课堂笔记） ===== */
-.xs-summary-pane .r360-xs-content.r362-learn-card{border:1px solid #cfe0f5!important;border-top:3px solid #4a90e2!important;background:#fff!important;box-shadow:0 6px 18px rgba(30,58,138,.10)!important}
+/* ===== R363-学而思1：七个页签按键分两个区域卡片放置 =====
+   词汇 / KET词组 / 语法 / 课堂笔记 一个区域卡；课前测 / 每日巩固 / 学而思练习 另一个区域卡。 */
+.xs-sub-tabs.r363-tabs{display:flex;flex-direction:column;gap:10px;margin:10px 0 12px;flex-wrap:nowrap}
+.xs-sub-tabs.r363-tabs .r363-tab-zone{
+  display:flex;flex-wrap:wrap;align-items:center;gap:8px;
+  box-sizing:border-box;width:100%;
+  background:#f2f8ff;border:1px solid #cfe0f5;border-radius:14px;
+  padding:9px 10px;box-shadow:0 2px 8px rgba(30,58,138,.06);
+}
+.xs-sub-tabs.r363-tabs .r363-tab-zone .sub-tab{flex:0 0 auto;margin:0}
 
-/* ===== R362-学而思2：巩固板块卡片（课前测 / 每日巩固 / 学而思练习） ===== */
-.xs-summary-pane .r360-xs-content.r362-consol-card{border:1px solid #f5dcb4!important;border-top:3px solid #f0a742!important;background:#fffdf8!important;box-shadow:0 6px 18px rgba(196,137,32,.10)!important}
+/* ===== R363-学而思2：课堂笔记 / 课前测 —— 标题 + 新增 + 删除 放在页签上方的浅蓝色卡片内 ===== */
+.r363-note-head-host{display:block;margin:8px 0 0}
+/* R363-学而思2：课堂笔记 / 课前测下工具条没有内容 → 显式收起（display:flex 会压过 [hidden]） */
+.xs-summary-pane .xs-summary-head[hidden]{display:none!important}
 
-/* ===== R362-学而思3：课堂笔记 / 课前测 标题 + 新增 + 删除 同排蓝色卡片 ===== */
-.xs-note-head.yw-comp-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:nowrap;box-sizing:border-box;background:linear-gradient(135deg,#4a90e2,#2f7ed8);border:1px solid #2f7ed8;border-radius:12px;padding:7px 12px;min-height:44px;margin:0 0 10px;color:#fff;font-size:15px;font-weight:800;line-height:1.2;box-shadow:0 4px 12px rgba(47,126,216,.22)}
-.xs-note-head.yw-comp-head .xs-note-head-actions{flex:0 0 auto;gap:8px;font-size:12px;font-weight:700;white-space:nowrap}
-.xs-note-head.yw-comp-head .xs-note-head-actions .pbtn{background:#fff;color:#1e3a8a;border:1px solid rgba(255,255,255,.92);border-radius:8px;padding:5px 10px;font-size:12px;font-weight:700;line-height:1.15;min-height:28px;box-shadow:none}
-.xs-note-head.yw-comp-head .xs-note-head-actions .pbtn.is-on{background:#ffe9c7;color:#8a5200;border-color:#f5c884}
+.r363-note-head-host[hidden]{display:none}
+.r363-note-head{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:nowrap;
+  box-sizing:border-box;width:100%;
+  background:#e8f2fe;border:1px solid #bcd9f7;border-radius:14px;
+  padding:8px 12px;min-height:48px;
+  box-shadow:0 2px 10px rgba(47,126,216,.10);
+}
+.r363-note-head .r363-note-title{
+  font-size:15px;font-weight:800;line-height:1.25;color:#1e3a8a;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;
+}
+.r363-note-head .xs-note-head-actions{display:flex;align-items:center;gap:8px;flex:0 0 auto;white-space:nowrap}
+.r363-note-head .xs-note-head-actions .pbtn{
+  background:#fff;color:#1e3a8a;border:1px solid #bcd9f7;border-radius:9px;
+  padding:5px 10px;font-size:12px;font-weight:700;line-height:1.15;min-height:30px;box-shadow:none;
+}
+.r363-note-head .xs-note-head-actions .pbtn.is-on{background:#ffe9c7;color:#8a5200;border-color:#f5c884}
 @media (max-width:820px){
-  .xs-note-head.yw-comp-head{padding:6px 10px;font-size:14px;min-height:42px;gap:8px}
-  .xs-note-head.yw-comp-head .xs-note-head-actions .pbtn{font-size:11.5px;padding:4px 8px;min-height:26px}
+  .xs-sub-tabs.r363-tabs{gap:8px}
+  .xs-sub-tabs.r363-tabs .r363-tab-zone{padding:7px 8px;gap:6px}
+  .r363-note-head{padding:7px 10px;min-height:44px;gap:8px}
+  .r363-note-head .r363-note-title{font-size:14px}
+  .r363-note-head .xs-note-head-actions .pbtn{font-size:11.5px;padding:4px 8px;min-height:28px}
 }
 
 </style>
@@ -14281,12 +14307,18 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
 
     <!-- 学习汇总（词汇 + 语法） -->
     <div class="xs-pane xs-summary-pane" data-xs-pane="summary" data-page-node-id="V56WGpErSzMODzu1rxPD3h">
-      <div class="xs-sub-tabs" data-page-node-id="GFq8A3j6UOj9r9lMpZmpGJ">
+      <!-- R363-学而思2：课堂笔记 / 课前测的「标题 + 新增 + 删除」统一上移到页签按键上方的浅蓝色卡片 -->
+      <div class="r363-note-head-host" id="xsNoteHeadHost" hidden></div>
+      <div class="xs-sub-tabs r363-tabs" data-page-node-id="GFq8A3j6UOj9r9lMpZmpGJ">
         <!-- R250-1：页签顺序调整 —— 课堂笔记移至「语法」与「学而思练习」之间；学而思练习与词汇语法巩固互换 -->
+        <!-- R363-学而思1：七个按键分两个区域卡片放置 —— 学习类（词汇/KET词组/语法/课堂笔记）+ 巩固类（课前测/每日巩固/学而思练习） -->
+        <div class="r363-tab-zone">
         <button class="sub-tab active" data-xs-cat="words" data-page-node-id="bIdFhDZ9zmRt3QscgXNna5">🔤 词汇</button>
         <button class="sub-tab" data-xs-cat="ket" data-page-node-id="R354KetTab">🔗 KET词组</button>
         <button class="sub-tab" data-xs-cat="grammar" data-page-node-id="pk7ufwpxLS7x5Xj5vu8FRB">📐 语法</button>
         <button class="sub-tab" data-xs-cat="notes" data-page-node-id="R218xsNoteTab">📝 课堂笔记</button>
+        </div>
+        <div class="r363-tab-zone">
         <!-- R312-8：课堂笔记与每日巩固之间新增「课前测」子板块（学年 + Lesson，排版同课堂笔记） -->
         <button class="sub-tab" data-xs-cat="pretest" data-page-node-id="R312xsPretestTab">🧪 课前测</button>
         <!-- V21-1：巩固打卡子板块（每日默写）；R247-3 改名「词汇语法巩固」；R250-1 与学而思练习互换位置
@@ -14294,6 +14326,7 @@ button,.pbtn,.primary-btn,.nav-btn,[data-go],[data-check],[data-r319-act],
         <button class="sub-tab" data-xs-cat="checkin" data-page-node-id="16Lidsc7U9X3IdqhZRSIjY">🎯 每日巩固</button>
         <!-- R247-3：学而思练习独立板块（课堂练习 / 课前测 / 各类测试记录）；R250-1 移至词汇语法巩固之后 -->
         <button class="sub-tab" data-xs-cat="exercise" data-page-node-id="R247xsExerciseTab">📝 学而思练习</button>
+        </div>
         <!-- R252-1：「📒 已默写」子页签已删除，功能移入「📚 语法题库」弹窗内 -->
       </div>
       <div class="r360-xs-content">
@@ -35047,7 +35080,17 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
   const isChild = ()=> { try { return (S.load().profile.mode || 'child') === 'child'; } catch(e){ return true; } };
   const isParent = ()=> !isChild();
   const esc = s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  /* R363-全局1：打卡完成 / 取消打卡不再弹出任何提示文字。
+     全平台各板块仍按原逻辑调用 toast()，这里统一拦掉「打卡成功 / 已打卡 / 打卡完成 /
+     已取消打卡」这类反馈文案，只保留操作类与异常类提示。 */
+  const _r363CheckinTip = (msg)=>{
+    const s = String(msg==null?'':msg);
+    if(!s) return false;
+    if(/已取消打卡|打卡成功|已打卡|打卡完成/.test(s)) return true;
+    return /^已取消[。！!\s]*$/.test(s);
+  };
   const toast = (msg)=>{
+    if(_r363CheckinTip(msg)) return;
     const t=$('#toast'); if(!t) return;
     t.textContent=msg; t.hidden=false;
     /* R358-设置1：功能中心 / 设置中心的弹层是 z-index 9300，提示条固定 2000 会被完全遮住，
@@ -40466,48 +40509,17 @@ window.__KM_BG_DATA_INLINE__={"KM_CHINESE":"./assets/ae85f5594938.jpg","KM_MATH"
   }
   /* R362-全局1：打卡动画配置项已全部下线，动画固定使用内置默认值 */
   const R362_FX = { text:'{nick}！恭喜获得 {stars}⭐', color:'#2e9e5b', duration:1500, sfx:'r' };
-  /* R328-1.1：全平台统一打卡成功反馈 —— 绿色恭喜文字「NICK！恭喜获得 N⭐」，
-     默认 1.5 秒后消失，同步播放一次烟花绽放音效。pointer-events:none 不拦点击。 */
+  /* R363-全局1：全平台「打卡完成 / 取消打卡」的弹窗动画与提示文字整体下线。
+     函数入口保留（数十处调用点不改），内部只保留打卡音效，不再生成任何浮层、
+     烟花粒子或恭喜 / 已取消文案。 */
   function r327CheckinSuccess(stars, isCancel){
     try{
-      const cfg = R362_FX;
-      const nm = ((S.load().profile || {}).nickname || 'Nick');
-      const n = Math.max(0, parseInt(stars, 10) || 0);
-      const old = document.querySelector('.r327-celebrate');
-      if(old && old.parentNode) old.parentNode.removeChild(old);
-      const box = document.createElement('div');
-      box.className = 'r327-celebrate';
-      box.style.setProperty('--r328-dur', cfg.duration + 'ms');
-      /* R336-6.1：取消打卡复用同一套动画，仅换成中性色与「已取消打卡」文案 */
-      box.style.setProperty('--r328-cc', isCancel ? '#94a3b8' : cfg.color);
-      if(isCancel) box.classList.add('r336-checkin-cancel');
-      const hues = [cfg.color,'#ffca28','#43a047','#29b6f6','#ab47bc','#ff7a18'];
-      let bursts = '';
-      const spots = [{x:'28%',y:'36%'},{x:'50%',y:'26%'},{x:'72%',y:'38%'},{x:'38%',y:'58%'},{x:'64%',y:'60%'}];
-      spots.forEach(function(s, bi){
-        let sparks = '';
-        for(let i=0;i<16;i++){
-          const ang = (i/16) * Math.PI * 2;
-          const dist = 58 + (i % 4) * 20;
-          const dx = Math.round(Math.cos(ang) * dist);
-          const dy = Math.round(Math.sin(ang) * dist);
-          sparks += '<i class="r327-fw-spark" style="--dx:' + dx + 'px;--dy:' + dy + 'px;--hue:' + hues[(i + bi * 2) % hues.length] + ';animation-delay:' + (bi * 140 + (i % 6) * 26) + 'ms"></i>';
-        }
-        bursts += '<span class="r327-fw" style="left:' + s.x + ';top:' + s.y + '">' + sparks + '</span>';
-      });
-      const raw = isCancel ? '{nick}，已取消打卡' : cfg.text.replace(/\{nick\}/g, '\u0001').replace(/\{stars\}/g, '\u0002');
-      const label = isCancel ? esc(raw).replace(/\{nick\}/g, esc(nm))
-                             : esc(raw).replace(/\u0001/g, esc(nm)).replace(/\u0002/g, String(n));
-      box.innerHTML = '<div class="r327-celebrate-txt">' + label + '</div>' + bursts;
-      document.body.appendChild(box);
-      setTimeout(function(){ if(box && box.parentNode) box.parentNode.removeChild(box); }, cfg.duration);
+      if(isCancel) return;
       /* 打卡音效单响：捕获阶段若已响过（间隔 < 160ms）就不再补播；其余打卡路径在这里补一次 */
-      if(!isCancel){ try{
-        if(isCheckinSfxOn() && Date.now() - (_checkinSfxAt || 0) > 160){
-          const p = SFX_PRESETS[cfg.sfx]; if(p && p.play) p.play();
-          _checkinSfxAt = Date.now();
-        }
-      }catch(e){} }
+      if(isCheckinSfxOn() && Date.now() - (_checkinSfxAt || 0) > 160){
+        const p = SFX_PRESETS[R362_FX.sfx]; if(p && p.play) p.play();
+        _checkinSfxAt = Date.now();
+      }
     }catch(e){}
   }
   /* R336-6.1：全平台打卡 / 取消打卡统一动画入口——打卡与取消都走书单那套 r327CheckinSuccess */
@@ -42253,8 +42265,15 @@ window.EN_SENTENCE_MERGE = EN_SENTENCE_MERGE; // R206-2：导入结果（新增�
     if(_pending && _kpHydrateTried[unitId] !== _pending){
       _kpHydrateTried[unitId] = _pending;
       enKpHydrate().then(function(n){
-        if(!n) return;
-        try{ if(document.getElementById('enSlotBody')) renderEnKeyPoints(_enKpUnit); }catch(e){}
+        /* R363-英语1【重点知识无法显示】renderEnKeyPoints 只返回 HTML 字符串，不直接写 DOM。
+           旧实现把返回值丢弃，图片从 IndexedDB 水合成功后界面仍是空白。
+           改为走插槽重绘钩子，把水合到的图片真正画回当前板块。
+           本次一张都没水合到（首次启动 IDB 未就绪）时清掉标记，下次渲染允许重试。 */
+        if(!n){ delete _kpHydrateTried[unitId]; return; }
+        try{
+          if(!document.getElementById('enSlotBody')) return;
+          if(typeof window.__slotRerender === 'function') window.__slotRerender();
+        }catch(e){}
       });
     }
     return items;
@@ -54085,13 +54104,21 @@ function renderKMAdmin(){
     }).join('') : '<div class="kp-empty">这个学年 · Lesson 还没有' + xsModeLabel() + '记录，点上面「➕ 新增' + xsModeLabel() + '」导入照片吧～</div>';
     target.classList.remove('xs-list-grammar','xs-list-raz');
     target.classList.add('notes-mode');
-    target.innerHTML = `
-      <div class="yw-comp-head xs-note-head">${xsModeLabel()}
+    /* R363-学而思2：标题 + 新增 + 删除 统一放进页签按键上方的浅蓝色卡片（课堂笔记 / 课前测共用） */
+    const _r363NoteHost = document.getElementById('xsNoteHeadHost');
+    if(_r363NoteHost){
+      _r363NoteHost.hidden = false;
+      _r363NoteHost.innerHTML = `
+      <div class="r363-note-head">
+        <span class="r363-note-title">${xsModeLabel()}</span>
         <span class="xs-note-head-actions">
           <button type="button" class="pbtn small" data-xs-note-add="1" title="导入${xsModeLabel()}照片（相册 / 文件夹）">➕ 新增${xsModeLabel()}</button>
           <button type="button" class="pbtn small${_xsNoteDelMode?' is-on':''}" data-xs-note-del-mode="1" title="进入删除模式后可点击图片删除">${_xsNoteDelMode?'🗑 退出删除':'🗑 删除'+xsModeLabel()}</button>
         </span>
-      </div>
+      </div>`;
+      xsNoteBind(_r363NoteHost);
+    }
+    target.innerHTML = `
       <div class="math-filter-bar xs-note-filter-bar">
         <div class="math-filter" data-xs-pick-group="year">
           <button type="button" class="math-filter-btn" data-xs-pick="year" aria-haspopup="listbox" aria-expanded="false" title="点击选择学年">
@@ -54127,6 +54154,10 @@ function renderKMAdmin(){
     if(addBtn){ addBtn.classList.add('hidden'); addBtn.style.display = 'none'; }
     const filterBtn = $('#btnXsGramFilter');
     if(filterBtn) filterBtn.hidden = true;
+    /* R363-学而思2：标题 / 新增 / 删除已上移到页签上方的浅蓝色卡片，
+       工具条本身在课堂笔记 / 课前测下没有内容，一并收起避免留一条空白框。 */
+    const _r363Bar = $('.xs-summary-pane .xs-summary-head');
+    if(_r363Bar) _r363Bar.hidden = true;
     const pager = $('#xsPager');
     if(pager) pager.innerHTML = '';
     xsNoteBind(target);
@@ -54462,13 +54493,12 @@ function renderKMAdmin(){
   function renderXueersiSummary(){
     if(xsCat === 'stories') xsCat = 'words'; // V12.3：仅过滤绘本；恢复语法
     _uiMem('xsCat', xsCat); // R254-7：记住当前页签（下次进入直接回到这里）
-    /* R362-学而思1/2：按页签切换内容卡类型 —— 词汇/KET词组/语法/课堂笔记=学习板块卡，课前测/每日巩固/学而思练习=巩固板块卡 */
-    const _r362Card = document.querySelector('.xs-summary-pane .r360-xs-content');
-    if(_r362Card){
-      const _r362Learn = (xsCat === 'words' || xsCat === 'ket' || xsCat === 'grammar' || xsCat === 'notes');
-      _r362Card.classList.toggle('r362-learn-card', _r362Learn);
-      _r362Card.classList.toggle('r362-consol-card', !_r362Learn);
-    }
+    /* R363-学而思2：课堂笔记 / 课前测的标题卡挂在页签上方的独立宿主里。
+       切到其它页签时先清空并收起，只有 notes / pretest 渲染时再写入。 */
+    const _r363HeadHost = document.getElementById('xsNoteHeadHost');
+    if(_r363HeadHost){ _r363HeadHost.innerHTML = ''; _r363HeadHost.hidden = true; }
+    const _r363Bar0 = document.querySelector('.xs-summary-pane .xs-summary-head');
+    if(_r363Bar0) _r363Bar0.hidden = false;
     $$('.xs-summary-pane .xs-sub-tabs [data-xs-cat]').forEach(b=>b.classList.toggle('active', b.dataset.xsCat===xsCat));
     // R218-1：课堂笔记子板块（与「新世界·英语专区·重点知识」功能/交互完全一致）
     if(xsCat === 'notes'){ _xsNoteMode = 'notes'; renderXsNotes(); return; }
